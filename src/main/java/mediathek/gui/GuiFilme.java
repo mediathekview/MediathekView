@@ -42,6 +42,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
+import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -159,6 +160,62 @@ public class GuiFilme extends JPanel {
         setupActionListeners();
     }
 
+    private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
+
+    public void installMenuEntries(JMenu menu) {
+        JMenuItem miPlayFilm = new JMenuItem("Film abspielen");
+        if (SystemUtils.IS_OS_MAC_OSX)
+            miPlayFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.META_DOWN_MASK));
+        else
+            miPlayFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+        miPlayFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
+        miPlayFilm.addActionListener(playAction);
+
+        JMenuItem miRecordFilm = new JMenuItem("Film aufzeichnen");
+        if (SystemUtils.IS_OS_MAC_OSX)
+            miRecordFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.META_DOWN_MASK));
+        else
+            miRecordFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+        miRecordFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
+        miRecordFilm.addActionListener(saveFilmAction);
+
+        JMenuItem miOpenBlacklist = new JMenuItem("Blacklist öffnen");
+        if (SystemUtils.IS_OS_MAC_OSX)
+            miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_DOWN_MASK));
+        else
+            miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
+        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(MediathekGui.ui(), daten));
+
+        if (SystemUtils.IS_OS_MAC_OSX)
+            cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_DOWN_MASK));
+        else
+            cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
+
+        JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
+        miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+        miMarkFilmAsSeen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
+        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
+
+        JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
+        miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        miMarkFilmAsUnseen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
+        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
+
+        JMenuItem miSearchMediaCollection = new JMenuItem("Titel in der Mediensammlung suchen");
+        miSearchMediaCollection.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+        miSearchMediaCollection.addActionListener(mediensammlungAction);
+
+        menu.add(miPlayFilm);
+        menu.add(miRecordFilm);
+        menu.add(miOpenBlacklist);
+        menu.addSeparator();
+        menu.add(cbkShowDescription);
+        menu.addSeparator();
+        menu.add(miMarkFilmAsSeen);
+        menu.add(miMarkFilmAsUnseen);
+        menu.addSeparator();
+        menu.add(miSearchMediaCollection);
+    }
 
     private void setupFilmActionPanel() {
         add(fxPanel, BorderLayout.NORTH);
@@ -1265,19 +1322,18 @@ public class GuiFilme extends JPanel {
      * Here we just display the panel
      */
     private void setupShowFilmDescriptionMenuItem() {
-        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
-        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
-        cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
-        cbk.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbk.isSelected()));
+        cbkShowDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
+        cbkShowDescription.addActionListener(l -> jPanelBeschreibung.setVisible(cbkShowDescription.isSelected()));
+        cbkShowDescription.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbkShowDescription.isSelected()));
         jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                cbk.setSelected(true);
+                cbkShowDescription.setSelected(true);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                cbk.setSelected(false);
+                cbkShowDescription.setSelected(false);
             }
         });
     }

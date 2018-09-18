@@ -52,7 +52,6 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.actions.CreateProtocolFileAction;
 import mediathek.gui.actions.ResetSettingsAction;
-import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitor;
@@ -644,10 +643,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    public JCheckBoxMenuItem getFilmDescriptionMenuItem() {
-        return cbkBeschreibung;
-    }
-
     public JCheckBoxMenuItem getDownloadFilmDescriptionMenuItem() {
         return miShowDownloadDescription;
     }
@@ -681,7 +676,7 @@ public class MediathekGui extends JFrame {
         installMenuTabSwitchListener();
 
         initializeDateiMenu();
-        initializeFilmeMenu();
+        tabFilme.installMenuEntries(jMenuFilme);
         initializeDownloadsMenu();
         tabAbos.installMenuEntries(jMenuAbos);
         initializeAnsichtMenu();
@@ -821,25 +816,6 @@ public class MediathekGui extends JFrame {
 
         jMenuItemDownloadMediensammlung.addActionListener(e -> tabDownloads.guiFilmMediensammlung());
         jMenuItemDownloadInvertSelection.addActionListener(e -> tabDownloads.invertSelection());
-    }
-
-    private void initializeFilmeMenu()
-    {
-        jMenuItemFilmAbspielen.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-        jMenuItemFilmAbspielen.addActionListener(tabFilme.playAction);
-
-        jMenuItemFilmAufzeichnen.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
-        jMenuItemFilmAufzeichnen.addActionListener(tabFilme.saveFilmAction);
-
-        jMenuItemBlacklist.setAction(new ShowBlacklistDialogAction(this, daten));
-
-        jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
-        jMenuItemFilmeGesehen.addActionListener(tabFilme.markFilmAsSeenAction);
-
-        jMenuItemFilmeUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
-        jMenuItemFilmeUngesehen.addActionListener(tabFilme.markFilmAsUnseenAction);
-
-        jMenuItemFilmeMediensammlung.addActionListener(tabFilme.mediensammlungAction);
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
@@ -1100,14 +1076,6 @@ public class MediathekGui extends JFrame {
         jSeparator2 = new JSeparator();
         jMenuItemBeenden = new JMenuItem();
         jMenuFilme = new JMenu();
-        jMenuItemFilmAbspielen = new JMenuItem();
-        jMenuItemFilmAufzeichnen = new JMenuItem();
-        jMenuItemBlacklist = new JMenuItem();
-        var separator1 = new JSeparator();
-        cbkBeschreibung = new JCheckBoxMenuItem();
-        jMenuItemFilmeGesehen = new JMenuItem();
-        jMenuItemFilmeUngesehen = new JMenuItem();
-        jMenuItemFilmeMediensammlung = new JMenuItem();
         jMenuDownload = new JMenu();
         jMenuItemDownloadsAlleStarten = new JMenuItem();
         jMenuItemDownloadStartTime = new JMenuItem();
@@ -1186,43 +1154,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuFilme.setMnemonic('F');
                 jMenuFilme.setText("Filme");
-
-                //---- jMenuItemFilmAbspielen ----
-                jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
-                jMenuItemFilmAbspielen.setText("Film abspielen");
-                jMenuFilme.add(jMenuItemFilmAbspielen);
-
-                //---- jMenuItemFilmAufzeichnen ----
-                jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
-                jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
-                jMenuFilme.add(jMenuItemFilmAufzeichnen);
-
-                //---- jMenuItemBlacklist ----
-                jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK));
-                jMenuItemBlacklist.setText("Blacklist \u00f6ffnen");
-                jMenuFilme.add(jMenuItemBlacklist);
-                jMenuFilme.add(separator1);
-
-                //---- cbkBeschreibung ----
-                cbkBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
-                cbkBeschreibung.setText("Beschreibung anzeigen");
-                jMenuFilme.add(cbkBeschreibung);
-                jMenuFilme.addSeparator();
-
-                //---- jMenuItemFilmeGesehen ----
-                jMenuItemFilmeGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_MASK));
-                jMenuItemFilmeGesehen.setText("Filme als gesehen markieren");
-                jMenuFilme.add(jMenuItemFilmeGesehen);
-
-                //---- jMenuItemFilmeUngesehen ----
-                jMenuItemFilmeUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-                jMenuItemFilmeUngesehen.setText("Filme als ungesehen markieren");
-                jMenuFilme.add(jMenuItemFilmeUngesehen);
-
-                //---- jMenuItemFilmeMediensammlung ----
-                jMenuItemFilmeMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK));
-                jMenuItemFilmeMediensammlung.setText("Titel in der Mediensammlung suchen");
-                jMenuFilme.add(jMenuItemFilmeMediensammlung);
             }
             jMenuBar.add(jMenuFilme);
 
@@ -1430,13 +1361,6 @@ public class MediathekGui extends JFrame {
     protected JSeparator jSeparator2;
     protected JMenuItem jMenuItemBeenden;
     private JMenu jMenuFilme;
-    protected JMenuItem jMenuItemFilmAbspielen;
-    protected JMenuItem jMenuItemFilmAufzeichnen;
-    protected JMenuItem jMenuItemBlacklist;
-    protected JCheckBoxMenuItem cbkBeschreibung;
-    private JMenuItem jMenuItemFilmeGesehen;
-    private JMenuItem jMenuItemFilmeUngesehen;
-    private JMenuItem jMenuItemFilmeMediensammlung;
     protected JMenu jMenuDownload;
     private JMenuItem jMenuItemDownloadsAlleStarten;
     private JMenuItem jMenuItemDownloadStartTime;
