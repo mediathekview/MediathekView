@@ -19,19 +19,22 @@
  */
 package mediathek.tool.cellrenderer;
 
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
 @SuppressWarnings("serial")
 public class CellRendererAbo extends CellRendererBase {
+    private static final Logger logger = LogManager.getLogger(CellRendererAbo.class);
+
     public CellRendererAbo(MVSenderIconCache cache) {
         super(cache);
     }
@@ -102,7 +105,7 @@ public class CellRendererAbo extends CellRendererBase {
             if (!aboIstEingeschaltet)
                 setBackgroundColor(this, isSelected);
         } catch (Exception ex) {
-            Log.errorLog(630365892, ex);
+            logger.error("Fehler 630365892", ex);
         }
         return this;
     }

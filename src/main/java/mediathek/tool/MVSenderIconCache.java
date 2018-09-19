@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,10 +20,10 @@ public class MVSenderIconCache {
 
     private final static int ICON_SIZE_LARGE = 32;
     private final static int ICON_SIZE_SMALL = 16;
-    private final LoadingCache<String, ImageIcon> senderCache_small = CacheBuilder.newBuilder()
+    private final LoadingCache<String, Optional<ImageIcon>> senderCache_small = CacheBuilder.newBuilder()
             .expireAfterAccess(2, TimeUnit.MINUTES)
             .build(new IconCacheLoader(ICON_SIZE_SMALL));
-    private final LoadingCache<String, ImageIcon> senderCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, Optional<ImageIcon>> senderCache = CacheBuilder.newBuilder()
             .expireAfterAccess(2, TimeUnit.MINUTES)
             .build(new IconCacheLoader(ICON_SIZE_LARGE));
 
@@ -46,20 +47,21 @@ public class MVSenderIconCache {
      * @return The {@link javax.swing.ImageIcon} for the sender or null.
      */
     public ImageIcon get(String sender, boolean small) {
-        ImageIcon icon;
+        Optional<ImageIcon> icon;
         try {
             if (small)
                 icon = senderCache_small.get(sender);
             else
                 icon = senderCache.get(sender);
-        } catch (ExecutionException ex) {
-            icon = null;
+        } catch (CacheLoader.InvalidCacheLoadException | ExecutionException ex) {
+            ex.printStackTrace();
+            icon = Optional.empty();
         }
 
-        return icon;
+        return icon.orElse(null);
     }
 
-    class IconCacheLoader extends CacheLoader<String, ImageIcon> {
+    class IconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
         private final int height;
 
         public IconCacheLoader(int height) {
@@ -84,7 +86,7 @@ public class MVSenderIconCache {
         }
 
         @Override
-        public ImageIcon load(@NotNull String sender) {
+        public Optional<ImageIcon> load(@NotNull String sender) {
             ImageIcon icon;
 
             switch (sender) {
@@ -174,7 +176,7 @@ public class MVSenderIconCache {
                     break;
             }
 
-            return icon;
+            return Optional.ofNullable(icon);
         }
     }
 }
