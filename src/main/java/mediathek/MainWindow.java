@@ -16,20 +16,30 @@ import mediathek.javafx.StatusBarController;
 import javax.swing.*;
 
 public class MainWindow extends Stage {
+    private final StatusBarController statusBarController;
+    private static MainWindow ui = null;
+
+    public StatusBarController getStatusBarController() {
+        return statusBarController;
+    }
+
+    public static MainWindow ui() { return ui;}
     public MainWindow() {
         super();
+        ui = this;
+
         setTitle("FX Mediathekview");
         setWidth(800d);
         setHeight(600d);
 
-        StatusBarController cont = new StatusBarController(Daten.getInstance());
+        statusBarController = new StatusBarController(Daten.getInstance());
 
         VBox mainLayout = new VBox();
         Node contentPane = createContentPane();
         VBox.setVgrow(contentPane, Priority.ALWAYS);
         mainLayout.getChildren().addAll(createMenuBar(),
                 contentPane,
-                cont.createStatusBar());
+                statusBarController.createStatusBar());
 
         Scene scene = new Scene(mainLayout);
         setScene(scene);
