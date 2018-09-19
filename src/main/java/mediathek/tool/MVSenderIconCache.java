@@ -46,7 +46,7 @@ public class MVSenderIconCache {
      * @param small  large or small icon requested.
      * @return The {@link javax.swing.ImageIcon} for the sender or null.
      */
-    public ImageIcon get(String sender, boolean small) {
+    public Optional<ImageIcon> get(String sender, boolean small) {
         Optional<ImageIcon> icon;
         try {
             if (small)
@@ -54,11 +54,10 @@ public class MVSenderIconCache {
             else
                 icon = senderCache.get(sender);
         } catch (CacheLoader.InvalidCacheLoadException | ExecutionException ex) {
-            ex.printStackTrace();
             icon = Optional.empty();
         }
 
-        return icon.orElse(null);
+        return icon;
     }
 
     class IconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
@@ -176,7 +175,13 @@ public class MVSenderIconCache {
                     break;
             }
 
-            return Optional.ofNullable(icon);
+            final Optional<ImageIcon> optIcon;
+            if (icon == null)
+                optIcon = Optional.empty();
+            else
+                optIcon = Optional.of(icon);
+
+            return optIcon;
         }
     }
 }
