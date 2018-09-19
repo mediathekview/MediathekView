@@ -19,27 +19,29 @@
  */
 package mediathek.tool;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Filter {
-
     /**
      * The cache for already compiled RegExp.
      * Entries will be removed if the haven´t been accessed for more than 5 minutes.
      */
-    private static final Cache<String, Pattern> CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build();
+            .build(new PatternCacheLoader());
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -182,7 +184,6 @@ public class Filter {
         return false;
     }
 
-
     public static boolean isPattern(final String textSuchen) {
         return textSuchen.startsWith("#:");
     }
@@ -196,16 +197,10 @@ public class Filter {
     public static Pattern makePattern(final String textSuchen) {
         Pattern p;
         if (isPattern(textSuchen)) {
-            p = CACHE.getIfPresent(textSuchen);
-            if (p == null) {
-                //nothing in cache, so we have to compile...
-                try {
-                    p = Pattern.compile(textSuchen.substring(2),
-                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
-                    CACHE.put(textSuchen, p);
-                } catch (Exception ignored) {
-                    p = null;
-                }
+            try {
+                p = CACHE.get(textSuchen);
+            } catch (ExecutionException ex) {
+                p = null;
             }
         } else
             p = null;
@@ -225,6 +220,22 @@ public class Filter {
             }
         } else {
             tf.setBackground(Color.WHITE);
+        }
+    }
+
+    /**
+     * This loader will compile regexp patterns when they are not in cache.
+     */
+    static class PatternCacheLoader extends CacheLoader<String, Pattern> {
+
+        @Override
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+            System.out.println("COMPILING PATTERN: " + pattern);
+            Pattern p;
+            p = Pattern.compile(pattern.substring(2),
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+
+            return p;
         }
     }
 }
