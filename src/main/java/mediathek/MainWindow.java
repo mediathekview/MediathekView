@@ -16,14 +16,9 @@ import mediathek.javafx.StatusBarController;
 import javax.swing.*;
 
 public class MainWindow extends Stage {
-    private final StatusBarController statusBarController;
     private static MainWindow ui = null;
+    private final StatusBarController statusBarController;
 
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
-    }
-
-    public static MainWindow ui() { return ui;}
     public MainWindow() {
         super();
         ui = this;
@@ -45,6 +40,14 @@ public class MainWindow extends Stage {
         setScene(scene);
 
         setOnCloseRequest(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false)));
+    }
+
+    public static MainWindow ui() {
+        return ui;
+    }
+
+    public StatusBarController getStatusBarController() {
+        return statusBarController;
     }
 
     private MenuBar createMenuBar() {
