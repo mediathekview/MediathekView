@@ -82,7 +82,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
 
-            if (((MVTable) table).lineBreak) {
+            if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA:

@@ -443,7 +443,7 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK);
+        tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenDownload.COLUMN_NAMES,
                 DatenDownload.spaltenAnzeigen,
