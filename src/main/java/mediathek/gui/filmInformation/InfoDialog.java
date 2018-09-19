@@ -22,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class InfoDialog extends JDialog {
     private static final long serialVersionUID = -890508930316467747L;
@@ -197,11 +198,11 @@ public class InfoDialog extends JDialog {
     }
 
     private void setSenderIcon(final JLabel control) {
-        final ImageIcon icon = senderIconCache.get(currentFilm.getSender(), true);
-        if (icon != null) {
+        final Optional<ImageIcon> optIcon = senderIconCache.get(currentFilm.getSender(), true);
+        optIcon.ifPresent(icon -> {
             control.setText("");
             control.setIcon(icon);
-        }
+        });
     }
 
     private void updateTextFields() {

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * Base class for all cell renderer.
@@ -33,11 +34,11 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      */
     protected void setSenderIcon(String sender, boolean small) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        final ImageIcon icon = senderIconCache.get(sender, small);
-        if (icon != null) {
+        final Optional<ImageIcon> optIcon = senderIconCache.get(sender, small);
+        optIcon.ifPresent(icon -> {
             setText("");
             setIcon(icon);
-        }
+        });
     }
 
     /**
