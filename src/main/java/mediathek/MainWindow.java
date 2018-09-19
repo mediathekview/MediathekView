@@ -1,9 +1,11 @@
 package mediathek;
 
 import javafx.embed.swing.SwingNode;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mediathek.config.Daten;
 import mediathek.gui.GuiAbo;
@@ -16,39 +18,26 @@ import javax.swing.*;
 public class MainWindow extends Stage {
     public MainWindow() {
         super();
-        setTitle("Dummy JavaFX MainWindow");
+        setTitle("FX Mediathekview");
         setWidth(800d);
         setHeight(600d);
 
-        BorderPane bp = new BorderPane();
         StatusBarController cont = new StatusBarController(Daten.getInstance());
-        bp.setBottom(cont.createStatusBar());
 
-        TabPane tabPane = new TabPane();
-        Tab filmeTab = new Tab("Filme");
-        filmeTab.setClosable(false);
-        final SwingNode filmeSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> filmeSwingNode.setContent(new GuiFilme(Daten.getInstance(),MediathekGui.ui())));
-        filmeTab.setContent(filmeSwingNode);
+        VBox mainLayout = new VBox();
+        Node contentPane = createContentPane();
+        VBox.setVgrow(contentPane, Priority.ALWAYS);
+        mainLayout.getChildren().addAll(createMenuBar(),
+                contentPane,
+                cont.createStatusBar());
 
-        Tab downloadsTab = new Tab("Downloads");
-        final SwingNode downloadsSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> downloadsSwingNode.setContent(new GuiDownloads(Daten.getInstance(),MediathekGui.ui())));
-        downloadsTab.setContent(downloadsSwingNode);
-        downloadsTab.setClosable(false);
-
-        Tab aboTab = new Tab("Abos");
-        final SwingNode aboSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> aboSwingNode.setContent(new GuiAbo(Daten.getInstance(),MediathekGui.ui())));
-        aboTab.setClosable(false);
-        aboTab.setContent(aboSwingNode);
-
-        tabPane.getTabs().addAll(filmeTab, downloadsTab,aboTab);
-        bp.setCenter(tabPane);
-
-        Scene scene = new Scene(bp);
+        Scene scene = new Scene(mainLayout);
         setScene(scene);
 
+        setOnCloseRequest(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false)));
+    }
+
+    private MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
 
         Menu menuFile = new Menu("Datei");
@@ -64,11 +53,37 @@ public class MainWindow extends Stage {
         Menu menuHelp = new Menu("Hilfe");
 
         MenuItem menuItem = new MenuItem("Beenden");
-        menuItem.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false,false)));
+        menuItem.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false)));
         menuFile.getItems().add(menuItem);
 
-        menuBar.getMenus().addAll(menuFile, menuFilme, menuDownloads, menuAbos,menuAnsicht, menuHelp);
+        menuBar.getMenus().addAll(menuFile, menuFilme, menuDownloads, menuAbos, menuAnsicht, menuHelp);
         menuBar.useSystemMenuBarProperty().set(true);
-        bp.setTop(menuBar);
+
+        return menuBar;
+    }
+
+    private Node createContentPane() {
+        TabPane tabPane = new TabPane();
+        Tab filmeTab = new Tab("Filme");
+        filmeTab.setClosable(false);
+        final SwingNode filmeSwingNode = new SwingNode();
+        SwingUtilities.invokeLater(() -> filmeSwingNode.setContent(new GuiFilme(Daten.getInstance(), MediathekGui.ui())));
+        filmeTab.setContent(filmeSwingNode);
+
+        Tab downloadsTab = new Tab("Downloads");
+        final SwingNode downloadsSwingNode = new SwingNode();
+        SwingUtilities.invokeLater(() -> downloadsSwingNode.setContent(new GuiDownloads(Daten.getInstance(), MediathekGui.ui())));
+        downloadsTab.setContent(downloadsSwingNode);
+        downloadsTab.setClosable(false);
+
+        Tab aboTab = new Tab("Abos");
+        final SwingNode aboSwingNode = new SwingNode();
+        SwingUtilities.invokeLater(() -> aboSwingNode.setContent(new GuiAbo(Daten.getInstance(), MediathekGui.ui())));
+        aboTab.setClosable(false);
+        aboTab.setContent(aboSwingNode);
+
+        tabPane.getTabs().addAll(filmeTab, downloadsTab, aboTab);
+
+        return tabPane;
     }
 }
