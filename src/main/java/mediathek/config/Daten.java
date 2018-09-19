@@ -75,6 +75,10 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
+    /**
+     * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
+     */
+    private final Cleaner cleaner = Cleaner.create();
     public MVUsedUrls history; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -93,17 +97,6 @@ public class Daten {
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
     private MVSenderIconCache senderIconCache;
-
-    public MVSenderIconCache getSenderIconCache() { return senderIconCache;}
-
-    private void loadSenderIcons() {
-            senderIconCache = new MVSenderIconCache();
-    }
-
-    /**
-     * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
-     */
-    private final Cleaner cleaner = Cleaner.create();
 
     private Daten() {
         start();
@@ -226,6 +219,14 @@ public class Daten {
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
+    }
+
+    public MVSenderIconCache getSenderIconCache() {
+        return senderIconCache;
+    }
+
+    private void loadSenderIcons() {
+        senderIconCache = new MVSenderIconCache();
     }
 
     public Cleaner getCleaner() {

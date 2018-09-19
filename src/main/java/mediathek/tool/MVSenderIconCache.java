@@ -1,99 +1,180 @@
 package mediathek.tool;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class will load only one instance for all used sender icons.
  */
 public class MVSenderIconCache {
 
-    private final static Map<String, ImageIcon> iconCache = new HashMap<>();
-    private final static Map<String, ImageIcon> iconCache_small = new HashMap<>();
-    private final static String PFAD = "/mediathek/res/sender/";
-    private final static int height = 32;
-    private final static int height_small = 16;
+    private final static int ICON_SIZE_LARGE = 32;
+    private final static int ICON_SIZE_SMALL = 16;
+    private final LoadingCache<String, ImageIcon> senderCache_small = CacheBuilder.newBuilder()
+            .expireAfterAccess(2, TimeUnit.MINUTES)
+            .build(new IconCacheLoader(ICON_SIZE_SMALL));
+    private final LoadingCache<String, ImageIcon> senderCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(2, TimeUnit.MINUTES)
+            .build(new IconCacheLoader(ICON_SIZE_LARGE));
 
-    static {
-        iconCache.put("3Sat", scaleImage(PFAD + "3sat.png", height));
-        iconCache.put("ARD", scaleImage(PFAD + "ard.png", height));
-        iconCache.put("ARD.Podcast", scaleImage(PFAD + "ard.png", height));
-        iconCache.put("ARTE.DE", scaleImage(PFAD + "arte-de.png", height));
-        iconCache.put("ARTE.FR", scaleImage(PFAD + "arte-fr.png", height));
-        iconCache.put("BR", scaleImage(PFAD + "br.png", height));
-        iconCache.put("HR", scaleImage(PFAD + "hr.png", height));
-        iconCache.put("KiKA", scaleImage(PFAD + "kika.png", height));
-        iconCache.put("MDR", scaleImage(PFAD + "mdr.png", height));
-        iconCache.put("DW", scaleImage(PFAD + "dw.png", height));
-        iconCache.put("NDR", scaleImage(PFAD + "ndr.png", height));
-        iconCache.put("ORF", scaleImage(PFAD + "orf.png", height));
-        iconCache.put("RBB", scaleImage(PFAD + "rbb.png", height));
-        iconCache.put("SR", scaleImage(PFAD + "sr.png", height));
-        iconCache.put("SRF", scaleImage(PFAD + "srf.png", height));
-        iconCache.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height));
-        iconCache.put("SWR", scaleImage(PFAD + "swr.png", height));
-        iconCache.put("WDR", scaleImage(PFAD + "wdr.png", height));
-        iconCache.put("ZDF", scaleImage(PFAD + "zdf.png", height));
-        iconCache.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height));
-        iconCache.put("PHOENIX", scaleImage(PFAD + "phoenix.png", height));
+    public MVSenderIconCache() {
+        setupCleanupScheduler();
     }
 
-    static {
-        iconCache_small.put("3Sat", scaleImage(PFAD + "3sat.png", height_small));
-        iconCache_small.put("ARD", scaleImage(PFAD + "ard.png", height_small));
-        iconCache_small.put("ARD.Podcast", scaleImage(PFAD + "ard.png", height_small));
-        iconCache_small.put("ARTE.DE", scaleImage(PFAD + "arte-de.png", height_small));
-        iconCache_small.put("ARTE.FR", scaleImage(PFAD + "arte-fr.png", height_small));
-        iconCache_small.put("BR", scaleImage(PFAD + "br.png", height_small));
-        iconCache_small.put("HR", scaleImage(PFAD + "hr.png", height_small));
-        iconCache_small.put("KiKA", scaleImage(PFAD + "kika.png", height_small));
-        iconCache_small.put("MDR", scaleImage(PFAD + "mdr.png", height_small));
-        iconCache_small.put("DW", scaleImage(PFAD + "dw.png", height_small));
-        iconCache_small.put("NDR", scaleImage(PFAD + "ndr.png", height_small));
-        iconCache_small.put("ORF", scaleImage(PFAD + "orf.png", height_small));
-        iconCache_small.put("RBB", scaleImage(PFAD + "rbb.png", height_small));
-        iconCache_small.put("SR", scaleImage(PFAD + "sr.png", height_small));
-        iconCache_small.put("SRF", scaleImage(PFAD + "srf.png", height_small));
-        iconCache_small.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height_small));
-        iconCache_small.put("SWR", scaleImage(PFAD + "swr.png", height_small));
-        iconCache_small.put("WDR", scaleImage(PFAD + "wdr.png", height_small));
-        iconCache_small.put("ZDF", scaleImage(PFAD + "zdf.png", height_small));
-        iconCache_small.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height_small));
-        iconCache_small.put("PHOENIX", scaleImage(PFAD + "phoenix.png", height_small));
+    private void setupCleanupScheduler() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(() -> {
+            senderCache.cleanUp();
+            senderCache_small.cleanUp();
+        }, 2, 2, TimeUnit.MINUTES);
     }
 
     /**
      * Get the icon for a specific sender.
      *
      * @param sender The name of the supported sender.
-     * @param small
+     * @param small  large or small icon requested.
      * @return The {@link javax.swing.ImageIcon} for the sender or null.
      */
     public ImageIcon get(String sender, boolean small) {
-        if (small) {
-            return iconCache_small.get(sender);
-        } else {
-            return iconCache.get(sender);
+        ImageIcon icon;
+        try {
+            if (small)
+                icon = senderCache_small.get(sender);
+            else
+                icon = senderCache.get(sender);
+        } catch (ExecutionException ex) {
+            icon = null;
+        }
+
+        return icon;
+    }
+
+    class IconCacheLoader extends CacheLoader<String, ImageIcon> {
+        private final int height;
+
+        public IconCacheLoader(int height) {
+            this.height = height;
+        }
+
+        private ImageIcon scaleImage(String source, int maxHeight) {
+
+            int newWidth, priorHeight, priorWidth; // Variables for the old - new ICON_SIZE_LARGE and width
+            Image image;
+            ImageIcon sizeImage;
+
+            image = new ImageIcon(MVSenderIconCache.class.getResource(source)).getImage();
+            sizeImage = new ImageIcon(image);
+
+            priorHeight = sizeImage.getIconHeight();
+            priorWidth = sizeImage.getIconWidth();
+
+            newWidth = (int) (((float) priorWidth / (float) priorHeight) * (float) maxHeight);
+
+            return new ImageIcon(image.getScaledInstance(newWidth, maxHeight, Image.SCALE_AREA_AVERAGING));
+        }
+
+        @Override
+        public ImageIcon load(@NotNull String sender) {
+            ImageIcon icon;
+
+            switch (sender) {
+                case "3Sat":
+                    icon = scaleImage("/mediathek/res/sender/3sat.png", height);
+                    break;
+
+                case "ARD":
+                case "ARD.Podcast":
+                    icon = scaleImage("/mediathek/res/sender/ard.png", height);
+                    break;
+
+                case "ARTE.DE":
+                    icon = scaleImage("/mediathek/res/sender/arte-de.png", height);
+                    break;
+
+                case "ARTE.FR":
+                    icon = scaleImage("/mediathek/res/sender/arte-fr.png", height);
+                    break;
+
+                case "BR":
+                    icon = scaleImage("/mediathek/res/sender/br.png", height);
+                    break;
+
+                case "HR":
+                    icon = scaleImage("/mediathek/res/sender/hr.png", height);
+                    break;
+
+                case "KiKA":
+                    icon = scaleImage("/mediathek/res/sender/kika.png", height);
+                    break;
+
+                case "MDR":
+                    icon = scaleImage("/mediathek/res/sender/mdr.png", height);
+                    break;
+
+                case "DW":
+                    icon = scaleImage("/mediathek/res/sender/dw.png", height);
+                    break;
+
+                case "NDR":
+                    icon = scaleImage("/mediathek/res/sender/ndr.png", height);
+                    break;
+
+                case "ORF":
+                    icon = scaleImage("/mediathek/res/sender/orf.png", height);
+                    break;
+
+                case "RBB":
+                    icon = scaleImage("/mediathek/res/sender/rbb.png", height);
+                    break;
+
+                case "SR":
+                    icon = scaleImage("/mediathek/res/sender/sr.png", height);
+                    break;
+
+                case "SRF":
+                    icon = scaleImage("/mediathek/res/sender/srf.png", height);
+                    break;
+
+                case "SRF.Podcast":
+                    icon = scaleImage("/mediathek/res/sender/srf-podcast.png", height);
+                    break;
+
+                case "SWR":
+                    icon = scaleImage("/mediathek/res/sender/swr.png", height);
+                    break;
+
+                case "WDR":
+                    icon = scaleImage("/mediathek/res/sender/wdr.png", height);
+                    break;
+
+                case "ZDF":
+                    icon = scaleImage("/mediathek/res/sender/zdf.png", height);
+                    break;
+
+                case "ZDF-tivi":
+                    icon = scaleImage("/mediathek/res/sender/zdf-tivi.png", height);
+                    break;
+
+                case "PHOENIX":
+                    icon = scaleImage("/mediathek/res/sender/phoenix.png", height);
+                    break;
+
+                default:
+                    icon = null;
+                    break;
+            }
+
+            return icon;
         }
     }
-
-    private static ImageIcon scaleImage(String source, int maxHeight) {
-
-        int newWidth, priorHeight, priorWidth; // Variables for the old - new height and width
-        Image image;
-        ImageIcon sizeImage;
-
-        image = new ImageIcon(MVSenderIconCache.class.getResource(source)).getImage();
-        sizeImage = new ImageIcon(image);
-
-        priorHeight = sizeImage.getIconHeight();
-        priorWidth = sizeImage.getIconWidth();
-
-        newWidth = (int) (((float) priorWidth / (float) priorHeight) * (float) maxHeight);
-
-        return new ImageIcon(image.getScaledInstance(newWidth, maxHeight, Image.SCALE_AREA_AVERAGING));
-    }
-
 }
