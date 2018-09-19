@@ -26,6 +26,8 @@ import mSearch.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -223,6 +225,8 @@ public class Filter {
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(Filter.class);
+
     /**
      * This loader will compile regexp patterns when they are not in cache.
      */
@@ -230,7 +234,7 @@ public class Filter {
 
         @Override
         public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
-            System.out.println("COMPILING PATTERN: " + pattern);
+            logger.debug("COMPILING PATTERN: " + pattern);
             Pattern p;
             p = Pattern.compile(pattern.substring(2),
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);

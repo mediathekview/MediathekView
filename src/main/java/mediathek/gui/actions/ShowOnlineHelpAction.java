@@ -1,8 +1,9 @@
 package mediathek.gui.actions;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Konstanten;
-import mediathek.res.GetIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
-        putValue(SMALL_ICON, GetIcon.getProgramIcon("menue-help.png", 16, 16));
+        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE, 16));
     }
 
     @Override
