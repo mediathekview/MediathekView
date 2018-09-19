@@ -38,7 +38,6 @@ import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.TModelAbo;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
@@ -192,8 +191,7 @@ public class GuiAbo extends JPanel {
     }
 
     private void setCellRenderer() {
-        final MVSenderIconCache cache = MediathekGui.ui().getSenderIconCache();
-        final CellRendererAbo cellRenderer = new CellRendererAbo(cache);
+        final CellRendererAbo cellRenderer = new CellRendererAbo(daten.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);

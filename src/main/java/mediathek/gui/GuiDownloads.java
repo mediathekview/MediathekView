@@ -184,7 +184,7 @@ public class GuiDownloads extends JPanel {
 
         showDescriptionPanel();
 
-        init(mediathekGui);
+        init();
 
         installTabInfoStatusBarControl();
 
@@ -424,11 +424,11 @@ public class GuiDownloads extends JPanel {
             DatenDownload.DOWNLOAD_FILM_NR,
             DatenDownload.DOWNLOAD_NR};
 
-    private void init(MediathekGui mediathekGui) {
+    private void init() {
         setupKeyMappings();
         //Tabelle einrichten
 
-        final CellRendererDownloads cellRenderer = new CellRendererDownloads(mediathekGui.getSenderIconCache());
+        final CellRendererDownloads cellRenderer = new CellRendererDownloads(daten.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);

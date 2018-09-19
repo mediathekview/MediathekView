@@ -52,9 +52,9 @@ public class InfoDialog extends JDialog {
         return item;
     }
 
-    public InfoDialog(Window parent, MVSenderIconCache cache) {
+    public InfoDialog(Window parent) {
         super(parent);
-        senderIconCache = cache;
+        senderIconCache = Daten.getInstance().getSenderIconCache();
 
         setType(Window.Type.UTILITY);
         setTitle("Filminformation");
