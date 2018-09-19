@@ -115,14 +115,6 @@ public class MediathekGuiMac extends MediathekGui {
         });
     }
 
-    @Override
-    protected void setupHelpMenu() {
-        super.setupHelpMenu();
-        //not needed on OSX, located in apple menu
-        jMenuHilfe.remove(jSeparatorAboutApplication);
-        jMenuHilfe.remove(jMenuItemAboutApplication);
-    }
-
     /**
      * Setup the UI for OS X
      */

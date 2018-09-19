@@ -169,55 +169,6 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemShowOnlineHelp"
-						"text": "Online-Hilfe anzeigen"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator4"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemCreateProtocolFile"
-						"text": "Protokolldatei erstellen..."
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemResetSettings"
-						"text": "Einstellungen zurücksetzen..."
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator8"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "miSearchForProgramUpdate"
-						"text": "Nach Update suchen..."
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "miShowProgramInfos"
-						"text": "Programminfos anzeigen..."
-					} )
-					add( new FormComponent( "javax.swing.JSeparator" ) {
-						name: "jSeparatorAboutApplication"
-						auxiliary() {
-							"JavaCodeGenerator.variableName": "jSeparatorAboutApplication"
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAboutApplication"
-						"text": "Über dieses Programm..."
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
 				} )
 			}
 		}, new FormLayoutConstraints( null ) {
