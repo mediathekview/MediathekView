@@ -1,9 +1,9 @@
 package mediathek.tool;
 
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.ImageIcon;
 
 /**
  * This class will load only one instance for all used sender icons.
@@ -13,8 +13,8 @@ public class MVSenderIconCache {
     private final static Map<String, ImageIcon> iconCache = new HashMap<>();
     private final static Map<String, ImageIcon> iconCache_small = new HashMap<>();
     private final static String PFAD = "/mediathek/res/sender/";
-    final static int height = 32;
-    final static int height_small = 15;
+    private final static int height = 32;
+    private final static int height_small = 16;
 
     static {
         iconCache.put("3Sat", scaleImage(PFAD + "3sat.png", height));

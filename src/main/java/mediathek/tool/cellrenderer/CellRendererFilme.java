@@ -28,7 +28,6 @@ import mediathek.config.MVColor;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,8 +46,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final Icon selectedPlayIcon;
     private final Icon normalPlayIcon;
 
-    public CellRendererFilme(Daten d, MVSenderIconCache cache) {
-        super(cache);
+    public CellRendererFilme(Daten d) {
+        super(d.getSenderIconCache());
 
         selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, new Color(255, 255, 255));
         normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);

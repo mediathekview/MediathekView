@@ -34,6 +34,7 @@ import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVSenderIconCache;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -91,6 +92,14 @@ public class Daten {
     private DialogMediaDB dialogMediaDB;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
+    private MVSenderIconCache senderIconCache;
+
+    public MVSenderIconCache getSenderIconCache() { return senderIconCache;}
+
+    private void loadSenderIcons() {
+            senderIconCache = new MVSenderIconCache();
+    }
+
     /**
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
@@ -245,6 +254,9 @@ public class Daten {
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
+
+        updateSplashScreen("Lade Sender Icons...");
+        loadSenderIcons();
 
         updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();

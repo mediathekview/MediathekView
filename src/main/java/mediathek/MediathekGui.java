@@ -107,7 +107,6 @@ public class MediathekGui extends JFrame {
     private final SplashScreenManager splashScreenManager;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
-    private final MVSenderIconCache senderIconCache;
 
     public void updateSplashScreenText(final String aSplashScreenText)
     {
@@ -128,10 +127,6 @@ public class MediathekGui extends JFrame {
         //Hier wird F10 default Funktion unterbunden:
         InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
-    }
-
-    public MVSenderIconCache getSenderIconCache() {
-        return senderIconCache;
     }
 
     /**
@@ -170,8 +165,6 @@ public class MediathekGui extends JFrame {
         setWindowTitle();
 
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
-
-        senderIconCache = new MVSenderIconCache();
 
         remapF10Key();
 
@@ -377,7 +370,7 @@ public class MediathekGui extends JFrame {
      * Create the film information tool window.
      */
     private void createFilmInformationHUD() {
-        filmInfo = new InfoDialog(this, senderIconCache);
+        filmInfo = new InfoDialog(this);
     }
 
     @Handler

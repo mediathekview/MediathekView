@@ -439,8 +439,8 @@ public class GuiFilme extends JPanel {
         tabelle.getActionMap().put("film_starten", playAction);
     }
 
-    private void setupCellRenderer(MediathekGui mediathekGui) {
-        final CellRendererFilme cellRenderer = new CellRendererFilme(daten, mediathekGui.getSenderIconCache());
+    private void setupCellRenderer() {
+        final CellRendererFilme cellRenderer = new CellRendererFilme(daten);
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
@@ -474,7 +474,7 @@ public class GuiFilme extends JPanel {
             }
         });
 
-        setupCellRenderer(mediathekGui);
+        setupCellRenderer();
 
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
         final int[] hiddenColumns = new int[]{

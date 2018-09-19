@@ -37,13 +37,7 @@ public class Filter {
      * The cache for already compiled RegExp.
      * Entries will be removed if the haven´t been accessed for more than 10 minutes.
      */
-    private static final Cache<String, Pattern> CACHE;
-
-    static {
-        CACHE = CacheBuilder.newBuilder()
-                .expireAfterAccess(10, TimeUnit.MINUTES)
-                .build();
-    }
+    private static final Cache<String, Pattern> CACHE = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
