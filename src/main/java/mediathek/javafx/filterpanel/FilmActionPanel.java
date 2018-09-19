@@ -30,8 +30,8 @@ import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.tool.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.CheckListView;
-import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
@@ -53,7 +53,6 @@ import java.util.stream.Collectors;
 public class FilmActionPanel {
     private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
     private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
-    private final PopOver filterPopover;
     private final Daten daten;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
@@ -84,7 +83,7 @@ public class FilmActionPanel {
     private Button btnFilmInformation;
     private Button btnPlay;
     private Button btnRecord;
-    private Button btnNewFilter;
+    private Button btnShowFilter;
     private BlacklistButton btnBlacklist;
     private Button btnEditBlacklist;
     /**
@@ -92,12 +91,11 @@ public class FilmActionPanel {
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private ToggleButton btnSearchThroughDescription;
-    private PopOver popover;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
-        filterPopover = createFilterPopover();
+        createFilterDialog();
         createFilterButton();
 
         restoreConfigSettings();
@@ -105,6 +103,16 @@ public class FilmActionPanel {
         setupConfigListeners();
 
         daten.getMessageBus().subscribe(this);
+    }
+
+    private void createFilterDialog() {
+        VBox vb = getFilterDialogContent();
+        SwingUtilities.invokeLater(() -> {
+            filterDialog = new SwingFilterDialog(MediathekGui.ui(),vb);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                filterDialog.setSize(410,582);
+            }
+        });
     }
 
     public CustomTextField getSearchField() {
@@ -308,15 +316,25 @@ public class FilmActionPanel {
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
+    private JDialog filterDialog;
+
     private void createFilterButton() {
-        btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
-        btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
-        btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
+        btnShowFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+        btnShowFilter.setTooltip(new Tooltip("Filter anzeigen"));
+        btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+            if (filterDialog != null) {
+                if (!filterDialog.isVisible()) {
+                    filterDialog.setVisible(true);
+                    System.out.println("FILTER HEIGHT: " + filterDialog.getHeight());
+                    System.out.println("FILTER WIDTH: "+ filterDialog.getWidth());
+                }
+            }
+        }));
     }
 
     private void setupRightButtons(boolean disabled) {
         Platform.runLater(() -> {
-            btnNewFilter.setDisable(disabled);
+            btnShowFilter.setDisable(disabled);
             btnBlacklist.setDisable(disabled);
             jfxSearchField.setDisable(disabled);
             btnSearchThroughDescription.setDisable(disabled);
@@ -354,6 +372,8 @@ public class FilmActionPanel {
 
         VBox vBox = new VBox();
         vBox.setSpacing(4d);
+        Node senderBox = createSenderBox();
+        VBox.setVgrow(senderBox,Priority.ALWAYS);
         vBox.getChildren().addAll(cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
@@ -365,7 +385,7 @@ public class FilmActionPanel {
                 cbDontShowTrailers,
                 cbDontShowAudioVersions,
                 new Separator(),
-                createSenderBox(),
+                senderBox,
                 new Separator(),
                 createThemaBox(),
                 new Separator(),
@@ -424,6 +444,7 @@ public class FilmActionPanel {
         senderList.setPrefHeight(150d);
         senderList.setMinHeight(100d);
 
+        VBox.setVgrow(senderList,Priority.ALWAYS);
         vb.getChildren().addAll(
                 new Label("Sender:"),
                 senderList);
@@ -493,37 +514,26 @@ public class FilmActionPanel {
         return root;
     }
 
-    private PopOver createFilterPopover() {
-        popover = new PopOver();
-        popover.setTitle("Filter");
-        popover.setAnimated(true);
-        popover.setCloseButtonEnabled(true);
-        popover.setAutoFix(true);
-        popover.setDetachable(true);
-        popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-        popover.setPrefWidth(200);
-
+    private VBox getFilterDialogContent() {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
         vb.getChildren().add(createCommonViewSettingsPane());
 
-        popover.setContentNode(vb);
-
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> popover.getContentNode().setDisable(true));
+                Platform.runLater(() -> vb.setDisable(true));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> popover.getContentNode().setDisable(false));
+                Platform.runLater(() -> vb.setDisable(false));
 
             }
         });
 
-        return popover;
+        return vb;
     }
 
     public Scene getFilmActionPanelScene() {
@@ -550,7 +560,7 @@ public class FilmActionPanel {
         createLeft(toolBar);
 
         toolBar.getItems().addAll(spacer,
-                btnNewFilter,
+                btnShowFilter,
                 jfxSearchField,
                 btnSearchThroughDescription);
 
