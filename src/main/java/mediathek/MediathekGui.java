@@ -539,7 +539,7 @@ public class MediathekGui extends JFrame {
      * @param enable Shall the menu item be enabled?
      */
     public void enableUpdateMenuItem(boolean enable) {
-        miSearchForProgramUpdate.setEnabled(enable);
+        miSearchProgramUpdate.setEnabled(enable);
     }
 
     /**
@@ -747,6 +747,37 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(cbSearchMediaDb);
     }
 
+    private final JMenuItem miSearchProgramUpdate = new JMenuItem("Nach Update suchen...");
+
+    private void createHelpMenu() {
+        JMenuItem miShowOnlineHelp = new JMenuItem("Online-Hilfe anzeigen");
+        miShowOnlineHelp.setAction(new ShowOnlineHelpAction());
+
+        JMenuItem miCreateProtocolFile = new JMenuItem("Protokolldatei erstellen...");
+        miCreateProtocolFile.setAction(new CreateProtocolFileAction());
+
+        JMenuItem miResetSettings = new JMenuItem("Einstellungen zurücksetzen...");
+        miResetSettings.setAction(new ResetSettingsAction(this, daten));
+
+        miSearchProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
+
+        JMenuItem miShowProgramInfo = new JMenuItem("Programminfos anzeigen...");
+        miShowProgramInfo.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
+
+        JMenuItem miShowAboutDialog = new JMenuItem("Über dieses Programm...");
+        miShowAboutDialog.addActionListener(e -> showAboutDialog());
+
+        jMenuHilfe.add(miShowOnlineHelp);
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(miCreateProtocolFile);
+        jMenuHilfe.add(miResetSettings);
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(miSearchProgramUpdate);
+        jMenuHilfe.add(miShowProgramInfo);
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(miShowAboutDialog);
+    }
+
     protected void initMenus() {
         installMenuTabSwitchListener();
 
@@ -757,7 +788,7 @@ public class MediathekGui extends JFrame {
         tabAbos.installMenuEntries(jMenuAbos);
         createViewMenu();
 
-        setupHelpMenu();
+        createHelpMenu();
     }
 
     private void showMemoryMonitor() {
@@ -768,19 +799,6 @@ public class MediathekGui extends JFrame {
 
             memoryMonitor.show();
         });
-    }
-
-    protected void setupHelpMenu() {
-        jMenuItemResetSettings.setAction(new ResetSettingsAction(this, daten));
-
-        miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
-        miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
-
-        jMenuItemShowOnlineHelp.setAction(new ShowOnlineHelpAction());
-
-        jMenuItemCreateProtocolFile.setAction(new CreateProtocolFileAction());
-
-        jMenuItemAboutApplication.addActionListener(e -> showAboutDialog());
     }
 
     /**
@@ -1121,13 +1139,6 @@ public class MediathekGui extends JFrame {
         jMenuAbos = new JMenu();
         jMenuAnsicht = new JMenu();
         jMenuHilfe = new JMenu();
-        jMenuItemShowOnlineHelp = new JMenuItem();
-        jMenuItemCreateProtocolFile = new JMenuItem();
-        jMenuItemResetSettings = new JMenuItem();
-        miSearchForProgramUpdate = new JMenuItem();
-        miShowProgramInfos = new JMenuItem();
-        jSeparatorAboutApplication = new JSeparator();
-        jMenuItemAboutApplication = new JMenuItem();
         var jPanelCont = new JPanel();
         jPanelInfo = new JPanel();
         jTabbedPane = new JTabbedPane();
@@ -1264,33 +1275,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuHilfe.setMnemonic('h');
                 jMenuHilfe.setText("Hilfe");
-
-                //---- jMenuItemShowOnlineHelp ----
-                jMenuItemShowOnlineHelp.setText("Online-Hilfe anzeigen");
-                jMenuHilfe.add(jMenuItemShowOnlineHelp);
-                jMenuHilfe.addSeparator();
-
-                //---- jMenuItemCreateProtocolFile ----
-                jMenuItemCreateProtocolFile.setText("Protokolldatei erstellen...");
-                jMenuHilfe.add(jMenuItemCreateProtocolFile);
-
-                //---- jMenuItemResetSettings ----
-                jMenuItemResetSettings.setText("Einstellungen zur\u00fccksetzen...");
-                jMenuHilfe.add(jMenuItemResetSettings);
-                jMenuHilfe.addSeparator();
-
-                //---- miSearchForProgramUpdate ----
-                miSearchForProgramUpdate.setText("Nach Update suchen...");
-                jMenuHilfe.add(miSearchForProgramUpdate);
-
-                //---- miShowProgramInfos ----
-                miShowProgramInfos.setText("Programminfos anzeigen...");
-                jMenuHilfe.add(miShowProgramInfos);
-                jMenuHilfe.add(jSeparatorAboutApplication);
-
-                //---- jMenuItemAboutApplication ----
-                jMenuItemAboutApplication.setText("\u00dcber dieses Programm...");
-                jMenuHilfe.add(jMenuItemAboutApplication);
             }
             jMenuBar.add(jMenuHilfe);
         }
@@ -1357,13 +1341,6 @@ public class MediathekGui extends JFrame {
     private JMenu jMenuAbos;
     private JMenu jMenuAnsicht;
     protected JMenu jMenuHilfe;
-    private JMenuItem jMenuItemShowOnlineHelp;
-    private JMenuItem jMenuItemCreateProtocolFile;
-    protected JMenuItem jMenuItemResetSettings;
-    private JMenuItem miSearchForProgramUpdate;
-    private JMenuItem miShowProgramInfos;
-    protected JSeparator jSeparatorAboutApplication;
-    protected JMenuItem jMenuItemAboutApplication;
     private JPanel jPanelInfo;
     private JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables

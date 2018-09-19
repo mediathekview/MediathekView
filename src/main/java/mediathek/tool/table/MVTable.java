@@ -22,7 +22,6 @@ package mediathek.tool.table;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
-import mediathek.tool.MVFont;
 import mediathek.tool.TModel;
 
 import javax.swing.*;
@@ -126,34 +125,41 @@ public abstract class MVTable extends JTable {
     }
 
     /**
-     * Helper function for setHeight().
-     *
-     * @return sizeArea
+     * This is the UI provided default font used for calculating the size area
      */
+    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
+
     protected int getSizeArea() {
-        return 0;
+        int sizeArea = 0;
+
+        if (lineBreak)
+            sizeArea = defaultFont.getSize() * 4;
+
+        return sizeArea;
     }
 
     public void setHeight() {
         final int sizeArea = getSizeArea();
+        final int defaultFontSize = defaultFont.getSize();
+        final int internalDefaultSize = defaultFontSize + defaultFontSize / 3;
 
         int size;
         if (!showSenderIcon) {
-            if (MVFont.fontSize < 15) {
+            if (defaultFontSize < 15) {
                 size = 18;
             } else {
-                size = MVFont.fontSize + MVFont.fontSize / 3;
+                size = internalDefaultSize;
             }
         } else if (useSmallSenderIcons) {
-            if (MVFont.fontSize < 18) {
+            if (defaultFontSize < 18) {
                 size = 20;
             } else {
-                size = MVFont.fontSize + MVFont.fontSize / 3;
+                size = internalDefaultSize;
             }
-        } else if (MVFont.fontSize < 30) {
+        } else if (defaultFontSize < 30) {
             size = 36;
         } else {
-            size = MVFont.fontSize + MVFont.fontSize / 3;
+            size = internalDefaultSize;
         }
 
         setRowHeight(size > sizeArea ? size : sizeArea);

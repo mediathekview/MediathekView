@@ -2,7 +2,6 @@ package mediathek.tool.table;
 
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVConfig;
-import mediathek.tool.MVFont;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 
@@ -75,17 +74,6 @@ public class MVFilmTable extends MVTable {
                     break;
             }
         }
-    }
-
-    @Override
-    protected int getSizeArea() {
-        int sizeArea = 0;
-
-        if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-
-        return sizeArea;
     }
 
     @Override

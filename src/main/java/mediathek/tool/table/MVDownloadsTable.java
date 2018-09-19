@@ -4,7 +4,6 @@ import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVFont;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
@@ -117,17 +116,6 @@ public class MVDownloadsTable extends MVTable {
                     break;
             }
         }
-    }
-
-    @Override
-    protected int getSizeArea() {
-        int sizeArea = 0;
-
-        if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-
-        return sizeArea;
     }
 
     @Override
