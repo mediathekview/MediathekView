@@ -476,7 +476,7 @@ public class GuiFilme extends JPanel {
 
         setupCellRenderer(mediathekGui);
 
-        tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
+        tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
         final int[] hiddenColumns = new int[]{
                 DatenFilm.FILM_ABSPIELEN,
                 DatenFilm.FILM_AUFZEICHNEN,

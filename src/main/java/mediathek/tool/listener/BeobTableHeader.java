@@ -125,9 +125,9 @@ public class BeobTableHeader extends MouseAdapter {
         jPopupMenu.addSeparator();
         // Tabellenspalten umbrechen
         JCheckBoxMenuItem itemBr = new JCheckBoxMenuItem("Zeilen umbrechen");
-        itemBr.setSelected(tabelle.lineBreak);
+        itemBr.setSelected(tabelle.isLineBreak());
         itemBr.addActionListener(e -> {
-            tabelle.lineBreak = itemBr.isSelected();
+            tabelle.setLineBreak(itemBr.isSelected());
             MVConfig.add(configs, Boolean.toString(itemBr.isSelected()));
             setSpalten();
         });

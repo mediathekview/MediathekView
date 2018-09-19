@@ -106,7 +106,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF);
 
-            if (((MVTable) table).lineBreak) {
+            if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
                     case DatenDownload.DOWNLOAD_TITEL:

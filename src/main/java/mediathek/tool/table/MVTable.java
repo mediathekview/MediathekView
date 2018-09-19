@@ -40,7 +40,7 @@ public abstract class MVTable extends JTable {
     final int[] reihe;
     private boolean showSenderIcon = false;
     public boolean useSmallSenderIcons = false;
-    public boolean lineBreak = true;
+    private boolean lineBreak = true;
     int maxSpalten;
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
     int indexSpalte = 0;
@@ -112,6 +112,8 @@ public abstract class MVTable extends JTable {
     public void setLineBreak(boolean lb) {
         lineBreak = lb;
     }
+
+    public boolean isLineBreak() { return lineBreak;}
 
     public void invertSelection() {
         final ListSelectionModel mdl = getSelectionModel();

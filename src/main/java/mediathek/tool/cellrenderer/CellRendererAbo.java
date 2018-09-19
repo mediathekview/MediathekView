@@ -57,7 +57,7 @@ public class CellRendererAbo extends CellRendererBase {
             DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
             final boolean aboIstEingeschaltet = abo.aboIstEingeschaltet();
 
-            if (((MVTable) table).lineBreak) {
+            if (((MVTable) table).isLineBreak()) {
                 switch (c) {
                     case DatenAbo.ABO_IRGENDWO:
                     case DatenAbo.ABO_NAME:
