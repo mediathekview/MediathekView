@@ -1277,32 +1277,29 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, false /* starten */));
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
             itemVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
             jPopupMenu.add(itemVorziehen);
             itemVorziehen.addActionListener(arg0 -> downloadsVorziehen());
+
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(Icons.ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN);
+            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
             jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(arg0 -> downloadLoeschen(false /* dauerhaft */));
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
-            itemDauerhaftLoeschen.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
+            itemDauerhaftLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(arg0 -> downloadLoeschen(true /* dauerhaft */));
             //Download ändern
             JMenuItem itemAendern = new JMenuItem("Download ändern");
-            itemAendern.setIcon(Icons.ICON_MENUE_DOWNLOAD_AENDERN);
+            itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(arg0 -> downloadAendern());
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
             itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
@@ -1323,17 +1320,15 @@ public class GuiDownloads extends JPanel {
             itemAktualisieren.addActionListener(arg0 -> downloadsAktualisieren());
 
             JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
-            itemAufraeumen.setIcon(Icons.ICON_MENUE_CLEAR);
+            itemAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(arg0 -> downloadsAufraeumen());
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(Icons.ICON_MENUE_FILM_START);
+            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
 
             itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
