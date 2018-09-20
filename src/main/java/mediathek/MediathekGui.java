@@ -763,7 +763,7 @@ public class MediathekGui extends JFrame {
 
         createFileMenu();
         tabFilme.installMenuEntries(jMenuFilme);
-        initializeDownloadsMenu();
+        createDownloadsMenus();
         tabDownloads.installMenuEntries(jMenuDownload);
         tabAbos.installMenuEntries(jMenuAbos);
         createViewMenu();
@@ -791,18 +791,18 @@ public class MediathekGui extends JFrame {
         aboutDialog.dispose();
     }
 
-    private void initializeDownloadsMenu()
+    private void createDownloadsMenus()
     {
         jMenuItemDownloadsAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
         jMenuItemDownloadsAktualisieren.addActionListener(e -> tabDownloads.aktualisieren());
 
-        jMenuItemDownloadAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
+        jMenuItemDownloadAbspielen.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
         jMenuItemDownloadAbspielen.addActionListener(e -> tabDownloads.filmAbspielen());
 
-        jMenuItemDownloadsAufraeumen.setIcon(Icons.ICON_MENUE_CLEAR);
+        jMenuItemDownloadsAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
         jMenuItemDownloadsAufraeumen.addActionListener(e -> tabDownloads.aufraeumen());
 
-        jMenuItemDownloadsLoeschen.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
+        jMenuItemDownloadsLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jMenuItemDownloadsLoeschen.addActionListener(e -> tabDownloads.loeschen());
 
         jMenuItemDownloadsAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
@@ -814,7 +814,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadStarten.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
         jMenuItemDownloadStarten.addActionListener(e -> tabDownloads.starten(false));
 
-        jMenuItemDownloadsZurueckstellen.setIcon(Icons.ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN);
+        jMenuItemDownloadsZurueckstellen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
         jMenuItemDownloadsZurueckstellen.addActionListener(e -> tabDownloads.zurueckstellen());
 
         jMenuItemDownloadVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
@@ -832,7 +832,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
         jMenuItemDownloadStoppen.addActionListener(e -> tabDownloads.stoppen(false));
 
-        jMenuItemDownloadShutDown.setIcon(Icons.ICON_MENUE_BEENDEN);
+        jMenuItemDownloadShutDown.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
         jMenuItemDownloadShutDown.addActionListener(e -> {
             if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
