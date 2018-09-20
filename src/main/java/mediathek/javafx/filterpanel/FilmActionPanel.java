@@ -95,6 +95,7 @@ public class FilmActionPanel {
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private ToggleButton btnSearchThroughDescription;
+    public JDialog filterDialog;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -112,14 +113,14 @@ public class FilmActionPanel {
     private void createFilterDialog() {
         VBox vb = getFilterDialogContent();
         SwingUtilities.invokeLater(() -> {
-            filterDialog = new SwingFilterDialog(MediathekGui.ui(),vb);
+            filterDialog = new SwingFilterDialog(MediathekGui.ui(), vb);
             if (SystemUtils.IS_OS_WINDOWS) {
-                filterDialog.setSize(410,582);
+                filterDialog.setSize(410, 582);
             }
             filterDialog.addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentHidden(ComponentEvent e) {
-                    GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW,filterDialog);
+                    GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW, filterDialog);
                 }
             });
 
@@ -327,8 +328,6 @@ public class FilmActionPanel {
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private JDialog filterDialog;
-
     private void createFilterButton() {
         btnShowFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         btnShowFilter.setTooltip(new Tooltip("Filter anzeigen"));
@@ -382,7 +381,7 @@ public class FilmActionPanel {
         VBox vBox = new VBox();
         vBox.setSpacing(4d);
         Node senderBox = createSenderBox();
-        VBox.setVgrow(senderBox,Priority.ALWAYS);
+        VBox.setVgrow(senderBox, Priority.ALWAYS);
         vBox.getChildren().addAll(cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
@@ -453,7 +452,7 @@ public class FilmActionPanel {
         senderList.setPrefHeight(150d);
         senderList.setMinHeight(100d);
 
-        VBox.setVgrow(senderList,Priority.ALWAYS);
+        VBox.setVgrow(senderList, Priority.ALWAYS);
         vb.getChildren().addAll(
                 new Label("Sender:"),
                 senderList);
