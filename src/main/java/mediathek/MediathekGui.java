@@ -823,13 +823,10 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         jMenuItemDownloadAendern.addActionListener(e -> tabDownloads.aendern());
 
-        jMenuItemDownloadAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
         jMenuItemDownloadAlleStoppen.addActionListener(e -> tabDownloads.stoppen(true ));
 
-        jMenuItemDownloadWartendeStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
         jMenuItemDownloadWartendeStoppen.addActionListener(e -> tabDownloads.wartendeStoppen());
 
-        jMenuItemDownloadStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
         jMenuItemDownloadStoppen.addActionListener(e -> tabDownloads.stoppen(false));
 
         jMenuItemDownloadShutDown.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
@@ -964,6 +961,8 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(11, "Fertig.");
         dialog.hide();
 
+        tabFilme.fap.filterDialog.dispose();
+        
         Log.endMsg();
 
         if (shutDown) {
