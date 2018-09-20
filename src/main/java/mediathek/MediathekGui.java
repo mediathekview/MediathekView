@@ -820,7 +820,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
         jMenuItemDownloadVorziehen.addActionListener(e -> tabDownloads.vorziehen());
 
-        jMenuItemDownloadAendern.setIcon(Icons.ICON_MENUE_DOWNLOAD_AENDERN);
+        jMenuItemDownloadAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         jMenuItemDownloadAendern.addActionListener(e -> tabDownloads.aendern());
 
         jMenuItemDownloadAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);

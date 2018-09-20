@@ -32,11 +32,8 @@ public class Icons {
 
     public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
     public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_BEENDEN = GetIcon.getProgramIcon("menue-beenden.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_CLEAR = GetIcon.getProgramIcon("menue-clear.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_ALLE_STARTEN = GetIcon.getProgramIcon("menue-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_MENUE_ABO_NEU = GetIcon.getProgramIcon("menue-abo-neu.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNLOAD_AENDERN = GetIcon.getProgramIcon("menue-download-aendern.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNOAD_STARTEN = GetIcon.getProgramIcon("menue-download-starten.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNOAD_STOP = GetIcon.getProgramIcon("menue-download-stop.png", 16, 16);
@@ -48,7 +45,6 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_EIN = GetIcon.getProgramIcon("menue-ein.png", 16, 16);
     public static final ImageIcon ICON_MENUE_AUS = GetIcon.getProgramIcon("menue-aus.png", 16, 16);
     public static final ImageIcon ICON_MENUE_VORZIEHEN = GetIcon.getProgramIcon("menue-vorziehen.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN = GetIcon.getProgramIcon("menue-download-zurueckstellen.png", 16, 16);
 
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
@@ -75,10 +71,9 @@ public class Icons {
     public static final ImageIcon ICON_BUTTON_FILE_OPEN = GetIcon.getProgramIcon("button-file-open.png", 16, 16);
 
     // Icons TABBED_PANE
-    private static final int W = 30, H = 30;
-    public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", W, H);
-    public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", W, H);
-    public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", W, H);
+    public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", 32, 32);
+    public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", 32, 32);
+    public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", 32, 32);
 
     public static final Image ICON_TRAY = GetIcon.getProgramIcon("tray.png", 256, 256).getImage();
     public static final Image ICON_TRAY_ERROR = GetIcon.getProgramIcon("tray-fehler.png", 256, 256).getImage();
