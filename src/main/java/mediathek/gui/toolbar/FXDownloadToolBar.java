@@ -38,7 +38,7 @@ public class FXDownloadToolBar extends ToolBar {
 
         btnUpdateDownloads = new Button("",fontAwesome.create(FontAwesome.Glyph.REFRESH).size(16d));
         btnUpdateDownloads.setTooltip(new Tooltip("Downloadliste aktualisieren"));
-        btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::aktualisieren));
+        btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::updateDownloads));
 
         Button btnStartAllDownloads = new Button("",fontAwesome.create(FontAwesome.Glyph.ANGLE_DOUBLE_DOWN).size(16d));
         btnStartAllDownloads.setTooltip(new Tooltip("Alle Downloads starten"));
@@ -50,15 +50,15 @@ public class FXDownloadToolBar extends ToolBar {
 
         Button btnZurueckstellen = new Button("",fontAwesome.create(FontAwesome.Glyph.CLOCK_ALT).size(16d));
         btnZurueckstellen.setTooltip(new Tooltip("Downloads zurückstellen"));
-        btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::zurueckstellen));
+        btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> tabDownloads.downloadLoeschen(false)));
 
         Button btnRemoveDownload = new Button("",fontAwesome.create(FontAwesome.Glyph.TRASH_ALT).size(16d));
         btnRemoveDownload.setTooltip(new Tooltip("Downloads entfernen"));
-        btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::loeschen));
+        btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> tabDownloads.downloadLoeschen(true)));
 
         Button btnCleanup = new Button("",fontAwesome.create(FontAwesome.Glyph.ERASER).size(16d));
         btnCleanup.setTooltip(new Tooltip("Liste säubern"));
-        btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::aufraeumen));
+        btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::cleanupDownloads));
 
         Button btnFilter = new FilterButton();
         btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {

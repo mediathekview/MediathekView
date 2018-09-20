@@ -58,7 +58,10 @@ import mediathek.gui.messages.*;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.GenericShutdownComputerCommand;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.ShutdownComputerCommand;
+import mediathek.tool.TABS;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgrammUpdateSuchen;
@@ -96,8 +99,6 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
-    private static final String LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN = "Die Downloads müssen zuerst gestartet werden.";
-    private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
 
 
     private final Daten daten;
@@ -433,13 +434,11 @@ public class MediathekGui extends JFrame {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 miLoadFilmList.setEnabled(false);
-                jMenuItemDownloadsAktualisieren.setEnabled(false);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 miLoadFilmList.setEnabled(true);
-                jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
 
@@ -625,10 +624,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    public JCheckBoxMenuItem getDownloadFilmDescriptionMenuItem() {
-        return miShowDownloadDescription;
-    }
-
     /**
      * Handle the install/or remove event sent from settings dialog
      *
@@ -763,7 +758,6 @@ public class MediathekGui extends JFrame {
 
         createFileMenu();
         tabFilme.installMenuEntries(jMenuFilme);
-        createDownloadsMenus();
         tabDownloads.installMenuEntries(jMenuDownload);
         tabAbos.installMenuEntries(jMenuAbos);
         createViewMenu();
@@ -789,65 +783,6 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.centerOnScreen(aboutDialog, false);
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
-    }
-
-    private void createDownloadsMenus()
-    {
-        jMenuItemDownloadsAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-        jMenuItemDownloadsAktualisieren.addActionListener(e -> tabDownloads.aktualisieren());
-
-        jMenuItemDownloadAbspielen.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-        jMenuItemDownloadAbspielen.addActionListener(e -> tabDownloads.filmAbspielen());
-
-        jMenuItemDownloadsAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
-        jMenuItemDownloadsAufraeumen.addActionListener(e -> tabDownloads.aufraeumen());
-
-        jMenuItemDownloadsLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-        jMenuItemDownloadsLoeschen.addActionListener(e -> tabDownloads.loeschen());
-
-        jMenuItemDownloadsAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
-        jMenuItemDownloadsAlleStarten.addActionListener(e -> tabDownloads.starten(true));
-
-        jMenuItemDownloadStartTime.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
-        jMenuItemDownloadStartTime.addActionListener(e -> tabDownloads.startAtTime());
-
-        jMenuItemDownloadStarten.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
-        jMenuItemDownloadStarten.addActionListener(e -> tabDownloads.starten(false));
-
-        jMenuItemDownloadsZurueckstellen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
-        jMenuItemDownloadsZurueckstellen.addActionListener(e -> tabDownloads.zurueckstellen());
-
-        jMenuItemDownloadVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
-        jMenuItemDownloadVorziehen.addActionListener(e -> tabDownloads.vorziehen());
-
-        jMenuItemDownloadAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-        jMenuItemDownloadAendern.addActionListener(e -> tabDownloads.aendern());
-
-        jMenuItemDownloadAlleStoppen.addActionListener(e -> tabDownloads.stoppen(true ));
-
-        jMenuItemDownloadWartendeStoppen.addActionListener(e -> tabDownloads.wartendeStoppen());
-
-        jMenuItemDownloadStoppen.addActionListener(e -> tabDownloads.stoppen(false));
-
-        jMenuItemDownloadShutDown.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
-        jMenuItemDownloadShutDown.addActionListener(e -> {
-            if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
-                // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                beenden(true, false);
-            } else {
-                MVMessageDialog.showMessageDialog(this, LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN,
-                        LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS, JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        jMenuItemDownloadGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
-        jMenuItemDownloadGesehen.addActionListener(e -> tabDownloads.filmGesehen());
-
-        jMenuItemDownloadUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
-        jMenuItemDownloadUngesehen.addActionListener(e -> tabDownloads.filmUngesehen());
-
-        jMenuItemDownloadMediensammlung.addActionListener(e -> tabDownloads.guiFilmMediensammlung());
-        jMenuItemDownloadInvertSelection.addActionListener(e -> tabDownloads.invertSelection());
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
@@ -962,7 +897,7 @@ public class MediathekGui extends JFrame {
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
-        
+
         Log.endMsg();
 
         if (shutDown) {
@@ -1096,25 +1031,6 @@ public class MediathekGui extends JFrame {
         jMenuDatei = new JMenu();
         jMenuFilme = new JMenu();
         jMenuDownload = new JMenu();
-        jMenuItemDownloadsAlleStarten = new JMenuItem();
-        jMenuItemDownloadStartTime = new JMenuItem();
-        jMenuItemDownloadAlleStoppen = new JMenuItem();
-        jMenuItemDownloadWartendeStoppen = new JMenuItem();
-        jMenuItemDownloadsAktualisieren = new JMenuItem();
-        jMenuItemDownloadsAufraeumen = new JMenuItem();
-        jMenuItemDownloadStarten = new JMenuItem();
-        jMenuItemDownloadStoppen = new JMenuItem();
-        jMenuItemDownloadVorziehen = new JMenuItem();
-        jMenuItemDownloadsZurueckstellen = new JMenuItem();
-        jMenuItemDownloadsLoeschen = new JMenuItem();
-        jMenuItemDownloadAendern = new JMenuItem();
-        miShowDownloadDescription = new JCheckBoxMenuItem();
-        jMenuItemDownloadGesehen = new JMenuItem();
-        jMenuItemDownloadUngesehen = new JMenuItem();
-        jMenuItemDownloadAbspielen = new JMenuItem();
-        jMenuItemDownloadMediensammlung = new JMenuItem();
-        jMenuItemDownloadInvertSelection = new JMenuItem();
-        jMenuItemDownloadShutDown = new JMenuItem();
         jMenuAbos = new JMenu();
         jMenuAnsicht = new JMenu();
         jMenuHilfe = new JMenu();
@@ -1147,92 +1063,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuDownload.setMnemonic('O');
                 jMenuDownload.setText("Downloads");
-
-                //---- jMenuItemDownloadsAlleStarten ----
-                jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
-                jMenuDownload.add(jMenuItemDownloadsAlleStarten);
-
-                //---- jMenuItemDownloadStartTime ----
-                jMenuItemDownloadStartTime.setText("alle Downloads um xx:yy Uhr starten");
-                jMenuDownload.add(jMenuItemDownloadStartTime);
-
-                //---- jMenuItemDownloadAlleStoppen ----
-                jMenuItemDownloadAlleStoppen.setText("alle stoppen");
-                jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
-                jMenuDownload.add(jMenuItemDownloadAlleStoppen);
-
-                //---- jMenuItemDownloadWartendeStoppen ----
-                jMenuItemDownloadWartendeStoppen.setText("wartende stoppen");
-                jMenuItemDownloadWartendeStoppen.setToolTipText("wartende Downloads stoppen");
-                jMenuDownload.add(jMenuItemDownloadWartendeStoppen);
-
-                //---- jMenuItemDownloadsAktualisieren ----
-                jMenuItemDownloadsAktualisieren.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
-                jMenuItemDownloadsAktualisieren.setText("Liste der Downloads aktualisieren");
-                jMenuDownload.add(jMenuItemDownloadsAktualisieren);
-
-                //---- jMenuItemDownloadsAufraeumen ----
-                jMenuItemDownloadsAufraeumen.setText("Liste der Downloads aufr\u00e4umen");
-                jMenuDownload.add(jMenuItemDownloadsAufraeumen);
-                jMenuDownload.addSeparator();
-
-                //---- jMenuItemDownloadStarten ----
-                jMenuItemDownloadStarten.setText("Downloads starten");
-                jMenuDownload.add(jMenuItemDownloadStarten);
-
-                //---- jMenuItemDownloadStoppen ----
-                jMenuItemDownloadStoppen.setText("Downloads stoppen");
-                jMenuDownload.add(jMenuItemDownloadStoppen);
-
-                //---- jMenuItemDownloadVorziehen ----
-                jMenuItemDownloadVorziehen.setText("Downloads vorziehen");
-                jMenuDownload.add(jMenuItemDownloadVorziehen);
-
-                //---- jMenuItemDownloadsZurueckstellen ----
-                jMenuItemDownloadsZurueckstellen.setText("Downloads zur\u00fcckstellen");
-                jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
-
-                //---- jMenuItemDownloadsLoeschen ----
-                jMenuItemDownloadsLoeschen.setText("Downloads aus Liste entfernen");
-                jMenuDownload.add(jMenuItemDownloadsLoeschen);
-
-                //---- jMenuItemDownloadAendern ----
-                jMenuItemDownloadAendern.setText("Download \u00e4ndern");
-                jMenuDownload.add(jMenuItemDownloadAendern);
-                jMenuDownload.addSeparator();
-
-                //---- miShowDownloadDescription ----
-                miShowDownloadDescription.setText("Filmbeschreibung anzeigen");
-                jMenuDownload.add(miShowDownloadDescription);
-                jMenuDownload.addSeparator();
-
-                //---- jMenuItemDownloadGesehen ----
-                jMenuItemDownloadGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_MASK));
-                jMenuItemDownloadGesehen.setText("Filme als gesehen markieren");
-                jMenuDownload.add(jMenuItemDownloadGesehen);
-
-                //---- jMenuItemDownloadUngesehen ----
-                jMenuItemDownloadUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-                jMenuItemDownloadUngesehen.setText("Filme als ungesehen markieren");
-                jMenuDownload.add(jMenuItemDownloadUngesehen);
-
-                //---- jMenuItemDownloadAbspielen ----
-                jMenuItemDownloadAbspielen.setText("gespeicherten Film abspielen");
-                jMenuDownload.add(jMenuItemDownloadAbspielen);
-
-                //---- jMenuItemDownloadMediensammlung ----
-                jMenuItemDownloadMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK));
-                jMenuItemDownloadMediensammlung.setText("Titel in der Mediensammlung suchen");
-                jMenuDownload.add(jMenuItemDownloadMediensammlung);
-
-                //---- jMenuItemDownloadInvertSelection ----
-                jMenuItemDownloadInvertSelection.setText("Auswahl umkehren");
-                jMenuDownload.add(jMenuItemDownloadInvertSelection);
-                jMenuDownload.addSeparator();
-
-                //---- jMenuItemDownloadShutDown ----
-                jMenuItemDownloadShutDown.setText("Rechner nach Downloads herunterfahren");
-                jMenuDownload.add(jMenuItemDownloadShutDown);
             }
             jMenuBar.add(jMenuDownload);
 
@@ -1286,7 +1116,7 @@ public class MediathekGui extends JFrame {
             contentPaneLayout.createParallelGroup()
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(6, 6, 6)
-                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -1298,25 +1128,6 @@ public class MediathekGui extends JFrame {
     protected JMenu jMenuDatei;
     private JMenu jMenuFilme;
     protected JMenu jMenuDownload;
-    private JMenuItem jMenuItemDownloadsAlleStarten;
-    private JMenuItem jMenuItemDownloadStartTime;
-    private JMenuItem jMenuItemDownloadAlleStoppen;
-    private JMenuItem jMenuItemDownloadWartendeStoppen;
-    private JMenuItem jMenuItemDownloadsAktualisieren;
-    private JMenuItem jMenuItemDownloadsAufraeumen;
-    private JMenuItem jMenuItemDownloadStarten;
-    private JMenuItem jMenuItemDownloadStoppen;
-    private JMenuItem jMenuItemDownloadVorziehen;
-    private JMenuItem jMenuItemDownloadsZurueckstellen;
-    private JMenuItem jMenuItemDownloadsLoeschen;
-    private JMenuItem jMenuItemDownloadAendern;
-    private JCheckBoxMenuItem miShowDownloadDescription;
-    private JMenuItem jMenuItemDownloadGesehen;
-    private JMenuItem jMenuItemDownloadUngesehen;
-    private JMenuItem jMenuItemDownloadAbspielen;
-    private JMenuItem jMenuItemDownloadMediensammlung;
-    private JMenuItem jMenuItemDownloadInvertSelection;
-    private JMenuItem jMenuItemDownloadShutDown;
     private JMenu jMenuAbos;
     private JMenu jMenuAnsicht;
     protected JMenu jMenuHilfe;

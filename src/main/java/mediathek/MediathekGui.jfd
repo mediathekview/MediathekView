@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
-			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::247:x}}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
@@ -48,109 +48,6 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadsAlleStarten"
-						"text": "alle Downloads starten"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadStartTime"
-						"text": "alle Downloads um xx:yy Uhr starten"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadAlleStoppen"
-						"text": "alle stoppen"
-						"toolTipText": "alle Downloads stoppen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadWartendeStoppen"
-						"text": "wartende stoppen"
-						"toolTipText": "wartende Downloads stoppen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadsAktualisieren"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 87, 130, false )
-						"text": "Liste der Downloads aktualisieren"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadsAufraeumen"
-						"text": "Liste der Downloads aufräumen"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator3"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadStarten"
-						"text": "Downloads starten"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadStoppen"
-						"text": "Downloads stoppen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadVorziehen"
-						"text": "Downloads vorziehen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadsZurueckstellen"
-						"text": "Downloads zurückstellen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadsLoeschen"
-						"text": "Downloads aus Liste entfernen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadAendern"
-						"text": "Download ändern"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator1"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "miShowDownloadDescription"
-						"text": "Filmbeschreibung anzeigen"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator2"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadGesehen"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 71, 130, false )
-						"text": "Filme als gesehen markieren"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadUngesehen"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 78, 130, false )
-						"text": "Filme als ungesehen markieren"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadAbspielen"
-						"text": "gespeicherten Film abspielen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadMediensammlung"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 77, 130, false )
-						"text": "Titel in der Mediensammlung suchen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadInvertSelection"
-						"text": "Auswahl umkehren"
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator7"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemDownloadShutDown"
-						"text": "Rechner nach Downloads herunterfahren"
-					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "jMenuAbos"
