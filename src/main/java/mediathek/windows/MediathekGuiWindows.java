@@ -11,6 +11,6 @@ public class MediathekGuiWindows extends MediathekGui {
 
     @Override
     protected IndicatorThread createProgressIndicatorThread() {
-        return new WinIndicatorThread(this);
+        return new TaskbarIndicatorThread(this);
     }
 }
