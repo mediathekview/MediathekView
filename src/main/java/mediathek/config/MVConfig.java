@@ -115,6 +115,7 @@ public class MVConfig {
         SYSTEM_GROESSE_ABO("Groesse-Abo"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
+        SYSTEM_GROESSE_FILTER_DIALOG_NEW("filter-dialog-new"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_URL_FILMLISTEN("system-url-filmlisten"),

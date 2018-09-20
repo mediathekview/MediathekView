@@ -20,6 +20,7 @@ import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.GermanStringSorter;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
@@ -28,6 +29,7 @@ import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.tool.Filter;
+import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
@@ -41,6 +43,8 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -112,6 +116,13 @@ public class FilmActionPanel {
             if (SystemUtils.IS_OS_WINDOWS) {
                 filterDialog.setSize(410,582);
             }
+            filterDialog.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                    GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW,filterDialog);
+                }
+            });
+
         });
     }
 
@@ -325,8 +336,6 @@ public class FilmActionPanel {
             if (filterDialog != null) {
                 if (!filterDialog.isVisible()) {
                     filterDialog.setVisible(true);
-                    System.out.println("FILTER HEIGHT: " + filterDialog.getHeight());
-                    System.out.println("FILTER WIDTH: "+ filterDialog.getWidth());
                 }
             }
         }));
@@ -519,19 +528,6 @@ public class FilmActionPanel {
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
         vb.getChildren().add(createCommonViewSettingsPane());
-
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> vb.setDisable(true));
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> vb.setDisable(false));
-
-            }
-        });
 
         return vb;
     }
