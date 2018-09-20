@@ -2,14 +2,10 @@ package mediathek.gui.actions.export;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import mediathek.MediathekGui;
-import mediathek.javafx.CenteredBorderPane;
-import mediathek.javafx.VerticalSeparator;
+import mediathek.javafx.tool.FXProgressPane;
 import org.controlsfx.control.StatusBar;
 
 import javax.swing.*;
@@ -34,14 +30,7 @@ public class FilmListExportAction extends AbstractAction {
 
     private void export(File selectedFile) {
         StatusBar bar = gui.getStatusBarController().getStatusBar();
-        ProgressBar progBar = new ProgressBar();
-
-        HBox hb = new HBox();
-        hb.setSpacing(4d);
-        hb.getChildren().addAll(new VerticalSeparator(),
-                new CenteredBorderPane(new Label("Exportiere FilmListe...")),
-                new CenteredBorderPane(progBar));
-        bar.getRightItems().add(hb);
+        FXProgressPane hb = new FXProgressPane();
 
         FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile);
         task.setOnSucceeded(e -> {
@@ -53,7 +42,7 @@ public class FilmListExportAction extends AbstractAction {
             showError();
         });
 
-        progBar.progressProperty().bind(task.progressProperty());
+        hb.prog.progressProperty().bind(task.progressProperty());
 
         CompletableFuture.runAsync(task);
     }

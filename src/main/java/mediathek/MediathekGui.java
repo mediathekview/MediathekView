@@ -28,10 +28,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -60,6 +56,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.*;
+import mediathek.javafx.tool.FXProgressPane;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -252,28 +249,18 @@ public class MediathekGui extends JFrame {
 
     private void loadFilmlist() {
         Platform.runLater(() -> {
-            HBox hb = new HBox();
-            hb.setSpacing(4d);
-            javafx.scene.control.Label lb = new Label("");
-            ProgressBar prog = new ProgressBar();
-            prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-            hb.getChildren().addAll(
-                    new VerticalSeparator(),
-                    new CenteredBorderPane(lb),
-                    new CenteredBorderPane(prog)
-            );
-
+            FXProgressPane hb = new FXProgressPane();
             FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
             filmListReaderTask.setOnRunning(e -> {
                 getStatusBarController().getStatusBar().getRightItems().add(hb);
-                lb.textProperty().bind(filmListReaderTask.messageProperty());
-                prog.progressProperty().bind(filmListReaderTask.progressProperty());
+                hb.lb.textProperty().bind(filmListReaderTask.messageProperty());
+                hb.prog.progressProperty().bind(filmListReaderTask.progressProperty());
             });
 
             FilmListFilterTask filterTask = new FilmListFilterTask(true);
             filterTask.setOnRunning(e -> {
-                lb.textProperty().bind(filterTask.messageProperty());
-                prog.progressProperty().bind(filterTask.progressProperty());
+                hb.lb.textProperty().bind(filterTask.messageProperty());
+                hb.prog.progressProperty().bind(filterTask.progressProperty());
             });
             filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
             filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
