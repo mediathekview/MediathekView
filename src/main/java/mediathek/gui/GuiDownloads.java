@@ -790,9 +790,15 @@ public class GuiDownloads extends JPanel {
 
     private Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
+
+        if (selectedTableRow != -1) {
+            Optional<DatenFilm> optRet;
             final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
-            return Optional.of(download.film);
+            if (download.film == null)
+                optRet = Optional.empty();
+            else
+                optRet = Optional.of(download.film);
+            return optRet;
         } else {
             return Optional.empty();
         }
@@ -800,8 +806,8 @@ public class GuiDownloads extends JPanel {
 
     private DatenDownload getSelDownload() {
         DatenDownload datenDownload = null;
-        int row = tabelle.getSelectedRow();
-        if (row >= 0) {
+        final int row = tabelle.getSelectedRow();
+        if (row != -1) {
             datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -1246,16 +1252,16 @@ public class GuiDownloads extends JPanel {
 
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
-            int nr = tabelle.rowAtPoint(p);
-            if (nr >= 0) {
+            final int nr = tabelle.rowAtPoint(p);
+            if (nr != -1) {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Film vorziehen
-            int row = tabelle.getSelectedRow();
             boolean wartenOderLaufen = false;
-            if (row >= 0) {
+            final int row = tabelle.getSelectedRow();
+            if (row != -1) {
                 DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 if (download.start != null) {
                     if (download.start.status <= Start.STATUS_RUN) {
@@ -1272,7 +1278,6 @@ public class GuiDownloads extends JPanel {
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
-            itemStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, false /* starten */));
@@ -1306,11 +1311,10 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, true /* starten */));
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
-            itemAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, false /* starten */));
+
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
-            itemWartendeStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(arg0 -> wartendeDownloadsStoppen());
 
