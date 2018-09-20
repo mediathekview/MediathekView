@@ -22,10 +22,6 @@ package mediathek.filmlisten;
 import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -38,9 +34,8 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
-import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.FilmListFilterTask;
-import mediathek.javafx.VerticalSeparator;
+import mediathek.javafx.tool.FXProgressPane;
 import mediathek.tool.GuiFunktionen;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -320,28 +315,19 @@ public class FilmeLaden {
         logger.info("");
 
         Platform.runLater(() -> {
-            HBox hb = new HBox();
-            hb.setSpacing(4d);
-            javafx.scene.control.Label lb = new Label("");
-            ProgressBar prog = new ProgressBar();
-            prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-            hb.getChildren().addAll(
-                    new VerticalSeparator(),
-                    new CenteredBorderPane(lb),
-                    new CenteredBorderPane(prog)
-            );
+            FXProgressPane hb = new FXProgressPane();
 
             FilmListFilterTask task = new FilmListFilterTask(true);
             task.setOnRunning(e -> {
                 MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().add(hb);
-                lb.textProperty().bind(task.messageProperty());
-                prog.progressProperty().bind(task.progressProperty());
+                hb.lb.textProperty().bind(task.messageProperty());
+                hb.prog.progressProperty().bind(task.progressProperty());
             });
 
             FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
             writerTask.setOnRunning(e -> {
-                lb.textProperty().bind(writerTask.messageProperty());
-                prog.progressProperty().bind(writerTask.progressProperty());
+                hb.lb.textProperty().bind(writerTask.messageProperty());
+                hb.prog.progressProperty().bind(writerTask.progressProperty());
             });
             writerTask.setOnSucceeded(e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb));
             writerTask.setOnFailed(e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb));
