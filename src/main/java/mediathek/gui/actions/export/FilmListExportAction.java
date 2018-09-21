@@ -42,6 +42,7 @@ public class FilmListExportAction extends AbstractAction {
             showError();
         });
 
+        bar.getRightItems().add(hb);
         hb.prog.progressProperty().bind(task.progressProperty());
 
         CompletableFuture.runAsync(task);
