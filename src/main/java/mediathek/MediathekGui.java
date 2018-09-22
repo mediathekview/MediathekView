@@ -50,7 +50,7 @@ import mediathek.gui.actions.CreateProtocolFileAction;
 import mediathek.gui.actions.ResetSettingsAction;
 import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
-import mediathek.gui.bandwidth.MVBandwidthMonitor;
+import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
@@ -119,7 +119,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    protected MVBandwidthMonitor bandwidthMonitor;
+    protected BandwidthMonitorController bandwidthMonitor;
 
     private void remapF10Key() {
         //Hier wird F10 default Funktion unterbunden:
@@ -199,7 +199,7 @@ public class MediathekGui extends JFrame {
 
         createMemoryMonitor();
 
-        bandwidthMonitor = new MVBandwidthMonitor(this);
+        bandwidthMonitor = new BandwidthMonitorController(this);
 
         splashScreenManager.closeSplashScreen();
 
@@ -897,6 +897,8 @@ public class MediathekGui extends JFrame {
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
+
+        bandwidthMonitor.close();
 
         Log.endMsg();
 
