@@ -454,43 +454,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-
-    /**
-     * Return the number of Starts, which are queued in state INIT or RUN.
-     *
-     * @return number of queued Starts.
-     */
-    public synchronized int getNumberOfStartsNotFinished() {
-        for (DatenDownload datenDownload : this) {
-            Start s = datenDownload.start;
-            if (s != null) {
-                if (s.status < Start.STATUS_FERTIG) {
-                    return this.size();
-                }
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Return the maximum time of all running starts until finish.
-     *
-     * @return The time in SECONDS.
-     */
-    public synchronized long getMaximumFinishTimeOfRunningStarts() {
-        long rem = 0;
-        for (DatenDownload d : this) {
-            Start s = d.start;
-            if (s != null) {
-                if (s.status < Start.STATUS_FERTIG) {
-                    rem = Math.max(rem, s.restSekunden);
-                }
-            }
-        }
-
-        return rem;
-    }
-
     /**
      * Return a List of all not yet finished downloads.
      *
