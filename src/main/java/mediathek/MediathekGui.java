@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
-import mSearch.daten.PooledDatabaseConnection;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
@@ -82,7 +81,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -859,41 +857,38 @@ public class MediathekGui extends JFrame {
 
         programUpdateChecker.close();
 
-        ShutdownDialog dialog = new ShutdownDialog(this, 11);
+        ShutdownDialog dialog = new ShutdownDialog(this, 10);
         dialog.show();
 
         dialog.setStatusText(1, "Warte auf commonPool()");
         waitForCommonPoolToComplete();
 
-        dialog.setStatusText(2, "Warte auf Abschluss der Datenbank-Operationen");
-        waitForDatabasePoolToComplete();
-
         // Tabelleneinstellungen merken
-        dialog.setStatusText(3, "Film-Daten sichern");
+        dialog.setStatusText(2, "Film-Daten sichern");
         tabFilme.tabelleSpeichern();
 
-        dialog.setStatusText(4, "Download-Daten sichern");
+        dialog.setStatusText(3, "Download-Daten sichern");
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(5, "Abo-Daten sichern");
+        dialog.setStatusText(4, "Abo-Daten sichern");
         tabAbos.tabelleSpeichern();
 
-        dialog.setStatusText(6, "MediaDB sichern");
+        dialog.setStatusText(5, "MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
 
-        dialog.setStatusText(7, "Downloads anhalten");
+        dialog.setStatusText(6, "Downloads anhalten");
         stopDownloads();
 
-        dialog.setStatusText(8, "Programmkonfiguration schreiben");
+        dialog.setStatusText(7, "Programmkonfiguration schreiben");
         writeOldConfiguration();
 
-        dialog.setStatusText(9, "Datenbank schließen");
+        dialog.setStatusText(8, "Datenbank schließen");
         DatenFilm.Database.closeDatabase();
 
-        dialog.setStatusText(10, "Programmdaten sichern");
+        dialog.setStatusText(9, "Programmdaten sichern");
         daten.allesSpeichern();
 
-        dialog.setStatusText(11, "Fertig.");
+        dialog.setStatusText(10, "Fertig.");
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
@@ -926,27 +921,6 @@ public class MediathekGui extends JFrame {
                 }
             }
         }
-    }
-
-    private void waitForDatabasePoolToComplete() {
-        logger.debug("waiting for database pool to complete");
-
-        ExecutorService pool = PooledDatabaseConnection.getInstance().getDatabaseExecutor();
-        pool.shutdown();
-        try {
-            if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
-                pool.shutdownNow();
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-                    logger.error("Pool did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            pool.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
-
-        logger.debug("done waiting database pool");
     }
 
     private void waitForCommonPoolToComplete() {

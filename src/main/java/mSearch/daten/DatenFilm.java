@@ -19,6 +19,7 @@
  */
 package mSearch.daten;
 
+import com.zaxxer.hikari.HikariDataSource;
 import mSearch.tool.*;
 import mediathek.config.Daten;
 import org.apache.commons.lang3.StringUtils;
@@ -28,10 +29,7 @@ import org.h2.jdbc.JdbcSQLException;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Cleaner;
-import java.lang.ref.WeakReference;
 import java.sql.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
@@ -137,16 +135,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private int databaseFilmNumber;
     private boolean neuerFilm = false;
     private Cleaner.Cleanable cleaner = null;
-    /**
-     * Future used for writing description into database.
-     * Will be checked before each read if finished
-     */
-    private WeakReference<CompletableFuture<Void>> descriptionFutureReference = null;
-    /**
-     * Future used for writing website link into database.
-     * Will be checked before each read if finished
-     */
-    private WeakReference<CompletableFuture<Void>> websiteFutureReference = null;
     /**
      * Flag that this entry is in sign language (aka Gebärdensprache).
      */
@@ -291,15 +279,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?")) {
             statement.setLong(1, databaseFilmNumber);
 
-            descriptionFutureReference = checkFutureCompletion(descriptionFutureReference);
-
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     sqlStr = rs.getString(1);
                 } else
                     sqlStr = "";
             }
-        } catch (SQLException | InterruptedException | ExecutionException e) {
+        } catch (SQLException e) {
             logger.error(e);
             sqlStr = "";
         }
@@ -315,29 +301,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     public void setDescription(final String desc) {
         if (desc != null && !desc.isEmpty()) {
-            if (MemoryUtils.isLowMemoryEnvironment())
                 writeDescriptionToDatabase(desc);
-            else {
-                final CompletableFuture<Void> descriptionFuture = CompletableFuture.runAsync(() -> writeDescriptionToDatabase(desc), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
-                descriptionFutureReference = new WeakReference<>(descriptionFuture);
-            }
         }
-    }
-
-    private synchronized WeakReference<CompletableFuture<Void>> checkFutureCompletion(WeakReference<CompletableFuture<Void>> refVar) throws ExecutionException, InterruptedException {
-        if (refVar != null) {
-            final CompletableFuture<Void> refFuture = refVar.get();
-            if (refFuture != null) {
-                if (!refFuture.isDone()) {
-                    refFuture.get();
-                }
-                //set to null when finished as we don´t need it anymore...
-                refVar.clear();
-                return null;
-            }
-        }
-
-        return refVar;
     }
 
     public String getWebsiteLink() {
@@ -347,15 +312,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?")) {
             statement.setLong(1, databaseFilmNumber);
 
-            websiteFutureReference = checkFutureCompletion(websiteFutureReference);
-
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     res = rs.getString(1);
                 } else
                     res = "";
             }
-        } catch (SQLException | InterruptedException | ExecutionException ex) {
+        } catch (SQLException ex) {
             logger.error(ex);
             res = "";
         }
@@ -365,12 +328,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     public void setWebsiteLink(String link) {
         if (link != null && !link.isEmpty()) {
-            if (MemoryUtils.isLowMemoryEnvironment())
                 writeWebsiteLinkToDatabase(link);
-            else {
-                CompletableFuture<Void> websiteFuture = CompletableFuture.runAsync(() -> writeWebsiteLinkToDatabase(link), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
-                websiteFutureReference = new WeakReference<>(websiteFuture);
-            }
         }
     }
 
@@ -611,14 +569,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
         public static void closeDatabase() {
-            try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-                 Statement statement = connection.createStatement()) {
-                //statement.executeUpdate("DROP SCHEMA mediathekview");
-                statement.executeUpdate("SHUTDOWN COMPACT");
-            } catch (SQLException e) {
-                logger.error(e);
-            }
-            PooledDatabaseConnection.getInstance().close();
+                HikariDataSource ds = PooledDatabaseConnection.getInstance().getDataSource();
+                ds.close();
         }
 
         public static void createIndices() {
