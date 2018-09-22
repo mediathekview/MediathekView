@@ -14,6 +14,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.ListeDownloads;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
@@ -22,7 +23,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -37,8 +37,10 @@ public class BandwidthMonitorController {
     private final AtomicInteger time = new AtomicInteger();
     private JDialog hudDialog = null;
     private Timeline updateMemoryTimer;
+    private final ListeDownloads listeDownloads;
 
     public BandwidthMonitorController(JFrame parent) {
+        listeDownloads = Daten.getInstance().getListeDownloads();
         createDialog(parent);
         createFXPanel();
 
@@ -115,15 +117,16 @@ public class BandwidthMonitorController {
     private int calculateBandwidthUsage() {
         int bandwidth = 0; // bytes per second
         //only count running/active downloads and calc accumulated progress..
-        LinkedList<DatenDownload> activeDownloadList = Daten.getInstance().getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+        var activeDownloadList = listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : activeDownloadList) {
             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                 bandwidth += download.start.bandbreite;
             }
         }
+        activeDownloadList.clear();
 
         //convert to MBits per second
-        bandwidth = bandwidth * 8 / 1024 / 1024;
+        bandwidth = bandwidth * 8 / 1000 / 1000;
 
         return bandwidth;
     }

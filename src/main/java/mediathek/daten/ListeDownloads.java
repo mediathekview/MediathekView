@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
     private final Daten daten;
-    private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
     public ListeDownloads(Daten daten_) {
         this.daten = daten_;
@@ -326,7 +325,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void setModelProgress(TModelDownload tModel) {
         int row = 0;
 
-        for (Vector item : (Iterable<Vector>) tModel.getDataVector()) {
+        for (Vector item : tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) item.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
@@ -455,6 +454,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
+
     /**
      * Return the number of Starts, which are queued in state INIT or RUN.
      *
@@ -497,14 +497,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @return A list with all download objects.
      */
-    public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
-        aktivDownloads.clear();
-        aktivDownloads.addAll(this.stream()
+    public synchronized List<DatenDownload> getListOfStartsNotFinished(int quelle) {
+        final List<DatenDownload> activeDownloads;
+        activeDownloads = this.stream()
                 .filter(download -> download.start != null)
                 .filter(download -> download.start.status < Start.STATUS_FERTIG)
                 .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
-                .collect(Collectors.toList()));
-        return aktivDownloads;
+                .collect(Collectors.toList());
+
+        return activeDownloads;
     }
 
     public synchronized TModel getModelStarts(TModel model) {

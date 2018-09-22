@@ -26,7 +26,6 @@ import mediathek.controller.starter.Start;
 import mediathek.tool.MVFilmSize;
 
 import java.text.DecimalFormat;
-import java.util.LinkedList;
 
 public class DownloadInfos {
 
@@ -92,7 +91,7 @@ public class DownloadInfos {
         downloadStarts = daten.getListeDownloads().getStarts();
 
         // Liste gestarteter Downloads
-        LinkedList<DatenDownload> aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+        var aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : aktivDownloads) {
             ++daten.getDownloadInfos().anzDownloadsRun;
             daten.getDownloadInfos().byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
@@ -106,6 +105,7 @@ public class DownloadInfos {
                 }
             }
         }
+        aktivDownloads.clear();
 
         if (daten.getDownloadInfos().bandwidth < 0) {
             daten.getDownloadInfos().bandwidth = 0;
