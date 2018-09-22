@@ -1,42 +1,24 @@
 package mSearch.daten;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
-import org.apache.commons.dbcp2.*;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.pool2.ObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 
-import javax.sql.DataSource;
-import java.io.Closeable;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
-public class PooledDatabaseConnection implements Closeable {
+public class PooledDatabaseConnection {
     private static PooledDatabaseConnection INSTANCE;
-    private final DataSource dataSource;
-
-    private final ExecutorService databaseExecutor;
+    private final HikariDataSource dataSource;
 
     private PooledDatabaseConnection() {
         dataSource = setupDataSource();
-
-        final int cpu = Runtime.getRuntime().availableProcessors();
-        databaseExecutor = new ThreadPoolExecutor(cpu, 2 * cpu + 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-        ((ThreadPoolExecutor) databaseExecutor).allowCoreThreadTimeOut(true);
-    }
-
-    public ExecutorService getDatabaseExecutor() {
-        return databaseExecutor;
     }
 
     public static PooledDatabaseConnection getInstance() {
@@ -46,8 +28,8 @@ public class PooledDatabaseConnection implements Closeable {
         return INSTANCE;
     }
 
-    public void close() {
-        connectionPool.close();
+    public HikariDataSource getDataSource() {
+        return dataSource;
     }
 
     public Connection getConnection() {
@@ -61,8 +43,6 @@ public class PooledDatabaseConnection implements Closeable {
 
         return con;
     }
-
-    private ObjectPool<PoolableConnection> connectionPool;
 
     /**
      * Get the location of the filmlist database
@@ -89,30 +69,14 @@ public class PooledDatabaseConnection implements Closeable {
         return absolutePath.toString();
     }
 
-    private DataSource setupDataSource() {
-
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Properties props = new Properties();
-        props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
-        props.put("poolPreparedStatements", "false");
-        props.put("maxIdle", "-1");
-        props.put("testOnBorrow", "true");
-
+    private HikariDataSource setupDataSource() {
         final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
-        PoolableConnectionFactory poolableConnectionFactory =
-                new PoolableConnectionFactory(connectionFactory, null);
+        HikariConfig config = new HikariConfig();
+        config.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
+        config.addDataSourceProperty("URL", driverCommand);
+        config.setMaximumPoolSize(Runtime.getRuntime().availableProcessors() * 2 + 1);
 
-        connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
-
-        poolableConnectionFactory.setPool(connectionPool);
-        
-        return new PoolingDataSource<>(connectionPool);
+        return new HikariDataSource(config);
     }
 }
