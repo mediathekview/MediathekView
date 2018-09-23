@@ -36,6 +36,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -109,7 +110,7 @@ public class FilmeLaden {
 
         boolean showDialogs = true;
 
-        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO)
+        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
         final Request request = new Request.Builder().url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get().build();

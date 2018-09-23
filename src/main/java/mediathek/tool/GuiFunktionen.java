@@ -31,11 +31,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.lang.reflect.Field;
 
 import static mSearch.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
+
+    private final static int WIN_MAX_PATH_LENGTH = 250;
+    private final static int X_MAX_NAME_LENGTH = 255;
 
     public static void updateGui(MediathekGui mediathekGui) {
         try {
@@ -73,7 +75,6 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         c.setLocation(x, y);
     }
-
 
     public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {
@@ -187,9 +188,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    private final static int WIN_MAX_PATH_LENGTH = 250;
-    private final static int X_MAX_NAME_LENGTH = 255;
-
     public static String[] checkLengthPath(String[] pathName) {
         if (SystemUtils.IS_OS_WINDOWS) {
             // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
@@ -204,7 +202,7 @@ public class GuiFunktionen extends MVFunctionSys {
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else // für X-Systeme
-         if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
+            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
                 Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
@@ -324,40 +322,60 @@ public class GuiFunktionen extends MVFunctionSys {
         return liste;
     }
 
-    public static int getImportArtFilme() {
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUS = 0;
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUTO = 2;
+
+    public static void setImportArtFilme(FilmListUpdateType type) {
+        final int value;
+        switch (type) {
+            case AUTOMATIC:
+                value = UPDATE_FILME_AUTO;
+                break;
+
+            case MANUAL:
+                value = UPDATE_FILME_AUS;
+                break;
+
+            default:
+                value = UPDATE_FILME_AUTO;
+                break;
+        }
+
+        MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));
+    }
+
+    public static FilmListUpdateType getImportArtFilme() {
+        FilmListUpdateType result;
+
         int ret;
         try {
             ret = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-            ret = Konstanten.UPDATE_FILME_AUTO;
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(UPDATE_FILME_AUTO));
+            ret = UPDATE_FILME_AUTO;
         }
-        return ret;
-    }
 
-    public static void setParent(Dialog dialog, Container aParent) {
-        try {
-            dialog.dispose();
-            Field declaredField = Component.class.getDeclaredField("parent");
-            declaredField.setAccessible(true);
-            declaredField.set(dialog, aParent);
-            dialog.setVisible(true);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+        switch (ret) {
+            case UPDATE_FILME_AUTO:
+                result = FilmListUpdateType.AUTOMATIC;
+                break;
 
-    public static void setDialogDecorated(Dialog dialog, JComponent panel, boolean set) {
-        boolean vis = dialog.isVisible();
-        dialog.dispose();
-        if (set) {
-            dialog.setUndecorated(false);
-            panel.setBorder(null);
-        } else {
-            dialog.setUndecorated(true);
-            panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+            case UPDATE_FILME_AUS:
+                result = FilmListUpdateType.MANUAL;
+                break;
+
+            default:
+                result = FilmListUpdateType.AUTOMATIC;
+                break;
         }
-        dialog.setVisible(vis);
+
+        return result;
     }
 
     public static void enableComponents(Container container, boolean enable) {

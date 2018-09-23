@@ -3,7 +3,11 @@ package mediathek.gui.dialogEinstellungen;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
-import mediathek.config.*;
+import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
+import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
 import org.apache.commons.lang3.SystemUtils;
@@ -58,7 +62,7 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void initRadio() {
-        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
+        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL) {
             jRadioButtonManuell.setSelected(true);
         } else {
             jRadioButtonAuto.setSelected(true);
@@ -81,12 +85,11 @@ public class PanelFilmlisteLaden extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (jRadioButtonManuell.isSelected()) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
-            } else {
-                MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-            }
-            // den Dialog gibts 2x
+            if (jRadioButtonManuell.isSelected())
+                GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+            else
+                GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
+
             Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
         }
     }
