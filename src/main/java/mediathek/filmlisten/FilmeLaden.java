@@ -27,6 +27,7 @@ import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.reader.FilmListReader;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.MediathekGui;
@@ -113,7 +114,10 @@ public class FilmeLaden {
         if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
-        final Request request = new Request.Builder().url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get().build();
+        final Request request = new Request.Builder()
+                .url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get()
+                .header(Konstanten.SERVER_ANTI_THROTTLING_HEADER, ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID))
+                .build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (body != null && response.isSuccessful()) {

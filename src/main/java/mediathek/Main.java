@@ -19,6 +19,8 @@
  */
 package mediathek;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
@@ -41,8 +43,10 @@ import java.awt.*;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
@@ -145,6 +149,8 @@ public class Main {
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
+        generateAntiThrottlingId();
+
         setupPortableMode(args);
         checkMemoryRequirements();
         checkForJavaFX();
@@ -154,6 +160,24 @@ public class Main {
         installSingleInstanceHandler();
 
         new Main().start(args);
+    }
+
+    /**
+     * This ID will be used by the server-side load balancer to prevent throttling of legitimate
+     * MediathekView users. We have black sheeps who downloads lists REALLY often :(
+     * It is not intented to track user behaviour!
+     */
+    private static void generateAntiThrottlingId() {
+            //Test if we already have an id
+            String id = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID,null);
+            if (id == null) {
+                //generate one that can´t be reconstructed
+                final HashCode hc = Hashing.murmur3_128().newHasher()
+                        .putString(UUID.randomUUID().toString(), StandardCharsets.UTF_8)
+                        .hash();
+
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID,hc.toString());
+            }
     }
 
     private static void installSingleInstanceHandler() {
@@ -307,11 +331,11 @@ public class Main {
                         return authenticator;
                     }
                 });
-                logger.info(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
+                logger.debug(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
             } else if (prxUser != null && prxPassword == null) {
-                logger.info(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
+                logger.debug(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
             } else {
-                logger.info(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
+                logger.debug(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
             }
 
         } catch (SecurityException se) {

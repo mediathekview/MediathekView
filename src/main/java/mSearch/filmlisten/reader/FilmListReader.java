@@ -26,10 +26,12 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
 import mediathek.config.Const;
+import mediathek.config.Konstanten;
 import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -391,7 +393,10 @@ public class FilmListReader implements AutoCloseable {
             }
         };
 
-        final Request request = new Request.Builder().url(source).build();
+        final Request request = new Request.Builder()
+                .url(source)
+                .header(Konstanten.SERVER_ANTI_THROTTLING_HEADER, ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID))
+                .build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
                 try (ResponseBody body = response.body();
