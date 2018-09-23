@@ -32,7 +32,7 @@ public class BandwidthMonitorController {
 
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 150;
-    private static final int TIMELINE_SIZE = 60;
+    private static final int TIMELINE_SIZE = 120;
     private final XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private final AtomicInteger time = new AtomicInteger();
     private JDialog hudDialog = null;
