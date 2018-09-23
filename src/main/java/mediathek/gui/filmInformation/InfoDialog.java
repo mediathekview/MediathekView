@@ -2,8 +2,6 @@ package mediathek.gui.filmInformation;
 
 import com.jidesoft.swing.MultilineLabel;
 import mSearch.daten.DatenFilm;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.gui.HyperlinkButton;
@@ -109,33 +107,6 @@ public class InfoDialog extends JDialog {
         });
     }
 
-    private void addFilmlistLoadListener() {
-        //TODO here is a bug with displaying film data
-        Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            private boolean tempVisibility;
-
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                tempVisibility = isVisible();
-                if (isVisible()) {
-                    setVisible(!tempVisibility);
-                }
-            }
-
-            @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                setVisible(tempVisibility);
-            }
-
-            @Override
-            public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
-            }
-        });
-    }
     /**
      * Restore window position from config settings.
      */
