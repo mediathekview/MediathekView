@@ -33,11 +33,11 @@ public class BandwidthMonitorController {
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 150;
     private static final int TIMELINE_SIZE = 120;
-    private final XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private final AtomicInteger time = new AtomicInteger();
+    private final ListeDownloads listeDownloads;
+    private XYChart.Series<Number, Number> series;
     private JDialog hudDialog = null;
     private Timeline updateMemoryTimer;
-    private final ListeDownloads listeDownloads;
 
     public BandwidthMonitorController(JFrame parent) {
         listeDownloads = Daten.getInstance().getListeDownloads();
@@ -48,8 +48,6 @@ public class BandwidthMonitorController {
             hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
             calculateHudPosition();
         }
-
-        createUpdateTimer();
 
         Daten.getInstance().getMessageBus().subscribe(this);
 
@@ -64,7 +62,10 @@ public class BandwidthMonitorController {
     }
 
     public void close() {
-        updateMemoryTimer.stop();
+        Platform.runLater(() -> {
+            if (updateMemoryTimer != null)
+                updateMemoryTimer.stop();
+        });
         hudDialog.dispose();
     }
 
@@ -99,16 +100,6 @@ public class BandwidthMonitorController {
         hudDialog.setLocation(dm.getWidth() - DEFAULT_WIDTH, 0);
     }
 
-
-    /**
-     * remove too old data from data series.
-     */
-    private void cleanupDataSeries() {
-        if (series.getData().size() > TIMELINE_SIZE) {
-            series.getData().subList(0, series.getData().size() - TIMELINE_SIZE).clear();
-        }
-    }
-
     /**
      * Calculate to current bandwidth usage.
      *
@@ -132,14 +123,20 @@ public class BandwidthMonitorController {
     }
 
     private void createUpdateTimer() {
-        updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            series.getData().add(new XYChart.Data<>(time.incrementAndGet(), calculateBandwidthUsage()));
-            cleanupDataSeries();
-        }));
-        updateMemoryTimer.setCycleCount(Animation.INDEFINITE);
+        Platform.runLater(() -> {
+            updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+                series.getData().add(new XYChart.Data<>(time.incrementAndGet(), calculateBandwidthUsage()));
+                if (series.getData().size() > TIMELINE_SIZE) {
+                    series.getData().subList(0, series.getData().size() - TIMELINE_SIZE).clear();
+                }
+            }));
+            updateMemoryTimer.setCycleCount(Animation.INDEFINITE);
+        });
     }
 
     private AreaChart createChart() {
+        series = new XYChart.Series<>();
+
         NumberAxis xAxis = new NumberAxis();
         xAxis.setForceZeroInRange(false);
         xAxis.setTickUnit(5d);
@@ -154,6 +151,8 @@ public class BandwidthMonitorController {
         areaChart.setLegendVisible(false);
         areaChart.setAnimated(false);
         areaChart.getData().add(series);
+
+        createUpdateTimer();
 
         return areaChart;
     }
