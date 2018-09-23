@@ -80,7 +80,7 @@ public class Version {
     /**
      * Nimmt ein Objekt vom Typ Version an und vergleicht ihn mit sich selbst
      *
-     * @param a Versionsobjekt welches zum vergleich rangezogen werden soll
+     * @param versionzwei Versionsobjekt welches zum vergleich rangezogen werden soll
      * @return 1 Version a ist größer, 0 Versionen sind gleich oder -1 Version a ist kleiner
      */
     public int compare(Version versionzwei) {

@@ -53,10 +53,6 @@ public class ImportFilmliste {
 
                 }
             }
-
-            @Override
-            public synchronized void fertig(ListenerFilmeLadenEvent event) {
-            }
         });
     }
 
