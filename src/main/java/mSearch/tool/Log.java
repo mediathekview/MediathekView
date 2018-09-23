@@ -19,6 +19,7 @@
  */
 package mSearch.tool;
 
+import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import org.apache.logging.log4j.LogManager;
@@ -56,6 +57,8 @@ public class Log {
     public static final Date startZeit = new Date(System.currentTimeMillis());
     private static final ArrayList<String> logList = new ArrayList<>();
 
+    private static final Stopwatch programRuntime = Stopwatch.createStarted();
+
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     private static final long TO_MEGABYTE = 1000L * 1000L;
@@ -69,7 +72,6 @@ public class Log {
         logger.debug("totalMemory: {} MB", runtime.totalMemory() / TO_MEGABYTE);
         final long maxMem = runtime.maxMemory();
         logger.info("maxMemory: {} MB", maxMem / TO_MEGABYTE);
-        logger.debug("freeMemory: {} MB", runtime.freeMemory() / TO_MEGABYTE);
 
         //Version
         logger.info("Version: {}", progName);
@@ -82,23 +84,13 @@ public class Log {
     }
 
     public static void endMsg() {
-        logger.info("");
-        logger.info("");
-        logger.info("");
-        logger.info("");
-
         printErrorMsg().forEach(Log::sysLog);
 
-        // Laufzeit ausgeben
-        Date stopZeit = new Date(System.currentTimeMillis());
-        final long minuten = (stopZeit.getTime() - Log.startZeit.getTime()) / (1000 * 60);
-
-        logger.info("");
-        logger.info("");
         logger.info(LINE);
         logger.info("   --> Beginn: {}", dateFormatter.format(Log.startZeit));
-        logger.info("   --> Fertig: {}", dateFormatter.format(stopZeit));
-        logger.info("   --> Dauer[Min]: {}", (minuten == 0 ? "<1" : minuten));
+        logger.info("   --> Fertig: {}", dateFormatter.format(new Date(System.currentTimeMillis())));
+        programRuntime.stop();
+        logger.info("   --> Dauer: {}", programRuntime);
         logger.info(LINE);
     }
 
