@@ -360,9 +360,6 @@ public class GuiFilme extends JPanel {
             }
         });
 
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
-        actionMap.put("info", new ShowFilmInformationAction());
-
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
         actionMap.put("url-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
 
@@ -851,6 +848,8 @@ public class GuiFilme extends JPanel {
             return item;
         }
 
+        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1042,14 +1041,9 @@ public class GuiFilme extends JPanel {
             JMenuItem item = new JMenuItem("Tabelle drucken");
             item.addActionListener(beobPrint);
             jPopupMenu.add(item);
-            //Infos
-            item = new JMenuItem("Filminformation anzeigen");
-            item.addActionListener(e -> {
-                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
-                    MediathekGui.ui().getFilmInfoDialog().showInfo();
-                }
-            });
-            jPopupMenu.add(item);
+
+            jPopupMenu.add(showFilmInformationAction);
+
             //History
             res.ifPresent(film -> {
                 JMenuItem miHistory;

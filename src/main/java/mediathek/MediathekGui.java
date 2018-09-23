@@ -47,6 +47,7 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.actions.CreateProtocolFileAction;
 import mediathek.gui.actions.ResetSettingsAction;
+import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
@@ -73,7 +74,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -697,11 +697,8 @@ public class MediathekGui extends JFrame {
 
     private void createViewMenu() {
         JCheckBoxMenuItem cbVideoplayer = new JCheckBoxMenuItem("Buttons anzeigen");
-        if (SystemUtils.IS_OS_MAC_OSX)
-            cbVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_DOWN_MASK));
-        else
+        if (!SystemUtils.IS_OS_MAC_OSX)
             cbVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-
         cbVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
         cbVideoplayer.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbVideoplayer.isSelected()));
@@ -734,6 +731,8 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(miShowMemoryMonitor);
         jMenuAnsicht.add(cbBandwidthDisplay);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(new ShowFilmInformationAction());
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(cbSearchMediaDb);
     }

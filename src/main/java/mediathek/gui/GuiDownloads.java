@@ -44,6 +44,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
@@ -444,15 +445,6 @@ public class GuiDownloads extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmStartenWiederholenStoppen(false, true /* starten */);
-            }
-        });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
-        this.getActionMap().put("info", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
-                    MediathekGui.ui().getFilmInfoDialog().showInfo();
-                }
             }
         });
 
@@ -1528,19 +1520,11 @@ public class GuiDownloads extends JPanel {
             });
             jPopupMenu.add(itemUrl);
 
-            // Infos
-            JMenuItem itemInfo = new JMenuItem("Filminformation anzeigen");
-            itemInfo.addActionListener(e -> {
-                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
-                    MediathekGui.ui().getFilmInfoDialog().showInfo();
-                }
-            });
-            jPopupMenu.add(itemInfo);
+            jPopupMenu.add(showFilmInformationAction);
 
-            // ######################
-            // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
+        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
     }
 
     /**
