@@ -3,9 +3,9 @@ package mediathek.javafx;
 import javafx.concurrent.Task;
 import mSearch.filmlisten.reader.FilmListReader;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListReadStartEvent;
+import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 
 public class FilmListReaderTask extends Task<Void> {
@@ -30,7 +30,7 @@ public class FilmListReaderTask extends Task<Void> {
         updateMessage("Lese Filmliste");
         readLocalFilmList();
 
-        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
+        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
             updateMessage("Lese Filmliste Netzwerk");
             daten.getFilmeLaden().loadFilmlist("", true);
         }

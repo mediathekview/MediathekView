@@ -154,7 +154,7 @@ public class GuiFilme extends JPanel {
 
         setupFilmActionPanel();
 
-        start_init(mediathekGui);
+        start_init();
         start_addListener();
 
         setupActionListeners();
@@ -446,7 +446,7 @@ public class GuiFilme extends JPanel {
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
-    private void start_init(MediathekGui mediathekGui) {
+    private void start_init() {
         showDescriptionPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override

@@ -57,11 +57,9 @@ import mediathek.gui.messages.*;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.res.GetIcon;
-import mediathek.tool.GenericShutdownComputerCommand;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ShutdownComputerCommand;
-import mediathek.tool.TABS;
+import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
+import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
@@ -246,6 +244,9 @@ public class MediathekGui extends JFrame {
         });
     }
 
+    /**
+     * Read a local filmlist or load a new one in auto mode.
+     */
     private void loadFilmlist() {
         Platform.runLater(() -> {
             FXProgressPane hb = new FXProgressPane();
@@ -443,9 +444,25 @@ public class MediathekGui extends JFrame {
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
                 setupUpdateCheck();
+                setupAutomaticFilmlistReload();
                 prepareMediaDb();
             }
         });
+    }
+
+
+    /**
+     * Reload filmlist every 24h when in automatic mode.
+     */
+    private void setupAutomaticFilmlistReload() {
+        final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
+            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
+                FilmeLaden filmeLaden = new FilmeLaden(daten);
+                filmeLaden.loadFilmlist("");
+            }
+        };
+        AutomaticFilmlistUpdate automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
+        automaticFilmlistUpdate.start();
     }
 
     private void init() {
@@ -550,6 +567,7 @@ public class MediathekGui extends JFrame {
         final int index = jTabbedPane.indexOfComponent(tab);
         jTabbedPane.setIconAt(index,icon);
     }
+
     /**
      * Number of active downloads
      */
@@ -784,7 +802,7 @@ public class MediathekGui extends JFrame {
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
-        if (manualMode || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
+        if (manualMode || GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL) {
             // Dialog zum Laden der Filme anzeigen
             LoadFilmListDialog dlg = new LoadFilmListDialog(this);
             dlg.setVisible(true);

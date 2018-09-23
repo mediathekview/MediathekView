@@ -21,6 +21,8 @@ package mediathek.config;
 
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
+import mediathek.tool.FilmListUpdateType;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -214,9 +216,9 @@ public class MVConfig {
             }
         }
 
-        if (Config.isDebuggingEnabled()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
-        }
+        if (Config.isDebuggingEnabled())
+            GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
 
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, 5, 1000);
