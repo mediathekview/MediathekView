@@ -20,11 +20,12 @@
 package mediathek.config;
 
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Log;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,190 @@ public class MVConfig {
 
     public final static String TRENNER = "#=#";
     public static final String SYSTEM = "system";
+    public static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
+    private static final int MAX_FILTER = 5; //old filter profile code setting
+
+    public static void loadSystemParameter() {
+        //einmal die leeren mit den inits füllen
+        for (Configs key : Configs.values()) {
+            String s = HASHMAP.get(key.cValue);
+            if (s == null || s.isEmpty()) {
+                MVConfig.add(key, key.initValue);
+            }
+        }
+
+        if (Config.isDebuggingEnabled()) {
+            logger.debug("Setting FilmList import mode to MANUAL");
+            GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+        }
+
+        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, 5, 1000);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, 0, 100);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP, 0, 100);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, 5, 1000);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, 5, 1000);
+
+        logger.debug("=======================================");
+        logger.debug("Systemparameter");
+        logger.debug("-----------------");
+        logger.debug("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
+        logger.debug("max. Download-Restart: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART));
+        logger.debug("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
+        logger.debug("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
+        logger.debug("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
+        logger.debug("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
+        logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+        logger.debug("=======================================");
+    }
+
+    public static void check(Configs key, int min, int max) {
+        int v = getInt(key);
+        if (v < min || v > max) {
+            add(key, key.initValue);
+        }
+    }
+
+    public static synchronized void add(String key, String value) {
+        HASHMAP.put(key, value);
+    }
+
+    public static synchronized void add(Configs key, String value) {
+        HASHMAP.put(key.cValue, value);
+    }
+
+    public static synchronized void add(Configs key, String value, int i) {
+        boolean ok = false;
+        String[] sa = {""};
+        String s = HASHMAP.get(key.cValue);
+        if (s != null) {
+            sa = split(s);
+            if (sa.length == MAX_FILTER) {
+                sa[i] = value;
+                ok = true;
+            }
+        }
+        if (!ok) {
+            // dann anlegen
+            sa = initArray(key);
+            sa[i] = value;
+        }
+        // und jetzt eintragen
+        s = addArray(sa);
+        HASHMAP.put(key.cValue, s);
+    }
+
+    public static synchronized String get(Configs key) {
+        String s = HASHMAP.get(key.cValue);
+        if (s == null) {
+            s = key.initValue;
+        }
+        return s == null ? "" : s;
+    }
+
+    public static synchronized int getInt(Configs key) {
+        int ret;
+        try {
+            ret = Integer.parseInt(get(key));
+        } catch (Exception ignore) {
+            ret = 0;
+        }
+        return ret;
+    }
+
+    public static synchronized boolean getBool(Configs key) {
+        return Boolean.parseBoolean(get(key));
+    }
+
+    public static synchronized String get(Configs key, int i) {
+        String[] sa;
+        String s = HASHMAP.get(key.cValue);
+        if (s == null) {
+            return key.initValue;
+        } else {
+            sa = split(s);
+        }
+        if (sa.length <= i) {
+            HASHMAP.remove(key.cValue);
+            return key.initValue;
+        } else {
+            return sa[i];
+        }
+    }
+
+    public static synchronized String[][] getAll() {
+        final LinkedList<String[]> liste = new LinkedList<>();
+        final Set<String> strings = HASHMAP.keySet();
+        final String[] setArray = strings.toArray(new String[0]);
+        for (String entry : setArray) {
+            String[] s = new String[2];
+            s[0] = entry;
+            s[1] = HASHMAP.get(entry);
+            liste.add(s);
+        }
+        listeSort(liste);
+
+        return liste.toArray(new String[][]{});
+    }
+
+    private static String[] split(String sIn) {
+        ArrayList<String> l = new ArrayList<>();
+        String s = sIn;
+        while (s.contains(TRENNER)) {
+            l.add(s.substring(0, s.indexOf(TRENNER)));
+            s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
+        }
+        l.add(s);
+
+        return l.toArray(new String[0]);
+
+    }
+
+    private static String addArray(String[] arr) {
+        if (arr == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int k = 0; k < arr.length; ++k) {
+            sb.append(arr[k]);
+            if (k < arr.length - 1) {
+                sb.append(TRENNER);
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String[] initArray(Configs key) {
+        String[] sa = new String[MAX_FILTER];
+        for (int k = 0; k < MAX_FILTER; ++k) {
+            sa[k] = key.initValue;
+        }
+        return sa;
+    }
+
+    private static void listeSort(LinkedList<String[]> liste) {
+        //Stringliste alphabetisch sortieren
+        mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
+        if (liste != null) {
+            String str1;
+            String str2;
+            for (int i = 1; i < liste.size(); ++i) {
+                for (int k = i; k > 0; --k) {
+                    str1 = liste.get(k - 1)[0];
+                    str2 = liste.get(k)[0];
+                    // if (str1.compareToIgnoreCase(str2) > 0) {
+                    if (sorter.compare(str1, str2) > 0) {
+                        liste.add(k - 1, liste.remove(k));
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     public enum Configs {
         //============================================
@@ -204,188 +388,6 @@ public class MVConfig {
                 }
             }
             return false;
-        }
-    }
-
-    public static void loadSystemParameter() {
-        //einmal die leeren mit den inits füllen
-        for (Configs key : Configs.values()) {
-            String s = HASHMAP.get(key.cValue);
-            if (s == null || s.isEmpty()) {
-                MVConfig.add(key, key.initValue);
-            }
-        }
-
-        if (Config.isDebuggingEnabled())
-            GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, 5, 1000);
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, 0, 100);
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP, 0, 100);
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, 5, 1000);
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, 5, 1000);
-
-        Log.sysLog("");
-        Log.sysLog("=======================================");
-        Log.sysLog("Systemparameter");
-        Log.sysLog("-----------------");
-        Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
-        Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART));
-        Log.sysLog("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
-        Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
-        Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
-        Log.sysLog("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
-        Log.sysLog("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-        Log.sysLog("=======================================");
-        Log.sysLog("");
-    }
-
-    public static void check(Configs key, int min, int max) {
-        int v = getInt(key);
-        if (v < min || v > max) {
-            add(key, key.initValue);
-        }
-    }
-
-    public static synchronized void add(String key, String value) {
-        HASHMAP.put(key, value);
-    }
-
-    public static synchronized void add(Configs key, String value) {
-        HASHMAP.put(key.cValue, value);
-    }
-
-    private static final int MAX_FILTER = 5; //old filter profile code setting
-    public static synchronized void add(Configs key, String value, int i) {
-        boolean ok = false;
-        String[] sa = {""};
-        String s = HASHMAP.get(key.cValue);
-        if (s != null) {
-            sa = split(s);
-            if (sa.length == MAX_FILTER) {
-                sa[i] = value;
-                ok = true;
-            }
-        }
-        if (!ok) {
-            // dann anlegen
-            sa = initArray(key);
-            sa[i] = value;
-        }
-        // und jetzt eintragen
-        s = addArray(sa);
-        HASHMAP.put(key.cValue, s);
-    }
-
-    public static synchronized String get(Configs key) {
-        String s = HASHMAP.get(key.cValue);
-        if (s == null) {
-            s = key.initValue;
-        }
-        return s == null ? "" : s;
-    }
-
-    public static synchronized int getInt(Configs key) {
-        int ret;
-        try {
-            ret = Integer.parseInt(get(key));
-        } catch (Exception ignore) {
-            ret = 0;
-        }
-        return ret;
-    }
-
-    public static synchronized boolean getBool(Configs key) {
-        return Boolean.parseBoolean(get(key));
-    }
-
-    public static synchronized String get(Configs key, int i) {
-        String[] sa;
-        String s = HASHMAP.get(key.cValue);
-        if (s == null) {
-            return key.initValue;
-        } else {
-            sa = split(s);
-        }
-        if (sa.length <= i) {
-            HASHMAP.remove(key.cValue);
-            return key.initValue;
-        } else {
-            return sa[i];
-        }
-    }
-
-    public static synchronized String[][] getAll() {
-        final LinkedList<String[]> liste = new LinkedList<>();
-        final Set<String> strings = HASHMAP.keySet();
-        final String[] setArray = strings.toArray(new String[0]);
-        for (String entry : setArray) {
-            String[] s = new String[2];
-            s[0] = entry;
-            s[1] = HASHMAP.get(entry);
-            liste.add(s);
-        }
-        listeSort(liste);
-
-        return liste.toArray(new String[][]{});
-    }
-
-    private static String[] split(String sIn) {
-        ArrayList<String> l = new ArrayList<>();
-        String s = sIn;
-        while (s.contains(TRENNER)) {
-            l.add(s.substring(0, s.indexOf(TRENNER)));
-            s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
-        }
-        l.add(s);
-
-        return l.toArray(new String[0]);
-
-    }
-
-    private static String addArray(String[] arr) {
-        if (arr == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int k = 0; k < arr.length; ++k) {
-            sb.append(arr[k]);
-            if (k < arr.length - 1) {
-                sb.append(TRENNER);
-            }
-        }
-        return sb.toString();
-    }
-
-    private static String[] initArray(Configs key) {
-        String[] sa = new String[MAX_FILTER];
-        for (int k = 0; k < MAX_FILTER; ++k) {
-            sa[k] = key.initValue;
-        }
-        return sa;
-    }
-
-    private static void listeSort(LinkedList<String[]> liste) {
-        //Stringliste alphabetisch sortieren
-        mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
-        if (liste != null) {
-            String str1;
-            String str2;
-            for (int i = 1; i < liste.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    str1 = liste.get(k - 1)[0];
-                    str2 = liste.get(k)[0];
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (sorter.compare(str1, str2) > 0) {
-                        liste.add(k - 1, liste.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
         }
     }
 }
