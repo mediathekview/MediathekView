@@ -30,6 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.InputEvent;
 import java.io.File;
 
 import static mSearch.tool.Functions.getOs;
@@ -322,6 +323,25 @@ public class GuiFunktionen extends MVFunctionSys {
         return liste;
     }
 
+    /**
+     * Maps the "command" key to the correspondig icon based on operating system.
+     * @return an InputEvent modifier based on operating system.
+     */
+    public static int getPlatformControlKey() {
+        int result;
+
+        switch(getOs()) {
+            case MAC:
+                result = InputEvent.META_DOWN_MASK;
+                break;
+
+                default:
+                    result = InputEvent.CTRL_DOWN_MASK;
+                    break;
+        }
+
+        return result;
+    }
     /**
      * legacy constant, used internally only
      */
