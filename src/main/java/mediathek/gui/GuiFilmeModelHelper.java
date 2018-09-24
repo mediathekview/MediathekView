@@ -202,20 +202,32 @@ public class GuiFilmeModelHelper {
      * Perform the last stage of filtering.
      * Rework!!!
      */
-    public boolean finalStageFiltering(final DatenFilm film) {
+    private boolean finalStageFiltering(final DatenFilm film) {
+        boolean result;
+
+        if (searchThroughDescriptions && !film.getDescription().isEmpty())
+            result = searchEntriesWithDescription(film);
+        else
+            result = searchEntries(film);
+
+        return result;
+    }
+
+    private boolean searchEntries(DatenFilm film) {
+        boolean result = false;
+        if (Filter.pruefen(arrIrgendwo, film.getThema())
+                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
+            result = true;
+        }
+        return result;
+    }
+
+    private boolean searchEntriesWithDescription(DatenFilm film) {
         boolean result = false;
 
-        if (searchThroughDescriptions) {
-            if (Filter.pruefen(arrIrgendwo, film.getDescription())
-                    || Filter.pruefen(arrIrgendwo, film.getThema())
-                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-                result = true;
-            }
-        } else {
-            if (Filter.pruefen(arrIrgendwo, film.getThema())
-                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-                result = true;
-            }
+        if (Filter.pruefen(arrIrgendwo, film.getDescription())
+                || searchEntries(film)) {
+            result = true;
         }
 
         return result;
