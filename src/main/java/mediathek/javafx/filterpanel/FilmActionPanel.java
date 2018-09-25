@@ -351,6 +351,28 @@ public class FilmActionPanel {
     }
 
     private VBox createCommonViewSettingsPane() {
+        Button btnDeleteFilterSettings = new Button("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
+        btnDeleteFilterSettings.setTooltip(new Tooltip("Filter zurücksetzen"));
+        btnDeleteFilterSettings.setOnAction(e -> {
+            showOnlyHd.setValue(false);
+            showSubtitlesOnly.setValue(false);
+            showNewOnly.setValue(false);
+            showLivestreamsOnly.setValue(false);
+            showUnseenOnly.setValue(false);
+            dontShowAbos.setValue(false);
+            dontShowSignLanguage.setValue(false);
+            dontShowTrailers.setValue(false);
+            dontShowAudioVersions.setValue(false);
+
+            senderList.getCheckModel().clearChecks();
+            themaBox.getSelectionModel().select("");
+
+            filmLengthSlider.lowValueProperty().setValue(0);
+            filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+            zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+        });
+
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
 
@@ -382,7 +404,10 @@ public class FilmActionPanel {
         vBox.setSpacing(4d);
         Node senderBox = createSenderBox();
         VBox.setVgrow(senderBox, Priority.ALWAYS);
-        vBox.getChildren().addAll(cbShowOnlyHd,
+        vBox.getChildren().addAll(
+                btnDeleteFilterSettings,
+                new Separator(),
+                cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
                 cbShowOnlyLivestreams,
