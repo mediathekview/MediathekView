@@ -25,7 +25,6 @@ import mediathek.config.Daten;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.h2.jdbc.JdbcSQLException;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Cleaner;
@@ -348,54 +347,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
              PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")
         ) {
-            String cleanedDesc = cleanDescription(desc, arr[FILM_THEMA], getTitle());
-            cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br/>");
-
             mergeStatement.setInt(1, databaseFilmNumber);
-            mergeStatement.setString(2, cleanedDesc);
+            mergeStatement.setString(2, desc);
             mergeStatement.executeUpdate();
 
-        } catch (SQLIntegrityConstraintViolationException ignored) {
-            //this will happen in UPSERT operation
-        } catch (JdbcSQLException ex) {
-            if (!ex.getMessage().contains("primary key violation")) {
-                logger.error("JdbcSQLException: ", ex);
-            }
         } catch (SQLException ex) {
             logger.error("SQLException: ", ex);
         }
 
-    }
-
-    private String cleanDescription(String s, String thema, String titel) {
-        // die Beschreibung auf x Zeichen beschränken
-
-        s = Functions.removeHtml(s); // damit die Beschreibung nicht unnötig kurz wird wenn es erst später gemacht wird
-
-        if (s.startsWith(titel)) {
-            s = s.substring(titel.length()).trim();
-        }
-        if (s.startsWith(thema)) {
-            s = s.substring(thema.length()).trim();
-        }
-        if (s.startsWith("|")) {
-            s = s.substring(1).trim();
-        }
-        if (s.startsWith("Video-Clip")) {
-            s = s.substring("Video-Clip".length()).trim();
-        }
-        if (s.startsWith(titel)) {
-            s = s.substring(titel.length()).trim();
-        }
-        if (s.startsWith(":") || s.startsWith(",") || s.startsWith("\n")) {
-            s = s.substring(1).trim();
-        }
-
-        if (s.contains("\\\"")) { // wegen " in json-Files
-            s = StringUtils.replace(s, "\\\"", "\"");
-        }
-
-        return s;
     }
 
     public boolean isNew() {

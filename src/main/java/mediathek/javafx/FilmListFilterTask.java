@@ -20,7 +20,7 @@ public class FilmListFilterTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        logger.info("FilmListFilterTask started");
+        logger.debug("FilmListFilterTask started");
 
         if (submitEvent)
             daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
@@ -40,7 +40,7 @@ public class FilmListFilterTask extends Task<Void> {
 
         SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false)));
 
-        logger.info("FilmListFilterTask finished");
+        logger.debug("FilmListFilterTask finished");
         return null;
     }
 }

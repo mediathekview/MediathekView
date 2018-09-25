@@ -27,38 +27,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 public class Functions {
 
     private static final String RBVERSION = "version";
     private static final Logger logger = LogManager.getLogger(Functions.class);
-    private static final Pattern PATTERN;
-
-    static {
-        PATTERN = Pattern.compile("\\<.*?>");
-    }
-
-    public static void fastChannelCopy(final ReadableByteChannel src, final WritableByteChannel dest) throws IOException {
-        final ByteBuffer buffer = ByteBuffer.allocateDirect(64 * 1024);
-        while (src.read(buffer) != -1) {
-            buffer.flip();
-            dest.write(buffer);
-            buffer.compact();
-        }
-
-        buffer.flip();
-
-        while (buffer.hasRemaining()) {
-            dest.write(buffer);
-        }
-    }
 
     public static String textLaenge(int max, String text, boolean mitte, boolean addVorne) {
         if (text.length() > max) {
@@ -168,14 +143,6 @@ public class Functions {
             Log.errorLog(134679898, e);
         }
         return new Version("").toString();
-    }
-
-    public static boolean istUrl(String dateiUrl) {
-        return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
-    }
-
-    public static String removeHtml(final String in) {
-        return PATTERN.matcher(in).replaceAll("");
     }
 
     public enum OperatingSystemType {

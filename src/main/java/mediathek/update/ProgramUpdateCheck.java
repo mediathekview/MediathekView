@@ -118,7 +118,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
     }
 
     private void performUpdateCheck() {
-        logger.info("performUpdateCheck started.");
+        logger.debug("performUpdateCheck started.");
         var gui = MediathekGui.ui();
         try {
             //first check if network is available...
@@ -131,7 +131,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
 
                 checkForPsetUpdates();
             } else
-                logger.info("Network is not reachable.");
+                logger.warn("Update Check: Network is not reachable.");
         }
         catch (UnknownHostException ignored) {
         }
@@ -141,11 +141,11 @@ public class ProgramUpdateCheck implements AutoCloseable {
         } finally {
             SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
         }
-        logger.info("performUpdateCheck finished.");
+        logger.debug("performUpdateCheck finished.");
     }
 
     public void start() {
-        logger.info("ProgramUpdateCheck Started.");
+        logger.debug("ProgramUpdateCheck Started.");
         updateCheckTimer.start();
     }
 
@@ -154,6 +154,6 @@ public class ProgramUpdateCheck implements AutoCloseable {
         if (updateCheckTimer != null) {
             updateCheckTimer.stop();
         }
-        logger.info("ProgramUpdateCheck closed.");
+        logger.debug("ProgramUpdateCheck closed.");
     }
 }

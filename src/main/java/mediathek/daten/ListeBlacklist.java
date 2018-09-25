@@ -193,7 +193,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             listeRet.fillSenderList();
         }
         stopwatch.stop();
-        logger.info("filterListe(): {}", stopwatch);
+        logger.debug("filterListe(): {}", stopwatch);
     }
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);

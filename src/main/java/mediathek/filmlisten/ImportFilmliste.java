@@ -82,7 +82,7 @@ public class ImportFilmliste {
         boolean ret = false;
         try {
             if (!dateiUrl.isEmpty()) {
-                logger.info("Filmliste laden von: {}", dateiUrl);
+                logger.trace("Filmliste laden von: {}", dateiUrl);
                 msFilmListReader.readFilmListe(dateiUrl, listeFilme, days);
                 if (!listeFilme.isEmpty()) {
                     ret = true;

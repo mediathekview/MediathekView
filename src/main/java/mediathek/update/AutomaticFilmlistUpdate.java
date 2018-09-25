@@ -28,15 +28,15 @@ public class AutomaticFilmlistUpdate implements AutoCloseable {
     }
 
     private void reloadFilmList() {
-        logger.info("Automatic FilmList load started.");
+        logger.debug("Automatic FilmList load started.");
 
         action.performUpdate();
 
-        logger.info("Automatic FilmList load finished.");
+        logger.debug("Automatic FilmList load finished.");
     }
 
     public void start() {
-        logger.info("AutomaticFilmlistUpdate Started.");
+        logger.debug("AutomaticFilmlistUpdate Started.");
         updateCheckTimer.start();
     }
 
@@ -45,7 +45,7 @@ public class AutomaticFilmlistUpdate implements AutoCloseable {
         if (updateCheckTimer != null) {
             updateCheckTimer.stop();
         }
-        logger.info("AutomaticFilmlistUpdate closed.");
+        logger.debug("AutomaticFilmlistUpdate closed.");
     }
 
     @FunctionalInterface
