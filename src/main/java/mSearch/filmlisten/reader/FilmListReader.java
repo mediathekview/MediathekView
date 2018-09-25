@@ -22,6 +22,7 @@ package mSearch.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.google.common.base.Stopwatch;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -243,6 +244,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         JsonToken jsonToken;
 
         if (jp.nextToken() != JsonToken.START_OBJECT) {
@@ -252,8 +254,6 @@ public class FilmListReader implements AutoCloseable {
         parseMetaData(jp, listeFilme);
 
         skipFieldDescriptions(jp);
-
-        long start = System.nanoTime();
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
@@ -293,8 +293,9 @@ public class FilmListReader implements AutoCloseable {
                 }
             }
         }
-        long end = System.nanoTime();
-        logger.debug("Reading filmlist took {} msecs.", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+
+        stopwatch.stop();
+        logger.debug("Reading filmlist took {}", stopwatch);
     }
 
     private void checkDays(long days) {
@@ -307,7 +308,7 @@ public class FilmListReader implements AutoCloseable {
 
     public void readFilmListe(String source, final ListeFilme listeFilme, int days) {
         try {
-            logger.info("Liste Filme lesen von: {}", source);
+            logger.trace("Liste Filme lesen von: {}", source);
             listeFilme.clear();
 
             notifyStart(source); // für die Progressanzeige
@@ -329,6 +330,24 @@ public class FilmListReader implements AutoCloseable {
         notifyFertig(source, listeFilme);
     }
 
+    class ProgressMonitor implements InputStreamProgressMonitor {
+        private final String sourceString;
+        private int oldProgress = 0;
+
+        public ProgressMonitor(String source) {
+            sourceString = source;
+        }
+
+        @Override
+        public void progress(long bytesRead, long size) {
+            final int iProgress = (int) (bytesRead * 100 / size);
+            if (iProgress != oldProgress) {
+                oldProgress = iProgress;
+                notifyProgress(sourceString, iProgress);
+            }
+        }
+    }
+
     /**
      * Read a locally available filmlist.
      *
@@ -336,26 +355,13 @@ public class FilmListReader implements AutoCloseable {
      * @param listeFilme the list to read to
      */
     private void processFromFile(String source, ListeFilme listeFilme) {
-        InputStreamProgressMonitor monitor = new InputStreamProgressMonitor() {
-            private final String sourceString = source;
-            private int oldProgress = 0;
-
-            @Override
-            public void progress(final long bytesRead, final long size) {
-                final int iProgress = (int) (bytesRead * 100 / size);
-                if (iProgress != oldProgress) {
-                    oldProgress = iProgress;
-                    notifyProgress(sourceString, iProgress);
-                }
-            }
-        };
-
         try {
             final Path filePath = Paths.get(source);
             final long fileSize = Files.size(filePath);
             if (fileSize == 0)
                 Files.deleteIfExists(filePath);
 
+            final ProgressMonitor monitor = new ProgressMonitor(source);
             try (FileInputStream fis = new FileInputStream(source);
                  InputStream input = new ProgressMonitorInputStream(fis, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
@@ -378,27 +384,13 @@ public class FilmListReader implements AutoCloseable {
      * @param listeFilme the list to read to
      */
     private void processFromWeb(URL source, ListeFilme listeFilme) {
-        //our progress monitor callback
-        InputStreamProgressMonitor monitor = new InputStreamProgressMonitor() {
-            private final String sourceString = source.toString();
-            private int oldProgress = 0;
-
-            @Override
-            public void progress(final long bytesRead, final long size) {
-                final int iProgress = (int) (bytesRead * 100 / size);
-                if (iProgress != oldProgress) {
-                    oldProgress = iProgress;
-                    notifyProgress(sourceString, iProgress);
-                }
-            }
-        };
-
         final Request request = new Request.Builder()
                 .url(source)
                 .header(Konstanten.SERVER_ANTI_THROTTLING_HEADER, ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID))
                 .build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
+                ProgressMonitor monitor = new ProgressMonitor(source.toString());
                 try (ResponseBody body = response.body();
                      InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);

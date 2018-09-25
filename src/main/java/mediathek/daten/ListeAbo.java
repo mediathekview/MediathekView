@@ -295,6 +295,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         });
 
         stopwatch.stop();
-        logger.info("setAboFuerFilm: {}",stopwatch);
+        logger.debug("setAboFuerFilm: {}",stopwatch);
     }
 }
