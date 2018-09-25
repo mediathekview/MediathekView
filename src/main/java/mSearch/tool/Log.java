@@ -84,62 +84,12 @@ public class Log {
     }
 
     public static void endMsg() {
-        printErrorMsg().forEach(Log::sysLog);
-
         logger.info(LINE);
         logger.info("   --> Beginn: {}", dateFormatter.format(Log.startZeit));
         logger.info("   --> Fertig: {}", dateFormatter.format(new Date(System.currentTimeMillis())));
         programRuntime.stop();
         logger.info("   --> Dauer: {}", programRuntime);
         logger.info(LINE);
-    }
-
-    public static synchronized ArrayList<String> printErrorMsg() {
-        int max = 0;
-        ArrayList<String> retList = new ArrayList<>();
-        retList.add("");
-        retList.add(LINE);
-        if (fehlerListe.isEmpty()) {
-            retList.add(" Keine Fehler :)");
-        } else {
-            // Fehler ausgeben
-            int i_1;
-            int i_2;
-            for (Error e : fehlerListe) {
-                if (e.cl.length() > max) {
-                    max = e.cl.length();
-                }
-            }
-            max++;
-            for (Error e : fehlerListe) {
-                while (e.cl.length() < max) {
-                    e.cl += ' ';
-                }
-            }
-            for (int i = 1; i < fehlerListe.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    i_1 = fehlerListe.get(k - 1).nr;
-                    i_2 = fehlerListe.get(k).nr;
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (i_1 < i_2) {
-                        fehlerListe.add(k - 1, fehlerListe.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
-            for (Error e : fehlerListe) {
-                String strEx;
-                if (e.ex) {
-                    strEx = "Ex! ";
-                } else {
-                    strEx = "    ";
-                }
-                retList.add(strEx + e.cl + " Fehlernummer: " + e.nr + " Anzahl: " + e.count);
-            }
-        }
-        retList.add(LINE);
-        return retList;
     }
 
     // Fehlermeldung mit Exceptions

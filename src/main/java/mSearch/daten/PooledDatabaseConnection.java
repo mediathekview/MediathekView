@@ -10,8 +10,6 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class PooledDatabaseConnection {
     private static PooledDatabaseConnection INSTANCE;
@@ -30,18 +28,6 @@ public class PooledDatabaseConnection {
 
     public HikariDataSource getDataSource() {
         return dataSource;
-    }
-
-    public Connection getConnection() {
-        Connection con = null;
-        try {
-            con = dataSource.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException ignored) {
-        }
-
-        return con;
     }
 
     /**
