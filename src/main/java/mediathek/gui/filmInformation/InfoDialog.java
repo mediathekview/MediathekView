@@ -13,6 +13,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -43,12 +44,21 @@ public class InfoDialog extends JDialog {
     private JLabel lblAbo;
     private HyperlinkButton btnLinkWebsite;
     private JTextArea lblDescription;
+    private static final String COPY_URL_TEXT = "URL kopieren";
 
     private JMenuItem createCopyLinkToClipboardItem() {
-        JMenuItem item = new JMenuItem("URL kopieren");
+        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
         item.addActionListener(e -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink()));
 
         return item;
+    }
+
+    private void installCopyUrlHandler(JTextComponent component) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
+        item.addActionListener(e -> GuiFunktionen.copyToClipboard(component.getText()));
+        menu.add(item);
+        component.setComponentPopupMenu(menu);
     }
 
     public InfoDialog(Window parent) {
@@ -75,6 +85,9 @@ public class InfoDialog extends JDialog {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(createCopyLinkToClipboardItem());
         btnLinkWebsite.setComponentPopupMenu(popupMenu);
+
+        installCopyUrlHandler(lblThema);
+        installCopyUrlHandler(lblTitel);
 
         updateTextFields();
 
