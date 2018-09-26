@@ -5,20 +5,12 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
-			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::247:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "jPanelCont"
-				auxiliary() {
-					"JavaCodeGenerator.variableLocal": true
-				}
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
-					name: "jPanelInfo"
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Last"
-				} )
 				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 					name: "jTabbedPane"
 					"border": new javax.swing.border.EmptyBorder( 5, 1, 1, 1 )

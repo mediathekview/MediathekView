@@ -319,7 +319,7 @@ public class MediathekGui extends JFrame {
         statusBarController = new StatusBarController(daten);
 
         JFXPanel statusBarPanel = new JFXPanel();
-        jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
+        jPanelCont.add(statusBarPanel, BorderLayout.PAGE_END);
         Platform.runLater(() -> {
             statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
             installSelectedItemsLabel();
@@ -1027,8 +1027,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos = new JMenu();
         jMenuAnsicht = new JMenu();
         jMenuHilfe = new JMenu();
-        var jPanelCont = new JPanel();
-        jPanelInfo = new JPanel();
+        jPanelCont = new JPanel();
         jTabbedPane = new JTabbedPane();
 
         //======== this ========
@@ -1086,12 +1085,6 @@ public class MediathekGui extends JFrame {
         {
             jPanelCont.setLayout(new BorderLayout());
 
-            //======== jPanelInfo ========
-            {
-                jPanelInfo.setLayout(new BorderLayout());
-            }
-            jPanelCont.add(jPanelInfo, BorderLayout.PAGE_END);
-
             //======== jTabbedPane ========
             {
                 jTabbedPane.setBorder(new EmptyBorder(5, 1, 1, 1));
@@ -1109,7 +1102,7 @@ public class MediathekGui extends JFrame {
             contentPaneLayout.createParallelGroup()
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(6, 6, 6)
-                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -1124,7 +1117,7 @@ public class MediathekGui extends JFrame {
     private JMenu jMenuAbos;
     private JMenu jMenuAnsicht;
     protected JMenu jMenuHilfe;
-    private JPanel jPanelInfo;
+    private JPanel jPanelCont;
     private JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 }

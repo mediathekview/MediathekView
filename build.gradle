@@ -60,7 +60,7 @@ repositories {
 
 dependencies {
     compile ":jide-oss:3.7.4"
-    compile 'org.apache.commons:commons-lang3:3.7'
+    compile 'org.apache.commons:commons-lang3:3.8.1'
     compile 'com.google.guava:guava:26.0-jre'
     compile 'org.apache.commons:commons-compress:1.17'
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
