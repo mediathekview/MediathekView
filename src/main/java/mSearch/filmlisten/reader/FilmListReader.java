@@ -37,16 +37,14 @@ import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tukaani.xz.XZInputStream;
 
 import javax.swing.event.EventListenerList;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -363,7 +361,8 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
             try (FileInputStream fis = new FileInputStream(source);
-                 InputStream input = new ProgressMonitorInputStream(fis, fileSize, monitor);
+                 BufferedInputStream bis = new BufferedInputStream(fis, (int)(64 * FileUtils.ONE_KB));
+                 InputStream input = new ProgressMonitorInputStream(bis, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
                  JsonParser jp = new JsonFactory().createParser(in)) {
                 readData(jp, listeFilme);
