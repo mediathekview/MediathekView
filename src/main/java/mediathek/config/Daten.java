@@ -29,6 +29,7 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.gui.SplashScreenManager;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
@@ -304,6 +305,8 @@ public class Daten {
             MediathekGui.ui().updateSplashScreenText(text);
         }
     }
+
+    public static final SplashScreenManager splashScreenManager = new SplashScreenManager();
 
     public boolean allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");

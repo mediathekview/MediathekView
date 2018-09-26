@@ -83,7 +83,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mSearch.tool.Functions.getOs;
-import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
@@ -159,18 +158,13 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         super();
-        getContentPane().setLayout(new BorderLayout());
+        splashScreenManager = Daten.splashScreenManager;
+        splashScreenManager.updateSplashScreenText("Hauptfenster laden...");
 
+        getContentPane().setLayout(new BorderLayout());
         ui = this;
 
         setIconAndWindowImage();
-
-        setupShutdownCommand();
-
-        splashScreenManager = new SplashScreenManager();
-        splashScreenManager.initializeSplashScreen();
-
-        splashScreenManager.updateSplashScreenText("Anwendungsdaten laden...");
 
         createMenuBar();
 
@@ -178,22 +172,24 @@ public class MediathekGui extends JFrame {
 
         remapF10Key();
 
+        splashScreenManager.updateSplashScreenText("Anwendungsdaten laden...");
         daten = Daten.getInstance();
-
-        startMeldungen();
 
         loadDaten();
 
         createStatusBar();
 
+        splashScreenManager.updateSplashScreenText("Filminfo-Dialog laden...");
         createFilmInformationHUD();
 
         setLookAndFeel();
 
         setupFilmListListener();
 
+        splashScreenManager.updateSplashScreenText("Tabs laden...");
         initTabs();
 
+        splashScreenManager.updateSplashScreenText("Menüs initialisieren...");
         initMenus();
 
         initWindowListener();
@@ -202,6 +198,7 @@ public class MediathekGui extends JFrame {
 
         setSize();
 
+        splashScreenManager.updateSplashScreenText("Einstellungsdialog laden...");
         initializeSettingsDialog();
 
         addListener();
@@ -211,10 +208,12 @@ public class MediathekGui extends JFrame {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
 
-        setFocusOnSearchField();
+//        setFocusOnSearchField();
 
+        splashScreenManager.updateSplashScreenText("Speichermonitor laden...");
         createMemoryMonitor();
 
+        splashScreenManager.updateSplashScreenText("Bandbreitendialog laden...");
         bandwidthMonitor = new BandwidthMonitorController(this);
 
         splashScreenManager.closeSplashScreen();
@@ -227,6 +226,8 @@ public class MediathekGui extends JFrame {
             window.show();
             window.setMaximized(true);
         });*/
+
+        setupShutdownCommand();
 
         loadFilmlist();
     }

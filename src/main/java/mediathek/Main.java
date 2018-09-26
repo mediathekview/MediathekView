@@ -252,12 +252,16 @@ public class Main {
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
+            Daten.splashScreenManager.initializeSplashScreen();
+            Daten.splashScreenManager.updateSplashScreenText("Init JavaFX");
+
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
             if (SystemUtils.IS_OS_MAC_OSX) {
                 checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+                Daten.splashScreenManager.updateSplashScreenText("Dateien aufräumen");
                 cleanupOsxFiles();
             }
 
@@ -266,6 +270,9 @@ public class Main {
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
             }
 
+            startMeldungen();
+
+            Daten.splashScreenManager.updateSplashScreenText("UI starten...");
             getPlatformWindow().setVisible(true);
         });
     }
