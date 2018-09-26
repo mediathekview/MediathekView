@@ -1,7 +1,6 @@
 package mediathek.javafx;
 
 import javafx.concurrent.Task;
-import mSearch.daten.DatenFilm;
 import mSearch.filmlisten.reader.FilmListReader;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -26,10 +25,6 @@ public class FilmListReaderTask extends Task<Void> {
     @Override
     protected Void call() {
         daten.getMessageBus().publishAsync(new FilmListReadStartEvent());
-        updateMessage("Initialisiere Datenbank");
-        DatenFilm.Database.initializeDatabase();
-
-
 
         updateProgress(-1, 4);
         updateMessage("Lese Filmliste");

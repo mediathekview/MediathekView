@@ -104,6 +104,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         COLUMN_NAMES[FILM_DATUM_LONG] = "DatumL";
     }
 
+    static {
+        Database.initializeDatabase();
+    }
+
     /**
      * The magic arr array.
      * Here all the film information with some minor exceptions.
@@ -506,7 +510,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             logger.debug("Finished creating SQL indices");
         }
 
-        public static void initializeDatabase() {
+        private static void initializeDatabase() {
             logger.debug("initializeDatabase()");
             SqlClosure.sqlExecute(connection -> {
                 Statement statement = connection.createStatement();
