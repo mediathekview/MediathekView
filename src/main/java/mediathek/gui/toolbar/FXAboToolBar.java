@@ -9,6 +9,7 @@ import javafx.scene.layout.Region;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
+import mediathek.javafx.VerticalSeparator;
 import mediathek.javafx.tool.FilterButton;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -50,10 +51,17 @@ public class FXAboToolBar extends ToolBar {
             Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, FXAboToolBar.class.getName());
         }));
 
+        Button btnNewAbo = new Button("",fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
+        btnNewAbo.setTooltip(new Tooltip("Abo anlegen"));
+        btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::neu));
+
         getItems().addAll(btnOn,
                 btnOff,
-                btnDelete,
+                new VerticalSeparator(),
+                btnNewAbo,
                 btnEdit,
+                btnDelete,
+                new VerticalSeparator(),
                 spacer,
                 btnShowFilter);
     }
