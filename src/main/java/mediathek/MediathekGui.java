@@ -205,7 +205,7 @@ public class MediathekGui extends JFrame {
         initializeSettingsDialog();
 
         addListener();
-
+        
         setupSearchKeyForMac();
 
         //register message bus handler
