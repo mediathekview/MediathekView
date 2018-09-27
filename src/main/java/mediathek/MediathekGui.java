@@ -182,8 +182,6 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILMINFO_DIALOG);
         createFilmInformationHUD();
 
-        setLookAndFeel();
-
         setupFilmListListener();
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_TABS);
@@ -229,6 +227,8 @@ public class MediathekGui extends JFrame {
         });*/
 
         setupShutdownCommand();
+
+        setLookAndFeel();
 
         loadFilmlist();
     }
@@ -451,6 +451,9 @@ public class MediathekGui extends JFrame {
      * error it will always reset to system LAF.
      */
     private void setLookAndFeel() {
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return; //don´t set L&F for macOS
+
         try {
             String laf = MVConfig.get(MVConfig.Configs.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF

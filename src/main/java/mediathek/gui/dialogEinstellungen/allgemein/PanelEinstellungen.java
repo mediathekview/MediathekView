@@ -213,6 +213,12 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void setupLookAndFeelComboBox() {
+        //do not change L&F on macOS
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            jComboBoxLookAndFeel.setEnabled(false);
+            return;
+        }
+
         try {
             //query all installed LAFs
             final UIManager.LookAndFeelInfo info[];
