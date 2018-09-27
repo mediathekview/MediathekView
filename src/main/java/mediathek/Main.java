@@ -34,6 +34,7 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.UIProgressState;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -160,6 +161,8 @@ public class Main {
         checkMemoryRequirements();
         checkForJavaFX();
 
+        Daten.splashScreenManager.initializeSplashScreen();
+
         IconFontSwing.register(FontAwesome.getIconFont());
 
         installSingleInstanceHandler();
@@ -252,16 +255,15 @@ public class Main {
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
-            Daten.splashScreenManager.initializeSplashScreen();
-            Daten.splashScreenManager.updateSplashScreenText("Init JavaFX");
+            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
 
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
+            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
             if (SystemUtils.IS_OS_MAC_OSX) {
                 checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
-                Daten.splashScreenManager.updateSplashScreenText("Dateien aufräumen");
                 cleanupOsxFiles();
             }
 
@@ -272,7 +274,7 @@ public class Main {
 
             startMeldungen();
 
-            Daten.splashScreenManager.updateSplashScreenText("UI starten...");
+            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
         });
     }
