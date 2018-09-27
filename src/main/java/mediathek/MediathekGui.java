@@ -159,7 +159,7 @@ public class MediathekGui extends JFrame {
     public MediathekGui() {
         super();
         splashScreenManager = Daten.splashScreenManager;
-        splashScreenManager.updateSplashScreenText("Hauptfenster laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
 
         getContentPane().setLayout(new BorderLayout());
         ui = this;
@@ -172,24 +172,24 @@ public class MediathekGui extends JFrame {
 
         remapF10Key();
 
-        splashScreenManager.updateSplashScreenText("Anwendungsdaten laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_APP_DATA);
         daten = Daten.getInstance();
 
         loadDaten();
 
         createStatusBar();
 
-        splashScreenManager.updateSplashScreenText("Filminfo-Dialog laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILMINFO_DIALOG);
         createFilmInformationHUD();
 
         setLookAndFeel();
 
         setupFilmListListener();
 
-        splashScreenManager.updateSplashScreenText("Tabs laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_TABS);
         initTabs();
 
-        splashScreenManager.updateSplashScreenText("Menüs initialisieren...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.INIT_MENUS);
         initMenus();
 
         initWindowListener();
@@ -198,11 +198,11 @@ public class MediathekGui extends JFrame {
 
         setSize();
 
-        splashScreenManager.updateSplashScreenText("Einstellungsdialog laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_SETTINGS_DIALOG);
         initializeSettingsDialog();
 
         addListener();
-        
+
         setupSearchKeyForMac();
 
         //register message bus handler
@@ -210,12 +210,13 @@ public class MediathekGui extends JFrame {
 
 //        setFocusOnSearchField();
 
-        splashScreenManager.updateSplashScreenText("Speichermonitor laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEMORY_MONITOR);
         createMemoryMonitor();
 
-        splashScreenManager.updateSplashScreenText("Bandbreitendialog laden...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_BANDWIDTH_MONITOR);
         bandwidthMonitor = new BandwidthMonitorController(this);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
         splashScreenManager.closeSplashScreen();
 
         if (!SystemUtils.IS_OS_WINDOWS)
@@ -241,13 +242,13 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
+    public SplashScreenManager getSplashScreenManager() {
+        return splashScreenManager;
+    }
+
     private void setIconAndWindowImage() {
         setWindowTitle();
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
-    }
-
-    public void updateSplashScreenText(final String aSplashScreenText) {
-        splashScreenManager.updateSplashScreenText(aSplashScreenText);
     }
 
     public void closeSplashScreen() {
@@ -365,7 +366,7 @@ public class MediathekGui extends JFrame {
     private void loadDaten() {
         if (daten.allesLaden()) {
             // alles geladen
-            splashScreenManager.updateSplashScreenText("GUI Initialisieren...");
+            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_UI);
         } else {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!

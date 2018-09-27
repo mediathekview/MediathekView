@@ -1,13 +1,24 @@
 package mediathek.gui;
 
+import mediathek.tool.UIProgressState;
+
 import java.awt.*;
+import java.util.EnumSet;
 
 /**
  * A class to manage the splash screen.
  */
 @SuppressWarnings("serial")
-public class SplashScreenManager
-{
+public class SplashScreenManager {
+    /**
+     * the maximum number of steps used for progress bar calculation.
+     */
+    private final int MAXIMUM_STEPS;
+
+    public SplashScreenManager() {
+        final var set = EnumSet.allOf(UIProgressState.class);
+        MAXIMUM_STEPS = set.size() - 1;
+    }
     /**
      * The JVM {@link java.awt.SplashScreen} storage
      */
@@ -22,18 +33,17 @@ public class SplashScreenManager
     private int splashScreenProgress = 0;
 
     /**
-     * the maximum number of steps used for progress bar calculation.
-     */
-    private final static int MAXIMUM_STEPS = 12;
-
-    /**
      * wegen der möglichen Abfrage: "Backup laden.."
      */
     public void closeSplashScreen() {
         splashScreenContext = null;
     }
 
-    public void updateSplashScreenText(final String text) {
+    public void updateSplashScreenText(UIProgressState state) {
+        updateSplashScreenText(state.toString());
+    }
+
+    private void updateSplashScreenText(final String text) {
         //bail out when we don´ have a splash screen...
         if (splashScreenContext == null) {
             return;

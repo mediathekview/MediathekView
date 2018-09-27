@@ -453,7 +453,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                 final long l = Long.parseLong(arr[DatenFilm.FILM_DATUM_LONG]);
                 datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.error("Datum: {}, Zeit: {}, Datum_LONG: {}", arr[DatenFilm.FILM_DATUM], arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
+                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", arr[DatenFilm.FILM_DATUM], arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
                 datumFilm = new DatumFilm(0);
                 arr[DatenFilm.FILM_DATUM] = "";
                 arr[DatenFilm.FILM_ZEIT] = "";

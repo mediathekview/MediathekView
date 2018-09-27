@@ -36,6 +36,7 @@ import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.UIProgressState;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -257,27 +258,20 @@ public class Daten {
         filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
 
-        updateSplashScreen("Lade Sender Icons...");
         loadSenderIcons();
 
-        updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
 
-        updateSplashScreen("Lade Programmsets...");
         listePset = new ListePset();
 
-        updateSplashScreen("Lade Abos...");
         listeAbo = new ListeAbo(this);
 
-        updateSplashScreen("Lade Downloads...");
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        updateSplashScreen("Lade erledigte Abos...");
         erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
 
-        updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
         listeMediaDB = new ListeMediaDB(this);
@@ -295,21 +289,12 @@ public class Daten {
         timer.start();
     }
 
-    /**
-     * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
-     *
-     * @param text The displayed text on the splash graphics.
-     */
-    private void updateSplashScreen(String text) {
-        if (MediathekGui.ui() != null) {
-            MediathekGui.ui().updateSplashScreenText(text);
-        }
-    }
-
     public static final SplashScreenManager splashScreenManager = new SplashScreenManager();
 
     public boolean allesLaden() {
-        updateSplashScreen("Lade Konfigurationsdaten...");
+        if (MediathekGui.ui() != null) {
+            MediathekGui.ui().getSplashScreenManager().updateSplashScreenText(UIProgressState.LOAD_CONFIG);
+        }
 
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");
@@ -320,8 +305,6 @@ public class Daten {
         logger.info("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
 
-        // erst die Systemdaten, dann die Filmliste
-        updateSplashScreen("Lade Filmliste...");
         return true;
     }
 
