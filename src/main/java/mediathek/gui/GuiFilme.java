@@ -235,8 +235,6 @@ public class GuiFilme extends JPanel {
      */
     private final JFXPanel fxPanel = new JFXPanel();
 
-    private DescriptionPanelController descriptionPanelController;
-
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
             try {
@@ -246,7 +244,7 @@ public class GuiFilme extends JPanel {
                 loader.setLocation(url);
 
                 TabPane descriptionPane = loader.load();
-                descriptionPanelController = loader.getController();
+                final DescriptionPanelController descriptionPanelController = loader.getController();
                 descriptionPanelController.setOnCloseRequest(e -> {
                     SwingUtilities.invokeLater(() -> jPanelBeschreibung.setVisible(false));
                     e.consume();
