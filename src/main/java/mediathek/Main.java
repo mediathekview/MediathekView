@@ -143,8 +143,9 @@ public class Main {
      * Due to a controlsfx bug no notifications on windows
      */
     private static void disableNotifications() {
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,false);
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, false);
     }
+
     /**
      * @param args the command line arguments
      */
@@ -179,18 +180,15 @@ public class Main {
      * This ID will be used by the server-side load balancer to prevent throttling of legitimate
      * MediathekView users. We have black sheeps who downloads lists REALLY often :(
      * It is not intented to track user behaviour!
+     * Calculate and store ID until next restart of the application.
      */
     private static void generateAntiThrottlingId() {
-            //Test if we already have an id
-            String id = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID,null);
-            if (id == null) {
-                //generate one that can´t be reconstructed
-                final HashCode hc = Hashing.murmur3_128().newHasher()
-                        .putString(UUID.randomUUID().toString(), StandardCharsets.UTF_8)
-                        .hash();
+        //generate one that can´t be reconstructed
+        final HashCode hc = Hashing.murmur3_128().newHasher()
+                .putString(UUID.randomUUID().toString(), StandardCharsets.UTF_8)
+                .hash();
 
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID,hc.toString());
-            }
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID, hc.toString());
     }
 
     private static void installSingleInstanceHandler() {
