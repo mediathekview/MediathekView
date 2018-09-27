@@ -353,7 +353,6 @@ public class GuiDownloads extends JPanel {
         menu.add(miShutdownAfterDownload);
     }
 
-    private DescriptionPanelController descriptionPanelController;
 
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
@@ -364,7 +363,7 @@ public class GuiDownloads extends JPanel {
                 loader.setLocation(url);
 
                 TabPane descriptionPane = loader.load();
-                descriptionPanelController = loader.getController();
+                final DescriptionPanelController descriptionPanelController = loader.getController();
                 descriptionPanelController.setOnCloseRequest(e -> {
                     SwingUtilities.invokeLater(() -> jPanelBeschreibung.setVisible(false));
                     e.consume();
