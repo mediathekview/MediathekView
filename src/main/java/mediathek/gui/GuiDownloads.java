@@ -312,7 +312,7 @@ public class GuiDownloads extends JPanel {
         JMenuItem miShutdownAfterDownload = new JMenuItem("Rechner nach Downloads herunterfahren");
         miShutdownAfterDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
         miShutdownAfterDownload.addActionListener(e -> {
-            if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
+            if (daten.getListeDownloads().unfinishedDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
                 MediathekGui.ui().beenden(true, false);
             } else {

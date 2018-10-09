@@ -267,7 +267,7 @@ public class DialogBeendenZeit extends JDialog {
                 progressPanel.setMessage("Warte auf Abschluss der Downloads...");
                 DatenDownload.startenDownloads(daten, listeDownloadsStarten);
 
-                while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {
+                while ((Daten.getInstance().getListeDownloads().unfinishedDownloads() > 0) && !isCancelled()) {
                     TimeUnit.SECONDS.sleep(1);
                 }
 
