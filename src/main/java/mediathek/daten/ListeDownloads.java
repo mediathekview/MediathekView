@@ -140,15 +140,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
-    public synchronized int nochNichtFertigeDownloads() {
-        // es wird nach noch nicht fertigen gestarteten Downloads gesucht
-        int ret = 0;
-        for (DatenDownload download : this) {
-            if (download.runNotFinished()) {
-                ++ret;
-            }
-        }
-        return ret;
+    /**
+     * Get the number of unfinished download tasks.
+     * @return number of unfinished tasks
+     */
+    public synchronized long unfinishedDownloads() {
+        return stream().filter(DatenDownload::runNotFinished).count();
     }
 
     public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download) {

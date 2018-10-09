@@ -31,6 +31,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class DialogBeenden extends JDialog {
@@ -214,9 +215,8 @@ public class DialogBeenden extends JDialog {
         downloadMonitorWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {
-                    Thread.sleep(1000);
-                }
+                while ((Daten.getInstance().getListeDownloads().unfinishedDownloads() > 0) && !isCancelled())
+                    TimeUnit.SECONDS.sleep(1);
 
                 return null;
             }
