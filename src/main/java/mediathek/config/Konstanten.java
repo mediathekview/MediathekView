@@ -22,7 +22,7 @@ package mediathek.config;
 import mSearch.tool.Version;
 
 public class Konstanten {
-    public static final String ROUTER_BASE_ADDRESS = "https://rtr.mdthk.de/";
+    public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekview.de/";
     public static final String SERVER_ANTI_THROTTLING_HEADER = "MV-AntiThrottlingID";
 
     public static final Version MVVERSION = new Version(13, 3, 0);
