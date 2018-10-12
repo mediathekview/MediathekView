@@ -3,7 +3,9 @@ package mediathek;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -76,27 +78,22 @@ public class MainWindow extends Stage {
     }
 
     private Node createContentPane() {
-        TabPane tabPane = new TabPane();
-        Tab filmeTab = new Tab("Filme");
-        filmeTab.setClosable(false);
-        final SwingNode filmeSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> filmeSwingNode.setContent(new GuiFilme(Daten.getInstance(), MediathekGui.ui())));
-        filmeTab.setContent(filmeSwingNode);
 
-        Tab downloadsTab = new Tab("Downloads");
-        final SwingNode downloadsSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> downloadsSwingNode.setContent(new GuiDownloads(Daten.getInstance(), MediathekGui.ui())));
-        downloadsTab.setContent(downloadsSwingNode);
-        downloadsTab.setClosable(false);
+        SwingNode tabNode = new SwingNode();
+        SwingUtilities.invokeLater(() -> {
+            JTabbedPane tabbedPane = new JTabbedPane();
+            GuiDownloads tabDownloads = new GuiDownloads(Daten.getInstance(), MediathekGui.ui());
+            GuiAbo tabAbos = new GuiAbo(Daten.getInstance(), MediathekGui.ui());
+            GuiFilme tabFilme = new GuiFilme(Daten.getInstance(), MediathekGui.ui());
 
-        Tab aboTab = new Tab("Abos");
-        final SwingNode aboSwingNode = new SwingNode();
-        SwingUtilities.invokeLater(() -> aboSwingNode.setContent(new GuiAbo(Daten.getInstance(), MediathekGui.ui())));
-        aboTab.setClosable(false);
-        aboTab.setContent(aboSwingNode);
+            tabbedPane.addTab(GuiFilme.NAME, tabFilme);
+            tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
+            tabbedPane.addTab(GuiAbo.NAME, tabAbos);
+            tabbedPane.setSelectedIndex(0);
 
-        tabPane.getTabs().addAll(filmeTab, downloadsTab, aboTab);
+            tabNode.setContent(tabbedPane);
+        });
 
-        return tabPane;
+        return tabNode;
     }
 }
