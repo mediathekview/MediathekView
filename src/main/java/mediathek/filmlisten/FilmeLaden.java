@@ -154,6 +154,8 @@ public class FilmeLaden {
 
         } catch (IOException ex) {
             logger.error("IOxception:", ex);
+            Platform.runLater(() ->
+                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE, "Netzwerkfehler aufgetreten!", ex));
         } catch (Exception ex) {
             logger.error("check for filmliste.id failed", ex);
             if (showDialogs)
