@@ -280,7 +280,7 @@ public class FilmListReader implements AutoCloseable {
                 parseGeo(jp, datenFilm);
                 parseNeu(jp, datenFilm);
 
-                listeFilme.importFilmliste(datenFilm);
+                listeFilme.addAndInitialize(datenFilm);
 
                 if (milliseconds > 0) {
                     // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
