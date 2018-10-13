@@ -328,24 +328,25 @@ public class MediathekGui extends JFrame {
      */
     private void loadFilmlist() {
         Platform.runLater(() -> {
-            FXProgressPane hb = new FXProgressPane();
+            FXProgressPane progressPane = new FXProgressPane();
+
             FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
             filmListReaderTask.setOnRunning(e -> {
-                getStatusBarController().getStatusBar().getRightItems().add(hb);
-                hb.lb.textProperty().bind(filmListReaderTask.messageProperty());
-                hb.prog.progressProperty().bind(filmListReaderTask.progressProperty());
+                getStatusBarController().getStatusBar().getRightItems().add(progressPane);
+                progressPane.bindTask(filmListReaderTask);
             });
+
+            FilmListNetworkReaderTask networkTask = new FilmListNetworkReaderTask();
+            networkTask.setOnRunning(e -> progressPane.bindTask(networkTask));
 
             FilmListFilterTask filterTask = new FilmListFilterTask(true);
-            filterTask.setOnRunning(e -> {
-                hb.lb.textProperty().bind(filterTask.messageProperty());
-                hb.prog.progressProperty().bind(filterTask.progressProperty());
-            });
-            filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
-            filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
+            filterTask.setOnRunning(e -> progressPane.bindTask(filterTask));
+            filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane));
+            filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane));
 
-            CompletableFuture<Void> loaderTask = CompletableFuture.runAsync(filmListReaderTask);
-            loaderTask.thenRun(filterTask);
+            CompletableFuture.runAsync(filmListReaderTask)
+                    .thenRun(networkTask)
+                    .thenRun(filterTask);
         });
     }
 

@@ -1,5 +1,6 @@
 package mediathek.javafx.tool;
 
+import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -15,12 +16,17 @@ public class FXProgressPane extends HBox {
         super();
         setSpacing(4d);
 
-        lb = new Label("");
+        lb = new Label();
         prog = new ProgressBar();
         prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
 
         getChildren().addAll(new VerticalSeparator(),
                 new CenteredBorderPane(lb),
                 new CenteredBorderPane(prog));
+    }
+
+    public void bindTask(Task task) {
+        lb.textProperty().bind(task.messageProperty());
+        prog.progressProperty().bind(task.progressProperty());
     }
 }
