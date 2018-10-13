@@ -63,10 +63,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return senderList;
     }
 
-    public synchronized void importFilmliste(DatenFilm film) {
-        addInit(film);
-    }
-
     /**
      * Search all themas within list based on sender.
      * If sender is empty, return full list of themas.
@@ -115,7 +111,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 }
             }
 
-            listeEinsortieren.forEach(this::addInit);
+            listeEinsortieren.forEach(this::addAndInitialize);
         } else {
             // ==============================================
             this.forEach(f -> addHash(f, hash, index));
@@ -123,17 +119,17 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             for (DatenFilm f : listeEinsortieren) {
                 if (index) {
                     if (!hash.contains(f.getIndex())) {
-                        addInit(f);
+                        addAndInitialize(f);
                     }
                 } else if (!hash.contains(f.getUrl())) {
-                    addInit(f);
+                    addAndInitialize(f);
                 }
             }
         }
         hash.clear();
     }
 
-    private void addInit(DatenFilm film) {
+    public synchronized void addAndInitialize(DatenFilm film) {
         film.init();
         add(film);
     }
