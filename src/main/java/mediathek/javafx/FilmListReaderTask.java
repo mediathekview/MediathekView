@@ -5,8 +5,6 @@ import mSearch.filmlisten.reader.FilmListReader;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListReadStartEvent;
-import mediathek.tool.FilmListUpdateType;
-import mediathek.tool.GuiFunktionen;
 
 public class FilmListReaderTask extends Task<Void> {
     private final Daten daten;
@@ -16,23 +14,14 @@ public class FilmListReaderTask extends Task<Void> {
         daten = Daten.getInstance();
     }
 
-    private void readLocalFilmList() {
-        try (FilmListReader reader = new FilmListReader()) {
-            reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-        }
-    }
-
     @Override
     protected Void call() {
         daten.getMessageBus().publishAsync(new FilmListReadStartEvent());
 
         updateProgress(-1, 4);
-        updateMessage("Lese Filmliste");
-        readLocalFilmList();
-
-        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
-            updateMessage("Lese Filmliste Netzwerk");
-            daten.getFilmeLaden().loadFilmlist("", true);
+        updateMessage("Lese lokale Filmliste");
+        try (FilmListReader reader = new FilmListReader()) {
+            reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
 
         return null;
