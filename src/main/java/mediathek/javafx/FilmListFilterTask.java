@@ -20,27 +20,27 @@ public class FilmListFilterTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        logger.debug("FilmListFilterTask started");
+        logger.trace("FilmListFilterTask started");
 
         if (submitEvent)
             daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
         //SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false)));
 
-        updateMessage("FLLT Themen suchen");
+        updateMessage("Themen suchen");
         updateProgress(-1, 4);
         daten.getListeFilme().fillSenderList();
 
-        updateMessage("FLLT Abos eintragen");
+        updateMessage("Abos eintragen");
         updateProgress(-1, 4);
         daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false);
 
-        updateMessage("FLLT Blacklist filtern");
+        updateMessage("Blacklist filtern");
         updateProgress(-1, 4);
         daten.getListeBlacklist().filterListe();
 
         SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false)));
 
-        logger.debug("FilmListFilterTask finished");
+        logger.trace("FilmListFilterTask finished");
         return null;
     }
 }
