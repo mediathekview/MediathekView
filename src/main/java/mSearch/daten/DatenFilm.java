@@ -145,6 +145,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Flag indicating a trailer, teaser or german Vorschau.
      */
     private boolean isTrailerTeaser = false;
+    private String websiteLink = null;
+    private String description = null;
 
     public DatenFilm() {
         setupArr();
@@ -157,13 +159,15 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void writeFilmNumberToDatabase() {
-        SqlClosure.sqlExecute(connection -> {
-            PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)");
-            insertStatement.setInt(1, databaseFilmNumber);
-            insertStatement.executeUpdate();
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            SqlClosure.sqlExecute(connection -> {
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)");
+                insertStatement.setInt(1, databaseFilmNumber);
+                insertStatement.executeUpdate();
 
-            return null;
-        });
+                return null;
+            });
+        }
     }
 
     public boolean isTrailerTeaser() {
@@ -202,14 +206,15 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void setupDatabaseCleanup() {
-        final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
-        if (useCleaner)
-            installCleanupTask();
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
+            if (useCleaner)
+                installCleanupTask();
+        }
     }
 
     private void installCleanupTask() {
         DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
-
         cleaner = Daten.getInstance().getCleaner().register(this, task);
     }
 
@@ -272,13 +277,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * @return the film description.
      */
     public String getDescription() {
-        return SqlClosure.sqlExecute(connection -> {
-            PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?");
-            statement.setLong(1, databaseFilmNumber);
-            ResultSet rs = statement.executeQuery();
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            return SqlClosure.sqlExecute(connection -> {
+                PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?");
+                statement.setLong(1, databaseFilmNumber);
+                ResultSet rs = statement.executeQuery();
 
-            return (rs.next() ? rs.getString(1) : "");
-        });
+                return (rs.next() ? rs.getString(1) : "");
+            });
+        } else {
+            return description != null ? description : "";
+        }
     }
 
     /**
@@ -289,36 +298,46 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     public void setDescription(final String desc) {
         if (desc != null && !desc.isEmpty()) {
-            SqlClosure.sqlExecute(connection -> {
-                PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)");
-                mergeStatement.setInt(1, databaseFilmNumber);
-                mergeStatement.setString(2, desc);
-                mergeStatement.executeUpdate();
+            if (MemoryUtils.isLowMemoryEnvironment()) {
+                SqlClosure.sqlExecute(connection -> {
+                    PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)");
+                    mergeStatement.setInt(1, databaseFilmNumber);
+                    mergeStatement.setString(2, desc);
+                    mergeStatement.executeUpdate();
 
-                return null;
-            });
+                    return null;
+                });
+            } else
+                description = desc;
         }
     }
 
     public String getWebsiteLink() {
-        return SqlClosure.sqlExecute(connection -> {
-            PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?");
-            statement.setLong(1, databaseFilmNumber);
-            ResultSet rs = statement.executeQuery();
-            return (rs.next() ? rs.getString(1) : "");
-        });
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            return SqlClosure.sqlExecute(connection -> {
+                PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?");
+                statement.setLong(1, databaseFilmNumber);
+                ResultSet rs = statement.executeQuery();
+                return (rs.next() ? rs.getString(1) : "");
+            });
+        } else
+            return websiteLink != null ? websiteLink : "";
     }
 
     public void setWebsiteLink(String link) {
         if (link != null && !link.isEmpty()) {
-            SqlClosure.sqlExecute(connection -> {
-                PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
-                mergeStatement.setInt(1, databaseFilmNumber);
-                mergeStatement.setString(2, link);
-                mergeStatement.executeUpdate();
+            if (MemoryUtils.isLowMemoryEnvironment()) {
+                SqlClosure.sqlExecute(connection -> {
+                    PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
+                    mergeStatement.setInt(1, databaseFilmNumber);
+                    mergeStatement.setString(2, link);
+                    mergeStatement.executeUpdate();
 
-                return null;
-            });
+                    return null;
+                });
+            } else {
+                websiteLink = link;
+            }
         }
     }
 
@@ -498,16 +517,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
         public static void createIndices() {
-            logger.debug("Creating SQL indices");
-            SqlClosure.sqlExecute(connection -> {
-                Statement statement = connection.createStatement();
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
+            if (MemoryUtils.isLowMemoryEnvironment()) {
+                logger.trace("Creating SQL indices");
+                SqlClosure.sqlExecute(connection -> {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
+                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
+                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
 
-                return null;
-            });
-            logger.debug("Finished creating SQL indices");
+                    return null;
+                });
+                logger.trace("Finished creating SQL indices");
+            }
         }
 
         private static void initializeDatabase() {
