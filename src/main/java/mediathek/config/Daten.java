@@ -270,9 +270,9 @@ public class Daten {
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
+        erledigteAbos = new MVUsedUrls("downloadAbos.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
 
-        history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
+        history = new MVUsedUrls("history.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();

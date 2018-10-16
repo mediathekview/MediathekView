@@ -20,6 +20,7 @@
 package mediathek.config;
 
 import mSearch.tool.Version;
+import org.apache.commons.io.FileUtils;
 
 public class Konstanten {
     public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekview.de/";
@@ -29,13 +30,11 @@ public class Konstanten {
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
-    public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
-    public static final String FILE_HISTORY = "history.txt";
     public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     // MediathekView URLs
     public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
-    public static final String ADRESSE_DOWNLAD = "https://mediathekview.de/download/";
+    public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";
     public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
     public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/faq/";
     public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen11/programmgruppen.xml";
@@ -48,8 +47,10 @@ public class Konstanten {
     public static final String JSON_DATEI_FILME = "filme.json";
     public final static String SHUTDOWN_LINUX = "shutdown -h now";
 
-    // 
-    public static final int MIN_DATEI_GROESSE_FILM = 256 * 1000; //minimale Größe (256 kB) eines Films um nicht als Fehler zu gelten
+    /**
+     * Minimum file size which won´t be regarded as an error.
+     */
+    public static final long MIN_FILM_FILE_SIZE_KB = 256 * FileUtils.ONE_KB;
     public static final String XML_START = "Mediathek";
     public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
