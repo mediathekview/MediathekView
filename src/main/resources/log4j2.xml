@@ -21,8 +21,9 @@
 
     <Loggers>
         <Root level="trace">
-            <AppenderRef ref="console" level="info"></AppenderRef>
+            <AppenderRef ref="console" level="trace"></AppenderRef>
             <AppenderRef ref="Async"></AppenderRef>
         </Root>
+        <Logger name="hsqldb.db" level="warn"></Logger>
     </Loggers>
 </Configuration>
