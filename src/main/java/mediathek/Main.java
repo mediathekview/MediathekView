@@ -29,6 +29,7 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.daten.PooledDatabaseConnection;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
+import mSearch.tool.MemoryUtils;
 import mSearch.tool.SingleInstance;
 import mediathek.config.Config;
 import mediathek.config.Daten;
@@ -157,7 +158,8 @@ public class Main {
 
         setupPortableMode(args);
 
-        setupDatabase();
+        if (MemoryUtils.isLowMemoryEnvironment())
+            setupDatabase();
 
         checkMemoryRequirements();
         checkForJavaFX();
