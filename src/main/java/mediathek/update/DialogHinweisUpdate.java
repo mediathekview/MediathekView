@@ -47,7 +47,7 @@ public class DialogHinweisUpdate extends JDialog {
 
         btnWebsite.addActionListener(e -> {
             try {
-                UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLOAD);
+                UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLAD);
             } catch (URISyntaxException ex) {
                 logger.error(ex);
             }
