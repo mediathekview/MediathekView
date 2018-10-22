@@ -70,7 +70,7 @@ public class MVConfig {
         logger.debug("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
         logger.debug("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         logger.debug("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
-        logger.debug("Downloadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
+        logger.debug("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
         logger.debug("=======================================");
     }
