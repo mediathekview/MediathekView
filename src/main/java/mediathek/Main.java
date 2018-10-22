@@ -158,11 +158,11 @@ public class Main {
 
         setupPortableMode(args);
 
-        if (MemoryUtils.isLowMemoryEnvironment())
-            setupDatabase();
-
         checkMemoryRequirements();
         checkForJavaFX();
+
+        if (MemoryUtils.isLowMemoryEnvironment())
+            setupDatabase();
 
         Daten.splashScreenManager.initializeSplashScreen();
 
