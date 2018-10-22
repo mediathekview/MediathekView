@@ -35,6 +35,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class MVUsedUrls {
 
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
     private final HashSet<String> listeUrls;
     private final LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
@@ -207,7 +208,7 @@ public class MVUsedUrls {
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
         String text;
-        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String datum = SDF.format(new Date());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
@@ -225,7 +226,7 @@ public class MVUsedUrls {
 
     public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
         String text;
-        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String datum = SDF.format(new Date());
 
         try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
