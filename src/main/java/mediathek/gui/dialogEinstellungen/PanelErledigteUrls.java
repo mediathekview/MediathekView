@@ -41,11 +41,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class PanelErledigteUrls extends PanelVorlage {
@@ -158,14 +159,17 @@ public class PanelErledigteUrls extends PanelVorlage {
         }
 
         private void exportListe() {
-            LinkedList<MVUsedUrl> liste;
+            List<MVUsedUrl> liste;
             if (abo) {
-                liste = daten.erledigteAbos.getSortList();
+                liste = daten.erledigteAbos.getSortedList();
             } else {
-                liste = daten.history.getSortList();
+                liste = daten.history.getSortedList();
             }
+
             Path logFilePath = Paths.get(ziel);
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            try (OutputStream os = Files.newOutputStream(logFilePath);
+                 OutputStreamWriter osw = new OutputStreamWriter(os);
+                 BufferedWriter bw = new BufferedWriter(osw)) {
                 bw.newLine();
                 bw.write(MVUsedUrl.getHeaderString());
                 bw.newLine();
@@ -175,13 +179,131 @@ public class PanelErledigteUrls extends PanelVorlage {
                     bw.newLine();
                 }
                 bw.newLine();
-                //
+
                 bw.flush();
             } catch (Exception ex) {
                 SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                         "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
             } finally {
                 mVRun.dispose();
+            }
+        }
+    }
+
+    class BeobMausTabelle extends MouseAdapter {
+
+        //rechhte Maustaste in der Tabelle
+        BeobLoeschen beobLoeschen = new BeobLoeschen();
+        BeobUrl beobUrl = new BeobUrl();
+        private Point p;
+        DatenFilm film;
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            p = evt.getPoint();
+            int nr = jTable1.rowAtPoint(p);
+            if (nr >= 0) {
+                jTable1.setRowSelectionInterval(nr, nr);
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
+                film = daten.getListeFilme().getFilmByUrl(url);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            //löschen
+            JMenuItem item = new JMenuItem("Url aus der Liste löschen");
+            item.addActionListener(beobLoeschen);
+            jPopupMenu.add(item);
+            //Url
+            item = new JMenuItem("URL kopieren");
+            item.addActionListener(beobUrl);
+            jPopupMenu.add(item);
+            // Infos anzeigen
+            item = new JMenuItem("Infos zum Film anzeigen");
+            item.addActionListener(new BeobInfo());
+            jPopupMenu.add(item);
+            if (film == null) {
+                item.setEnabled(false);
+            }
+            // Download anlegen
+            item = new JMenuItem("Download noch einmal anlegen");
+            item.addActionListener(new BeobDownload());
+            jPopupMenu.add(item);
+            if (film == null) {
+                item.setEnabled(false);
+            }
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        class BeobDownload implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
+                if (datenDownload != null) {
+                    int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
+                            + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
+                    if (ret != JOptionPane.OK_OPTION) {
+                        return;
+                    }
+                }
+                // weiter
+                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, film, null, "");
+                dialog.setVisible(true);
+            }
+
+        }
+
+        class BeobInfo implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(film);
+                MediathekGui.ui().getFilmInfoDialog().showInfo();
+            }
+        }
+
+        class BeobUrl implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow >= 0) {
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
+                    if (abo) {
+                        GuiFunktionen.copyToClipboard(del);
+                    } else {
+                        GuiFunktionen.copyToClipboard(del);
+                    }
+                }
+
+            }
+        }
+
+        private class BeobLoeschen implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow >= 0) {
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
+                    if (abo) {
+                        daten.erledigteAbos.urlAusLogfileLoeschen(del);
+                    } else {
+                        daten.history.urlAusLogfileLoeschen(del);
+                    }
+                }
             }
         }
     }
@@ -247,122 +369,4 @@ public class PanelErledigteUrls extends PanelVorlage {
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton jToggleButtonLaden;
     // End of variables declaration//GEN-END:variables
-
-    public class BeobMausTabelle extends MouseAdapter {
-
-        //rechhte Maustaste in der Tabelle
-        BeobLoeschen beobLoeschen = new BeobLoeschen();
-        BeobUrl beobUrl = new BeobUrl();
-        private Point p;
-        DatenFilm film;
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            p = evt.getPoint();
-            int nr = jTable1.rowAtPoint(p);
-            if (nr >= 0) {
-                jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
-                film = daten.getListeFilme().getFilmByUrl(url);
-            }
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            //löschen
-            JMenuItem item = new JMenuItem("Url aus der Liste löschen");
-            item.addActionListener(beobLoeschen);
-            jPopupMenu.add(item);
-            //Url
-            item = new JMenuItem("URL kopieren");
-            item.addActionListener(beobUrl);
-            jPopupMenu.add(item);
-            // Infos anzeigen
-            item = new JMenuItem("Infos zum Film anzeigen");
-            item.addActionListener(new BeobInfo());
-            jPopupMenu.add(item);
-            if (film == null) {
-                item.setEnabled(false);
-            }
-            // Download anlegen
-            item = new JMenuItem("Download noch einmal anlegen");
-            item.addActionListener(new BeobDownload());
-            jPopupMenu.add(item);
-            if (film == null) {
-                item.setEnabled(false);
-            }
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobDownload implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
-                if (datenDownload != null) {
-                    int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
-                            + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
-                    if (ret != JOptionPane.OK_OPTION) {
-                        return;
-                    }
-                }
-                // weiter
-                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, film, null, "");
-                dialog.setVisible(true);
-            }
-
-        }
-
-        private class BeobInfo implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(film);
-                MediathekGui.ui().getFilmInfoDialog().showInfo();
-            }
-        }
-
-        private class BeobUrl implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
-                    if (abo) {
-                        GuiFunktionen.copyToClipboard(del);
-                    } else {
-                        GuiFunktionen.copyToClipboard(del);
-                    }
-                }
-
-            }
-        }
-
-        private class BeobLoeschen implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
-                    if (abo) {
-                        daten.erledigteAbos.urlAusLogfileLoeschen(del);
-                    } else {
-                        daten.history.urlAusLogfileLoeschen(del);
-                    }
-                }
-            }
-        }
-    }
 }
