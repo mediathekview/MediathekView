@@ -167,6 +167,18 @@
       <version>1.4.197</version>
     </dependency>
 
+    <!-- Hikary Connection Pool -->
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>sansorm</artifactId>
+      <version>3.7</version>
+    </dependency>
 
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
@@ -179,6 +191,7 @@
       <artifactId>annotations</artifactId>
       <version>16.0.2</version>
     </dependency>
+
 
     <!-- JavaFX 11 -->
     <dependency>
@@ -197,102 +210,79 @@
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <plugin>
-          <artifactId>maven-toolchain-plugin</artifactId>
-          <version>1.1</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>toolchain</goal>
-              </goals>
-            </execution>
-          </executions>
-          <configuration>
-            <toolchains>
-              <jdk>
-                <version>10</version>
-                <vendor>OpenJDK</vendor>
-              </jdk>
-            </toolchains>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>jar-no-fork</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-          <configuration>
-            <release>10</release>
-            <compilerArgs>
-              <arg>--add-modules</arg>
-              <arg>javafx.graphics</arg>
-              <arg>--add-modules</arg>
-              <arg>java.activation</arg>
-            </compilerArgs>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
+      <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <release>10</release>
+          <compilerArgs>
+            <arg>--add-modules</arg>
+            <arg>javafx.graphics</arg>
+            <arg>--add-modules</arg>
+            <arg>java.activation</arg>
+          </compilerArgs>
 
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.0</version>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-                <shadedArtifactAttached>true</shadedArtifactAttached>
-                <transformers>
-                  <transformer implementation=
-                    "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                    <mainClass>mediathek.Main</mainClass>
-                  </transformer>
-                </transformers>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <!--
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        -->
-      </plugins>
-    </pluginManagement>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>mediathek.Main</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+      </plugin>
+    </plugins>
 
   </build>
 </project>
