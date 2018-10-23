@@ -72,7 +72,7 @@ public class StarterClass {
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (!file.exists()) {
             Log.errorLog(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
+        } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
             Log.errorLog(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else {
             if (datenDownload.istAbo()) {
@@ -100,7 +100,7 @@ public class StarterClass {
                     if (!file.delete()) {
                         throw new Exception();
                     }
-                } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
+                } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
                     logger.info("Restart/Aufräumen: Zu kleine Datei löschen ({})", file.getAbsolutePath());
                     if (!file.delete()) {
                         throw new Exception();
