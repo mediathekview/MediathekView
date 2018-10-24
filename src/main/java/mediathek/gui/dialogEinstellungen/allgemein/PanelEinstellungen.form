@@ -37,6 +37,7 @@
                       <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                       <Component id="jPanel4" alignment="0" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="cbUseWikipediaSenderLogos" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -61,6 +62,8 @@
               <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jCheckBoxTray" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbUseWikipediaSenderLogos" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -566,6 +569,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Programm ins Tray minimieren"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbUseWikipediaSenderLogos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Senderlogos von Wikipedia verwenden"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbUseWikipediaSenderLogosActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

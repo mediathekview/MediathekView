@@ -520,10 +520,14 @@ public class MediathekGui extends JFrame {
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
             if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
-                FilmeLaden filmeLaden = new FilmeLaden(daten);
-                filmeLaden.loadFilmlist("");
+                //if downloads are running, don´t update
+                if (daten.getListeDownloads().unfinishedDownloads() == 0) {
+                    FilmeLaden filmeLaden = new FilmeLaden(daten);
+                    filmeLaden.loadFilmlist("");
+                }
             }
         };
+
         AutomaticFilmlistUpdate automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
         automaticFilmlistUpdate.start();
     }
@@ -568,15 +572,20 @@ public class MediathekGui extends JFrame {
         Container contentPane = getContentPane();
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_DOWNLOAD_TAB);
         tabDownloads = new GuiDownloads(daten, this);
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_TAB);
         tabAbos = new GuiAbo(daten, this);
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILM_TAB);
         tabFilme = new GuiFilme(daten, this);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.ADD_TABS_TO_UI);
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
         tabbedPane.addTab(GuiAbo.NAME, tabAbos);
         tabbedPane.setSelectedIndex(0);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.CONFIGURE_TABS);
         configureTabPlacement();
         configureTabIcons();
     }
@@ -798,8 +807,10 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(miSearchProgramUpdate);
         jMenuHilfe.add(miShowProgramInfo);
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(miShowAboutDialog);
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuHilfe.addSeparator();
+            jMenuHilfe.add(miShowAboutDialog);
+        }
     }
 
     protected void initMenus() {
