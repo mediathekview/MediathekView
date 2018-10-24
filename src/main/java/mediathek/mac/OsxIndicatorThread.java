@@ -19,7 +19,8 @@ class OsxIndicatorThread extends IndicatorThread {
 
     @Override
     public void run() {
-        Taskbar.getTaskbar().setProgressValue(0);
+        final Taskbar taskbar = Taskbar.getTaskbar();
+        taskbar.setProgressValue(0);
 
         try {
             while (!isInterrupted()) {
@@ -28,7 +29,7 @@ class OsxIndicatorThread extends IndicatorThread {
                 //update in 1pct steps...
                 //if icon was already drawn, don´ do it again
                 if (oldPercentage != percentage) {
-                    Taskbar.getTaskbar().setProgressValue(percentage);
+                    taskbar.setProgressValue(percentage);
                 }
 
                 oldPercentage = percentage;
@@ -38,7 +39,7 @@ class OsxIndicatorThread extends IndicatorThread {
         } catch (Exception ignored) {
         } finally {
             //reset the application dock icon
-            Taskbar.getTaskbar().setProgressValue(-1);
+            taskbar.setProgressValue(-1);
             oldPercentage = 0;
         }
     }

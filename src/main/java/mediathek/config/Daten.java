@@ -228,7 +228,7 @@ public class Daten {
     }
 
     private void loadSenderIcons() {
-        senderIconCache = new MVSenderIconCache();
+        senderIconCache = new MVSenderIconCache(this);
     }
 
     public Cleaner getCleaner() {
