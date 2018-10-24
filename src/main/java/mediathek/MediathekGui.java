@@ -807,8 +807,10 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(miSearchProgramUpdate);
         jMenuHilfe.add(miShowProgramInfo);
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(miShowAboutDialog);
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuHilfe.addSeparator();
+            jMenuHilfe.add(miShowAboutDialog);
+        }
     }
 
     protected void initMenus() {
