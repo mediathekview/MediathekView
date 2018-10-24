@@ -102,12 +102,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         COLUMN_NAMES[FILM_URL_HISTORY] = "URL History";
         COLUMN_NAMES[FILM_REF] = "Ref";
         COLUMN_NAMES[FILM_DATUM_LONG] = "DatumL";
-
-        if (MemoryUtils.isLowMemoryEnvironment())
-            Database.initializeDatabase();
-    }
-
-    static {
     }
 
     /**
@@ -533,7 +527,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             }
         }
 
-        private static void initializeDatabase() {
+        public static void initializeDatabase() {
             logger.debug("initializeDatabase()");
             SqlClosure.sqlExecute(connection -> {
                 Statement statement = connection.createStatement();

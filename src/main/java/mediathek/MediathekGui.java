@@ -568,15 +568,20 @@ public class MediathekGui extends JFrame {
         Container contentPane = getContentPane();
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_DOWNLOAD_TAB);
         tabDownloads = new GuiDownloads(daten, this);
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_TAB);
         tabAbos = new GuiAbo(daten, this);
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILM_TAB);
         tabFilme = new GuiFilme(daten, this);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.ADD_TABS_TO_UI);
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
         tabbedPane.addTab(GuiAbo.NAME, tabAbos);
         tabbedPane.setSelectedIndex(0);
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.CONFIGURE_TABS);
         configureTabPlacement();
         configureTabIcons();
     }
