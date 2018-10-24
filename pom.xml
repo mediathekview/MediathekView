@@ -238,7 +238,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
         <configuration>
-          <release>10</release>
+          <release>11</release>
           <compilerArgs>
             <arg>--add-modules</arg>
             <arg>javafx.graphics</arg>
