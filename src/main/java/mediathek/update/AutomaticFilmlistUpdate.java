@@ -20,7 +20,7 @@ public class AutomaticFilmlistUpdate implements AutoCloseable {
 
     public AutomaticFilmlistUpdate(IUpdateAction action) {
         this.action = action;
-        final int load_delay = (int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS);
+        final int load_delay = (int) TimeUnit.MILLISECONDS.convert(12, TimeUnit.HOURS);
 
         updateCheckTimer = new Timer(load_delay, e -> ForkJoinPool.commonPool().execute(this::reloadFilmList));
         updateCheckTimer.setRepeats(true);
