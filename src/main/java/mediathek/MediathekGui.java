@@ -520,10 +520,14 @@ public class MediathekGui extends JFrame {
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
             if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
-                FilmeLaden filmeLaden = new FilmeLaden(daten);
-                filmeLaden.loadFilmlist("");
+                //if downloads are running, don´t update
+                if (daten.getListeDownloads().unfinishedDownloads() == 0) {
+                    FilmeLaden filmeLaden = new FilmeLaden(daten);
+                    filmeLaden.loadFilmlist("");
+                }
             }
         };
+
         AutomaticFilmlistUpdate automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
         automaticFilmlistUpdate.start();
     }
