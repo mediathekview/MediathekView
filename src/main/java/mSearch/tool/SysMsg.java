@@ -32,7 +32,6 @@ public class SysMsg {
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrProgramm = 0;
 
-    @Deprecated
     public static synchronized void playerMsg(String text) {
         if (!playerMeldungenAus) {
             playermeldung(new String[]{text});

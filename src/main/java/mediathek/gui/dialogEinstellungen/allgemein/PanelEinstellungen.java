@@ -28,8 +28,10 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.gui.messages.SenderIconStyleChangedEvent;
 import mediathek.gui.messages.TabVisualSettingsChangedEvent;
 import mediathek.gui.messages.TrayIconEvent;
+import mediathek.tool.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
@@ -170,6 +172,9 @@ public class PanelEinstellungen extends PanelVorlage {
         setupTray();
 
         setupTabSwitchListener();
+
+        final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
+        cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
     }
 
     private void setupTabSwitchListener() {
@@ -317,6 +322,7 @@ public class PanelEinstellungen extends PanelVorlage {
         javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
         cbSaveHumanReadableFilmlist = new javax.swing.JCheckBox();
         jCheckBoxTray = new javax.swing.JCheckBox();
+        cbUseWikipediaSenderLogos = new javax.swing.JCheckBox();
 
         setMaximumSize(new java.awt.Dimension(10, 10));
         setMinimumSize(getMaximumSize());
@@ -563,6 +569,13 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
+        cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
+        cbUseWikipediaSenderLogos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbUseWikipediaSenderLogosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -578,7 +591,8 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jCheckBoxTray)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbUseWikipediaSenderLogos))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -600,15 +614,23 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxTray)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbUseWikipediaSenderLogos)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUseWikipediaSenderLogosActionPerformed
+        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
+        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
+    }//GEN-LAST:event_cbUseWikipediaSenderLogosActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbAutomaticMenuTabSwitching;
     private javax.swing.JCheckBox cbSaveHumanReadableFilmlist;
     private javax.swing.JCheckBox cbUseDatabaseCleaner;
+    private javax.swing.JCheckBox cbUseWikipediaSenderLogos;
     private javax.swing.JButton jButtonHelpDays;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JCheckBox jCheckBoxTabIcon;
