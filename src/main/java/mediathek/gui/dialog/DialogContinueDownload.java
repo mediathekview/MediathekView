@@ -41,8 +41,8 @@ public class DialogContinueDownload extends JDialog {
     private DownloadResult result;
 
     private boolean isNewName = false;
-    private MVPanelDownloadZiel mVPanelDownloadZiel;
-    private Timer countdownTimer = null;
+    private final MVPanelDownloadZiel mVPanelDownloadZiel;
+    private final Timer countdownTimer;
     private final boolean direkterDownload;
     final private JFrame parent;
 

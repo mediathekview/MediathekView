@@ -26,6 +26,7 @@ import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import mSearch.daten.DatenFilm;
 import mSearch.daten.PooledDatabaseConnection;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
@@ -161,8 +162,10 @@ public class Main {
         checkMemoryRequirements();
         checkForJavaFX();
 
-        if (MemoryUtils.isLowMemoryEnvironment())
+        if (MemoryUtils.isLowMemoryEnvironment()) {
             setupDatabase();
+            DatenFilm.Database.initializeDatabase();
+        }
 
         Daten.splashScreenManager.initializeSplashScreen();
 
@@ -267,10 +270,8 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Config.isDebuggingEnabled()) {
-                // use for debugging EDT violations
-                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-            }
+            // use for debugging EDT violations
+            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
 
             startMeldungen();
 
