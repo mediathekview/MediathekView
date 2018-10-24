@@ -56,11 +56,23 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>10</maven.compiler.source>
-    <maven.compiler.target>10</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <dependencies>
+
+      <dependency>
+          <groupId>com.sun.activation</groupId>
+          <artifactId>javax.activation</artifactId>
+          <version>1.2.0</version>
+      </dependency>
+
+      <dependency>
+          <groupId>javax.transaction</groupId>
+          <artifactId>javax.transaction-api</artifactId>
+          <version>1.2</version>
+      </dependency>
 
     <!-- Apache Commons Lang für Utils -->
     <dependency>
@@ -68,17 +80,18 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.8</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-configuration2</artifactId>
-      <version>2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-dbcp2</artifactId>
-      <version>2.5.0</version>
-    </dependency>
 
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-configuration2</artifactId>
+          <version>2.3</version>
+      </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.5</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -110,11 +123,6 @@
       <artifactId>controlsfx</artifactId>
       <version>9.0.0</version>    </dependency>
     <dependency>
-      <groupId>net.sf.jchart2d</groupId>
-      <artifactId>jchart2d</artifactId>
-      <version>3.3.2</version>
-    </dependency>
-    <dependency>
       <groupId>com.miglayout</groupId>
       <artifactId>miglayout-core</artifactId>
       <version>5.2</version>
@@ -139,19 +147,11 @@
       <artifactId>jiconfont-font_awesome</artifactId>
       <version>4.7.0.0</version>
     </dependency>
-    <dependency>
-      <groupId>com.jidesoft</groupId>
-      <artifactId>jide-oss</artifactId>
-      <version>3.6.18</version>
-    </dependency>
-
-    <!-- Windows C/C++ Interop Layer -->
-    <!-- TODO: Ersatz suchen -->
-    <dependency>
-      <groupId>com.nativelibs4java</groupId>
-      <artifactId>bridj</artifactId>
-      <version>0.7.0</version>
-    </dependency>
+      <dependency>
+          <groupId>org.bidib.com.jidesoft</groupId>
+          <artifactId>jide-common</artifactId>
+          <version>3.7.3</version>
+      </dependency>
 
     <!-- Event Bus Mbassador -->
     <dependency>
@@ -194,11 +194,49 @@
 
 
     <!-- JavaFX 11 -->
-    <dependency>
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-base</artifactId>
+          <version>11</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-controls</artifactId>
+          <version>11</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-graphics</artifactId>
+          <version>11</version>
+      </dependency>
+
+      <dependency>
       <groupId>org.openjfx</groupId>
-      <artifactId>javafx-graphics</artifactId>
+      <artifactId>javafx-media</artifactId>
       <version>11</version>
     </dependency>
+
+      <dependency>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-swing</artifactId>
+          <version>11</version>
+      </dependency>
+
+
+      <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>11</version>
+    </dependency>
+
 
     <!-- Logging -->
     <dependency>
@@ -238,14 +276,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
         <configuration>
-          <release>10</release>
-          <compilerArgs>
-            <arg>--add-modules</arg>
-            <arg>javafx.graphics</arg>
-            <arg>--add-modules</arg>
-            <arg>java.activation</arg>
-          </compilerArgs>
-
+          <release>11</release>
         </configuration>
       </plugin>
       <plugin>
