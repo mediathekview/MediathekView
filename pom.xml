@@ -198,30 +198,35 @@
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-base</artifactId>
           <version>11</version>
+        <classifier>mac</classifier>
       </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-controls</artifactId>
           <version>11</version>
+        <classifier>mac</classifier>
       </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-graphics</artifactId>
           <version>11</version>
+        <classifier>mac</classifier>
       </dependency>
 
       <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
       <version>11</version>
-    </dependency>
+        <classifier>mac</classifier>
+      </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-swing</artifactId>
           <version>11</version>
+        <classifier>mac</classifier>
       </dependency>
 
 
@@ -229,14 +234,65 @@
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-web</artifactId>
       <version>11</version>
+        <classifier>mac</classifier>
+      </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>11</version>
+      <classifier>mac</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>11</version>
+      <classifier>win</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
       <version>11</version>
+      <classifier>win</classifier>
     </dependency>
-
 
     <!-- Logging -->
     <dependency>
@@ -303,6 +359,13 @@
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <SplashScreen-Image>splash.png</SplashScreen-Image>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <version>3.1.0</version>
       </plugin>
       <plugin>
