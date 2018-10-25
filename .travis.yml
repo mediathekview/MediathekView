@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk10
+  - oraclejdk11
 
 sudo: required
 install:
