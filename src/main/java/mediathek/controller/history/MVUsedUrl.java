@@ -32,11 +32,11 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     public static final int USED_URL_THEMA = 1;
     public static final int USED_URL_TITEL = 2;
     public static final int USED_URL_URL = 3;
-
+    public static final int MAX_TITLE_LENGTH = 40;
+    public static final int MAX_THEMA_LENGTH = 25;
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
-
     private final String datum;
     private final String thema;
     private final String titel;
@@ -51,8 +51,8 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
     public static String getUsedUrl(String date, String thema, String title, String url) {
         return date + PAUSE
-                + Functions.textLaenge(25, putzen(thema), false, false) + PAUSE
-                + Functions.textLaenge(40, putzen(title), false, false) + TRENNER
+                + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
+                + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(title), false, false) + TRENNER
                 + url + '\n';
     }
 
@@ -79,13 +79,6 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         return new MVUsedUrl(datum, thema, titel, url);
     }
 
-    public static String getHeaderString() {
-        return Functions.textLaenge(40, TITLE_HEADER[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
-                + "    " + Functions.textLaenge(25, TITLE_HEADER[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
-                + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false /* mitte */, false /*addVorne*/)
-                + "    " + TITLE_HEADER[USED_URL_URL];
-    }
-
     private static String putzen(String s) {
         s = StringUtils.replace(s, "\n", "");
         s = StringUtils.replace(s, "|", "");
@@ -94,24 +87,23 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         return s;
     }
 
-    public String getDatum() { return datum;}
+    public String getDatum() {
+        return datum;
+    }
 
-    public String getThema() { return thema;}
+    public String getThema() {
+        return thema;
+    }
 
-    public String getTitel() { return titel;}
+    public String getTitel() {
+        return titel;
+    }
 
     public String getUsedUrl() {
         return datum + PAUSE
-                + Functions.textLaenge(25, putzen(thema), false, false) + PAUSE
-                + Functions.textLaenge(40, putzen(titel), false, false) + TRENNER
+                + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
+                + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(titel), false, false) + TRENNER
                 + url + '\n';
-    }
-
-    public String getString() {
-        return Functions.textLaenge(40, titel, false, false)
-                + "    " + Functions.textLaenge(25, thema, false, false)
-                + "    " + (datum.isEmpty() ? "          " : datum)
-                + "    " + url;
     }
 
     public String getUrl() {

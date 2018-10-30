@@ -292,10 +292,10 @@ public class MVUsedUrls {
 
         @Override
         public synchronized void run() {
-            zeilenSchreiben(mvuuList);
+            zeilenSchreiben();
         }
 
-        private synchronized void zeilenSchreiben(LinkedList<MVUsedUrl> mvuuList) {
+        private synchronized void zeilenSchreiben() {
             String text;
             try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
                  OutputStreamWriter osw = new OutputStreamWriter(os);

@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mSearch.daten.DatenFilm;
+import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -48,6 +49,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static mediathek.controller.history.MVUsedUrl.*;
+
 @SuppressWarnings("serial")
 public class PanelErledigteUrls extends PanelVorlage {
     private boolean abo;
@@ -66,7 +69,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.TITLE_HEADER));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), TITLE_HEADER));
                     setsum();
                 }
             }
@@ -80,11 +83,11 @@ public class PanelErledigteUrls extends PanelVorlage {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
                 jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.TITLE_HEADER));
+                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), TITLE_HEADER));
                 setsum();
             } else {
                 jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, MVUsedUrl.TITLE_HEADER));
+                jTable1.setModel(new TModel(null, TITLE_HEADER));
                 setsum();
             }
         });
@@ -96,7 +99,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.TITLE_HEADER));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), TITLE_HEADER));
                     setsum();
                 }
             }
@@ -110,11 +113,11 @@ public class PanelErledigteUrls extends PanelVorlage {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
                 jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.TITLE_HEADER));
+                jTable1.setModel(new TModel(daten.history.getObjectData(), TITLE_HEADER));
                 setsum();
             } else {
                 jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, MVUsedUrl.TITLE_HEADER));
+                jTable1.setModel(new TModel(null, TITLE_HEADER));
                 setsum();
             }
         });
@@ -158,6 +161,20 @@ public class PanelErledigteUrls extends PanelVorlage {
             exportListe();
         }
 
+        private String getHeaderString() {
+            return Functions.textLaenge(MAX_TITLE_LENGTH, TITLE_HEADER[USED_URL_TITEL], false, false)
+                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, TITLE_HEADER[USED_URL_THEMA], false, false)
+                    + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false, false)
+                    + "    " + TITLE_HEADER[USED_URL_URL];
+        }
+
+        private String prepareUrlString(MVUsedUrl entry) {
+            return Functions.textLaenge(MAX_TITLE_LENGTH, entry.getTitel(), false, false)
+                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, entry.getThema(), false, false)
+                    + "    " + (entry.getDatum().isEmpty() ? "          " : entry.getDatum())
+                    + "    " + entry.getUrl();
+        }
+
         private void exportListe() {
             List<MVUsedUrl> liste;
             if (abo) {
@@ -171,11 +188,11 @@ public class PanelErledigteUrls extends PanelVorlage {
                  OutputStreamWriter osw = new OutputStreamWriter(os);
                  BufferedWriter bw = new BufferedWriter(osw)) {
                 bw.newLine();
-                bw.write(MVUsedUrl.getHeaderString());
+                bw.write(getHeaderString());
                 bw.newLine();
                 bw.newLine();
                 for (MVUsedUrl entry : liste) {
-                    bw.write(entry.getString());
+                    bw.write(prepareUrlString(entry));
                     bw.newLine();
                 }
                 bw.newLine();
@@ -217,7 +234,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), USED_URL_URL).toString();
                 film = daten.getListeFilme().getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
@@ -280,7 +297,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
                     if (abo) {
                         GuiFunktionen.copyToClipboard(del);
                     } else {
@@ -297,7 +314,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
                     if (abo) {
                         daten.erledigteAbos.urlAusLogfileLoeschen(del);
                     } else {
