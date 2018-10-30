@@ -36,7 +36,6 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_ABO_NEU = GetIcon.getProgramIcon("menue-abo-neu.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNOAD_STARTEN = GetIcon.getProgramIcon("menue-download-starten.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNOAD_STOP = GetIcon.getProgramIcon("menue-download-stop.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILM_REC = GetIcon.getProgramIcon("menue-film-rec.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILM_START = GetIcon.getProgramIcon("menue-film-start.png", 16, 16);

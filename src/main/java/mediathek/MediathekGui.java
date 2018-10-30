@@ -215,7 +215,6 @@ public class MediathekGui extends JFrame {
         bandwidthMonitor = new BandwidthMonitorController(this);
 
         splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
-        splashScreenManager.closeSplashScreen();
 
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
@@ -249,10 +248,6 @@ public class MediathekGui extends JFrame {
     private void setIconAndWindowImage() {
         setWindowTitle();
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
-    }
-
-    public void closeSplashScreen() {
-        splashScreenManager.closeSplashScreen();
     }
 
     private void remapF10Key() {

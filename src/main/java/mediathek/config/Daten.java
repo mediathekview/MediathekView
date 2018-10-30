@@ -351,7 +351,6 @@ public class Daten {
 
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
-        MediathekGui.ui().closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
                 + "Soll versucht werden, mit gesicherten\n"
