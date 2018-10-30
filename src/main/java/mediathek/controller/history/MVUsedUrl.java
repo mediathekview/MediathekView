@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller;
+package mediathek.controller.history;
 
 import mSearch.tool.Functions;
 import mSearch.tool.GermanStringSorter;
@@ -27,34 +27,33 @@ import org.jetbrains.annotations.NotNull;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
-    public static final String[] title = {"Datum", "Thema", "Titel", "Url"};
+    public static final String[] TITLE_HEADER = {"Datum", "Thema", "Titel", "Url"};
     public static final int USED_URL_DATUM = 0;
     public static final int USED_URL_THEMA = 1;
     public static final int USED_URL_TITEL = 2;
     public static final int USED_URL_URL = 3;
-    
+
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
 
-    String[] uUrl;
+    private final String datum;
+    private final String thema;
+    private final String titel;
+    private final String url;
 
     public MVUsedUrl(String date, String thema, String title, String url) {
-        this.uUrl = new String[]{date, thema, title, url};
+        this.datum = date;
+        this.thema = thema;
+        this.titel = title;
+        this.url = url;
     }
 
     public static String getUsedUrl(String date, String thema, String title, String url) {
         return date + PAUSE
-                + Functions.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/) + PAUSE
-                + Functions.textLaenge(40, putzen(title), false /* mitte */, false /*addVorne*/) + TRENNER
+                + Functions.textLaenge(25, putzen(thema), false, false) + PAUSE
+                + Functions.textLaenge(40, putzen(title), false, false) + TRENNER
                 + url + '\n';
-    }
-
-    public String getUsedUrl() {
-        return uUrl[USED_URL_DATUM] + PAUSE
-                + Functions.textLaenge(25, putzen(uUrl[USED_URL_THEMA]), false /* mitte */, false /*addVorne*/) + PAUSE
-                + Functions.textLaenge(40, putzen(uUrl[USED_URL_TITEL]), false /* mitte */, false /*addVorne*/) + TRENNER
-                + uUrl[USED_URL_URL] + '\n';
     }
 
     public static MVUsedUrl getUrlAusZeile(String zeile) {
@@ -81,26 +80,10 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     }
 
     public static String getHeaderString() {
-        return Functions.textLaenge(40, title[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
-                + "    " + Functions.textLaenge(25, title[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
-                + "    " + Functions.textLaenge(10, title[USED_URL_DATUM], false /* mitte */, false /*addVorne*/)
-                + "    " + title[USED_URL_URL];
-    }
-
-    public String getString() {
-        return Functions.textLaenge(40, uUrl[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
-                + "    " + Functions.textLaenge(25, uUrl[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
-                + "    " + (uUrl[USED_URL_DATUM].isEmpty() ? "          " : uUrl[USED_URL_DATUM])
-                + "    " + uUrl[USED_URL_URL];
-    }
-
-    public String getUrl() {
-        return uUrl[USED_URL_URL];
-    }
-
-    @Override
-    public int compareTo(@NotNull MVUsedUrl arg0) {
-        return sorter.compare(uUrl[USED_URL_TITEL], arg0.uUrl[USED_URL_TITEL]);
+        return Functions.textLaenge(40, TITLE_HEADER[USED_URL_TITEL], false /* mitte */, false /*addVorne*/)
+                + "    " + Functions.textLaenge(25, TITLE_HEADER[USED_URL_THEMA], false /* mitte */, false /*addVorne*/)
+                + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false /* mitte */, false /*addVorne*/)
+                + "    " + TITLE_HEADER[USED_URL_URL];
     }
 
     private static String putzen(String s) {
@@ -109,5 +92,34 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         s = StringUtils.replace(s, TRENNER, "");
 
         return s;
+    }
+
+    public String getDatum() { return datum;}
+
+    public String getThema() { return thema;}
+
+    public String getTitel() { return titel;}
+
+    public String getUsedUrl() {
+        return datum + PAUSE
+                + Functions.textLaenge(25, putzen(thema), false, false) + PAUSE
+                + Functions.textLaenge(40, putzen(titel), false, false) + TRENNER
+                + url + '\n';
+    }
+
+    public String getString() {
+        return Functions.textLaenge(40, titel, false, false)
+                + "    " + Functions.textLaenge(25, thema, false, false)
+                + "    " + (datum.isEmpty() ? "          " : datum)
+                + "    " + url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public int compareTo(@NotNull MVUsedUrl arg0) {
+        return sorter.compare(titel, arg0.titel);
     }
 }

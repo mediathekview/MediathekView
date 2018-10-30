@@ -25,7 +25,7 @@ import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.history.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
