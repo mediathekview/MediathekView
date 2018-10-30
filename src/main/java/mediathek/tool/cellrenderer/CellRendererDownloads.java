@@ -19,6 +19,8 @@
  */
 package mediathek.tool.cellrenderer;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -41,13 +43,13 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
     private static ImageIcon download_stop_tab = null;
-    private static ImageIcon download_start_tab = null;
     private static ImageIcon download_stop_sw_tab = null;
+    private static ImageIcon download_start_tab = null;
     private static ImageIcon download_start_sw_tab = null;
-    private static ImageIcon download_clear_tab = null;
-    private static ImageIcon download_clear_sw_tab = null;
-    private static ImageIcon download_del_tab = null;
-    private static ImageIcon download_del_sw_tab = null;
+    private static Icon download_clear_tab_selected = null;
+    private static Icon download_clear_sw_tab = null;
+    private static Icon download_del_tab_selected = null;
+    private static Icon download_del_sw_tab = null;
     private JProgressBar progressBar;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
@@ -60,10 +62,11 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         download_stop_sw_tab = Icons.ICON_TABELLE_DOWNOAD_STOP_SW;
         download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
         download_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_START_SW;
-        download_clear_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR;
-        download_clear_sw_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR_SW;
-        download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
-        download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
+        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, new Color(255, 255, 255));
+        download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
+
+        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TIMES, 16, new Color(255, 255, 255));
+        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TIMES, 16);
 
         setupProgressBar();
 
@@ -369,7 +372,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (datenDownload.start != null) {
             if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                setIcons(download_clear_tab, download_clear_sw_tab, DOWNLOAD_ENTFERNEN, isSelected);
+                setIcons(download_clear_tab_selected, download_clear_sw_tab, DOWNLOAD_ENTFERNEN, isSelected);
             } else {
                 setupDownloadLoeschen(isSelected);
             }
@@ -390,6 +393,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     }
 
     private void setupDownloadLoeschen(final boolean isSelected) {
-        setIcons(download_del_tab, download_del_sw_tab, DOWNLOAD_LOESCHEN, isSelected);
+        setIcons(download_del_tab_selected, download_del_sw_tab, DOWNLOAD_LOESCHEN, isSelected);
     }
 }
