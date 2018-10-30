@@ -29,9 +29,9 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
+import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
 
 import javax.swing.*;
@@ -132,7 +132,6 @@ public class PanelErledigteUrls extends PanelVorlage {
     }
 
     private void export() {
-        MVRun mVRun;
         if (jTable1.getModel().getRowCount() <= 0) {
             return;
         }
@@ -141,23 +140,28 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        mVRun = new MVRun(MediathekGui.ui(), "Datei: \"" + dialog.ziel + "\" erstellen");
-        mVRun.setVisible(true);
-        new Thread(new Export_(dialog.ziel, mVRun)).start();
+
+        final List<MVUsedUrl> liste;
+        if (abo)
+            liste = daten.erledigteAbos.getSortedList();
+        else
+            liste = daten.history.getSortedList();
+
+        new HistoryWriterThread(dialog.ziel,liste).start();
     }
 
-    private class Export_ implements Runnable {
+    private class HistoryWriterThread extends Thread {
+        private final String ziel;
+        private final List<MVUsedUrl> liste;
 
-        String ziel;
-        MVRun mVRun;
-
-        public Export_(final String ziel, MVRun mVRun) {
+        public HistoryWriterThread(final String ziel, List<MVUsedUrl> liste) {
             this.ziel = ziel;
-            this.mVRun = mVRun;
+            this.liste = liste;
+            setName(HistoryWriterThread.class.getName());
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             exportListe();
         }
 
@@ -176,13 +180,6 @@ public class PanelErledigteUrls extends PanelVorlage {
         }
 
         private void exportListe() {
-            List<MVUsedUrl> liste;
-            if (abo) {
-                liste = daten.erledigteAbos.getSortedList();
-            } else {
-                liste = daten.history.getSortedList();
-            }
-
             Path logFilePath = Paths.get(ziel);
             try (OutputStream os = Files.newOutputStream(logFilePath);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -201,8 +198,6 @@ public class PanelErledigteUrls extends PanelVorlage {
             } catch (Exception ex) {
                 SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                         "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
-            } finally {
-                mVRun.dispose();
             }
         }
     }
@@ -286,8 +281,9 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(film);
-                MediathekGui.ui().getFilmInfoDialog().showInfo();
+                final InfoDialog dlg = MediathekGui.ui().getFilmInfoDialog();
+                dlg.updateCurrentFilm(film);
+                dlg.showInfo();
             }
         }
 
@@ -295,16 +291,11 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow >= 0) {
+                final int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow != -1) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
-                    if (abo) {
-                        GuiFunktionen.copyToClipboard(del);
-                    } else {
-                        GuiFunktionen.copyToClipboard(del);
-                    }
+                    GuiFunktionen.copyToClipboard(del);
                 }
-
             }
         }
 
@@ -313,7 +304,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow >= 0) {
+                if (selectedTableRow != -1) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
                     if (abo) {
                         daten.erledigteAbos.urlAusLogfileLoeschen(del);
