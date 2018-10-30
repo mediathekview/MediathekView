@@ -42,8 +42,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
-    private static ImageIcon download_stop_tab = null;
-    private static ImageIcon download_stop_sw_tab = null;
+    private static Icon download_stop_tab = null;
+    private static Icon download_stop_sw_tab = null;
     private static ImageIcon download_start_tab = null;
     private static ImageIcon download_start_sw_tab = null;
     private static Icon download_clear_tab_selected = null;
@@ -58,8 +58,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     public CellRendererDownloads(MVSenderIconCache cache) {
         super(cache);
 
-        download_stop_tab = Icons.ICON_TABELLE_DOWNOAD_STOP;
-        download_stop_sw_tab = Icons.ICON_TABELLE_DOWNOAD_STOP_SW;
+        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, new Color(255, 255, 255));
+        download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
         download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
         download_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_START_SW;
         download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, new Color(255, 255, 255));
