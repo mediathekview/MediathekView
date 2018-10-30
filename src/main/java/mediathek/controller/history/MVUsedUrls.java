@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller;
+package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -96,10 +96,9 @@ public class MVUsedUrls {
      */
     public synchronized Object[][] getObjectData() {
         int i = 0;
-        Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
         final Object[][] object = new Object[listeUrlsSortDate.size()][];
-        while (iterator.hasNext()) {
-            object[i] = iterator.next().uUrl;
+        for (var item : listeUrlsSortDate) {
+            object[i] = new String[] {item.getDatum(),item.getThema(), item.getTitel(), item.getUrl()};
             ++i;
         }
         return object;
@@ -247,8 +246,9 @@ public class MVUsedUrls {
     }
 
     // eigener Thread!!
-    public synchronized void zeilenSchreiben(LinkedList<MVUsedUrl> mvuuList) {
-        new Thread(new zeilenSchreiben_(mvuuList)).start();
+    public synchronized void createLineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
+        Thread t = new LineWriterThread(mvuuList);
+        t.start();
     }
 
     private Path getUrlFilePath() {
@@ -266,7 +266,7 @@ public class MVUsedUrls {
     private void listeBauen() {
         //LinkedList mit den URLs aus dem Logfile bauen
         Path urlPath = getUrlFilePath();
-        //use Automatic Resource Management
+
         try (InputStream is = Files.newInputStream(urlPath);
              InputStreamReader isr = new InputStreamReader(is);
              LineNumberReader in = new LineNumberReader(isr)) {
@@ -281,12 +281,13 @@ public class MVUsedUrls {
         }
     }
 
-    private class zeilenSchreiben_ implements Runnable {
+    class LineWriterThread extends Thread {
 
-        LinkedList<MVUsedUrl> mvuuList;
+        private final LinkedList<MVUsedUrl> mvuuList;
 
-        public zeilenSchreiben_(LinkedList<MVUsedUrl> mvuuList) {
+        public LineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
             this.mvuuList = mvuuList;
+            setName(LineWriterThread.class.getName());
         }
 
         @Override

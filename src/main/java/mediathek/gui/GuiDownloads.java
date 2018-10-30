@@ -39,7 +39,7 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -1001,7 +1001,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
             if (!urlAboList.isEmpty()) {
-                daten.erledigteAbos.zeilenSchreiben(urlAboList);
+                daten.erledigteAbos.createLineWriterThread(urlAboList);
             }
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();

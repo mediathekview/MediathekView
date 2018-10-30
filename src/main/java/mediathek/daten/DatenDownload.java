@@ -24,7 +24,7 @@ import mSearch.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
@@ -298,7 +298,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
                     d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
         }
         if (!urlList.isEmpty()) {
-            ddaten.history.zeilenSchreiben(urlList);
+            ddaten.history.createLineWriterThread(urlList);
         }
         ddaten.getMessageBus().publishAsync(new StartEvent());
     }

@@ -23,7 +23,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.controller.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrl;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -66,7 +66,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
+                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.TITLE_HEADER));
                     setsum();
                 }
             }
@@ -80,11 +80,11 @@ public class PanelErledigteUrls extends PanelVorlage {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
                 jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
+                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.TITLE_HEADER));
                 setsum();
             } else {
                 jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                jTable1.setModel(new TModel(null, MVUsedUrl.TITLE_HEADER));
                 setsum();
             }
         });
@@ -96,7 +96,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
+                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.TITLE_HEADER));
                     setsum();
                 }
             }
@@ -110,11 +110,11 @@ public class PanelErledigteUrls extends PanelVorlage {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
                 jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
+                jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.TITLE_HEADER));
                 setsum();
             } else {
                 jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                jTable1.setModel(new TModel(null, MVUsedUrl.TITLE_HEADER));
                 setsum();
             }
         });

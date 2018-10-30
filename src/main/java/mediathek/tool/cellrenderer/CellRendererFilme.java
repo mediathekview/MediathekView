@@ -25,7 +25,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.history.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.table.MVTable;
