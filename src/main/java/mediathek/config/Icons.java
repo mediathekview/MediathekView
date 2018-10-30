@@ -49,8 +49,6 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_START = GetIcon.getProgramIcon("tabelle-download-start.png", 20, 20);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_START_SW = GetIcon.getProgramIcon("tabelle-download-start-sw.png", 14, 14);
-    public static final ImageIcon ICON_TABELLE_DOWNOAD_STOP = GetIcon.getProgramIcon("tabelle-download-stop.png", 18, 18);
-    public static final ImageIcon ICON_TABELLE_DOWNOAD_STOP_SW = GetIcon.getProgramIcon("tabelle-download-stop-sw.png", 15, 15);
 
     public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 20, 20);
     public static final ImageIcon ICON_TABELLE_FILM_START_SW = GetIcon.getProgramIcon("tabelle-film-start-sw.png", 16, 16);
