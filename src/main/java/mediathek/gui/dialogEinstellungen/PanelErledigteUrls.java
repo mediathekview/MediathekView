@@ -162,24 +162,6 @@ public class PanelErledigteUrls extends PanelVorlage {
 
         @Override
         public void run() {
-            exportListe();
-        }
-
-        private String getHeaderString() {
-            return Functions.textLaenge(MAX_TITLE_LENGTH, TITLE_HEADER[USED_URL_TITEL], false, false)
-                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, TITLE_HEADER[USED_URL_THEMA], false, false)
-                    + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false, false)
-                    + "    " + TITLE_HEADER[USED_URL_URL];
-        }
-
-        private String prepareUrlString(MVUsedUrl entry) {
-            return Functions.textLaenge(MAX_TITLE_LENGTH, entry.getTitel(), false, false)
-                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, entry.getThema(), false, false)
-                    + "    " + (entry.getDatum().isEmpty() ? "          " : entry.getDatum())
-                    + "    " + entry.getUrl();
-        }
-
-        private void exportListe() {
             Path logFilePath = Paths.get(ziel);
             try (OutputStream os = Files.newOutputStream(logFilePath);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -199,6 +181,20 @@ public class PanelErledigteUrls extends PanelVorlage {
                 SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                         "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
             }
+        }
+
+        private String getHeaderString() {
+            return Functions.textLaenge(MAX_TITLE_LENGTH, TITLE_HEADER[USED_URL_TITEL], false, false)
+                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, TITLE_HEADER[USED_URL_THEMA], false, false)
+                    + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false, false)
+                    + "    " + TITLE_HEADER[USED_URL_URL];
+        }
+
+        private String prepareUrlString(MVUsedUrl entry) {
+            return Functions.textLaenge(MAX_TITLE_LENGTH, entry.getTitel(), false, false)
+                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, entry.getThema(), false, false)
+                    + "    " + (entry.getDatum().isEmpty() ? "          " : entry.getDatum())
+                    + "    " + entry.getUrl();
         }
     }
 

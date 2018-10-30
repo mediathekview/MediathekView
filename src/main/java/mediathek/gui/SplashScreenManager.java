@@ -23,32 +23,21 @@ public class SplashScreenManager {
      * The JVM {@link java.awt.SplashScreen} storage
      */
     private SplashScreen splash = null;
-    /**
-     * Store the splash screen {@link Graphics2D} context here for reuse
-     */
-    private Graphics2D splashScreenContext = null;
+
     /**
      * helper variable to calculate splash screen progress
      */
     private int splashScreenProgress = 0;
-
-    /**
-     * wegen der möglichen Abfrage: "Backup laden.."
-     */
-    public void closeSplashScreen() {
-        splashScreenContext = null;
-    }
 
     public void updateSplashScreenText(UIProgressState state) {
         updateSplashScreenText(state.toString());
     }
 
     private void updateSplashScreenText(final String text) {
-        //bail out when we don´ have a splash screen...
-        if (splashScreenContext == null) {
+        if (!splash.isVisible())
             return;
-        }
 
+        final Graphics2D splashScreenContext = splash.createGraphics();
         final int splashScreenYPosition = 450;
         final int splashScreenXPosition = 84;
         final int splashScreenWidth = 320;
@@ -73,6 +62,7 @@ public class SplashScreenManager {
         splashScreenContext.setColor(Color.GREEN);
         splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenProgress * (splashScreenWidth / MAXIMUM_STEPS), 5);
         splash.update();
+        splashScreenContext.dispose();
     }
 
     /**
@@ -81,9 +71,6 @@ public class SplashScreenManager {
     public void initializeSplashScreen() {
         try {
             splash = SplashScreen.getSplashScreen();
-            if (splash != null) {
-                splashScreenContext = splash.createGraphics();
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
