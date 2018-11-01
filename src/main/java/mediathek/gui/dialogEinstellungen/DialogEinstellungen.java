@@ -47,7 +47,6 @@ public class DialogEinstellungen extends JFrame {
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelBlacklist panelBlacklist;
-    private PanelErledigteUrls panelErledigteAbos;
     private PanelErledigteUrls panelHistory;
     private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
@@ -71,7 +70,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_programmsetImportieren = "Set importieren";
     private static final String NAME_infos = "Infos";
     private static final String NAME_history = "History";
-    private static final String NAME_logfile = "Erledigte Abos";
+
     // ######## Einstellulngen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
@@ -94,7 +93,6 @@ public class DialogEinstellungen extends JFrame {
     // ####### Infos #########
     private final DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
     private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
-    private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
 
     public DialogEinstellungen(Daten d) {
         initComponents();
@@ -119,10 +117,8 @@ public class DialogEinstellungen extends JFrame {
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
         panelImportFilme = new PanelFilmlisteLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
-        panelHistory = new PanelErledigteUrls(ddaten, this);
+        panelHistory = new PanelErledigteUrls(ddaten);
         panelHistory.initHistory();
-        panelErledigteAbos = new PanelErledigteUrls(ddaten, this);
-        panelErledigteAbos.initAbo();
         panelDateinamen = new PanelDateinamen(ddaten, this);
         panelPset = new PanelPset(ddaten, this);
         panelPsetVorlagen = new PanelPsetImport(ddaten, this);
@@ -155,7 +151,6 @@ public class DialogEinstellungen extends JFrame {
         // ===============================================================================
         // ####### Infos #########
         treeNodeInfos.add(treeNodeHistory);
-        treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
 
         // Aufbauen
@@ -239,10 +234,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_history:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelHistory);
-                        break;
-                    case NAME_logfile:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelErledigteAbos);
                         break;
                     default:
                         jPanelExtra.removeAll();

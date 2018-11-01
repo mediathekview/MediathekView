@@ -26,7 +26,6 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
@@ -52,11 +51,13 @@ import java.util.List;
 import static mediathek.controller.history.MVUsedUrl.*;
 
 @SuppressWarnings("serial")
-public class PanelErledigteUrls extends PanelVorlage {
+public class PanelErledigteUrls extends JPanel {
     private boolean abo;
+    private final Daten daten;
 
-    public PanelErledigteUrls(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public PanelErledigteUrls(Daten d) {
+        this.daten = d;
+
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
@@ -75,7 +76,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             }
         });
         jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 daten.erledigteAbos.alleLoeschen();
             }
@@ -105,7 +106,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             }
         });
         jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 daten.history.alleLoeschen();
             }
@@ -135,7 +136,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (jTable1.getModel().getRowCount() <= 0) {
             return;
         }
-        DialogZiel dialog = new DialogZiel(parentComponent, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
+        DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
@@ -260,7 +261,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
                 if (datenDownload != null) {
-                    int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
+                    int ret = JOptionPane.showConfirmDialog(getParent(), "Download für den Film existiert bereits.\n"
                             + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
                     if (ret != JOptionPane.OK_OPTION) {
                         return;

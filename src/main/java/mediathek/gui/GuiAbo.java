@@ -33,6 +33,8 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.dialog.StandardCloseDialog;
+import mediathek.gui.dialogEinstellungen.PanelErledigteUrls;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
@@ -161,13 +163,36 @@ public class GuiAbo extends JPanel {
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> invertSelection());
 
+        JMenuItem miShowAboHistory = new JMenuItem("Erledigte Abos anzeigen...");
+        miShowAboHistory.addActionListener(e -> showAboHistory());
+
         menu.add(miAboOn);
         menu.add(miAboOff);
         menu.add(miAboDelete);
         menu.add(miAboEdit);
         menu.add(miAboNew);
         menu.addSeparator();
+        menu.add(miShowAboHistory);
+        menu.addSeparator();
         menu.add(miInvertSelection);
+    }
+
+    class ShowAboHistoryDialog extends StandardCloseDialog {
+        public ShowAboHistoryDialog(Frame owner) {
+            super(owner,"Erledigte Abos", true);
+        }
+        @Override
+        public JComponent createContentPanel() {
+            PanelErledigteUrls panel = new PanelErledigteUrls(daten);
+            panel.initAbo();
+            return panel;
+        }
+    }
+
+    private void showAboHistory() {
+        ShowAboHistoryDialog dialog = new ShowAboHistoryDialog(MediathekGui.ui());
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
     public void aendern() {
