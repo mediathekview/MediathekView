@@ -47,7 +47,6 @@ public class DialogEinstellungen extends JFrame {
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelBlacklist panelBlacklist;
-    private PanelErledigteUrls panelHistory;
     private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
@@ -68,8 +67,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_dateiname = "Datei- und Pfadnamen";
     private static final String NAME_programmset = "Set bearbeiten";
     private static final String NAME_programmsetImportieren = "Set importieren";
-    private static final String NAME_infos = "Infos";
-    private static final String NAME_history = "History";
 
     // ######## Einstellulngen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
@@ -90,9 +87,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
-    // ####### Infos #########
-    private final DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
-    private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
 
     public DialogEinstellungen(Daten d) {
         initComponents();
@@ -117,8 +111,6 @@ public class DialogEinstellungen extends JFrame {
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
         panelImportFilme = new PanelFilmlisteLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
-        panelHistory = new PanelErledigteUrls(ddaten);
-        panelHistory.initHistory();
         panelDateinamen = new PanelDateinamen(ddaten, this);
         panelPset = new PanelPset(ddaten, this);
         panelPsetVorlagen = new PanelPsetImport(ddaten, this);
@@ -148,10 +140,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeDownload.add(treeNodeProgramme);
         treeNodeDownload.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownload);
-        // ===============================================================================
-        // ####### Infos #########
-        treeNodeInfos.add(treeNodeHistory);
-        treeNodeStart.add(treeNodeInfos);
 
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
@@ -227,14 +215,7 @@ public class DialogEinstellungen extends JFrame {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPsetVorlagen);
                         break;
-                    //Infos
-                    case NAME_infos:
-                        jTree1.setSelectionPath(new TreePath(treeNodeHistory.getPath()));
-                        break;
-                    case NAME_history:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelHistory);
-                        break;
+
                     default:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);
@@ -245,9 +226,9 @@ public class DialogEinstellungen extends JFrame {
             jPanelExtra.updateUI();
         });
         // und jetzt noch aufklappen
-        for (int i = 0; i < jTree1.getRowCount(); ++i) {
+        for (int i = 0; i < jTree1.getRowCount(); ++i)
             jTree1.expandRow(i);
-        }
+
         // und den Start setzen
         TreePath tp = new TreePath(treeNodeAllgemeineEinstellungen.getPath());
         jTree1.setSelectionPath(tp);
