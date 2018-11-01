@@ -17,20 +17,18 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialogEinstellungen;
+package mediathek.gui.history;
 
 import mSearch.daten.DatenFilm;
-import mSearch.tool.Functions;
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrls;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 
 import javax.swing.*;
@@ -39,21 +37,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
-import static mediathek.controller.history.MVUsedUrl.*;
+import static mediathek.controller.history.MVUsedUrl.TITLE_HEADER;
+import static mediathek.controller.history.MVUsedUrl.USED_URL_URL;
 
 @SuppressWarnings("serial")
-public class PanelErledigteUrls extends JPanel {
-    private boolean abo;
-    private final Daten daten;
+public abstract class PanelErledigteUrls extends JPanel {
+    protected final Daten daten;
+    protected MVUsedUrls workList;
 
     public PanelErledigteUrls(Daten d) {
         this.daten = d;
@@ -64,67 +57,11 @@ public class PanelErledigteUrls extends JPanel {
         jButtonExport.addActionListener((ActionEvent e) -> export());
     }
 
-    public void initAbo() {
-        abo = true;
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), TITLE_HEADER));
-                    setsum();
-                }
-            }
-        });
-        jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                daten.erledigteAbos.alleLoeschen();
-            }
-        });
-        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
-            if (jToggleButtonLaden.isSelected()) {
-                jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), TITLE_HEADER));
-                setsum();
-            } else {
-                jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, TITLE_HEADER));
-                setsum();
-            }
-        });
+    protected TModel createDataModel() {
+        return new TModel(workList.getObjectData(), TITLE_HEADER);
     }
 
-    public void initHistory() {
-        abo = false;
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (jToggleButtonLaden.isSelected()) {
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), TITLE_HEADER));
-                    setsum();
-                }
-            }
-        });
-        jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                daten.history.alleLoeschen();
-            }
-        });
-        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
-            if (jToggleButtonLaden.isSelected()) {
-                jButtonLoeschen.setEnabled(true);
-                jTable1.setModel(new TModel(daten.history.getObjectData(), TITLE_HEADER));
-                setsum();
-            } else {
-                jButtonLoeschen.setEnabled(false);
-                jTable1.setModel(new TModel(null, TITLE_HEADER));
-                setsum();
-            }
-        });
-    }
-
-    private void setsum() {
+    protected void setsum() {
         if (jTable1.getRowCount() <= 0) {
             jLabelSum.setText("");
         } else {
@@ -132,76 +69,31 @@ public class PanelErledigteUrls extends JPanel {
         }
     }
 
-    private void export() {
-        if (jTable1.getModel().getRowCount() <= 0) {
-            return;
-        }
+    protected String getExportFileLocation() {
         DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
         dialog.setVisible(true);
-        if (!dialog.ok) {
-            return;
-        }
-
-        final List<MVUsedUrl> liste;
-        if (abo)
-            liste = daten.erledigteAbos.getSortedList();
+        if (!dialog.ok)
+            return "";
         else
-            liste = daten.history.getSortedList();
+            return dialog.ziel;
 
-        new HistoryWriterThread(dialog.ziel,liste).start();
     }
 
-    private class HistoryWriterThread extends Thread {
-        private final String ziel;
-        private final List<MVUsedUrl> liste;
+    protected abstract List<MVUsedUrl> getExportableList();
 
-        public HistoryWriterThread(final String ziel, List<MVUsedUrl> liste) {
-            this.ziel = ziel;
-            this.liste = liste;
-            setName(HistoryWriterThread.class.getName());
-        }
+    private void export() {
+        if (jTable1.getModel().getRowCount() <= 0)
+            return;
 
-        @Override
-        public void run() {
-            Path logFilePath = Paths.get(ziel);
-            try (OutputStream os = Files.newOutputStream(logFilePath);
-                 OutputStreamWriter osw = new OutputStreamWriter(os);
-                 BufferedWriter bw = new BufferedWriter(osw)) {
-                bw.newLine();
-                bw.write(getHeaderString());
-                bw.newLine();
-                bw.newLine();
-                for (MVUsedUrl entry : liste) {
-                    bw.write(prepareUrlString(entry));
-                    bw.newLine();
-                }
-                bw.newLine();
+        final String ziel = getExportFileLocation();
+        if (!ziel.isEmpty())
+            new HistoryWriterThread(ziel, getExportableList()).start();
 
-                bw.flush();
-            } catch (Exception ex) {
-                SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
-            }
-        }
-
-        private String getHeaderString() {
-            return Functions.textLaenge(MAX_TITLE_LENGTH, TITLE_HEADER[USED_URL_TITEL], false, false)
-                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, TITLE_HEADER[USED_URL_THEMA], false, false)
-                    + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false, false)
-                    + "    " + TITLE_HEADER[USED_URL_URL];
-        }
-
-        private String prepareUrlString(MVUsedUrl entry) {
-            return Functions.textLaenge(MAX_TITLE_LENGTH, entry.getTitel(), false, false)
-                    + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, entry.getThema(), false, false)
-                    + "    " + (entry.getDatum().isEmpty() ? "          " : entry.getDatum())
-                    + "    " + entry.getUrl();
-        }
     }
 
     class BeobMausTabelle extends MouseAdapter {
 
-        //rechhte Maustaste in der Tabelle
+        //rechte Maustaste in der Tabelle
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         BeobUrl beobUrl = new BeobUrl();
         private Point p;
@@ -300,14 +192,10 @@ public class PanelErledigteUrls extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = jTable1.getSelectedRow();
+                final int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow != -1) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
-                    if (abo) {
-                        daten.erledigteAbos.urlAusLogfileLoeschen(del);
-                    } else {
-                        daten.history.urlAusLogfileLoeschen(del);
-                    }
+                    workList.urlAusLogfileLoeschen(del);
                 }
             }
         }
@@ -369,9 +257,9 @@ public class PanelErledigteUrls extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonExport;
-    private javax.swing.JButton jButtonLoeschen;
+    protected javax.swing.JButton jButtonLoeschen;
     private javax.swing.JLabel jLabelSum;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JToggleButton jToggleButtonLaden;
+    protected javax.swing.JTable jTable1;
+    protected javax.swing.JToggleButton jToggleButtonLaden;
     // End of variables declaration//GEN-END:variables
 }

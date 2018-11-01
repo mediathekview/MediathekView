@@ -34,7 +34,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.StandardCloseDialog;
-import mediathek.gui.dialogEinstellungen.PanelErledigteUrls;
+import mediathek.gui.history.AboHistoryPanel;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
@@ -183,9 +183,7 @@ public class GuiAbo extends JPanel {
         }
         @Override
         public JComponent createContentPanel() {
-            PanelErledigteUrls panel = new PanelErledigteUrls(daten);
-            panel.initAbo();
-            return panel;
+            return new AboHistoryPanel(daten);
         }
     }
 
