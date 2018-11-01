@@ -48,6 +48,8 @@ import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.dialog.StandardCloseDialog;
+import mediathek.gui.dialogEinstellungen.PanelErledigteUrls;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
@@ -326,6 +328,9 @@ public class GuiDownloads extends JPanel {
             }
         });
 
+        JMenuItem miShowDownloadHistory = new JMenuItem("Download-Historie anzeigen...");
+        miShowDownloadHistory.addActionListener(e -> showDownloadHistory());
+
         menu.add(miDownloadsStartAll);
         menu.add(miDownloadStartTimed);
         menu.add(miStopAllDownloads);
@@ -348,11 +353,31 @@ public class GuiDownloads extends JPanel {
         menu.addSeparator();
         menu.add(miSearchMediaDb);
         menu.addSeparator();
+        menu.add(miShowDownloadHistory);
+        menu.addSeparator();
         menu.add(miInvertSelection);
         menu.addSeparator();
         menu.add(miShutdownAfterDownload);
     }
 
+    class ShowDownloadHistoryDialog extends StandardCloseDialog {
+        public ShowDownloadHistoryDialog(Frame owner) {
+            super(owner,"Download-Historie", true);
+        }
+
+        @Override
+        public JComponent createContentPanel() {
+            PanelErledigteUrls panel = new PanelErledigteUrls(daten);
+            panel.initHistory();
+            return panel;
+        }
+    }
+
+    private void showDownloadHistory() {
+        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(MediathekGui.ui());
+        dialog.pack();
+        dialog.setVisible(true);
+    }
 
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
