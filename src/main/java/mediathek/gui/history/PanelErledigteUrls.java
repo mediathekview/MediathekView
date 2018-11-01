@@ -94,10 +94,10 @@ public abstract class PanelErledigteUrls extends JPanel {
     class BeobMausTabelle extends MouseAdapter {
 
         //rechte Maustaste in der Tabelle
-        BeobLoeschen beobLoeschen = new BeobLoeschen();
-        BeobUrl beobUrl = new BeobUrl();
+        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
+        private final BeobUrl beobUrl = new BeobUrl();
         private Point p;
-        DatenFilm film;
+        private DatenFilm film;
 
         @Override
         public void mousePressed(MouseEvent arg0) {
