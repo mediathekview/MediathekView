@@ -60,7 +60,7 @@ public class MVInfoFile {
             titel += ".txt";
         }
         pfad = GuiFunktionen.addsPfad(pfad, titel);
-        DialogZiel dialog = new DialogZiel(paFrame, true, pfad, "Infos speichern");
+        DialogZiel dialog = new DialogZiel(null, true, pfad, "Infos speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;

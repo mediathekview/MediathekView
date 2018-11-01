@@ -35,9 +35,9 @@ import java.io.File;
 public class DialogZiel extends JDialog {
     public boolean ok = false;
     public String ziel;
-    private final JFrame parent;
+    private final Dialog parent;
 
-    public DialogZiel(JFrame pparent, boolean modal, String ziel, String titel) {
+    public DialogZiel(Dialog pparent, boolean modal, String ziel, String titel) {
         super(pparent, modal);
         parent = pparent;
         initComponents();
@@ -65,7 +65,7 @@ public class DialogZiel extends JDialog {
             try {
                 int ook;
                 if (new File(pfad).exists()) {
-                    ook = JOptionPane.showConfirmDialog(parent, "Datei:  " + '"' + pfad + '"' + "  existiert bereits", "Überschreiben?",
+                    ook = JOptionPane.showConfirmDialog(this, "Datei:  " + '"' + pfad + '"' + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ook = JOptionPane.OK_OPTION;
