@@ -67,6 +67,9 @@
               <Connection code="new TModel()" type="code"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
@@ -74,11 +77,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Liste l&#xf6;schen"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JToggleButton" name="jToggleButtonLaden">
       <Properties>
         <Property name="text" type="java.lang.String" value="Laden"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonExport">
       <Properties>

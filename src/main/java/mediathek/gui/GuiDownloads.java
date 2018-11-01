@@ -49,7 +49,7 @@ import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.StandardCloseDialog;
-import mediathek.gui.dialogEinstellungen.PanelErledigteUrls;
+import mediathek.gui.history.DownloadHistoryPanel;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
@@ -367,9 +367,7 @@ public class GuiDownloads extends JPanel {
 
         @Override
         public JComponent createContentPanel() {
-            PanelErledigteUrls panel = new PanelErledigteUrls(daten);
-            panel.initHistory();
-            return panel;
+            return new DownloadHistoryPanel(daten);
         }
     }
 
