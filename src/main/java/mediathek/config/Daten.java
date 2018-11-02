@@ -270,7 +270,7 @@ public class Daten {
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        erledigteAbos = new MVUsedUrls("downloadAbos.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
+        erledigteAbos = new MVUsedUrls("downloadAbos.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS_GEAENDERT);
 
         history = new MVUsedUrls("history.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
