@@ -30,6 +30,7 @@ import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,6 +56,31 @@ public abstract class PanelErledigteUrls extends JPanel {
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
         jButtonExport.addActionListener((ActionEvent e) -> export());
+        initListeners();
+    }
+
+    protected void initListeners() {
+        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
+            if (jToggleButtonLaden.isSelected()) {
+                jButtonLoeschen.setEnabled(true);
+                updateModelAndRecalculate(createDataModel());
+            } else {
+                jButtonLoeschen.setEnabled(false);
+                updateModelAndRecalculate(new TModel(null, TITLE_HEADER));
+            }
+        });
+
+        jButtonLoeschen.addActionListener((ActionEvent e) -> {
+            final int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                workList.alleLoeschen();
+            }
+        });
+    }
+
+    protected void updateModelAndRecalculate(@NotNull TModel model) {
+        jTable1.setModel(model);
+        setsum();
     }
 
     protected TModel createDataModel() {
