@@ -59,7 +59,12 @@ public abstract class PanelErledigteUrls extends JPanel {
         initListeners();
     }
 
-    protected void initListeners() {
+    protected void changeListHandler() {
+        if (jToggleButtonLaden.isSelected())
+            updateModelAndRecalculate(createDataModel());
+    }
+
+    private void initListeners() {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
                 jButtonLoeschen.setEnabled(true);
@@ -78,7 +83,7 @@ public abstract class PanelErledigteUrls extends JPanel {
         });
     }
 
-    protected void updateModelAndRecalculate(@NotNull TModel model) {
+    private void updateModelAndRecalculate(@NotNull TModel model) {
         jTable1.setModel(model);
         setsum();
     }
@@ -87,7 +92,7 @@ public abstract class PanelErledigteUrls extends JPanel {
         return new TModel(workList.getObjectData(), TITLE_HEADER);
     }
 
-    protected void setsum() {
+    private void setsum() {
         if (jTable1.getRowCount() <= 0) {
             jLabelSum.setText("");
         } else {
