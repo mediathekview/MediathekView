@@ -11,21 +11,16 @@ public final class DownloadHistoryPanel extends PanelErledigteUrls {
         super(d);
         workList = daten.history;
 
-        initHistory();
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                changeListHandler();
+            }
+        });
     }
 
     @Override
     protected List<MVUsedUrl> getExportableList() {
         return daten.history.getSortedList();
-    }
-
-    private void initHistory() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (jToggleButtonLaden.isSelected())
-                    updateModelAndRecalculate(createDataModel());
-            }
-        });
     }
 }
