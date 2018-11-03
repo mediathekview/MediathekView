@@ -19,7 +19,6 @@
  */
 package mediathek.tool.table;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.tool.TModel;
@@ -80,12 +79,6 @@ public abstract class MVTable extends JTable {
         }
 
         setHeight();
-        Listener.addListener(new Listener(Listener.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setHeight();
-            }
-        });
     }
 
     private static SortKey sortKeyLesen(String s, String upDown) {
