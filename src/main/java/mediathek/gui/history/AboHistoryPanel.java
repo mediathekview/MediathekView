@@ -1,22 +1,25 @@
 package mediathek.gui.history;
 
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.gui.messages.history.AboHistoryChangedEvent;
+import net.engio.mbassy.listener.Handler;
 
+import javax.swing.*;
 import java.util.List;
 
 public final class AboHistoryPanel extends PanelErledigteUrls {
+
     public AboHistoryPanel(Daten d) {
         super(d);
         workList = daten.erledigteAbos;
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                changeListHandler();
-            }
-        });
+        d.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleAboHistoryChangeEvent(AboHistoryChangedEvent e) {
+        SwingUtilities.invokeLater(this::changeListHandler);
     }
 
     @Override

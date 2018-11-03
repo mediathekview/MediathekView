@@ -50,6 +50,7 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
@@ -506,6 +507,17 @@ public class GuiFilme extends JPanel {
         }
     }
 
+    @Handler
+    private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (fap.showUnseenOnly.getValue()) {
+                loadTable();
+            } else {
+                tabelle.fireTableDataChanged(true);
+            }
+        });
+    }
+
     private void start_addListener() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -516,16 +528,7 @@ public class GuiFilme extends JPanel {
                 setupPanelVideoplayer();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (fap.showUnseenOnly.getValue()) {
-                    loadTable();
-                } else {
-                    tabelle.fireTableDataChanged(true);
-                }
-            }
-        });
+
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {

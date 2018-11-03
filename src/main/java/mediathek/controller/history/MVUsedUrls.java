@@ -21,10 +21,12 @@ package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.config.Daten;
+import mediathek.gui.messages.history.HistoryChangedEvent;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,19 +35,20 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class MVUsedUrls {
+public class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
     private final HashSet<String> listeUrls;
     private final LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
     private final String settingsDir;
-    private final int notifyEvent;
+    private final Class<T> clazz;
 
-    public MVUsedUrls(String fileName, String settingsDir, int notifyEvent) {
+    public MVUsedUrls(String fileName, String settingsDir,Class<T> clazz) {
         this.fileName = fileName;
         this.settingsDir = settingsDir;
-        this.notifyEvent = notifyEvent;
+        this.clazz = clazz;
+
         listeUrlsSortDate = new LinkedList<>();
         listeUrls = new HashSet<>() {
             @Override
@@ -75,6 +78,15 @@ public class MVUsedUrls {
         }
     }
 
+    private void sendChangeMessage() {
+        try {
+            final T msg = clazz.getDeclaredConstructor().newInstance();
+            Daten.getInstance().getMessageBus().publishAsync(msg);
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     public synchronized void alleLoeschen() {
         listeUrls.clear();
         Path urlPath = getUrlFilePath();
@@ -83,7 +95,7 @@ public class MVUsedUrls {
         } catch (IOException ignored) {
         }
 
-        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        sendChangeMessage();
     }
 
     public synchronized boolean urlPruefen(String urlFilm) {
@@ -150,7 +162,7 @@ public class MVUsedUrls {
         listeUrls.clear();
         listeBauen();
 
-        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        sendChangeMessage();
     }
 
     public synchronized void urlAusLogfileLoeschen(ArrayList<DatenFilm> filme) {
@@ -202,7 +214,7 @@ public class MVUsedUrls {
         listeUrls.clear();
         listeBauen();
 
-        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        sendChangeMessage();
     }
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
@@ -220,7 +232,7 @@ public class MVUsedUrls {
             Log.errorLog(945258023, ex);
         }
 
-        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        sendChangeMessage();
     }
 
     public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
@@ -242,7 +254,7 @@ public class MVUsedUrls {
             Log.errorLog(420312459, ex);
         }
 
-        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        sendChangeMessage();
     }
 
     // eigener Thread!!
@@ -309,7 +321,7 @@ public class MVUsedUrls {
             } catch (Exception ex) {
                 Log.errorLog(945258023, ex);
             }
-            Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+            sendChangeMessage();
         }
     }
 

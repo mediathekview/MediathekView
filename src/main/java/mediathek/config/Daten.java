@@ -20,7 +20,6 @@
 package mediathek.config;
 
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
@@ -33,6 +32,8 @@ import mediathek.gui.SplashScreenManager;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.gui.messages.history.AboHistoryChangedEvent;
+import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
@@ -81,8 +82,8 @@ public class Daten {
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
-    public MVUsedUrls history; // alle angesehenen Filme
-    public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
+    public MVUsedUrls<DownloadHistoryChangedEvent> history; // alle angesehenen Filme
+    public MVUsedUrls<AboHistoryChangedEvent> erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
@@ -270,9 +271,9 @@ public class Daten {
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        erledigteAbos = new MVUsedUrls("downloadAbos.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS_GEAENDERT);
+        erledigteAbos = new MVUsedUrls<>("downloadAbos.txt", getSettingsDirectory_String(), AboHistoryChangedEvent.class);
 
-        history = new MVUsedUrls("history.txt", getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
+        history = new MVUsedUrls<>("history.txt", getSettingsDirectory_String(), DownloadHistoryChangedEvent.class);
 
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
