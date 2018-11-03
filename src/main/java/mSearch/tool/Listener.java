@@ -28,13 +28,11 @@ import java.util.EventListener;
 
 public class Listener implements EventListener {
 
-    public static final int EREIGNIS_LISTE_HISTORY_GEAENDERT = 1;
     public static final int EREIGNIS_LISTE_PSET = 2;
 
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 6;
     public static final int EREIGNIS_LISTE_DOWNLOADS = 9;
     public static final int EREIGNIS_LISTE_ABOS = 10;
-    public static final int EREIGNIS_LISTE_ERLEDIGTE_ABOS_GEAENDERT = 11;
     public static final int EREIGNIS_ART_IMPORT_FILMLISTE = 12;
     public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 13;
     public static final int EREIGNIS_START_EVENT_BUTTON = 15;

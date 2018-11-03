@@ -1,9 +1,11 @@
 package mediathek.gui.history;
 
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
+import net.engio.mbassy.listener.Handler;
 
+import javax.swing.*;
 import java.util.List;
 
 public final class DownloadHistoryPanel extends PanelErledigteUrls {
@@ -11,12 +13,12 @@ public final class DownloadHistoryPanel extends PanelErledigteUrls {
         super(d);
         workList = daten.history;
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                changeListHandler();
-            }
-        });
+        d.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleChangeEvent(DownloadHistoryChangedEvent e) {
+        SwingUtilities.invokeLater(this::changeListHandler);
     }
 
     @Override
