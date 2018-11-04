@@ -535,12 +535,7 @@ public class GuiFilme extends JPanel {
                 loadTable();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BESCHREIBUNG, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                loadTable();
-            }
-        });
+
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
