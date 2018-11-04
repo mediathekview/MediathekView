@@ -26,9 +26,12 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
+import mediathek.gui.messages.mediadb.MediaDbStartEvent;
+import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
 import mediathek.tool.table.MVMediaDbTable;
 import mediathek.tool.table.MVTable;
+import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,14 +51,34 @@ import java.io.File;
 public class DialogMediaDB extends JDialog {
     private final JFrame parent;
     private final Daten daten;
+    private final MVTable tabelleFilme;
 
+    @Handler
+    private void handleMediaDbStartEvent(MediaDbStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB suchen
+            makeIndex(true);
+            jLabelSum.setText("0");
+        });
+    }
 
-    //    private boolean init = false;
-    private MVTable tabelleFilme;
+    @Handler
+    private void handleMediaDbStopEvent(MediaDbStopEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB liegt vor
+            makeIndex(false);
+            jLabelSum.setText(Integer.toString(daten.getListeMediaDB().size()));
+            searchFilmInDb();
+        });
+    }
+
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
         daten = Daten.getInstance();
         initComponents();
+
+        daten.getMessageBus().subscribe(this);
+
         this.parent = pparent;
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -64,23 +87,6 @@ public class DialogMediaDB extends JDialog {
             }
         });
         this.setTitle("Mediensammlung durchsuchen");
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, DialogMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB suchen
-                makeIndex(true);
-                jLabelSum.setText("0");
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, DialogMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB liegt vor
-                makeIndex(false);
-                jLabelSum.setText(daten.getListeMediaDB().size() + "");
-                searchFilmInDb();
-            }
-        });
 
         tabelleFilme = new MVMediaDbTable();
         jScrollPane3.setViewportView(tabelleFilme);

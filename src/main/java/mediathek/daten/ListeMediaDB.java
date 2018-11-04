@@ -19,10 +19,11 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.gui.messages.mediadb.MediaDbStartEvent;
+import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelMediaDB;
@@ -30,10 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +42,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("serial")
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public final static String TRENNER = "  |###|  ";
-    public final static String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
@@ -91,13 +88,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         @Override
         public void run() {
             logger.info("Clean MediaDB start");
-            Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+            final var messageBus = daten.getMessageBus();
+            messageBus.publishAsync(new MediaDbStartEvent());
             makeIndex = true;
 
             clean();
 
             makeIndex = false;
-            Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+            messageBus.publishAsync(new MediaDbStopEvent());
             logger.info("Clean MediaDB stop");
         }
     }
@@ -122,13 +120,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void delList(boolean ohneSave) {
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+        final var messageBus = daten.getMessageBus();
+        messageBus.publishAsync(new MediaDbStartEvent());
         makeIndex = true;
 
         del(ohneSave);
 
         makeIndex = false;
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+        messageBus.publishAsync(new MediaDbStopEvent());
     }
 
     private void del(boolean ohneSave) {
@@ -141,7 +140,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void createMediaDB(String pfad) {
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+        daten.getMessageBus().publishAsync(new MediaDbStartEvent());
         suffix = MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
@@ -167,8 +166,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     public synchronized void loadSavedList() {
         Path urlPath = getFilePath();
-        //use Automatic Resource Management
-        try (LineNumberReader in = new LineNumberReader(Files.newBufferedReader(urlPath))) {
+
+        try (BufferedReader br = Files.newBufferedReader(urlPath);
+                LineNumberReader in = new LineNumberReader(br)) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 DatenMediaDB mdb = getUrlAusZeile(zeile);
@@ -288,7 +288,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             makeIndex = false;
             logger.debug("Ende Mediensammlung erstellen");
 
-            Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+            daten.getMessageBus().publishAsync(new MediaDbStopEvent());
         }
 
         private void errorMsg() {
