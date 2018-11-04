@@ -20,12 +20,12 @@
 package mediathek.gui.dialog;
 
 import mSearch.tool.FilenameUtils;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
+import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
@@ -133,7 +133,7 @@ public class DialogMediaDB extends JDialog {
 
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        Listener.notify(Listener.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
+        daten.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
     }
 
     public void tabelleSpeichern() {

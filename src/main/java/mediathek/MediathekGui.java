@@ -55,6 +55,7 @@ import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
+import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.res.GetIcon;
@@ -198,8 +199,6 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_SETTINGS_DIALOG);
         initializeSettingsDialog();
-
-        addListener();
 
         setupSearchKeyForMac();
 
@@ -417,19 +416,15 @@ public class MediathekGui extends JFrame {
     }
 
     @Handler
+    private void handleMediaDbDialogEvent(MediaDbDialogVisibleEvent e) {
+        SwingUtilities.invokeLater(() -> cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))));
+    }
+
+    @Handler
     private void handleTabVisualSettingsChangedEvent(TabVisualSettingsChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             configureTabPlacement();
             configureTabIcons();
-        });
-    }
-
-    private void addListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-            }
         });
     }
 
