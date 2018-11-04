@@ -23,6 +23,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
+import java.io.IOException;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -79,7 +80,7 @@ public class Main {
             try {
                 var oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
-            } catch (Exception ignored) {
+            } catch (IOException ignored) {
             }
         }
     }
@@ -307,7 +308,7 @@ public class Main {
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
-        } catch (Exception ignored) {
+        } catch (NoSuchFieldException|IllegalAccessException e) {
             logger.warn("Could not set awtAppClassName");
         }
     }
