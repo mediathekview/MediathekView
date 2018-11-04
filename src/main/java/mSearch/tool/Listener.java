@@ -48,8 +48,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
     public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
     public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;
-    public static final int EREIGNIS_MEDIA_DB_START = 41;
-    public static final int EREIGNIS_MEDIA_DB_STOP = 42;
 
     private static final EventListenerList listeners = new EventListenerList();
     private static final Logger logger = LogManager.getLogger(Listener.class);

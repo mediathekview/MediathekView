@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -30,7 +29,10 @@ import mediathek.daten.DatenMediaPath;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.mediadb.MediaDbStartEvent;
+import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -46,28 +48,32 @@ public class PanelMediaDB extends PanelVorlage {
     private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
 
+    @Handler
+    private void handleMediaDbStartEvent(MediaDbStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB suchen
+            setIndex(false);
+            modelMediaDB.setRowCount(0);
+            jToggleButtonLoad.setSelected(false);
+        });
+    }
+
+    @Handler
+    private void handleMediaDbStopEvent(MediaDbStopEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB liegt vor
+            jLabelSizeIndex.setText(daten.getListeMediaDB().size() + "");
+            setIndex(true);
+        });
+    }
+
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         daten = d;
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, PanelMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB suchen
-                setIndex(false);
-                modelMediaDB.setRowCount(0);
-                jToggleButtonLoad.setSelected(false);
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, PanelMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB liegt vor
-                jLabelSizeIndex.setText(daten.getListeMediaDB().size() + "");
-                setIndex(true);
-            }
-        });
+        daten.getMessageBus().subscribe(this);
+
         progress.setVisible(false);
         progress.setIndeterminate(true);
         progress.setMaximum(0);
