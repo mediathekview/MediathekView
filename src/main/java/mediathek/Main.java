@@ -85,28 +85,6 @@ public class Main {
         }
     }
 
-    /**
-     * Tests if javafx is in the classpath by loading a well known class.
-     */
-    private static void checkForJavaFX() {
-        final var message = "MediathekView benötigt ein installiertes JavaFX.";
-
-        try {
-            Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
-        } catch (ClassNotFoundException e) {
-            logger.error("JavaFX was not found on system.", e);
-            if (GraphicsEnvironment.isHeadless()) {
-                System.err.println(message);
-            } else {
-                //we have a screen
-                JOptionPane.showMessageDialog(null,
-                        message,
-                        "JavaFX nicht gefunden", JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(3);
-        }
-    }
-
     private static void printArguments(final String... aArguments) {
         for (String argument : aArguments) {
             logger.info("Startparameter: {}", argument);
@@ -161,7 +139,6 @@ public class Main {
         setupPortableMode(args);
 
         checkMemoryRequirements();
-        checkForJavaFX();
 
         if (MemoryUtils.isLowMemoryEnvironment()) {
             setupDatabase();
