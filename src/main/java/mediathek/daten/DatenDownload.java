@@ -20,12 +20,16 @@
 package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
-import mSearch.tool.*;
+import mSearch.tool.Datum;
+import mSearch.tool.FilenameUtils;
+import mSearch.tool.GermanStringSorter;
+import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
@@ -241,7 +245,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public void interruptRestart() {
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
-        Listener.notify(Listener.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
+        Daten.getInstance().getMessageBus().publishAsync(new RestartDownloadEvent());
     }
 
     public boolean notStarted() {

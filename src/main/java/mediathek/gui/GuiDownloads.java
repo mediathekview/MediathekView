@@ -50,10 +50,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.StandardCloseDialog;
 import mediathek.gui.history.DownloadHistoryPanel;
-import mediathek.gui.messages.DownloadRateLimitChangedEvent;
-import mediathek.gui.messages.GeoStateChangedEvent;
-import mediathek.gui.messages.StartEvent;
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.gui.messages.*;
 import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.DownloadTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
@@ -732,6 +729,14 @@ public class GuiDownloads extends JPanel {
         return textLinks;
     }
 
+    @Handler
+    private void handleRestartDownloadEvent(RestartDownloadEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            reloadTable();
+            daten.allesSpeichern();
+        });
+    }
+
     private void addListenerMediathekView() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -756,7 +761,7 @@ public class GuiDownloads extends JPanel {
             }
         });
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS,
-                Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, Listener.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
+                Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 reloadTable();
