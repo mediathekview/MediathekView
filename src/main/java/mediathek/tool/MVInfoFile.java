@@ -88,7 +88,8 @@ public class MVInfoFile {
             br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.arr[DatenFilm.FILM_GROESSE]);
             br.write("\n\n");
 
-            br.write("Website\n");
+            br.write("Website");
+            br.write("\n");
             br.write(film.getWebsiteLink());
             br.write("\n\n");
 
