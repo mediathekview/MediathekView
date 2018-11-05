@@ -52,6 +52,6 @@ public class FilmListInfoPane extends HBox {
 
     @Handler
     public void handleTimerEvent(TimerEvent e) {
-        Platform.runLater(filmListAgeLabel::computeAge);
+        Platform.runLater(filmListAgeLabel::setAgeToLabel);
     }
 }
