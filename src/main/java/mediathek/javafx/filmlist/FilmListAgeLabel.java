@@ -1,10 +1,11 @@
 package mediathek.javafx.filmlist;
 
-import java.time.Duration;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.javafx.tool.ComputedLabel;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import java.time.Duration;
 
 /**
  * Label which will compute the age of the filmlist when updated.
