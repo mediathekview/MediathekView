@@ -25,6 +25,6 @@ class FilmListAgeLabel extends ComputedLabel {
 
     public String computeAge(long seconds) {
       Duration duration = Duration.ofSeconds(seconds);
-      return String.format("Alter: %s", DurationFormatUtils.formatDurationISO(duration.toMillis()));
+      return String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
     }
 }
