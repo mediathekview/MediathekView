@@ -64,7 +64,7 @@ public class DialogFilmBeschreibung extends JDialog {
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());
             MVInfoFile file = new MVInfoFile();
-            file.writeInfoFile(paFrame, datenFilm);
+            file.writeInfoFile(datenFilm);
         });
         pack();
     }
