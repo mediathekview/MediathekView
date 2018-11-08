@@ -1,15 +1,16 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
+import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -28,6 +29,8 @@ public class PanelFilmlisteLaden extends JPanel {
         super();
         daten = d;
 
+        daten.getMessageBus().subscribe(this);
+
         initComponents();
         init();
     }
@@ -35,38 +38,41 @@ public class PanelFilmlisteLaden extends JPanel {
     private void init() {
         initRadio();
 
-        jButtonLoad.addActionListener(ae -> daten.getFilmeLaden().loadFilmlist(""));
+        final var filmeLaden = daten.getFilmeLaden();
+        jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist(""));
 
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
 
         jButtonFilmeLaden.addActionListener(e -> {
-            if (jCheckBoxUpdate.isSelected()) {
-                daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
-            } else {
-                daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
-            }
+            if (jCheckBoxUpdate.isSelected())
+                filmeLaden.updateFilmlist(jTextFieldUrl.getText());
+            else
+                filmeLaden.loadFilmlist(jTextFieldUrl.getText());
         });
 
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         jTextFieldUrl.addMouseListener(new TextCopyPaste());
+    }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                initRadio();
-            }
-        });
+    @Handler
+    private void handleFilmListImportTypeChanged(FilmListImportTypeChangedEvent e) {
+        SwingUtilities.invokeLater(this::initRadio);
     }
 
     private void initRadio() {
-        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL) {
-            jRadioButtonManuell.setSelected(true);
-        } else {
-            jRadioButtonAuto.setSelected(true);
+        switch (GuiFunktionen.getImportArtFilme()) {
+            case MANUAL:
+                jRadioButtonManuell.setSelected(true);
+                break;
+
+            case AUTOMATIC:
+                jRadioButtonAuto.setSelected(true);
+                break;
         }
+
         jTextFieldUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL));
         setPanelTabelle(jRadioButtonManuell.isSelected());
     }
@@ -90,7 +96,7 @@ public class PanelFilmlisteLaden extends JPanel {
             else
                 GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
 
-            Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
         }
     }
 
