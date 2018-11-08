@@ -48,6 +48,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
@@ -518,6 +519,14 @@ public class GuiFilme extends JPanel {
         });
     }
 
+    @Handler
+    private void handleButtonStart(ButtonStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            tabelle.fireTableDataChanged(true);
+            setInfoStatusbar();
+        });
+    }
+
     private void start_addListener() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -540,13 +549,6 @@ public class GuiFilme extends JPanel {
             @Override
             public void ping() {
                 loadTable();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
-                setInfoStatusbar();
             }
         });
     }

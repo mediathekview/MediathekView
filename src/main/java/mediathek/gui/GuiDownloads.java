@@ -760,7 +760,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         });
-        
+
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
                 Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
