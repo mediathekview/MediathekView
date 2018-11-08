@@ -26,8 +26,8 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
+import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
-import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -153,14 +153,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             this.remove(datenDownload);
             this.addFirst(datenDownload);
         }
-        Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
+
+        daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
     }
 
     public synchronized void delDownloadButton(String url) {
-        Iterator<DatenDownload> it = this.iterator();
-        DatenDownload datenDownload;
-        while (it.hasNext()) {
-            datenDownload = it.next();
+        for (DatenDownload datenDownload : this) {
             if (datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 if (datenDownload.start != null) {
                     if (datenDownload.start.status < Start.STATUS_FERTIG) {
@@ -466,31 +464,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .collect(Collectors.toList());
 
         return activeDownloads;
-    }
-
-    public synchronized TModel getModelStarts(TModel model) {
-        model.setRowCount(0);
-        Object[] object;
-
-        if (!this.isEmpty()) {
-            final int objLen = DatenDownload.MAX_ELEM + 1;
-            object = new Object[objLen];
-            for (DatenDownload datenDownload : this) {
-                if (datenDownload.start != null) {
-                    for (int k = 0; k < objLen; ++k) {
-                        if (k < DatenDownload.MAX_ELEM) {
-                            object[k] = datenDownload.arr[k];
-                        } else if (datenDownload.istAbo()) {
-                            object[k] = "Abo";
-                        } else {
-                            object[k] = "";
-                        }
-                    }
-                }
-                model.addRow(object);
-            }
-        }
-        return model;
     }
 
     public synchronized void buttonStartsPutzen() {
