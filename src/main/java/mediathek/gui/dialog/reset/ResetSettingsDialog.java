@@ -1,7 +1,7 @@
-package mediathek.gui.dialog;
+package mediathek.gui.dialog.reset;
 
 import mediathek.config.Daten;
-import mediathek.gui.ResetSettingsPanel;
+import mediathek.gui.dialog.StandardCloseDialog;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package mediathek.gui.actions;
 
 import mediathek.config.Daten;
-import mediathek.gui.dialog.ResetSettingsDialog;
+import mediathek.gui.dialog.reset.ResetSettingsDialog;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
