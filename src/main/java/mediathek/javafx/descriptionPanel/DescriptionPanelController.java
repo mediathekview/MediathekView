@@ -10,7 +10,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import mSearch.daten.DatenFilm;
 import mediathek.MediathekGui;
-import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,7 @@ public class DescriptionPanelController {
         MenuItem edit = new MenuItem("Beschreibung ändern");
         edit.setOnAction(e -> {
             SwingUtilities.invokeLater(() -> {
-                DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), Daten.getInstance(), currentFilm);
+                DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), currentFilm);
                 dialog.setVisible(true);
             });
         });

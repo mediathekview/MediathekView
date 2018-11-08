@@ -19,9 +19,11 @@
  */
 package mediathek.gui.dialog;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import mSearch.daten.DatenFilm;
-import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVInfoFile;
 
@@ -29,17 +31,14 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class DialogFilmBeschreibung extends JDialog {
-    DatenFilm datenFilm;
-    JFrame paFrame;
-    Daten daten;
+    private static final String TITLE = "Beschreibung ändern";
 
-    public DialogFilmBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {
+    public DialogFilmBeschreibung(JFrame parent, DatenFilm datenFilm) {
         super(parent, true);
-        paFrame = parent;
-        daten = ddaten;
+
         initComponents();
-        datenFilm = ddatenFilm;
-        setTitle("Beschreibung ändern");
+
+        setTitle(TITLE);
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -53,19 +52,28 @@ public class DialogFilmBeschreibung extends JDialog {
             datenFilm.setDescription(jTextArea1.getText());
             dispose();
         });
+
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, '\n'
-                + "Diese Funktion richtet sich z.B. an Benutzer,\n"
-                + "welche eine angepasste Beschreibung der Sendung in Form\n"
-                + "der Infodatei (\"Filmname.txt\") anlegen\n"
-                + "und durch Drittprogramme einlesen lassen wollen.\n"
-                + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
-                + "einer Filmliste verloren.").setVisible(true));
+        jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Konstanten.PROGRAMMNAME);
+            alert.setHeaderText("Hilfe zu " + TITLE);
+            alert.setContentText("Diese Funktion richtet sich z.B. an Benutzer,"
+                    + "welche eine angepasste Beschreibung der Sendung in Form "
+                    + "der Infodatei (\"Filmname.txt\") anlegen "
+                    + "und durch Drittprogramme einlesen lassen wollen.\n\n"
+                    + "Achtung: Diese Änderungen gehen nach dem Neuladen "
+                    + "einer Filmliste verloren.");
+            alert.showAndWait();
+
+        }));
+
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());
             MVInfoFile file = new MVInfoFile();
             file.writeInfoFile(datenFilm);
         });
+
         pack();
     }
 
