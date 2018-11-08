@@ -36,7 +36,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.util.Iterator;
 
 @SuppressWarnings("serial")
 public class PanelDateinamen extends PanelVorlage {
@@ -79,8 +78,8 @@ public class PanelDateinamen extends PanelVorlage {
             setTextfelder();
         });
         jButtonMinus.addActionListener(e -> {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.remove(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
@@ -149,8 +148,8 @@ public class PanelDateinamen extends PanelVorlage {
 
     private void setVon() {
         if (!stopBeob) {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
@@ -159,8 +158,8 @@ public class PanelDateinamen extends PanelVorlage {
 
     private void setNach() {
         if (!stopBeob) {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.NACH_NR] = jTextFieldNach.getText();
                 tabelleLaden();
             }
@@ -168,10 +167,10 @@ public class PanelDateinamen extends PanelVorlage {
     }
 
     private void upDown(boolean auf) {
-        int rows = tabelle.getSelectedRow();
+        final int rows = tabelle.getSelectedRow();
         if (rows != -1) {
-            int row = tabelle.convertRowIndexToModel(rows);
-            int neu = ReplaceList.up(row, auf);
+            final int row = tabelle.convertRowIndexToModel(rows);
+            final int neu = ReplaceList.up(row, auf);
             tabelleLaden();
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
@@ -184,23 +183,21 @@ public class PanelDateinamen extends PanelVorlage {
     private void tabelleLaden() {
         stopBeob = true;
         int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
+        if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
-        }
+
         TModel model = new TModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
-        Object[] object;
         model.setRowCount(0);
-        Iterator<String[]> iterator = ReplaceList.list.iterator();
-        object = new Object[ReplaceList.MAX_ELEM];
-        while (iterator.hasNext()) {
-            String[] s = iterator.next();
+        Object[] object = new Object[ReplaceList.MAX_ELEM];
+        for (String[] s : ReplaceList.list) {
             //object[i] = datenAbo.arr;
             object[0] = s[0];
             object[1] = s[1];
             model.addRow(object);
         }
+
         tabelle.setModel(model);
-        if (selectedTableRow >= 0) {
+        if (selectedTableRow != -1) {
             if (tabelle.getRowCount() > 0 && selectedTableRow < tabelle.getRowCount()) {
                 tabelle.setRowSelectionInterval(selectedTableRow, selectedTableRow);
             } else if (tabelle.getRowCount() > 0 && selectedTableRow > 0) {
@@ -216,9 +213,8 @@ public class PanelDateinamen extends PanelVorlage {
     }
 
     private void setTextfelder() {
-        int selectedTableRow = tabelle.getSelectedRow();
-
-        if (selectedTableRow >= 0) {
+        final int selectedTableRow = tabelle.getSelectedRow();
+        if (selectedTableRow != -1) {
             jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.VON_NR).toString());
             jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.NACH_NR).toString());
         } else {
