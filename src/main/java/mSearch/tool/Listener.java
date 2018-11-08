@@ -26,7 +26,7 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
-public class Listener implements EventListener {
+public abstract class Listener implements EventListener {
 
     public static final int EREIGNIS_LISTE_PSET = 2;
 
@@ -82,8 +82,7 @@ public class Listener implements EventListener {
         }
     }
 
-    public void ping() {
-    }
+    public abstract void ping();
 
     private void pingen() {
         try {
