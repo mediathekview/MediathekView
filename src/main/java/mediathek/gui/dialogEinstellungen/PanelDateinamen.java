@@ -19,15 +19,16 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -44,17 +45,21 @@ public class PanelDateinamen extends PanelVorlage {
     private static final Color cGruen = new Color(0, 153, 51);
     private static final Color cRot = new Color(255, 0, 0);
 
+    @Handler
+    private void handleReplaceListChange(ReplaceListChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            tabelleLaden();
+            setTextfelder();
+        });
+    }
+
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
         daten = d;
-        Listener.addListener(new Listener(Listener.EREIGNIS_REPLACELIST_CHANGED, PanelDateinamen.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleLaden();
-                setTextfelder();
-            }
-        });
+
+        daten.getMessageBus().subscribe(this);
+
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
         jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
@@ -146,8 +151,6 @@ public class PanelDateinamen extends PanelVorlage {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-//                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
-//                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
                 ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }

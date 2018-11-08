@@ -15,12 +15,12 @@
  */
 package mediathek.controller;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import mediathek.gui.messages.ReplaceListChangedEvent;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.xml.stream.XMLInputFactory;
@@ -99,12 +99,12 @@ public class IoXmlLesen {
         if (foundAbos > 0) {
             daten.getListeAbo().aenderungMelden();
         }
-        if (foundBlacklistEntries > 0) {
+
+        if (foundBlacklistEntries > 0)
             daten.getListeBlacklist().filterListAndNotifyListeners();
-        }
-        if (foundReplaceListEntries > 0) {
-            Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
-        }
+
+        if (foundReplaceListEntries > 0)
+            daten.getMessageBus().publishAsync(new ReplaceListChangedEvent());
 
         return new ImmutableTriple<>(foundAbos, foundBlacklistEntries, foundReplaceListEntries);
     }

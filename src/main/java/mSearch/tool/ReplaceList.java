@@ -19,9 +19,12 @@
  */
 package mSearch.tool;
 
+import mediathek.config.Daten;
+import mediathek.gui.messages.ReplaceListChangedEvent;
+
 import java.io.File;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public final class ReplaceList {
 
@@ -33,7 +36,7 @@ public final class ReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public static LinkedList<String[]> list = new LinkedList<>();
+    public static List<String[]> list = new LinkedList<>();
 
     public static void init() {
         list.clear();
@@ -41,21 +44,21 @@ public final class ReplaceList {
     }
 
     public static String replace(String strCheck, boolean pfad) {
-        Iterator<String[]> it = list.iterator();
+        final var it = list.iterator();
         while (it.hasNext()) {
             String[] strReplace = it.next();
 
             // hat der Nutzer als Suchbegriff "leer" eingegeben, dann weg damit
             if (strReplace[0].isEmpty()) {
                 it.remove();
-                Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, ReplaceList.class.getSimpleName());
+                Daten.getInstance().getMessageBus().publishAsync(new ReplaceListChangedEvent());
                 continue;
             }
 
             // bei Pfaden darf / oder \ natürlich nicht entfernt werden
-            if (pfad && strReplace[0].equals(File.separator)) {
+            if (pfad && strReplace[0].equals(File.separator))
                 continue;
-            }
+
 
             strCheck = strCheck.replace(strReplace[0], strReplace[1]);
         }
