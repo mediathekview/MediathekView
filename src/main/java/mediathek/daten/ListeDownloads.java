@@ -26,6 +26,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
+import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.TModelDownload;
@@ -482,9 +483,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
-        }
+        if (gefunden)
+            daten.getMessageBus().publishAsync(new ButtonStartEvent());
     }
 
     public synchronized DatenDownload getNextStart() {

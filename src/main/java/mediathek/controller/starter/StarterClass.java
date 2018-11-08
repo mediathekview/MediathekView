@@ -32,6 +32,7 @@ import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
@@ -279,11 +280,13 @@ public class StarterClass {
     }
 
     static void notifyStartEvent(DatenDownload datenDownload) {
-        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
+        final var messageBus = Daten.getInstance().getMessageBus();
+
+        messageBus.publishAsync(new StartEvent());
+
         if (datenDownload != null) {
-            if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
-                Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
-            }
+            if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON)
+                messageBus.publishAsync(new ButtonStartEvent());
         }
     }
 
