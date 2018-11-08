@@ -43,7 +43,6 @@ public class Listener implements EventListener {
 
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 27;
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 29;
-    public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
     public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
     public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;
 
