@@ -1,9 +1,9 @@
 package mediathek.tool.table;
 
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
@@ -257,7 +257,8 @@ public class MVDownloadsTable extends MVTable {
             setRowSorter(null);
             setAutoCreateRowSorter(true);
             setSelected();
-            Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVTable.class.getSimpleName());
+
+            daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
         }
 
         @Override

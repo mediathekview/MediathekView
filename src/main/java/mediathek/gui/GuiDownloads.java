@@ -731,6 +731,15 @@ public class GuiDownloads extends JPanel {
 
     @Handler
     private void handleRestartDownloadEvent(RestartDownloadEvent e) {
+        reloadAndSave();
+    }
+
+    @Handler
+    private void handleDownloadQueueRankChanged(DownloadQueueRankChangedEvent e) {
+        reloadAndSave();
+    }
+
+    private void reloadAndSave() {
         SwingUtilities.invokeLater(() -> {
             reloadTable();
             daten.allesSpeichern();
@@ -751,6 +760,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         });
+        
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
                 Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
@@ -760,8 +770,8 @@ public class GuiDownloads extends JPanel {
                 }
             }
         });
-        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS,
-                Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD}, GuiDownloads.class.getSimpleName()) {
+
+        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 reloadTable();
