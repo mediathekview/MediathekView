@@ -746,6 +746,14 @@ public class GuiDownloads extends JPanel {
         });
     }
 
+    @Handler
+    private void handleAboListChanged(AboListChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)))
+                updateDownloads();
+        });
+    }
+
     private void addListenerMediathekView() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -761,8 +769,7 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
-                Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
@@ -771,7 +778,7 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 reloadTable();
@@ -779,15 +786,14 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (lastUpdate < (new Date().getTime() - 500)) {
+                final long now = System.currentTimeMillis();
+                if ((now - lastUpdate) >= 500) {
                     // nur alle 500ms aufrufen
-                    lastUpdate = new Date().getTime();
+                    lastUpdate = now;
                     daten.getListeDownloads().setModelProgress(model);
-                    // ist ein Kompromiss: beim Sortieren nach Progress wird die Tabelle nicht neu sortiert!
-                    //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
             }
         });

@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -25,11 +25,11 @@ import mSearch.daten.ListeFilme;
 import mSearch.tool.Datum;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.GermanStringSorter;
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
@@ -45,15 +45,14 @@ import java.util.LinkedList;
 
 @SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
-    private final Daten daten;
     private static final String[] LEER = {""};
-    //private String[] titel, thema, irgendwo;
+    private static final Logger logger = LogManager.getLogger(ListeAbo.class);
+    private final Daten daten;
+    private int nr;
 
     public ListeAbo(Daten ddaten) {
         daten = ddaten;
     }
-
-    private int nr;
 
     public void addAbo(String aboName) {
         addAbo(aboName, "", "", "");
@@ -119,8 +118,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     public void aenderungMelden() {
         // Filmliste anpassen
-        setAboFuerFilm(Daten.getInstance().getListeFilme(), true /*aboLoeschen*/);
-        Listener.notify(Listener.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        setAboFuerFilm(daten.getListeFilme(), true);
+        daten.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
     public DatenAbo getAboNr(int i) {
@@ -266,8 +265,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
-    private static final Logger logger = LogManager.getLogger(ListeAbo.class);
-
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
@@ -295,6 +292,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         });
 
         stopwatch.stop();
-        logger.debug("setAboFuerFilm: {}",stopwatch);
+        logger.debug("setAboFuerFilm: {}", stopwatch);
     }
 }
