@@ -48,6 +48,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
@@ -527,6 +528,11 @@ public class GuiFilme extends JPanel {
         });
     }
 
+    @Handler
+    private void handleAboListChanged(AboListChangedEvent e) {
+        SwingUtilities.invokeLater(this::loadTable);
+    }
+
     private void start_addListener() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -535,13 +541,6 @@ public class GuiFilme extends JPanel {
             @Override
             public void ping() {
                 setupPanelVideoplayer();
-            }
-        });
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                loadTable();
             }
         });
 

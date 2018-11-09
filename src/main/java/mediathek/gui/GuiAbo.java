@@ -35,6 +35,7 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.StandardCloseDialog;
 import mediathek.gui.history.AboHistoryPanel;
+import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
@@ -45,6 +46,7 @@ import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVAbosTable;
 import mediathek.tool.table.MVTable;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -119,6 +121,8 @@ public class GuiAbo extends JPanel {
         this.parentComponent = parentComponent;
 
         initComponents();
+
+        daten.getMessageBus().subscribe(this);
 
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
@@ -220,13 +224,12 @@ public class GuiAbo extends JPanel {
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
+    @Handler
+    private void handleAboListChanged(AboListChangedEvent e) {
+        SwingUtilities.invokeLater(this::tabelleLaden);
+    }
+
     private void initListeners() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleLaden();
-            }
-        });
         tabelle.addMouseListener(new BeobMausTabelle1());
         setCellRenderer();
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
