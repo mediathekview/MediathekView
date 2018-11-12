@@ -23,7 +23,6 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
-import java.io.IOException;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -47,6 +46,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.charset.StandardCharsets;
@@ -248,8 +248,11 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            // use for debugging EDT violations
-            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+            if (Config.isDebuggingEnabled()) {
+                // use for debugging EDT violations
+                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+                logger.info("Swing Thread checking repaint manager installed.");
+            }
 
             startMeldungen();
 
