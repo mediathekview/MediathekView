@@ -21,7 +21,6 @@ package mediathek.controller.starter;
 
 import com.google.common.util.concurrent.RateLimiter;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mediathek.MediathekGui;
@@ -32,10 +31,7 @@ import mediathek.controller.ThrottlingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
-import mediathek.gui.messages.DownloadFinishedEvent;
-import mediathek.gui.messages.DownloadListChangedEvent;
-import mediathek.gui.messages.DownloadRateLimitChangedEvent;
-import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.gui.messages.*;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 import net.engio.mbassy.listener.Handler;
@@ -276,7 +272,7 @@ public class DirectHttpDownload extends Thread {
                     melden = true;
                 }
                 if (melden) {
-                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                    daten.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
                     melden = false;
                 }
             }

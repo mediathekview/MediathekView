@@ -19,9 +19,10 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.tool.MVFilmSize;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -165,7 +166,7 @@ public class RuntimeExec {
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
-                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                    Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
                     Log.errorLog(912036780, input);
                 }
                 return;
@@ -229,7 +230,7 @@ public class RuntimeExec {
                     }
                 }
             } catch (Exception ex) {
-                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
                 Log.errorLog(912036780, input);
             }
         }
@@ -252,7 +253,7 @@ public class RuntimeExec {
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
-                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
             }
         }
     }

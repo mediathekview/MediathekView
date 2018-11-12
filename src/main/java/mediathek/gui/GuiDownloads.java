@@ -756,8 +756,10 @@ public class GuiDownloads extends JPanel {
 
     @Handler
     private void handleDownloadListChange(DownloadListChangedEvent e) {
-        reloadTable();
-        daten.allesSpeichern();
+        SwingUtilities.invokeLater(() -> {
+            reloadTable();
+            daten.allesSpeichern();
+        });
     }
 
     private void addListenerMediathekView() {
@@ -784,19 +786,19 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final long now = System.currentTimeMillis();
-                if ((now - lastUpdate) >= 500) {
-                    // nur alle 500ms aufrufen
-                    lastUpdate = now;
-                    daten.getListeDownloads().setModelProgress(model);
-                }
+        setupShowFilmDescriptionMenuItem();
+    }
+
+    @Handler
+    private void handleDownloadProgressChanged(DownloadProgressChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            final long now = System.currentTimeMillis();
+            if ((now - lastUpdate) >= 500) {
+                // nur alle 500ms aufrufen
+                lastUpdate = now;
+                daten.getListeDownloads().setModelProgress(model);
             }
         });
-
-        setupShowFilmDescriptionMenuItem();
     }
 
     @Handler
