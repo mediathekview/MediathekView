@@ -33,6 +33,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
@@ -473,7 +474,7 @@ public class DirectHttpDownload extends Thread {
 
                 case RESTART_WITH_NEW_NAME:
                     if (dialogContinueDownload.isNewName()) {
-                        Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
                         try {
                             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
                         } catch (IOException ignored) {

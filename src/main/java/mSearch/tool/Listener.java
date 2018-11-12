@@ -31,7 +31,6 @@ public abstract class Listener implements EventListener {
     public static final int EREIGNIS_LISTE_PSET = 2;
 
     public static final int EREIGNIS_ANZAHL_DOWNLOADS = 6;
-    public static final int EREIGNIS_LISTE_DOWNLOADS = 9;
     public static final int EREIGNIS_ART_DOWNLOAD_PROZENT = 13;
     public static final int EREIGNIS_PROGRAMM_OEFFNEN = 16;
     public static final int EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN = 21;
@@ -43,8 +42,8 @@ public abstract class Listener implements EventListener {
 
     private static final EventListenerList listeners = new EventListenerList();
     private static final Logger logger = LogManager.getLogger(Listener.class);
-    public int[] mvEreignis = {-1};
-    public String klasse = "";
+    public int[] mvEreignis;
+    public String klasse;
 
     public Listener(int eereignis, String kklasse) {
         mvEreignis = new int[]{eereignis};

@@ -21,12 +21,12 @@ package mediathek.gui.dialog;
 
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVFilmSize;
@@ -449,7 +449,7 @@ public class DialogAddDownload extends JDialog {
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
             daten.getListeDownloads().addMitNummer(datenDownload);
-            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
                 datenDownload.startDownload(daten);

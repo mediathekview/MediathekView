@@ -48,10 +48,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.messages.AboListChangedEvent;
-import mediathek.gui.messages.ButtonStartEvent;
-import mediathek.gui.messages.StartEvent;
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
@@ -605,7 +602,7 @@ public class GuiFilme extends JPanel {
                 datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
 
                 daten.getListeDownloads().addMitNummer(datenDownload);
-                Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
                     // und evtl. auch gleich starten
                     datenDownload.startDownload(daten);

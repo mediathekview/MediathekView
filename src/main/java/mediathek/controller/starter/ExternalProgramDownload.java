@@ -19,7 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -28,6 +27,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
@@ -324,7 +324,7 @@ public class ExternalProgramDownload extends Thread
                     {
                         // jetzt den Programmaufruf nochmal mit dem geänderten Dateinamen nochmal bauen
                         datenDownload.aufrufBauen();
-                        Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
                         try
                         {
                             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
