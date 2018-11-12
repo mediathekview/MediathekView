@@ -65,8 +65,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, new Color(255, 255, 255));
         download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
 
-        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TIMES, 16, new Color(255, 255, 255));
-        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TIMES, 16);
+        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, new Color(255, 255, 255));
+        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TRASH, 16);
 
         setupProgressBar();
 
