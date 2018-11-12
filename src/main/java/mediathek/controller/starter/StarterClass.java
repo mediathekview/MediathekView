@@ -23,7 +23,6 @@ import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -33,6 +32,7 @@ import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.messages.ButtonStartEvent;
+import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
@@ -383,7 +383,8 @@ public class StarterClass {
          */
         private void startStarten(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
-            Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+            daten.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+
             Thread downloadThread;
 
             switch (datenDownload.art) {
