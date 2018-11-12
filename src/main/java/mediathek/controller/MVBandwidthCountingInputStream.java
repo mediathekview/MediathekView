@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimerTask;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MVBandwidthCountingInputStream extends InputStream {
 
@@ -111,31 +111,20 @@ public class MVBandwidthCountingInputStream extends InputStream {
      */
     private class BandwidthCalculationTask extends TimerTask {
 
-        private long oldTotalBytes = 0;
-        private long totalBytesRead = 0;
-        private long bandwidth = 0;
-        private long sumTime = 0;
-        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        private final AtomicLong _oldTotalBytes = new AtomicLong(0);
+        private final AtomicLong _totalBytesRead = new AtomicLong(0);
+        private final AtomicLong _bandwidth = new AtomicLong(0);
+        private final AtomicLong _sumTime = new AtomicLong(0);
 
         @Override
         public void run() {
-            lock.writeLock().lock();
-            try {
-                bandwidth = totalBytesRead - oldTotalBytes;
-                oldTotalBytes = totalBytesRead;
-                ++sumTime;
-            } finally {
-                lock.writeLock().unlock();
-            }
+            _sumTime.incrementAndGet();
+            final long totalBytesRead = _totalBytesRead.get();
+            _bandwidth.set(totalBytesRead - _oldTotalBytes.getAndSet(totalBytesRead));
         }
 
         public void incrementBytesRead(int value) {
-            lock.writeLock().lock();
-            try {
-                totalBytesRead += value;
-            } finally {
-                lock.writeLock().unlock();
-            }
+            _totalBytesRead.addAndGet(value);
         }
 
         /**
@@ -144,14 +133,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
          * @return Total number of bytes read.
          */
         public long getTotalBytesRead() {
-            lock.readLock().lock();
-            final long res;
-            try {
-                res = totalBytesRead;
-            } finally {
-                lock.readLock().unlock();
-            }
-            return res;
+            return _totalBytesRead.get();
         }
 
         /**
@@ -160,14 +142,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
          * @return Bandwidth in bytes per second.
          */
         public long getBandwidth() {
-            lock.readLock().lock();
-            final long bw;
-            try {
-                bw = bandwidth;
-            } finally {
-                lock.readLock().unlock();
-            }
-            return bw;
+            return _bandwidth.get();
         }
 
         /**
@@ -176,14 +151,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
          * @return Time in s
          */
         public long getSumTime() {
-            lock.readLock().lock();
-            final long t;
-            try {
-                t = sumTime;
-            } finally {
-                lock.readLock().unlock();
-            }
-            return t;
+            return _sumTime.get();
         }
     }
 }
