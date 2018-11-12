@@ -71,10 +71,11 @@ import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("serial")
 public class GuiDownloads extends JPanel {
-    private long lastUpdate = 0;
+    private final AtomicLong _lastUpdate = new AtomicLong(0);
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
     private boolean onlyWaiting = false;
@@ -791,14 +792,12 @@ public class GuiDownloads extends JPanel {
 
     @Handler
     private void handleDownloadProgressChanged(DownloadProgressChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            final long now = System.currentTimeMillis();
-            if ((now - lastUpdate) >= 500) {
-                // nur alle 500ms aufrufen
-                lastUpdate = now;
-                daten.getListeDownloads().setModelProgress(model);
-            }
-        });
+        final long now = System.currentTimeMillis();
+        // nur alle 500ms aufrufen
+        if (now - _lastUpdate.get() >= 500) {
+            _lastUpdate.set(now);
+            SwingUtilities.invokeLater(() -> daten.getListeDownloads().setModelProgress(model));
+        }
     }
 
     @Handler
