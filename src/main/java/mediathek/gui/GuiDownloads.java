@@ -754,6 +754,12 @@ public class GuiDownloads extends JPanel {
         });
     }
 
+    @Handler
+    private void handleDownloadListChange(DownloadListChangedEvent e) {
+        reloadTable();
+        daten.allesSpeichern();
+    }
+
     private void addListenerMediathekView() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -775,14 +781,6 @@ public class GuiDownloads extends JPanel {
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     updateDownloads();
                 }
-            }
-        });
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_DOWNLOADS, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                reloadTable();
-                daten.allesSpeichern(); // damit nichts verloren geht
             }
         });
 

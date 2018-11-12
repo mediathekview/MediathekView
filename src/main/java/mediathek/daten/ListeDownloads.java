@@ -20,13 +20,13 @@
 package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.messages.ButtonStartEvent;
+import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.TModelDownload;
@@ -87,7 +87,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -106,7 +106,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -168,7 +168,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 datenDownload.mVFilmSize.reset();
                 datenDownload.start = null;
-                Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
                 break;
             }
         }
@@ -213,7 +213,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
