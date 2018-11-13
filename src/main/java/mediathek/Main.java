@@ -186,10 +186,7 @@ public class Main {
     private static void checkForOfficialOSXAppUse() {
         final var osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
         if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
-            JOptionPane.showMessageDialog(null,
-                    "Bitte nutzen Sie die offizielle macOS Applikation für das beste Nutzererlebnis.",
-                    "Anwendungshinweis",
-                    JOptionPane.WARNING_MESSAGE);
+            logger.warn("WARN: macOS app NOT launched from official launcher!");
         }
     }
 
@@ -198,7 +195,7 @@ public class Main {
         // more than 450MB avail...
         if (maxMem < 450 * FileUtils.ONE_MB) {
             if (GraphicsEnvironment.isHeadless()) {
-                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen.");
+                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen bekommen.");
                 System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
             } else {
                 JOptionPane.showMessageDialog(null,
