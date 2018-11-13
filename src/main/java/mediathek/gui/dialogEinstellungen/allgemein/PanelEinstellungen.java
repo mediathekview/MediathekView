@@ -20,17 +20,13 @@
 package mediathek.gui.dialogEinstellungen.allgemein;
 
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.messages.InstallTabSwitchListenerEvent;
-import mediathek.gui.messages.SenderIconStyleChangedEvent;
-import mediathek.gui.messages.TabVisualSettingsChangedEvent;
-import mediathek.gui.messages.TrayIconEvent;
+import mediathek.gui.messages.*;
 import mediathek.tool.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
@@ -160,13 +156,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         setupDays();
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                initSpinner();
-            }
-        });
-
         setupTabUI();
 
         setupTray();
@@ -175,6 +164,11 @@ public class PanelEinstellungen extends PanelVorlage {
 
         final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
+    }
+
+    @Handler
+    private void handleParallelDownloadNumberChanged(ParallelDownloadNumberChangedEvent e) {
+        SwingUtilities.invokeLater(this::initSpinner);
     }
 
     private void setupTabSwitchListener() {
