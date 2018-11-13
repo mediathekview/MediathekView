@@ -20,12 +20,13 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.ParallelDownloadNumberChangedEvent;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -35,10 +36,19 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 public class PanelDownload extends PanelVorlage {
+
+    @Handler
+    private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
+        SwingUtilities.invokeLater(() -> jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD))));
+    }
+
     public PanelDownload(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         daten = d;
+
+        daten.getMessageBus().subscribe(this);
+
         jSpinnerAnzahlDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
         jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
         jSpinnerAnzahlDownload.addChangeListener(new BeobSpinnerDownload());
@@ -52,12 +62,6 @@ public class PanelDownload extends PanelVorlage {
                 + "auf 1 Download pro Server\n"
                 + "(z.B. nur ein Download von \"www.zdf.de\")\n"
                 + "weiter begrenzt werden.").setVisible(true));
-        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-            }
-        });
 
         final boolean showNotification = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
         jCheckBoxNotification.setSelected(showNotification);
@@ -72,6 +76,17 @@ public class PanelDownload extends PanelVorlage {
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
 
         disableNotifications();
+    }
+
+    private class BeobSpinnerDownload implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent arg0) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
+                    String.valueOf(((Number) jSpinnerAnzahlDownload.getModel().getValue()).intValue()));
+
+            daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
+        }
     }
 
     /**
@@ -193,15 +208,4 @@ public class PanelDownload extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxServer;
     private javax.swing.JSpinner jSpinnerAnzahlDownload;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobSpinnerDownload implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent arg0) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-                    String.valueOf(((Number) jSpinnerAnzahlDownload.getModel().getValue()).intValue()));
-            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName());
-        }
-    }
-
 }

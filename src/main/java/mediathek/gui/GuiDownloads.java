@@ -558,7 +558,7 @@ public class GuiDownloads extends JPanel {
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerAnzahlDownloads.getModel().getValue()).intValue()));
-            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, GuiDownloads.class.getSimpleName());
+            daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
         jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER));
