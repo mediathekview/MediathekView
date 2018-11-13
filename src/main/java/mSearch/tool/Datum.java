@@ -44,14 +44,6 @@ public class Datum extends Date {
         }
     }
 
-    public String toStringR() {
-        if (this.getTime() == 0) {
-            return dateFormatter2.format(new Date());
-        } else {
-            return dateFormatter2.format(this);
-        }
-    }
-
     /**
      * Liefert den Betrag der Zeitdifferenz zu jetzt.
      *

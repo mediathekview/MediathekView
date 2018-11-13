@@ -43,15 +43,6 @@ public class DatumFilm extends Datum {
         }
     }
 
-    @Override
-    public String toStringR() {
-        if (this.getTime() == 0) {
-            return dateFormatter2.format(new Date());
-        } else {
-            return dateFormatter2.format(this);
-        }
-    }
-
     private static class SDF extends SimpleDateFormat {
         private final static TimeZone tz = TimeZone.getTimeZone("Europe/Berlin");
 
