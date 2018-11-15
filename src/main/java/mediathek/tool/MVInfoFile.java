@@ -44,29 +44,13 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class MVInfoFile {
 
   private static final Logger logger = LogManager.getLogger(MVInfoFile.class);
-
-  private void writeSender(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.getSender());
-    br.newLine();
-  }
-
-  private void writeThema(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.getThema());
-    br.newLine();
-    br.newLine();
-  }
-
-  private void writeTitle(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.getTitle());
-    br.newLine();
-    br.newLine();
-  }
 
   public void writeInfoFile(DatenFilm film) {
     String titel = FilenameUtils.replaceLeerDateiname(film.getTitle(), false,
@@ -102,29 +86,7 @@ public class MVInfoFile {
         DataOutputStream dos = new DataOutputStream(os);
         OutputStreamWriter osw = new OutputStreamWriter(dos);
         BufferedWriter br = new BufferedWriter(osw)) {
-      writeSender(br, film);
-      writeThema(br, film);
-      writeTitle(br, film);
-      writeDatum(br, film);
-      writeZeit(br, film);
-      writeDauer(br, film);
-      br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.getSize());
-      br.newLine();
-      br.newLine();
-      writeWebsiteLink(br, film);
-      writeUrl(br, film);
-
-      int anz = 0;
-      for (String s : film.getDescription().split(" ")) {
-        anz += s.length();
-        br.write(s + ' ');
-        if (anz > 50) {
-          br.newLine();
-          anz = 0;
-        }
-      }
-      br.newLine();
-      br.newLine();
+      br.write(formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
       br.flush();
 
       showSuccessDialog();
@@ -154,37 +116,6 @@ public class MVInfoFile {
     });
   }
 
-  private void writeDatum(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM] + ":       " + film.getSendeDatum());
-    br.newLine();
-  }
-
-  private void writeUrl(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL]);
-    br.newLine();
-    br.write(film.getUrl());
-    br.newLine();
-    br.newLine();
-  }
-
-  private void writeWebsiteLink(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write("Website");
-    br.newLine();
-    br.write(film.getWebsiteLink());
-    br.newLine();
-    br.newLine();
-  }
-
-  private void writeZeit(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_ZEIT] + ":        " + film.getSendeZeit());
-    br.newLine();
-  }
-
-  private void writeDauer(BufferedWriter br, DatenFilm film) throws IOException {
-    br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DAUER] + ":       " + film.getDauer());
-    br.newLine();
-  }
-
   public void writeInfoFile(DatenDownload datenDownload) {
     logger.info("Infofile schreiben nach: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
@@ -197,39 +128,10 @@ public class MVInfoFile {
         BufferedWriter br = new BufferedWriter(osw)) {
       final DatenFilm film = datenDownload.film;
       if (film != null) {
-        writeSender(br, film);
-        writeThema(br, film);
-        writeTitle(br, film);
-        writeDatum(br, film);
-        writeZeit(br, film);
-        writeDauer(br, film);
-        br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  "
-            + datenDownload.mVFilmSize);
-        br.newLine();
-        br.newLine();
-        writeWebsiteLink(br, film);
+        br.write(
+            formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
+        br.flush();
       }
-
-      br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL]);
-      br.newLine();
-      br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-      br.newLine();
-      br.newLine();
-
-      if (film != null) {
-        int anz = 0;
-        for (String s : datenDownload.film.getDescription().split(" ")) {
-          anz += s.length();
-          br.write(s + ' ');
-          if (anz > 50) {
-            br.newLine();
-            anz = 0;
-          }
-        }
-      }
-      br.newLine();
-      br.newLine();
-      br.flush();
 
       showSuccessDialog();
       logger.info("Infofile geschrieben");
@@ -275,7 +177,7 @@ public class MVInfoFile {
     sb.append(System.lineSeparator());
     sb.append(System.lineSeparator());
 
-    sb.append(splittStringIntoMaxFixedLengthLines(film.getDescription(), 50));
+    sb.append(splittStringIntoMaxFixedLengthLines(film.getDescription(), 62));
     sb.append(System.lineSeparator());
     sb.append(System.lineSeparator());
 
@@ -283,20 +185,10 @@ public class MVInfoFile {
 
   }
 
-
-
   public static String splittStringIntoMaxFixedLengthLines(String input, int lineLength) {
-    int anz = 0;
-    StringBuilder sb = new StringBuilder();
-    for (String s : input.split(" ")) {
-      anz += s.length();
-      sb.append(s + ' ');
-      if (anz > lineLength) {
-        sb.append(System.lineSeparator());
-        anz = 0;
-      }
-    }
-    return sb.toString();
+    return Optional.ofNullable(input)
+        .map(s -> WordUtils.wrap(s, lineLength))
+        .orElse("");
   }
 
   public static int getMaxLengthFromStringArray(String[] array) {
