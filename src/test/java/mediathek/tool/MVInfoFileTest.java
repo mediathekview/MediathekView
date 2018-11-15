@@ -1,14 +1,11 @@
 package mediathek.tool;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
 import mSearch.daten.DatenFilm;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -28,52 +25,64 @@ class MVInfoFileTest {
   @Test
   void getMaxLengthFromStringArrayWithNullArray() {
 
-    assertThat(0, is(equalTo(MVInfoFile.getMaxLengthFromStringArray(null))));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(null), is(equalTo(0)));
   }
 
   @Test
   void getMaxLengthFromStringArrayWithEmptyArray() {
 
-    assertThat(0, is(equalTo(MVInfoFile.getMaxLengthFromStringArray(new String[]{}))));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{}), is(equalTo(0)));
   }
 
   @Test
   void getMaxLengthFromStringArrayWithOneItemLengthOf8() {
 
-    assertThat(8, is(equalTo(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcdefgh"}))));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcdefgh"}), is(equalTo(8)));
 
   }
 
   @Test
   void getMaxLengthFromStringArrayWithTwoItemsEachSameLengthOf4() {
 
-    assertThat(4, is(equalTo(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcd", "efgh"}))));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcd", "efgh"}), is(equalTo(4)));
 
   }
 
   @Test
   void getMaxLengthFromStringArrayWithSomeDifferentItems() {
 
-    assertThat(10, is(equalTo(MVInfoFile.getMaxLengthFromStringArray(new String[]{"Nr", "Filmnr", "Untertitel"}))));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"Nr", "Filmnr", "Untertitel"}), is(equalTo(10)));
 
   }
 
   @Test
   void splittDescriptionTextIntoOneLine() {
 
-    assertThat("The Big Brown Fox Jumps over the Lazy Dog", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50))));
+    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50), is(equalTo("The Big Brown Fox Jumps over the Lazy Dog")));
 
   }
 
   @Test
   void splittDescriptionTextIntoMore() {
-    assertThat("Weit hinten, hinter den Wortbergen, fern der Länder Vokalien" + System.lineSeparator()
-                    + "und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie" + System.lineSeparator()
-                    + "in Buchstabhausen an der Küste des Semantik, eines großen" + System.lineSeparator()
-                    + "Sprachozeans. Ein kleines Bächlein namens Duden fließt durch" + System.lineSeparator()
-                    + "ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist" + System.lineSeparator()
-                    + "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator()
-                    + "in den Mund fliegen.", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 62))));
+    String result = "Weit hinten, hinter den Wortbergen, fern der Länder Vokalien" + System.lineSeparator()
+                  + "und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie" + System.lineSeparator()
+                  + "in Buchstabhausen an der Küste des Semantik, eines großen" + System.lineSeparator()
+                  + "Sprachozeans. Ein kleines Bächlein namens Duden fließt durch" + System.lineSeparator()
+                  + "ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist" + System.lineSeparator()
+                  + "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator()
+                  + "in den Mund fliegen.";
+
+    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 62), is(equalTo(result)));
+  }
+
+  @Test
+  void appendFormatedTableStringToEmptyStringBuilder() {
+    StringBuilder sb = new StringBuilder();
+
+    sb = MVInfoFile.appendFormatedTableLine(sb, "%-12s %s", "Größe [MB]", "194");
+
+    assertThat(sb.toString(), is(equalTo("Größe [MB]:  194" + System.lineSeparator())));
+
   }
 
   @Test
@@ -115,7 +124,7 @@ class MVInfoFileTest {
       "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator() +
       "in den Mund fliegen." + System.lineSeparator() + System.lineSeparator();
 
-    assertThat(result, is(equalTo(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2))));
+    assertThat(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2), is(equalTo(result)));
   }
 
 }
