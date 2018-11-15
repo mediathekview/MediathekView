@@ -143,27 +143,20 @@ public class MVInfoFile {
 
   protected static String formatFilmAsString(DatenFilm film, int maxLengthHeaders) {
 
+    if(null == film)
+      return "";
+
     String formatString = String.format("%%-%ds %%s", maxLengthHeaders);
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER]), film.getSender()));
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA]), film.getThema()));
-    sb.append(System.lineSeparator());
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL]), film.getTitle()));
-    sb.append(System.lineSeparator());
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM]), film.getSendeDatum()));
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_ZEIT]), film.getSendeZeit()));
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DAUER]), film.getDauer()));
-    sb.append(System.lineSeparator());
-    sb.append(String.format(formatString, String.format("%s:", DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE]), film.getSize()));
-    sb.append(System.lineSeparator());
-    sb.append(System.lineSeparator());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER], film.getSender());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA], film.getThema()).append(System.lineSeparator());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL], film.getTitle()).append(System.lineSeparator());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM], film.getSendeDatum());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_ZEIT], film.getSendeZeit());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DAUER], film.getDauer());
+    sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE], film.getSize()).append(System.lineSeparator());
 
     sb.append("Website");
     sb.append(System.lineSeparator());
@@ -183,6 +176,11 @@ public class MVInfoFile {
 
     return sb.toString();
 
+  }
+
+  protected static StringBuilder appendFormatedTableLine(StringBuilder sb, String formatString, String keyTitle, String value) {
+    return sb.append(String.format(formatString, String.format("%s:", keyTitle), value))
+             .append(System.lineSeparator());
   }
 
   public static String splittStringIntoMaxFixedLengthLines(String input, int lineLength) {
