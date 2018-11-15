@@ -34,6 +34,18 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/*
+ * TODO: 8 Step plan
+ * - Introduce Setters and Getters vor each Field
+ * - Each Filed gets an "get<FieldName>Title" to get the German Title of the Field
+ * - Change all usages to arr to a getter or setter
+ * - Make a Real Entity. Remove the Array
+ * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
+ * - Finalize a Real Entity
+ * - Write Testcases for each Method
+ * - Write JavaDoc for each of the new Methods splitted from this moloch
+ */
+
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public static final String AUFLOESUNG_NORMAL = "normal";
     public static final String AUFLOESUNG_HD = "hd";
@@ -228,34 +240,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             arr[i] = "";
     }
 
-    /**
-     * Return the title of the film.
-     */
-    public String getTitle() {
-        return arr[FILM_TITEL];
-    }
-
-    public void setTitle(String title) {
-        arr[FILM_TITEL] = title;
-    }
-
-    public String getThema() {
-        return arr[FILM_THEMA];
-    }
-
-    /**
-     * Return the film size.
-     *
-     * @return size as a string
-     */
-    public String getSize() {
-        return arr[FILM_GROESSE];
-    }
-
-    public String getSender() {
-        return arr[FILM_SENDER];
-    }
-
     public void setSender(String sender) {
         arr[DatenFilm.FILM_SENDER] = sender;
     }
@@ -282,7 +266,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                 return (rs.next() ? rs.getString(1) : "");
             });
         } else {
-            return description != null ? description : "";
+            return StringUtils.defaultString(description);
         }
     }
 
@@ -345,10 +329,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         neuerFilm = newFilm;
     }
 
-    public String getUrlSubtitle() {
-        return arr[FILM_URL_SUBTITLE];
-    }
-
     public boolean hasSubtitle() {
         //Film hat Untertitel
         return !arr[DatenFilm.FILM_URL_SUBTITLE].isEmpty();
@@ -395,9 +375,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return (getSender() + arr[FILM_THEMA]).toLowerCase() + getUrl();
     }
 
-    public String getUrl() {
-        return arr[DatenFilm.FILM_URL];
-    }
 
     public boolean isHD() {
         //Film gibts in HD
@@ -503,7 +480,42 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[DatenFilm.FILM_URL];
     }
 
-    public static class Database {
+    /*
+     * Preliminary work to get an real Entity
+     *
+     * Getters/Setters
+     */
+
+  public String getSender() {
+      return arr[FILM_SENDER];
+    }
+
+  public String getThema() { return arr[FILM_THEMA]; }
+
+  public String getTitle() {
+    return arr[FILM_TITEL];
+  }
+  public void setTitle(String title) {
+    arr[FILM_TITEL] = title;
+  }
+
+  public String getSendeDatum() { return arr[FILM_DATUM]; }
+  public String getSendeZeit() { return arr[FILM_ZEIT]; }
+// getSendeZeitpunkt mit LocalDateTime definieren
+
+  public String getDauer() { return arr[FILM_DAUER]; }
+  public String getSize() {
+    return arr[FILM_GROESSE];
+  }
+
+  public String getUrl() {
+    return arr[DatenFilm.FILM_URL];
+  }
+  public String getUrlSubtitle() {
+    return arr[FILM_URL_SUBTITLE];
+  }
+
+  public static class Database {
         private Database() {
         }
 
