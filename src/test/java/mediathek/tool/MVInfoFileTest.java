@@ -61,36 +61,61 @@ class MVInfoFileTest {
   @Test
   void splittDescriptionTextIntoOneLine() {
 
-    assertThat("The Big Brown Fox Jumps over the Lazy Dog ", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50))));
+    assertThat("The Big Brown Fox Jumps over the Lazy Dog", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50))));
 
   }
 
   @Test
   void splittDescriptionTextIntoMore() {
-    assertThat("Weit hinten, hinter den Wortbergen, fern der Länder Vokalien " + System.lineSeparator()
-                    + "und Konsonantien leben die Blindtexte. Abgeschieden wohnen " + System.lineSeparator()
-                    + "sie in Buchstabhausen an der Küste des Semantik, eines großen " + System.lineSeparator()
-                    + "Sprachozeans. Ein kleines Bächlein namens Duden fließt durch " + System.lineSeparator()
-                    + "ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist " + System.lineSeparator()
-                    + "ein paradiesmatisches Land, in dem einem gebratene Satzteile " + System.lineSeparator()
-                    + "in den Mund fliegen. ", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 50))));
+    assertThat("Weit hinten, hinter den Wortbergen, fern der Länder Vokalien" + System.lineSeparator()
+                    + "und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie" + System.lineSeparator()
+                    + "in Buchstabhausen an der Küste des Semantik, eines großen" + System.lineSeparator()
+                    + "Sprachozeans. Ein kleines Bächlein namens Duden fließt durch" + System.lineSeparator()
+                    + "ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist" + System.lineSeparator()
+                    + "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator()
+                    + "in den Mund fliegen.", is(equalTo(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 62))));
   }
 
   @Test
   void formatFilmAsStringTestWithValidFilm() {
 
-    Mockito.lenient().when(datenFilm.getSender()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getThema()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getTitle()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getSendeDatum()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getSendeZeit()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getDauer()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getSize()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getWebsiteLink()).thenReturn("a");
-    Mockito.lenient().when(datenFilm.getUrl()).thenReturn("a");
+    Mockito.lenient().when(datenFilm.getSender()).thenReturn("BRX");
+    Mockito.lenient().when(datenFilm.getThema()).thenReturn("Olafs Tag");
+    Mockito.lenient().when(datenFilm.getTitle()).thenReturn("Olafs Tag mit Hans Wurst");
+    Mockito.lenient().when(datenFilm.getSendeDatum()).thenReturn("25.01.2018");
+    Mockito.lenient().when(datenFilm.getSendeZeit()).thenReturn("23:30:00");
+    Mockito.lenient().when(datenFilm.getDauer()).thenReturn("00:59:00");
+    Mockito.lenient().when(datenFilm.getSize()).thenReturn("889");
+    Mockito.lenient().when(datenFilm.getWebsiteLink()).thenReturn("https://sha512.badssl.com/");
+    Mockito.lenient().when(datenFilm.getUrl()).thenReturn("https://badssl.com/");
     Mockito.lenient().when(datenFilm.getDescription()).thenReturn(DESCRIPTION_TEXT);
 
-    System.out.println(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
+    String result =
+      "Sender:      BRX" + System.lineSeparator() +
+      "Thema:       Olafs Tag" + System.lineSeparator() +
+      "" + System.lineSeparator() +
+      "Titel:       Olafs Tag mit Hans Wurst" + System.lineSeparator() +
+      "" + System.lineSeparator() +
+      "Datum:       25.01.2018" + System.lineSeparator() +
+      "Zeit:        23:30:00" + System.lineSeparator() +
+      "Dauer:       00:59:00" + System.lineSeparator() +
+      "Größe [MB]:  889" + System.lineSeparator() +
+      "" + System.lineSeparator() +
+      "Website" + System.lineSeparator() +
+      "https://sha512.badssl.com/" + System.lineSeparator() +
+      "" + System.lineSeparator() +
+      "URL" + System.lineSeparator() +
+      "https://badssl.com/" + System.lineSeparator() +
+      "" + System.lineSeparator() +
+      "Weit hinten, hinter den Wortbergen, fern der Länder Vokalien" + System.lineSeparator() +
+      "und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie" + System.lineSeparator() +
+      "in Buchstabhausen an der Küste des Semantik, eines großen" + System.lineSeparator() +
+      "Sprachozeans. Ein kleines Bächlein namens Duden fließt durch" + System.lineSeparator() +
+      "ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist" + System.lineSeparator() +
+      "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator() +
+      "in den Mund fliegen." + System.lineSeparator() + System.lineSeparator();
+
+    assertThat(result, is(equalTo(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2))));
   }
 
 }
