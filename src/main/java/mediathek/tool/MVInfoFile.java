@@ -193,7 +193,7 @@ public class MVInfoFile {
     return Optional.ofNullable(array)
         .map(Arrays::stream)
         .orElseGet(Stream::empty)
-        .max(Comparator.comparing(item -> item.length()))
+        .max(Comparator.comparing(String::length))
         .map(String::length)
         .orElse(0);
   }
