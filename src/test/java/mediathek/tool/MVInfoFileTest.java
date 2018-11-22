@@ -1,8 +1,6 @@
 package mediathek.tool;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import mSearch.daten.DatenFilm;
 
@@ -25,40 +23,41 @@ class MVInfoFileTest {
   @Test
   void getMaxLengthFromStringArrayWithNullArray() {
 
-    assertThat(MVInfoFile.getMaxLengthFromStringArray(null), is(equalTo(0)));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(null)).isEqualTo(0);
   }
 
   @Test
   void getMaxLengthFromStringArrayWithEmptyArray() {
 
-    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{}), is(equalTo(0)));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{})).isEqualTo(0);
   }
 
   @Test
   void getMaxLengthFromStringArrayWithOneItemLengthOf8() {
 
-    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcdefgh"}), is(equalTo(8)));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcdefgh"})).isEqualTo(8);
 
   }
 
   @Test
   void getMaxLengthFromStringArrayWithTwoItemsEachSameLengthOf4() {
 
-    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcd", "efgh"}), is(equalTo(4)));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"abcd", "efgh"})).isEqualTo(4);
 
   }
 
   @Test
   void getMaxLengthFromStringArrayWithSomeDifferentItems() {
 
-    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"Nr", "Filmnr", "Untertitel"}), is(equalTo(10)));
+    assertThat(MVInfoFile.getMaxLengthFromStringArray(new String[]{"Nr", "Filmnr", "Untertitel"})).isEqualTo(10);
 
   }
 
   @Test
   void splittDescriptionTextIntoOneLine() {
 
-    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50), is(equalTo("The Big Brown Fox Jumps over the Lazy Dog")));
+    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines("The Big Brown Fox Jumps over the Lazy Dog", 50))
+        .isEqualTo("The Big Brown Fox Jumps over the Lazy Dog");
 
   }
 
@@ -72,7 +71,7 @@ class MVInfoFileTest {
                   + "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator()
                   + "in den Mund fliegen.";
 
-    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 62), is(equalTo(result)));
+    assertThat(MVInfoFile.splittStringIntoMaxFixedLengthLines(DESCRIPTION_TEXT, 62)).isEqualTo(result);
   }
 
   @Test
@@ -81,7 +80,7 @@ class MVInfoFileTest {
 
     sb = MVInfoFile.appendFormatedTableLine(sb, "%-12s %s", "Größe [MB]", "194");
 
-    assertThat(sb.toString(), is(equalTo("Größe [MB]:  194" + System.lineSeparator())));
+    assertThat(sb.toString()).isEqualTo("Größe [MB]:  194" + System.lineSeparator());
 
   }
 
@@ -124,7 +123,7 @@ class MVInfoFileTest {
       "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator() +
       "in den Mund fliegen." + System.lineSeparator() + System.lineSeparator();
 
-    assertThat(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2), is(equalTo(result)));
+    assertThat(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2)).isEqualTo(result);
   }
 
 }
