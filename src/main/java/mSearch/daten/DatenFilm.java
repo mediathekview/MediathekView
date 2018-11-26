@@ -507,6 +507,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
   public String getSize() {
     return arr[FILM_GROESSE];
   }
+  public void setSize(String size) {
+      arr[FILM_GROESSE] = size;
+  }
 
   public String getUrl() {
     return arr[DatenFilm.FILM_URL];

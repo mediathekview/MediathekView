@@ -155,7 +155,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public synchronized DatenFilm getFilmByUrl(final String url) {
-        Optional<DatenFilm> opt = this.parallelStream().filter(f -> f.arr[DatenFilm.FILM_URL].equalsIgnoreCase(url)).findAny();
+        Optional<DatenFilm> opt = this.parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny();
         return opt.orElse(null);
     }
 
@@ -164,7 +164,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         // wird versucht, einen Film mit einer kleinen/Hoher/HD-URL zu finden
         DatenFilm ret = null;
         for (DatenFilm f : this) {
-            if (f.arr[DatenFilm.FILM_URL].equals(url)) {
+            if (f.getUrl().equals(url)) {
                 ret = f;
                 break;
             } else if (f.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD).equals(url)) {
