@@ -241,6 +241,10 @@ public class FilmListReader implements AutoCloseable {
         parseTrailerTeaser(title, datenFilm);
     }
 
+    private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
+        datenFilm.setUrl(checkedString(jp));
+    }
+
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
         Stopwatch stopwatch = Stopwatch.createStarted();
         JsonToken jsonToken;
@@ -267,7 +271,7 @@ public class FilmListReader implements AutoCloseable {
                 parseDefault(jp, datenFilm, DatenFilm.FILM_DAUER);
                 parseGroesse(jp, datenFilm);
                 parseDescription(jp, datenFilm);
-                parseDefault(jp, datenFilm, DatenFilm.FILM_URL);
+                parseUrl(jp,datenFilm);
                 parseWebsiteLink(jp, datenFilm);
                 parseDefault(jp, datenFilm, DatenFilm.FILM_URL_SUBTITLE);
                 skipToken(jp);
