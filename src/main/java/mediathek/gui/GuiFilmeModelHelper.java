@@ -282,6 +282,9 @@ public class GuiFilmeModelHelper {
                 case DatenFilm.FILM_UT:
                     object[m] = film.hasSubtitle() ? "1" : "0";
                     break;
+                case DatenFilm.FILM_URL:
+                    object[m] = film.getUrl();
+                    break;
                 default:
                     object[m] = film.arr[m];
                     break;
