@@ -473,6 +473,7 @@ public class GuiFilme extends JPanel {
 
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
         final int[] hiddenColumns = new int[]{
+                DatenFilm.FILM_NR,
                 DatenFilm.FILM_ABSPIELEN,
                 DatenFilm.FILM_AUFZEICHNEN,
                 DatenFilm.FILM_DATUM_LONG,
