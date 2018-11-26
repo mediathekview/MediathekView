@@ -57,7 +57,6 @@ import java.util.UUID;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
