@@ -584,7 +584,7 @@ public class GuiFilme extends JPanel {
 
         for (DatenFilm datenFilm : liste) {
             // erst mal schauen obs den schon gibt
-            DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
+            DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrl());
             if (datenDownload != null) {
                 int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
                         + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
@@ -805,12 +805,12 @@ public class GuiFilme extends JPanel {
                     Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
                     filmSelection.ifPresent(datenFilm -> {
                         boolean stop = false;
-                        final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
+                        final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
                         if (datenDownload != null) {
                             if (datenDownload.start != null) {
                                 if (datenDownload.start.status == Start.STATUS_RUN) {
                                     stop = true;
-                                    daten.getListeDownloadsButton().delDownloadButton(datenFilm.arr[DatenFilm.FILM_URL]);
+                                    daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
                                 }
                             }
                         }

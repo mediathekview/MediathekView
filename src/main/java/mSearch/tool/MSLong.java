@@ -31,15 +31,16 @@ public class MSLong implements Comparable<MSLong> {
     }
 
     public MSLong(DatenFilm film) {
-        if (film.arr[DatenFilm.FILM_GROESSE].equals("<1")) {
-            film.arr[DatenFilm.FILM_GROESSE] = "1";
+        if (film.getSize().equals("<1")) {
+            film.setSize("1");
         }
+
         try {
-            if (!film.arr[DatenFilm.FILM_GROESSE].isEmpty()) {
-                l = Long.valueOf(film.arr[DatenFilm.FILM_GROESSE]);
+            if (!film.getSize().isEmpty()) {
+                l = Long.valueOf(film.getSize());
             }
         } catch (NumberFormatException ex) {
-            Log.errorLog(649891025, ex, "String: " + film.arr[DatenFilm.FILM_GROESSE]);
+            Log.errorLog(649891025, ex, "String: " + film.getSize());
             l = 0;
         }
     }

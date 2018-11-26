@@ -207,7 +207,7 @@ public class DialogAddDownload extends JDialog {
                 jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
             }
         }
-        dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL]);
+        dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.getUrl());
         if (!dateiGroesse_Hoch.isEmpty()) {
             jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
         }

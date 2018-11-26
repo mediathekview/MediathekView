@@ -147,7 +147,7 @@ public class FilmListWriter {
         jg.writeString(datenFilm.arr[DatenFilm.FILM_DAUER]);
         jg.writeString(datenFilm.arr[DatenFilm.FILM_GROESSE]);
         jg.writeString(datenFilm.getDescription());
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL]);
+        jg.writeString(datenFilm.getUrl());
         jg.writeString(datenFilm.getWebsiteLink());
         jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_SUBTITLE]);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
