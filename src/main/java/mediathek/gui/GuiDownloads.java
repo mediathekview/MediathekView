@@ -1528,7 +1528,7 @@ public class GuiDownloads extends JPanel {
                             if (datenDownload1.film != null) {
                                 DatenFilm filmDownload = datenDownload1.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.arr[DatenFilm.FILM_URL] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL];
+                                filmDownload.setUrl(datenDownload1.arr[DatenDownload.DOWNLOAD_URL]);
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN] = "";
                                 // und starten
                                 daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);

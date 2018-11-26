@@ -512,7 +512,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
   }
 
   public String getUrl() {
-    return arr[DatenFilm.FILM_URL];
+    return arr[FILM_URL];
+  }
+  public void setUrl(String url) {
+      arr[FILM_URL] = url;
   }
   public String getUrlSubtitle() {
     return arr[FILM_URL_SUBTITLE];

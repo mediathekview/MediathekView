@@ -148,7 +148,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DOWNLOAD_SENDER] = film.getSender();
         arr[DOWNLOAD_THEMA] = film.getThema();
         arr[DOWNLOAD_TITEL] = film.getTitle();
-        arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL];
+        arr[DOWNLOAD_FILM_URL] = film.getUrl();
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM];
         arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT];
@@ -176,7 +176,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public void setGroesseFromFilm() {
         if (film != null) {
-            if (film.arr[DatenFilm.FILM_URL].equals(arr[DOWNLOAD_URL])) {
+            if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
                 mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
             } else {
                 mVFilmSize.setSize("");
