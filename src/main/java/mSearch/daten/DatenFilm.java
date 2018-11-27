@@ -521,6 +521,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     return arr[FILM_URL_SUBTITLE];
   }
 
+  public String getGeo() { return arr[FILM_GEO];}
+  public void setGeo(String geo) { arr[FILM_GEO] = geo;}
+
   public static class Database {
         private Database() {
         }

@@ -126,7 +126,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     protected void parseGeo(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.arr[DatenFilm.FILM_GEO] = checkedString(jp);
+        datenFilm.setGeo(checkedString(jp));
     }
 
     private void parseSender(JsonParser jp, DatenFilm datenFilm) throws IOException {
