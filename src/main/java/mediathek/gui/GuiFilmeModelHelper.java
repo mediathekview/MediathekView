@@ -285,6 +285,9 @@ public class GuiFilmeModelHelper {
                 case DatenFilm.FILM_URL:
                     object[m] = film.getUrl();
                     break;
+                case DatenFilm.FILM_GEO:
+                    object[m] = film.getGeo();
+                    break;
                 default:
                     object[m] = film.arr[m];
                     break;

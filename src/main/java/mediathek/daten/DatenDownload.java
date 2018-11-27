@@ -165,7 +165,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
-        arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO];
+        arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo();
         // und jetzt noch die Dateigröße für die entsp. URL
         setGroesseFromFilm();
         //setGroesse(""); //dann dauert das Starten uu sehr lange

@@ -171,7 +171,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
         if (geoMelden) {
             if (!start)
-                setupGeoblockingBackground(c, datenFilm.arr[DatenFilm.FILM_GEO], isSelected);
+                setupGeoblockingBackground(c, datenFilm.getGeo(), isSelected);
         }
     }
 

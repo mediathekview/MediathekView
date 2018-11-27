@@ -209,7 +209,7 @@ public class InfoDialog extends JDialog {
             cbHD.setSelected(currentFilm.isHD());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
 
-            lblGeo.setText(currentFilm.arr[DatenFilm.FILM_GEO]);
+            lblGeo.setText(currentFilm.getGeo());
             lblAbo.setText(currentFilm.arr[DatenFilm.FILM_ABO_NAME]);
 
             btnLinkWebsite.setToolTipText(currentFilm.getWebsiteLink());
