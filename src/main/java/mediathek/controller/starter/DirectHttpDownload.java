@@ -256,8 +256,8 @@ public class DirectHttpDownload extends Thread {
                         // Restzeit ermitteln
                         if (p > 2 && p > startProzent) {
                             // sonst macht es noch keinen Sinn
-                            int diffZeit = start.startZeit.diffInSekunden();
-                            int restProzent = 1000 - (int) p;
+                            final int diffZeit = start.startZeit.diffInSekunden();
+                            final int restProzent = 1000 - (int) p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
                             // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
                             // als die bereits geladene Speilzeit des Films
