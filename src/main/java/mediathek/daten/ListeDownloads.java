@@ -317,7 +317,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
         int row = 0;
 
@@ -490,18 +489,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized DatenDownload getNextStart() {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-        DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
-            DatenDownload datenDownload = naechsterStart();
-            if (datenDownload != null) {
+        final DatenDownload[] ret = new DatenDownload[1];
+
+        if (this.size() > 0 &&
+                getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
+            naechsterStart().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
-                    if (datenDownload.start.status == Start.STATUS_INIT) {
-                        ret = datenDownload;
-                    }
+                    if (datenDownload.start.status == Start.STATUS_INIT)
+                        ret[0] = datenDownload;
                 }
-            }
+            });
         }
-        return ret;
+
+        return ret[0];
     }
 
     public DatenDownload getRestartDownload() {
@@ -549,15 +549,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return true;
     }
 
-    private DatenDownload naechsterStart() {
-        Iterator<DatenDownload> it = iterator();
+    private Optional<DatenDownload> naechsterStart() {
         //erster Versuch, Start mit einem anderen Sender
-        while (it.hasNext()) {
-            DatenDownload datenDownload = it.next();
+        for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
                     if (!maxSenderLaufen(datenDownload, 1)) {
-                        return datenDownload;
+                        return Optional.of(datenDownload);
                     }
                 }
             }
@@ -570,18 +568,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
 
         //zweiter Versuch, Start mit einem passenden Sender
-        it = iterator();
-        while (it.hasNext()) {
-            DatenDownload datenDownload = it.next();
+        for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
                     if (!maxSenderLaufen(datenDownload, maxProSender)) {
-                        return datenDownload;
+                        return Optional.of(datenDownload);
                     }
                 }
             }
         }
-        return null;
+
+        return Optional.empty();
     }
 
     private boolean maxSenderLaufen(DatenDownload d, int max) {
