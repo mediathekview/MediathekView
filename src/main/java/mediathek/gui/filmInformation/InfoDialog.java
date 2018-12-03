@@ -202,9 +202,9 @@ public class InfoDialog extends JDialog {
             lblDescription.setCaretPosition(0);
 
             lblSize.setText(currentFilm.getSize());
-            lblDatum.setText(currentFilm.arr[DatenFilm.FILM_DATUM]);
-            lblUhrzeit.setText(currentFilm.arr[DatenFilm.FILM_ZEIT]);
-            lblDauer.setText(currentFilm.arr[DatenFilm.FILM_DAUER]);
+            lblDatum.setText(currentFilm.getSendeDatum());
+            lblUhrzeit.setText(currentFilm.getSendeZeit());
+            lblDauer.setText(currentFilm.getDauer());
 
             cbHD.setSelected(currentFilm.isHD());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
