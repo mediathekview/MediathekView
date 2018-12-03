@@ -439,13 +439,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void setDatum() {
-        if (!arr[DatenFilm.FILM_DATUM].isEmpty()) {
+        if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             try {
                 final long l = Long.parseLong(arr[DatenFilm.FILM_DATUM_LONG]);
                 datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", arr[DatenFilm.FILM_DATUM], arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
+                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
                 datumFilm = new DatumFilm(0);
                 arr[DatenFilm.FILM_DATUM] = "";
                 arr[DatenFilm.FILM_ZEIT] = "";

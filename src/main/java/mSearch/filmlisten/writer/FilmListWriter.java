@@ -142,7 +142,7 @@ public class FilmListWriter {
         writeSender(jg, datenFilm);
         writeThema(jg, datenFilm);
         writeTitel(jg, datenFilm);
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM]);
+        jg.writeString(datenFilm.getSendeDatum());
         writeZeit(jg, datenFilm);
         jg.writeString(datenFilm.arr[DatenFilm.FILM_DAUER]);
         jg.writeString(datenFilm.arr[DatenFilm.FILM_GROESSE]);
