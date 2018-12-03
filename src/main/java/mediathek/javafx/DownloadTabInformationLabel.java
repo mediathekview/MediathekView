@@ -41,7 +41,7 @@ public class DownloadTabInformationLabel extends Label {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getDownloadInfos().downloadStarts;
+        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
         final int anz = daten.getListeDownloads().size();
         final int diff = anz - starts[0];
 

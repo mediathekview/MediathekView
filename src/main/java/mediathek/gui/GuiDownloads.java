@@ -633,7 +633,7 @@ public class GuiDownloads extends JPanel {
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
 
     private void setInfoText() {
-        int[] starts = daten.getDownloadInfos().downloadStarts;
+        int[] starts = daten.getDownloadInfos().getDownloadStarts();
         if (starts[0] == 0) {
             txtDownload.setText("");
             return;
@@ -685,7 +685,7 @@ public class GuiDownloads extends JPanel {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = daten.getDownloadInfos().downloadStarts;
+        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
 //        if (starts[0] == 1) {
 //            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
 //        } else {
