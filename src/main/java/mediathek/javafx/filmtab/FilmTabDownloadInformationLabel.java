@@ -17,7 +17,7 @@ public class FilmTabDownloadInformationLabel extends Label {
 
     private String getInfoTextDownloads() {
         String textLinks;
-        final int[] starts = daten.getDownloadInfos().downloadStarts;
+        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
         final int anz = daten.getListeDownloads().size();
 
         boolean print = false;

@@ -61,7 +61,7 @@ public final class MVTray {
             }
 
             // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-            int[] starts = daten.getDownloadInfos().downloadStarts;
+            final int[] starts = daten.getDownloadInfos().getDownloadStarts();
             if (starts[6] > 0) {
                 // es gibt welche mit Fehler
                 if (trayState != 2) {
@@ -166,7 +166,7 @@ public final class MVTray {
     private String getInfoTextDownloads() {
         String text;
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = daten.getDownloadInfos().downloadStarts;
+        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
         text = "Downloads: " + starts[0];
 
         boolean print = false;

@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 
 public class DownloadInfos {
 
+    private static final DecimalFormat formatter = new DecimalFormat("####0.00");
     private final Daten daten;
     // Anzahl
     public int anzDownloadsRun = 0; //Anzahl gestarteter Downloads
@@ -42,18 +43,21 @@ public class DownloadInfos {
     public long bandwidth = 0; //Bandbreite: bytes per second
     public String bandwidthStr = "";
     // Prozent fertig (alle)
-    public int percent = -1;
-
+    private int percent = -1;
     // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-    public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
+    private int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
 
     public DownloadInfos(Daten aDaten) {
         daten = aDaten;
     }
 
+    public int[] getDownloadStarts() {
+        return downloadStarts;
+    }
+
     public String roundBandwidth() {
         if (bandwidth > 1_000_000.0) {
-            bandwidthStr = new DecimalFormat("####0.00").format(bandwidth / 1_000_000.0) + " MByte/s";
+            bandwidthStr = formatter.format(bandwidth / 1_000_000.0) + " MByte/s";
         } else if (bandwidth > 1_000.0) {
             bandwidthStr = Math.round(bandwidth / 1_000.0) + " kByte/s";
         } else {
@@ -67,7 +71,7 @@ public class DownloadInfos {
             if (timeRestAllDownloads < 60) {
                 return "< 1 Min";
             } else {
-                return Long.toString(timeRestAllDownloads / 60) + " Min";
+                return timeRestAllDownloads / 60 + " Min";
             }
         }
         return "";
@@ -78,7 +82,7 @@ public class DownloadInfos {
             if (timeRestAktDownloads < 60) {
                 return "< 1 Min";
             } else {
-                return Long.toString(timeRestAktDownloads / 60) + " Min";
+                return timeRestAktDownloads / 60 + " Min";
             }
         }
         return "";
@@ -137,20 +141,20 @@ public class DownloadInfos {
         if (!MVConfig.getBool(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS)) {
             return;
         }
-        int progress = daten.getDownloadInfos().percent;
+        final int progress = daten.getDownloadInfos().percent;
         if (progress >= 0) {
-            String text = "  [ ";
-            int a = progress / 10;
+            StringBuilder text = new StringBuilder("  [ ");
+            final int a = progress / 10;
             for (int i = 0; i < a; ++i) {
-                text += "#";
+                text.append("#");
             }
             for (int i = 0; i < (10 - a); ++i) {
-                text += "-";
+                text.append("-");
             }
-            text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte /";
-            text += " Downloads: " + daten.getDownloadInfos().anzDownloadsRun + " /";
-            text += " Bandbreite: " + roundBandwidth();
-            Log.progress(text);
+            text.append(" ]  ").append(MVFilmSize.getGroesse(byteAktDownloads)).append(" von ").append(MVFilmSize.getGroesse(byteAlleDownloads)).append(" MByte /");
+            text.append(" Downloads: ").append(daten.getDownloadInfos().anzDownloadsRun).append(" /");
+            text.append(" Bandbreite: ").append(roundBandwidth());
+            Log.progress(text.toString());
         }
     }
 
