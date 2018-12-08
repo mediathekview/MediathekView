@@ -18,16 +18,12 @@ public class FilmTabDownloadInformationLabel extends Label {
     private String getInfoTextDownloads() {
         String textLinks;
         final var listeDownloads = daten.getListeDownloads();
-        final int[] starts = listeDownloads.getStarts();
+        final var info = listeDownloads.getStarts();
         final int anz = listeDownloads.size();
 
         boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
+        if (info.hasValues())
+            print = true;
 
         if (anz == 1) {
             textLinks = "1 Download";
@@ -37,36 +33,36 @@ public class FilmTabDownloadInformationLabel extends Label {
 
         if (print) {
             textLinks += ": ";
-        }
 
-        if (print) {
-            if (starts[4] == 1) {
+            if (info.running == 1) {
                 textLinks += "1 läuft";
             } else {
-                textLinks += starts[4] + " laufen";
+                textLinks += info.running + " laufen";
             }
 
-            if (starts[4] > 0) {
+            if (info.running > 0) {
                 textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
             }
 
-            if (starts[3] == 1) {
+            if (info.initialized == 1) {
                 textLinks += ", 1 wartet";
             } else {
-                textLinks += ", " + starts[3] + " warten";
+                textLinks += ", " + info.initialized + " warten";
             }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
+
+            if (info.finished > 0) {
+                if (info.finished == 1) {
                     textLinks += ", 1 fertig";
                 } else {
-                    textLinks += ", " + starts[5] + " fertig";
+                    textLinks += ", " + info.finished + " fertig";
                 }
             }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
+
+            if (info.error > 0) {
+                if (info.error == 1) {
                     textLinks += ", 1 fehlerhaft";
                 } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
+                    textLinks += ", " + info.error + " fehlerhaft";
                 }
             }
         }

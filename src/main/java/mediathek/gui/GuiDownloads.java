@@ -637,8 +637,7 @@ public class GuiDownloads extends JPanel {
     private static final String END = "</body></html>";
 
     private void setInfoText() {
-        final int[] starts = daten.getListeDownloads().getStarts();
-        if (starts[0] == 0) {
+        if (daten.getListeDownloads().getStarts().total_starts == 0) {
             txtDownload.setText("");
             return;
         }
@@ -689,44 +688,19 @@ public class GuiDownloads extends JPanel {
 
     private String getInfoText() {
         String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getListeDownloads().getStarts();
-        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + starts[0] + "<br />";
+        final var info = daten.getListeDownloads().getStarts();
+        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + info.total_starts + "<br />";
 
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
+        if (info.hasValues()) {
             textLinks += "( ";
-            if (starts[4] == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += starts[4] + " laufen";
-            }
-            if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
-                }
-            }
+            textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
+            textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
+            if (info.finished > 0)
+                textLinks += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
+
+            if (info.error > 0)
+                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
+
             textLinks += " )";
         }
         textLinks += "<br /></span>";
