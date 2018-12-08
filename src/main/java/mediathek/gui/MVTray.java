@@ -25,6 +25,7 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
+import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
 import net.engio.mbassy.listener.Handler;
@@ -61,14 +62,14 @@ public final class MVTray {
             }
 
             // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-            final int[] starts = daten.getListeDownloads().getStarts();
-            if (starts[6] > 0) {
+            DownloadStartInfo info = daten.getListeDownloads().getStarts();
+            if (info.error > 0) {
                 // es gibt welche mit Fehler
                 if (trayState != 2) {
                     trayState = 2;
                     trayIcon.setImage(Icons.ICON_TRAY_ERROR);
                 }
-            } else if (starts[4] > 0) {
+            } else if (info.running > 0) {
                 // es laufen welche
                 if (trayState != 1) {
                     trayState = 1;
@@ -164,47 +165,39 @@ public final class MVTray {
     }
 
     private String getInfoTextDownloads() {
-        String text;
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getListeDownloads().getStarts();
-        text = "Downloads: " + starts[0];
+        DownloadStartInfo info = daten.getListeDownloads().getStarts();
+        String text = "Downloads: " + info.total_starts;
 
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
+        if (info.hasValues()) {
             text += "   [ ";
-            if (starts[4] == 1) {
+            if (info.running == 1) {
                 text += "1 läuft";
             } else {
-                text += starts[4] + " laufen";
+                text += info.running + " laufen";
             }
 
-            if (starts[4] > 0) {
+            if (info.running > 0) {
                 text += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
             }
 
-            if (starts[3] == 1) {
+            if (info.initialized == 1) {
                 text += ", 1 wartet";
             } else {
-                text += ", " + starts[3] + " warten";
+                text += ", " + info.initialized + " warten";
             }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
+
+            if (info.finished > 0) {
+                if (info.finished == 1) {
                     text += ", 1 fertig";
                 } else {
-                    text += ", " + starts[5] + " fertig";
+                    text += ", " + info.finished + " fertig";
                 }
             }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
+            if (info.error > 0) {
+                if (info.error == 1) {
                     text += ", 1 fehlerhaft";
                 } else {
-                    text += ", " + starts[6] + " fehlerhaft";
+                    text += ", " + info.error + " fehlerhaft";
                 }
             }
             text += " ]";

@@ -39,19 +39,13 @@ public class DownloadTabInformationLabel extends Label {
 
     private void getInfoTextDownloads() {
         String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getListeDownloads().getStarts();
+        final var info = daten.getListeDownloads().getStarts();
         final int anz = daten.getListeDownloads().size();
-        final int diff = anz - starts[0];
+        final int diff = anz - info.total_starts;
 
         boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
+        if (info.hasValues())
+            print = true;
 
         if (anz == 1) {
             textLinks = "1 Download";
@@ -65,47 +59,47 @@ public class DownloadTabInformationLabel extends Label {
             textLinks += " (" + diff + " zurückgestellt)";
         }
         textLinks += TRENNER;
-        if (starts[1] == 1) {
+        if (info.num_abos == 1) {
             textLinks += "1 Abo, ";
         } else {
-            textLinks += "" + starts[1] + " Abos, ";
+            textLinks += "" + info.num_abos + " Abos, ";
         }
-        if (starts[2] == 1) {
+        if (info.num_downloads == 1) {
             textLinks += "1 Download";
         } else {
-            textLinks += starts[2] + " Downloads";
+            textLinks += info.num_downloads + " Downloads";
         }
 
         textLinks +=" ";
         
         if (print) {
-            if (starts[4] == 1) {
+            if (info.running == 1) {
                 textLinks += "1 läuft";
             } else {
-                textLinks += starts[4] + " laufen";
+                textLinks += info.running + " laufen";
             }
 
-            if (starts[4] > 0) {
+            if (info.running > 0) {
                 textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
             }
 
-            if (starts[3] == 1) {
+            if (info.initialized == 1) {
                 textLinks += ", 1 wartet";
             } else {
-                textLinks += ", " + starts[3] + " warten";
+                textLinks += ", " + info.initialized + " warten";
             }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
+            if (info.finished > 0) {
+                if (info.finished == 1) {
                     textLinks += ", 1 fertig";
                 } else {
-                    textLinks += ", " + starts[5] + " fertig";
+                    textLinks += ", " + info.finished + " fertig";
                 }
             }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
+            if (info.error > 0) {
+                if (info.error == 1) {
                     textLinks += ", 1 fehlerhaft";
                 } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
+                    textLinks += ", " + info.error + " fehlerhaft";
                 }
             }
         }
