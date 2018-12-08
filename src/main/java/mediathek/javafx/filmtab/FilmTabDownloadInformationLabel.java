@@ -17,8 +17,9 @@ public class FilmTabDownloadInformationLabel extends Label {
 
     private String getInfoTextDownloads() {
         String textLinks;
-        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
-        final int anz = daten.getListeDownloads().size();
+        final var listeDownloads = daten.getListeDownloads();
+        final int[] starts = listeDownloads.getStarts();
+        final int anz = listeDownloads.size();
 
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
@@ -46,7 +47,7 @@ public class FilmTabDownloadInformationLabel extends Label {
             }
 
             if (starts[4] > 0) {
-                textLinks += " (" + daten.getDownloadInfos().bandwidthStr + ')';
+                textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
             }
 
             if (starts[3] == 1) {

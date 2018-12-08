@@ -41,7 +41,7 @@ public class DownloadTabInformationLabel extends Label {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
+        final int[] starts = daten.getListeDownloads().getStarts();
         final int anz = daten.getListeDownloads().size();
         final int diff = anz - starts[0];
 
@@ -86,7 +86,7 @@ public class DownloadTabInformationLabel extends Label {
             }
 
             if (starts[4] > 0) {
-                textLinks += " (" + daten.getDownloadInfos().bandwidthStr + ')';
+                textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
             }
 
             if (starts[3] == 1) {

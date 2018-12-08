@@ -278,7 +278,7 @@ public class Daten {
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
 
-        downloadInfos = new DownloadInfos(this);
+        downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
 
         Timer timer = new Timer(1000, e ->

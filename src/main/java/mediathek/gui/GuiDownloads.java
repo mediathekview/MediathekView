@@ -631,50 +631,56 @@ public class GuiDownloads extends JPanel {
     }
 
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
+    private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+            + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
+            + "<body>";
+    private static final String END = "</body></html>";
 
     private void setInfoText() {
-        int[] starts = daten.getDownloadInfos().getDownloadStarts();
+        final int[] starts = daten.getListeDownloads().getStarts();
         if (starts[0] == 0) {
             txtDownload.setText("");
             return;
         }
-        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>\n"
-                + "<body>\n";
-        final String END = "</body></html>";
 
         String info = HEAD;
 
         // Downloads
         info += getInfoText();
+
+        final var downloadInfos = daten.getDownloadInfos();
         // Größe
-        if (daten.getDownloadInfos().byteAlleDownloads > 0 || daten.getDownloadInfos().byteAktDownloads > 0) {
+        final long byteAlleDownloads = downloadInfos.getByteAlleDownloads();
+        final long byteAktDownloads = downloadInfos.getByteAktDownloads();
+        if (byteAlleDownloads > 0 || byteAktDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (daten.getDownloadInfos().byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAktDownloads) + " von "
-                        + MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
+            if (byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(byteAktDownloads) + " von "
+                        + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
             }
         }
         // Restzeit
-        if (daten.getDownloadInfos().timeRestAktDownloads > 0 && daten.getDownloadInfos().timeRestAllDownloads > 0) {
+        final long timeRestAktDownloads = downloadInfos.getTimeRestAktDownloads();
+        final long timeRestAllDownloads = downloadInfos.getTimeRestAllDownloads();
+        if (timeRestAktDownloads > 0 && timeRestAllDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + daten.getDownloadInfos().getRestzeit() + ",<br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
-        } else if (daten.getDownloadInfos().timeRestAktDownloads > 0) {
+                    + downloadInfos.getRestzeit() + ",<br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
+        } else if (timeRestAktDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + daten.getDownloadInfos().getRestzeit() + "</span>";
-        } else if (daten.getDownloadInfos().timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + downloadInfos.getRestzeit() + "</span>";
+        } else if (timeRestAllDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
         }
         // Bandbreite
-        if (daten.getDownloadInfos().bandwidth > 0) {
+        if (downloadInfos.getBandwidth() > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += daten.getDownloadInfos().bandwidthStr + "</span>";
+            info += downloadInfos.getBandwidthStr() + "</span>";
         }
         info += END;
 
@@ -685,12 +691,9 @@ public class GuiDownloads extends JPanel {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
-//        if (starts[0] == 1) {
-//            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
-//        } else {
+        final int[] starts = daten.getListeDownloads().getStarts();
         textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + starts[0] + "<br />";
-//        }
+
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
             if (starts[ii] > 0) {
@@ -893,7 +896,7 @@ public class GuiDownloads extends JPanel {
 
     private ArrayList<DatenDownload> getSelDownloads() {
         ArrayList<DatenDownload> arrayDownloads = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
@@ -1277,7 +1280,7 @@ public class GuiDownloads extends JPanel {
 
     private ArrayList<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
