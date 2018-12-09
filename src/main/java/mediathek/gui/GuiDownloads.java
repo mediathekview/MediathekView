@@ -610,7 +610,7 @@ public class GuiDownloads extends JPanel {
         txtDownload.setFocusable(false);
         txtDownload.setContentType("text/html");
         try {
-            if (jScrollPaneFilter.isVisible()) {
+            if (txtDownload.isVisible()) {
                 timerTask = new TimerTask() {
 
                     @Override
