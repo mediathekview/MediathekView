@@ -14,7 +14,7 @@ public class ErrorLabel extends Label {
             String textLinks = "";
 
             if (info.error > 0)
-                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
+                textLinks += info.error + " fehlerhaft";
             setText(textLinks);
         }
     }

@@ -115,8 +115,9 @@ public class DownloadTabInformationLabel extends HBox {
             children.remove(finishedBox);
 
         if (info.error > 0) {
+
             if (!children.contains(errorLabel))
-                children.add(IDX_ERROR_LABEL, errorLabel);
+                children.add(new CenteredBorderPane(errorLabel));
             errorLabel.updateLabel(info);
         } else
             children.remove(errorLabel);
