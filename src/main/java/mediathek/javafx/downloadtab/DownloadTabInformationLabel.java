@@ -14,13 +14,6 @@ import net.engio.mbassy.listener.Handler;
 
 
 public class DownloadTabInformationLabel extends HBox {
-    private static final int IDX_OVERALL_LABEL = 0;
-    private static final int IDX_ABO_LABEL = 2;
-    private static final int IDX_NUM_DOWNLOADS_LABEL = 4;
-    private static final int IDX_ACTIVE_LABEL = 6;
-    private static final int IDX_WAITING_LABEL = 7;
-    private static final int IDX_FINISHED_LABEL = 8;
-    private static final int IDX_ERROR_LABEL = 9;
     private final Daten daten;
     private final GesamtdownloadsLabel overallDownloadLabel = new GesamtdownloadsLabel();
     private final AboLabel aboLabel = new AboLabel();
@@ -61,17 +54,16 @@ public class DownloadTabInformationLabel extends HBox {
         waitingBox.getChildren().addAll(new CenteredBorderPane(waitingLabel), new VerticalSeparator());
         activeBox.getChildren().addAll(new CenteredBorderPane(activeDownloadLabel), new VerticalSeparator());
 
-        final var children = getChildren();
-        children.addAll(new VerticalSeparator(),
+        getChildren().addAll(new CenteredBorderPane(overallDownloadLabel),
                 new VerticalSeparator(),
-                new VerticalSeparator());
-        children.add(IDX_OVERALL_LABEL, new CenteredBorderPane(overallDownloadLabel));
-        children.add(IDX_ABO_LABEL, new CenteredBorderPane(aboLabel));
-        children.add(IDX_NUM_DOWNLOADS_LABEL, new CenteredBorderPane(numDownloadsLabel));
-        children.add(IDX_ACTIVE_LABEL, activeBox);
-        children.add(IDX_WAITING_LABEL, waitingBox);
-        children.add(IDX_FINISHED_LABEL, finishedBox);
-        children.add(IDX_ERROR_LABEL, new CenteredBorderPane(errorLabel));
+                new CenteredBorderPane(aboLabel),
+                new VerticalSeparator(),
+                new CenteredBorderPane(numDownloadsLabel),
+                new VerticalSeparator(),
+                activeBox,
+                waitingBox,
+                finishedBox,
+                new CenteredBorderPane(errorLabel));
     }
 
     @Handler
@@ -95,21 +87,21 @@ public class DownloadTabInformationLabel extends HBox {
 
         if (info.running > 0) {
             if (!children.contains(activeBox))
-                children.add(IDX_ACTIVE_LABEL, activeBox);
+                children.add(activeBox);
             activeDownloadLabel.updateLabel(daten, info);
         } else
             children.remove(activeBox);
 
         if (info.initialized > 0) {
             if (!children.contains(waitingBox))
-                children.add(IDX_WAITING_LABEL, waitingBox);
+                children.add(waitingBox);
             waitingLabel.updateLabel(info);
         } else
             children.remove(waitingBox);
 
         if (info.finished > 0) {
             if (!children.contains(finishedBox))
-                children.add(IDX_FINISHED_LABEL, finishedBox);
+                children.add(finishedBox);
             finishedLabel.updateLabel(info);
         } else
             children.remove(finishedBox);
