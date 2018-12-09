@@ -165,43 +165,27 @@ public final class MVTray {
     }
 
     private String getInfoTextDownloads() {
-        DownloadStartInfo info = daten.getListeDownloads().getStarts();
+        final DownloadStartInfo info = daten.getListeDownloads().getStarts();
         String text = "Downloads: " + info.total_starts;
 
         if (info.hasValues()) {
             text += "   [ ";
-            if (info.running == 1) {
-                text += "1 läuft";
-            } else {
-                text += info.running + " laufen";
-            }
+            text += (info.running == 1) ? "1 läuft" : info.running + " laufen";
 
-            if (info.running > 0) {
+            if (info.running > 0)
                 text += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
-            }
 
-            if (info.initialized == 1) {
-                text += ", 1 wartet";
-            } else {
-                text += ", " + info.initialized + " warten";
-            }
+            text += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
 
-            if (info.finished > 0) {
-                if (info.finished == 1) {
-                    text += ", 1 fertig";
-                } else {
-                    text += ", " + info.finished + " fertig";
-                }
-            }
-            if (info.error > 0) {
-                if (info.error == 1) {
-                    text += ", 1 fehlerhaft";
-                } else {
-                    text += ", " + info.error + " fehlerhaft";
-                }
-            }
+            if (info.finished > 0)
+                text += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
+
+            if (info.error > 0)
+                text += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
+
             text += " ]";
         }
+
         return text;
     }
 
