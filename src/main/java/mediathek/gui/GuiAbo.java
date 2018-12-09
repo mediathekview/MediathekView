@@ -153,7 +153,7 @@ public class GuiAbo extends JPanel {
         miAboOff.addActionListener(e -> einAus(false));
 
         JMenuItem miAboDelete = new JMenuItem("Löschen");
-        miAboDelete.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        miAboDelete.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
         miAboDelete.addActionListener(e -> loeschen());
 
         JMenuItem miAboEdit = new JMenuItem("Ändern");
@@ -480,7 +480,7 @@ public class GuiAbo extends JPanel {
             jPopupMenu.add(itemDeaktivieren);
 
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
             itemLoeschen.addActionListener(e -> aboLoeschen());
             jPopupMenu.add(itemLoeschen);
 

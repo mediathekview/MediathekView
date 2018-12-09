@@ -36,7 +36,7 @@ public class FXAboToolBar extends ToolBar {
         btnOff.setTooltip(new Tooltip("Abos ausschalten"));
         btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> tabAbo.einAus(false)));
 
-        Button btnDelete = new Button("",fontAwesome.create(FontAwesome.Glyph.TRASH_ALT).size(16d));
+        Button btnDelete = new Button("",fontAwesome.create(FontAwesome.Glyph.MINUS).size(16d));
         btnDelete.setTooltip(new Tooltip("Abos löschen"));
         btnDelete.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::loeschen));
 
@@ -59,8 +59,8 @@ public class FXAboToolBar extends ToolBar {
                 btnOff,
                 new VerticalSeparator(),
                 btnNewAbo,
-                btnEdit,
                 btnDelete,
+                btnEdit,
                 new VerticalSeparator(),
                 spacer,
                 btnShowFilter);
