@@ -21,51 +21,25 @@ public class FilmTabDownloadInformationLabel extends Label {
         final var info = listeDownloads.getStarts();
         final int anz = listeDownloads.size();
 
-        boolean print = false;
-        if (info.hasValues())
-            print = true;
+        textLinks = (anz == 1) ? "1 Download" : anz + " Downloads";
 
-        if (anz == 1) {
-            textLinks = "1 Download";
-        } else {
-            textLinks = anz + " Downloads";
-        }
-
-        if (print) {
+        if (info.hasValues()) {
             textLinks += ": ";
 
-            if (info.running == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += info.running + " laufen";
-            }
+            textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
 
-            if (info.running > 0) {
+            if (info.running > 0)
                 textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
-            }
 
-            if (info.initialized == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + info.initialized + " warten";
-            }
+            textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
 
-            if (info.finished > 0) {
-                if (info.finished == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + info.finished + " fertig";
-                }
-            }
+            if (info.finished > 0)
+                textLinks += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
 
-            if (info.error > 0) {
-                if (info.error == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + info.error + " fehlerhaft";
-                }
-            }
+            if (info.error > 0)
+                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
         }
+
         return textLinks;
     }
 }
