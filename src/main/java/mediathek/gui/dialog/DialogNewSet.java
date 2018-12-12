@@ -104,68 +104,68 @@ public class DialogNewSet extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         jButtonAbbrechen = new JButton();
-        JPanel jPanel1 = new JPanel();
-        JLabel jLabel7 = new JLabel();
+        var jPanel1 = new JPanel();
+        var jLabel7 = new JLabel();
         hyperlinkButton = new HyperlinkButton();
         jCheckBoxMorgen = new JCheckBox();
-        JPanel jPanel3 = new JPanel();
-        JScrollPane jScrollPane1 = new JScrollPane();
+        var jPanel3 = new JPanel();
+        var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         jButtonAdd = new JButton();
-        JPanel jPanel4 = new JPanel();
+        var jPanel4 = new JPanel();
         jButtonReplace = new JButton();
-        JScrollPane jScrollPane2 = new JScrollPane();
+        var jScrollPane2 = new JScrollPane();
         jTextArea2 = new JTextArea();
-        JScrollPane jScrollPane3 = new JScrollPane();
+        var jScrollPane3 = new JScrollPane();
         jTextArea3 = new JTextArea();
         jButtonSetHelp = new JButton();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
         //---- jButtonAbbrechen ----
-        jButtonAbbrechen.setText("Abbrechen");
+        jButtonAbbrechen.setText("Abbrechen"); //NON-NLS
 
         //======== jPanel1 ========
         {
-            jPanel1.setBorder(new TitledBorder(""));
+            jPanel1.setBorder(new TitledBorder("")); //NON-NLS
 
             //---- jLabel7 ----
-            jLabel7.setText("Anleitung:");
+            jLabel7.setText("Anleitung:"); //NON-NLS
 
             //---- hyperlinkButton ----
-            hyperlinkButton.setText("text");
+            hyperlinkButton.setText("text"); //NON-NLS
 
             GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
             jPanel1.setLayout(jPanel1Layout);
             jPanel1Layout.setHorizontalGroup(
-                    jPanel1Layout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(jLabel7)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(hyperlinkButton, GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
-                                    .addGap(335, 335, 335))
+                jPanel1Layout.createParallelGroup()
+                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hyperlinkButton, GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                        .addGap(335, 335, 335))
             );
             jPanel1Layout.setVerticalGroup(
-                    jPanel1Layout.createParallelGroup()
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                            .addComponent(jLabel7)
-                                            .addComponent(hyperlinkButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addContainerGap(11, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel7)
+                            .addComponent(hyperlinkButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(11, Short.MAX_VALUE))
             );
         }
 
         //---- jCheckBoxMorgen ----
         jCheckBoxMorgen.setSelected(true);
-        jCheckBoxMorgen.setText("Morgen wieder fragen");
+        jCheckBoxMorgen.setText("Morgen wieder fragen"); //NON-NLS
 
         //======== jPanel3 ========
         {
-            jPanel3.setBorder(new TitledBorder(null, "Entweder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204)));
+            jPanel3.setBorder(new TitledBorder(null, "Entweder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
 
             //======== jScrollPane1 ========
             {
@@ -178,38 +178,38 @@ public class DialogNewSet extends JDialog {
             }
 
             //---- jButtonAdd ----
-            jButtonAdd.setText("Neue Sets hinzuf\u00fcgen");
+            jButtonAdd.setText("Neue Sets hinzuf\u00fcgen"); //NON-NLS
 
             GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
             jPanel3.setLayout(jPanel3Layout);
             jPanel3Layout.setHorizontalGroup(
-                    jPanel3Layout.createParallelGroup()
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup()
+                            .addComponent(jScrollPane1)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(jPanel3Layout.createParallelGroup()
-                                            .addComponent(jScrollPane1)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                    .addComponent(jButtonAdd)
-                                                    .addGap(0, 0, Short.MAX_VALUE)))
-                                    .addContainerGap())
+                                .addComponent(jButtonAdd)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
             );
             jPanel3Layout.setVerticalGroup(
-                    jPanel3Layout.createParallelGroup()
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jButtonAdd)
-                                    .addContainerGap())
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonAdd)
+                        .addContainerGap())
             );
         }
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder(null, "Oder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204)));
+            jPanel4.setBorder(new TitledBorder(null, "Oder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
 
             //---- jButtonReplace ----
-            jButtonReplace.setText("Bestehende Sets durch die neuen ersetzen");
+            jButtonReplace.setText("Bestehende Sets durch die neuen ersetzen"); //NON-NLS
 
             //======== jScrollPane2 ========
             {
@@ -224,24 +224,24 @@ public class DialogNewSet extends JDialog {
             GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
             jPanel4.setLayout(jPanel4Layout);
             jPanel4Layout.setHorizontalGroup(
-                    jPanel4Layout.createParallelGroup()
+                jPanel4Layout.createParallelGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup()
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(jPanel4Layout.createParallelGroup()
-                                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                                    .addComponent(jButtonReplace)
-                                                    .addGap(0, 243, Short.MAX_VALUE))
-                                            .addComponent(jScrollPane2))
-                                    .addContainerGap())
+                                .addComponent(jButtonReplace)
+                                .addGap(0, 243, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2))
+                        .addContainerGap())
             );
             jPanel4Layout.setVerticalGroup(
-                    jPanel4Layout.createParallelGroup()
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jButtonReplace)
-                                    .addGap(13, 13, 13))
+                jPanel4Layout.createParallelGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonReplace)
+                        .addGap(13, 13, 13))
             );
         }
 
@@ -257,46 +257,46 @@ public class DialogNewSet extends JDialog {
         }
 
         //---- jButtonSetHelp ----
-        jButtonSetHelp.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png")));
-        jButtonSetHelp.setToolTipText("Hilfe anzeigen");
+        jButtonSetHelp.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+        jButtonSetHelp.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3)
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jScrollPane3)
-                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                .addComponent(jCheckBoxMorgen)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButtonAbbrechen)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jButtonSetHelp)))
-                                .addContainerGap())
+                            .addComponent(jCheckBoxMorgen)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonAbbrechen)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButtonSetHelp)))
+                    .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(jButtonAbbrechen)
-                                                .addComponent(jCheckBoxMorgen))
-                                        .addComponent(jButtonSetHelp))
-                                .addContainerGap())
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonAbbrechen)
+                            .addComponent(jCheckBoxMorgen))
+                        .addComponent(jButtonSetHelp))
+                    .addContainerGap())
         );
         pack();
         setLocationRelativeTo(getOwner());
