@@ -26,6 +26,9 @@ import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVInfoFile;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -97,40 +100,44 @@ public class DialogFilmBeschreibung extends JDialog {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
-            "fill,insets 5,hidemode 3,gap 5 5",
+            new LC().fill().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
             // columns
-            "[grow,fill]",
+            new AC()
+                .grow().fill(),
             // rows
-            "[fill]" +
-            "[grow,fill]" +
-            "[fill]"));
+            new AC()
+                .fill().gap()
+                .grow().fill().gap()
+                .fill()));
 
         //======== panel1 ========
         {
             panel1.setLayout(new MigLayout(
-                "insets 0,hidemode 3,gap 5 5",
+                new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
                 // columns
-                "[fill]" +
-                "[grow,fill]" +
-                "[fill]" +
-                "[fill]",
+                new AC()
+                    .fill().gap()
+                    .grow().fill().gap()
+                    .fill().gap()
+                    .fill(),
                 // rows
-                "[fill]"));
+                new AC()
+                    .fill()));
 
             //---- jButtonOk ----
-            jButtonOk.setText("Ok");
-            panel1.add(jButtonOk, "cell 3 0");
+            jButtonOk.setText("Ok"); //NON-NLS
+            panel1.add(jButtonOk, new CC().cell(3, 0));
 
             //---- jButtonHilfe ----
-            jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png")));
-            jButtonHilfe.setToolTipText("Hilfe anzeigen");
-            panel1.add(jButtonHilfe, "cell 2 0");
+            jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+            jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+            panel1.add(jButtonHilfe, new CC().cell(2, 0));
 
             //---- jButtonSpeichern ----
-            jButtonSpeichern.setText("Speichern");
-            panel1.add(jButtonSpeichern, "cell 0 0");
+            jButtonSpeichern.setText("Speichern"); //NON-NLS
+            panel1.add(jButtonSpeichern, new CC().cell(0, 0));
         }
-        contentPane.add(panel1, "cell 0 2");
+        contentPane.add(panel1, new CC().cell(0, 2));
 
         //======== jScrollPane1 ========
         {
@@ -142,27 +149,29 @@ public class DialogFilmBeschreibung extends JDialog {
             jTextArea1.setWrapStyleWord(true);
             jScrollPane1.setViewportView(jTextArea1);
         }
-        contentPane.add(jScrollPane1, "cell 0 1");
+        contentPane.add(jScrollPane1, new CC().cell(0, 1));
 
         //======== panel2 ========
         {
             panel2.setLayout(new MigLayout(
-                "insets 0,hidemode 3,gap 5 5",
+                new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
                 // columns
-                "[fill]" +
-                "[grow,fill]",
+                new AC()
+                    .fill().gap()
+                    .grow().fill(),
                 // rows
-                "[fill]"));
+                new AC()
+                    .fill()));
 
             //---- jLabel2 ----
-            jLabel2.setText("Filmtitel:");
-            panel2.add(jLabel2, "cell 0 0");
+            jLabel2.setText("Filmtitel:"); //NON-NLS
+            panel2.add(jLabel2, new CC().cell(0, 0));
 
             //---- jTextFieldTitel ----
             jTextFieldTitel.setEditable(false);
-            panel2.add(jTextFieldTitel, "cell 1 0");
+            panel2.add(jTextFieldTitel, new CC().cell(1, 0));
         }
-        contentPane.add(panel2, "cell 0 0");
+        contentPane.add(panel2, new CC().cell(0, 0));
         setSize(490, 185);
         setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
