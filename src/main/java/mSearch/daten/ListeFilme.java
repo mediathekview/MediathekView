@@ -19,8 +19,9 @@
  */
 package mSearch.daten;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.collections.ObservableList;
 import mSearch.tool.GermanStringSorter;
 import mediathek.config.Const;
@@ -47,8 +48,13 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     /**
      * List of available senders which notifies its users.
      */
-    private final ObservableList<String> senderList = FXCollections.observableArrayList();
+    private final EventList<String> m_senderList = new BasicEventList<>();
+    /**
+     * javafx proxy class to the sender list.
+     */
+    private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
     public boolean neueFilme = false;
+
     public ListeFilme() {
         super();
         sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
@@ -59,7 +65,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public ObservableList<String> getSenders() {
-        return senderList;
+        return obs_senderList;
     }
 
     public synchronized void importFilmliste(DatenFilm film) {
@@ -283,16 +289,17 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public synchronized long countNewFilms() {
-        return this.stream().filter(DatenFilm::isNew).count();
+        return stream().filter(DatenFilm::isNew).count();
     }
 
-    public synchronized void fillSenderList() {
-        Platform.runLater(() -> {
-            senderList.clear();
-            // der erste Sender ist ""
-            //senderList.add("");
-            senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
-        });
+    public void fillSenderList() {
+        var writeLock = m_senderList.getReadWriteLock().writeLock();
+        try {
+            writeLock.lock();
+            m_senderList.clear();
+            m_senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+        } finally {
+            writeLock.unlock();
+        }
     }
-
 }
