@@ -71,12 +71,14 @@ public class FilmListWriter {
     }
 
     private void writeFormatHeader(JsonGenerator jg, ListeFilme listeFilme) throws IOException {
+        final var meta = listeFilme.metaData();
+
         jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
         jg.writeString(""); //ListeFilme.FILMLISTE_DATUM_NR unused in newer versions
-        jg.writeString(listeFilme.metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR]);
-        jg.writeString(listeFilme.metaDaten[2]); //filmlist version
-        jg.writeString(""); //filmlist creator program
-        jg.writeString(listeFilme.metaDaten[ListeFilme.FILMLISTE_ID_NR]);
+        jg.writeString(meta.getDatum());
+        jg.writeString(meta.getVersion());
+        jg.writeString("");
+        jg.writeString(meta.getId());
         jg.writeEndArray();
     }
 

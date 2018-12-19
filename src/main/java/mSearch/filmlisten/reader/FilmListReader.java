@@ -82,7 +82,7 @@ public class FilmListReader implements AutoCloseable {
      * Remove all registered listeners when we do not need them anymore.
      */
     private void removeRegisteredListeners() {
-        ListenerFilmeLaden list[] = listeners.getListeners(ListenerFilmeLaden.class);
+        ListenerFilmeLaden[] list = listeners.getListeners(ListenerFilmeLaden.class);
         for (ListenerFilmeLaden lst : list) {
             listeners.remove(ListenerFilmeLaden.class, lst);
         }
@@ -166,9 +166,13 @@ public class FilmListReader implements AutoCloseable {
                 break;
             }
             if (jp.isExpectedStartArrayToken()) {
-                for (int k = 0; k < ListeFilme.MAX_ELEM; ++k) {
-                    listeFilme.metaDaten[k] = jp.nextTextValue();
-                }
+                var meta = listeFilme.metaData();
+                jp.nextTextValue();
+                meta.setDatum(jp.nextTextValue());
+                jp.nextTextValue();
+                jp.nextTextValue();
+                meta.setId(jp.nextTextValue());
+
                 break;
             }
         }

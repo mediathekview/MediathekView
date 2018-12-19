@@ -38,25 +38,24 @@ import java.util.stream.Stream;
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String THEMA_LIVE = "Livestream";
     public static final String FILMLISTE = "Filmliste";
-
-    public static final int FILMLISTE_DATUM_GMT_NR = 1;
-    public static final int FILMLISTE_ID_NR = 4;
-    public static final int MAX_ELEM = 5; //5 although not many indices are declared
-
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
     private static final SimpleDateFormat sdf_ = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
+    private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
+    private final FilmListMetaData metaData = new FilmListMetaData();
     private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     /**
      * List of available senders which notifies its users.
      */
     private final ObservableList<String> senderList = FXCollections.observableArrayList();
-    public String[] metaDaten = new String[]{"", "", "", "", ""};
     public boolean neueFilme = false;
-
     public ListeFilme() {
         super();
         sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    }
+
+    public FilmListMetaData metaData() {
+        return metaData;
     }
 
     public ObservableList<String> getSenders() {
@@ -150,8 +149,9 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         super.clear();
     }
 
-    public synchronized void setMeta(ListeFilme listeFilme) {
-        System.arraycopy(listeFilme.metaDaten, 0, metaDaten, 0, MAX_ELEM);
+    public synchronized void setMetaData(FilmListMetaData meta) {
+        metaData.setDatum(meta.getDatum());
+        metaData.setId(meta.getId());
     }
 
     public synchronized DatenFilm getFilmByUrl(final String url) {
@@ -182,7 +182,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public synchronized String genDate() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         // in der Form "dd.MM.yyyy, HH:mm"
-        final String date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+        final String date = metaData.getDatum();
 
         Date filmDate;
         String ret;
@@ -199,16 +199,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     public synchronized String getId() {
         // liefert die ID einer Filmliste
-        return metaDaten[ListeFilme.FILMLISTE_ID_NR];
-    }
-
-    /**
-     * Replace the current metadata with new one.
-     *
-     * @param data the new metadata
-     */
-    public synchronized void setMetaDaten(String[] data) {
-        metaDaten = data;
+        return metaData.getId();
     }
 
     /**
@@ -229,15 +220,13 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return ret;
     }
 
-    private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
-
     /**
      * Get the age of the film list.
      *
      * @return Age as a {@link java.util.Date} object.
      */
     private Date getAgeAsDate() {
-        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+        String date = metaData.getDatum();
         sdf.setTimeZone(TIMEZONE);
 
         Date filmDate = null;
@@ -305,4 +294,5 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
         });
     }
+
 }

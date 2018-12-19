@@ -136,7 +136,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     /**
      * Main filtering routine
      */
-    @SuppressWarnings("unchecked")
     public synchronized void filterListe() {
         Daten daten = Daten.getInstance();
         final ListeFilme listeFilme = daten.getListeFilme();
@@ -148,7 +147,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         listeRet.clear();
 
         if (listeFilme != null) {
-            listeRet.setMeta(listeFilme);
+            listeRet.setMetaData(listeFilme.metaData());
 
             this.parallelStream().forEach(entry -> {
                 entry.toLower();
