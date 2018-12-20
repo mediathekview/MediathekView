@@ -200,12 +200,8 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_SETTINGS_DIALOG);
         initializeSettingsDialog();
 
-        setupSearchKeyForMac();
-
         //register message bus handler
         daten.getMessageBus().subscribe(this);
-
-//        setFocusOnSearchField();
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEMORY_MONITOR);
         createMemoryMonitor();
@@ -344,13 +340,6 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    /**
-     * Setup the keyboard for search field on macOS.
-     * Ununsed on other platforms.
-     */
-    protected void setupSearchKeyForMac() {
-    }
-
     private void initializeSettingsDialog() {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(daten);
@@ -431,10 +420,6 @@ public class MediathekGui extends JFrame {
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))));
-    }
-
-    protected void setFocusOnSearchField() {
-        Platform.runLater(() -> tabFilme.fap.getSearchField().requestFocus());
     }
 
     /**
