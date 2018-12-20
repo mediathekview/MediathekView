@@ -411,8 +411,8 @@ public abstract class MVTable extends JTable {
         b = Integer.toString(breite_[0]);
         r = Integer.toString(reihe_[0]);
         for (int i = 1; i < breite.length; i++) {
-            b = b + ',' + Integer.toString(breite_[i]);
-            r = r + ',' + Integer.toString(reihe_[i]);
+            b = b + ',' + breite_[i];
+            r = r + ',' + reihe_[i];
         }
 
         listeSortKeys = this.getRowSorter().getSortKeys();
