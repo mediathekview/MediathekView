@@ -240,30 +240,6 @@ public abstract class MVTable extends JTable {
         }
     }
 
-    public void requestFocusSelect(JScrollPane jScrollPane) {
-        requestFocus();
-        if (getRowCount() > 0) {
-            // sonst ist schon eine Zeile markiert
-            if (getSelectedRow() == -1) {
-                setRowSelectionInterval(0, 0);
-            }
-            final int firstSelectedRow = getSelectedRow();
-            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
-            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
-        }
-    }
-
-    public void requestFocusSelect(JScrollPane jScrollPane, int zeile) {
-        requestFocus();
-        if (getRowCount() > 0) {
-            // sonst ist schon eine Zeile markiert
-            setRowSelectionInterval(zeile, zeile);
-            final int firstSelectedRow = getSelectedRow();
-            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
-            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
-        }
-    }
-
     public void scrollToSelection() {
         final int rowCount = getRowCount();
 
@@ -421,8 +397,8 @@ public abstract class MVTable extends JTable {
         // Tabellendaten ind die Daten.system schreiben
         // erst die Breite, dann die Reihenfolge
         String b, r, s = "", upDown = "";
-        int reihe_[] = new int[maxSpalten];
-        int breite_[] = new int[maxSpalten];
+        int[] reihe_ = new int[maxSpalten];
+        int[] breite_ = new int[maxSpalten];
         for (int i = 0; i < reihe_.length && i < getModel().getColumnCount(); ++i) {
             reihe_[i] = convertColumnIndexToModel(i);
         }
