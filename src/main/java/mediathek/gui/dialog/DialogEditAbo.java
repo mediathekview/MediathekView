@@ -20,7 +20,6 @@
 package mediathek.gui.dialog;
 
 import mSearch.tool.FilenameUtils;
-import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -59,6 +58,8 @@ public class DialogEditAbo extends JDialog {
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
+        setTitle("Abo ändern");
+        
         Daten daten = Daten.getInstance();
         this.change = change;
         aktAbo = aktA;
@@ -72,7 +73,8 @@ public class DialogEditAbo extends JDialog {
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Const.SENDER)));
+        comboboxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(Daten.getInstance().getListeFilme()));
+
         // Zeilpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {

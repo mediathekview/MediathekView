@@ -666,12 +666,22 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%q", res);
 
         replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
-        replStr = StringUtils.replace(replStr, "%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%Z", getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
 
-        replStr = StringUtils.replace(replStr, "%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL])
+        replStr = StringUtils.replace(replStr, "%z", getHash(this.arr[DatenDownload.DOWNLOAD_URL])
                 + '.' + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
 
         return replStr;
+    }
+
+    private String getHash(String pfad) {
+        //Hash eines Dateinamens zB. 1433245578
+        final int h = Math.abs(pfad.hashCode());
+        StringBuilder hh = new StringBuilder(Integer.toString(h));
+        while (hh.length() < 10) {
+            hh.insert(0, '0');
+        }
+        return hh.toString();
     }
 
     private String getField(String name, int length) {

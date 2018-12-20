@@ -27,7 +27,6 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
-import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -237,7 +236,8 @@ public class GuiAbo extends JPanel {
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
                 new int[]{DatenAbo.ABO_EINGESCHALTET},
                 new int[]{},
-                true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
+                true,
+                MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
             @Override
@@ -265,9 +265,7 @@ public class GuiAbo extends JPanel {
         });
 
         //Filter
-        final String[] sender = GuiFunktionen.addLeerListe(Const.SENDER);
-        jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
-        jcbSender.addActionListener(l -> tabelleLaden());
+        setupSenderCombo();
 
         jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
@@ -282,6 +280,11 @@ public class GuiAbo extends JPanel {
                 setFilter();
             }
         });
+    }
+
+    private void setupSenderCombo() {
+        jcbSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
+        jcbSender.addActionListener(l -> tabelleLaden());
     }
 
     private void setFilter() {
@@ -304,7 +307,7 @@ public class GuiAbo extends JPanel {
     }
 
     private void aboLoeschen() {
-        int rows[] = tabelle.getSelectedRows();
+        int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             String text;
             if (rows.length == 1) {
