@@ -667,7 +667,7 @@ public class GuiFilme extends JPanel {
 
     private ArrayList<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenFilm datenFilm = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenFilm.FILM_REF);
@@ -829,7 +829,7 @@ public class GuiFilme extends JPanel {
 
         private JMenuItem createPlayItem() {
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(Icons.ICON_MENUE_FILM_START);
+            item.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
             item.addActionListener(playAction);
             return item;
         }
@@ -838,7 +838,7 @@ public class GuiFilme extends JPanel {
 
         private JMenuItem createSaveFilmItem() {
             JMenuItem item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(Icons.ICON_MENUE_FILM_REC);
+            item.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
             item.addActionListener(saveFilmAction);
             return item;
         }
