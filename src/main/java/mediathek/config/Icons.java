@@ -33,8 +33,7 @@ public class Icons {
     public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
     public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_ALLE_STARTEN = GetIcon.getProgramIcon("menue-download-alle-starten.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNOAD_STARTEN = GetIcon.getProgramIcon("menue-download-starten.png", 16, 16);
+    public static final ImageIcon ICON_MENUE_DOWNLOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_ADD = GetIcon.getProgramIcon("menue-history-add.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_REMOVE = GetIcon.getProgramIcon("menue-history-remove.png", 16, 16);
@@ -42,8 +41,6 @@ public class Icons {
 
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
-    public static final ImageIcon ICON_TABELLE_DOWNOAD_START = GetIcon.getProgramIcon("tabelle-download-start.png", 20, 20);
-    public static final ImageIcon ICON_TABELLE_DOWNOAD_START_SW = GetIcon.getProgramIcon("tabelle-download-start-sw.png", 14, 14);
 
     public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 20, 20);
     public static final ImageIcon ICON_TABELLE_FILM_START_SW = GetIcon.getProgramIcon("tabelle-film-start-sw.png", 16, 16);
