@@ -22,6 +22,7 @@ package mSearch.daten;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.javafx.EventObservableList;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import mSearch.tool.GermanStringSorter;
 import mediathek.config.Const;
@@ -300,13 +301,15 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public void fillSenderList() {
-        var writeLock = m_senderList.getReadWriteLock().writeLock();
-        try {
-            writeLock.lock();
-            m_senderList.clear();
-            m_senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
-        } finally {
-            writeLock.unlock();
-        }
+        Platform.runLater(() -> {
+            var writeLock = m_senderList.getReadWriteLock().writeLock();
+            try {
+                writeLock.lock();
+                m_senderList.clear();
+                m_senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+            } finally {
+                writeLock.unlock();
+            }
+        });
     }
 }
