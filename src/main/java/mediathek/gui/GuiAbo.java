@@ -38,7 +38,7 @@ import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.TModelAbo;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
@@ -338,7 +338,7 @@ public class GuiAbo extends JPanel {
 
             daten.getListeAbo().aenderungMelden();
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -355,7 +355,7 @@ public class GuiAbo extends JPanel {
     public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
             return;
         }
 
@@ -417,7 +417,7 @@ public class GuiAbo extends JPanel {
             setInfo();
             daten.getListeAbo().aenderungMelden();
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
     }
 

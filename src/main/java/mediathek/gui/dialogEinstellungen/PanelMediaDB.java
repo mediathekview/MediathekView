@@ -220,7 +220,7 @@ public class PanelMediaDB extends PanelVorlage {
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(MediathekGui.ui());
+            NoSelectionErrorDialog.show();
             return;
         }
         String path = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();

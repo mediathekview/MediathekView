@@ -865,7 +865,7 @@ public class GuiDownloads extends JPanel {
                 arrayDownloads.add(datenDownload);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayDownloads;
     }
@@ -892,7 +892,7 @@ public class GuiDownloads extends JPanel {
         if (row != -1) {
             datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return datenDownload;
     }
@@ -1251,7 +1251,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayFilme;
     }

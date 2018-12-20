@@ -499,7 +499,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyPset();
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -510,7 +510,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setLoeschen() {
-        int rows[] = tabellePset.getSelectedRows();
+        int[] rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
             String text;
@@ -531,13 +531,13 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyPset();
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
     }
 
     private void setExport() {
         LinkedList<DatenPset> liste = new LinkedList<>();
-        int rows[] = tabellePset.getSelectedRows();
+        int[] rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
             for (int row : rows) {
@@ -561,7 +561,7 @@ public class PanelPsetLang extends PanelVorlage {
                 configWriter.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -582,7 +582,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme.setRowSelectionInterval(neu, neu);
             tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
 
     }
@@ -775,7 +775,7 @@ public class PanelPsetLang extends PanelVorlage {
                 DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
+                NoSelectionErrorDialog.show();
             }
         }
     }
@@ -830,7 +830,7 @@ public class PanelPsetLang extends PanelVorlage {
                     notifyPset();
                     stopBeob = false;
                 } else {
-                    new HinweisKeineAuswahl().zeigen(parentComponent);
+                    NoSelectionErrorDialog.show();
                 }
             }
             setNamePruefen();
@@ -849,7 +849,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabellePset();
                 notifyPset();
             } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
+                NoSelectionErrorDialog.show();
             }
         }
     }
@@ -858,7 +858,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int rows[] = tabelleProgramme.getSelectedRows();
+            int[] rows = tabelleProgramme.getSelectedRows();
             if (rows.length > 0) {
                 DatenPset pSet = getPset();
                 String text;
@@ -877,7 +877,7 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme();
                 }
             } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
+                NoSelectionErrorDialog.show();
             }
         }
     }
