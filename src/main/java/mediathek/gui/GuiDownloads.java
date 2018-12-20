@@ -504,9 +504,7 @@ public class GuiDownloads extends JPanel {
     private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
             DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF,
-            DatenDownload.DOWNLOAD_URL_RTMP,
-            DatenDownload.DOWNLOAD_FILM_NR,
-            DatenDownload.DOWNLOAD_NR};
+            DatenDownload.DOWNLOAD_URL_RTMP};
 
     private void init() {
         setupKeyMappings();

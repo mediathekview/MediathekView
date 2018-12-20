@@ -55,6 +55,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      */
     private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
     public boolean neueFilme = false;
+
     public ListeFilme() {
         super();
         sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
@@ -62,6 +63,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     /**
      * Get the basic sender channel list, useful e.g. for swing models
+     *
      * @return the plain list of channels
      */
     public EventList<String> getBaseSenderList() {
