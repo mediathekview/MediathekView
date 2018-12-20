@@ -265,11 +265,11 @@ public class GuiDownloads extends JPanel {
         miCleanupDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
         miCleanupDownloads.addActionListener(e -> cleanupDownloads());
 
-        JMenuItem miStartDownloads = new JMenuItem("Downloads starten");
-        miStartDownloads.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
+        JMenuItem miStartDownloads = new JMenuItem("Ausgewählte Downloads starten");
+        miStartDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
         miStartDownloads.addActionListener(e -> starten(false));
 
-        JMenuItem miStopDownloads = new JMenuItem("Downloads stoppen");
+        JMenuItem miStopDownloads = new JMenuItem("Ausgewählte Downloads stoppen");
         miStopDownloads.addActionListener(e -> stoppen(false));
 
         JMenuItem miDownloadsVorziehen = new JMenuItem("Downloads vorziehen");
@@ -1355,7 +1355,7 @@ public class GuiDownloads extends JPanel {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
+            itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, true /* starten */));
@@ -1422,7 +1422,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
+            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNLOAD_LOESCHEN);
 
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);

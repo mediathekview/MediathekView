@@ -49,14 +49,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     public CellRendererFilme(Daten d) {
         super(d.getSenderIconCache());
 
-        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, new Color(255, 255, 255));
+        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, Color.WHITE);
         normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
 
-        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, new Color(255, 255, 255));
+        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
         normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
         history = d.history;
-        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, new Color(255, 255, 255));
+        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
     }
 
