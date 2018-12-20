@@ -171,8 +171,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public synchronized DatenFilm getFilmByUrl(final String url) {
-        Optional<DatenFilm> opt = this.parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny();
-        return opt.orElse(null);
+        return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny().orElse(null);
     }
 
     public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {
