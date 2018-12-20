@@ -42,7 +42,7 @@ public class FXAboToolBar extends ToolBar {
 
         Button btnEdit = new Button("",fontAwesome.create(FontAwesome.Glyph.EDIT).size(16d));
         btnEdit.setTooltip(new Tooltip("Abo ändern"));
-        btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::aendern));
+        btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::editAbo));
 
         Button btnShowFilter = new FilterButton();
         btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
@@ -53,7 +53,7 @@ public class FXAboToolBar extends ToolBar {
 
         Button btnNewAbo = new Button("",fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
         btnNewAbo.setTooltip(new Tooltip("Abo anlegen"));
-        btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::neu));
+        btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::createNewAbo));
 
         getItems().addAll(btnOn,
                 btnOff,

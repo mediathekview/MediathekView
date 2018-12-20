@@ -62,7 +62,6 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -296,21 +295,6 @@ public class GuiFilme extends JPanel {
         }
     }
 
-    private class SortBySenderAction extends AbstractAction {
-        private final ArrayList<SortKey> listSortKeys = new ArrayList<>();
-
-        public SortBySenderAction() {
-            SortKey sk = new SortKey(DatenFilm.FILM_SENDER, SortOrder.ASCENDING);
-            listSortKeys.add(sk);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            tabelle.getRowSorter().setSortKeys(listSortKeys);
-            tabelle.requestFocusSelect(jScrollPane1, 0);
-        }
-    }
-
     public class PlayFilmAction extends AbstractAction {
 
         @Override
@@ -337,47 +321,37 @@ public class GuiFilme extends JPanel {
         }
     }
 
+    private static final String ACTION_MAP_KEY_PLAY_FILM = "film_abspielen";
+    private static final String ACTION_MAP_KEY_SAVE_FILM = "download_film";
+    private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url";
+    private static final String ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd";
+    private static final String ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein";
+    private static final String ACTION_MAP_KEY_MEDIA_DB = "mediadb";
+    private static final String ACTION_MAP_KEY_MARK_SEEN = "seen";
+    private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
+
     private void setupKeyMapping() {
-        final JRootPane rootPane = MediathekGui.ui().getRootPane();
-        final InputMap focusedWindowMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        final ActionMap actionMap = getActionMap();
+        final InputMap focusedWindowMap = tabelle.getInputMap();
 
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
-        rootPane.getActionMap().put("sender", new SortBySenderAction());
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_MEDIA_DB);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN);
 
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "abspielen");
-        actionMap.put("abspielen", playAction);
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
-        actionMap.put("download", saveFilmAction);
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
-        actionMap.put("tabelle", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelect(jScrollPane1);
-            }
-        });
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
-        actionMap.put("url-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
-
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
-        } else {
-            focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
-        }
-        actionMap.put("url-hd-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_HD));
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-k-copy");
-        actionMap.put("url-k-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_KLEIN));
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
-        actionMap.put("mediensammlung", mediensammlungAction);
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
-        actionMap.put("gesehen", markFilmAsSeenAction);
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
-        actionMap.put("ungesehen", markFilmAsUnseenAction);
+        final ActionMap actionMap = tabelle.getActionMap();
+        actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
+        actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_HD));
+        actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_KLEIN));
+        actionMap.put(ACTION_MAP_KEY_MEDIA_DB, mediensammlungAction);
+        actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
+        actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
     }
 
     private class CopyUrlToClipboardAction extends AbstractAction {
@@ -429,11 +403,6 @@ public class GuiFilme extends JPanel {
         }
     }
 
-    private void setupTableKeyMapping() {
-        tabelle.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "film_starten");
-        tabelle.getActionMap().put("film_starten", playAction);
-    }
-
     private void setupCellRenderer() {
         final CellRendererFilme cellRenderer = new CellRendererFilme(daten);
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
@@ -457,7 +426,6 @@ public class GuiFilme extends JPanel {
         });
 
         setupKeyMapping();
-        setupTableKeyMapping();
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
@@ -968,49 +936,33 @@ public class GuiFilme extends JPanel {
                     uLow = ""; // dann gibts keine
                 }
                 if (!uNormal.isEmpty()) {
-                    //##Trenner##
                     jPopupMenu.addSeparator();
-                    //##Trenner##
+
+                    final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
                     if (!uHd.isEmpty() || !uLow.isEmpty()) {
                         JMenu submenueURL = new JMenu("Film-URL kopieren");
                         // HD
                         if (!uHd.isEmpty()) {
                             item = new JMenuItem("in HD-Auflösung");
-                            KeyStroke ctrlH;
-                            if (SystemUtils.IS_OS_MAC_OSX) {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.SHIFT_DOWN_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            } else {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            }
-                            item.setAccelerator(ctrlH);
-
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                             submenueURL.add(item);
                         }
 
                         // normale Auflösung, gibts immer
                         item = new JMenuItem("in hoher Auflösung");
-
-                        KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                        item.setAccelerator(ctrlU);
-
-                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+                        item.addActionListener(copyNormalUrlListener);
                         submenueURL.add(item);
 
                         // kleine Auflösung
                         if (!uLow.isEmpty()) {
                             item = new JMenuItem("in geringer Auflösung");
-
-                            KeyStroke ctrlK = KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            item.setAccelerator(ctrlK);
-
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                             submenueURL.add(item);
                         }
                         jPopupMenu.add(submenueURL);
                     } else {
                         item = new JMenuItem("Film-URL kopieren");
-                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+                        item.addActionListener(copyNormalUrlListener);
                         jPopupMenu.add(item);
                     }
                 }
@@ -1021,9 +973,7 @@ public class GuiFilme extends JPanel {
                 }
             });
 
-            //##Trenner##
             jPopupMenu.addSeparator();
-            //##Trenner##
 
             // Film in der MediaDB suchen
             res.ifPresent(film -> {
