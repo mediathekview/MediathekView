@@ -143,25 +143,9 @@ public class GuiAbo extends JPanel {
     }
 
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miAboOn = new JMenuItem("Einschalten");
-        miAboOn.setIcon(IconFontSwing.buildIcon(FontAwesome.CHECK, 16));
-        miAboOn.addActionListener(e -> einAus(true));
-
-        JMenuItem miAboOff = new JMenuItem("Ausschalten");
-        miAboOff.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
-        miAboOff.addActionListener(e -> einAus(false));
-
-        JMenuItem miAboDelete = new JMenuItem("Löschen");
-        miAboDelete.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
-        miAboDelete.addActionListener(e -> loeschen());
-
-        JMenuItem miAboEdit = new JMenuItem("Ändern");
-        miAboEdit.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-        miAboEdit.addActionListener(e -> aendern());
-
         JMenuItem miAboNew = new JMenuItem("Neues Abo anlegen");
         miAboNew.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
-        miAboNew.addActionListener(e -> neu());
+        miAboNew.addActionListener(e -> createNewAbo());
 
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> invertSelection());
@@ -169,10 +153,6 @@ public class GuiAbo extends JPanel {
         JMenuItem miShowAboHistory = new JMenuItem("Erledigte Abos anzeigen...");
         miShowAboHistory.addActionListener(e -> showAboHistory());
 
-        menu.add(miAboOn);
-        menu.add(miAboOff);
-        menu.add(miAboDelete);
-        menu.add(miAboEdit);
         menu.add(miAboNew);
         menu.addSeparator();
         menu.add(miShowAboHistory);
@@ -196,20 +176,12 @@ public class GuiAbo extends JPanel {
         dialog.setVisible(true);
     }
 
-    public void aendern() {
-        aboAendern();
-    }
-
     public void einAus(boolean ein) {
         aboEinAus(ein);
     }
 
     public void loeschen() {
         aboLoeschen();
-    }
-
-    public void neu() {
-        aboNeu();
     }
 
     public void invertSelection() {
@@ -228,6 +200,32 @@ public class GuiAbo extends JPanel {
         SwingUtilities.invokeLater(this::tabelleLaden);
     }
 
+    private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
+    private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
+
+    private void setupKeyMap() {
+        final InputMap im = tabelle.getInputMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_EDIT_ABO);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), ACTION_MAP_KEY_DELETE_ABO);
+
+        final ActionMap am = tabelle.getActionMap();
+        //aendern
+        am.put(ACTION_MAP_KEY_EDIT_ABO, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editAbo();
+            }
+        });
+
+        //löschen
+        am.put(ACTION_MAP_KEY_DELETE_ABO, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aboLoeschen();
+            }
+        });
+    }
+
     private void initListeners() {
         tabelle.addMouseListener(new BeobMausTabelle1());
         setCellRenderer();
@@ -238,31 +236,8 @@ public class GuiAbo extends JPanel {
                 new int[]{},
                 true,
                 MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
-        this.getActionMap().put("tabelle", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelect(jScrollPane1);
-            }
-        });
-        //aendern
-        final ActionMap am = tabelle.getActionMap();
-        final InputMap im = tabelle.getInputMap();
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
-        am.put("aendern", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aendern();
-            }
-        });
-        //löschen
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
-        am.put("loeschen", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aboLoeschen();
-            }
-        });
+
+        setupKeyMap();
 
         //Filter
         setupSenderCombo();
@@ -316,7 +291,7 @@ public class GuiAbo extends JPanel {
             } else {
                 text = rows.length + " Abos löschen?";
             }
-            int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            final int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabelle.convertRowIndexToModel(rows[i]);
@@ -344,17 +319,19 @@ public class GuiAbo extends JPanel {
         }
     }
 
-    private void aboAendern() {
+    public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
             new HinweisKeineAuswahl().zeigen(parentComponent);
             return;
         }
 
-        int[] rows = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
+
         DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
+        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
+        dialog.setTitle("Abo ändern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
@@ -386,8 +363,8 @@ public class GuiAbo extends JPanel {
         setInfo();
     }
 
-    private void aboNeu() {
-        daten.getListeAbo().addAbo("Neu" /*Abonamer*/);
+    public void createNewAbo() {
+        daten.getListeAbo().addAbo("Neu");
     }
 
     private void aboEinAus(boolean ein) {
@@ -436,7 +413,7 @@ public class GuiAbo extends JPanel {
                         buttonTable(row, column);
                     }
                 } else if (arg0.getClickCount() > 1) {
-                    aboAendern();
+                    editAbo();
                 }
             }
         }
@@ -489,14 +466,14 @@ public class GuiAbo extends JPanel {
 
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
             itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-            itemAendern.addActionListener(e -> aboAendern());
+            itemAendern.addActionListener(e -> editAbo());
             jPopupMenu.add(itemAendern);
 
             jPopupMenu.addSeparator();
 
             JMenuItem itemNeu = new JMenuItem("Abo anlegen");
             itemNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
-            itemNeu.addActionListener(e -> aboNeu());
+            itemNeu.addActionListener(e -> createNewAbo());
             jPopupMenu.add(itemNeu);
         }
 

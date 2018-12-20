@@ -61,7 +61,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     /**
      * Get the basic sender channel list, useful e.g. for swing models
-     * @return
+     * @return the plain list of channels
      */
     public EventList<String> getBaseSenderList() {
         return m_senderList;

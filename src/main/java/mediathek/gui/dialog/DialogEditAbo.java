@@ -58,8 +58,7 @@ public class DialogEditAbo extends JDialog {
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
-        setTitle("Abo ändern");
-        
+
         Daten daten = Daten.getInstance();
         this.change = change;
         aktAbo = aktA;
