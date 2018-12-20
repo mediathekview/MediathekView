@@ -173,7 +173,7 @@ public class DialogMediaDB extends JDialog {
             String s = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             DirOpenAction.zielordnerOeffnen(parent, s);
         } else {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -184,7 +184,7 @@ public class DialogMediaDB extends JDialog {
             String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             OpenPlayerAction.filmAbspielen(parent, path + File.separator + file);
         } else {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -205,7 +205,7 @@ public class DialogMediaDB extends JDialog {
         String del = "";
         int row = tabelleFilme.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
             return;
         }
         try {

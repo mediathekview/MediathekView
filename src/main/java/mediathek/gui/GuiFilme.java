@@ -591,7 +591,7 @@ public class GuiFilme extends JPanel {
     private void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         } else if (pSet.istSpeichern()) {
             // wenn das pSet zum Speichern (über die Button) gewählt wurde,
             // weiter mit dem Dialog "Speichern"
@@ -642,7 +642,7 @@ public class GuiFilme extends JPanel {
                 arrayFilme.add(datenFilm);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayFilme;
     }

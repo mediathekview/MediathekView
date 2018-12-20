@@ -19,12 +19,19 @@
  */
 package mediathek.tool;
 
-import java.awt.Frame;
-import javax.swing.JOptionPane;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import mediathek.config.Konstanten;
 
-public class HinweisKeineAuswahl {
+public class NoSelectionErrorDialog {
 
-    public void zeigen(Frame parentComponent) {
-        MVMessageDialog.showMessageDialog(parentComponent, "Zeile auswählen", "keine Auswahl", JOptionPane.INFORMATION_MESSAGE);
+    public static void show() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(Konstanten.PROGRAMMNAME);
+            alert.setHeaderText("Befehl kann nicht ausgeführt werden.");
+            alert.setContentText("Sie haben keinen Tabelleneintrag ausgewählt.");
+            alert.show();
+        });
     }
 }

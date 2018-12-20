@@ -25,7 +25,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
-import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
 import net.engio.mbassy.listener.Handler;
@@ -175,7 +175,7 @@ public class PanelDateinamen extends PanelVorlage {
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
 
     }
