@@ -435,82 +435,70 @@ public class GuiDownloads extends JPanel {
         daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
     }
 
+    private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
+    private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
+    private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
+    private static final String ACTION_MAP_KEY_MAERK_AS_UNSEEN = "unseen";
+    private static final String ACTION_MAP_KEY_START_DOWNLOAD = "dl_start";
+    private static final String ACTION_MAP_KEY_SEARCH_MEDIADB = "search_in_mediadb";
+
+    private class SearchInMediaDbAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final int row = tabelle.getSelectedRow();
+            if (row != -1) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                daten.getDialogMediaDB().setVis();
+
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                if (datenDownload != null) {
+                    daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+                }
+
+            }
+        }
+    }
     private void setupKeyMappings() {
-        ActionMap am = tabelle.getActionMap();
-        InputMap im = tabelle.getInputMap();
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
-        am.put("aendern", new AbstractAction() {
+        final InputMap im = tabelle.getInputMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_EDIT_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), ACTION_MAP_KEY_DELETE_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_AS_SEEN);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MAERK_AS_UNSEEN);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_START_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_SEARCH_MEDIADB);
+
+        final ActionMap am = tabelle.getActionMap();
+        am.put(ACTION_MAP_KEY_EDIT_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 editDownload();
             }
         });
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
-        am.put("loeschen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_DELETE_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadLoeschen(true);
             }
         });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
-        this.getActionMap().put("tabelle", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelect(jScrollPane1);
-            }
-        });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
-        this.getActionMap().put("download", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filmStartenWiederholenStoppen(false, true /* starten */);
-            }
-        });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
-        this.getActionMap().put("url-copy", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tabelle.getSelectedRow();
-                if (row != -1) {
-                    GuiFunktionen.copyToClipboard(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row),
-                            DatenDownload.DOWNLOAD_URL).toString());
-                }
-            }
-        });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "searchInMediaDb");
-        this.getActionMap().put("searchInMediaDb", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tabelle.getSelectedRow();
-                if (row != -1) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    daten.getDialogMediaDB().setVis();
-
-                    DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
-                    if (datenDownload != null) {
-                        daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-                    }
-
-                }
-            }
-        });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
-        this.getActionMap().put("gesehen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 markFilmAsSeen();
             }
         });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
-        this.getActionMap().put("ungesehen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 markFilmAsUnseen();
             }
         });
+        am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { filmStartenWiederholenStoppen(false, true);
+            }
+        });
+        am.put(ACTION_MAP_KEY_SEARCH_MEDIADB, new SearchInMediaDbAction());
     }
 
     private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
@@ -1446,9 +1434,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(e -> zielordnerOeffnen());
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             //Abo ändern
             JMenu submenueAbo = new JMenu("Abo");
@@ -1484,9 +1470,7 @@ public class GuiDownloads extends JPanel {
             submenueAbo.add(itemChangeAbo);
             jPopupMenu.add(submenueAbo);
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             // Film in der MediaDB suchen
             JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
@@ -1527,8 +1511,6 @@ public class GuiDownloads extends JPanel {
 
             // URL kopieren
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
-            KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-            itemUrl.setAccelerator(ctrlU);
             itemUrl.addActionListener(e -> {
                 int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
