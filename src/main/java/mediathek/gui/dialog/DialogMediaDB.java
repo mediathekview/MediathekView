@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialog;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.tool.FilenameUtils;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -456,7 +458,7 @@ public class DialogMediaDB extends JDialog {
 
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(Icons.ICON_MENUE_FILM_START);
+            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
             itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
 
