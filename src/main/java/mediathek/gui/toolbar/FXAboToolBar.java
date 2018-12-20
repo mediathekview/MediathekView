@@ -61,7 +61,6 @@ public class FXAboToolBar extends ToolBar {
                 btnNewAbo,
                 btnDelete,
                 btnEdit,
-                new VerticalSeparator(),
                 spacer,
                 btnShowFilter);
     }

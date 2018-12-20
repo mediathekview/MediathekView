@@ -28,7 +28,6 @@ import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -49,7 +48,10 @@ import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class GuiAbo extends JPanel {
@@ -147,17 +149,12 @@ public class GuiAbo extends JPanel {
         miAboNew.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
         miAboNew.addActionListener(e -> createNewAbo());
 
-        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
-        miInvertSelection.addActionListener(e -> invertSelection());
-
         JMenuItem miShowAboHistory = new JMenuItem("Erledigte Abos anzeigen...");
         miShowAboHistory.addActionListener(e -> showAboHistory());
 
         menu.add(miAboNew);
         menu.addSeparator();
         menu.add(miShowAboHistory);
-        menu.addSeparator();
-        menu.add(miInvertSelection);
     }
 
     class ShowAboHistoryDialog extends StandardCloseDialog {
@@ -209,15 +206,12 @@ public class GuiAbo extends JPanel {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), ACTION_MAP_KEY_DELETE_ABO);
 
         final ActionMap am = tabelle.getActionMap();
-        //aendern
         am.put(ACTION_MAP_KEY_EDIT_ABO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 editAbo();
             }
         });
-
-        //löschen
         am.put(ACTION_MAP_KEY_DELETE_ABO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -226,9 +220,48 @@ public class GuiAbo extends JPanel {
         });
     }
 
+    private JPopupMenu createContextMenu() {
+        JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
+        itemEinschalten.setIcon(IconFontSwing.buildIcon(FontAwesome.CHECK, 16));
+        itemEinschalten.addActionListener(e -> aboEinAus(true));
+
+        JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
+        itemDeaktivieren.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
+        itemDeaktivieren.addActionListener(e -> aboEinAus(false));
+
+        JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
+        itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
+        itemLoeschen.addActionListener(e -> aboLoeschen());
+
+        JMenuItem itemAendern = new JMenuItem("Abo ändern");
+        itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
+        itemAendern.addActionListener(e -> editAbo());
+
+        JMenuItem itemNeu = new JMenuItem("Abo anlegen");
+        itemNeu.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
+        itemNeu.addActionListener(e -> createNewAbo());
+
+        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
+        miInvertSelection.addActionListener(e -> invertSelection());
+
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        jPopupMenu.add(itemEinschalten);
+        jPopupMenu.add(itemDeaktivieren);
+        jPopupMenu.addSeparator();
+        jPopupMenu.add(itemNeu);
+        jPopupMenu.add(itemLoeschen);
+        jPopupMenu.add(itemAendern);
+        jPopupMenu.addSeparator();
+        jPopupMenu.add(miInvertSelection);
+
+        return jPopupMenu;
+    }
+
     private void initListeners() {
-        tabelle.addMouseListener(new BeobMausTabelle1());
+        tabelle.setComponentPopupMenu(createContextMenu());
+
         setCellRenderer();
+
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
@@ -390,110 +423,6 @@ public class GuiAbo extends JPanel {
 
     private void setInfo() {
         daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
-    private class BeobMausTabelle1 extends MouseAdapter {
-        private JPopupMenu jPopupMenu;
-        private Point p;
-        private JMenuItem itemEinschalten;
-        private JMenuItem itemDeaktivieren;
-
-        public BeobMausTabelle1() {
-            createPopupMenu();
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON1) {
-                if (arg0.getClickCount() == 1) {
-                    p = arg0.getPoint();
-                    final int row = tabelle.rowAtPoint(p);
-                    if (row >= 0) {
-                        final int column = tabelle.columnAtPoint(p);
-                        buttonTable(row, column);
-                    }
-                } else if (arg0.getClickCount() > 1) {
-                    editAbo();
-                }
-            }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void buttonTable(int row, int column) {
-            if (row != -1) {
-                if (tabelle.convertColumnIndexToModel(column) == DatenAbo.ABO_EINGESCHALTET) {
-                    DatenAbo akt = daten.getListeAbo().getAboNr(tabelle.convertRowIndexToModel(row));
-                    akt.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]));
-                    tabelle.getSpalten();
-                    tabelleLaden();
-                    tabelle.setSpalten();
-                    setInfo();
-                    daten.getListeAbo().aenderungMelden();
-                }
-            }
-        }
-
-        private void createPopupMenu() {
-            jPopupMenu = new JPopupMenu();
-
-            itemEinschalten = new JMenuItem("Abo einschalten");
-            itemEinschalten.setIcon(Icons.ICON_MENUE_EIN);
-            itemEinschalten.addActionListener(e -> aboEinAus(true));
-            jPopupMenu.add(itemEinschalten);
-
-            itemDeaktivieren = new JMenuItem("Abo ausschalten");
-            itemDeaktivieren.setIcon(Icons.ICON_MENUE_AUS);
-            itemDeaktivieren.addActionListener(e -> aboEinAus(false));
-            jPopupMenu.add(itemDeaktivieren);
-
-            JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
-            itemLoeschen.addActionListener(e -> aboLoeschen());
-            jPopupMenu.add(itemLoeschen);
-
-            JMenuItem itemAendern = new JMenuItem("Abo ändern");
-            itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-            itemAendern.addActionListener(e -> editAbo());
-            jPopupMenu.add(itemAendern);
-
-            jPopupMenu.addSeparator();
-
-            JMenuItem itemNeu = new JMenuItem("Abo anlegen");
-            itemNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
-            itemNeu.addActionListener(e -> createNewAbo());
-            jPopupMenu.add(itemNeu);
-        }
-
-        private void showMenu(MouseEvent evt) {
-            boolean ein = true;
-            p = evt.getPoint();
-            int nr = tabelle.rowAtPoint(p);
-            if (nr >= 0) {
-                tabelle.setRowSelectionInterval(nr, nr);
-                int modelRow = tabelle.convertRowIndexToModel(nr);
-                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-                ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]);
-            }
-
-            itemEinschalten.setEnabled(!ein);
-            itemDeaktivieren.setEnabled(ein);
-
-            //Menü anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
     }
 
     /**
