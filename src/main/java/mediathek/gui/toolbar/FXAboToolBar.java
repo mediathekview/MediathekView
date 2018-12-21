@@ -1,8 +1,6 @@
 package mediathek.gui.toolbar;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -11,6 +9,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.actions.CreateNewAboAction;
+import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.javafx.tool.FilterButton;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -21,6 +20,8 @@ import javax.swing.*;
 
 
 public class FXAboToolBar extends ToolBar {
+
+    private final ComboBox<String> cbSender = new ComboBox<>();
 
     public FXAboToolBar(GuiAbo tabAbo) {
         super();
@@ -38,11 +39,11 @@ public class FXAboToolBar extends ToolBar {
         btnOff.setTooltip(new Tooltip("Abos ausschalten"));
         btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> tabAbo.einAus(false)));
 
-        Button btnDelete = new Button("",fontAwesome.create(FontAwesome.Glyph.MINUS).size(16d));
+        Button btnDelete = new Button("", fontAwesome.create(FontAwesome.Glyph.MINUS).size(16d));
         btnDelete.setTooltip(new Tooltip("Abos löschen"));
         btnDelete.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::loeschen));
 
-        Button btnEdit = new Button("",fontAwesome.create(FontAwesome.Glyph.EDIT).size(16d));
+        Button btnEdit = new Button("", fontAwesome.create(FontAwesome.Glyph.EDIT).size(16d));
         btnEdit.setTooltip(new Tooltip("Abo ändern"));
         btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::editAbo));
 
@@ -53,10 +54,13 @@ public class FXAboToolBar extends ToolBar {
             Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, FXAboToolBar.class.getName());
         }));
 
-        Button btnNewAbo = new Button("",fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
+        Button btnNewAbo = new Button("", fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
         btnNewAbo.setTooltip(new Tooltip("Abo anlegen"));
         CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
         btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(new CenteredBorderPane(new Label("Abos für Sender:")), cbSender);
 
         getItems().addAll(btnOn,
                 btnOff,
@@ -64,8 +68,13 @@ public class FXAboToolBar extends ToolBar {
                 btnNewAbo,
                 btnDelete,
                 btnEdit,
+                new VerticalSeparator(),
+                hBox,
                 spacer,
                 btnShowFilter);
     }
 
+    public ComboBox<String> getSenderComboBox() {
+        return cbSender;
+    }
 }

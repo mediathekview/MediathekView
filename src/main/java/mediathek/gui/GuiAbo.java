@@ -19,9 +19,12 @@
  */
 package mediathek.gui;
 
+import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Datum;
@@ -37,6 +40,7 @@ import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.SenderList;
 import mediathek.tool.TModelAbo;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
@@ -65,27 +69,32 @@ public class GuiAbo extends JPanel {
         super();
         daten = d;
         this.parentComponent = parentComponent;
+        toolBar = new FXAboToolBar(this);
+        senderCb = toolBar.getSenderComboBox();
+        Platform.runLater(this::setupSenderCb);
 
         initComponents();
-
-        daten.getMessageBus().subscribe(this);
-
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
 
+        SwingUtilities.invokeLater(() -> {
+            JFXPanel toolBarPanel = new JFXPanel();
+            add(toolBarPanel,BorderLayout.NORTH);
+            Platform.runLater(() -> toolBarPanel.setScene(new Scene(toolBar)));
+        });
+
+        daten.getMessageBus().subscribe(this);
+
         initListeners();
+
         tabelleLaden();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
-
-        SwingUtilities.invokeLater(() -> {
-            JFXPanel toolBarPanel = new JFXPanel();
-            add(toolBarPanel,BorderLayout.NORTH);
-            Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
-        });
     }
+
+    private final FXAboToolBar toolBar;
 
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
 
@@ -205,6 +214,16 @@ public class GuiAbo extends JPanel {
         });
     }
 
+    private final ComboBox<String> senderCb;
+
+    private void setupSenderCb() {
+        var senderList = new SenderList(daten.getListeFilme().getBaseSenderList());
+        ObservableList<String> senderModel = new EventObservableList<>(senderList);
+        senderCb.setItems(senderModel);
+        senderCb.getSelectionModel().select(0);
+        senderCb.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
+    }
+
     private void setupSenderCombo() {
         jcbSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
         jcbSender.addActionListener(l -> tabelleLaden());
@@ -221,12 +240,18 @@ public class GuiAbo extends JPanel {
 
     private void tabelleLaden() {
         tabelle.getSpalten();
-        final Object selectedItem = jcbSender.getSelectedItem();
-        if (selectedItem != null) {
-            daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem.toString());
-            tabelle.setSpalten();
-            setInfo();
-        }
+
+        Platform.runLater(() -> {
+            final String selectedItem = senderCb.getValue();
+            if (selectedItem != null) {
+                SwingUtilities.invokeLater(() -> {
+                    daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
+                    tabelle.setSpalten();
+                    setInfo();
+
+                });
+            }
+        });
     }
 
     private void aboLoeschen() {
