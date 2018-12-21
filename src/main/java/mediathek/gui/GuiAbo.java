@@ -38,7 +38,6 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.SenderList;
 import mediathek.tool.TModelAbo;
@@ -196,9 +195,6 @@ public class GuiAbo extends JPanel {
 
         setupKeyMap();
 
-        //Filter
-        setupSenderCombo();
-
         jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jScrollPaneFilter.isVisible()) {
@@ -222,11 +218,6 @@ public class GuiAbo extends JPanel {
         senderCb.setItems(senderModel);
         senderCb.getSelectionModel().select(0);
         senderCb.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
-    }
-
-    private void setupSenderCombo() {
-        jcbSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
-        jcbSender.addActionListener(l -> tabelleLaden());
     }
 
     private void setFilter() {
@@ -375,8 +366,6 @@ public class GuiAbo extends JPanel {
         var jTable1 = new JTable();
         jScrollPaneFilter = new JScrollPane();
         var jPanelFilter = new JPanel();
-        var jLabel1 = new JLabel();
-        jcbSender = new JComboBox<>();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -401,39 +390,15 @@ public class GuiAbo extends JPanel {
                 //======== jPanelFilter ========
                 {
 
-                    //---- jLabel1 ----
-                    jLabel1.setText("Abos f\u00fcr Sender:"); //NON-NLS
-
-                    //---- jcbSender ----
-                    jcbSender.setMaximumRowCount(25);
-                    jcbSender.setModel(new DefaultComboBoxModel<>(new String[] {
-                        "Item 1", //NON-NLS
-                        "Item 2", //NON-NLS
-                        "Item 3", //NON-NLS
-                        "Item 4" //NON-NLS
-                    }));
-
                     GroupLayout jPanelFilterLayout = new GroupLayout(jPanelFilter);
                     jPanelFilter.setLayout(jPanelFilterLayout);
                     jPanelFilterLayout.setHorizontalGroup(
                         jPanelFilterLayout.createParallelGroup()
-                            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanelFilterLayout.createParallelGroup()
-                                    .addComponent(jcbSender)
-                                    .addGroup(jPanelFilterLayout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addGap(0, 57, Short.MAX_VALUE)))
-                                .addContainerGap())
+                            .addGap(0, 180, Short.MAX_VALUE)
                     );
                     jPanelFilterLayout.setVerticalGroup(
                         jPanelFilterLayout.createParallelGroup()
-                            .addGroup(jPanelFilterLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jcbSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(400, Short.MAX_VALUE))
+                            .addGap(0, 406, Short.MAX_VALUE)
                     );
                 }
                 jScrollPaneFilter.setViewportView(jPanelFilter);
@@ -448,6 +413,5 @@ public class GuiAbo extends JPanel {
     private JSplitPane jSplitPane1;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPaneFilter;
-    private JComboBox<String> jcbSender;
     // End of variables declaration//GEN-END:variables
 }

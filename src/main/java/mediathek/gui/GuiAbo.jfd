@@ -24,34 +24,13 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "jScrollPaneFilter"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp jcbSender:::::x, seq {comp jLabel1:::p::p, space :0:57:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, comp jcbSender:::p::p, space ::400:x}}"
+						"$horizontalGroup": "par l {space :0:180:x}"
+						"$verticalGroup": "par l {space :0:406:x}"
 					} ) {
 						name: "jPanelFilter"
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "jLabel1"
-							"text": "Abos für Sender:"
-							auxiliary() {
-								"JavaCodeGenerator.variableLocal": true
-							}
-						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
-							name: "jcbSender"
-							"maximumRowCount": 25
-							"model": new javax.swing.DefaultComboBoxModel {
-								selectedItem: "Item 1"
-								addElement( "Item 1" )
-								addElement( "Item 2" )
-								addElement( "Item 3" )
-								addElement( "Item 4" )
-							}
-							auxiliary() {
-								"JavaCodeGenerator.typeParameters": "String"
-							}
-						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "left"
@@ -61,6 +40,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 400, 300 )
+			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
 }
