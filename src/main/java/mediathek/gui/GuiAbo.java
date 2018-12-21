@@ -31,12 +31,10 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
-import mediathek.gui.actions.ShowAboHistoryAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
-import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.TModelAbo;
@@ -49,14 +47,11 @@ import net.engio.mbassy.listener.Handler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class GuiAbo extends JPanel {
     private final MVTable tabelle;
-    public static final String NAME = "Abos";
     private final Daten daten;
     private final JFrame parentComponent;
 
@@ -64,56 +59,6 @@ public class GuiAbo extends JPanel {
         if (tabelle != null) {
             tabelle.tabelleNachDatenSchreiben();
         }
-    }
-
-    /**
-     * Update the property with the current number of selected entries from the JTable.
-     */
-    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
-        tabelle.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
-            }
-        });
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
-
-                MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.ABO);
-            }
-        });
-    }
-
-    private AboTabInformationLabel filmInfoLabel;
-
-    private void installTabInfoStatusBarControl() {
-        Platform.runLater(() -> {
-            filmInfoLabel = new AboTabInformationLabel(daten);
-            if (isVisible())
-                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
-        });
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(true);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
-                });
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(false);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
-                });
-            }
-        });
     }
 
     public GuiAbo(Daten d, MediathekGui parentComponent) {
@@ -128,10 +73,6 @@ public class GuiAbo extends JPanel {
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
 
-        installTabInfoStatusBarControl();
-
-        setupFilmSelectionPropertyListener(parentComponent);
-
         initListeners();
         tabelleLaden();
         tabelle.initTabelle();
@@ -139,24 +80,14 @@ public class GuiAbo extends JPanel {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        JFXPanel toolBarPanel = new JFXPanel();
-        add(toolBarPanel,BorderLayout.NORTH);
-        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
+        SwingUtilities.invokeLater(() -> {
+            JFXPanel toolBarPanel = new JFXPanel();
+            add(toolBarPanel,BorderLayout.NORTH);
+            Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
+        });
     }
 
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
-
-    public void installMenuEntries(JMenu menu) {
-        JMenuItem miAboNew = new JMenuItem();
-        miAboNew.setAction(createAboAction);
-
-        JMenuItem miShowAboHistory = new JMenuItem();
-        miShowAboHistory.setAction(new ShowAboHistoryAction(MediathekGui.ui(), daten));
-
-        menu.add(miAboNew);
-        menu.addSeparator();
-        menu.add(miShowAboHistory);
-    }
 
     public void einAus(boolean ein) {
         aboEinAus(ein);

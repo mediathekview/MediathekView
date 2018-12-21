@@ -10,7 +10,6 @@ public enum UIProgressState {
     LOAD_TABS("Tabs laden..."),
     LOAD_FILM_TAB("Filme-Tab laden"),
     LOAD_DOWNLOAD_TAB("Download-Tab laden"),
-    LOAD_ABO_TAB("Abo-Tab laden"),
     ADD_TABS_TO_UI("Tabs zum UI hinzufügen"),
     CONFIGURE_TABS("Tabs konfigurieren"),
     INIT_MENUS("Menüs initialisieren..."),
