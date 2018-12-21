@@ -4,14 +4,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
-import mediathek.javafx.tool.FilterButton;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -47,13 +44,6 @@ public class FXAboToolBar extends ToolBar {
         btnEdit.setTooltip(new Tooltip("Abo ändern"));
         btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::editAbo));
 
-        Button btnShowFilter = new FilterButton();
-        btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
-            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS, Boolean.toString(b));
-            Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, FXAboToolBar.class.getName());
-        }));
-
         Button btnNewAbo = new Button("", fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
         btnNewAbo.setTooltip(new Tooltip("Abo anlegen"));
         CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
@@ -69,9 +59,7 @@ public class FXAboToolBar extends ToolBar {
                 btnDelete,
                 btnEdit,
                 new VerticalSeparator(),
-                hBox,
-                spacer,
-                btnShowFilter);
+                hBox);
     }
 
     public ComboBox<String> getSenderComboBox() {
