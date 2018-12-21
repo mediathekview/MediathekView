@@ -2,7 +2,9 @@ package mediathek.gui.dialog;
 
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
+import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +24,8 @@ public class ManageAboDialog extends JDialog {
         contentPane.add(aboPanel, BorderLayout.CENTER);
 
         pack();
+        //restore saved size
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_MANAGE_ABO, this, owner);
     }
 
     public GuiAbo getAboPanel() {

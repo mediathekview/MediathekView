@@ -138,7 +138,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static boolean setSize(Configs nr, JDialog jDialog, JFrame relativFrame) {
+    public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
         breite = 0;
