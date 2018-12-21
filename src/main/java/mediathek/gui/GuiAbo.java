@@ -28,7 +28,6 @@ import javafx.scene.control.ComboBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Datum;
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -194,20 +193,6 @@ public class GuiAbo extends JPanel {
                 MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
 
         setupKeyMap();
-
-        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
-        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
-            if (jScrollPaneFilter.isVisible()) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
-            }
-        });
-        jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, GuiAbo.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setFilter();
-            }
-        });
     }
 
     private final ComboBox<String> senderCb;
@@ -218,15 +203,6 @@ public class GuiAbo extends JPanel {
         senderCb.setItems(senderModel);
         senderCb.getSelectionModel().select(0);
         senderCb.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
-    }
-
-    private void setFilter() {
-        // Panel anzeigen und die Filmliste anpassen
-        jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
-        if (jScrollPaneFilter.isVisible()) {
-            jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
-        }
-        updateUI();
     }
 
     private void tabelleLaden() {
@@ -361,57 +337,25 @@ public class GuiAbo extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
-        jSplitPane1 = new JSplitPane();
         jScrollPane1 = new JScrollPane();
         var jTable1 = new JTable();
-        jScrollPaneFilter = new JScrollPane();
-        var jPanelFilter = new JPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
 
-        //======== jSplitPane1 ========
+        //======== jScrollPane1 ========
         {
-            jSplitPane1.setDividerLocation(200);
 
-            //======== jScrollPane1 ========
-            {
-
-                //---- jTable1 ----
-                jTable1.setAutoCreateRowSorter(true);
-                jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                jScrollPane1.setViewportView(jTable1);
-            }
-            jSplitPane1.setRightComponent(jScrollPane1);
-
-            //======== jScrollPaneFilter ========
-            {
-
-                //======== jPanelFilter ========
-                {
-
-                    GroupLayout jPanelFilterLayout = new GroupLayout(jPanelFilter);
-                    jPanelFilter.setLayout(jPanelFilterLayout);
-                    jPanelFilterLayout.setHorizontalGroup(
-                        jPanelFilterLayout.createParallelGroup()
-                            .addGap(0, 180, Short.MAX_VALUE)
-                    );
-                    jPanelFilterLayout.setVerticalGroup(
-                        jPanelFilterLayout.createParallelGroup()
-                            .addGap(0, 406, Short.MAX_VALUE)
-                    );
-                }
-                jScrollPaneFilter.setViewportView(jPanelFilter);
-            }
-            jSplitPane1.setLeftComponent(jScrollPaneFilter);
+            //---- jTable1 ----
+            jTable1.setAutoCreateRowSorter(true);
+            jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            jScrollPane1.setViewportView(jTable1);
         }
-        add(jSplitPane1, BorderLayout.CENTER);
+        add(jScrollPane1, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JSplitPane jSplitPane1;
     private JScrollPane jScrollPane1;
-    private JScrollPane jScrollPaneFilter;
     // End of variables declaration//GEN-END:variables
 }
