@@ -5,35 +5,15 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
-				name: "jSplitPane1"
-				"dividerLocation": 200
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane1"
-					add( new FormComponent( "javax.swing.JTable" ) {
-						name: "jTable1"
-						"autoCreateRowSorter": true
-						"autoResizeMode": 0
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "right"
-				} )
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPaneFilter"
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {space :0:180:x}"
-						"$verticalGroup": "par l {space :0:406:x}"
-					} ) {
-						name: "jPanelFilter"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "left"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "jTable1"
+					"autoCreateRowSorter": true
+					"autoResizeMode": 0
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
