@@ -11,25 +11,33 @@ import java.awt.event.WindowEvent;
 
 public class ManageAboAction extends AbstractAction {
     private final Daten daten;
+    private ManageAboDialog dialog;
 
     public ManageAboAction(Daten daten) {
         this.daten = daten;
         putValue(Action.NAME, "Abos verwalten...");
     }
 
+    public void closeDialog() {
+        if (dialog != null) {
+            dialog.setVisible(false);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        ManageAboDialog dialog = new ManageAboDialog(MediathekGui.ui(), daten);
-        dialog.setVisible(true);
+        dialog = new ManageAboDialog(MediathekGui.ui(), daten);
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 dialog.getAboPanel().tabelleSpeichern();
                 setEnabled(true);
+                dialog = null;
                 super.windowClosing(e);
             }
         });
+        dialog.setVisible(true);
 
         setEnabled(false);
     }

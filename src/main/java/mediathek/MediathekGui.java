@@ -36,11 +36,8 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
 import mediathek.config.*;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -887,6 +884,8 @@ public class MediathekGui extends JFrame {
         ShutdownDialog dialog = new ShutdownDialog(this, 9);
         dialog.show();
 
+        manageAboAction.closeDialog();
+
         dialog.setStatusText(1, "Warte auf commonPool()");
         waitForCommonPoolToComplete();
 
@@ -906,8 +905,10 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(6, "Programmkonfiguration schreiben");
         writeOldConfiguration();
 
-        dialog.setStatusText(7, "Datenbank schließen");
-        DatenFilm.Database.closeDatabase();
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            dialog.setStatusText(7, "Datenbank schließen");
+            DatenFilm.Database.closeDatabase();
+        }
 
         dialog.setStatusText(8, "Programmdaten sichern");
         daten.allesSpeichern();

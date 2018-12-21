@@ -14,6 +14,7 @@ public class ManageAboDialog extends JDialog {
         super(owner);
         setTitle("Abos verwalten");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(true);
 
         aboPanel = new GuiAbo(daten, MediathekGui.ui());
         var contentPane = getContentPane();
