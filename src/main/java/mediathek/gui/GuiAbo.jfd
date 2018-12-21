@@ -1,0 +1,66 @@
+JFDML JFormDesigner: "7.0.0.0.142" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "jSplitPane1"
+				"dividerLocation": 200
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					add( new FormComponent( "javax.swing.JTable" ) {
+						name: "jTable1"
+						"autoCreateRowSorter": true
+						"autoResizeMode": 0
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPaneFilter"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp jcbSender:::::x, seq {comp jLabel1:::p::p, space :0:57:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, comp jcbSender:::p::p, space ::400:x}}"
+					} ) {
+						name: "jPanelFilter"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel1"
+							"text": "Abos für Sender:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jcbSender"
+							"maximumRowCount": 25
+							"model": new javax.swing.DefaultComboBoxModel {
+								selectedItem: "Item 1"
+								addElement( "Item 1" )
+								addElement( "Item 2" )
+								addElement( "Item 3" )
+								addElement( "Item 4" )
+							}
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}
