@@ -7,8 +7,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import mSearch.tool.Listener;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
+import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.javafx.tool.FilterButton;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -53,7 +55,8 @@ public class FXAboToolBar extends ToolBar {
 
         Button btnNewAbo = new Button("",fontAwesome.create(FontAwesome.Glyph.PLUS).size(16d));
         btnNewAbo.setTooltip(new Tooltip("Abo anlegen"));
-        btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::createNewAbo));
+        CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+        btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
 
         getItems().addAll(btnOn,
                 btnOff,

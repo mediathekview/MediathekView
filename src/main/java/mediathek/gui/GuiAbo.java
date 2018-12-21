@@ -30,9 +30,9 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
+import mediathek.gui.actions.CreateNewAboAction;
+import mediathek.gui.actions.ShowAboHistoryAction;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.dialog.StandardCloseDialog;
-import mediathek.gui.history.AboHistoryPanel;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
@@ -144,33 +144,18 @@ public class GuiAbo extends JPanel {
         Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
     }
 
-    public void installMenuEntries(JMenu menu) {
-        JMenuItem miAboNew = new JMenuItem("Neues Abo anlegen");
-        miAboNew.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
-        miAboNew.addActionListener(e -> createNewAbo());
+    private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
 
-        JMenuItem miShowAboHistory = new JMenuItem("Erledigte Abos anzeigen...");
-        miShowAboHistory.addActionListener(e -> showAboHistory());
+    public void installMenuEntries(JMenu menu) {
+        JMenuItem miAboNew = new JMenuItem();
+        miAboNew.setAction(createAboAction);
+
+        JMenuItem miShowAboHistory = new JMenuItem();
+        miShowAboHistory.setAction(new ShowAboHistoryAction(MediathekGui.ui(), daten));
 
         menu.add(miAboNew);
         menu.addSeparator();
         menu.add(miShowAboHistory);
-    }
-
-    class ShowAboHistoryDialog extends StandardCloseDialog {
-        public ShowAboHistoryDialog(Frame owner) {
-            super(owner,"Erledigte Abos", true);
-        }
-        @Override
-        public JComponent createContentPanel() {
-            return new AboHistoryPanel(daten);
-        }
-    }
-
-    private void showAboHistory() {
-        ShowAboHistoryDialog dialog = new ShowAboHistoryDialog(MediathekGui.ui());
-        dialog.pack();
-        dialog.setVisible(true);
     }
 
     public void einAus(boolean ein) {
@@ -237,9 +222,8 @@ public class GuiAbo extends JPanel {
         itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         itemAendern.addActionListener(e -> editAbo());
 
-        JMenuItem itemNeu = new JMenuItem("Abo anlegen");
-        itemNeu.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
-        itemNeu.addActionListener(e -> createNewAbo());
+        JMenuItem itemNeu = new JMenuItem();
+        itemNeu.setAction(createAboAction);
 
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> invertSelection());
@@ -394,10 +378,6 @@ public class GuiAbo extends JPanel {
         tabelleLaden();
         daten.getListeAbo().aenderungMelden();
         setInfo();
-    }
-
-    public void createNewAbo() {
-        daten.getListeAbo().addAbo("Neu");
     }
 
     private void aboEinAus(boolean ein) {
