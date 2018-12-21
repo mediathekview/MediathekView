@@ -183,6 +183,7 @@ public class FilmActionPanel {
                 new VerticalSeparator(),
                 btnBlacklist,
                 createEditBlacklistButton(),
+                new VerticalSeparator(),
                 btnManageAbos);
 
 
@@ -601,7 +602,8 @@ public class FilmActionPanel {
 
     private class ManageAboButton extends Button {
         public ManageAboButton() {
-            setText("Abo verwalten...");
+            super("", fontAwesome.create(FontAwesome.Glyph.DATABASE).size(16d));
+            setTooltip(new Tooltip("Abos verwalten"));
             setOnAction(e -> SwingUtilities.invokeLater(() -> {
                 if (manageAboAction.isEnabled())
                     manageAboAction.actionPerformed(null);
