@@ -58,7 +58,6 @@ public class Icons {
     // Icons TABBED_PANE
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", 32, 32);
     public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", 32, 32);
-    public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", 32, 32);
 
     public static final Image ICON_TRAY = GetIcon.getProgramIcon("tray.png", 256, 256).getImage();
     public static final Image ICON_TRAY_ERROR = GetIcon.getProgramIcon("tray-fehler.png", 256, 256).getImage();

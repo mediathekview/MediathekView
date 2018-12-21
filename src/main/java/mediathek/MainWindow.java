@@ -88,7 +88,6 @@ public class MainWindow extends Stage {
 
             tabbedPane.addTab(GuiFilme.NAME, tabFilme);
             tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-            tabbedPane.addTab(GuiAbo.NAME, tabAbos);
             tabbedPane.setSelectedIndex(0);
 
             tabNode.setContent(tabbedPane);

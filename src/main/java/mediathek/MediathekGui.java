@@ -25,7 +25,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -45,10 +47,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
-import mediathek.gui.actions.CreateProtocolFileAction;
-import mediathek.gui.actions.ResetSettingsAction;
-import mediathek.gui.actions.ShowFilmInformationAction;
-import mediathek.gui.actions.ShowOnlineHelpAction;
+import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.*;
@@ -128,7 +127,6 @@ public class MediathekGui extends JFrame {
     private final JMenuItem miSearchProgramUpdate = new JMenuItem("Nach Update suchen...");
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
-    public GuiAbo tabAbos;
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -213,12 +211,6 @@ public class MediathekGui extends JFrame {
 
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
-
-        /*Platform.runLater(() -> {
-            MainWindow window = new MainWindow();
-            window.show();
-            window.setMaximized(true);
-        });*/
 
         setupShutdownCommand();
 
@@ -331,8 +323,9 @@ public class MediathekGui extends JFrame {
 
             FilmListFilterTask filterTask = new FilmListFilterTask(true);
             filterTask.setOnRunning(e -> progressPane.bindTask(filterTask));
-            filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane));
-            filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane));
+            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane);
+            filterTask.setOnSucceeded(workerStateEventEventHandler);
+            filterTask.setOnFailed(workerStateEventEventHandler);
 
             CompletableFuture.runAsync(filmListReaderTask)
                     .thenRun(networkTask)
@@ -549,15 +542,12 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_DOWNLOAD_TAB);
         tabDownloads = new GuiDownloads(daten, this);
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_TAB);
-        tabAbos = new GuiAbo(daten, this);
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILM_TAB);
         tabFilme = new GuiFilme(daten, this);
 
         splashScreenManager.updateSplashScreenText(UIProgressState.ADD_TABS_TO_UI);
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-        tabbedPane.addTab(GuiAbo.NAME, tabAbos);
         tabbedPane.setSelectedIndex(0);
 
         splashScreenManager.updateSplashScreenText(UIProgressState.CONFIGURE_TABS);
@@ -592,12 +582,10 @@ public class MediathekGui extends JFrame {
         if (!icon) {
             setTabIcon(tabFilme, null);
             setTabIcon(tabDownloads, null);
-            setTabIcon(tabAbos, null);
         } else {
             //setup icons for each tab here
             setTabIcon(tabFilme, Icons.ICON_TAB_FILM);
             setTabIcon(tabDownloads, Icons.ICON_TAB_DOWNLOAD);
-            setTabIcon(tabAbos, Icons.ICON_TAB_ABO);
         }
     }
 
@@ -656,13 +644,11 @@ public class MediathekGui extends JFrame {
         //initial setup
         menuListeners.put(jMenuFilme, new MenuTabSwitchListener(TABS.TAB_FILME));
         menuListeners.put(jMenuDownload, new MenuTabSwitchListener(TABS.TAB_DOWNLOADS));
-        menuListeners.put(jMenuAbos, new MenuTabSwitchListener(TABS.TAB_ABOS));
 
         //now assign if really necessary
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
             jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
             jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
-            jMenuAbos.addMenuListener(menuListeners.get(jMenuAbos));
         }
     }
 
@@ -676,7 +662,6 @@ public class MediathekGui extends JFrame {
                 SwingUtilities.invokeLater(() -> {
                     jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
                     jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
-                    jMenuAbos.addMenuListener(menuListeners.get(jMenuAbos));
                 });
                 break;
 
@@ -684,7 +669,6 @@ public class MediathekGui extends JFrame {
                 SwingUtilities.invokeLater(() -> {
                     jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
                     jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
-                    jMenuAbos.removeMenuListener(menuListeners.get(jMenuAbos));
                 });
                 break;
         }
@@ -794,10 +778,20 @@ public class MediathekGui extends JFrame {
         createFileMenu();
         tabFilme.installMenuEntries(jMenuFilme);
         tabDownloads.installMenuEntries(jMenuDownload);
-        tabAbos.installMenuEntries(jMenuAbos);
-        createViewMenu();
 
+        createViewMenu();
+        createAboMenu();
         createHelpMenu();
+    }
+
+    private ManageAboAction manageAboAction;
+
+    private void createAboMenu() {
+        jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
+        jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui(), daten));
+        jMenuAbos.addSeparator();
+        manageAboAction = new ManageAboAction(daten);
+        jMenuAbos.add(manageAboAction);
     }
 
     private void showMemoryMonitor() {
@@ -889,7 +883,7 @@ public class MediathekGui extends JFrame {
 
         programUpdateChecker.close();
 
-        ShutdownDialog dialog = new ShutdownDialog(this, 10);
+        ShutdownDialog dialog = new ShutdownDialog(this, 9);
         dialog.show();
 
         dialog.setStatusText(1, "Warte auf commonPool()");
@@ -902,25 +896,22 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(3, "Download-Daten sichern");
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(4, "Abo-Daten sichern");
-        tabAbos.tabelleSpeichern();
-
-        dialog.setStatusText(5, "MediaDB sichern");
+        dialog.setStatusText(4, "MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
 
-        dialog.setStatusText(6, "Downloads anhalten");
+        dialog.setStatusText(5, "Downloads anhalten");
         stopDownloads();
 
-        dialog.setStatusText(7, "Programmkonfiguration schreiben");
+        dialog.setStatusText(6, "Programmkonfiguration schreiben");
         writeOldConfiguration();
 
-        dialog.setStatusText(8, "Datenbank schließen");
+        dialog.setStatusText(7, "Datenbank schließen");
         DatenFilm.Database.closeDatabase();
 
-        dialog.setStatusText(9, "Programmdaten sichern");
+        dialog.setStatusText(8, "Programmdaten sichern");
         daten.allesSpeichern();
 
-        dialog.setStatusText(10, "Fertig.");
+        dialog.setStatusText(9, "Fertig.");
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
@@ -1006,9 +997,6 @@ public class MediathekGui extends JFrame {
                     break;
                 case TAB_DOWNLOADS:
                     setTabIfContain(tabDownloads);
-                    break;
-                case TAB_ABOS:
-                    setTabIfContain(tabAbos);
                     break;
 
                 default:
