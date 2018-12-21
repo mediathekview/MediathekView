@@ -791,6 +791,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui(), daten));
         jMenuAbos.addSeparator();
         manageAboAction = new ManageAboAction(daten);
+        tabFilme.fap.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
     }
 

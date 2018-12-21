@@ -21,6 +21,7 @@ import mSearch.tool.GermanStringSorter;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
@@ -66,6 +67,11 @@ public class FilmActionPanel {
     private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
+    private final ManageAboButton btnManageAbos = new ManageAboButton();
+    private final Button btnDownload = new DownloadButton();
+    private final Button btnShowFilter = new FilterButton();
+    private final Button btnRecord = new RecordButton();
+    private final Button btnPlay = new PlayButton();
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -81,13 +87,11 @@ public class FilmActionPanel {
     public ComboBox<String> themaBox;
     public RangeSlider filmLengthSlider;
     public CheckListView<String> senderList;
+    public JDialog filterDialog;
+    public ManageAboAction manageAboAction;
     private Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
-    private Button btnDownload;
     private Button btnFilmInformation;
-    private Button btnPlay;
-    private Button btnRecord;
-    private Button btnShowFilter;
     private BlacklistButton btnBlacklist;
     private Button btnEditBlacklist;
     /**
@@ -95,13 +99,11 @@ public class FilmActionPanel {
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private ToggleButton btnSearchThroughDescription;
-    public JDialog filterDialog;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
         createFilterDialog();
-        createFilterButton();
 
         restoreConfigSettings();
 
@@ -125,10 +127,6 @@ public class FilmActionPanel {
             });
 
         });
-    }
-
-    public CustomTextField getSearchField() {
-        return jfxSearchField;
     }
 
     private void restoreConfigSettings() {
@@ -176,15 +174,16 @@ public class FilmActionPanel {
     private void createLeft(ToolBar toolBar) {
         btnBlacklist = new BlacklistButton(daten);
 
-        toolBar.getItems().addAll(createDownloadButton(),
+        toolBar.getItems().addAll(btnDownload,
                 new VerticalSeparator(),
                 createFilmInformationButton(),
                 new VerticalSeparator(),
-                createPlayButton(),
-                createRecordButton(),
+                btnPlay,
+                btnRecord,
                 new VerticalSeparator(),
                 btnBlacklist,
-                createEditBlacklistButton());
+                createEditBlacklistButton(),
+                btnManageAbos);
 
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -210,35 +209,11 @@ public class FilmActionPanel {
         Platform.runLater(() -> btnDownload.setDisable(false));
     }
 
-    private Button createDownloadButton() {
-        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD).size(16d));
-        btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
-        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
-
-        return btnDownload;
-    }
-
-    private Button createPlayButton() {
-        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY).size(16d));
-        btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-
-        return btnPlay;
-    }
-
     private Button createFilmInformationButton() {
         btnFilmInformation = new FilmInformationButton();
         btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
         return btnFilmInformation;
-    }
-
-    private Button createRecordButton() {
-        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD).size(16d));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-        btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
-
-        return btnRecord;
     }
 
     private Button createEditBlacklistButton() {
@@ -328,18 +303,6 @@ public class FilmActionPanel {
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private void createFilterButton() {
-        btnShowFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
-        btnShowFilter.setTooltip(new Tooltip("Filter anzeigen"));
-        btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            if (filterDialog != null) {
-                if (!filterDialog.isVisible()) {
-                    filterDialog.setVisible(true);
-                }
-            }
-        }));
-    }
-
     private void setupRightButtons(boolean disabled) {
         Platform.runLater(() -> {
             btnShowFilter.setDisable(disabled);
@@ -351,27 +314,7 @@ public class FilmActionPanel {
     }
 
     private VBox createCommonViewSettingsPane() {
-        Button btnDeleteFilterSettings = new Button("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
-        btnDeleteFilterSettings.setTooltip(new Tooltip("Filter zurücksetzen"));
-        btnDeleteFilterSettings.setOnAction(e -> {
-            showOnlyHd.setValue(false);
-            showSubtitlesOnly.setValue(false);
-            showNewOnly.setValue(false);
-            showLivestreamsOnly.setValue(false);
-            showUnseenOnly.setValue(false);
-            dontShowAbos.setValue(false);
-            dontShowSignLanguage.setValue(false);
-            dontShowTrailers.setValue(false);
-            dontShowAudioVersions.setValue(false);
-
-            senderList.getCheckModel().clearChecks();
-            themaBox.getSelectionModel().select("");
-
-            filmLengthSlider.lowValueProperty().setValue(0);
-            filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
-
-            zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
-        });
+        Button btnDeleteFilterSettings = new DeleteFilterSettingsButton();
 
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
@@ -473,10 +416,7 @@ public class FilmActionPanel {
     private Node createSenderBox() {
         VBox vb = new VBox();
 
-        senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
-        senderList.setPrefHeight(150d);
-        senderList.setMinHeight(100d);
-
+        senderList = new SenderListBox();
         VBox.setVgrow(senderList, Priority.ALWAYS);
         vb.getChildren().addAll(
                 new Label("Sender:"),
@@ -585,5 +525,87 @@ public class FilmActionPanel {
                 btnSearchThroughDescription);
 
         return new Scene(toolBar);
+    }
+
+    private class SenderListBox extends CheckListView<String> {
+        public SenderListBox() {
+            super(daten.getListeFilmeNachBlackList().getSenders());
+            setPrefHeight(150d);
+            setMinHeight(100d);
+        }
+    }
+
+    private class PlayButton extends Button {
+        public PlayButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.PLAY).size(16d));
+            setTooltip(new Tooltip("Film abspielen"));
+            setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
+        }
+    }
+
+    private class RecordButton extends Button {
+        public RecordButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD).size(16d));
+            setTooltip(new Tooltip("Film aufzeichnen"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
+        }
+    }
+
+    private class DeleteFilterSettingsButton extends Button {
+        public DeleteFilterSettingsButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
+            setTooltip(new Tooltip("Filter zurücksetzen"));
+            setOnAction(e -> {
+                showOnlyHd.setValue(false);
+                showSubtitlesOnly.setValue(false);
+                showNewOnly.setValue(false);
+                showLivestreamsOnly.setValue(false);
+                showUnseenOnly.setValue(false);
+                dontShowAbos.setValue(false);
+                dontShowSignLanguage.setValue(false);
+                dontShowTrailers.setValue(false);
+                dontShowAudioVersions.setValue(false);
+
+                senderList.getCheckModel().clearChecks();
+                themaBox.getSelectionModel().select("");
+
+                filmLengthSlider.lowValueProperty().setValue(0);
+                filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+                zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+            });
+        }
+    }
+
+    private class FilterButton extends Button {
+        public FilterButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+            setTooltip(new Tooltip("Filter anzeigen"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (filterDialog != null) {
+                    if (!filterDialog.isVisible()) {
+                        filterDialog.setVisible(true);
+                    }
+                }
+            }));
+        }
+    }
+
+    private class DownloadButton extends Button {
+        public DownloadButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD).size(16d));
+            setTooltip(new Tooltip("Neue Filmliste laden"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
+        }
+    }
+
+    private class ManageAboButton extends Button {
+        public ManageAboButton() {
+            setText("Abo verwalten...");
+            setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (manageAboAction.isEnabled())
+                    manageAboAction.actionPerformed(null);
+            }));
+        }
     }
 }
