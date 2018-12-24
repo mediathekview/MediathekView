@@ -1,13 +1,10 @@
 package mediathek.javafx;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import net.engio.mbassy.listener.Handler;
 
 public class AboTabInformationLabel extends Label {
@@ -18,24 +15,8 @@ public class AboTabInformationLabel extends Label {
         super();
         this.daten = daten;
 
-        if (isVisible())
-            daten.getMessageBus().subscribe(this);
-
-        visibleProperty().addListener(new ChangeListener<>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    daten.getMessageBus().subscribe(this);
-                } else {
-                    daten.getMessageBus().unsubscribe(this);
-                }
-            }
-        });
-    }
-
-    @Handler
-    private void handleLeftDisplayUpdate(UpdateStatusBarLeftDisplayEvent e) {
-        Platform.runLater(this::setInfoAbo);
+        daten.getMessageBus().subscribe(this);
+        setText("0 Abos");
     }
 
     private void setInfoAbo() {
