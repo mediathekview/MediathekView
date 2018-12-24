@@ -7,7 +7,7 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
-import mediathek.javafx.AboTabInformationLabel;
+import mediathek.javafx.AboInformationPanel;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class ManageAboDialog extends JDialog {
         contentPane.setLayout(new BorderLayout());
         contentPane.add(aboPanel, BorderLayout.CENTER);
 
-        AboTabInformationLabel infoLabel = new AboTabInformationLabel(daten);
+        AboInformationPanel infoLabel = new AboInformationPanel(daten);
         JFXPanel infoPanel = new JFXPanel();
         contentPane.add(infoPanel,BorderLayout.SOUTH);
         Platform.runLater(() -> {
