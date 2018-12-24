@@ -118,6 +118,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
+    public long activeAbos() {
+        return stream().filter(DatenAbo::aboIstEingeschaltet).count();
+    }
+
+    public long inactiveAbos() {
+        return stream().filter(abo -> !abo.aboIstEingeschaltet()).count();
+    }
+
     public void aenderungMelden() {
         // Filmliste anpassen
         setAboFuerFilm(daten.getListeFilme(), true);
