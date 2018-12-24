@@ -1,9 +1,13 @@
 package mediathek.gui.dialog;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
+import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -22,6 +26,15 @@ public class ManageAboDialog extends JDialog {
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.add(aboPanel, BorderLayout.CENTER);
+
+        AboTabInformationLabel infoLabel = new AboTabInformationLabel(daten);
+        JFXPanel infoPanel = new JFXPanel();
+        contentPane.add(infoPanel,BorderLayout.SOUTH);
+        Platform.runLater(() -> {
+            Scene scene = new Scene(infoLabel);
+            infoPanel.setScene(scene);
+        });
+
 
         pack();
         //restore saved size
