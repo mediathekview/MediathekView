@@ -236,6 +236,7 @@ public class FilmActionPanel {
             btnPlay.setDisable(disabled);
             btnRecord.setDisable(disabled);
             btnEditBlacklist.setDisable(disabled);
+            btnManageAbos.setDisable(disabled);
         });
     }
 
