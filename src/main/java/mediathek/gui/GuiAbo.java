@@ -35,7 +35,6 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.SenderList;
@@ -214,8 +213,6 @@ public class GuiAbo extends JPanel {
                 SwingUtilities.invokeLater(() -> {
                     daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
                     tabelle.setSpalten();
-                    setInfo();
-
                 });
             }
         });
@@ -300,7 +297,6 @@ public class GuiAbo extends JPanel {
 
         tabelleLaden();
         daten.getListeAbo().aenderungMelden();
-        setInfo();
     }
 
     private void aboEinAus(boolean ein) {
@@ -317,15 +313,11 @@ public class GuiAbo extends JPanel {
             for (int row : rows) {
                 tabelle.addRowSelectionInterval(row, row);
             }
-            setInfo();
+
             daten.getListeAbo().aenderungMelden();
         } else {
             NoSelectionErrorDialog.show();
         }
-    }
-
-    private void setInfo() {
-        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     /**
