@@ -3,7 +3,6 @@ package mediathek.gui.dialog;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
@@ -22,7 +21,7 @@ public class ManageAboDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(true);
 
-        aboPanel = new GuiAbo(daten, MediathekGui.ui());
+        aboPanel = new GuiAbo(daten);
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.add(aboPanel, BorderLayout.CENTER);

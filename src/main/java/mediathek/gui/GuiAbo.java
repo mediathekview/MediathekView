@@ -54,7 +54,6 @@ import java.awt.event.KeyEvent;
 public class GuiAbo extends JPanel {
     private final MVTable tabelle;
     private final Daten daten;
-    private final JFrame parentComponent;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -62,10 +61,9 @@ public class GuiAbo extends JPanel {
         }
     }
 
-    public GuiAbo(Daten d, MediathekGui parentComponent) {
+    public GuiAbo(Daten d) {
         super();
         daten = d;
-        this.parentComponent = parentComponent;
         toolBar = new FXAboToolBar(this);
         senderCb = toolBar.getSenderComboBox();
         Platform.runLater(this::setupSenderCb);
@@ -228,7 +226,7 @@ public class GuiAbo extends JPanel {
             } else {
                 text = rows.length + " Abos löschen?";
             }
-            final int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            final int ret = JOptionPane.showConfirmDialog(this, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabelle.convertRowIndexToModel(rows[i]);
