@@ -13,6 +13,9 @@ public class AboInformationPanel extends HBox {
     private final Daten daten;
     private final Label gesamtLabel = new Label();
     private final Label onOffLabel = new Label();
+    private int oldSize = -1;
+    private long oldActive = -1;
+    private long oldInactive = -1;
 
     public AboInformationPanel(Daten daten) {
         super();
@@ -26,23 +29,36 @@ public class AboInformationPanel extends HBox {
         daten.getMessageBus().subscribe(this);
     }
 
-    private void setInfoAbo() {
-        final var listeAbo = daten.getListeAbo();
-
-        final int gesamt = listeAbo.size();
-        final String text;
+    private void updateTotalDisplay(final int gesamt) {
         if (gesamt == 1) {
-            text = "1 Abo";
+            gesamtLabel.setText("1 Abo");
         } else {
-            text = gesamt + " Abos";
+            gesamtLabel.setText(String.format("%d Abos", gesamt));
         }
-        gesamtLabel.setText(text);
+    }
 
-        onOffLabel.setText(listeAbo.activeAbos() + " eingeschaltet, " + listeAbo.inactiveAbos() + " ausgeschaltet");
+    private void updateDisplayText() {
+        final var listeAbo = daten.getListeAbo();
+        final long activeAbos = listeAbo.activeAbos();
+        final long inactiveAbos = listeAbo.inactiveAbos();
+        final int gesamt = listeAbo.size();
+
+        if (gesamt != oldSize) {
+            updateTotalDisplay(gesamt);
+
+            oldSize = gesamt;
+        }
+
+        if ((activeAbos != oldActive) || (inactiveAbos != oldInactive)) {
+            onOffLabel.setText(String.format("%d eingeschaltet, %d ausgeschaltet", activeAbos, inactiveAbos));
+
+            oldActive = activeAbos;
+            oldInactive = inactiveAbos;
+        }
     }
 
     @Handler
     private void handleTimerEvent(TimerEvent e) {
-        Platform.runLater(this::setInfoAbo);
+        Platform.runLater(this::updateDisplayText);
     }
 }

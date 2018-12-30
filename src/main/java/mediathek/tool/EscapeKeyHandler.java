@@ -29,6 +29,8 @@ import java.awt.event.KeyEvent;
 @SuppressWarnings("serial")
 public class EscapeKeyHandler {
 
+    private static final String CANCEL_KEY_HANDLER = "key_cancel";
+
     private EscapeKeyHandler(JFrame frame, IAction action) {
         JRootPane rootPane = frame.getRootPane();
         installHandler(rootPane, action);
@@ -48,24 +50,19 @@ public class EscapeKeyHandler {
     }
 
     private void installHandler(JRootPane rootPane, IAction action) {
+        final var inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         // ESC zum Beenden
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
-        rootPane.getActionMap().put("x", new AbstractAction() {
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), CANCEL_KEY_HANDLER);
+        // für den Mac
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), CANCEL_KEY_HANDLER);
+        }
+        rootPane.getActionMap().put(CANCEL_KEY_HANDLER, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 action.perform();
             }
         });
-        // für den Mac
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-cancel");
-            rootPane.getActionMap().put("mac-cancel", new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    action.perform();
-                }
-            });
-        }
     }
 
     public interface IAction {

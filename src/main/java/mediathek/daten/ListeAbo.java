@@ -111,11 +111,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         add(datenAbo);
     }
 
-    public void aboLoeschen(DatenAbo abo) {
-        if (abo != null) {
-            this.remove(abo);
+    public void aboLoeschen(@NotNull DatenAbo abo) {
+            remove(abo);
             aenderungMelden();
-        }
     }
 
     /**
