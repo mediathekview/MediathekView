@@ -5,7 +5,7 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.dialog.ManageAboDialog;
+import mediathek.gui.abo.ManageAboDialog;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
