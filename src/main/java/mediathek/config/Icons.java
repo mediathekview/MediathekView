@@ -42,9 +42,6 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
 
-    public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 20, 20);
-    public static final ImageIcon ICON_TABELLE_FILM_START_SW = GetIcon.getProgramIcon("tabelle-film-start-sw.png", 16, 16);
-
     public static final ImageIcon ICON_BUTTON_REMOVE = GetIcon.getProgramIcon("button-remove.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_ADD = GetIcon.getProgramIcon("button-add.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_AKTUALISIEREN = GetIcon.getProgramIcon("button-aktualisieren.png", 16, 16);
