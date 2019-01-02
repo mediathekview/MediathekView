@@ -37,7 +37,6 @@ import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
-import mSearch.tool.Functions.OperatingSystemType;
 import mediathek.config.*;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -78,8 +77,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static mSearch.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
@@ -210,8 +207,6 @@ public class MediathekGui extends JFrame {
             workaroundControlsFxNotificationBug();
 
         setupShutdownCommand();
-
-        setLookAndFeel();
 
         loadFilmlist();
     }
@@ -410,39 +405,6 @@ public class MediathekGui extends JFrame {
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))));
-    }
-
-    /**
-     * This will set the Look&Feel based on Application Preferences. In case of
-     * error it will always reset to system LAF.
-     */
-    private void setLookAndFeel() {
-        if (SystemUtils.IS_OS_MAC_OSX)
-            return; //don´t set L&F for macOS
-
-        try {
-            String laf = MVConfig.get(MVConfig.Configs.SYSTEM_LOOK);
-            //if we have the old values, reset to System LAF
-            if (laf.isEmpty() || laf.length() == 1) {
-                if (getOs() != OperatingSystemType.LINUX) {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-            } else {
-                //otherwise set the requested UI
-                laf = MVConfig.get(MVConfig.Configs.SYSTEM_LOOK);
-                UIManager.setLookAndFeel(laf);
-            }
-            SwingUtilities.updateComponentTreeUI(this);
-            for (Frame f : Frame.getFrames()) {
-                SwingUtilities.updateComponentTreeUI(f);
-                for (Window w : f.getOwnedWindows()) {
-                    SwingUtilities.updateComponentTreeUI(w);
-                }
-            }
-        } catch (Exception ignored) {
-            //update the LAF parameter, just in case we tried to load a non-existing LAF before
-            MVConfig.add(MVConfig.Configs.SYSTEM_LOOK, UIManager.getSystemLookAndFeelClassName());
-        }
     }
 
     private void setWindowTitle() {
