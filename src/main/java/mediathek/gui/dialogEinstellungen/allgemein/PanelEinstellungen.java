@@ -35,9 +35,6 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
@@ -152,8 +149,6 @@ public class PanelEinstellungen extends PanelVorlage {
             daten.getFilmeLaden().loadFilmlist("");
         });
 
-        setupLookAndFeelComboBox();
-
         setupDays();
 
         setupTabUI();
@@ -211,66 +206,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays.setValue(s);
     }
 
-    private void setupLookAndFeelComboBox() {
-        //do not change L&F on macOS
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            jComboBoxLookAndFeel.setEnabled(false);
-            return;
-        }
-
-        try {
-            //query all installed LAFs
-            final UIManager.LookAndFeelInfo info[];
-            info = UIManager.getInstalledLookAndFeels();
-            LookAndFeel aktLaf = UIManager.getLookAndFeel();
-            String classNameAktLaf = aktLaf.getClass().getName();
-            int idx = 0;
-
-            //fill in the combobox model
-            ArrayList<String> themeList = new ArrayList<>(); // list of "UIManager.LookAndFeelInfo" names
-            for (int i = 0; i < info.length; ++i) {
-                themeList.add(info[i].getName());
-                // LookAndFeelInfo.getName und LookAndFeel.getName sind beim GTK LF nicht gleich??
-                if (info[i].getClassName().equals(classNameAktLaf)) {
-                    idx = i;
-                }
-            }
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(themeList.toArray(new String[0]));
-            jComboBoxLookAndFeel.setModel(model);
-            jComboBoxLookAndFeel.setSelectedIndex(idx);
-
-            ActionListener lst = actionEvent -> {
-                String lafName = jComboBoxLookAndFeel.getModel().getElementAt(jComboBoxLookAndFeel.getSelectedIndex());
-                String lafClass = "";
-                //retrieve class name for selected LAF
-                for (UIManager.LookAndFeelInfo i : info) {
-                    if (i.getName().equals(lafName)) {
-                        lafClass = i.getClassName();
-                        break;
-                    }
-                }
-                //and now switch it...
-                try {
-                    UIManager.setLookAndFeel(lafClass);
-                    SwingUtilities.updateComponentTreeUI(MediathekGui.ui());
-                    for (Frame f : Frame.getFrames()) {
-                        SwingUtilities.updateComponentTreeUI(f);
-                        for (Window w : f.getOwnedWindows()) {
-                            SwingUtilities.updateComponentTreeUI(w);
-                        }
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                MVConfig.add(MVConfig.Configs.SYSTEM_LOOK, lafClass);  //
-            };
-            jComboBoxLookAndFeel.addActionListener(lst);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private class BeobSpinnerDays implements ChangeListener {
 
         @Override
@@ -308,9 +243,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays = new javax.swing.JSpinner();
         jButtonLoad = new javax.swing.JButton();
         jButtonHelpDays = new javax.swing.JButton();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxLookAndFeel = new javax.swing.JComboBox<>();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         cbUseDatabaseCleaner = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
@@ -494,31 +426,6 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jLabel2.setText("Look&Feel:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxLookAndFeel, 0, 487, Short.MAX_VALUE)
-                .addGap(44, 44, 44))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
 
         cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
@@ -579,7 +486,6 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBoxTray)
@@ -600,8 +506,6 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -630,7 +534,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxTabIcon;
     private javax.swing.JCheckBox jCheckBoxTabsTop;
     private javax.swing.JCheckBox jCheckBoxTray;
-    private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
     private javax.swing.JSpinner jSpinnerDays;
     private javax.swing.JPasswordField jpfProxyPassword;
     private javax.swing.JTextField jtfProxyHost;

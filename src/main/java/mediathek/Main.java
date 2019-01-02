@@ -126,10 +126,41 @@ public class Main {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, false);
     }
 
+    private static void setSystemLookAndFeel() {
+        final String laf = System.getProperty("swing.defaultlaf");
+        if (laf == null || laf.isEmpty()) {
+            //only set L&F if there was no define on CLI
+            logger.trace("L&F property is empty, setting L&F");
+            //use system for windows and macOS
+            String systemLaF = UIManager.getSystemLookAndFeelClassName();
+            if (SystemUtils.IS_OS_LINUX) {
+                try {
+                    for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                        if ("Nimbus".equals(info.getName())) {
+                            systemLaF = info.getClassName();
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    systemLaF = UIManager.getSystemLookAndFeelClassName();
+                }
+            }
+
+            //set the L&F...
+            try {
+                UIManager.setLookAndFeel(systemLaF);
+            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        setSystemLookAndFeel();
+
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
