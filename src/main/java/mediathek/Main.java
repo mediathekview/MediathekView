@@ -126,31 +126,56 @@ public class Main {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, false);
     }
 
+    /**
+     * Query the class name for Nimbus L&F.
+     * @return the class name for Nimbus, otherwise return the system default l&f class name.
+     */
+    private static String queryNimbusLaFName() {
+        String systemLaF = UIManager.getSystemLookAndFeelClassName();
+
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    systemLaF = info.getClassName();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            systemLaF = UIManager.getSystemLookAndFeelClassName();
+        }
+
+        return systemLaF;
+    }
+
+    /**
+     * Set the look and feel for various OS.
+     * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
+     * On windows, use the system windows l&f for swing.
+     * On Linux, use Nimbus l&f which is more modern than Metal.
+     *
+     * One can override the L&F stuff for non-macOS by supplying -Dswing.defaultlaf=class_name and the class name on the CLI.
+     */
     private static void setSystemLookAndFeel() {
+        //don´t set L&F on macOS...
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return;
+
         final String laf = System.getProperty("swing.defaultlaf");
         if (laf == null || laf.isEmpty()) {
             //only set L&F if there was no define on CLI
             logger.trace("L&F property is empty, setting L&F");
             //use system for windows and macOS
             String systemLaF = UIManager.getSystemLookAndFeelClassName();
+            //on linux, use more modern Nimbus L&F...
             if (SystemUtils.IS_OS_LINUX) {
-                try {
-                    for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                        if ("Nimbus".equals(info.getName())) {
-                            systemLaF = info.getClassName();
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    systemLaF = UIManager.getSystemLookAndFeelClassName();
-                }
+                systemLaF = queryNimbusLaFName();
             }
 
             //set the L&F...
             try {
                 UIManager.setLookAndFeel(systemLaF);
             } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.error("L&F error: " , e);
             }
         }
     }
