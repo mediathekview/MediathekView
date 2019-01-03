@@ -31,13 +31,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 @SuppressWarnings("serial")
 public class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
     private final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
-    private final Set<String> listeUrls = new HashSet<>();
+    private final Set<String> listeUrls = new ConcurrentSkipListSet<>();
     private final List<MVUsedUrl> listeUrlsSortDate = new LinkedList<>();
     private final Class<T> clazz;
     private Path urlPath;
@@ -99,7 +100,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         sendChangeMessage();
     }
 
-    public synchronized boolean urlPruefen(String urlFilm) {
+    public boolean urlPruefen(String urlFilm) {
         //wenn url gefunden, dann true zurück
         return listeUrls.contains(urlFilm);
     }
