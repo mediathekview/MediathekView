@@ -87,7 +87,8 @@ public abstract class PanelErledigteUrls extends JPanel {
     }
 
     protected TModel createDataModel() {
-        return new TModel(workList.getObjectData(), MVUsedUrlModelHelper.TITLE_HEADER);
+        final var data = MVUsedUrlModelHelper.getObjectData(workList.getListeUrlsSortDate());
+        return new TModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
     }
 
     private void setsum() {

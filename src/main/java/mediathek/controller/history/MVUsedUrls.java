@@ -41,19 +41,21 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     private final List<MVUsedUrl> listeUrlsSortDate = new LinkedList<>();
     private final Class<T> clazz;
     private Path urlPath;
-
-
     public MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
         this.clazz = clazz;
 
         try {
             urlPath = Paths.get(settingsDir).resolve(fileName);
         } catch (InvalidPathException e) {
-            logger.error("Path resolve failed for {},{}",settingsDir,fileName);
+            logger.error("Path resolve failed for {},{}", settingsDir, fileName);
             urlPath = null;
         }
 
         listeBauen();
+    }
+
+    public List<MVUsedUrl> getListeUrlsSortDate() {
+        return listeUrlsSortDate;
     }
 
     public synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms, ListeFilme listeFilmeHistory) {
@@ -100,19 +102,6 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     public synchronized boolean urlPruefen(String urlFilm) {
         //wenn url gefunden, dann true zurück
         return listeUrls.contains(urlFilm);
-    }
-
-    /**
-     * Creates a "model" for the table.
-     */
-    public synchronized Object[][] getObjectData() {
-        int i = 0;
-        final Object[][] object = new Object[listeUrlsSortDate.size()][];
-        for (var item : listeUrlsSortDate) {
-            object[i] = new String[]{item.getDatum(), item.getThema(), item.getTitel(), item.getUrl()};
-            ++i;
-        }
-        return object;
     }
 
     public synchronized List<MVUsedUrl> getSortedList() {
