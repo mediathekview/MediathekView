@@ -44,13 +44,6 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         this.url = url;
     }
 
-    public static String getUsedUrl(String date, String thema, String title, String url) {
-        return date + PAUSE
-                + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
-                + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(title), false, false) + TRENNER
-                + url + '\n';
-    }
-
     public static MVUsedUrl getUrlAusZeile(String zeile) {
         // 29.05.2014 |#| Abendschau                |#| Patenkind trifft Groß                     |###|  http://cdn-storage.br.de/iLCpbHJGNLT6NK9HsLo6s61luK4C_2rc5U1S/_-OS/5-8y9-NP/5bb33365-038d-46f7-914b-eb83fab91448_E.mp4
         String url = "", thema = "", titel = "", datum = "";

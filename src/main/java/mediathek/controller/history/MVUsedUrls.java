@@ -169,8 +169,6 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         boolean gefunden = false, gef;
 
         final Path urlPath = getUrlFilePath();
-        if (Files.notExists(urlPath))
-            return;
 
         List<String> newListe = new ArrayList<>();
         try (InputStream is = Files.newInputStream(urlPath);
@@ -218,7 +216,6 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
-        String text;
         String datum = SDF.format(new Date());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
@@ -226,8 +223,8 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-            text = MVUsedUrl.getUsedUrl(datum, thema, titel, url);
-            bufferedWriter.write(text);
+            final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
+            bufferedWriter.write(usedUrl.getUsedUrl());
         } catch (Exception ex) {
             Log.errorLog(945258023, ex);
         }
@@ -236,8 +233,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
-        String text;
-        String datum = SDF.format(new Date());
+        final String datum = SDF.format(new Date());
 
         try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
@@ -246,9 +242,11 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             for (DatenFilm film : arrayFilms) {
                 // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
                 listeUrls.add(film.getUrlHistory());
-                listeUrlsSortDate.add(new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory()));
-                text = MVUsedUrl.getUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
-                bufferedWriter.write(text);
+
+                final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
+                listeUrlsSortDate.add(usedUrl);
+
+                bufferedWriter.write(usedUrl.getUsedUrl());
             }
         } catch (Exception ex) {
             Log.errorLog(420312459, ex);
