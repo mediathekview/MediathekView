@@ -236,7 +236,6 @@ public class MVConfig {
         SYSTEM_TABS_TOP("Tabs-oben", SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemUtils.IS_OS_MAC_OSX ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
-        SYSTEM_LOOK("System-look", "0"),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),

@@ -23,6 +23,7 @@ import mSearch.daten.DatenFilm;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrlModelHelper;
 import mediathek.controller.history.MVUsedUrls;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -40,9 +41,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
-
-import static mediathek.controller.history.MVUsedUrl.TITLE_HEADER;
-import static mediathek.controller.history.MVUsedUrl.USED_URL_URL;
 
 @SuppressWarnings("serial")
 public abstract class PanelErledigteUrls extends JPanel {
@@ -71,7 +69,7 @@ public abstract class PanelErledigteUrls extends JPanel {
                 updateModelAndRecalculate(createDataModel());
             } else {
                 jButtonLoeschen.setEnabled(false);
-                updateModelAndRecalculate(new TModel(null, TITLE_HEADER));
+                updateModelAndRecalculate(new TModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
             }
         });
 
@@ -89,7 +87,7 @@ public abstract class PanelErledigteUrls extends JPanel {
     }
 
     protected TModel createDataModel() {
-        return new TModel(workList.getObjectData(), TITLE_HEADER);
+        return new TModel(workList.getObjectData(), MVUsedUrlModelHelper.TITLE_HEADER);
     }
 
     private void setsum() {
@@ -149,7 +147,7 @@ public abstract class PanelErledigteUrls extends JPanel {
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
-                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), USED_URL_URL).toString();
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrlModelHelper.USED_URL_URL).toString();
                 film = daten.getListeFilme().getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
@@ -213,7 +211,7 @@ public abstract class PanelErledigteUrls extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 final int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow != -1) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
                     GuiFunktionen.copyToClipboard(del);
                 }
             }
@@ -225,7 +223,7 @@ public abstract class PanelErledigteUrls extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 final int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow != -1) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), USED_URL_URL).toString();
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
                     workList.urlAusLogfileLoeschen(del);
                 }
             }
