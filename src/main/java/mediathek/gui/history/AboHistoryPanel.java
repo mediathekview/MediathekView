@@ -12,7 +12,7 @@ public final class AboHistoryPanel extends PanelErledigteUrls {
 
     public AboHistoryPanel(Daten d) {
         super(d);
-        workList = daten.erledigteAbos;
+        workList = daten.getAboHistoryList();
 
         d.getMessageBus().subscribe(this);
     }
@@ -24,6 +24,6 @@ public final class AboHistoryPanel extends PanelErledigteUrls {
 
     @Override
     protected List<MVUsedUrl> getExportableList() {
-        return daten.erledigteAbos.getSortedList();
+        return daten.getAboHistoryList().getSortedList();
     }
 }

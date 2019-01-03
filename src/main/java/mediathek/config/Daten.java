@@ -82,8 +82,14 @@ public class Daten {
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
-    public MVUsedUrls<DownloadHistoryChangedEvent> history; // alle angesehenen Filme
-    public MVUsedUrls<AboHistoryChangedEvent> erledigteAbos; // erfolgreich geladenen Abos
+    /**
+     * alle angesehenen Filme.
+     */
+    private MVUsedUrls<DownloadHistoryChangedEvent> history;
+    /**
+     * erfolgreich geladene Abos.
+     */
+    private MVUsedUrls<AboHistoryChangedEvent> erledigteAbos;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
@@ -252,6 +258,22 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
+    public void setSeenHistoryList(MVUsedUrls<DownloadHistoryChangedEvent> list) {
+        history = list;
+    }
+
+    public MVUsedUrls<DownloadHistoryChangedEvent> getSeenHistoryList() {
+        return history;
+    }
+
+    public void setAboHistoryList(MVUsedUrls<AboHistoryChangedEvent> list) {
+        erledigteAbos = list;
+    }
+
+    public MVUsedUrls<AboHistoryChangedEvent> getAboHistoryList() {
+        return erledigteAbos;
+    }
+
     private void start() {
         setupMessageBus();
 
@@ -270,10 +292,6 @@ public class Daten {
 
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
-
-        erledigteAbos = new MVUsedUrls<>("downloadAbos.txt", getSettingsDirectory_String(), AboHistoryChangedEvent.class);
-
-        history = new MVUsedUrls<>("history.txt", getSettingsDirectory_String(), DownloadHistoryChangedEvent.class);
 
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
