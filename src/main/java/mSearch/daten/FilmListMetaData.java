@@ -1,8 +1,8 @@
 package mSearch.daten;
 
 public class FilmListMetaData {
-    private String datum;
-    private String id;
+    private String datum = "";
+    private String id = "";
 
     public String getDatum() {
         return datum;
