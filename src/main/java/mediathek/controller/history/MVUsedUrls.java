@@ -37,26 +37,18 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class MVUsedUrls<T extends HistoryChangedEvent> {
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
-    private final HashSet<String> listeUrls;
-    private final LinkedList<MVUsedUrl> listeUrlsSortDate;
+    private final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
+    private final Set<String> listeUrls = new HashSet<>();
+    private final List<MVUsedUrl> listeUrlsSortDate = new LinkedList<>();
     private final String fileName;
     private final String settingsDir;
     private final Class<T> clazz;
 
-    public MVUsedUrls(String fileName, String settingsDir,Class<T> clazz) {
+    public MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
         this.fileName = fileName;
         this.settingsDir = settingsDir;
         this.clazz = clazz;
 
-        listeUrlsSortDate = new LinkedList<>();
-        listeUrls = new HashSet<>() {
-            @Override
-            public void clear() {
-                listeUrlsSortDate.clear();
-                super.clear();
-            }
-        };
         listeBauen();
     }
 
@@ -89,6 +81,8 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
 
     public synchronized void alleLoeschen() {
         listeUrls.clear();
+        listeUrlsSortDate.clear();
+
         Path urlPath = getUrlFilePath();
         try {
             Files.deleteIfExists(urlPath);
@@ -110,7 +104,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         int i = 0;
         final Object[][] object = new Object[listeUrlsSortDate.size()][];
         for (var item : listeUrlsSortDate) {
-            object[i] = new String[] {item.getDatum(),item.getThema(), item.getTitel(), item.getUrl()};
+            object[i] = new String[]{item.getDatum(), item.getThema(), item.getTitel(), item.getUrl()};
             ++i;
         }
         return object;
@@ -159,7 +153,10 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 Log.errorLog(566277080, ex);
             }
         }
+
         listeUrls.clear();
+        listeUrlsSortDate.clear();
+
         listeBauen();
 
         sendChangeMessage();
@@ -211,7 +208,10 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 Log.errorLog(784512067, ex);
             }
         }
+
         listeUrls.clear();
+        listeUrlsSortDate.clear();
+
         listeBauen();
 
         sendChangeMessage();
