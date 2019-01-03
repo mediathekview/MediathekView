@@ -21,9 +21,10 @@ package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.gui.messages.history.HistoryChangedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -43,6 +44,8 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     private final String fileName;
     private final String settingsDir;
     private final Class<T> clazz;
+    private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
+
 
     public MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
         this.fileName = fileName;
@@ -75,7 +78,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             final T msg = clazz.getDeclaredConstructor().newInstance();
             Daten.getInstance().getMessageBus().publishAsync(msg);
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("sendChangeMessage()", e);
         }
     }
 
@@ -139,7 +142,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(281006874, ex);
+            logger.error("urlAusLogfileLoeschen(String)", ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -150,7 +153,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 for (String entry : liste)
                     bufferedWriter.write(entry + '\n');
             } catch (Exception ex) {
-                Log.errorLog(566277080, ex);
+                logger.error("urlAusLogfileLoeschen(String)", ex);
             }
         }
 
@@ -191,7 +194,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
 
             }
         } catch (Exception ex) {
-            Log.errorLog(401020398, ex);
+            logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -203,7 +206,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                     bufferedWriter.write(entry + '\n');
                 }
             } catch (Exception ex) {
-                Log.errorLog(784512067, ex);
+                logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
             }
         }
 
@@ -226,7 +229,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
             bufferedWriter.write(usedUrl.getUsedUrl());
         } catch (Exception ex) {
-            Log.errorLog(945258023, ex);
+            logger.error("zeileSchreiben(...)", ex);
         }
 
         sendChangeMessage();
@@ -249,7 +252,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 bufferedWriter.write(usedUrl.getUsedUrl());
             }
         } catch (Exception ex) {
-            Log.errorLog(420312459, ex);
+            logger.error("zeileSchreiben(ArrayList)", ex);
         }
 
         sendChangeMessage();
@@ -268,7 +271,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             if (Files.notExists(urlPath))
                 Files.createFile(urlPath);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("getUrlFilePath()", ex);
         }
         return urlPath;
     }
@@ -287,13 +290,13 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
-            Log.errorLog(926362547, ex);
+            logger.error("listeBauen()", ex);
         }
     }
 
     class LineWriterThread extends Thread {
 
-        private final LinkedList<MVUsedUrl> mvuuList;
+        private final List<MVUsedUrl> mvuuList;
 
         public LineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
             this.mvuuList = mvuuList;
@@ -301,7 +304,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             zeilenSchreiben();
         }
 
@@ -317,7 +320,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                     bufferedWriter.write(text);
                 }
             } catch (Exception ex) {
-                Log.errorLog(945258023, ex);
+                logger.error("zeilenSchreiben()", ex);
             }
             sendChangeMessage();
         }
