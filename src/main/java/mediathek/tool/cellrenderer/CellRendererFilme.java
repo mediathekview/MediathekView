@@ -55,7 +55,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
         normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
-        history = d.history;
+        history = d.getSeenHistoryList();
         selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
     }

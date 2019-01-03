@@ -6,6 +6,8 @@ public enum UIProgressState {
     START_UI("Anwendungsklassen laden..."),
     LOAD_MAINWINDOW("Hauptfenster initialisieren..."),
     LOAD_APP_DATA("Anwendungsdaten laden..."),
+    LOAD_HISTORY_DATA("Liste der angesehenen Filme laden..."),
+    LOAD_ABO_HISTORY_DATA("Liste der erledigten Abos laden..."),
     LOAD_FILMINFO_DIALOG("Filminfo-Dialog initialisieren..."),
     LOAD_TABS("Tabs laden..."),
     LOAD_FILM_TAB("Filme-Tab laden"),

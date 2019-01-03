@@ -387,7 +387,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryList().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
         }
     }
 
@@ -399,7 +399,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryList().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
         }
     }
 
@@ -992,7 +992,7 @@ public class GuiFilme extends JPanel {
             //History
             res.ifPresent(film -> {
                 JMenuItem miHistory;
-                if (daten.history.urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryList().urlPruefen(film.getUrlHistory())) {
                     miHistory = new JMenuItem("Film als ungesehen markieren");
                     miHistory.addActionListener(new BeobHistory(false));
                 } else {
@@ -1015,10 +1015,10 @@ public class GuiFilme extends JPanel {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
+                    daten.getSeenHistoryList().zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
                     daten.getListeFilmeHistory().add(film);
                 } else {
-                    daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
+                    daten.getSeenHistoryList().urlAusLogfileLoeschen(film.getUrlHistory());
                     daten.getListeFilmeHistory().remove(film);
                 }
             }

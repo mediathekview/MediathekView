@@ -286,7 +286,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         if (film != null) {
             aDaten.getListeFilmeHistory().add(film);
         }
-        aDaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        aDaten.getSeenHistoryList().zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         aDaten.getMessageBus().publishAsync(new StartEvent());
     }
 
@@ -302,7 +302,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
                     d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
         }
         if (!urlList.isEmpty()) {
-            ddaten.history.createLineWriterThread(urlList);
+            ddaten.getSeenHistoryList().createLineWriterThread(urlList);
         }
         ddaten.getMessageBus().publishAsync(new StartEvent());
     }

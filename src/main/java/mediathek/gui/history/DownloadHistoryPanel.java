@@ -11,7 +11,7 @@ import java.util.List;
 public final class DownloadHistoryPanel extends PanelErledigteUrls {
     public DownloadHistoryPanel(Daten d) {
         super(d);
-        workList = daten.history;
+        workList = daten.getSeenHistoryList();
 
         d.getMessageBus().subscribe(this);
     }
@@ -23,6 +23,6 @@ public final class DownloadHistoryPanel extends PanelErledigteUrls {
 
     @Override
     protected List<MVUsedUrl> getExportableList() {
-        return daten.history.getSortedList();
+        return daten.getSeenHistoryList().getSortedList();
     }
 }

@@ -38,6 +38,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
 import mediathek.config.*;
+import mediathek.controller.history.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
@@ -50,6 +51,8 @@ import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
+import mediathek.gui.messages.history.AboHistoryChangedEvent;
+import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
@@ -169,6 +172,12 @@ public class MediathekGui extends JFrame {
         daten = Daten.getInstance();
 
         loadDaten();
+
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA);
+        daten.setSeenHistoryList(new MVUsedUrls<>("history.txt", Daten.getSettingsDirectory_String(), DownloadHistoryChangedEvent.class));
+
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
+        daten.setAboHistoryList(new MVUsedUrls<>("downloadAbos.txt", Daten.getSettingsDirectory_String(), AboHistoryChangedEvent.class));
 
         createStatusBar();
 
