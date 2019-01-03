@@ -36,7 +36,7 @@ public class MVConfig {
 
     public final static String TRENNER = "#=#";
     public static final String SYSTEM = "system";
-    public static final Logger logger = LogManager.getLogger(MVConfig.class);
+    private static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
     private static final int MAX_FILTER = 5; //old filter profile code setting
 
