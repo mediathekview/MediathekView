@@ -35,7 +35,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
     public ProgramUpdateCheck(Daten daten) {
         this.daten = daten;
 
-        updateCheckTimer = new Timer(1000, e -> ForkJoinPool.commonPool().execute(this::performUpdateCheck));
+        updateCheckTimer = new Timer(60_000, e -> ForkJoinPool.commonPool().execute(this::performUpdateCheck));
         updateCheckTimer.setRepeats(true);
         updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
     }
