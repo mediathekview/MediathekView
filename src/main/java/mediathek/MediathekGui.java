@@ -218,6 +218,8 @@ public class MediathekGui extends JFrame {
         setupShutdownCommand();
 
         loadFilmlist();
+
+        setupUpdateCheck();
     }
 
     /**
@@ -443,7 +445,6 @@ public class MediathekGui extends JFrame {
 
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
-                setupUpdateCheck();
                 setupAutomaticFilmlistReload();
                 prepareMediaDb();
             }
