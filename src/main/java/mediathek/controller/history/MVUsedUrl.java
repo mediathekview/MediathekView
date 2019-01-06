@@ -20,16 +20,13 @@
 package mediathek.controller.history;
 
 import mSearch.tool.Functions;
-import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
-public class MVUsedUrl implements Comparable<MVUsedUrl> {
+public class MVUsedUrl {
 
     public static final int MAX_TITLE_LENGTH = 40;
     public static final int MAX_THEMA_LENGTH = 25;
-    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
     private final String datum;
@@ -67,7 +64,7 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         return new MVUsedUrl(datum, thema, titel, url);
     }
 
-    private static String putzen(String s) {
+    private String putzen(String s) {
         s = StringUtils.replace(s, "\n", "");
         s = StringUtils.replace(s, "|", "");
         s = StringUtils.replace(s, TRENNER, "");
@@ -96,10 +93,5 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
     public String getUrl() {
         return url;
-    }
-
-    @Override
-    public int compareTo(@NotNull MVUsedUrl arg0) {
-        return sorter.compare(titel, arg0.titel);
     }
 }

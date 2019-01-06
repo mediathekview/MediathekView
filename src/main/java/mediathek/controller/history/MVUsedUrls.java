@@ -21,6 +21,7 @@ package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.messages.history.HistoryChangedEvent;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
     private final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
     private final Set<String> listeUrls = new ConcurrentSkipListSet<>();
-    private final List<MVUsedUrl> listeUrlsSortDate = new LinkedList<>();
+    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
     private final Class<T> clazz;
     private Path urlPath;
     public MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
@@ -107,7 +108,8 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
 
     public synchronized List<MVUsedUrl> getSortedList() {
         ArrayList<MVUsedUrl> ret = new ArrayList<>(listeUrlsSortDate);
-        Collections.sort(ret);
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
 
         return ret;
     }
@@ -237,7 +239,6 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
 
             for (DatenFilm film : arrayFilms) {
-                // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
                 listeUrls.add(film.getUrlHistory());
 
                 final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
@@ -289,7 +290,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
 
         private final List<MVUsedUrl> mvuuList;
 
-        public LineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
+        public LineWriterThread(List<MVUsedUrl> mvuuList) {
             this.mvuuList = mvuuList;
             setName(LineWriterThread.class.getName());
         }
@@ -299,7 +300,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             zeilenSchreiben();
         }
 
-        private synchronized void zeilenSchreiben() {
+        private void zeilenSchreiben() {
             checkUrlFilePath();
 
             try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
