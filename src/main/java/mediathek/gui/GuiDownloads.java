@@ -428,11 +428,11 @@ public class GuiDownloads extends JPanel {
     }
 
     public void markFilmAsSeen() {
-        daten.getSeenHistoryList().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void markFilmAsUnseen() {
-        daten.getSeenHistoryList().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
@@ -1007,7 +1007,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
             if (!urlAboList.isEmpty()) {
-                daten.getAboHistoryList().createLineWriterThread(urlAboList);
+                daten.getAboHistoryController().createLineWriterThread(urlAboList);
             }
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
@@ -1061,7 +1061,7 @@ public class GuiDownloads extends JPanel {
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.istAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        daten.getAboHistoryList().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                        daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
             }
@@ -1167,7 +1167,7 @@ public class GuiDownloads extends JPanel {
                         listeDownloadsLoeschen.add(download);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.getAboHistoryList().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                            daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
                 }

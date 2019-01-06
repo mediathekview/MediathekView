@@ -24,7 +24,8 @@ import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.history.MVUsedUrls;
+import mediathek.controller.history.AboHistoryController;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
@@ -32,8 +33,6 @@ import mediathek.gui.SplashScreenManager;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.gui.messages.history.AboHistoryChangedEvent;
-import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
@@ -85,11 +84,11 @@ public class Daten {
     /**
      * alle angesehenen Filme.
      */
-    private MVUsedUrls<DownloadHistoryChangedEvent> history;
+    private SeenHistoryController history;
     /**
      * erfolgreich geladene Abos.
      */
-    private MVUsedUrls<AboHistoryChangedEvent> erledigteAbos;
+    private AboHistoryController erledigteAbos;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
@@ -258,19 +257,19 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
-    public void setSeenHistoryList(MVUsedUrls<DownloadHistoryChangedEvent> list) {
-        history = list;
+    public void setSeenHistoryController(SeenHistoryController controller) {
+        history = controller;
     }
 
-    public MVUsedUrls<DownloadHistoryChangedEvent> getSeenHistoryList() {
+    public SeenHistoryController getSeenHistoryController() {
         return history;
     }
 
-    public void setAboHistoryList(MVUsedUrls<AboHistoryChangedEvent> list) {
-        erledigteAbos = list;
+    public void setAboHistoryList(AboHistoryController controller) {
+        erledigteAbos = controller;
     }
 
-    public MVUsedUrls<AboHistoryChangedEvent> getAboHistoryList() {
+    public AboHistoryController getAboHistoryController() {
         return erledigteAbos;
     }
 
