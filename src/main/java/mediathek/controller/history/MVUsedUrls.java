@@ -91,8 +91,6 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         listeUrls.clear();
         listeUrlsSortDate.clear();
 
-        //TODO this code is sort of useless as the file is always created here
-        checkUrlFilePath();
         try {
             Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
