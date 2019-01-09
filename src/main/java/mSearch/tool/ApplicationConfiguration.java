@@ -1,7 +1,5 @@
 package mSearch.tool;
 
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import org.apache.commons.configuration2.Configuration;
@@ -15,6 +13,8 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The global application configuration class.
@@ -80,32 +80,11 @@ public class ApplicationConfiguration {
         return ourInstance.config;
     }
 
-    private final class EvtListener implements EventListener<ConfigurationEvent> {
-        private final PauseTransition pause;
-
-        public EvtListener() {
-            pause = new PauseTransition(Duration.millis(5000));
-            pause.setOnFinished(evtl -> {
-                try {
-                    handler.save();
-                } catch (ConfigurationException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-
-        @Override
-        public void onEvent(ConfigurationEvent configurationEvent) {
-            if (!configurationEvent.isBeforeUpdate())
-                pause.playFromStart();
-        }
-    }
-
     private void setupXmlConfiguration() {
         config = new XMLConfiguration();
         config.setSynchronizer(new ReadWriteSynchronizer());
         config.setRootElementName("settings");
-        config.addEventListener(ConfigurationEvent.ANY, new EvtListener());
+        config.addEventListener(ConfigurationEvent.ANY, new TimerTaskListener());
         config.setThrowExceptionOnMissing(true);
     }
 
@@ -167,6 +146,40 @@ public class ApplicationConfiguration {
                 config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
             else
                 config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true);
+        }
+    }
+
+    /**
+     * This class will issue a timer to write config to file 5 seconds after onEvent call.
+     * In case this listener is called several times in a row the timer will get reset in order
+     * to ensure that config is written only once.
+     */
+    private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
+        private Timer timer;
+
+        public TimerTaskListener() {
+            timer = new Timer();
+        }
+
+        @Override
+        public void onEvent(ConfigurationEvent configurationEvent) {
+            timer.cancel();
+            timer = new Timer();
+            timer.schedule(new WriteConfigurationTask(), 5_000);
+        }
+
+        /**
+         * Task which saves the current configuration to disk.
+         */
+        private final class WriteConfigurationTask extends TimerTask {
+            @Override
+            public void run() {
+                try {
+                    handler.save();
+                } catch (ConfigurationException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
