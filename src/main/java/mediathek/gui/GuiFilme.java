@@ -109,10 +109,12 @@ public class GuiFilme extends JPanel {
     private FilmTabInfoPane filmInfoLabel;
 
     private void installTabInfoStatusBarControl() {
+        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
+
         Platform.runLater(() -> {
             filmInfoLabel = new FilmTabInfoPane(daten,this);
             if (isVisible())
-                mediathekGui.getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                leftItems.add(filmInfoLabel);
         });
 
         addComponentListener(new ComponentAdapter() {
@@ -120,7 +122,7 @@ public class GuiFilme extends JPanel {
             public void componentShown(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(true);
-                    mediathekGui.getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                    leftItems.add(filmInfoLabel);
                 });
             }
 
@@ -128,7 +130,7 @@ public class GuiFilme extends JPanel {
             public void componentHidden(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(false);
-                    mediathekGui.getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                    leftItems.remove(filmInfoLabel);
                 });
             }
         });
