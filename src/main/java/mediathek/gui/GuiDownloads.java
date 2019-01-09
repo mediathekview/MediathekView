@@ -180,6 +180,12 @@ public class GuiDownloads extends JPanel {
 
         initComponents();
 
+        toolBarPanel = new JFXPanel();
+        add(toolBarPanel,BorderLayout.NORTH);
+
+        fxDescriptionPanel = new JFXPanel();
+        jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
+
         setupF4Key(mediathekGui);
 
         tabelle = new MVDownloadsTable();
@@ -208,12 +214,12 @@ public class GuiDownloads extends JPanel {
         cbView.setModel(getViewModel());
         cbView.addActionListener(new DisplayCategoryListener());
 
-        JFXPanel toolBarPanel = new JFXPanel();
-        add(toolBarPanel,BorderLayout.NORTH);
         Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
 
         setupDownloadRateLimitSpinner();
     }
+
+    private final JFXPanel toolBarPanel;
 
     private void setupDownloadRateLimitSpinner() {
         //restore spinner setting from config
@@ -377,6 +383,8 @@ public class GuiDownloads extends JPanel {
         dialog.setVisible(true);
     }
 
+    private final JFXPanel fxDescriptionPanel;
+
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
             try {
@@ -392,13 +400,11 @@ public class GuiDownloads extends JPanel {
                     e.consume();
                 });
 
-                JFXPanel panel = new JFXPanel();
-                panel.setScene(new Scene(descriptionPane));
+                fxDescriptionPanel.setScene(new Scene(descriptionPane));
                 tabelle.getSelectionModel().addListSelectionListener(e -> {
                     Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
                 });
-                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
             }
             catch (Exception ex) {
                 ex.printStackTrace();
