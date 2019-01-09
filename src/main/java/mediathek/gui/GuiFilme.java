@@ -63,6 +63,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
@@ -1317,79 +1318,97 @@ public class GuiFilme extends JPanel {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jScrollPane1 = new JScrollPane();
+        var jTable1 = new JTable();
+        var jPanel2 = new JPanel();
+        jPanelBeschreibung = new JPanel();
+        jPanelExtra = new JPanel();
+        jCheckBoxProgamme = new JCheckBox();
+        jPanelExtraInnen = new JPanel();
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        javax.swing.JTable jTable1 = new javax.swing.JTable();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jPanelBeschreibung = new javax.swing.JPanel();
-        jPanelExtra = new javax.swing.JPanel();
-        jCheckBoxProgamme = new javax.swing.JCheckBox();
-        jPanelExtraInnen = new javax.swing.JPanel();
+        //======== this ========
+        setLayout(new BorderLayout());
 
-        setLayout(new java.awt.BorderLayout());
+        //======== jScrollPane1 ========
+        {
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new TModel());
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane1.setViewportView(jTable1);
+            //---- jTable1 ----
+            jTable1.setModel(new TModel());
+            jTable1.setAutoCreateRowSorter(true);
+            jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            jScrollPane1.setViewportView(jTable1);
+        }
+        add(jScrollPane1, BorderLayout.CENTER);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        //======== jPanel2 ========
+        {
+            jPanel2.setLayout(new BorderLayout());
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
+            //======== jPanelBeschreibung ========
+            {
+                jPanelBeschreibung.setLayout(new BorderLayout());
+            }
+            jPanel2.add(jPanelBeschreibung, BorderLayout.CENTER);
 
-        jPanelBeschreibung.setLayout(new java.awt.BorderLayout());
-        jPanel2.add(jPanelBeschreibung, java.awt.BorderLayout.CENTER);
+            //======== jPanelExtra ========
+            {
+                jPanelExtra.setBorder(new LineBorder(new Color(153, 153, 153)));
 
-        jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+                //---- jCheckBoxProgamme ----
+                jCheckBoxProgamme.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+                jCheckBoxProgamme.setToolTipText("Buttons ausblenden"); //NON-NLS
 
-        jCheckBoxProgamme.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jCheckBoxProgamme.setToolTipText("Buttons ausblenden");
+                //======== jPanelExtraInnen ========
+                {
 
-        javax.swing.GroupLayout jPanelExtraInnenLayout = new javax.swing.GroupLayout(jPanelExtraInnen);
-        jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
-        jPanelExtraInnenLayout.setHorizontalGroup(
-            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 597, Short.MAX_VALUE)
-        );
-        jPanelExtraInnenLayout.setVerticalGroup(
-            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+                    GroupLayout jPanelExtraInnenLayout = new GroupLayout(jPanelExtraInnen);
+                    jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
+                    jPanelExtraInnenLayout.setHorizontalGroup(
+                        jPanelExtraInnenLayout.createParallelGroup()
+                            .addGap(0, 597, Short.MAX_VALUE)
+                    );
+                    jPanelExtraInnenLayout.setVerticalGroup(
+                        jPanelExtraInnenLayout.createParallelGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                    );
+                }
 
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addComponent(jCheckBoxProgamme)
-                .addGap(5, 5, 5)
-                .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
-        );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addComponent(jCheckBoxProgamme)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(5, 5, 5))
-        );
-
-        jPanel2.add(jPanelExtra, java.awt.BorderLayout.SOUTH);
-
-        add(jPanel2, java.awt.BorderLayout.SOUTH);
+                GroupLayout jPanelExtraLayout = new GroupLayout(jPanelExtra);
+                jPanelExtra.setLayout(jPanelExtraLayout);
+                jPanelExtraLayout.setHorizontalGroup(
+                    jPanelExtraLayout.createParallelGroup()
+                        .addGroup(jPanelExtraLayout.createSequentialGroup()
+                            .addComponent(jCheckBoxProgamme)
+                            .addGap(5, 5, 5)
+                            .addComponent(jPanelExtraInnen, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(5, 5, 5))
+                );
+                jPanelExtraLayout.setVerticalGroup(
+                    jPanelExtraLayout.createParallelGroup()
+                        .addGroup(jPanelExtraLayout.createSequentialGroup()
+                            .addGroup(jPanelExtraLayout.createParallelGroup()
+                                .addGroup(jPanelExtraLayout.createSequentialGroup()
+                                    .addComponent(jCheckBoxProgamme)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(jPanelExtraLayout.createSequentialGroup()
+                                    .addGap(5, 5, 5)
+                                    .addComponent(jPanelExtraInnen, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGap(5, 5, 5))
+                );
+            }
+            jPanel2.add(jPanelExtra, BorderLayout.SOUTH);
+        }
+        add(jPanel2, BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxProgamme;
-    private javax.swing.JPanel jPanelBeschreibung;
-    private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JPanel jPanelExtraInnen;
-    private javax.swing.JScrollPane jScrollPane1;
+    // Generated using JFormDesigner non-commercial license
+    private JScrollPane jScrollPane1;
+    private JPanel jPanelBeschreibung;
+    private JPanel jPanelExtra;
+    private JCheckBox jCheckBoxProgamme;
+    private JPanel jPanelExtraInnen;
     // End of variables declaration//GEN-END:variables
 }
