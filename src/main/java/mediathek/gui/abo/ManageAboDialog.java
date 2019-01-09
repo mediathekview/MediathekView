@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.GuiAbo;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
