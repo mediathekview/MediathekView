@@ -145,6 +145,12 @@ public class GuiFilme extends JPanel {
         this.mediathekGui = mediathekGui;
         initComponents();
 
+        fxFilmActionPanel = new JFXPanel();
+        add(fxFilmActionPanel, BorderLayout.NORTH);
+
+        fxDescriptionPanel = new JFXPanel();
+        jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
+
         tabelle = new MVFilmTable();
         jScrollPane1.setViewportView(tabelle);
 
@@ -221,12 +227,9 @@ public class GuiFilme extends JPanel {
     }
 
     private void setupFilmActionPanel() {
-        add(fxPanel, BorderLayout.NORTH);
         fap = new FilmActionPanel(daten);
-        Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
+        Platform.runLater(() -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
     }
-
-    //private static final Logger logger = LogManager.getLogger(GuiFilme.class);
 
     /**
      * The JavaFx Film action popup panel.
@@ -234,9 +237,11 @@ public class GuiFilme extends JPanel {
     public FilmActionPanel fap;
 
     /**
-     * The swing helper panel for using JavaFX inside Swing.
+     * The swing helper panel FilmAction bar.
      */
-    private final JFXPanel fxPanel = new JFXPanel();
+    private final JFXPanel fxFilmActionPanel;
+
+    private final JFXPanel fxDescriptionPanel;
 
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
@@ -253,13 +258,11 @@ public class GuiFilme extends JPanel {
                     e.consume();
                 });
 
-                JFXPanel panel = new JFXPanel();
-                panel.setScene(new Scene(descriptionPane));
+                fxDescriptionPanel.setScene(new Scene(descriptionPane));
                 tabelle.getSelectionModel().addListSelectionListener(e -> {
                     Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
                 });
-                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
             }
             catch (Exception ex) {
                 ex.printStackTrace();
