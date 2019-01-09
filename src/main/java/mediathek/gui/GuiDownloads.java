@@ -99,7 +99,7 @@ public class GuiDownloads extends JPanel {
     private final MVTable tabelle;
     public static final String NAME = "Downloads";
     private final Daten daten;
-    private final JFrame parentComponent;
+    private final MediathekGui mediathekGui;
 
 
 
@@ -146,10 +146,12 @@ public class GuiDownloads extends JPanel {
     private DownloadTabInformationLabel filmInfoLabel;
 
     private void installTabInfoStatusBarControl() {
+        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
+
         Platform.runLater(() -> {
             filmInfoLabel = new DownloadTabInformationLabel(daten);
             if (isVisible())
-                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                leftItems.add(filmInfoLabel);
         });
 
         addComponentListener(new ComponentAdapter() {
@@ -157,7 +159,7 @@ public class GuiDownloads extends JPanel {
             public void componentShown(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(true);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                    leftItems.add(filmInfoLabel);
                 });
             }
 
@@ -165,7 +167,7 @@ public class GuiDownloads extends JPanel {
             public void componentHidden(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(false);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                    leftItems.remove(filmInfoLabel);
                 });
             }
         });
@@ -174,7 +176,7 @@ public class GuiDownloads extends JPanel {
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
-        parentComponent = mediathekGui;
+        this.mediathekGui = mediathekGui;
 
         initComponents();
 
@@ -314,7 +316,7 @@ public class GuiDownloads extends JPanel {
         miShutdownAfterDownload.addActionListener(e -> {
             if (daten.getListeDownloads().unfinishedDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                MediathekGui.ui().beenden(true, false);
+                mediathekGui.beenden(true, false);
             } else {
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -370,7 +372,7 @@ public class GuiDownloads extends JPanel {
     }
 
     private void showDownloadHistory() {
-        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(MediathekGui.ui());
+        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(mediathekGui);
         dialog.pack();
         dialog.setVisible(true);
     }
@@ -411,7 +413,7 @@ public class GuiDownloads extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
+        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 
@@ -833,7 +835,7 @@ public class GuiDownloads extends JPanel {
         }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         daten.getListeDownloads().abosAuffrischen();
-        daten.getListeDownloads().abosSuchen(parentComponent);
+        daten.getListeDownloads().abosSuchen(mediathekGui);
         reloadTable();
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
@@ -907,7 +909,7 @@ public class GuiDownloads extends JPanel {
             }
         }
         DatenDownload datenDownloadKopy = datenDownload.getCopy();
-        DialogEditDownload dialog = new DialogEditDownload(parentComponent, true, datenDownloadKopy, gestartet);
+        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, true, datenDownloadKopy, gestartet);
         dialog.setVisible(true);
         if (dialog.ok) {
             datenDownload.aufMichKopieren(datenDownloadKopy);
@@ -929,7 +931,7 @@ public class GuiDownloads extends JPanel {
             return;
         }
         String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD];
-        DirOpenAction.zielordnerOeffnen(parentComponent, s);
+        DirOpenAction.zielordnerOeffnen(mediathekGui, s);
     }
 
     public void filmAbspielen() {
@@ -938,7 +940,7 @@ public class GuiDownloads extends JPanel {
             return;
         }
         String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
-        OpenPlayerAction.filmAbspielen(parentComponent, s);
+        OpenPlayerAction.filmAbspielen(mediathekGui, s);
     }
 
     private void filmLoeschen_() {
@@ -949,17 +951,17 @@ public class GuiDownloads extends JPanel {
         // Download nur löschen wenn er nicht läuft
         if (datenDownload.start != null) {
             if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                MVMessageDialog.showMessageDialog(parentComponent, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
         try {
             File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             if (!file.exists()) {
-                MVMessageDialog.showMessageDialog(parentComponent, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int ret = JOptionPane.showConfirmDialog(parentComponent,
+            int ret = JOptionPane.showConfirmDialog(mediathekGui,
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], "Film Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
 
@@ -970,7 +972,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         } catch (Exception ex) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            MVMessageDialog.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
             logger.error("Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
@@ -1052,7 +1054,7 @@ public class GuiDownloads extends JPanel {
                     // wenn er noch läuft gibts nix
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                     //TODO in auto dialog umwandeln!
-                    int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
+                    int a = JOptionPane.showConfirmDialog(mediathekGui, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
                             "Fertiger Download", JOptionPane.YES_NO_OPTION);
                     if (a != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
@@ -1073,11 +1075,11 @@ public class GuiDownloads extends JPanel {
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(MediathekGui.ui(), daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(mediathekGui, daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            MediathekGui.ui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -1152,7 +1154,7 @@ public class GuiDownloads extends JPanel {
                             } else {
                                 text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
-                            antwort = JOptionPane.showConfirmDialog(parentComponent, text,
+                            antwort = JOptionPane.showConfirmDialog(mediathekGui, text,
                                     "Fertiger Download", JOptionPane.YES_NO_CANCEL_OPTION);
                         }
                         if (antwort == JOptionPane.CANCEL_OPTION) {
@@ -1234,7 +1236,7 @@ public class GuiDownloads extends JPanel {
                     aktFilm = datenDownload.film;
                 }
             }
-            MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(aktFilm);
+            mediathekGui.getFilmInfoDialog().updateCurrentFilm(aktFilm);
         }
     }
 
@@ -1456,7 +1458,7 @@ public class GuiDownloads extends JPanel {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             daten.getListeAbo().aenderungMelden();
@@ -1500,7 +1502,7 @@ public class GuiDownloads extends JPanel {
                         } else {
                             menuPath = "Datei->Einstellungen->Set bearbeiten";
                         }
-                        MVMessageDialog.showMessageDialog(parentComponent, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
+                        MVMessageDialog.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                 "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
