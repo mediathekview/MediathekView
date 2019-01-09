@@ -157,6 +157,10 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
 
         getContentPane().setLayout(new BorderLayout());
+
+        statusBarPanel = new JFXPanel();
+        getContentPane().add(statusBarPanel, BorderLayout.PAGE_END);
+
         ui = this;
 
         setIconAndWindowImage();
@@ -360,14 +364,14 @@ public class MediathekGui extends JFrame {
         return selectedItemsProperty;
     }
 
+    private final JFXPanel statusBarPanel;
+
     /**
      * Create the status bar item.
      */
     private void createStatusBar() {
         statusBarController = new StatusBarController(daten);
 
-        JFXPanel statusBarPanel = new JFXPanel();
-        getContentPane().add(statusBarPanel, BorderLayout.PAGE_END);
         Platform.runLater(() -> {
             statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
             installSelectedItemsLabel();
