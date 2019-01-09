@@ -1,11 +1,10 @@
-package mediathek.gui.toolbar;
+package mediathek.gui.abo;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import mediathek.config.Daten;
-import mediathek.gui.GuiAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;

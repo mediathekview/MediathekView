@@ -77,7 +77,7 @@ public class GuiFilme extends JPanel {
     public static final String NAME = "Filme";
     private final Daten daten;
     private boolean stopBeob = false;
-    private final JFrame parentComponent;
+    private final MediathekGui mediathekGui;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -112,7 +112,7 @@ public class GuiFilme extends JPanel {
         Platform.runLater(() -> {
             filmInfoLabel = new FilmTabInfoPane(daten,this);
             if (isVisible())
-                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                mediathekGui.getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
         });
 
         addComponentListener(new ComponentAdapter() {
@@ -120,7 +120,7 @@ public class GuiFilme extends JPanel {
             public void componentShown(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(true);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                    mediathekGui.getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
                 });
             }
 
@@ -128,7 +128,7 @@ public class GuiFilme extends JPanel {
             public void componentHidden(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(false);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                    mediathekGui.getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
                 });
             }
         });
@@ -138,7 +138,7 @@ public class GuiFilme extends JPanel {
         super();
         daten = aDaten;
         
-        parentComponent = mediathekGui;
+        this.mediathekGui = mediathekGui;
         initComponents();
 
         tabelle = new MVFilmTable();
@@ -183,7 +183,7 @@ public class GuiFilme extends JPanel {
             miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_DOWN_MASK));
         else
             miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
-        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(MediathekGui.ui(), daten));
+        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(mediathekGui, daten));
 
         if (SystemUtils.IS_OS_MAC_OSX)
             cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_DOWN_MASK));
@@ -271,7 +271,7 @@ public class GuiFilme extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
+        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
 
         updateFilmData();
         setInfoStatusbar();
@@ -303,7 +303,7 @@ public class GuiFilme extends JPanel {
             if (pset != null) {
                 playerStarten(pset);
             } else {
-                MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
+                MVMessageDialog.showMessageDialog(mediathekGui, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
                         "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -525,7 +525,7 @@ public class GuiFilme extends JPanel {
 
     private synchronized void saveFilm(DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            new DialogAboNoSet(parentComponent, daten).setVisible(true);
+            new DialogAboNoSet(mediathekGui, daten).setVisible(true);
             // Satz mit x, war wohl nix
             return;
         }
@@ -540,7 +540,7 @@ public class GuiFilme extends JPanel {
             if (pSet == null) {
                 pSet = Daten.listePset.getListeSpeichern().getFirst();
             }
-            DialogAddMoreDownload damd = new DialogAddMoreDownload(MediathekGui.ui(), pSet);
+            DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
             damd.setVisible(true);
             standard = damd.addAll;
             pfad = damd.getPath();
@@ -555,7 +555,7 @@ public class GuiFilme extends JPanel {
             // erst mal schauen obs den schon gibt
             DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrl());
             if (datenDownload != null) {
-                int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
+                int ret = JOptionPane.showConfirmDialog(mediathekGui, "Download für den Film existiert bereits.\n"
                         + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
                 if (ret != JOptionPane.OK_OPTION) {
                     continue;
@@ -582,7 +582,7 @@ public class GuiFilme extends JPanel {
                 if (fap.showOnlyHd.getValue()) {
                     aufloesung = DatenFilm.AUFLOESUNG_HD;
                 }
-                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, datenFilm, pSet, aufloesung);
+                DialogAddDownload dialog = new DialogAddDownload(mediathekGui, daten, datenFilm, pSet, aufloesung);
                 dialog.setVisible(true);
             }
         }
@@ -652,7 +652,7 @@ public class GuiFilme extends JPanel {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(MediathekGui.ui().getFilmInfoDialog()::updateCurrentFilm);
+        filmSelection.ifPresent(mediathekGui.getFilmInfoDialog()::updateCurrentFilm);
     }
 
     private void setInfoStatusbar() {
@@ -747,8 +747,8 @@ public class GuiFilme extends JPanel {
                     }
                 } else if (arg0.getClickCount() > 1) {
                     //filmAbspielen_();
-                    if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
-                        MediathekGui.ui().getFilmInfoDialog().showInfo();
+                    if (!mediathekGui.getFilmInfoDialog().isVisible()) {
+                        mediathekGui.getFilmInfoDialog().showInfo();
                     }
                 }
             }
@@ -1050,7 +1050,7 @@ public class GuiFilme extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1060,7 +1060,7 @@ public class GuiFilme extends JPanel {
                             DatenAbo datenAbo;
                             if ((datenAbo = daten.getListeAbo().getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
+                                DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     daten.getListeAbo().aenderungMelden();
@@ -1084,7 +1084,7 @@ public class GuiFilme extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {

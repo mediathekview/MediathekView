@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek.gui.abo;
 
 import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.application.Platform;
@@ -35,7 +35,6 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
-import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.SenderList;
 import mediathek.tool.TModelAbo;
