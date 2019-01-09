@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -1226,15 +1227,16 @@ public class GuiFilme extends JPanel {
 
     private void setupActionListeners() {
         Platform.runLater(() -> {
-            fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showNewOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowTrailers.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowSignLanguage.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowAudioVersions.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showLivestreamsOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            final ChangeListener<Boolean> reloadTableListener = (observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable);
+            fap.showOnlyHd.addListener(reloadTableListener);
+            fap.showSubtitlesOnly.addListener(reloadTableListener);
+            fap.showNewOnly.addListener(reloadTableListener);
+            fap.showUnseenOnly.addListener(reloadTableListener);
+            fap.dontShowAbos.addListener(reloadTableListener);
+            fap.dontShowTrailers.addListener(reloadTableListener);
+            fap.dontShowSignLanguage.addListener(reloadTableListener);
+            fap.dontShowAudioVersions.addListener(reloadTableListener);
+            fap.showLivestreamsOnly.addListener(reloadTableListener);
             fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
