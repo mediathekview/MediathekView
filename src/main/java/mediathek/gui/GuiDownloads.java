@@ -238,6 +238,8 @@ public class GuiDownloads extends JPanel {
 
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
 
+    private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
+
     public void installMenuEntries(JMenu menu) {
         JMenuItem miDownloadsStartAll = new JMenuItem("Alle Downloads starten");
         miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
@@ -269,7 +271,7 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        JMenuItem miCleanupDownloads = new JMenuItem("Liste der Downloads aufräumen");
+        JMenuItem miCleanupDownloads = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
         miCleanupDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
         miCleanupDownloads.addActionListener(e -> cleanupDownloads());
 
@@ -1415,7 +1417,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(arg0 -> updateDownloads());
 
-            JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
+            JMenuItem itemAufraeumen = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
             itemAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(arg0 -> cleanupDownloads());
