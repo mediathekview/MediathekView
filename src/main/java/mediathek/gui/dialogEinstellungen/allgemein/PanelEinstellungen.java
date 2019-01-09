@@ -45,21 +45,26 @@ public class PanelEinstellungen extends PanelVorlage {
     private void setupProxySettings() {
 
         jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
-        jtfProxyHost.getDocument().addDocumentListener(new ProxyHostListener(jtfProxyHost));
+        var listener = new TextFieldConfigWriter(jtfProxyHost,ApplicationConfiguration.HTTP_PROXY_HOSTNAME);
+        jtfProxyHost.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
         jtfProxyPort.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PORT, ""));
-        jtfProxyPort.getDocument().addDocumentListener(new ProxyPortListener(jtfProxyPort));
+        listener = new TextFieldConfigWriter(jtfProxyPort,ApplicationConfiguration.HTTP_PROXY_PORT);
+        jtfProxyPort.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
         jtfProxyUser.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_USERNAME, ""));
-        jtfProxyUser.getDocument().addDocumentListener(new ProxyUsernameListener(jtfProxyUser));
+        listener = new TextFieldConfigWriter(jtfProxyUser,ApplicationConfiguration.HTTP_PROXY_USERNAME);
+        jtfProxyUser.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
         jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PASSWORD, ""));
-        jpfProxyPassword.getDocument().addDocumentListener(new ProxyPasswordListener(jpfProxyPassword));
+        listener = new TextFieldConfigWriter(jpfProxyPassword,ApplicationConfiguration.HTTP_PROXY_PASSWORD);
+        jpfProxyPassword.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
     private void setupUserAgentSettings() {
         jtfUserAgent.setText(ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-        jtfUserAgent.getDocument().addDocumentListener(new UserAgentListener(jtfUserAgent));
+        var listener = new TextFieldConfigWriter(jtfUserAgent,ApplicationConfiguration.APPLICATION_USER_AGENT);
+        jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
     private void setupDays() {
