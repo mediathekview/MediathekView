@@ -22,6 +22,7 @@ package mediathek;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import com.sun.javafx.runtime.VersionInfo;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
@@ -190,6 +191,8 @@ public class Main {
             disableNotifications();
 
         //generateAntiThrottlingId();
+
+        logger.info("JavaFX version: " + VersionInfo.getRuntimeVersion());
 
         setupPortableMode(args);
 
