@@ -23,7 +23,6 @@ import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -63,16 +62,16 @@ public class StarterClass {
         if (start != null) {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-                Log.errorLog(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
-                        + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+                logger.error("Download fehlgeschlagen: 99,5% wurden nicht erreicht: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+
                 return false;
             }
         }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (!file.exists()) {
-            Log.errorLog(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Download fehlgeschlagen, Datei existiert nicht: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
-            Log.errorLog(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Download fehlgeschlagen, Datei zu klein:{}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else {
             if (datenDownload.istAbo()) {
                 daten.getAboHistoryController().zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
@@ -277,7 +276,7 @@ public class StarterClass {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(461204780, "Fehler beim Ermitteln der Dateigröße: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Fehler beim Ermitteln der Dateigröße: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
 
@@ -346,13 +345,13 @@ public class StarterClass {
                 try {
                     while ((datenDownload = getNextStart()) != null) {
                         startStarten(datenDownload);
-                        //alle 5 Sekunden einen Download starten
-                        TimeUnit.SECONDS.sleep(5);
+                        //alle 3 Sekunden einen Download starten
+                        TimeUnit.SECONDS.sleep(3);
                     }
                     daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     TimeUnit.SECONDS.sleep(3);
                 } catch (Exception ex) {
-                    Log.errorLog(613822015, ex);
+                    logger.error("Fehler in Starten Thread:", ex);
                 }
             }
         }
@@ -399,7 +398,7 @@ public class StarterClass {
                     downloadThread.start();
                     break;
                 default:
-                    Log.errorLog(789356001, "StarterClass.Starten - Switch-default");
+                    logger.error("StarterClass.Starten - Switch-default");
                     break;
             }
         }
