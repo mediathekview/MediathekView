@@ -45,7 +45,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public abstract class PanelErledigteUrls extends JPanel {
     protected final Daten daten;
-    protected MVUsedUrls workList;
+    protected MVUsedUrls<?> workList;
 
     public PanelErledigteUrls(Daten d) {
         this.daten = d;
