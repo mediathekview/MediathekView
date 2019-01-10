@@ -60,6 +60,7 @@
     <maven.compiler.target>11</maven.compiler.target>
 
     <junit.jupiter.version>5.3.1</junit.jupiter.version>
+    <javafx.version>11</javafx.version>
   </properties>
 
   <dependencies>
@@ -205,105 +206,48 @@
     </dependency>
 
 
-    <!-- JavaFX 11 -->
+    <!-- JavaFX-->
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-base</artifactId>
-          <version>11</version>
-        <classifier>mac</classifier>
+          <version>${javafx.version}</version>
       </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-controls</artifactId>
-          <version>11</version>
-        <classifier>mac</classifier>
+          <version>${javafx.version}</version>
       </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-graphics</artifactId>
-          <version>11</version>
-        <classifier>mac</classifier>
+          <version>${javafx.version}</version>
       </dependency>
 
       <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
-      <version>11</version>
-        <classifier>mac</classifier>
+      <version>${javafx.version}</version>
       </dependency>
 
       <dependency>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-swing</artifactId>
-          <version>11</version>
-        <classifier>mac</classifier>
+          <version>${javafx.version}</version>
       </dependency>
 
 
       <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-web</artifactId>
-      <version>11</version>
-        <classifier>mac</classifier>
+      <version>${javafx.version}</version>
       </dependency>
 
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>11</version>
-      <classifier>mac</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-base</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-graphics</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-media</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-swing</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-web</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-fxml</artifactId>
-      <version>11</version>
-      <classifier>win</classifier>
+      <version>${javafx.version}</version>
     </dependency>
 
     <!-- Logging -->
