@@ -24,11 +24,9 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Log;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.messages.ButtonStartEvent;
@@ -230,32 +228,36 @@ public class StarterClass {
         });
     }
 
-    static void finalizeDownload(DatenDownload datenDownload, Start start, DirectHttpDownload.HttpDownloadState state) {
-        deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
-        setFileSize(datenDownload);
-
-        if (SystemUtils.IS_OS_MAC_OSX && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
-            //we don´t write comments if download was cancelled...
+    private static void writeSpotlightComment(DatenDownload datenDownload, DirectHttpDownload.HttpDownloadState state) {
+        //we don´t write comments if download was cancelled...
+        if (state != DirectHttpDownload.HttpDownloadState.CANCEL) {
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                 final SpotlightCommentWriter writer = new SpotlightCommentWriter();
                 writer.writeComment(datenDownload);
             }
         }
+    }
+
+    public static void finalizeDownload(DatenDownload datenDownload, Start start, DirectHttpDownload.HttpDownloadState state) {
+        deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
+        setFileSize(datenDownload);
+
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            writeSpotlightComment(datenDownload, state);
+        }
 
         fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);
-        switch (state) {
-            case CANCEL:
-                datenDownload.resetDownload();
-                break;
-            default:
-                start.restSekunden = -1;
-                start.percent = Start.PROGRESS_FERTIG;
-                datenDownload.mVFilmSize.setAktSize(-1);
-                break;
+
+        if (state == DirectHttpDownload.HttpDownloadState.CANCEL) {
+            datenDownload.resetDownload();
+        } else {
+            start.restSekunden = -1;
+            start.percent = Start.PROGRESS_FERTIG;
+            datenDownload.mVFilmSize.setAktSize(-1);
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemUtils.IS_OS_MAC_OSX && MediathekGui.ui() != null) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             Taskbar.getTaskbar().requestUserAttention(true,false);
         }
     }
@@ -325,7 +327,7 @@ public class StarterClass {
     private class Starten extends Thread {
 
         /**
-         * The only {@link java.util.Timer} used for all {@link MVBandwidthCountingInputStream.BandwidthCalculationTask}
+         * The only {@link java.util.Timer} used for all bandwidth calculations.
          * calculation tasks.
          */
         private final java.util.Timer bandwidthCalculationTimer;
@@ -333,13 +335,13 @@ public class StarterClass {
 
         public Starten() {
             super();
-            setName(Starten.class.getName() + " Thread");
+            setName("StarterClass.Starten Thread");
             setDaemon(true);
             bandwidthCalculationTimer = new java.util.Timer("BandwidthCalculationTimer");
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             while (!isInterrupted()) {
                 try {
                     while ((datenDownload = getNextStart()) != null) {
