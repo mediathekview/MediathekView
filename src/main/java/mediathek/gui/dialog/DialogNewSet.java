@@ -21,10 +21,7 @@ package mediathek.gui.dialog;
 
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
-import mediathek.gui.HyperlinkButton;
-import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
@@ -63,7 +60,7 @@ public class DialogNewSet extends JDialog {
                 + '\n'
                 + "   (Wenn Sie die Einstellungen nicht verändert haben\n"
                 + "    ist das die Empfehlung)");
-        hyperlinkButton.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
+
         jButtonAdd.addActionListener(e -> {
             ok = true;
             beenden();
@@ -104,9 +101,6 @@ public class DialogNewSet extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         jButtonAbbrechen = new JButton();
-        var jPanel1 = new JPanel();
-        var jLabel7 = new JLabel();
-        hyperlinkButton = new HyperlinkButton();
         jCheckBoxMorgen = new JCheckBox();
         var jPanel3 = new JPanel();
         var jScrollPane1 = new JScrollPane();
@@ -126,38 +120,6 @@ public class DialogNewSet extends JDialog {
 
         //---- jButtonAbbrechen ----
         jButtonAbbrechen.setText("Abbrechen"); //NON-NLS
-
-        //======== jPanel1 ========
-        {
-            jPanel1.setBorder(new TitledBorder("")); //NON-NLS
-
-            //---- jLabel7 ----
-            jLabel7.setText("Anleitung:"); //NON-NLS
-
-            //---- hyperlinkButton ----
-            hyperlinkButton.setText("text"); //NON-NLS
-
-            GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-            jPanel1.setLayout(jPanel1Layout);
-            jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(hyperlinkButton, GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
-                        .addGap(335, 335, 335))
-            );
-            jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup()
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel7)
-                            .addComponent(hyperlinkButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(11, Short.MAX_VALUE))
-            );
-        }
 
         //---- jCheckBoxMorgen ----
         jCheckBoxMorgen.setSelected(true);
@@ -197,7 +159,7 @@ public class DialogNewSet extends JDialog {
                 jPanel3Layout.createParallelGroup()
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAdd)
                         .addContainerGap())
@@ -230,7 +192,7 @@ public class DialogNewSet extends JDialog {
                         .addGroup(jPanel4Layout.createParallelGroup()
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jButtonReplace)
-                                .addGap(0, 243, Short.MAX_VALUE))
+                                .addGap(0, 233, Short.MAX_VALUE))
                             .addComponent(jScrollPane2))
                         .addContainerGap())
             );
@@ -238,7 +200,7 @@ public class DialogNewSet extends JDialog {
                 jPanel4Layout.createParallelGroup()
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonReplace)
                         .addGap(13, 13, 13))
@@ -267,7 +229,6 @@ public class DialogNewSet extends JDialog {
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane3)
@@ -282,9 +243,7 @@ public class DialogNewSet extends JDialog {
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGap(39, 39, 39)
                     .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -304,7 +263,6 @@ public class DialogNewSet extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JButton jButtonAbbrechen;
-    private HyperlinkButton hyperlinkButton;
     private JCheckBox jCheckBoxMorgen;
     private JTextArea jTextArea1;
     private JButton jButtonAdd;
