@@ -1,10 +1,21 @@
 package mediathek.gui.filmInformation;
 
 import com.jidesoft.swing.MultilineLabel;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
-import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
@@ -28,6 +39,7 @@ public class InfoDialog extends JDialog {
     private static final String FILM_INFO_VISIBLE = "film.information.visible";
     private static final String FILM_INFO_LOCATION_X = "film.information.location.x";
     private static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+    private static final String COPY_URL_TEXT = "URL kopieren";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final MVSenderIconCache senderIconCache;
     private DatenFilm currentFilm = null;
@@ -42,24 +54,9 @@ public class InfoDialog extends JDialog {
     private JCheckBox cbSubtitle;
     private JLabel lblGeo;
     private JLabel lblAbo;
-    private HyperlinkButton btnLinkWebsite;
+    private JFXPanel fxPanel;
+    private Hyperlink hyperlink;
     private JTextArea lblDescription;
-    private static final String COPY_URL_TEXT = "URL kopieren";
-
-    private JMenuItem createCopyLinkToClipboardItem() {
-        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
-        item.addActionListener(e -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink()));
-
-        return item;
-    }
-
-    private void installCopyUrlHandler(JTextComponent component) {
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
-        item.addActionListener(e -> GuiFunktionen.copyToClipboard(component.getText()));
-        menu.add(item);
-        component.setComponentPopupMenu(menu);
-    }
 
     public InfoDialog(Window parent) {
         super(parent);
@@ -71,20 +68,6 @@ public class InfoDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         buildLayout();
-
-        btnLinkWebsite.addActionListener((e) -> {
-            if (currentFilm != null) {
-                try {
-                    UrlHyperlinkAction.openURL(null, currentFilm.getWebsiteLink());
-                } catch (URISyntaxException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(createCopyLinkToClipboardItem());
-        btnLinkWebsite.setComponentPopupMenu(popupMenu);
 
         installCopyUrlHandler(lblThema);
         installCopyUrlHandler(lblTitel);
@@ -118,6 +101,14 @@ public class InfoDialog extends JDialog {
                     saveLocation();
             }
         });
+    }
+
+    private void installCopyUrlHandler(JTextComponent component) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
+        item.addActionListener(e -> GuiFunktionen.copyToClipboard(component.getText()));
+        menu.add(item);
+        component.setComponentPopupMenu(menu);
     }
 
     /**
@@ -177,8 +168,10 @@ public class InfoDialog extends JDialog {
         cbSubtitle.setSelected(false);
         lblGeo.setText("");
         lblAbo.setText("");
-        btnLinkWebsite.setToolTipText("");
-        btnLinkWebsite.setEnabled(false);
+        Platform.runLater(() -> {
+            hyperlink.setTooltip(null);
+            hyperlink.setDisable(true);
+        });
     }
 
     private void setSenderIcon(final JLabel control) {
@@ -212,8 +205,10 @@ public class InfoDialog extends JDialog {
             lblGeo.setText(currentFilm.getGeo());
             lblAbo.setText(currentFilm.arr[DatenFilm.FILM_ABO_NAME]);
 
-            btnLinkWebsite.setToolTipText(currentFilm.getWebsiteLink());
-            btnLinkWebsite.setEnabled(true);
+            Platform.runLater(() -> {
+                hyperlink.setTooltip(new Tooltip(currentFilm.getWebsiteLink()));
+                hyperlink.setDisable(false);
+            });
         }
     }
 
@@ -347,10 +342,30 @@ public class InfoDialog extends JDialog {
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         contentPane.add(label, "cell 0 11");
 
-        btnLinkWebsite = new HyperlinkButton();
-        btnLinkWebsite.setText("Hier klicken");
-        contentPane.add(btnLinkWebsite, "cell 1 11,growx,wmax 250");
+        fxPanel = new JFXPanel();
+        contentPane.add(fxPanel, "cell 1 11,growx,wmax 250");
 
+        Platform.runLater(() -> {
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem mi = new MenuItem(COPY_URL_TEXT);
+            mi.setOnAction(e -> SwingUtilities.invokeLater(() -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink())));
+            contextMenu.getItems().add(mi);
+
+            hyperlink = new Hyperlink("Hier klicken");
+            hyperlink.setContextMenu(contextMenu);
+            hyperlink.setUnderline(true);
+            hyperlink.setBackground(new Background(new BackgroundFill(Color.rgb(236, 236, 236), CornerRadii.EMPTY, Insets.EMPTY)));
+            hyperlink.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (currentFilm != null) {
+                    try {
+                        UrlHyperlinkAction.openURL(null, currentFilm.getWebsiteLink());
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }));
+            fxPanel.setScene(new Scene(hyperlink));
+        });
         label = new JLabel();
         label.setText("Beschreibung:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
