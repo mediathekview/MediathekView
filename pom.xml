@@ -60,10 +60,15 @@
     <maven.compiler.target>11</maven.compiler.target>
 
     <junit.jupiter.version>5.3.1</junit.jupiter.version>
-    <javafx.version>11</javafx.version>
+    <javafx.version>12-ea+7</javafx.version>
   </properties>
 
   <dependencies>
+      <dependency>
+          <groupId>eu.hansolo</groupId>
+          <artifactId>tilesfx</artifactId>
+          <version>1.6.5</version>
+      </dependency>
 
       <dependency>
           <groupId>com.sun.activation</groupId>
