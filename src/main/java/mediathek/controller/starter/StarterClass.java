@@ -32,7 +32,7 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
-import mediathek.tool.MVFilmSize;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -174,7 +174,7 @@ public class StarterClass {
         }
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
-                text.add("Bytes gelesen: " + MVFilmSize.humanReadableByteCount(start.mVBandwidthCountingInputStream.getSumByte(), true));
+                text.add("Bytes gelesen: " + FileUtils.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
                 text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
@@ -204,7 +204,7 @@ public class StarterClass {
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true)
+                "Größe:  " + FileUtils.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
         };
 
         StringBuilder meldung = new StringBuilder();

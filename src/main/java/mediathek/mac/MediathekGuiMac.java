@@ -21,8 +21,6 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-    private static final String ACTION_KEY_MAC_F = "mac-f";
-
     public MediathekGuiMac() {
         super();
 
