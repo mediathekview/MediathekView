@@ -29,8 +29,8 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -288,7 +288,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + MVFilmSize.humanReadableByteCount(usableSpace, true) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
