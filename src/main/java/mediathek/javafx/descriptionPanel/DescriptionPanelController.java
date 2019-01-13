@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.*;
 import mSearch.daten.DatenFilm;
@@ -62,7 +61,6 @@ public class DescriptionPanelController {
             Font defaultFont = Font.getDefault();
             Text headLine = new Text((film.getSender().isEmpty() ? "" : film.getSender() + "  -  ") + film.getTitle());
             headLine.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, FontPosture.REGULAR, defaultFont.getSize()));
-            headLine.setFill(Color.RED);
 
             Text description = new Text(film.getDescription());
             description.setFont(Font.font(defaultFont.getName(), FontWeight.NORMAL, FontPosture.REGULAR, defaultFont.getSize()));
