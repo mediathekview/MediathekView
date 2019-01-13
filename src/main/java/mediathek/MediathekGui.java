@@ -117,7 +117,6 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
-    private final JMenuItem miSearchProgramUpdate = new JMenuItem("Nach Update suchen...");
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     /**
@@ -151,6 +150,7 @@ public class MediathekGui extends JFrame {
     public MediathekGui() {
         super();
         loadFilmListAction = new LoadFilmListAction(this);
+        searchProgramUpdateAction = new SearchProgramUpdateAction(this);
 
         splashScreenManager = Daten.splashScreenManager;
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
@@ -532,7 +532,7 @@ public class MediathekGui extends JFrame {
      * @param enable Shall the menu item be enabled?
      */
     public void enableUpdateMenuItem(boolean enable) {
-        miSearchProgramUpdate.setEnabled(enable);
+        searchProgramUpdateAction.setEnabled(enable);
     }
 
     /**
@@ -701,34 +701,19 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(cbSearchMediaDb);
     }
 
+    private final SearchProgramUpdateAction searchProgramUpdateAction;
+
     private void createHelpMenu() {
-        JMenuItem miShowOnlineHelp = new JMenuItem("Online-Hilfe anzeigen");
-        miShowOnlineHelp.setAction(new ShowOnlineHelpAction());
-
-        JMenuItem miCreateProtocolFile = new JMenuItem("Protokolldatei erstellen...");
-        miCreateProtocolFile.setAction(new CreateProtocolFileAction());
-
-        JMenuItem miResetSettings = new JMenuItem("Einstellungen zurücksetzen...");
-        miResetSettings.setAction(new ResetSettingsAction(this, daten));
-
-        miSearchProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
-
-        JMenuItem miShowProgramInfo = new JMenuItem("Programminfos anzeigen...");
-        miShowProgramInfo.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
-
-        JMenuItem miShowAboutDialog = new JMenuItem("Über dieses Programm...");
-        miShowAboutDialog.addActionListener(e -> showAboutDialog());
-
-        jMenuHilfe.add(miShowOnlineHelp);
+        jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(miCreateProtocolFile);
-        jMenuHilfe.add(miResetSettings);
+        jMenuHilfe.add(new CreateProtocolFileAction());
+        jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(miSearchProgramUpdate);
-        jMenuHilfe.add(miShowProgramInfo);
+        jMenuHilfe.add(searchProgramUpdateAction);
+        jMenuHilfe.add(new ShowProgramInfosAction(this));
         if (!SystemUtils.IS_OS_MAC_OSX) {
             jMenuHilfe.addSeparator();
-            jMenuHilfe.add(miShowAboutDialog);
+            jMenuHilfe.add(new ShowAboutAction(this));
         }
     }
 
@@ -768,7 +753,7 @@ public class MediathekGui extends JFrame {
     /**
      * Display the About Box
      */
-    protected void showAboutDialog() {
+    public void showAboutDialog() {
         AboutDialog aboutDialog = new AboutDialog(this);
         GuiFunktionen.centerOnScreen(aboutDialog, false);
         aboutDialog.setVisible(true);
@@ -930,7 +915,7 @@ public class MediathekGui extends JFrame {
         shutdownCommand.execute();
     }
 
-    private void searchForUpdateOrShowProgramInfos(boolean infos) {
+    public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, true);
     }
 
