@@ -31,8 +31,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -117,7 +115,6 @@ public class MediathekGui extends JFrame {
     private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
     private final JTabbedPane tabbedPane = new JTabbedPane();
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
-    private final JMenuItem miLoadFilmList = new JMenuItem("Neue Filmliste laden...");
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
     private final JMenuItem miSearchProgramUpdate = new JMenuItem("Nach Update suchen...");
@@ -153,6 +150,8 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         super();
+        loadFilmListAction = new LoadFilmListAction(this);
+
         splashScreenManager = Daten.splashScreenManager;
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
 
@@ -437,12 +436,12 @@ public class MediathekGui extends JFrame {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                miLoadFilmList.setEnabled(false);
+                loadFilmListAction.setEnabled(false);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                miLoadFilmList.setEnabled(true);
+                loadFilmListAction.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
 
@@ -646,28 +645,17 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void createFileMenu() {
-        miLoadFilmList.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-        miLoadFilmList.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
-        miLoadFilmList.addActionListener(e -> performFilmListLoadOperation(false));
-        jMenuDatei.add(miLoadFilmList);
+    private final LoadFilmListAction loadFilmListAction;
 
+    private void createFileMenu() {
+        jMenuDatei.add(loadFilmListAction);
         jMenuDatei.add(new FilmListExportAction(this));
 
         //on macOS we will use native handlers instead...
         if (!SystemUtils.IS_OS_MAC_OSX) {
-            JMenuItem miSettings = new JMenuItem("Einstellungen...");
-            miSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
-            miSettings.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-einstellungen.png")));
-            miSettings.addActionListener(e -> showSettingsDialog());
-
-            JMenuItem miQuit = new JMenuItem("Beenden");
-            miQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
-            miQuit.addActionListener(e -> beenden(false, false));
-
-            jMenuDatei.add(miSettings);
+            jMenuDatei.add(new SettingsAction(this));
             jMenuDatei.addSeparator();
-            jMenuDatei.add(miQuit);
+            jMenuDatei.add(new QuitAction(this));
         }
     }
 
