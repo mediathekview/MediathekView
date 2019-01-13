@@ -221,7 +221,8 @@ public class FilmListReader implements AutoCloseable {
      * Check if the title contains keyword which specify an audio version
      */
     private void parseAudioVersion(String title, DatenFilm film) {
-        if (title.contains("Hörfassung") || title.contains("Audiodeskription"))
+        if (title.contains("Hörfassung") || title.contains("Audiodeskription")
+         || title.contains("AD |"))
             film.setAudioVersion(true);
     }
 
