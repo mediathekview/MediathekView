@@ -62,7 +62,6 @@ import java.util.Date;
 
 public class Daten {
 
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     private static final Logger logger = LogManager.getLogger(Daten.class);

@@ -19,9 +19,9 @@
  */
 package mediathek.daten;
 
-import mediathek.config.Daten;
-import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 import mediathek.tool.GuiFunktionenProgramme;
+
+import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 
 public class DatenProg extends MVData<DatenProg> {
 
@@ -121,17 +121,14 @@ public class DatenProg extends MVData<DatenProg> {
         String ret = "";
         for (int i = 0; i < MAX_ELEM; ++i) {
             if (i == 0) {
-                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             } else {
-                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             }
         }
         return ret;
     }
 
-    //===================================
-    // Private
-    //===================================
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
