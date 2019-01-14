@@ -203,8 +203,6 @@ public class Main {
             DatenFilm.Database.initializeDatabase();
         }
 
-        Daten.splashScreenManager.initializeSplashScreen();
-
         IconFontSwing.register(FontAwesome.getIconFont());
 
         installSingleInstanceHandler();
