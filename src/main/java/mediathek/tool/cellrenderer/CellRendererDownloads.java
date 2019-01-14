@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -22,7 +22,6 @@ package mediathek.tool.cellrenderer;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Log;
-import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -42,31 +41,36 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
-    private static Icon download_stop_tab = null;
-    private static Icon download_stop_sw_tab = null;
-    private static ImageIcon download_start_tab = null;
-    private static ImageIcon download_start_sw_tab = null;
-    private static Icon download_clear_tab_selected = null;
-    private static Icon download_clear_sw_tab = null;
-    private static Icon download_del_tab_selected = null;
-    private static Icon download_del_sw_tab = null;
-    private JProgressBar progressBar;
+    private final Icon film_start_tab;
+    private final Icon film_start_sw_tab;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
+    private final Icon download_stop_tab;
+    private final Icon download_stop_sw_tab;
+    private final Icon download_start_tab;
+    private final Icon download_start_sw_tab;
+    private final Icon download_clear_tab_selected;
+    private final Icon download_clear_sw_tab;
+    private final Icon download_del_tab_selected;
+    private final Icon download_del_sw_tab;
+    private JProgressBar progressBar;
 
     public CellRendererDownloads(MVSenderIconCache cache) {
         super(cache);
 
-        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, new Color(255, 255, 255));
+        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
-        download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
-        download_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_START_SW;
-        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, new Color(255, 255, 255));
+        download_start_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16, Color.WHITE);
+        download_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16);
+        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, Color.WHITE);
         download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
 
-        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, new Color(255, 255, 255));
+        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, Color.WHITE);
         download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TRASH, 16);
+
+        film_start_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
+        film_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
         setupProgressBar();
 
@@ -87,7 +91,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 @Override
                 protected Color getSelectionForeground() {
-                    return Color.white;
+                    return Color.WHITE;
                 }
             });
         }

@@ -21,43 +21,51 @@ package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Log;
+import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.messages.history.HistoryChangedEvent;
+import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
+import java.nio.file.*;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class MVUsedUrls<T extends HistoryChangedEvent> {
+public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
-    private final HashSet<String> listeUrls;
-    private final LinkedList<MVUsedUrl> listeUrlsSortDate;
-    private final String fileName;
-    private final String settingsDir;
+    private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
+    private static final FastDateFormat SDF = FastDateFormat.getInstance("dd.MM.yyyy");
+    /**
+     * Quick lookup list for history checks.
+     * Stores only URLs
+     */
+    private final Set<String> listeUrls = Collections.synchronizedSet(new HashSet<>());
+    /**
+     * The actual storage for all history data.
+     * Will be written to file.
+     */
+    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
     private final Class<T> clazz;
+    private Path urlPath;
 
-    public MVUsedUrls(String fileName, String settingsDir,Class<T> clazz) {
-        this.fileName = fileName;
-        this.settingsDir = settingsDir;
+    protected MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
         this.clazz = clazz;
 
-        listeUrlsSortDate = new LinkedList<>();
-        listeUrls = new HashSet<>() {
-            @Override
-            public void clear() {
-                listeUrlsSortDate.clear();
-                super.clear();
-            }
-        };
+        try {
+            urlPath = Paths.get(settingsDir).resolve(fileName);
+        } catch (InvalidPathException e) {
+            logger.error("Path resolve failed for {},{}", settingsDir, fileName);
+            urlPath = null;
+        }
+
         listeBauen();
+    }
+
+    public List<MVUsedUrl> getListeUrlsSortDate() {
+        return listeUrlsSortDate;
     }
 
     public synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms, ListeFilme listeFilmeHistory) {
@@ -83,13 +91,14 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
             final T msg = clazz.getDeclaredConstructor().newInstance();
             Daten.getInstance().getMessageBus().publishAsync(msg);
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("sendChangeMessage()", e);
         }
     }
 
     public synchronized void alleLoeschen() {
         listeUrls.clear();
-        Path urlPath = getUrlFilePath();
+        listeUrlsSortDate.clear();
+
         try {
             Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
@@ -98,27 +107,15 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         sendChangeMessage();
     }
 
-    public synchronized boolean urlPruefen(String urlFilm) {
+    public boolean urlPruefen(String urlFilm) {
         //wenn url gefunden, dann true zurück
         return listeUrls.contains(urlFilm);
     }
 
-    /**
-     * Creates a "model" for the table.
-     */
-    public synchronized Object[][] getObjectData() {
-        int i = 0;
-        final Object[][] object = new Object[listeUrlsSortDate.size()][];
-        for (var item : listeUrlsSortDate) {
-            object[i] = new String[] {item.getDatum(),item.getThema(), item.getTitel(), item.getUrl()};
-            ++i;
-        }
-        return object;
-    }
-
     public synchronized List<MVUsedUrl> getSortedList() {
         ArrayList<MVUsedUrl> ret = new ArrayList<>(listeUrlsSortDate);
-        Collections.sort(ret);
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
 
         return ret;
     }
@@ -126,17 +123,15 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
     public synchronized void urlAusLogfileLoeschen(String urlFilm) {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
         //wenn die URL im Logfiel ist, dann true zurück
-        String zeile;
         boolean gefunden = false;
 
-        final Path urlPath = getUrlFilePath();
-        if (Files.notExists(urlPath))
-            return;
+        checkUrlFilePath();
 
         final List<String> liste = new ArrayList<>();
         try (InputStream is = Files.newInputStream(urlPath);
              InputStreamReader isr = new InputStreamReader(is);
              LineNumberReader in = new LineNumberReader(isr)) {
+            String zeile;
             while ((zeile = in.readLine()) != null) {
                 if (MVUsedUrl.getUrlAusZeile(zeile).getUrl().equals(urlFilm)) {
                     gefunden = true; //nur dann muss das Logfile auch geschrieben werden
@@ -145,21 +140,24 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(281006874, ex);
+            logger.error("urlAusLogfileLoeschen(String)", ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
         if (gefunden) {
-            try (OutputStream os = Files.newOutputStream(getUrlFilePath());
+            try (OutputStream os = Files.newOutputStream(urlPath);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
                  BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
                 for (String entry : liste)
                     bufferedWriter.write(entry + '\n');
             } catch (Exception ex) {
-                Log.errorLog(566277080, ex);
+                logger.error("urlAusLogfileLoeschen(String)", ex);
             }
         }
+
         listeUrls.clear();
+        listeUrlsSortDate.clear();
+
         listeBauen();
 
         sendChangeMessage();
@@ -171,9 +169,7 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         String zeile;
         boolean gefunden = false, gef;
 
-        final Path urlPath = getUrlFilePath();
-        if (Files.notExists(urlPath))
-            return;
+        checkUrlFilePath();
 
         List<String> newListe = new ArrayList<>();
         try (InputStream is = Files.newInputStream(urlPath);
@@ -196,62 +192,68 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
 
             }
         } catch (Exception ex) {
-            Log.errorLog(401020398, ex);
+            logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
         if (gefunden) {
-            try (OutputStream os = Files.newOutputStream(getUrlFilePath());
+            try (OutputStream os = Files.newOutputStream(urlPath);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
                  BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
                 for (String entry : newListe) {
                     bufferedWriter.write(entry + '\n');
                 }
             } catch (Exception ex) {
-                Log.errorLog(784512067, ex);
+                logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
             }
         }
+
         listeUrls.clear();
+        listeUrlsSortDate.clear();
+
         listeBauen();
 
         sendChangeMessage();
     }
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
-        String text;
         String datum = SDF.format(new Date());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
-        try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
+        checkUrlFilePath();
+
+        try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-            text = MVUsedUrl.getUsedUrl(datum, thema, titel, url);
-            bufferedWriter.write(text);
+            final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
+            bufferedWriter.write(usedUrl.getUsedUrl());
         } catch (Exception ex) {
-            Log.errorLog(945258023, ex);
+            logger.error("zeileSchreiben(...)", ex);
         }
 
         sendChangeMessage();
     }
 
     public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
-        String text;
-        String datum = SDF.format(new Date());
+        final String datum = SDF.format(new Date());
 
-        try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
+        checkUrlFilePath();
+
+        try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
 
             for (DatenFilm film : arrayFilms) {
-                // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
                 listeUrls.add(film.getUrlHistory());
-                listeUrlsSortDate.add(new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory()));
-                text = MVUsedUrl.getUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
-                bufferedWriter.write(text);
+
+                final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
+                listeUrlsSortDate.add(usedUrl);
+
+                bufferedWriter.write(usedUrl.getUsedUrl());
             }
         } catch (Exception ex) {
-            Log.errorLog(420312459, ex);
+            logger.error("zeileSchreiben(ArrayList)", ex);
         }
 
         sendChangeMessage();
@@ -263,21 +265,18 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
         t.start();
     }
 
-    private Path getUrlFilePath() {
-        Path urlPath = null;
+    private void checkUrlFilePath() {
         try {
-            urlPath = Paths.get(settingsDir).resolve(fileName);
             if (Files.notExists(urlPath))
                 Files.createFile(urlPath);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("checkUrlFilePath()", ex);
         }
-        return urlPath;
     }
 
     private void listeBauen() {
         //LinkedList mit den URLs aus dem Logfile bauen
-        Path urlPath = getUrlFilePath();
+        checkUrlFilePath();
 
         try (InputStream is = Files.newInputStream(urlPath);
              InputStreamReader isr = new InputStreamReader(is);
@@ -289,37 +288,38 @@ public class MVUsedUrls<T extends HistoryChangedEvent> {
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
-            Log.errorLog(926362547, ex);
+            logger.error("listeBauen()", ex);
         }
     }
 
     class LineWriterThread extends Thread {
 
-        private final LinkedList<MVUsedUrl> mvuuList;
+        private final List<MVUsedUrl> mvuuList;
 
-        public LineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
+        public LineWriterThread(List<MVUsedUrl> mvuuList) {
             this.mvuuList = mvuuList;
             setName(LineWriterThread.class.getName());
         }
 
         @Override
-        public synchronized void run() {
+        public void run() {
             zeilenSchreiben();
         }
 
-        private synchronized void zeilenSchreiben() {
-            String text;
-            try (OutputStream os = Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND);
+        private void zeilenSchreiben() {
+            checkUrlFilePath();
+
+            try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
                  BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
                 for (MVUsedUrl mvuu : mvuuList) {
                     listeUrls.add(mvuu.getUrl());
                     listeUrlsSortDate.add(mvuu);
-                    text = mvuu.getUsedUrl();
-                    bufferedWriter.write(text);
+
+                    bufferedWriter.write(mvuu.getUsedUrl());
                 }
             } catch (Exception ex) {
-                Log.errorLog(945258023, ex);
+                logger.error("zeilenSchreiben()", ex);
             }
             sendChangeMessage();
         }

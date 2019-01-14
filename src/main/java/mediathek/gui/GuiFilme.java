@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -62,8 +63,8 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
@@ -78,7 +79,7 @@ public class GuiFilme extends JPanel {
     public static final String NAME = "Filme";
     private final Daten daten;
     private boolean stopBeob = false;
-    private final JFrame parentComponent;
+    private final MediathekGui mediathekGui;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -110,10 +111,12 @@ public class GuiFilme extends JPanel {
     private FilmTabInfoPane filmInfoLabel;
 
     private void installTabInfoStatusBarControl() {
+        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
+
         Platform.runLater(() -> {
             filmInfoLabel = new FilmTabInfoPane(daten,this);
             if (isVisible())
-                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                leftItems.add(filmInfoLabel);
         });
 
         addComponentListener(new ComponentAdapter() {
@@ -121,7 +124,7 @@ public class GuiFilme extends JPanel {
             public void componentShown(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(true);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                    leftItems.add(filmInfoLabel);
                 });
             }
 
@@ -129,7 +132,7 @@ public class GuiFilme extends JPanel {
             public void componentHidden(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(false);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                    leftItems.remove(filmInfoLabel);
                 });
             }
         });
@@ -139,8 +142,14 @@ public class GuiFilme extends JPanel {
         super();
         daten = aDaten;
         
-        parentComponent = mediathekGui;
+        this.mediathekGui = mediathekGui;
         initComponents();
+
+        fxFilmActionPanel = new JFXPanel();
+        add(fxFilmActionPanel, BorderLayout.NORTH);
+
+        fxDescriptionPanel = new JFXPanel();
+        jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
 
         tabelle = new MVFilmTable();
         jScrollPane1.setViewportView(tabelle);
@@ -184,7 +193,7 @@ public class GuiFilme extends JPanel {
             miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_DOWN_MASK));
         else
             miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
-        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(MediathekGui.ui(), daten));
+        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(mediathekGui, daten));
 
         if (SystemUtils.IS_OS_MAC_OSX)
             cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_DOWN_MASK));
@@ -218,12 +227,9 @@ public class GuiFilme extends JPanel {
     }
 
     private void setupFilmActionPanel() {
-        add(fxPanel, BorderLayout.NORTH);
         fap = new FilmActionPanel(daten);
-        Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
+        Platform.runLater(() -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
     }
-
-    //private static final Logger logger = LogManager.getLogger(GuiFilme.class);
 
     /**
      * The JavaFx Film action popup panel.
@@ -231,9 +237,11 @@ public class GuiFilme extends JPanel {
     public FilmActionPanel fap;
 
     /**
-     * The swing helper panel for using JavaFX inside Swing.
+     * The swing helper panel FilmAction bar.
      */
-    private final JFXPanel fxPanel = new JFXPanel();
+    private final JFXPanel fxFilmActionPanel;
+
+    private final JFXPanel fxDescriptionPanel;
 
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
@@ -250,13 +258,11 @@ public class GuiFilme extends JPanel {
                     e.consume();
                 });
 
-                JFXPanel panel = new JFXPanel();
-                panel.setScene(new Scene(descriptionPane));
+                fxDescriptionPanel.setScene(new Scene(descriptionPane));
                 tabelle.getSelectionModel().addListSelectionListener(e -> {
                     Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
                 });
-                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -272,7 +278,7 @@ public class GuiFilme extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
+        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
 
         updateFilmData();
         setInfoStatusbar();
@@ -296,21 +302,6 @@ public class GuiFilme extends JPanel {
         }
     }
 
-    private class SortBySenderAction extends AbstractAction {
-        private final ArrayList<SortKey> listSortKeys = new ArrayList<>();
-
-        public SortBySenderAction() {
-            SortKey sk = new SortKey(DatenFilm.FILM_SENDER, SortOrder.ASCENDING);
-            listSortKeys.add(sk);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            tabelle.getRowSorter().setSortKeys(listSortKeys);
-            tabelle.requestFocusSelect(jScrollPane1, 0);
-        }
-    }
-
     public class PlayFilmAction extends AbstractAction {
 
         @Override
@@ -319,7 +310,7 @@ public class GuiFilme extends JPanel {
             if (pset != null) {
                 playerStarten(pset);
             } else {
-                MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
+                MVMessageDialog.showMessageDialog(mediathekGui, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
                         "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -337,47 +328,37 @@ public class GuiFilme extends JPanel {
         }
     }
 
+    private static final String ACTION_MAP_KEY_PLAY_FILM = "film_abspielen";
+    private static final String ACTION_MAP_KEY_SAVE_FILM = "download_film";
+    private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url";
+    private static final String ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd";
+    private static final String ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein";
+    private static final String ACTION_MAP_KEY_MEDIA_DB = "mediadb";
+    private static final String ACTION_MAP_KEY_MARK_SEEN = "seen";
+    private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
+
     private void setupKeyMapping() {
-        final JRootPane rootPane = MediathekGui.ui().getRootPane();
-        final InputMap focusedWindowMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        final ActionMap actionMap = getActionMap();
+        final InputMap focusedWindowMap = tabelle.getInputMap();
 
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
-        rootPane.getActionMap().put("sender", new SortBySenderAction());
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_MEDIA_DB);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN);
 
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "abspielen");
-        actionMap.put("abspielen", playAction);
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
-        actionMap.put("download", saveFilmAction);
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
-        actionMap.put("tabelle", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelect(jScrollPane1);
-            }
-        });
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
-        actionMap.put("url-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
-
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
-        } else {
-            focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
-        }
-        actionMap.put("url-hd-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_HD));
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-k-copy");
-        actionMap.put("url-k-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_KLEIN));
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
-        actionMap.put("mediensammlung", mediensammlungAction);
-
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
-        actionMap.put("gesehen", markFilmAsSeenAction);
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
-        actionMap.put("ungesehen", markFilmAsUnseenAction);
+        final ActionMap actionMap = tabelle.getActionMap();
+        actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
+        actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_HD));
+        actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_KLEIN));
+        actionMap.put(ACTION_MAP_KEY_MEDIA_DB, mediensammlungAction);
+        actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
+        actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
     }
 
     private class CopyUrlToClipboardAction extends AbstractAction {
@@ -413,7 +394,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryController().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
         }
     }
 
@@ -425,13 +406,8 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryController().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
         }
-    }
-
-    private void setupTableKeyMapping() {
-        tabelle.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "film_starten");
-        tabelle.getActionMap().put("film_starten", playAction);
     }
 
     private void setupCellRenderer() {
@@ -457,7 +433,6 @@ public class GuiFilme extends JPanel {
         });
 
         setupKeyMapping();
-        setupTableKeyMapping();
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
@@ -557,7 +532,7 @@ public class GuiFilme extends JPanel {
 
     private synchronized void saveFilm(DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            new DialogAboNoSet(parentComponent, daten).setVisible(true);
+            new DialogAboNoSet(mediathekGui, daten).setVisible(true);
             // Satz mit x, war wohl nix
             return;
         }
@@ -572,7 +547,7 @@ public class GuiFilme extends JPanel {
             if (pSet == null) {
                 pSet = Daten.listePset.getListeSpeichern().getFirst();
             }
-            DialogAddMoreDownload damd = new DialogAddMoreDownload(MediathekGui.ui(), pSet);
+            DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
             damd.setVisible(true);
             standard = damd.addAll;
             pfad = damd.getPath();
@@ -587,7 +562,7 @@ public class GuiFilme extends JPanel {
             // erst mal schauen obs den schon gibt
             DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrl());
             if (datenDownload != null) {
-                int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
+                int ret = JOptionPane.showConfirmDialog(mediathekGui, "Download für den Film existiert bereits.\n"
                         + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
                 if (ret != JOptionPane.OK_OPTION) {
                     continue;
@@ -614,7 +589,7 @@ public class GuiFilme extends JPanel {
                 if (fap.showOnlyHd.getValue()) {
                     aufloesung = DatenFilm.AUFLOESUNG_HD;
                 }
-                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, datenFilm, pSet, aufloesung);
+                DialogAddDownload dialog = new DialogAddDownload(mediathekGui, daten, datenFilm, pSet, aufloesung);
                 dialog.setVisible(true);
             }
         }
@@ -623,7 +598,7 @@ public class GuiFilme extends JPanel {
     private void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         } else if (pSet.istSpeichern()) {
             // wenn das pSet zum Speichern (über die Button) gewählt wurde,
             // weiter mit dem Dialog "Speichern"
@@ -667,14 +642,14 @@ public class GuiFilme extends JPanel {
 
     private ArrayList<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenFilm datenFilm = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenFilm.FILM_REF);
                 arrayFilme.add(datenFilm);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayFilme;
     }
@@ -684,7 +659,7 @@ public class GuiFilme extends JPanel {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(MediathekGui.ui().getFilmInfoDialog()::updateCurrentFilm);
+        filmSelection.ifPresent(mediathekGui.getFilmInfoDialog()::updateCurrentFilm);
     }
 
     private void setInfoStatusbar() {
@@ -779,8 +754,8 @@ public class GuiFilme extends JPanel {
                     }
                 } else if (arg0.getClickCount() > 1) {
                     //filmAbspielen_();
-                    if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
-                        MediathekGui.ui().getFilmInfoDialog().showInfo();
+                    if (!mediathekGui.getFilmInfoDialog().isVisible()) {
+                        mediathekGui.getFilmInfoDialog().showInfo();
                     }
                 }
             }
@@ -829,7 +804,7 @@ public class GuiFilme extends JPanel {
 
         private JMenuItem createPlayItem() {
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(Icons.ICON_MENUE_FILM_START);
+            item.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
             item.addActionListener(playAction);
             return item;
         }
@@ -838,7 +813,7 @@ public class GuiFilme extends JPanel {
 
         private JMenuItem createSaveFilmItem() {
             JMenuItem item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(Icons.ICON_MENUE_FILM_REC);
+            item.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
             item.addActionListener(saveFilmAction);
             return item;
         }
@@ -968,49 +943,33 @@ public class GuiFilme extends JPanel {
                     uLow = ""; // dann gibts keine
                 }
                 if (!uNormal.isEmpty()) {
-                    //##Trenner##
                     jPopupMenu.addSeparator();
-                    //##Trenner##
+
+                    final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
                     if (!uHd.isEmpty() || !uLow.isEmpty()) {
                         JMenu submenueURL = new JMenu("Film-URL kopieren");
                         // HD
                         if (!uHd.isEmpty()) {
                             item = new JMenuItem("in HD-Auflösung");
-                            KeyStroke ctrlH;
-                            if (SystemUtils.IS_OS_MAC_OSX) {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.SHIFT_DOWN_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            } else {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            }
-                            item.setAccelerator(ctrlH);
-
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                             submenueURL.add(item);
                         }
 
                         // normale Auflösung, gibts immer
                         item = new JMenuItem("in hoher Auflösung");
-
-                        KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                        item.setAccelerator(ctrlU);
-
-                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+                        item.addActionListener(copyNormalUrlListener);
                         submenueURL.add(item);
 
                         // kleine Auflösung
                         if (!uLow.isEmpty()) {
                             item = new JMenuItem("in geringer Auflösung");
-
-                            KeyStroke ctrlK = KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                            item.setAccelerator(ctrlK);
-
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                             submenueURL.add(item);
                         }
                         jPopupMenu.add(submenueURL);
                     } else {
                         item = new JMenuItem("Film-URL kopieren");
-                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+                        item.addActionListener(copyNormalUrlListener);
                         jPopupMenu.add(item);
                     }
                 }
@@ -1021,9 +980,7 @@ public class GuiFilme extends JPanel {
                 }
             });
 
-            //##Trenner##
             jPopupMenu.addSeparator();
-            //##Trenner##
 
             // Film in der MediaDB suchen
             res.ifPresent(film -> {
@@ -1042,7 +999,7 @@ public class GuiFilme extends JPanel {
             //History
             res.ifPresent(film -> {
                 JMenuItem miHistory;
-                if (daten.history.urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
                     miHistory = new JMenuItem("Film als ungesehen markieren");
                     miHistory.addActionListener(new BeobHistory(false));
                 } else {
@@ -1065,10 +1022,10 @@ public class GuiFilme extends JPanel {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
+                    daten.getSeenHistoryController().zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
                     daten.getListeFilmeHistory().add(film);
                 } else {
-                    daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
+                    daten.getSeenHistoryController().urlAusLogfileLoeschen(film.getUrlHistory());
                     daten.getListeFilmeHistory().remove(film);
                 }
             }
@@ -1100,7 +1057,7 @@ public class GuiFilme extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1110,7 +1067,7 @@ public class GuiFilme extends JPanel {
                             DatenAbo datenAbo;
                             if ((datenAbo = daten.getListeAbo().getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
+                                DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     daten.getListeAbo().aenderungMelden();
@@ -1134,7 +1091,7 @@ public class GuiFilme extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1273,15 +1230,16 @@ public class GuiFilme extends JPanel {
 
     private void setupActionListeners() {
         Platform.runLater(() -> {
-            fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showNewOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowTrailers.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowSignLanguage.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowAudioVersions.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showLivestreamsOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            final ChangeListener<Boolean> reloadTableListener = (observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable);
+            fap.showOnlyHd.addListener(reloadTableListener);
+            fap.showSubtitlesOnly.addListener(reloadTableListener);
+            fap.showNewOnly.addListener(reloadTableListener);
+            fap.showUnseenOnly.addListener(reloadTableListener);
+            fap.dontShowAbos.addListener(reloadTableListener);
+            fap.dontShowTrailers.addListener(reloadTableListener);
+            fap.dontShowSignLanguage.addListener(reloadTableListener);
+            fap.dontShowAudioVersions.addListener(reloadTableListener);
+            fap.showLivestreamsOnly.addListener(reloadTableListener);
             fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
@@ -1365,79 +1323,97 @@ public class GuiFilme extends JPanel {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jScrollPane1 = new JScrollPane();
+        var jTable1 = new JTable();
+        var jPanel2 = new JPanel();
+        jPanelBeschreibung = new JPanel();
+        jPanelExtra = new JPanel();
+        jCheckBoxProgamme = new JCheckBox();
+        jPanelExtraInnen = new JPanel();
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        javax.swing.JTable jTable1 = new javax.swing.JTable();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jPanelBeschreibung = new javax.swing.JPanel();
-        jPanelExtra = new javax.swing.JPanel();
-        jCheckBoxProgamme = new javax.swing.JCheckBox();
-        jPanelExtraInnen = new javax.swing.JPanel();
+        //======== this ========
+        setLayout(new BorderLayout());
 
-        setLayout(new java.awt.BorderLayout());
+        //======== jScrollPane1 ========
+        {
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new TModel());
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane1.setViewportView(jTable1);
+            //---- jTable1 ----
+            jTable1.setModel(new TModel());
+            jTable1.setAutoCreateRowSorter(true);
+            jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            jScrollPane1.setViewportView(jTable1);
+        }
+        add(jScrollPane1, BorderLayout.CENTER);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        //======== jPanel2 ========
+        {
+            jPanel2.setLayout(new BorderLayout());
 
-        jPanel2.setLayout(new java.awt.BorderLayout());
+            //======== jPanelBeschreibung ========
+            {
+                jPanelBeschreibung.setLayout(new BorderLayout());
+            }
+            jPanel2.add(jPanelBeschreibung, BorderLayout.CENTER);
 
-        jPanelBeschreibung.setLayout(new java.awt.BorderLayout());
-        jPanel2.add(jPanelBeschreibung, java.awt.BorderLayout.CENTER);
+            //======== jPanelExtra ========
+            {
+                jPanelExtra.setBorder(new LineBorder(new Color(153, 153, 153)));
 
-        jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+                //---- jCheckBoxProgamme ----
+                jCheckBoxProgamme.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
+                jCheckBoxProgamme.setToolTipText("Buttons ausblenden"); //NON-NLS
 
-        jCheckBoxProgamme.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jCheckBoxProgamme.setToolTipText("Buttons ausblenden");
+                //======== jPanelExtraInnen ========
+                {
 
-        javax.swing.GroupLayout jPanelExtraInnenLayout = new javax.swing.GroupLayout(jPanelExtraInnen);
-        jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
-        jPanelExtraInnenLayout.setHorizontalGroup(
-            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 597, Short.MAX_VALUE)
-        );
-        jPanelExtraInnenLayout.setVerticalGroup(
-            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+                    GroupLayout jPanelExtraInnenLayout = new GroupLayout(jPanelExtraInnen);
+                    jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
+                    jPanelExtraInnenLayout.setHorizontalGroup(
+                        jPanelExtraInnenLayout.createParallelGroup()
+                            .addGap(0, 597, Short.MAX_VALUE)
+                    );
+                    jPanelExtraInnenLayout.setVerticalGroup(
+                        jPanelExtraInnenLayout.createParallelGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                    );
+                }
 
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addComponent(jCheckBoxProgamme)
-                .addGap(5, 5, 5)
-                .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
-        );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addComponent(jCheckBoxProgamme)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(5, 5, 5))
-        );
-
-        jPanel2.add(jPanelExtra, java.awt.BorderLayout.SOUTH);
-
-        add(jPanel2, java.awt.BorderLayout.SOUTH);
+                GroupLayout jPanelExtraLayout = new GroupLayout(jPanelExtra);
+                jPanelExtra.setLayout(jPanelExtraLayout);
+                jPanelExtraLayout.setHorizontalGroup(
+                    jPanelExtraLayout.createParallelGroup()
+                        .addGroup(jPanelExtraLayout.createSequentialGroup()
+                            .addComponent(jCheckBoxProgamme)
+                            .addGap(5, 5, 5)
+                            .addComponent(jPanelExtraInnen, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(5, 5, 5))
+                );
+                jPanelExtraLayout.setVerticalGroup(
+                    jPanelExtraLayout.createParallelGroup()
+                        .addGroup(jPanelExtraLayout.createSequentialGroup()
+                            .addGroup(jPanelExtraLayout.createParallelGroup()
+                                .addGroup(jPanelExtraLayout.createSequentialGroup()
+                                    .addComponent(jCheckBoxProgamme)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(jPanelExtraLayout.createSequentialGroup()
+                                    .addGap(5, 5, 5)
+                                    .addComponent(jPanelExtraInnen, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGap(5, 5, 5))
+                );
+            }
+            jPanel2.add(jPanelExtra, BorderLayout.SOUTH);
+        }
+        add(jPanel2, BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxProgamme;
-    private javax.swing.JPanel jPanelBeschreibung;
-    private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JPanel jPanelExtraInnen;
-    private javax.swing.JScrollPane jScrollPane1;
+    // Generated using JFormDesigner non-commercial license
+    private JScrollPane jScrollPane1;
+    private JPanel jPanelBeschreibung;
+    private JPanel jPanelExtra;
+    private JCheckBox jCheckBoxProgamme;
+    private JPanel jPanelExtraInnen;
     // End of variables declaration//GEN-END:variables
 }

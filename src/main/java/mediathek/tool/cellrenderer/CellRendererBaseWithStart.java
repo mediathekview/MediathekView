@@ -2,7 +2,6 @@ package mediathek.tool.cellrenderer;
 
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.GeoStateChangedEvent;
@@ -17,8 +16,6 @@ import java.awt.*;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
-    protected static final ImageIcon film_start_tab = Icons.ICON_TABELLE_FILM_START;
-    protected static final ImageIcon film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
     private static final long serialVersionUID = 1659689253119935809L;
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected boolean geoMelden;

@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
+import mSearch.daten.ListeFilme;
 import mSearch.tool.Functions.OperatingSystemType;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
@@ -39,6 +41,14 @@ public class GuiFunktionen extends MVFunctionSys {
 
     private final static int WIN_MAX_PATH_LENGTH = 250;
     private final static int X_MAX_NAME_LENGTH = 255;
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUS = 0;
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUTO = 2;
 
     public static void updateGui(MediathekGui mediathekGui) {
         try {
@@ -125,7 +135,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static boolean setSize(Configs nr, JDialog jDialog, JFrame relativFrame) {
+    public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
         breite = 0;
@@ -242,16 +252,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    public static String getHash(String pfad) {
-        //Hash eines Dateinamens zB. 1433245578
-        final int h = Math.abs(pfad.hashCode());
-        String hh = Integer.toString(h);
-        while (hh.length() < 10) {
-            hh = '0' + hh;
-        }
-        return hh;
-    }
-
     public static String getSuffixFromUrl(String pfad) {
         // Suffix einer URL extrahieren
         // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
@@ -314,60 +314,28 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static String[] addLeerListe(String[] str) {
-        //ein Leerzeichen der Liste voranstellen
-        int len = str.length + 1;
-        String[] liste = new String[len];
-        liste[0] = "";
-        System.arraycopy(str, 0, liste, 1, len - 1);
-        return liste;
+    public static ComboBoxModel<String> getSenderListComboBoxModel(ListeFilme listeFilme) {
+        DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList(listeFilme.getBaseSenderList()));
+        senderModel.setSelectedItem("");
+
+        return senderModel;
     }
 
     /**
      * Maps the "command" key to the correspondig icon based on operating system.
+     *
      * @return an InputEvent modifier based on operating system.
      */
     public static int getPlatformControlKey() {
         int result;
 
-        switch(getOs()) {
-            case MAC:
-                result = InputEvent.META_DOWN_MASK;
-                break;
-
-                default:
-                    result = InputEvent.CTRL_DOWN_MASK;
-                    break;
+        if (getOs() == OperatingSystemType.MAC) {
+            result = InputEvent.META_DOWN_MASK;
+        } else {
+            result = InputEvent.CTRL_DOWN_MASK;
         }
 
         return result;
-    }
-    /**
-     * legacy constant, used internally only
-     */
-    private static final int UPDATE_FILME_AUS = 0;
-    /**
-     * legacy constant, used internally only
-     */
-    private static final int UPDATE_FILME_AUTO = 2;
-
-    public static void setImportArtFilme(FilmListUpdateType type) {
-        final int value;
-        switch (type) {
-            case AUTOMATIC:
-                value = UPDATE_FILME_AUTO;
-                break;
-
-            case MANUAL:
-                value = UPDATE_FILME_AUS;
-                break;
-
-            default:
-                value = UPDATE_FILME_AUTO;
-                break;
-        }
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));
     }
 
     public static FilmListUpdateType getImportArtFilme() {
@@ -396,6 +364,25 @@ public class GuiFunktionen extends MVFunctionSys {
         }
 
         return result;
+    }
+
+    public static void setImportArtFilme(FilmListUpdateType type) {
+        final int value;
+        switch (type) {
+            case AUTOMATIC:
+                value = UPDATE_FILME_AUTO;
+                break;
+
+            case MANUAL:
+                value = UPDATE_FILME_AUS;
+                break;
+
+            default:
+                value = UPDATE_FILME_AUTO;
+                break;
+        }
+
+        MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));
     }
 
     public static void enableComponents(Container container, boolean enable) {

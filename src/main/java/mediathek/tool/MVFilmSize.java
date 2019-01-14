@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
     private long aktSizeL = -1L;
-    public Long sizeL = 0L;
+    private Long sizeL = 0L;
     private String sizeStr = "";
 
     public MVFilmSize() {
@@ -112,24 +112,4 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         }
         return ret;
     }
-
-    /**
-     * Convert a byte count into a human readable string.
-     *
-     * @param bytes The number of bytes to convert.
-     * @param si Use International System of Units (SI)?
-     * @return The string representation
-     */
-    public static String humanReadableByteCount(final long bytes, final boolean si) {
-        final int unit = si ? 1000 : 1024;
-        if (bytes < unit) {
-            return bytes + " B";
-        }
-
-        final int exp = (int) (Math.log(bytes) / Math.log(unit));
-
-        final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
-
 }

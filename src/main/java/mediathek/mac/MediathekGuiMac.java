@@ -14,18 +14,13 @@ import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-    private static final String ACTION_KEY_MAC_F = "mac-f";
-
     public MediathekGuiMac() {
         super();
 
@@ -100,19 +95,6 @@ public class MediathekGuiMac extends MediathekGui {
         else {
             Taskbar.getTaskbar().setIconBadge("");
         }
-    }
-
-    @Override
-    protected void setupSearchKeyForMac() {
-        // für den Mac
-        final JRootPane rootPane = getRootPane();
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
-        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setFocusOnSearchField();
-            }
-        });
     }
 
     /**

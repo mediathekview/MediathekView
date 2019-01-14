@@ -24,7 +24,8 @@ import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.history.MVUsedUrls;
+import mediathek.controller.history.AboHistoryController;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
@@ -32,8 +33,6 @@ import mediathek.gui.SplashScreenManager;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.gui.messages.history.AboHistoryChangedEvent;
-import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
@@ -63,7 +62,6 @@ import java.util.Date;
 
 public class Daten {
 
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     private static final Logger logger = LogManager.getLogger(Daten.class);
@@ -78,13 +76,20 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
+    private static SplashScreenManager splashScreenManager = new SplashScreenManager();
     /**
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
-    public MVUsedUrls<DownloadHistoryChangedEvent> history; // alle angesehenen Filme
-    public MVUsedUrls<AboHistoryChangedEvent> erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    /**
+     * alle angesehenen Filme.
+     */
+    private SeenHistoryController history;
+    /**
+     * erfolgreich geladene Abos.
+     */
+    private AboHistoryController erledigteAbos;
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
     private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
@@ -224,6 +229,17 @@ public class Daten {
         return cal.getTimeInMillis();
     }
 
+    public static SplashScreenManager getSplashScreenManager() {
+        return splashScreenManager;
+    }
+
+    /**
+     * Do not keep splash screen object in memory
+     */
+    public static void closeSplashScreen() {
+        splashScreenManager = null;
+    }
+
     public MVSenderIconCache getSenderIconCache() {
         return senderIconCache;
     }
@@ -252,6 +268,22 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
+    public SeenHistoryController getSeenHistoryController() {
+        return history;
+    }
+
+    public void setSeenHistoryController(SeenHistoryController controller) {
+        history = controller;
+    }
+
+    public void setAboHistoryList(AboHistoryController controller) {
+        erledigteAbos = controller;
+    }
+
+    public AboHistoryController getAboHistoryController() {
+        return erledigteAbos;
+    }
+
     private void start() {
         setupMessageBus();
 
@@ -271,14 +303,10 @@ public class Daten {
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        erledigteAbos = new MVUsedUrls<>("downloadAbos.txt", getSettingsDirectory_String(), AboHistoryChangedEvent.class);
-
-        history = new MVUsedUrls<>("history.txt", getSettingsDirectory_String(), DownloadHistoryChangedEvent.class);
-
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
 
-        downloadInfos = new DownloadInfos(this);
+        downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
 
         Timer timer = new Timer(1000, e ->
@@ -290,12 +318,8 @@ public class Daten {
         timer.start();
     }
 
-    public static final SplashScreenManager splashScreenManager = new SplashScreenManager();
-
     public boolean allesLaden() {
-        if (MediathekGui.ui() != null) {
-            MediathekGui.ui().getSplashScreenManager().updateSplashScreenText(UIProgressState.LOAD_CONFIG);
-        }
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_CONFIG);
 
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");

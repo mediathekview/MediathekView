@@ -53,13 +53,13 @@ public class ShutdownDialog {
         Platform.runLater(() -> {
             final double percent = task / maxTasks;
             progress.setProgress(percent);
-            String message = "(" + Integer.toString(task) + "/" + Integer.toString((int) maxTasks) + ") "
+            String message = "(" + task + "/" + (int) maxTasks + ") "
                     + text;
             lblStatusText.setText(message);
         });
         //give the user some time to read the messages
         try {
-            Thread.sleep(250);
+            Thread.sleep(125);
         } catch (InterruptedException ignored) {
         }
     }

@@ -22,7 +22,6 @@ package mediathek.gui.dialogEinstellungen;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
-import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -207,7 +206,9 @@ public class PanelBlacklist extends PanelVorlage {
                 notifyBlack();
             }
         });
-        initCombo();
+
+        jComboBoxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
+
         comboThemaLaden();
         jTextFieldThemaTitel.addMouseListener(new TextCopyPaste());
         jTextFieldTitel.addMouseListener(new TextCopyPaste());
@@ -238,12 +239,6 @@ public class PanelBlacklist extends PanelVorlage {
         jComboBoxThema.setModel(model);
 
         lst.clear();
-    }
-
-    private void initCombo() {
-        // der erste Sender ist ""
-        final String[] sender = GuiFunktionen.addLeerListe(Const.SENDER);
-        jComboBoxSender.setModel(new DefaultComboBoxModel<>(sender));
     }
 
     private void tabelleLaden() {

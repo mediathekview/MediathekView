@@ -19,15 +19,22 @@
  */
 package mediathek.update;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import mediathek.config.Konstanten;
-import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.EscapeKeyHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
@@ -45,13 +52,20 @@ public class DialogHinweisUpdate extends JDialog {
         jButtonOk.addActionListener(e -> dispose());
         jTextArea1.setText(ttext);
 
-        btnWebsite.addActionListener(e -> {
-            try {
-                UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLOAD);
-            } catch (URISyntaxException ex) {
-                logger.error(ex);
-            }
+        Platform.runLater(() -> {
+            Hyperlink link = new Hyperlink("Link zur Website");
+            link.setBackground(new Background(new BackgroundFill(Color.rgb(236,236,236), CornerRadii.EMPTY, Insets.EMPTY)));
+            link.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                try {
+                    UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLOAD);
+                } catch (URISyntaxException ex) {
+                    logger.error(ex);
+                }
+            }));
+            hyperLinkPanel.setScene(new Scene(link));
         });
+
+        setSize(450,getHeight());
     }
 
     /** This method is called from within the constructor to
@@ -62,15 +76,15 @@ public class DialogHinweisUpdate extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
-        JScrollPane jScrollPane1 = new JScrollPane();
+        var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         jButtonOk = new JButton();
-        btnWebsite = new HyperlinkButton();
+        hyperLinkPanel = new JFXPanel();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Programminformationen");
-        Container contentPane = getContentPane();
+        setTitle("Programminformationen"); //NON-NLS
+        var contentPane = getContentPane();
 
         //======== jScrollPane1 ========
         {
@@ -80,41 +94,40 @@ public class DialogHinweisUpdate extends JDialog {
             jTextArea1.setColumns(20);
             jTextArea1.setLineWrap(true);
             jTextArea1.setRows(5);
-            jTextArea1.setText("\n\n");
+            jTextArea1.setText("\n\n"); //NON-NLS
             jTextArea1.setWrapStyleWord(true);
             jScrollPane1.setViewportView(jTextArea1);
         }
 
         //---- jButtonOk ----
-        jButtonOk.setText("Schlie\u00dfen");
-
-        //---- btnWebsite ----
-        btnWebsite.setText("Link zur Webseite");
+        jButtonOk.setText("Schlie\u00dfen"); //NON-NLS
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addComponent(hyperLinkPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addComponent(jScrollPane1)
-                                        .addComponent(btnWebsite, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 379, Short.MAX_VALUE)
-                                                .addComponent(jButtonOk)))
-                                .addGap(5, 5, 5))
+                            .addContainerGap()
+                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addComponent(jButtonOk))
+                                .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING))))
+                    .addGap(5, 5, 5))
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonOk)
-                                .addContainerGap())
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(hyperLinkPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(2, 2, 2)
+                    .addComponent(jButtonOk)
+                    .addContainerGap())
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -123,6 +136,6 @@ public class DialogHinweisUpdate extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private JTextArea jTextArea1;
     private JButton jButtonOk;
-    private HyperlinkButton btnWebsite;
+    private JFXPanel hyperLinkPanel;
     // End of variables declaration//GEN-END:variables
 }

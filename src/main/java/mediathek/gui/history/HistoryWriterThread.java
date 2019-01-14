@@ -2,6 +2,7 @@ package mediathek.gui.history;
 
 import mSearch.tool.Functions;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrlModelHelper;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
@@ -13,7 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static mediathek.controller.history.MVUsedUrl.*;
+import static mediathek.controller.history.MVUsedUrl.MAX_THEMA_LENGTH;
+import static mediathek.controller.history.MVUsedUrl.MAX_TITLE_LENGTH;
 
 class HistoryWriterThread extends Thread {
     private final String ziel;
@@ -49,10 +51,10 @@ class HistoryWriterThread extends Thread {
     }
 
     private String getHeaderString() {
-        return Functions.textLaenge(MAX_TITLE_LENGTH, TITLE_HEADER[USED_URL_TITEL], false, false)
-                + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, TITLE_HEADER[USED_URL_THEMA], false, false)
-                + "    " + Functions.textLaenge(10, TITLE_HEADER[USED_URL_DATUM], false, false)
-                + "    " + TITLE_HEADER[USED_URL_URL];
+        return Functions.textLaenge(MAX_TITLE_LENGTH, MVUsedUrlModelHelper.TITLE_HEADER[MVUsedUrlModelHelper.USED_URL_TITEL], false, false)
+                + "    " + Functions.textLaenge(MAX_THEMA_LENGTH, MVUsedUrlModelHelper.TITLE_HEADER[MVUsedUrlModelHelper.USED_URL_THEMA], false, false)
+                + "    " + Functions.textLaenge(10, MVUsedUrlModelHelper.TITLE_HEADER[MVUsedUrlModelHelper.USED_URL_DATUM], false, false)
+                + "    " + MVUsedUrlModelHelper.TITLE_HEADER[MVUsedUrlModelHelper.USED_URL_URL];
     }
 
     private String prepareUrlString(MVUsedUrl entry) {

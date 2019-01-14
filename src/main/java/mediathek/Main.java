@@ -22,6 +22,7 @@ package mediathek;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import com.sun.javafx.runtime.VersionInfo;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
@@ -35,6 +36,7 @@ import mSearch.tool.SingleInstance;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.UIProgressState;
 import mediathek.windows.MediathekGuiWindows;
@@ -127,13 +129,76 @@ public class Main {
     }
 
     /**
+     * Query the class name for Nimbus L&F.
+     * @return the class name for Nimbus, otherwise return the system default l&f class name.
+     */
+    private static String queryNimbusLaFName() {
+        String systemLaF = UIManager.getSystemLookAndFeelClassName();
+
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    systemLaF = info.getClassName();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            systemLaF = UIManager.getSystemLookAndFeelClassName();
+        }
+
+        return systemLaF;
+    }
+
+    /**
+     * Set the look and feel for various OS.
+     * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
+     * On windows, use the system windows l&f for swing.
+     * On Linux, use Nimbus l&f which is more modern than Metal.
+     *
+     * One can override the L&F stuff for non-macOS by supplying -Dswing.defaultlaf=class_name and the class name on the CLI.
+     */
+    private static void setSystemLookAndFeel() {
+        //don´t set L&F on macOS...
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return;
+
+        final String laf = System.getProperty("swing.defaultlaf");
+        if (laf == null || laf.isEmpty()) {
+            //only set L&F if there was no define on CLI
+            logger.trace("L&F property is empty, setting L&F");
+            //use system for windows and macOS
+            String systemLaF = UIManager.getSystemLookAndFeelClassName();
+            //on linux, use more modern Nimbus L&F...
+            if (SystemUtils.IS_OS_LINUX) {
+                systemLaF = queryNimbusLaFName();
+            }
+
+            //set the L&F...
+            try {
+                UIManager.setLookAndFeel(systemLaF);
+            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+                logger.error("L&F error: " , e);
+            }
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
+            System.exit(1);
+        }
+
+        setSystemLookAndFeel();
+
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
-        generateAntiThrottlingId();
+        //generateAntiThrottlingId();
+
+        logger.info("JavaFX version: " + VersionInfo.getRuntimeVersion());
 
         setupPortableMode(args);
 
@@ -143,8 +208,6 @@ public class Main {
             setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
-
-        Daten.splashScreenManager.initializeSplashScreen();
 
         IconFontSwing.register(FontAwesome.getIconFont());
 
@@ -232,12 +295,13 @@ public class Main {
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
+            final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
+            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
 
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
+            splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
             if (SystemUtils.IS_OS_MAC_OSX) {
                 checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
@@ -252,7 +316,7 @@ public class Main {
 
             startMeldungen();
 
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
+            splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
         });
     }

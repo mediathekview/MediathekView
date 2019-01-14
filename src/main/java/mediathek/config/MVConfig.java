@@ -36,7 +36,7 @@ public class MVConfig {
 
     public final static String TRENNER = "#=#";
     public static final String SYSTEM = "system";
-    public static final Logger logger = LogManager.getLogger(MVConfig.class);
+    private static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
     private static final int MAX_FILTER = 5; //old filter profile code setting
 
@@ -236,7 +236,6 @@ public class MVConfig {
         SYSTEM_TABS_TOP("Tabs-oben", SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemUtils.IS_OS_MAC_OSX ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
-        SYSTEM_LOOK("System-look", "0"),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
@@ -289,7 +288,6 @@ public class MVConfig {
         SYSTEM_TAB_FILME_ICON_KLEIN("system-tab-filme-icon-klein", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_ICON_KLEIN("system-tab-download-icon-klein", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_FILTER_VIS("system-tab-download-filter-vis", Boolean.TRUE.toString()),
-        SYSTEM_TAB_ABO_FILTER_VIS("system-tab-abo-filter-vis", Boolean.FALSE.toString()),
         SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein", Boolean.TRUE.toString()),
         SYSTEM_TAB_FILME_LINEBREAK("system-tab-filme-linebreak", Boolean.FALSE.toString()),
         SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
@@ -302,6 +300,7 @@ public class MVConfig {
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         SYSTEM_GROESSE_FILTER_DIALOG_NEW("filter-dialog-new"),
+        SYSTEM_GROESSE_MANAGE_ABO("manage-abo-dialog-size"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_URL_FILMLISTEN("system-url-filmlisten"),
