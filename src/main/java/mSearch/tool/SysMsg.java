@@ -72,7 +72,7 @@ public class SysMsg {
         if (text.size() > MAX_LAENGE_1) {
             text.remove(0, MAX_LAENGE_2);
         }
-        text.add(texte + System.getProperty("line.separator"));
+        text.add(texte + System.lineSeparator());
     }
 
     public synchronized static String getText() {
