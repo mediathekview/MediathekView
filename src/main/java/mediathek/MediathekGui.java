@@ -230,10 +230,6 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
-    public SplashScreenManager getSplashScreenManager() {
-        return splashScreenManager;
-    }
-
     private void setIconAndWindowImage() {
         setWindowTitle();
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());

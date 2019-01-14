@@ -190,7 +190,7 @@ public class Main {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
             System.exit(1);
         }
-        
+
         setSystemLookAndFeel();
 
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
