@@ -394,7 +394,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.getSeenHistoryController().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryController().setGesehen(true, getSelFilme());
         }
     }
 
@@ -406,7 +406,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.getSeenHistoryController().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+            daten.getSeenHistoryController().setGesehen(false, getSelFilme());
         }
     }
 
@@ -1023,10 +1023,8 @@ public class GuiFilme extends JPanel {
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
                     daten.getSeenHistoryController().zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
-                    daten.getListeFilmeHistory().add(film);
                 } else {
                     daten.getSeenHistoryController().urlAusLogfileLoeschen(film.getUrlHistory());
-                    daten.getListeFilmeHistory().remove(film);
                 }
             }
 

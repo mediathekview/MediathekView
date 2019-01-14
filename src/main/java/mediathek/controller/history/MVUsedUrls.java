@@ -20,7 +20,6 @@
 package mediathek.controller.history;
 
 import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.messages.history.HistoryChangedEvent;
@@ -66,24 +65,6 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     public List<MVUsedUrl> getListeUrlsSortDate() {
         return listeUrlsSortDate;
-    }
-
-    public synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms, ListeFilme listeFilmeHistory) {
-        if (arrayFilms.isEmpty()) {
-            return;
-        }
-        if (!gesehen) {
-            urlAusLogfileLoeschen(arrayFilms);
-            arrayFilms.forEach(listeFilmeHistory::remove);
-        } else {
-            ArrayList<DatenFilm> neueFilme = new ArrayList<>();
-            arrayFilms.stream().filter(film -> !urlPruefen(film.getUrlHistory()))
-                    .forEach(film -> {
-                        neueFilme.add(film);
-                        listeFilmeHistory.add(film);
-                    });
-            zeileSchreiben(neueFilme);
-        }
     }
 
     private void sendChangeMessage() {

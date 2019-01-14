@@ -301,7 +301,7 @@ public class StarterClass {
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-            daten.getListeFilmeHistory().add(ersterFilm);
+
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             daten.getListeDownloadsButton().addMitNummer(d);
         }

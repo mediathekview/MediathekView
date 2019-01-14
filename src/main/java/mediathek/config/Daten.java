@@ -93,7 +93,6 @@ public class Daten {
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
     private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
-    private ListeFilme listeFilmeHistory; // für die HEUTIGE HISTORY
     private ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private ListeBlacklist listeBlacklist;
@@ -289,7 +288,6 @@ public class Daten {
 
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
-        listeFilmeHistory = new ListeFilme();
 
         loadSenderIcons();
 
@@ -491,10 +489,6 @@ public class Daten {
 
     public ListeFilme getListeFilmeNachBlackList() {
         return listeFilmeNachBlackList;
-    }
-
-    public ListeFilme getListeFilmeHistory() {
-        return listeFilmeHistory;
     }
 
     public ListeDownloads getListeDownloads() {
