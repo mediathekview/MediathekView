@@ -438,11 +438,11 @@ public class GuiDownloads extends JPanel {
     }
 
     public void markFilmAsSeen() {
-        daten.getSeenHistoryController().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(true, getSelFilme());
     }
 
     public void markFilmAsUnseen() {
-        daten.getSeenHistoryController().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(false, getSelFilme());
     }
 
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
