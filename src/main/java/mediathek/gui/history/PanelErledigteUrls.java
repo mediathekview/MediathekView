@@ -109,7 +109,9 @@ public abstract class PanelErledigteUrls extends JPanel {
 
     }
 
-    protected abstract List<MVUsedUrl> getExportableList();
+    protected List<MVUsedUrl> getExportableList() {
+        return workList.getSortedList();
+    }
 
     private void export() {
         if (jTable1.getModel().getRowCount() <= 0)
