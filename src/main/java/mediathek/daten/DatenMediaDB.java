@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import mediathek.tool.MVMediaDBFileSize;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,6 +43,14 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
         mVMediaDBFileSize = new MVMediaDBFileSize(size);
         arr[MEDIA_DB_SIZE] = mVMediaDBFileSize.toString();
         arr[MEDIA_DB_EXTERN] = Boolean.toString(extern);
+    }
+
+    private static String putzen(String s) {
+        s = StringUtils.replace(s, "\n", "");
+        s = StringUtils.replace(s, "|", "");
+        s = StringUtils.replace(s, ListeMediaDB.TRENNER, "");
+
+        return s;
     }
 
     public Object[] getRow() {
@@ -72,30 +79,19 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
         return arr[MEDIA_DB_NAME] + arr[MEDIA_DB_PATH] + arr[MEDIA_DB_SIZE];
     }
 
-    private static String putzen(String s) {
-        s = StringUtils.replace(s, "\n", "");
-        s = StringUtils.replace(s, "|", "");
-        s = StringUtils.replace(s, ListeMediaDB.TRENNER, "");
-
-        return s;
-    }
-
     @Override
     public String toString() {
         String ret = "";
         for (int i = 0; i < MAX_ELEM; ++i) {
             if (i == 0) {
-                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             } else {
-                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             }
         }
         return ret;
     }
 
-    //===================================
-    // Private
-    //===================================
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {

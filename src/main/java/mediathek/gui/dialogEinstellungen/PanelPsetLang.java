@@ -130,7 +130,7 @@ public class PanelPsetLang extends PanelVorlage {
             jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.setAbspielen(daten);
+                pset.setAbspielen();
                 nurtabellePset();
                 notifyPset();
             }

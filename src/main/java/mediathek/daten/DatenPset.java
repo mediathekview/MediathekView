@@ -155,7 +155,7 @@ public class DatenPset extends MVData<DatenPset> {
         return this.arr[PROGRAMMSET_NAME].equals("");
     }
 
-    public void setAbspielen(Daten daten) {
+    public void setAbspielen() {
         for (DatenPset datenPset : Daten.listePset) {
             datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = Boolean.FALSE.toString();
         }
@@ -268,16 +268,16 @@ public class DatenPset extends MVData<DatenPset> {
     @Override
     public String toString() {
         String ret = "";
-        ret += "================================================" + Daten.LINE_SEPARATOR;
-        ret += "| Programmset" + Daten.LINE_SEPARATOR;
+        ret += "================================================" + System.lineSeparator();
+        ret += "| Programmset" + System.lineSeparator();
         for (int i = 0; i < MAX_ELEM; ++i) {
-            ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
         }
         for (Object aListeProg : listeProg) {
-            ret += "|" + Daten.LINE_SEPARATOR;
+            ret += "|" + System.lineSeparator();
             ret += aListeProg.toString();
         }
-        ret += "|_______________________________________________" + Daten.LINE_SEPARATOR;
+        ret += "|_______________________________________________" + System.lineSeparator();
         return ret;
     }
     //===================================
