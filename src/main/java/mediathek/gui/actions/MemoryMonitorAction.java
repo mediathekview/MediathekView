@@ -1,20 +1,35 @@
 package mediathek.gui.actions;
 
-import mediathek.MediathekGui;
+import javafx.application.Platform;
+import mediathek.javafx.MemoryMonitor;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class MemoryMonitorAction extends AbstractAction {
-    private final MediathekGui mediathekGui;
+    private MemoryMonitor memoryMonitor;
 
-    public MemoryMonitorAction(MediathekGui mediathekGui) {
-        this.mediathekGui = mediathekGui;
+    public MemoryMonitorAction() {
         putValue(Action.NAME,"Speicherverbrauch anzeigen");
+    }
+
+    public void closeMemoryMonitor() {
+        if (memoryMonitor != null)
+            Platform.runLater(() -> memoryMonitor.close());
+    }
+
+    public void showMemoryMonitor() {
+        Platform.runLater(() -> {
+            if (memoryMonitor == null) {
+                memoryMonitor = new MemoryMonitor();
+            }
+
+            memoryMonitor.show();
+        });
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        mediathekGui.showMemoryMonitor();
+        showMemoryMonitor();
     }
 }
