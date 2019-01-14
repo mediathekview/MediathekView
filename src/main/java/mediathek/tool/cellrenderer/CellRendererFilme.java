@@ -22,7 +22,6 @@ package mediathek.tool.cellrenderer;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.history.MVUsedUrls;
@@ -143,7 +142,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
-        final boolean live = datenFilm.getThema().equals(ListeFilme.THEMA_LIVE);
         boolean start = false;
 
         if (datenDownload != null) {
@@ -155,7 +153,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
 
         if (!start) {
-            if (live) {
+            if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
             } else if (history.urlPruefen(datenFilm.getUrlHistory())) {

@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
-    public static final String THEMA_LIVE = "Livestream";
     public static final String FILMLISTE = "Filmliste";
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
     private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));

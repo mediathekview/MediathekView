@@ -155,6 +155,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private boolean isTrailerTeaser = false;
     private String websiteLink = null;
     private String description = null;
+    private boolean livestream = false;
 
     public DatenFilm() {
         setupArr();
@@ -238,10 +239,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private void setupArr() {
         for (int i = 0; i < MAX_ELEM; i++)
             arr[i] = "";
-    }
-
-    public void setSender(String sender) {
-        arr[DatenFilm.FILM_SENDER] = sender;
     }
 
     @Override
@@ -329,6 +326,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         neuerFilm = newFilm;
     }
 
+    public boolean isLivestream() {
+        return livestream;
+    }
+
+    public void setLivestream(boolean val) {
+        livestream = val;
+    }
+
     public boolean hasSubtitle() {
         //Film hat Untertitel
         return !arr[DatenFilm.FILM_URL_SUBTITLE].isEmpty();
@@ -374,7 +379,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         // URL beim KiKa und ORF ändern sich laufend!
         return (getSender() + arr[FILM_THEMA]).toLowerCase() + getUrl();
     }
-
 
     public boolean isHD() {
         //Film gibts in HD
@@ -480,51 +484,71 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[DatenFilm.FILM_URL];
     }
 
-    /*
-     * Preliminary work to get an real Entity
-     *
-     * Getters/Setters
-     */
-
-  public String getSender() {
-      return arr[FILM_SENDER];
+    public String getSender() {
+        return arr[FILM_SENDER];
     }
 
-  public String getThema() { return arr[FILM_THEMA]; }
+    public void setSender(String sender) {
+        arr[DatenFilm.FILM_SENDER] = sender;
+    }
 
-  public String getTitle() {
-    return arr[FILM_TITEL];
-  }
-  public void setTitle(String title) {
-    arr[FILM_TITEL] = title;
-  }
+    public String getThema() {
+        return arr[FILM_THEMA];
+    }
 
-  public String getSendeDatum() { return arr[FILM_DATUM]; }
-  public String getSendeZeit() { return arr[FILM_ZEIT]; }
-// getSendeZeitpunkt mit LocalDateTime definieren
+    public void setThema(String thema) {
+        arr[FILM_THEMA] = thema;
+    }
 
-  public String getDauer() { return arr[FILM_DAUER]; }
-  public String getSize() {
-    return arr[FILM_GROESSE];
-  }
-  public void setSize(String size) {
-      arr[FILM_GROESSE] = size;
-  }
+    public String getTitle() {
+        return arr[FILM_TITEL];
+    }
 
-  public String getUrl() {
-    return arr[FILM_URL];
-  }
-  public void setUrl(String url) {
-      arr[FILM_URL] = url;
-  }
-  public String getUrlSubtitle() {
-    return arr[FILM_URL_SUBTITLE];
-  }
+    public void setTitle(String title) {
+        arr[FILM_TITEL] = title;
+    }
 
-  public String getGeo() { return arr[FILM_GEO];}
-  public void setGeo(String geo) { arr[FILM_GEO] = geo;}
+    public String getSendeDatum() {
+        return arr[FILM_DATUM];
+    }
 
-  public static class Database {
+    public String getSendeZeit() {
+        return arr[FILM_ZEIT];
+    }
+
+    public String getDauer() {
+        return arr[FILM_DAUER];
+    }
+
+    public String getSize() {
+        return arr[FILM_GROESSE];
+    }
+
+    public void setSize(String size) {
+        arr[FILM_GROESSE] = size;
+    }
+
+    public String getUrl() {
+        return arr[FILM_URL];
+    }
+
+    public void setUrl(String url) {
+        arr[FILM_URL] = url;
+    }
+
+    public String getUrlSubtitle() {
+        return arr[FILM_URL_SUBTITLE];
+    }
+
+    public String getGeo() {
+        return arr[FILM_GEO];
+    }
+
+    public void setGeo(String geo) {
+        arr[FILM_GEO] = geo;
+    }
+
+    public static class Database {
         private Database() {
         }
 

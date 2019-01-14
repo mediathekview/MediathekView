@@ -142,7 +142,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyLivestreams) {
-                if (!film.getThema().equals(ListeFilme.THEMA_LIVE)) {
+                if (!film.isLivestream()) {
                     continue;
                 }
             }
