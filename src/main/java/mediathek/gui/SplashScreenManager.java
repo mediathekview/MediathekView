@@ -14,20 +14,19 @@ public class SplashScreenManager {
      * the maximum number of steps used for progress bar calculation.
      */
     private final int MAXIMUM_STEPS;
-
-    public SplashScreenManager() {
-        final var set = EnumSet.allOf(UIProgressState.class);
-        MAXIMUM_STEPS = set.size() - 1;
-    }
     /**
      * The JVM {@link java.awt.SplashScreen} storage
      */
     private SplashScreen splash = null;
-
     /**
      * helper variable to calculate splash screen progress
      */
     private int splashScreenProgress = 0;
+
+    public SplashScreenManager() {
+        MAXIMUM_STEPS = EnumSet.allOf(UIProgressState.class).size() - 1;
+        initializeSplashScreen();
+    }
 
     public void updateSplashScreenText(UIProgressState state) {
         updateSplashScreenText(state.toString());
@@ -68,7 +67,7 @@ public class SplashScreenManager {
     /**
      * Initialize the Splash Screen variables.
      */
-    public void initializeSplashScreen() {
+    private void initializeSplashScreen() {
         try {
             splash = SplashScreen.getSplashScreen();
         } catch (Exception ex) {
