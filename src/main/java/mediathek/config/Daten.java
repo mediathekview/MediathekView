@@ -319,9 +319,7 @@ public class Daten {
     }
 
     public boolean allesLaden() {
-        if (MediathekGui.ui() != null) {
-            MediathekGui.ui().getSplashScreenManager().updateSplashScreenText(UIProgressState.LOAD_CONFIG);
-        }
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_CONFIG);
 
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");

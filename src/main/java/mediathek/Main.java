@@ -186,6 +186,11 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
+            System.exit(1);
+        }
+        
         setSystemLookAndFeel();
 
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
