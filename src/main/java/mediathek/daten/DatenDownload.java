@@ -34,9 +34,9 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -60,8 +60,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public static final String ART_PROGRAMM_TXT = "Programm";
 
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
-    private static final SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-    private static final SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+    private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
+    private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
 
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
@@ -292,7 +292,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        final String zeit = sdf_datum.format(new Date());
         LinkedList<MVUsedUrl> urlList = new LinkedList<>();
         for (DatenDownload d : downloads) {
             d.start = new Start();
@@ -379,7 +379,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {
 
                 if (start.restSekunden > 300) {
-                    return Long.toString(Math.round(start.restSekunden / 60.0)) + " Min.";
+                    return Math.round(start.restSekunden / 60.0) + " Min.";
                 } else if (start.restSekunden > 230) {
                     return "5 Min.";
                 } else if (start.restSekunden > 170) {
@@ -700,19 +700,19 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     private String getJetzt_HHMMSS() {
-        return new SimpleDateFormat("HHmmss").format(new Date());
+        return FastDateFormat.getInstance("HHmmss").format(new Date());
     }
 
     private String getJetzt_HH_MM_SS() {
-        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+        return FastDateFormat.getInstance("HH:mm:ss").format(new Date());
     }
 
     private String getHeute_yyyyMMdd() {
-        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return FastDateFormat.getInstance("yyyyMMdd").format(new Date());
     }
 
     private String getHeute_yyyy_MM_dd() {
-        return new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        return sdf_datum.format(new Date());
     }
 
     private static String getDMY(String s, String datum) {

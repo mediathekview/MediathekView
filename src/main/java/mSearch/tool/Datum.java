@@ -19,13 +19,13 @@
  */
 package mSearch.tool;
 
-import java.text.SimpleDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
 public class Datum extends Date {
-    private final static SimpleDateFormat dateFormatter1 = new SimpleDateFormat("dd.MM.yyyy");
-    private final static SimpleDateFormat dateFormatter2 = new SimpleDateFormat("yyyy.MM.dd");
+    private final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
 
     public Datum() {
         super();
