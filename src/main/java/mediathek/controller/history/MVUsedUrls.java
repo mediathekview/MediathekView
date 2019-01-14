@@ -24,13 +24,13 @@ import mSearch.daten.ListeFilme;
 import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.messages.history.HistoryChangedEvent;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
-    private final SimpleDateFormat SDF = new SimpleDateFormat("dd.MM.yyyy");
+    private static final FastDateFormat SDF = FastDateFormat.getInstance("dd.MM.yyyy");
     private final Set<String> listeUrls = new ConcurrentSkipListSet<>();
     private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
     private final Class<T> clazz;

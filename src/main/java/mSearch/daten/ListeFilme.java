@@ -41,11 +41,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String THEMA_LIVE = "Livestream";
     public static final String FILMLISTE = "Filmliste";
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-    private static final SimpleDateFormat sdf_ = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+    private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    private static final FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
-    private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
     private final FilmListMetaData metaData = new FilmListMetaData();
-    private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     /**
      * List of available senders which notifies its users.
      */
@@ -55,11 +54,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      */
     private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
     public boolean neueFilme = false;
-
-    public ListeFilme() {
-        super();
-        sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-    }
 
     /**
      * Get the basic sender channel list, useful e.g. for swing models
@@ -199,11 +193,9 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         // in der Form "dd.MM.yyyy, HH:mm"
         final String date = metaData.getDatum();
 
-        Date filmDate;
         String ret;
         try {
-            filmDate = sdf_.parse(date);
-            FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
+            final Date filmDate = sdf_.parse(date);
             ret = formatter.format(filmDate);
         } catch (ParseException ignored) {
             ret = date;
@@ -242,11 +234,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      */
     private Date getAgeAsDate() {
         String date = metaData.getDatum();
-        sdf.setTimeZone(TIMEZONE);
 
         Date filmDate = null;
         try {
-            filmDate = sdf.parse(date);
+            filmDate = sdf_.parse(date);
         } catch (ParseException ignored) {
         }
 
