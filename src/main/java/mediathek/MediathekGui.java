@@ -134,11 +134,6 @@ public class MediathekGui extends JFrame {
     protected ShutdownComputerCommand shutdownCommand;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
-    /**
-     * Memory display for debugging purposes.
-     * Only visible when debug mode is enabled
-     */
-    private MemoryMonitor memoryMonitor;
     private StatusBarController statusBarController;
     private InfoDialog filmInfo; // Infos zum Film
     private ProgramUpdateCheck programUpdateChecker;
@@ -151,6 +146,7 @@ public class MediathekGui extends JFrame {
         super();
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
+        showMemoryMonitorAction = new MemoryMonitorAction();
 
         splashScreenManager = Daten.splashScreenManager;
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
@@ -302,12 +298,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
-        Platform.runLater(() -> {
-            if (Config.isDebuggingEnabled()) {
-                memoryMonitor = new MemoryMonitor();
-                memoryMonitor.show();
-            }
-        });
+        if (Config.isDebuggingEnabled())
+            showMemoryMonitorAction.showMemoryMonitor();
     }
 
     /**
@@ -690,7 +682,7 @@ public class MediathekGui extends JFrame {
 
         jMenuAnsicht.add(cbVideoplayer);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(new MemoryMonitorAction(this));
+        jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction());
@@ -698,6 +690,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(cbSearchMediaDb);
     }
 
+    private final MemoryMonitorAction showMemoryMonitorAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
 
     private void createHelpMenu() {
@@ -737,16 +730,6 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(manageAboAction);
     }
 
-    public void showMemoryMonitor() {
-        Platform.runLater(() -> {
-            if (memoryMonitor == null) {
-                memoryMonitor = new MemoryMonitor();
-            }
-
-            memoryMonitor.show();
-        });
-    }
-
     /**
      * Display the About Box
      */
@@ -771,11 +754,6 @@ public class MediathekGui extends JFrame {
 
     public void showSettingsDialog() {
         dialogEinstellungen.setVisible(true);
-    }
-
-    private void closeMemoryMonitor() {
-        if (memoryMonitor != null)
-            Platform.runLater(() -> memoryMonitor.close());
     }
 
     private void writeOldConfiguration() {
@@ -820,7 +798,7 @@ public class MediathekGui extends JFrame {
             shutDown = dialogBeenden.isShutdownRequested();
         }
 
-        closeMemoryMonitor();
+        showMemoryMonitorAction.closeMemoryMonitor();
 
         closeControlsFxWorkaroundStage();
 
