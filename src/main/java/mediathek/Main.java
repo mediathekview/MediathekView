@@ -36,6 +36,7 @@ import mSearch.tool.SingleInstance;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.UIProgressState;
 import mediathek.windows.MediathekGuiWindows;
@@ -289,12 +290,13 @@ public class Main {
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
+            final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
+            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
 
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
+            splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
             if (SystemUtils.IS_OS_MAC_OSX) {
                 checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
@@ -309,7 +311,7 @@ public class Main {
 
             startMeldungen();
 
-            Daten.splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
+            splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
         });
     }
