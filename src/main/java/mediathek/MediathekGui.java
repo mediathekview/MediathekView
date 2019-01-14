@@ -148,7 +148,7 @@ public class MediathekGui extends JFrame {
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
         showMemoryMonitorAction = new MemoryMonitorAction();
 
-        splashScreenManager = Daten.splashScreenManager;
+        splashScreenManager = Daten.getSplashScreenManager();
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
 
         getContentPane().setLayout(new BorderLayout());
@@ -209,6 +209,7 @@ public class MediathekGui extends JFrame {
         bandwidthMonitor = new BandwidthMonitorController(this);
 
         splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
+        Daten.closeSplashScreen();
 
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();

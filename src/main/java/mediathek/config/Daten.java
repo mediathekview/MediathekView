@@ -77,10 +77,12 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
+    private static SplashScreenManager splashScreenManager = new SplashScreenManager();
     /**
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
+    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     /**
      * alle angesehenen Filme.
      */
@@ -89,7 +91,6 @@ public class Daten {
      * erfolgreich geladene Abos.
      */
     private AboHistoryController erledigteAbos;
-    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
     private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
@@ -229,6 +230,17 @@ public class Daten {
         return cal.getTimeInMillis();
     }
 
+    public static SplashScreenManager getSplashScreenManager() {
+        return splashScreenManager;
+    }
+
+    /**
+     * Do not keep splash screen object in memory
+     */
+    public static void closeSplashScreen() {
+        splashScreenManager = null;
+    }
+
     public MVSenderIconCache getSenderIconCache() {
         return senderIconCache;
     }
@@ -257,12 +269,12 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
-    public void setSeenHistoryController(SeenHistoryController controller) {
-        history = controller;
-    }
-
     public SeenHistoryController getSeenHistoryController() {
         return history;
+    }
+
+    public void setSeenHistoryController(SeenHistoryController controller) {
+        history = controller;
     }
 
     public void setAboHistoryList(AboHistoryController controller) {
@@ -306,8 +318,6 @@ public class Daten {
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
     }
-
-    public static final SplashScreenManager splashScreenManager = new SplashScreenManager();
 
     public boolean allesLaden() {
         if (MediathekGui.ui() != null) {
