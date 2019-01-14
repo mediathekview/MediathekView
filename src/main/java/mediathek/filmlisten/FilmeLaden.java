@@ -278,7 +278,7 @@ public class FilmeLaden {
 
             final ListeFilme listeFilme = daten.getListeFilme();
             listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
-            listeFilme.setMetaDaten(diffListe.metaDaten);
+            listeFilme.setMetaData(diffListe.metaData());
             Collections.sort(listeFilme);
             diffListe.clear();
         } else {

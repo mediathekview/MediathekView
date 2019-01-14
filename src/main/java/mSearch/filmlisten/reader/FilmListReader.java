@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
     private static final Logger logger = LogManager.getLogger(FilmListReader.class);
+    private static final String THEMA_LIVE = "Livestream";
     private final EventListenerList listeners = new EventListenerList();
     private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
     private final int max;
@@ -82,7 +83,7 @@ public class FilmListReader implements AutoCloseable {
      * Remove all registered listeners when we do not need them anymore.
      */
     private void removeRegisteredListeners() {
-        ListenerFilmeLaden list[] = listeners.getListeners(ListenerFilmeLaden.class);
+        ListenerFilmeLaden[] list = listeners.getListeners(ListenerFilmeLaden.class);
         for (ListenerFilmeLaden lst : list) {
             listeners.remove(ListenerFilmeLaden.class, lst);
         }
@@ -143,10 +144,10 @@ public class FilmListReader implements AutoCloseable {
     private void parseThema(JsonParser jp, DatenFilm datenFilm) throws IOException {
         String value = checkedString(jp);
         if (value.isEmpty())
-            datenFilm.arr[DatenFilm.FILM_THEMA] = thema;
+            datenFilm.setThema(thema);
         else {
-            datenFilm.arr[DatenFilm.FILM_THEMA] = value;
-            thema = datenFilm.getThema();
+            datenFilm.setThema(value);
+            thema = value;
         }
     }
 
@@ -166,9 +167,13 @@ public class FilmListReader implements AutoCloseable {
                 break;
             }
             if (jp.isExpectedStartArrayToken()) {
-                for (int k = 0; k < ListeFilme.MAX_ELEM; ++k) {
-                    listeFilme.metaDaten[k] = jp.nextTextValue();
-                }
+                var meta = listeFilme.metaData();
+                jp.nextTextValue();
+                meta.setDatum(jp.nextTextValue());
+                jp.nextTextValue();
+                jp.nextTextValue();
+                meta.setId(jp.nextTextValue());
+
                 break;
             }
         }
@@ -217,7 +222,8 @@ public class FilmListReader implements AutoCloseable {
      * Check if the title contains keyword which specify an audio version
      */
     private void parseAudioVersion(String title, DatenFilm film) {
-        if (title.contains("Hörfassung") || title.contains("Audiodeskription"))
+        if (title.contains("Hörfassung") || title.contains("Audiodeskription")
+                || title.contains("AD |"))
             film.setAudioVersion(true);
     }
 
@@ -243,6 +249,11 @@ public class FilmListReader implements AutoCloseable {
 
     private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setUrl(checkedString(jp));
+    }
+
+    private void parseLivestream(DatenFilm datenFilm) {
+        if (datenFilm.getThema().equals(THEMA_LIVE))
+            datenFilm.setLivestream(true);
     }
 
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
@@ -271,7 +282,7 @@ public class FilmListReader implements AutoCloseable {
                 parseDefault(jp, datenFilm, DatenFilm.FILM_DAUER);
                 parseGroesse(jp, datenFilm);
                 parseDescription(jp, datenFilm);
-                parseUrl(jp,datenFilm);
+                parseUrl(jp, datenFilm);
                 parseWebsiteLink(jp, datenFilm);
                 parseDefault(jp, datenFilm, DatenFilm.FILM_URL_SUBTITLE);
                 skipToken(jp);
@@ -284,6 +295,8 @@ public class FilmListReader implements AutoCloseable {
                 parseGeo(jp, datenFilm);
                 parseNeu(jp, datenFilm);
 
+                //this will check after all data has been read
+                parseLivestream(datenFilm);
                 listeFilme.importFilmliste(datenFilm);
 
                 if (milliseconds > 0) {
@@ -332,24 +345,6 @@ public class FilmListReader implements AutoCloseable {
         notifyFertig(source, listeFilme);
     }
 
-    class ProgressMonitor implements InputStreamProgressMonitor {
-        private final String sourceString;
-        private int oldProgress = 0;
-
-        public ProgressMonitor(String source) {
-            sourceString = source;
-        }
-
-        @Override
-        public void progress(long bytesRead, long size) {
-            final int iProgress = (int) (bytesRead * 100 / size);
-            if (iProgress != oldProgress) {
-                oldProgress = iProgress;
-                notifyProgress(sourceString, iProgress);
-            }
-        }
-    }
-
     /**
      * Read a locally available filmlist.
      *
@@ -365,7 +360,7 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
             try (FileInputStream fis = new FileInputStream(source);
-                 BufferedInputStream bis = new BufferedInputStream(fis, (int)(64 * FileUtils.ONE_KB));
+                 BufferedInputStream bis = new BufferedInputStream(fis, (int) (64 * FileUtils.ONE_KB));
                  InputStream input = new ProgressMonitorInputStream(bis, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
                  JsonParser jp = new JsonFactory().createParser(in)) {
@@ -459,5 +454,23 @@ public class FilmListReader implements AutoCloseable {
     @Override
     public void close() {
         removeRegisteredListeners();
+    }
+
+    class ProgressMonitor implements InputStreamProgressMonitor {
+        private final String sourceString;
+        private int oldProgress = 0;
+
+        public ProgressMonitor(String source) {
+            sourceString = source;
+        }
+
+        @Override
+        public void progress(long bytesRead, long size) {
+            final int iProgress = (int) (bytesRead * 100 / size);
+            if (iProgress != oldProgress) {
+                oldProgress = iProgress;
+                notifyProgress(sourceString, iProgress);
+            }
+        }
     }
 }

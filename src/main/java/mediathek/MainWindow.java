@@ -10,7 +10,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mediathek.config.Daten;
-import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.javafx.StatusBarController;
@@ -83,12 +82,10 @@ public class MainWindow extends Stage {
         SwingUtilities.invokeLater(() -> {
             JTabbedPane tabbedPane = new JTabbedPane();
             GuiDownloads tabDownloads = new GuiDownloads(Daten.getInstance(), MediathekGui.ui());
-            GuiAbo tabAbos = new GuiAbo(Daten.getInstance(), MediathekGui.ui());
             GuiFilme tabFilme = new GuiFilme(Daten.getInstance(), MediathekGui.ui());
 
             tabbedPane.addTab(GuiFilme.NAME, tabFilme);
             tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-            tabbedPane.addTab(GuiAbo.NAME, tabAbos);
             tabbedPane.setSelectedIndex(0);
 
             tabNode.setContent(tabbedPane);

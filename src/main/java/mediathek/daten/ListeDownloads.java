@@ -361,7 +361,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
-            if (daten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
+            if (daten.getAboHistoryController().urlPruefen(film.getUrlHistory())) {
                 // ist schon mal geladen worden
                 continue;
             }
@@ -408,45 +408,42 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized int[] getStarts() {
-        // liefert die Anzahl Starts die:
-        // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-        // Downloads und Abos
+    public synchronized DownloadStartInfo getStarts() {
+        final DownloadStartInfo info = new DownloadStartInfo();
 
-        int[] ret = new int[]{0, 0, 0, 0, 0, 0, 0};
         for (DatenDownload download : this) {
             if (!download.istZurueckgestellt()) {
-                ++ret[0];
+                info.total_starts++;
             }
             if (download.istAbo()) {
-                ++ret[1];
+                info.num_abos++;
             } else {
-                ++ret[2];
+                info.num_downloads++;
             }
             if (download.start != null) {
-                //final int quelle = download.getQuelle();
                 if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD) {
                     switch (download.start.status) {
                         case Start.STATUS_INIT:
-                            ++ret[3];
+                            info.initialized++;
                             break;
 
                         case Start.STATUS_RUN:
-                            ++ret[4];
+                            info.running++;
                             break;
 
                         case Start.STATUS_FERTIG:
-                            ++ret[5];
+                            info.finished++;
                             break;
 
                         case Start.STATUS_ERR:
-                            ++ret[6];
+                            info.error++;
                             break;
                     }
                 }
             }
         }
-        return ret;
+
+        return info;
     }
 
     /**

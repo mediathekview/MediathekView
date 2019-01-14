@@ -142,7 +142,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyLivestreams) {
-                if (!film.getThema().equals(ListeFilme.THEMA_LIVE)) {
+                if (!film.isLivestream()) {
                     continue;
                 }
             }
@@ -162,7 +162,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (kGesehen) {
-                if (daten.history.urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
                     continue;
                 }
             }
@@ -262,37 +262,28 @@ public class GuiFilmeModelHelper {
 
     private void addFilmToTableModel(DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
-        for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
-            switch (m) {
-                case DatenFilm.FILM_NR:
-                    object[m] = film.getFilmNr();
-                    break;
-                case DatenFilm.FILM_DATUM:
-                    object[m] = film.datumFilm;
-                    break;
-                case DatenFilm.FILM_GROESSE:
-                    object[m] = film.getFilmSize();
-                    break;
-                case DatenFilm.FILM_REF:
-                    object[m] = film;
-                    break;
-                case DatenFilm.FILM_HD:
-                    object[m] = film.isHD() ? "1" : "0";
-                    break;
-                case DatenFilm.FILM_UT:
-                    object[m] = film.hasSubtitle() ? "1" : "0";
-                    break;
-                case DatenFilm.FILM_URL:
-                    object[m] = film.getUrl();
-                    break;
-                case DatenFilm.FILM_GEO:
-                    object[m] = film.getGeo();
-                    break;
-                default:
-                    object[m] = film.arr[m];
-                    break;
-            }
-        }
+
+        object[DatenFilm.FILM_NR] = film.getFilmNr();
+        object[DatenFilm.FILM_SENDER] = film.getSender();
+        object[DatenFilm.FILM_THEMA] = film.getThema();
+        object[DatenFilm.FILM_TITEL] = film.getTitle();
+        object[DatenFilm.FILM_ABSPIELEN] = film.arr[DatenFilm.FILM_ABSPIELEN];
+        object[DatenFilm.FILM_AUFZEICHNEN] = film.arr[DatenFilm.FILM_AUFZEICHNEN];
+        object[DatenFilm.FILM_DATUM] = film.datumFilm;
+        object[DatenFilm.FILM_ZEIT] = film.getSendeZeit();
+        object[DatenFilm.FILM_DAUER] = film.getDauer();
+        object[DatenFilm.FILM_GROESSE] = film.getFilmSize();
+        object[DatenFilm.FILM_HD] = film.isHD() ? "1" : "0";
+        object[DatenFilm.FILM_UT] = film.hasSubtitle() ? "1" : "0";
+        object[DatenFilm.FILM_GEO] = film.getGeo();
+        object[DatenFilm.FILM_URL] = film.getUrl();
+        object[DatenFilm.FILM_ABO_NAME] = film.arr[DatenFilm.FILM_ABO_NAME];
+        object[DatenFilm.FILM_URL_SUBTITLE] = film.getUrlSubtitle();
+        object[DatenFilm.FILM_URL_KLEIN] = film.arr[DatenFilm.FILM_URL_KLEIN];
+        object[DatenFilm.FILM_URL_HD] = film.arr[DatenFilm.FILM_URL_HD];
+        object[DatenFilm.FILM_URL_HISTORY] = film.arr[DatenFilm.FILM_URL_HISTORY];
+        object[DatenFilm.FILM_DATUM_LONG] = film.arr[DatenFilm.FILM_DATUM_LONG];
+        object[DatenFilm.FILM_REF] = film;
 
         tModel.addRow(object);
     }

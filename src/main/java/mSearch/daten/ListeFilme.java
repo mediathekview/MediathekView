@@ -19,8 +19,10 @@
  */
 package mSearch.daten;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mSearch.tool.GermanStringSorter;
 import mediathek.config.Const;
@@ -36,31 +38,37 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
-    public static final String THEMA_LIVE = "Livestream";
     public static final String FILMLISTE = "Filmliste";
-
-    public static final int FILMLISTE_DATUM_GMT_NR = 1;
-    public static final int FILMLISTE_ID_NR = 4;
-    public static final int MAX_ELEM = 5; //5 although not many indices are declared
-
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-    private static final SimpleDateFormat sdf_ = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+    private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    private static final FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
-    private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+    private final FilmListMetaData metaData = new FilmListMetaData();
     /**
      * List of available senders which notifies its users.
      */
-    private final ObservableList<String> senderList = FXCollections.observableArrayList();
-    public String[] metaDaten = new String[]{"", "", "", "", ""};
+    private final EventList<String> m_senderList = new BasicEventList<>();
+    /**
+     * javafx proxy class to the sender list.
+     */
+    private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
     public boolean neueFilme = false;
 
-    public ListeFilme() {
-        super();
-        sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    /**
+     * Get the basic sender channel list, useful e.g. for swing models
+     *
+     * @return the plain list of channels
+     */
+    public EventList<String> getBaseSenderList() {
+        return m_senderList;
+    }
+
+    public FilmListMetaData metaData() {
+        return metaData;
     }
 
     public ObservableList<String> getSenders() {
-        return senderList;
+        return obs_senderList;
     }
 
     public synchronized void importFilmliste(DatenFilm film) {
@@ -150,13 +158,13 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         super.clear();
     }
 
-    public synchronized void setMeta(ListeFilme listeFilme) {
-        System.arraycopy(listeFilme.metaDaten, 0, metaDaten, 0, MAX_ELEM);
+    public synchronized void setMetaData(FilmListMetaData meta) {
+        metaData.setDatum(meta.getDatum());
+        metaData.setId(meta.getId());
     }
 
     public synchronized DatenFilm getFilmByUrl(final String url) {
-        Optional<DatenFilm> opt = this.parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny();
-        return opt.orElse(null);
+        return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny().orElse(null);
     }
 
     public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {
@@ -182,13 +190,11 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public synchronized String genDate() {
         // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
         // in der Form "dd.MM.yyyy, HH:mm"
-        final String date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
+        final String date = metaData.getDatum();
 
-        Date filmDate;
         String ret;
         try {
-            filmDate = sdf_.parse(date);
-            FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
+            final Date filmDate = sdf_.parse(date);
             ret = formatter.format(filmDate);
         } catch (ParseException ignored) {
             ret = date;
@@ -199,16 +205,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     public synchronized String getId() {
         // liefert die ID einer Filmliste
-        return metaDaten[ListeFilme.FILMLISTE_ID_NR];
-    }
-
-    /**
-     * Replace the current metadata with new one.
-     *
-     * @param data the new metadata
-     */
-    public synchronized void setMetaDaten(String[] data) {
-        metaDaten = data;
+        return metaData.getId();
     }
 
     /**
@@ -229,20 +226,17 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return ret;
     }
 
-    private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
-
     /**
      * Get the age of the film list.
      *
      * @return Age as a {@link java.util.Date} object.
      */
     private Date getAgeAsDate() {
-        String date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
-        sdf.setTimeZone(TIMEZONE);
+        String date = metaData.getDatum();
 
         Date filmDate = null;
         try {
-            filmDate = sdf.parse(date);
+            filmDate = sdf_.parse(date);
         } catch (ParseException ignored) {
         }
 
@@ -294,15 +288,19 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public synchronized long countNewFilms() {
-        return this.stream().filter(DatenFilm::isNew).count();
+        return stream().filter(DatenFilm::isNew).count();
     }
 
-    public synchronized void fillSenderList() {
+    public void fillSenderList() {
         Platform.runLater(() -> {
-            senderList.clear();
-            // der erste Sender ist ""
-            //senderList.add("");
-            senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+            var writeLock = m_senderList.getReadWriteLock().writeLock();
+            try {
+                writeLock.lock();
+                m_senderList.clear();
+                m_senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+            } finally {
+                writeLock.unlock();
+            }
         });
     }
 }

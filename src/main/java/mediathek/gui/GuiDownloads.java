@@ -52,8 +52,8 @@ import mediathek.gui.dialog.StandardCloseDialog;
 import mediathek.gui.history.DownloadHistoryPanel;
 import mediathek.gui.messages.*;
 import mediathek.gui.toolbar.FXDownloadToolBar;
-import mediathek.javafx.DownloadTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
+import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
@@ -99,7 +99,7 @@ public class GuiDownloads extends JPanel {
     private final MVTable tabelle;
     public static final String NAME = "Downloads";
     private final Daten daten;
-    private final JFrame parentComponent;
+    private final MediathekGui mediathekGui;
 
 
 
@@ -146,10 +146,12 @@ public class GuiDownloads extends JPanel {
     private DownloadTabInformationLabel filmInfoLabel;
 
     private void installTabInfoStatusBarControl() {
+        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
+
         Platform.runLater(() -> {
             filmInfoLabel = new DownloadTabInformationLabel(daten);
             if (isVisible())
-                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                leftItems.add(filmInfoLabel);
         });
 
         addComponentListener(new ComponentAdapter() {
@@ -157,7 +159,7 @@ public class GuiDownloads extends JPanel {
             public void componentShown(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(true);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                    leftItems.add(filmInfoLabel);
                 });
             }
 
@@ -165,7 +167,7 @@ public class GuiDownloads extends JPanel {
             public void componentHidden(ComponentEvent e) {
                 Platform.runLater(() -> {
                     filmInfoLabel.setVisible(false);
-                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                    leftItems.remove(filmInfoLabel);
                 });
             }
         });
@@ -174,9 +176,15 @@ public class GuiDownloads extends JPanel {
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
-        parentComponent = mediathekGui;
+        this.mediathekGui = mediathekGui;
 
         initComponents();
+
+        toolBarPanel = new JFXPanel();
+        add(toolBarPanel,BorderLayout.NORTH);
+
+        fxDescriptionPanel = new JFXPanel();
+        jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
 
         setupF4Key(mediathekGui);
 
@@ -206,12 +214,12 @@ public class GuiDownloads extends JPanel {
         cbView.setModel(getViewModel());
         cbView.addActionListener(new DisplayCategoryListener());
 
-        JFXPanel toolBarPanel = new JFXPanel();
-        add(toolBarPanel,BorderLayout.NORTH);
         Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
 
         setupDownloadRateLimitSpinner();
     }
+
+    private final JFXPanel toolBarPanel;
 
     private void setupDownloadRateLimitSpinner() {
         //restore spinner setting from config
@@ -229,6 +237,8 @@ public class GuiDownloads extends JPanel {
     }
 
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
+
+    private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
 
     public void installMenuEntries(JMenu menu) {
         JMenuItem miDownloadsStartAll = new JMenuItem("Alle Downloads starten");
@@ -261,15 +271,15 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        JMenuItem miCleanupDownloads = new JMenuItem("Liste der Downloads aufräumen");
+        JMenuItem miCleanupDownloads = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
         miCleanupDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
         miCleanupDownloads.addActionListener(e -> cleanupDownloads());
 
-        JMenuItem miStartDownloads = new JMenuItem("Downloads starten");
-        miStartDownloads.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
+        JMenuItem miStartDownloads = new JMenuItem("Ausgewählte Downloads starten");
+        miStartDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
         miStartDownloads.addActionListener(e -> starten(false));
 
-        JMenuItem miStopDownloads = new JMenuItem("Downloads stoppen");
+        JMenuItem miStopDownloads = new JMenuItem("Ausgewählte Downloads stoppen");
         miStopDownloads.addActionListener(e -> stoppen(false));
 
         JMenuItem miDownloadsVorziehen = new JMenuItem("Downloads vorziehen");
@@ -314,7 +324,7 @@ public class GuiDownloads extends JPanel {
         miShutdownAfterDownload.addActionListener(e -> {
             if (daten.getListeDownloads().unfinishedDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                MediathekGui.ui().beenden(true, false);
+                mediathekGui.beenden(true, false);
             } else {
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -370,10 +380,12 @@ public class GuiDownloads extends JPanel {
     }
 
     private void showDownloadHistory() {
-        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(MediathekGui.ui());
+        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(mediathekGui);
         dialog.pack();
         dialog.setVisible(true);
     }
+
+    private final JFXPanel fxDescriptionPanel;
 
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
@@ -390,13 +402,11 @@ public class GuiDownloads extends JPanel {
                     e.consume();
                 });
 
-                JFXPanel panel = new JFXPanel();
-                panel.setScene(new Scene(descriptionPane));
+                fxDescriptionPanel.setScene(new Scene(descriptionPane));
                 tabelle.getSelectionModel().addListSelectionListener(e -> {
                     Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
                 });
-                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -411,7 +421,7 @@ public class GuiDownloads extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
+        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 
@@ -428,97 +438,83 @@ public class GuiDownloads extends JPanel {
     }
 
     public void markFilmAsSeen() {
-        daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void markFilmAsUnseen() {
-        daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
+        daten.getSeenHistoryController().setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
     }
 
+    private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
+    private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
+    private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
+    private static final String ACTION_MAP_KEY_MAERK_AS_UNSEEN = "unseen";
+    private static final String ACTION_MAP_KEY_START_DOWNLOAD = "dl_start";
+    private static final String ACTION_MAP_KEY_SEARCH_MEDIADB = "search_in_mediadb";
+
+    private class SearchInMediaDbAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final int row = tabelle.getSelectedRow();
+            if (row != -1) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                daten.getDialogMediaDB().setVis();
+
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                if (datenDownload != null) {
+                    daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+                }
+
+            }
+        }
+    }
     private void setupKeyMappings() {
-        ActionMap am = tabelle.getActionMap();
-        InputMap im = tabelle.getInputMap();
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
-        am.put("aendern", new AbstractAction() {
+        final InputMap im = tabelle.getInputMap();
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_EDIT_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), ACTION_MAP_KEY_DELETE_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_AS_SEEN);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MAERK_AS_UNSEEN);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_START_DOWNLOAD);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_SEARCH_MEDIADB);
+
+        final ActionMap am = tabelle.getActionMap();
+        am.put(ACTION_MAP_KEY_EDIT_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 editDownload();
             }
         });
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
-        am.put("loeschen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_DELETE_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadLoeschen(true);
             }
         });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
-        this.getActionMap().put("tabelle", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelect(jScrollPane1);
-            }
-        });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
-        this.getActionMap().put("download", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filmStartenWiederholenStoppen(false, true /* starten */);
-            }
-        });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
-        this.getActionMap().put("url-copy", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tabelle.getSelectedRow();
-                if (row != -1) {
-                    GuiFunktionen.copyToClipboard(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row),
-                            DatenDownload.DOWNLOAD_URL).toString());
-                }
-            }
-        });
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "searchInMediaDb");
-        this.getActionMap().put("searchInMediaDb", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tabelle.getSelectedRow();
-                if (row != -1) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    daten.getDialogMediaDB().setVis();
-
-                    DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
-                    if (datenDownload != null) {
-                        daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-                    }
-
-                }
-            }
-        });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
-        this.getActionMap().put("gesehen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 markFilmAsSeen();
             }
         });
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
-        this.getActionMap().put("ungesehen", new AbstractAction() {
+        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 markFilmAsUnseen();
             }
         });
+        am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { filmStartenWiederholenStoppen(false, true);
+            }
+        });
+        am.put(ACTION_MAP_KEY_SEARCH_MEDIADB, new SearchInMediaDbAction());
     }
 
     private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
             DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF,
-            DatenDownload.DOWNLOAD_URL_RTMP,
-            DatenDownload.DOWNLOAD_FILM_NR,
-            DatenDownload.DOWNLOAD_NR};
+            DatenDownload.DOWNLOAD_URL_RTMP};
 
     private void init() {
         setupKeyMappings();
@@ -610,7 +606,7 @@ public class GuiDownloads extends JPanel {
         txtDownload.setFocusable(false);
         txtDownload.setContentType("text/html");
         try {
-            if (jScrollPaneFilter.isVisible()) {
+            if (txtDownload.isVisible()) {
                 timerTask = new TimerTask() {
 
                     @Override
@@ -631,50 +627,55 @@ public class GuiDownloads extends JPanel {
     }
 
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
+    private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+            + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
+            + "<body>";
+    private static final String END = "</body></html>";
 
     private void setInfoText() {
-        int[] starts = daten.getDownloadInfos().getDownloadStarts();
-        if (starts[0] == 0) {
+        if (daten.getListeDownloads().getStarts().total_starts == 0) {
             txtDownload.setText("");
             return;
         }
-        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>\n"
-                + "<body>\n";
-        final String END = "</body></html>";
 
         String info = HEAD;
 
         // Downloads
         info += getInfoText();
+
+        final var downloadInfos = daten.getDownloadInfos();
         // Größe
-        if (daten.getDownloadInfos().byteAlleDownloads > 0 || daten.getDownloadInfos().byteAktDownloads > 0) {
+        final long byteAlleDownloads = downloadInfos.getByteAlleDownloads();
+        final long byteAktDownloads = downloadInfos.getByteAktDownloads();
+        if (byteAlleDownloads > 0 || byteAktDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (daten.getDownloadInfos().byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAktDownloads) + " von "
-                        + MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
+            if (byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(byteAktDownloads) + " von "
+                        + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
             }
         }
         // Restzeit
-        if (daten.getDownloadInfos().timeRestAktDownloads > 0 && daten.getDownloadInfos().timeRestAllDownloads > 0) {
+        final long timeRestAktDownloads = downloadInfos.getTimeRestAktDownloads();
+        final long timeRestAllDownloads = downloadInfos.getTimeRestAllDownloads();
+        if (timeRestAktDownloads > 0 && timeRestAllDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + daten.getDownloadInfos().getRestzeit() + ",<br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
-        } else if (daten.getDownloadInfos().timeRestAktDownloads > 0) {
+                    + downloadInfos.getRestzeit() + ",<br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
+        } else if (timeRestAktDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + daten.getDownloadInfos().getRestzeit() + "</span>";
-        } else if (daten.getDownloadInfos().timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + downloadInfos.getRestzeit() + "</span>";
+        } else if (timeRestAllDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
         }
         // Bandbreite
-        if (daten.getDownloadInfos().bandwidth > 0) {
+        if (downloadInfos.getBandwidth() > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += daten.getDownloadInfos().bandwidthStr + "</span>";
+            info += downloadInfos.getBandwidthStr() + "</span>";
         }
         info += END;
 
@@ -683,47 +684,19 @@ public class GuiDownloads extends JPanel {
 
     private String getInfoText() {
         String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        final int[] starts = daten.getDownloadInfos().getDownloadStarts();
-//        if (starts[0] == 1) {
-//            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
-//        } else {
-        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + starts[0] + "<br />";
-//        }
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
+        final var info = daten.getListeDownloads().getStarts();
+        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + info.total_starts + "<br />";
+
+        if (info.hasValues()) {
             textLinks += "( ";
-            if (starts[4] == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += starts[4] + " laufen";
-            }
-            if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
-                }
-            }
+            textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
+            textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
+            if (info.finished > 0)
+                textLinks += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
+
+            if (info.error > 0)
+                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
+
             textLinks += " )";
         }
         textLinks += "<br /></span>";
@@ -870,7 +843,7 @@ public class GuiDownloads extends JPanel {
         }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         daten.getListeDownloads().abosAuffrischen();
-        daten.getListeDownloads().abosSuchen(parentComponent);
+        daten.getListeDownloads().abosSuchen(mediathekGui);
         reloadTable();
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
@@ -893,14 +866,14 @@ public class GuiDownloads extends JPanel {
 
     private ArrayList<DatenDownload> getSelDownloads() {
         ArrayList<DatenDownload> arrayDownloads = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 arrayDownloads.add(datenDownload);
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayDownloads;
     }
@@ -927,7 +900,7 @@ public class GuiDownloads extends JPanel {
         if (row != -1) {
             datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return datenDownload;
     }
@@ -944,7 +917,7 @@ public class GuiDownloads extends JPanel {
             }
         }
         DatenDownload datenDownloadKopy = datenDownload.getCopy();
-        DialogEditDownload dialog = new DialogEditDownload(parentComponent, true, datenDownloadKopy, gestartet);
+        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, true, datenDownloadKopy, gestartet);
         dialog.setVisible(true);
         if (dialog.ok) {
             datenDownload.aufMichKopieren(datenDownloadKopy);
@@ -966,7 +939,7 @@ public class GuiDownloads extends JPanel {
             return;
         }
         String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD];
-        DirOpenAction.zielordnerOeffnen(parentComponent, s);
+        DirOpenAction.zielordnerOeffnen(mediathekGui, s);
     }
 
     public void filmAbspielen() {
@@ -975,7 +948,7 @@ public class GuiDownloads extends JPanel {
             return;
         }
         String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
-        OpenPlayerAction.filmAbspielen(parentComponent, s);
+        OpenPlayerAction.filmAbspielen(mediathekGui, s);
     }
 
     private void filmLoeschen_() {
@@ -986,17 +959,17 @@ public class GuiDownloads extends JPanel {
         // Download nur löschen wenn er nicht läuft
         if (datenDownload.start != null) {
             if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                MVMessageDialog.showMessageDialog(parentComponent, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
         try {
             File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             if (!file.exists()) {
-                MVMessageDialog.showMessageDialog(parentComponent, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                MVMessageDialog.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int ret = JOptionPane.showConfirmDialog(parentComponent,
+            int ret = JOptionPane.showConfirmDialog(mediathekGui,
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], "Film Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
 
@@ -1007,7 +980,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         } catch (Exception ex) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            MVMessageDialog.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
             logger.error("Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
@@ -1044,7 +1017,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
             if (!urlAboList.isEmpty()) {
-                daten.erledigteAbos.createLineWriterThread(urlAboList);
+                daten.getAboHistoryController().createLineWriterThread(urlAboList);
             }
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
@@ -1089,7 +1062,7 @@ public class GuiDownloads extends JPanel {
                     // wenn er noch läuft gibts nix
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                     //TODO in auto dialog umwandeln!
-                    int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
+                    int a = JOptionPane.showConfirmDialog(mediathekGui, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
                             "Fertiger Download", JOptionPane.YES_NO_OPTION);
                     if (a != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
@@ -1098,7 +1071,7 @@ public class GuiDownloads extends JPanel {
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.istAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                        daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
             }
@@ -1110,11 +1083,11 @@ public class GuiDownloads extends JPanel {
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(MediathekGui.ui(), daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(mediathekGui, daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            MediathekGui.ui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -1189,7 +1162,7 @@ public class GuiDownloads extends JPanel {
                             } else {
                                 text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
-                            antwort = JOptionPane.showConfirmDialog(parentComponent, text,
+                            antwort = JOptionPane.showConfirmDialog(mediathekGui, text,
                                     "Fertiger Download", JOptionPane.YES_NO_CANCEL_OPTION);
                         }
                         if (antwort == JOptionPane.CANCEL_OPTION) {
@@ -1204,7 +1177,7 @@ public class GuiDownloads extends JPanel {
                         listeDownloadsLoeschen.add(download);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                            daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
                 }
@@ -1271,13 +1244,13 @@ public class GuiDownloads extends JPanel {
                     aktFilm = datenDownload.film;
                 }
             }
-            MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(aktFilm);
+            mediathekGui.getFilmInfoDialog().updateCurrentFilm(aktFilm);
         }
     }
 
     private ArrayList<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
-        int rows[] = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
@@ -1286,7 +1259,7 @@ public class GuiDownloads extends JPanel {
                 }
             }
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
         return arrayFilme;
     }
@@ -1392,7 +1365,7 @@ public class GuiDownloads extends JPanel {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
+            itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, true /* starten */));
@@ -1444,7 +1417,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(arg0 -> updateDownloads());
 
-            JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
+            JMenuItem itemAufraeumen = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
             itemAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(arg0 -> cleanupDownloads());
@@ -1459,7 +1432,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
+            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNLOAD_LOESCHEN);
 
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
@@ -1469,9 +1442,7 @@ public class GuiDownloads extends JPanel {
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(e -> zielordnerOeffnen());
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             //Abo ändern
             JMenu submenueAbo = new JMenu("Abo");
@@ -1495,7 +1466,7 @@ public class GuiDownloads extends JPanel {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             daten.getListeAbo().aenderungMelden();
@@ -1507,9 +1478,7 @@ public class GuiDownloads extends JPanel {
             submenueAbo.add(itemChangeAbo);
             jPopupMenu.add(submenueAbo);
 
-            //#######################################
             jPopupMenu.addSeparator();
-            //#######################################
 
             // Film in der MediaDB suchen
             JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
@@ -1541,7 +1510,7 @@ public class GuiDownloads extends JPanel {
                         } else {
                             menuPath = "Datei->Einstellungen->Set bearbeiten";
                         }
-                        MVMessageDialog.showMessageDialog(parentComponent, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
+                        MVMessageDialog.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                 "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -1550,8 +1519,6 @@ public class GuiDownloads extends JPanel {
 
             // URL kopieren
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
-            KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-            itemUrl.setAccelerator(ctrlU);
             itemUrl.addActionListener(e -> {
                 int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {

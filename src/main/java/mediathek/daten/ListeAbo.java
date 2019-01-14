@@ -35,6 +35,7 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -77,6 +78,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false /*onlyOne*/);
+        dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
@@ -109,11 +111,25 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         add(datenAbo);
     }
 
-    public void aboLoeschen(DatenAbo abo) {
-        if (abo != null) {
-            this.remove(abo);
+    public void aboLoeschen(@NotNull DatenAbo abo) {
+            remove(abo);
             aenderungMelden();
-        }
+    }
+
+    /**
+     * Get the number of abos which are active and used.
+     * @return num of used abos
+     */
+    public long activeAbos() {
+        return stream().filter(DatenAbo::aboIstEingeschaltet).count();
+    }
+
+    /**
+     * Get the number of abos which are created but offline.
+     * @return number of abos which are offline
+     */
+    public long inactiveAbos() {
+        return stream().filter(abo -> !abo.aboIstEingeschaltet()).count();
     }
 
     public void aenderungMelden() {
@@ -242,27 +258,27 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      *
      * @param film assignee
      */
-    private void assignAboToFilm(DatenFilm film) {
-        final DatenAbo foundAbo = this.stream().filter(abo
+    private void assignAboToFilm(@NotNull DatenFilm film) {
+        stream().filter(abo
                 -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
                 abo.titel,
                 abo.thema,
                 abo.irgendwo,
                 abo.mindestdauerMinuten,
                 abo.min,
-                film, false)).findFirst().orElse(null);
+                film, false))
+                .findFirst().
+                ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
+    }
 
-        if (foundAbo != null) {
-            if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
-                // dann ist der Film zu kurz
-                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
-            } else {
-                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
-            }
-            film.abo = foundAbo;
+    private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
+        if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
+            // dann ist der Film zu kurz
+            film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
         } else {
-            deleteAboInFilm(film);
+            film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
         }
+        film.abo = foundAbo;
     }
 
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
@@ -276,7 +292,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
 
         // leere Abos löschen, die sind Fehler
-        this.stream().filter((datenAbo) -> (datenAbo.isEmpty())).forEach(this::remove);
+        this.stream().filter(DatenAbo::isEmpty).forEach(this::remove);
 
         // und jetzt erstellen
         forEach(this::createAbo);

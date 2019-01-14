@@ -30,29 +30,56 @@ import java.text.DecimalFormat;
 public class DownloadInfos {
 
     private static final DecimalFormat formatter = new DecimalFormat("####0.00");
-    private final Daten daten;
-    // Anzahl
-    public int anzDownloadsRun = 0; //Anzahl gestarteter Downloads
-    // Größe
-    public long byteAlleDownloads = 0; //anz. Bytes für alle gestarteten Downloads
-    public long byteAktDownloads = 0; //anz. Bytes bereits geladen für die gerade ladenden/laufenden Downloads
-    // Zeit
-    public long timeRestAktDownloads = 0; //Restzeit für die gerade ladenden/laufenden Downloads
-    public long timeRestAllDownloads = 0; // Restzeit aller gestarteten Downloads
-    // Bandbreite
-    public long bandwidth = 0; //Bandbreite: bytes per second
-    public String bandwidthStr = "";
+    /**
+     * Bandbreite: bytes per second
+     */
+    private long bandwidth = 0;
+    /**
+     * Restzeit aller gestarteten Downloads
+     */
+    private long timeRestAllDownloads = 0;
+    /**
+     * Restzeit für die gerade ladenden/laufenden Downloads
+     */
+    private long timeRestAktDownloads = 0;
+    /**
+     * Anzahl Bytes bereits geladen für die gerade ladenden/laufenden Downloads
+     */
+    private long byteAktDownloads = 0;
+    /**
+     * Anzahl Bytes für alle gestarteten Downloads
+     */
+    private long byteAlleDownloads = 0;
+    /**
+     * Anzahl gestarteter Downloads
+     */
+    private int anzDownloadsRun = 0;
     // Prozent fertig (alle)
     private int percent = -1;
-    // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-    private int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
+    private String bandwidthStr = "";
 
-    public DownloadInfos(Daten aDaten) {
-        daten = aDaten;
+    public long getBandwidth() {
+        return bandwidth;
     }
 
-    public int[] getDownloadStarts() {
-        return downloadStarts;
+    public long getTimeRestAllDownloads() {
+        return timeRestAllDownloads;
+    }
+
+    public long getTimeRestAktDownloads() {
+        return timeRestAktDownloads;
+    }
+
+    public long getByteAktDownloads() {
+        return byteAktDownloads;
+    }
+
+    public long getByteAlleDownloads() {
+        return byteAlleDownloads;
+    }
+
+    public String getBandwidthStr() {
+        return bandwidthStr;
     }
 
     public String roundBandwidth() {
@@ -92,42 +119,43 @@ public class DownloadInfos {
     public synchronized void makeDownloadInfos() {
         clean();
 
-        downloadStarts = daten.getListeDownloads().getStarts();
+        final var listeDownloads = Daten.getInstance().getListeDownloads();
+        final var aktivDownloads = listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
 
         // Liste gestarteter Downloads
-        var aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : aktivDownloads) {
-            ++daten.getDownloadInfos().anzDownloadsRun;
-            daten.getDownloadInfos().byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
+            anzDownloadsRun++;
+            byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                 // die Downlaods laufen gerade
-                daten.getDownloadInfos().bandwidth += download.start.bandbreite; // bytes per second
-                daten.getDownloadInfos().byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
-                if (download.start.restSekunden > daten.getDownloadInfos().timeRestAktDownloads) {
+                bandwidth += download.start.bandbreite; // bytes per second
+                byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
+                if (download.start.restSekunden > timeRestAktDownloads) {
                     // der längeste gibt die aktuelle Restzeit vor
-                    daten.getDownloadInfos().timeRestAktDownloads = download.start.restSekunden;
+                    timeRestAktDownloads = download.start.restSekunden;
                 }
             }
         }
         aktivDownloads.clear();
 
-        if (daten.getDownloadInfos().bandwidth < 0) {
-            daten.getDownloadInfos().bandwidth = 0;
+        if (bandwidth < 0) {
+            bandwidth = 0;
         }
 
-        if (daten.getDownloadInfos().bandwidth > 0) {
+        if (bandwidth > 0) {
             // sonst macht die Restzeit keinen Sinn
-            final long b = daten.getDownloadInfos().byteAlleDownloads - daten.getDownloadInfos().byteAktDownloads;
+            final long b = byteAlleDownloads - byteAktDownloads;
             if (b <= 0) {
-                daten.getDownloadInfos().timeRestAllDownloads = 0;
+                timeRestAllDownloads = 0;
             } else {
-                daten.getDownloadInfos().timeRestAllDownloads = b / daten.getDownloadInfos().bandwidth;
+                timeRestAllDownloads = b / bandwidth;
             }
-            if (daten.getDownloadInfos().timeRestAllDownloads < daten.getDownloadInfos().timeRestAktDownloads) {
-                daten.getDownloadInfos().timeRestAllDownloads = daten.getDownloadInfos().timeRestAktDownloads; // falsch geraten oder es gibt nur einen
+            if (timeRestAllDownloads < timeRestAktDownloads) {
+                timeRestAllDownloads = timeRestAktDownloads; // falsch geraten oder es gibt nur einen
             }
-            if (daten.getDownloadInfos().anzDownloadsRun == 1) {
-                daten.getDownloadInfos().timeRestAllDownloads = 0; // gibt ja nur noch einen
+
+            if (anzDownloadsRun == 1) {
+                timeRestAllDownloads = 0; // gibt ja nur noch einen
             }
         }
         if (byteAlleDownloads > 0) {
@@ -141,7 +169,7 @@ public class DownloadInfos {
         if (!MVConfig.getBool(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS)) {
             return;
         }
-        final int progress = daten.getDownloadInfos().percent;
+        final int progress = percent;
         if (progress >= 0) {
             StringBuilder text = new StringBuilder("  [ ");
             final int a = progress / 10;
@@ -152,7 +180,7 @@ public class DownloadInfos {
                 text.append("-");
             }
             text.append(" ]  ").append(MVFilmSize.getGroesse(byteAktDownloads)).append(" von ").append(MVFilmSize.getGroesse(byteAlleDownloads)).append(" MByte /");
-            text.append(" Downloads: ").append(daten.getDownloadInfos().anzDownloadsRun).append(" /");
+            text.append(" Downloads: ").append(anzDownloadsRun).append(" /");
             text.append(" Bandbreite: ").append(roundBandwidth());
             Log.progress(text.toString());
         }
