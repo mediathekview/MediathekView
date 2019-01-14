@@ -32,18 +32,26 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 @SuppressWarnings("serial")
-public class MVUsedUrls<T extends HistoryChangedEvent> {
+public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
     private static final FastDateFormat SDF = FastDateFormat.getInstance("dd.MM.yyyy");
-    private final Set<String> listeUrls = new ConcurrentSkipListSet<>();
+    /**
+     * Quick lookup list for history checks.
+     * Stores only URLs
+     */
+    private final Set<String> listeUrls = Collections.synchronizedSet(new HashSet<>());
+    /**
+     * The actual storage for all history data.
+     * Will be written to file.
+     */
     private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
     private final Class<T> clazz;
     private Path urlPath;
-    public MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
+
+    protected MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
         this.clazz = clazz;
 
         try {
