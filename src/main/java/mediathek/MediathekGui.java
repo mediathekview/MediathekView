@@ -676,9 +676,6 @@ public class MediathekGui extends JFrame {
             }
         });
 
-        JMenuItem miShowMemoryMonitor = new JMenuItem("Speicherverbrauch anzeigen");
-        miShowMemoryMonitor.addActionListener(e -> showMemoryMonitor());
-
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         cbBandwidthDisplay.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
@@ -693,7 +690,7 @@ public class MediathekGui extends JFrame {
 
         jMenuAnsicht.add(cbVideoplayer);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(miShowMemoryMonitor);
+        jMenuAnsicht.add(new MemoryMonitorAction(this));
         jMenuAnsicht.add(cbBandwidthDisplay);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction());
@@ -740,7 +737,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(manageAboAction);
     }
 
-    private void showMemoryMonitor() {
+    public void showMemoryMonitor() {
         Platform.runLater(() -> {
             if (memoryMonitor == null) {
                 memoryMonitor = new MemoryMonitor();
