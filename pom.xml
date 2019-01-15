@@ -85,6 +85,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.25.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.sun.activation</groupId>
 			<artifactId>javax.activation</artifactId>
 			<version>1.2.0</version>

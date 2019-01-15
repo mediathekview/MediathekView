@@ -24,7 +24,7 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.controller.history.MVUsedUrls;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.table.MVTable;
@@ -39,7 +39,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final MVUsedUrls history;
+    private final SeenHistoryController history;
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;
