@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -45,6 +46,19 @@ public class MVSubtitle {
 
     private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
 
+    private HttpURLConnection setupConnection(String urlSubtitle) throws IOException {
+        final HttpURLConnection conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
+        conn.setRequestProperty("User-Agent",
+                ApplicationConfiguration.getConfiguration()
+                        .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+
+        conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        conn.setReadTimeout(TIMEOUT);
+        conn.setConnectTimeout(TIMEOUT);
+
+        return conn;
+    }
+
     public void writeSubtitle(@NotNull DatenDownload datenDownload) {
         String strSubtitelFile;
         InputStream in = null;
@@ -52,7 +66,7 @@ public class MVSubtitle {
 
         if (urlSubtitle.isEmpty())
             return;
-        
+
         try {
             logger.info("Untertitel {} schreiben nach {}", urlSubtitle, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
@@ -64,20 +78,9 @@ public class MVSubtitle {
 
             strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + '.' + suffix;
 
-            final File subtitleFile = new File(strSubtitelFile);
-
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
 
-            //DOWNLOAD PATH
-            final HttpURLConnection conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
-            conn.setRequestProperty("User-Agent",
-                    ApplicationConfiguration.getConfiguration()
-                            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-
-            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            conn.setReadTimeout(TIMEOUT);
-            conn.setConnectTimeout(TIMEOUT);
-
+            final HttpURLConnection conn = setupConnection(urlSubtitle);
             // the encoding returned by the server
             final String encoding = conn.getContentEncoding();
             final int responseCode = conn.getResponseCode();
@@ -103,6 +106,7 @@ public class MVSubtitle {
                 }
             }
 
+            final File subtitleFile = new File(strSubtitelFile);
             try (FileOutputStream fos = new FileOutputStream(subtitleFile)) {
                 final byte[] buffer = new byte[64 * 1024];
                 int n;
