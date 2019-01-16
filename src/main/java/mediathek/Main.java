@@ -196,7 +196,7 @@ public class Main {
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
-        //generateAntiThrottlingId();
+        generateAntiThrottlingId();
 
         logger.info("JavaFX version: " + VersionInfo.getRuntimeVersion());
 
