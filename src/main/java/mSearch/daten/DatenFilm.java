@@ -335,8 +335,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public boolean hasSubtitle() {
-        //Film hat Untertitel
-        return !arr[DatenFilm.FILM_URL_SUBTITLE].isEmpty();
+        return !arr[FILM_URL_SUBTITLE].isEmpty();
     }
 
     public String getUrlFuerAufloesung(String aufloesung) {
