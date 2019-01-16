@@ -20,15 +20,14 @@
 package mediathek.tool;
 
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Log;
 import mSearch.tool.TimedTextMarkupLanguageParser;
 import mediathek.daten.DatenDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,34 +45,31 @@ public class MVSubtitle {
 
     private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
 
-    public void writeSubtitle(DatenDownload datenDownload) {
-        String suffix;// txt käme dem Infofile in die Quere
-
-        String urlSubtitle = "";
+    public void writeSubtitle(@NotNull DatenDownload datenDownload) {
         String strSubtitelFile;
-        File subtitelFile;
-        HttpURLConnection conn = null;
         InputStream in = null;
-        String encoding;
+        final String urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE];
 
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE].isEmpty()) {
+        if (urlSubtitle.isEmpty())
             return;
-        }
+        
         try {
-            logger.info("Untertitel {} schreiben nach {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
-                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
+            logger.info("Untertitel {} schreiben nach {}", urlSubtitle, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
-            urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE];
-            suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
+
+            String suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
             if (!suffix.endsWith(SUFFIX_SRT) && !suffix.endsWith(SUFFIX_VTT)) {
                 suffix = SUFFIX_TTML;
             }
+
             strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + '.' + suffix;
-            subtitelFile = new File(strSubtitelFile);
+
+            final File subtitleFile = new File(strSubtitelFile);
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
 
-            conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
+            //DOWNLOAD PATH
+            final HttpURLConnection conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
             conn.setRequestProperty("User-Agent",
                     ApplicationConfiguration.getConfiguration()
                             .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
@@ -83,12 +79,13 @@ public class MVSubtitle {
             conn.setConnectTimeout(TIMEOUT);
 
             // the encoding returned by the server
-            encoding = conn.getContentEncoding();
-            if ((conn.getResponseCode()) < 400) {
+            final String encoding = conn.getContentEncoding();
+            final int responseCode = conn.getResponseCode();
+            if (responseCode < 400) {
                 in = conn.getInputStream();
             } else {
                 // dann wars das
-                Log.errorLog(752301248, "url: " + urlSubtitle);
+                logger.error("HTTP Response Code {} for URL: {}", responseCode, urlSubtitle);
             }
 
             if (in == null) {
@@ -106,23 +103,13 @@ public class MVSubtitle {
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream(subtitelFile)) {
+            try (FileOutputStream fos = new FileOutputStream(subtitleFile)) {
                 final byte[] buffer = new byte[64 * 1024];
                 int n;
                 while ((n = in.read(buffer)) != -1) {
                     fos.write(buffer, 0, n);
                 }
                 logger.info("Untertitel wurde geschrieben");
-            }
-        } catch (IOException ex) {
-            strSubtitelFile = null;
-            if (conn != null) {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (Exception ignored) {
-                }
             }
         } catch (Exception ignored) {
             strSubtitelFile = null;
