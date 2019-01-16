@@ -89,7 +89,7 @@ public class PanelPsetImport extends PanelVorlage {
         }
         jButtonImportStandard.addActionListener(e -> {
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-            GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
+            GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true), true);
         });
     }
 
@@ -102,7 +102,7 @@ public class PanelPsetImport extends PanelVorlage {
         }
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
     }
 
     private void importText() {
@@ -111,7 +111,7 @@ public class PanelPsetImport extends PanelVorlage {
             // damit die Variablen ersetzt werden
             ListePset.progMusterErsetzen(parentComponent, listePset);
         }
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
     }
 
     private void tabelleLaden() {
