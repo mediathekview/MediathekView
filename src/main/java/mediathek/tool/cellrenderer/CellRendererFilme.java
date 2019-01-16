@@ -142,17 +142,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
-        boolean start = false;
+        // gestarteter Film
+        final boolean start = (datenDownload != null) && (datenDownload.start != null);
 
-        if (datenDownload != null) {
-            // gestarteter Film
-            if (datenDownload.start != null) {
-                start = true;
-                setBackgroundColor(c, datenDownload.start, isSelected);
-            }
-        }
-
-        if (!start) {
+        if (start) {
+            //film is started for download
+            setBackgroundColor(c, datenDownload.start, isSelected);
+        } else {
+            //not a start, set specific background colors
             if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
@@ -165,10 +162,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 if (!isSelected)
                     c.setForeground(MVColor.FILM_NEU.color);
             }
-        }
 
-        if (geoMelden) {
-            if (!start)
+            if (geoMelden)
                 setupGeoblockingBackground(c, datenFilm.getGeo(), isSelected);
         }
     }
