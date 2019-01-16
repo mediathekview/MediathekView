@@ -319,7 +319,7 @@ public class GuiDownloads extends JPanel {
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> tabelle.invertSelection());
 
-        JMenuItem miShutdownAfterDownload = new JMenuItem("Rechner nach Downloads herunterfahren");
+        JMenuItem miShutdownAfterDownload = new JMenuItem("Aktion nach abgeschlossenen Downloads...");
         miShutdownAfterDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
         miShutdownAfterDownload.addActionListener(e -> {
             if (daten.getListeDownloads().unfinishedDownloads() > 0) {
