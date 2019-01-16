@@ -19,8 +19,6 @@
  */
 package mediathek;
 
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.javafx.runtime.VersionInfo;
 import com.zaxxer.sansorm.SansOrm;
@@ -51,10 +49,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
@@ -196,8 +192,6 @@ public class Main {
         if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
-        generateAntiThrottlingId();
-
         logger.info("JavaFX version: " + VersionInfo.getRuntimeVersion());
 
         setupPortableMode(args);
@@ -219,21 +213,6 @@ public class Main {
     private static void setupDatabase() {
         logger.trace("setupDatabase()");
         SansOrm.initializeTxSimple(PooledDatabaseConnection.getInstance().getDataSource());
-    }
-
-    /**
-     * This ID will be used by the server-side load balancer to prevent throttling of legitimate
-     * MediathekView users. We have black sheeps who downloads lists REALLY often :(
-     * It is not intented to track user behaviour!
-     * Calculate and store ID until next restart of the application.
-     */
-    private static void generateAntiThrottlingId() {
-        //generate one that can´t be reconstructed
-        final HashCode hc = Hashing.murmur3_128().newHasher()
-                .putString(UUID.randomUUID().toString(), StandardCharsets.UTF_8)
-                .hash();
-
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_ANTI_THROTTLING_ID, hc.toString());
     }
 
     private static void installSingleInstanceHandler() {

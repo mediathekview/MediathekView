@@ -25,7 +25,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER = "application.ui.install_tab_listeners";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.show_notifications";
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
-    public static final String APPLICATION_ANTI_THROTTLING_ID = "application.anti_thottling.id";
 
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
