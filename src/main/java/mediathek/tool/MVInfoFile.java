@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
+import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -144,7 +145,7 @@ public class MVInfoFile {
 
             showSuccessDialog();
         } catch (IOException ex) {
-            showErrorDialog();
+            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,"Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
             logger.error("Ziel: {}", dialog.ziel, ex);
         }
     }
@@ -155,16 +156,6 @@ public class MVInfoFile {
             alert.setTitle(Konstanten.PROGRAMMNAME);
             alert.setHeaderText("Infodatei schreiben");
             alert.setContentText("Infodatei wurde erfolgreich geschrieben.");
-            alert.showAndWait();
-        });
-    }
-
-    private void showErrorDialog() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText("Infodatei schreiben");
-            alert.setContentText("Es trat ein unbekannter Fehler beim Schreiben auf.");
             alert.showAndWait();
         });
     }
@@ -181,16 +172,14 @@ public class MVInfoFile {
              BufferedWriter br = new BufferedWriter(osw)) {
             final DatenFilm film = datenDownload.film;
             if (film != null) {
-                br.write(
-                        formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
+                br.write(formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
                 br.flush();
             }
 
-            showSuccessDialog();
-            logger.info("Infofile geschrieben");
+            logger.info("Infodatei geschrieben");
         } catch (IOException ex) {
-            showErrorDialog();
-            logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,"Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
+            logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex);
         }
     }
 
