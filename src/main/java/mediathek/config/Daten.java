@@ -304,14 +304,10 @@ public class Daten {
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
 
-        downloadInfos = new DownloadInfos();
+        downloadInfos = new DownloadInfos(messageBus);
         starterClass = new StarterClass(this);
 
-        Timer timer = new Timer(1000, e ->
-        {
-            downloadInfos.makeDownloadInfos();
-            messageBus.publishAsync(new TimerEvent());
-        });
+        Timer timer = new Timer(1000, e -> messageBus.publishAsync(new TimerEvent()));
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
     }

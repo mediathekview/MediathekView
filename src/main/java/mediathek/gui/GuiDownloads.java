@@ -70,7 +70,11 @@ import java.awt.event.*;
 import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("serial")
@@ -94,8 +98,6 @@ public class GuiDownloads extends JPanel {
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private boolean loadFilmlist = false;
-    private final java.util.Timer timer = new java.util.Timer(false);
-    private TimerTask timerTask = null;
     private final MVTable tabelle;
     public static final String NAME = "Downloads";
     private final Daten daten;
@@ -217,6 +219,30 @@ public class GuiDownloads extends JPanel {
         Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
 
         setupDownloadRateLimitSpinner();
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                tabVisible.set(true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                tabVisible.set(false);
+            }
+        });
+    }
+
+    private final AtomicBoolean tabVisible = new AtomicBoolean(false);
+
+    @Handler
+    private void handleDownloadInfoUpdate(DownloadInfoUpdateAvailableEvent e) {
+        if (tabVisible.get()) {
+            SwingUtilities.invokeLater(() -> {
+                if (txtDownload.isShowing())
+                    setInfoText();
+            });
+        }
     }
 
     private final JFXPanel toolBarPanel;
@@ -571,7 +597,7 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        setTimer();
+        setupInfoPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -600,30 +626,11 @@ public class GuiDownloads extends JPanel {
         this.updateUI();
     }
 
-    private void setTimer() {
+    private void setupInfoPanel() {
         txtDownload.setText("");
         txtDownload.setEditable(false);
         txtDownload.setFocusable(false);
         txtDownload.setContentType("text/html");
-        try {
-            if (txtDownload.isVisible()) {
-                timerTask = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        SwingUtilities.invokeLater(() -> setInfoText());
-                    }
-                };
-                timer.schedule(timerTask, 0, 1_000);
-            } else {
-                if (timerTask != null) {
-                    timerTask.cancel();
-                }
-                timer.purge();
-            }
-        } catch (IllegalStateException ex) {
-            logger.debug(ex);
-        }
     }
 
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);

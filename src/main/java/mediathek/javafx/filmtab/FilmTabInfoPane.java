@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.HBox;
 import mediathek.config.Daten;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.javafx.CenteredBorderPane;
@@ -42,10 +43,13 @@ public class FilmTabInfoPane extends HBox {
     }
 
     private void updateLayout() {
-        downloadInformationLabel.setInfoFilme();
         filmInfoLabel.updateValues();
     }
 
+    @Handler
+    private void handleDownloadInfoUpdate(DownloadInfoUpdateAvailableEvent e) {
+        Platform.runLater(downloadInformationLabel::setInfoFilme);
+    }
     @Handler
     private void handleLeftDisplayUpdate(UpdateStatusBarLeftDisplayEvent e) {
         Platform.runLater(this::updateLayout);

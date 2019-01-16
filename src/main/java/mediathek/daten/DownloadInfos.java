@@ -23,13 +23,18 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.BaseEvent;
+import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
+import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.MVFilmSize;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 
 import java.text.DecimalFormat;
 
 public class DownloadInfos {
-
     private static final DecimalFormat formatter = new DecimalFormat("####0.00");
+    private final MBassador<BaseEvent> messageBus;
     /**
      * Bandbreite: bytes per second
      */
@@ -57,6 +62,11 @@ public class DownloadInfos {
     // Prozent fertig (alle)
     private int percent = -1;
     private String bandwidthStr = "";
+
+    public DownloadInfos(MBassador<BaseEvent> messageBus) {
+        this.messageBus = messageBus;
+        messageBus.subscribe(this);
+    }
 
     public long getBandwidth() {
         return bandwidth;
@@ -115,9 +125,13 @@ public class DownloadInfos {
         return "";
     }
 
-    //FIXME neu schreiben da die zugriffe komplett flasch sind, Kapseln!!!
-    public synchronized void makeDownloadInfos() {
-        clean();
+    @Handler
+    private void handleTimerEvent(TimerEvent e) {
+        makeDownloadInfos();
+    }
+
+    private void makeDownloadInfos() {
+        resetData();
 
         final var listeDownloads = Daten.getInstance().getListeDownloads();
         final var aktivDownloads = listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
@@ -163,6 +177,8 @@ public class DownloadInfos {
             progressMsg();
         }
         roundBandwidth();
+
+        messageBus.publishAsync(new DownloadInfoUpdateAvailableEvent());
     }
 
     private void progressMsg() {
@@ -186,7 +202,7 @@ public class DownloadInfos {
         }
     }
 
-    private void clean() {
+    private void resetData() {
         anzDownloadsRun = 0;
         byteAlleDownloads = 0;
         byteAktDownloads = 0;
