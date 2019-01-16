@@ -44,7 +44,7 @@ public class ResetSettingsPanel extends JPanel {
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
-            GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
+            GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true), true);
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, ResetSettingsPanel.class.getSimpleName());
         });
         jButtonResetAll.addActionListener(e -> {

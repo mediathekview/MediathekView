@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.MVHttpClient;
 import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -29,12 +30,13 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -199,12 +201,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
-    public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean auto, boolean setVersion) {
+    public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean setVersion) {
         if (pSet == null) {
-            if (!auto) {
-                MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                        "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
+            MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                    "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (parent != null) {
@@ -214,10 +214,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON].isEmpty()) {
                 if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON])) {
                     // und Tschüss
-                    if (!auto) {
-                        MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                                "Fehler", JOptionPane.ERROR_MESSAGE);
-                    }
+                    MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
@@ -225,28 +223,21 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         if (parent != null) {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
-        if (auto) {
+
+        DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
+        dialog.setVisible(true);
+        if (dialog.ok) {
             if (Daten.listePset.addPset(pSet)) {
                 if (setVersion) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 }
-            }
-        } else {
-            DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                if (Daten.listePset.addPset(pSet)) {
-                    if (setVersion) {
-                        MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
-                    }
-                    MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
-                            "Ok", JOptionPane.INFORMATION_MESSAGE);
+                MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
 
-                } else {
-                    MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                            "Fehler", JOptionPane.ERROR_MESSAGE);
+            } else {
+                MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                        "Fehler", JOptionPane.ERROR_MESSAGE);
 
-                }
             }
         }
     }
@@ -254,9 +245,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     private static boolean addOnZip(String datei) {
         String zielPfad = addsPfad(getPathJar(), "bin");
         File zipFile;
-        int timeout = 10_000; //10 Sekunden
         int n;
-        URLConnection conn;
+
         try {
             if (!GuiFunktionen.istUrl(datei)) {
                 zipFile = new File(datei);
@@ -272,42 +262,43 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 } else {
                     try (FileInputStream in = new FileInputStream(datei);
                          FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei))) {
-                        final byte[] buffer = new byte[1024];
+                        final byte[] buffer = new byte[64 * 1024];
                         while ((n = in.read(buffer)) != -1) {
                             fOut.write(buffer, 0, n);
                         }
                     }
                 }
             } else {
-                conn = new URL(datei).openConnection();
-                conn.setConnectTimeout(timeout);
-                conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", ApplicationConfiguration.getConfiguration()
-                        .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-                if (datei.endsWith(Const.FORMAT_ZIP)) {
-
-                    File tmpFile = File.createTempFile("mediathek", null);
-                    tmpFile.deleteOnExit();
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                         FileOutputStream fOut = new FileOutputStream(tmpFile)) {
-                        final byte[] buffer = new byte[1024];
-                        while ((n = in.read(buffer)) != -1) {
-                            fOut.write(buffer, 0, n);
-                        }
-                    }
-                    if (!entpacken(tmpFile, new File(zielPfad))) {
-                        // und Tschüss
-                        return false;
-                    }
-
-                } else {
-                    String file = GuiFunktionen.getDateiName(datei);
-                    File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                         FileOutputStream fOut = new FileOutputStream(f)) {
-                        final byte[] buffer = new byte[1024];
-                        while ((n = in.read(buffer)) != -1) {
-                            fOut.write(buffer, 0, n);
+                final Request request = new Request.Builder().url(datei).get()
+                        .header("User-Agent", ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT))
+                        .get().build();
+                try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+                     ResponseBody body = response.body()) {
+                    if (response.isSuccessful() && body != null) {
+                        try (InputStream is = body.byteStream();
+                             BufferedInputStream bis = new BufferedInputStream(is)) {
+                            final byte[] buffer = new byte[64 * 1024];
+                            if (datei.endsWith(Const.FORMAT_ZIP)) {
+                                File tmpFile = File.createTempFile("mediathek", null);
+                                tmpFile.deleteOnExit();
+                                try (FileOutputStream fOut = new FileOutputStream(tmpFile)) {
+                                    while ((n = bis.read(buffer)) != -1) {
+                                        fOut.write(buffer, 0, n);
+                                    }
+                                }
+                                if (!entpacken(tmpFile, new File(zielPfad))) {
+                                    // und Tschüss
+                                    return false;
+                                }
+                            } else {
+                                String file = GuiFunktionen.getDateiName(datei);
+                                File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
+                                try (FileOutputStream fOut = new FileOutputStream(f)) {
+                                    while ((n = bis.read(buffer)) != -1) {
+                                        fOut.write(buffer, 0, n);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -380,7 +371,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             break;
                         }
                     } else //Suffix prüfen
-                     if (url.endsWith(s1.toLowerCase())) {
+                        if (url.endsWith(s1.toLowerCase())) {
                             ret = true;
                             break;
                         }
@@ -431,7 +422,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else // Pfad beschreibbar?
-                     if (!checkPfadBeschreibbar(zielPfad)) {
+                        if (!checkPfadBeschreibbar(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";

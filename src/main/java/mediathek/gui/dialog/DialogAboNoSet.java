@@ -50,7 +50,7 @@ public class DialogAboNoSet extends JDialog {
                 + "(Oder die Standardsets importieren)");
         jButtonImport.addActionListener(l
                 -> GuiFunktionenProgramme.addSetVorlagen(parent, daten,
-                        ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/));
+                        ListePsetVorlagen.getStandarset(parent, daten, true), true));
         jButtonOk.addActionListener((ActionEvent e) -> dispose());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
