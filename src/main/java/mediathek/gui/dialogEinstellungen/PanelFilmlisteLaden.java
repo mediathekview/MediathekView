@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -33,6 +34,16 @@ public class PanelFilmlisteLaden extends JPanel {
 
         initComponents();
         init();
+
+        final var config = ApplicationConfiguration.getConfiguration();
+        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE,true));
+        cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE,cbSign.isSelected()));
+
+        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION,true));
+        cbAudio.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION,cbAudio.isSelected()));
+
+        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,true));
+        cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,cbTrailer.isSelected()));
     }
 
     private void init() {
@@ -177,6 +188,10 @@ public class PanelFilmlisteLaden extends JPanel {
         jCheckBoxUpdate = new javax.swing.JCheckBox();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonManuell = new javax.swing.JRadioButton();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        cbSign = new javax.swing.JCheckBox();
+        cbTrailer = new javax.swing.JCheckBox();
+        cbAudio = new javax.swing.JCheckBox();
 
         jPanelAuto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
 
@@ -271,6 +286,39 @@ public class PanelFilmlisteLaden extends JPanel {
 
         buttonGroup1.add(jRadioButtonManuell);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Zusätzliche Filmdaten laden"));
+        jPanel1.setToolTipText("<html>Alle nicht angewählten Einträge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Einträge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugefügt wenn die Einstellungen entsprechend angepasst wurden.</html>");
+
+        cbSign.setText("Gebärdensprache");
+
+        cbTrailer.setText("Trailer/Teaser/Vorschau");
+
+        cbAudio.setText("Hörfassungen");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cbTrailer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbAudio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbSign)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbSign)
+                    .addComponent(cbAudio)
+                    .addComponent(cbTrailer))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -283,7 +331,8 @@ public class PanelFilmlisteLaden extends JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelManuel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanelManuel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -297,11 +346,16 @@ public class PanelFilmlisteLaden extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButtonManuell)
                     .addComponent(jPanelManuel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbAudio;
+    private javax.swing.JCheckBox cbSign;
+    private javax.swing.JCheckBox cbTrailer;
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JButton jButtonLoad;
