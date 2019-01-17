@@ -27,6 +27,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
@@ -266,6 +267,11 @@ public class FilmListReader implements AutoCloseable {
 
         skipFieldDescriptions(jp);
 
+        final var config = ApplicationConfiguration.getConfiguration();
+        final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER, true);
+        final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION, true);
+        final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE, true);
+
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
                 break;
@@ -295,6 +301,22 @@ public class FilmListReader implements AutoCloseable {
 
                 //this will check after all data has been read
                 parseLivestream(datenFilm);
+
+                if (!loadTrailer) {
+                    if (datenFilm.isTrailerTeaser())
+                        continue;
+                }
+
+                if (!loadAudiodescription) {
+                    if (datenFilm.isAudioVersion())
+                        continue;
+                }
+
+                if (!loadSignLanguage) {
+                    if (datenFilm.isSignLanguage())
+                        continue;
+                }
+
                 listeFilme.importFilmliste(datenFilm);
 
                 if (milliseconds > 0) {
@@ -383,11 +405,13 @@ public class FilmListReader implements AutoCloseable {
         final Request request = new Request.Builder()
                 .url(source).get()
                 .build();
-        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
-            if (response.isSuccessful()) {
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+             ResponseBody body = response.body()) {
+            if (response.isSuccessful() && body != null) {
+                final var endRequest = response.request();
+                logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
                 ProgressMonitor monitor = new ProgressMonitor(source.toString());
-                try (ResponseBody body = response.body();
-                     InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
+                try (InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);
                      JsonParser jp = new JsonFactory().createParser(is)) {
                     readData(jp, listeFilme);

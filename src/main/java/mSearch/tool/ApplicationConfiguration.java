@@ -26,7 +26,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.show_notifications";
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
 
-
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
     public static final String HTTP_PROXY_USERNAME = "http.proxy.user";
@@ -44,6 +43,10 @@ public class ApplicationConfiguration {
     public static final String FILTER_PANEL_FILM_LENGTH_MIN = "filter.film_length.min";
     public static final String FILTER_PANEL_FILM_LENGTH_MAX = "filter.film_length.max";
     public static final String FILTER_PANEL_ZEITRAUM = "filter.zeitraum";
+
+    public static final String FILMLIST_LOAD_TRAILER = "filmlist.load.trailer";
+    public static final String FILMLIST_LOAD_AUDIODESCRIPTION = "filmlist.load.audio_description";
+    public static final String FILMLIST_LOAD_SIGNLANGUAGE = "filmlist.load.sign_language";
 
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
