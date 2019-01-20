@@ -909,27 +909,6 @@ public class GuiFilme extends JPanel {
             submenueBlack.add(itemBlackThema);
             submenueBlack.add(itemBlackSenderThema);
 
-            //##Trenner##
-            submenueBlack.addSeparator();
-            //##Trenner##
-
-            final JCheckBoxMenuItem jCheckBoxBlackBoxOn = new JCheckBoxMenuItem("Blacklist ist eingeschaltet");
-            jCheckBoxBlackBoxOn.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
-            jCheckBoxBlackBoxOn.addActionListener(e -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
-                daten.getListeBlacklist().filterListe();
-                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
-            });
-            submenueBlack.add(jCheckBoxBlackBoxOn);
-
-            final JCheckBoxMenuItem jCheckBoxBlackBoxStart = new JCheckBoxMenuItem("Blacklist ist beim Programmstart eingeschaltet");
-            jCheckBoxBlackBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
-            jCheckBoxBlackBoxStart.addActionListener(e -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxBlackBoxStart.isSelected()));
-                Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
-            });
-            submenueBlack.add(jCheckBoxBlackBoxStart);
-
             //Url
             res.ifPresent(film -> {
                 JMenuItem item;
