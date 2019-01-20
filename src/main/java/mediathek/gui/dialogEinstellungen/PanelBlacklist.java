@@ -51,8 +51,6 @@ public class PanelBlacklist extends PanelVorlage {
     public boolean ok = false;
     public String ziel;
     private final String name;
-    private static final Color cGruen = new Color(0, 153, 51);
-    private static final Color cRot = new Color(255, 0, 0);
 
     public PanelBlacklist(Daten d, JFrame parentComponent, String nname) {
         super(d, parentComponent);
@@ -72,7 +70,6 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void ping() {
                 jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
-                setCheckBlacklist();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
@@ -94,7 +91,6 @@ public class PanelBlacklist extends PanelVorlage {
         jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
         jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
 
-        setCheckBlacklist();
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
         jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
         try {
@@ -127,19 +123,16 @@ public class PanelBlacklist extends PanelVorlage {
             notifyBlack();
         });
         jCheckBoxAbo.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
             Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
         jCheckBoxStart.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
             Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
             notifyBlack();
         });
@@ -212,12 +205,6 @@ public class PanelBlacklist extends PanelVorlage {
         comboThemaLaden();
         jTextFieldThemaTitel.addMouseListener(new TextCopyPaste());
         jTextFieldTitel.addMouseListener(new TextCopyPaste());
-    }
-
-    private void setCheckBlacklist() {
-        jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
-        jCheckBoxStart.setForeground(jCheckBoxStart.isSelected() ? cGruen : cRot);
-        jCheckBoxAbo.setForeground(jCheckBoxAbo.isSelected() ? cGruen : cRot);
     }
 
     private void notifyBlack() {
