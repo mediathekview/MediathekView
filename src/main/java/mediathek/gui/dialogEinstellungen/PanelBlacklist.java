@@ -315,9 +315,10 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
+        javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
+        jCheckBoxStart = new javax.swing.JCheckBox();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
-        jCheckBoxStart = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -382,7 +383,7 @@ public class PanelBlacklist extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel13))
-                        .addGap(0, 230, Short.MAX_VALUE)))
+                        .addGap(0, 267, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -454,7 +455,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
 
         jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
@@ -575,7 +576,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonWhitelist)
                             .addComponent(jRadioButtonBlacklist))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 286, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -595,7 +596,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addComponent(jRadioButtonWhitelist))
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)
@@ -607,11 +608,18 @@ public class PanelBlacklist extends PanelVorlage {
 
         jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
 
-        jCheckBoxBlacklistEingeschaltet.setText("Blacklist im Tab Filme ist eingeschaltet");
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Allgemeine Einstellungen"));
+        jPanel8.setLayout(new java.awt.GridLayout(3, 1));
 
-        jCheckBoxAbo.setText("Die Blacklist beim Suchen der Abos berücksichtigen (sonst komplette Filmliste)");
+        jCheckBoxStart.setText("Beim Programmstart einschalten");
+        jPanel8.add(jCheckBoxStart);
 
-        jCheckBoxStart.setText("Blacklist beim Programmstart einschalten");
+        jCheckBoxBlacklistEingeschaltet.setText("Im Tab Filme einschalten");
+        jPanel8.add(jCheckBoxBlacklistEingeschaltet);
+
+        jCheckBoxAbo.setText("Bei der Suche nach Abos berücksichtigen");
+        jCheckBoxAbo.setToolTipText("<html>Die Blacklist beim Suchen nach Abos berücksichtigen.<br/>Ansonsten wird die komplette Filmliste durchsucht.</html>");
+        jPanel8.add(jCheckBoxAbo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -620,29 +628,15 @@ public class PanelBlacklist extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jCheckBoxStart)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTabbedPaneBlacklist)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBoxAbo)
-                                    .addComponent(jCheckBoxBlacklistEingeschaltet))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                    .addComponent(jTabbedPaneBlacklist)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxBlacklistEingeschaltet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxStart)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxAbo)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPaneBlacklist)
                 .addContainerGap())
