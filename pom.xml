@@ -463,7 +463,7 @@
 							<initialHeapSize>256</initialHeapSize>
 							<maxHeapSize>1024</maxHeapSize>
 							<maxHeapPercent>80</maxHeapPercent>
-							<jar>target/MediathekView.jar</jar>
+							<jar>MediathekView.jar</jar>
 							<jre>
 								<minVersion>11</minVersion>
 							</jre>
@@ -482,7 +482,7 @@
 							<initialHeapSize>256</initialHeapSize>
 							<maxHeapSize>1024</maxHeapSize>
 							<maxHeapPercent>80</maxHeapPercent>
-							<jar>target/MediathekView.jar</jar>
+							<jar>MediathekView.jar</jar>
 							<jre>
 								<minVersion>11</minVersion>
 							</jre>
@@ -505,7 +505,7 @@
 							<initialHeapSize>256</initialHeapSize>
 							<maxHeapSize>1024</maxHeapSize>
 							<maxHeapPercent>80</maxHeapPercent>
-							<jar>target/MediathekView.jar</jar>
+							<jar>MediathekView.jar</jar>
 							<jre>
 								<minVersion>11</minVersion>
 							</jre>
