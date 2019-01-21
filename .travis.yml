@@ -34,8 +34,8 @@ addons:
 # Build
 script:
   - chmod +x mvnw
-  - "./mvnw clean install -Pwindows"
-  - "./mvnw package -Plinux"
+  - "./mvnw clean install -Plinux"
+  - "./mvnw package -Pwindows"
   - "./mvnw package -Pmac"
   - echo "Travis Event Typ '$TRAVIS_EVENT_TYPE' und letzer Commit '$TRAVIS_COMMIT'";
   - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
