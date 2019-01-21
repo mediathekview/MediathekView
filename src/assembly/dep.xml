@@ -10,14 +10,7 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}/package</directory>
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>*.exe</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.build.directory}/res</directory>
+            <directory>${project.build.directory}/classes/res</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**/*.txt</include>
@@ -28,7 +21,9 @@
           <directory>${project.build.directory}</directory>
           <outputDirectory>/</outputDirectory>
           <includes>
-            <include>*.jar</include>
+            <include>MediathekView.jar</include>
+            <include>classes/res/*</include>
+            <include>*.exe</include>
           </includes>
         </fileSet>
     </fileSets>
