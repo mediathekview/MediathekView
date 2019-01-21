@@ -33,7 +33,7 @@ echo "cd $REMOTE" >> $BATCHDATEI
 
 for file in "$LOCAL"/*.{zip,gz,bz2} ; do
   # einzelne fertige Dateien hochladen
-  echo "put $LOCAL/$i" >> $BATCHDATEI
+  echo "put $LOCAL/$file" >> $BATCHDATEI
 done
 
 echo "cd ../" >> $BATCHDATEI
