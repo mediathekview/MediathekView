@@ -39,13 +39,13 @@ script:
     -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d && scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT; fi
     
     
-  - "./mvnw clean install -Pwindows"
+  - "./mvnw clean install -Pwindows,!linux"
   - echo "Travis Event Typ '$TRAVIS_EVENT_TYPE' und letzer Commit '$TRAVIS_COMMIT'";
   - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
     -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d && scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT; fi
     
     
-  - "./mvnw clean install -Pmac"
+  - "./mvnw clean install -Pmac,!linux"
   - echo "Travis Event Typ '$TRAVIS_EVENT_TYPE' und letzer Commit '$TRAVIS_COMMIT'";
   - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
     -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d && scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT; fi
