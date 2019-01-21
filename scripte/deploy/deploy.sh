@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BATCHDATEI="target/uploadbatch"
 LOCAL="target"
