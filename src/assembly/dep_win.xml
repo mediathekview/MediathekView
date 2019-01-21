@@ -21,6 +21,9 @@
           <includes>
             <include>**/*</include>
           </includes>
+          <excludes>
+            <exclude>*.sh</exclude>
+          </excludes>
         </fileSet>
     </fileSets>
 </assembly>
