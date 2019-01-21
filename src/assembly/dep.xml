@@ -10,19 +10,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}/classes/res</directory>
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>**/*.txt</include>
-                <include>**/*.sh</include>
-            </includes>
-        </fileSet>
-        <fileSet>
           <directory>${project.build.directory}</directory>
           <outputDirectory>/</outputDirectory>
           <includes>
             <include>MediathekView.jar</include>
-            <include>classes/res/*</include>
+            <include>res/*</include>
             <include>*.exe</include>
           </includes>
         </fileSet>
