@@ -14,8 +14,15 @@
           <outputDirectory>/</outputDirectory>
           <includes>
             <include>MediathekView.jar</include>
-            <include>res/*</include>
+            <include>res/**</include>
             <include>*.exe</include>
+          </includes>
+        </fileSet>
+        <fileSet>
+          <directory>${project.build.directory}/res</directory>
+          <outputDirectory>/</outputDirectory>
+          <includes>
+            <include>*</include>
           </includes>
         </fileSet>
     </fileSets>
