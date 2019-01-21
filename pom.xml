@@ -234,50 +234,6 @@
 			<version>1.11.0</version>
 		</dependency>
 
-
-		<!-- JavaFX -->
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-base</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-web</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
-
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -362,30 +318,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<shadedArtifactAttached>false</shadedArtifactAttached>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>${mainclass}</mainClass>
-								</transformer>
-							</transformers>
-							<excludes>
-								<exclude>res/*</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -405,202 +337,438 @@
 				<version>2.8.2</version>
 			</plugin>
 			<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.0.2</version>
-					<executions>
-						<execution>
-							<id>copy-resources</id>
-							<phase>validate</phase>
-							<goals>
-								<goal>copy-resources</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${basedir}/target/res</outputDirectory>
-								<resources>
-									<resource>
-										<directory>res</directory>
-										<filtering>true</filtering>
-									</resource>
-								</resources>
-							</configuration>
-						</execution>
-					</executions>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/res</outputDirectory>
+							<resources>
+								<resource>
+									<directory>res</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
-
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>windows</id>
+			<activation>
+				<os>
+					<name>windows</name>
+				</os>
+			</activation>
+			<properties>
+				<javafx.platform>win</javafx.platform>
+			</properties>
 			<dependencies>
+				<!-- JavaFX -->
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-base</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-swing</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
 				<dependency>
 					<groupId>org.openjfx</groupId>
 					<artifactId>javafx-graphics</artifactId>
 					<version>${javafx.version}</version>
-					<classifier>win</classifier>
+					<classifier>${javafx.platform}</classifier>
 				</dependency>
 			</dependencies>
 			<build>
-			<plugins>
-				<!-- Distribution Exe, and Archives -->
-				<plugin>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:linux</exclude>
+											<exclude>*:*:*:mac</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+										</transformer>
+									</transformers>
+									<excludes>
+										<exclude>res/*</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Distribution Exe, and Archives -->
+					<plugin>
 						<groupId>com.akathist.maven.plugins.launch4j</groupId>
 						<artifactId>launch4j-maven-plugin</artifactId>
 						<version>1.7.25</version>
 						<executions>
-						<execution>
-							<id>mv-exe</id>
-							<phase>package</phase>
-							<goals><goal>launch4j</goal></goals>
-							<configuration>
-								<headerType>gui</headerType>
-								<outfile>target/MediathekView.exe</outfile>
-								<dontWrapJar>true</dontWrapJar>
-								<mainClassName>${mainclass}</mainClassName>
-								<icon>res/MediathekView.ico</icon>
-								<initialHeapSize>256</initialHeapSize>
-								<maxHeapSize>1024</maxHeapSize>
-								<maxHeapPercent>80</maxHeapPercent>
-								<jar>MediathekView.jar</jar>
-								<jre>
-									<minVersion>11</minVersion>
-								</jre>
-							</configuration>
-						</execution>
-						<execution>
-							<id>mv-ipv4-exe</id>
-							<phase>package</phase>
-							<goals><goal>launch4j</goal></goals>
-							<configuration>
-								<headerType>gui</headerType>
-								<outfile>target/MediathekView_ipv4.exe</outfile>
-								<dontWrapJar>true</dontWrapJar>
-								<mainClassName>${mainclass}</mainClassName>
-								<icon>res/MediathekView.ico</icon>
-								<initialHeapSize>256</initialHeapSize>
-								<maxHeapSize>1024</maxHeapSize>
-								<maxHeapPercent>80</maxHeapPercent>
-								<jar>MediathekView.jar</jar>
-								<jre>
-									<minVersion>11</minVersion>
-								</jre>
-								<opts>
-									<opt>-Djava.net.preferIPv4Stack=true</opt>
-								</opts>
-							</configuration>
-						</execution>
-						<execution>
-							<id>mv-portable-exe</id>
-							<phase>package</phase>
-							<goals><goal>launch4j</goal></goals>
-							<configuration>
-								<headerType>gui</headerType>
-								<outfile>target/MediathekView_Portable.exe</outfile>
-								<dontWrapJar>true</dontWrapJar>
-								<mainClassName>${mainclass}</mainClassName>
-								<icon>res/MediathekView.ico</icon>
-								<cmdLine>Einstellungen/.mediathek3</cmdLine>
-								<initialHeapSize>256</initialHeapSize>
-								<maxHeapSize>1024</maxHeapSize>
-								<maxHeapPercent>80</maxHeapPercent>
-								<jar>MediathekView.jar</jar>
-								<jre>
-									<minVersion>11</minVersion>
-								</jre>
-								<opts>
-									<opt>-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log</opt>
-								</opts>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.5.3</version>
-					<configuration>
-					<finalName>MediathekView-${project.version}-win</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptor>src/assembly/dep_win.xml</descriptor>
-					</configuration>
-					<executions>
-						<execution>
-							<id>create-archive</id>
-							<phase>package</phase>
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		   </build>
+							<execution>
+								<id>mv-exe</id>
+								<phase>package</phase>
+								<goals>
+									<goal>launch4j</goal>
+								</goals>
+								<configuration>
+									<headerType>gui</headerType>
+									<outfile>target/MediathekView.exe</outfile>
+									<dontWrapJar>true</dontWrapJar>
+									<mainClassName>${mainclass}</mainClassName>
+									<icon>res/MediathekView.ico</icon>
+									<initialHeapSize>256</initialHeapSize>
+									<maxHeapSize>1024</maxHeapSize>
+									<maxHeapPercent>80</maxHeapPercent>
+									<jar>MediathekView.jar</jar>
+									<jre>
+										<minVersion>11</minVersion>
+									</jre>
+								</configuration>
+							</execution>
+							<execution>
+								<id>mv-ipv4-exe</id>
+								<phase>package</phase>
+								<goals>
+									<goal>launch4j</goal>
+								</goals>
+								<configuration>
+									<headerType>gui</headerType>
+									<outfile>target/MediathekView_ipv4.exe</outfile>
+									<dontWrapJar>true</dontWrapJar>
+									<mainClassName>${mainclass}</mainClassName>
+									<icon>res/MediathekView.ico</icon>
+									<initialHeapSize>256</initialHeapSize>
+									<maxHeapSize>1024</maxHeapSize>
+									<maxHeapPercent>80</maxHeapPercent>
+									<jar>MediathekView.jar</jar>
+									<jre>
+										<minVersion>11</minVersion>
+									</jre>
+									<opts>
+										<opt>-Djava.net.preferIPv4Stack=true</opt>
+									</opts>
+								</configuration>
+							</execution>
+							<execution>
+								<id>mv-portable-exe</id>
+								<phase>package</phase>
+								<goals>
+									<goal>launch4j</goal>
+								</goals>
+								<configuration>
+									<headerType>gui</headerType>
+									<outfile>target/MediathekView_Portable.exe</outfile>
+									<dontWrapJar>true</dontWrapJar>
+									<mainClassName>${mainclass}</mainClassName>
+									<icon>res/MediathekView.ico</icon>
+									<cmdLine>Einstellungen/.mediathek3</cmdLine>
+									<initialHeapSize>256</initialHeapSize>
+									<maxHeapSize>1024</maxHeapSize>
+									<maxHeapPercent>80</maxHeapPercent>
+									<jar>MediathekView.jar</jar>
+									<jre>
+										<minVersion>11</minVersion>
+									</jre>
+									<opts>
+										<opt>-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log</opt>
+									</opts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<finalName>MediathekView-${project.version}-win</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptor>src/assembly/dep_win.xml</descriptor>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-archive</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>linux</id>
+			<activation>
+				<os>
+					<name>linux</name>
+				</os>
+			</activation>
+			<properties>
+				<javafx.platform>linux</javafx.platform>
+			</properties>
 			<dependencies>
+				<!-- JavaFX -->
 				<dependency>
 					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics </artifactId>
+					<artifactId>javafx-base</artifactId>
 					<version>${javafx.version}</version>
-					<classifier>linux</classifier>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-swing</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
 				</dependency>
 			</dependencies>
 			<build>
-			<plugins>
-				<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-						<finalName>MediathekView-${project.version}-linux</finalName>
-						<appendAssemblyId>false</appendAssemblyId>
-						<descriptor>src/assembly/dep_linux.xml</descriptor>
-						</configuration>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
 						<executions>
 							<execution>
-										<id>create-archive</id>
-										<phase>package</phase>
-										<goals>
-											<goal>single</goal>
-										</goals>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:win</exclude>
+											<exclude>*:*:*:mac</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+										</transformer>
+									</transformers>
+									<excludes>
+										<exclude>res/*</exclude>
+									</excludes>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
-			</plugins>
-		  </build>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<finalName>MediathekView-${project.version}-linux</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptor>src/assembly/dep_linux.xml</descriptor>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-archive</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>mac</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+				</os>
+			</activation>
+			<properties>
+				<javafx.platform>mac</javafx.platform>
+			</properties>
 			<dependencies>
+				<!-- JavaFX -->
 				<dependency>
 					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics </artifactId>
+					<artifactId>javafx-base</artifactId>
 					<version>${javafx.version}</version>
-					<classifier>mac</classifier>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-swing</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
 				</dependency>
 			</dependencies>
 			<build>
-			<plugins>
-				<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-						<finalName>MediathekView-${project.version}-mac</finalName>
-						<appendAssemblyId>false</appendAssemblyId>
-						<descriptor>src/assembly/dep_mac.xml</descriptor>
-						</configuration>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
 						<executions>
 							<execution>
-										<id>create-archive</id>
-										<phase>package</phase>
-										<goals>
-											<goal>single</goal>
-										</goals>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:linux</exclude>
+											<exclude>*:*:*:win</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+										</transformer>
+									</transformers>
+									<excludes>
+										<exclude>res/*</exclude>
+									</excludes>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
-			</plugins>
-		  </build>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<finalName>MediathekView-${project.version}-mac</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<descriptor>src/assembly/dep_mac.xml</descriptor>
+						</configuration>
+						<executions>
+							<execution>
+								<id>create-archive</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

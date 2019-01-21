@@ -21,7 +21,10 @@
             <include>**/*</include>
           </includes>
           <excludes>
-            <exclude>*.exe</exclude>
+            <exclude>**/*.exe</exclude>
+            <exclude>**/*.bat</exclude>
+            <exclude>**/*.command</exclude>
+            <exclude>**/*macosx*</exclude>
           </excludes>
         </fileSet>
     </fileSets>
