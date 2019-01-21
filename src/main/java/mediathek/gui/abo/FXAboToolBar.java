@@ -2,8 +2,6 @@ package mediathek.gui.abo;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import mediathek.config.Daten;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.javafx.CenteredBorderPane;
@@ -21,9 +19,6 @@ public class FXAboToolBar extends ToolBar {
 
     public FXAboToolBar(GuiAbo tabAbo) {
         super();
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
