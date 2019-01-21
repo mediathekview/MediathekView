@@ -32,11 +32,13 @@ import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
 import mediathek.config.Const;
+import mediathek.config.Konstanten;
 import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -402,9 +404,14 @@ public class FilmListReader implements AutoCloseable {
      * @param listeFilme the list to read to
      */
     private void processFromWeb(URL source, ListeFilme listeFilme) {
+        final String clientId = Konstanten.MVVERSION.toString() + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
+
         final Request request = new Request.Builder()
-                .url(source).get()
+                .url(source)
+                .header("MV-Client", clientId)
+                .get()
                 .build();
+
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
