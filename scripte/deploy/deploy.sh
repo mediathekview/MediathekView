@@ -1,11 +1,11 @@
 #!/bin/sh
 
-BATCHDATEI="build/uploadbatch"
-LOCAL="build/distributions"
+BATCHDATEI="target/uploadbatch"
+LOCAL="target/distributions"
 REMOTE="upload"
 
-STATUSDATEI="build/upload.status"
-COMMITDATEI="build/gitcommithash.txt"
+STATUSDATEI="target/upload.status"
+COMMITDATEI="target/gitcommithash.txt"
 
 PORT="22"
 ADRESSE="deploy@mediathekview.de"
