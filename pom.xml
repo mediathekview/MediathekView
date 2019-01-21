@@ -431,8 +431,8 @@
 	
 	<profiles>
 		<profile>
-				<id>windows</id>
-			    <activation>
+			<id>windows</id>
+			<activation>
 					<os>
 						<family>windows</family>
 					</os>
@@ -537,6 +537,7 @@
 						</executions>
 					</plugin>
 			</plugins>
+		   </build>
 		</profile>
 		<profile>
 				<id>linux</id>
@@ -574,6 +575,7 @@
 						</executions>
 					</plugin>
 			</plugins>
+		  </build>
 		</profile>
 		<profile>
 				<id>mac</id>
@@ -611,5 +613,6 @@
 						</executions>
 					</plugin>
 			</plugins>
+		  </build>
 		</profile>
 </project>
