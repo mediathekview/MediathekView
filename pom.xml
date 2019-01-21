@@ -340,13 +340,6 @@
 
 	<build>
 		<finalName>MediathekView</finalName>
-		<resources>
-			<resource>
-				<directory>res</directory>
-			        <filtering>true</filtering>
-				<outputDirectory>${basedir}/target/res</outputDirectory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -386,6 +379,28 @@
 					<release>11</release>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/res</outputDirectory>
+							<resources>
+								<resource>
+									<directory>res</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+  </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
