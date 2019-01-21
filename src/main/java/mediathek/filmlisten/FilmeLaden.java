@@ -21,6 +21,8 @@ package mediathek.filmlisten;
 
 import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -47,7 +49,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -62,6 +63,10 @@ public class FilmeLaden {
     private static final String NETWORK_NOT_AVAILABLE = "Netzwerk nicht verfügbar";
     private static final String DIALOG_TITLE = "Filmliste laden";
     private static final String NO_UPDATE_AVAILABLE = "Keine aktuellere Liste verfügbar";
+    /**
+     * HTTP error code for not found.
+     */
+    private static final int HTTP_NOT_FOUND = 404;
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
     private final Daten daten;
@@ -126,7 +131,7 @@ public class FilmeLaden {
                 //we were not successful to load the id file
                 //if not found, pretend we need to update
                 logger.warn("hasNewRemoteFilmlist HTTP Response Code: {} for {}", response.code(), response.request().url());
-                if (response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                if (response.code() == HTTP_NOT_FOUND)
                     result = true;
             }
 
@@ -334,8 +339,10 @@ public class FilmeLaden {
                 hb.lb.textProperty().bind(writerTask.messageProperty());
                 hb.prog.progressProperty().bind(writerTask.progressProperty());
             });
-            writerTask.setOnSucceeded(e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb));
-            writerTask.setOnFailed(e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb));
+            
+            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            writerTask.setOnSucceeded(workerStateEventEventHandler);
+            writerTask.setOnFailed(workerStateEventEventHandler);
 
             CompletableFuture<Void> filterTask = CompletableFuture.runAsync(task);
             if (writeFilmList)
