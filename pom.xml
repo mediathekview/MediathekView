@@ -366,7 +366,7 @@
 			<id>windows</id>
 			<activation>
 				<os>
-					<name>windows</name>
+					<family>windows</family>
 				</os>
 			</activation>
 			<properties>
@@ -554,7 +554,7 @@
 			<id>linux</id>
 			<activation>
 				<os>
-					<name>linux</name>
+					<family>unix</family>
 				</os>
 			</activation>
 			<properties>
@@ -664,7 +664,7 @@
 			<id>mac</id>
 			<activation>
 				<os>
-					<name>mac os x</name>
+					<family>mac</family>
 				</os>
 			</activation>
 			<properties>
