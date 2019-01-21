@@ -41,6 +41,12 @@ jobs:
   - stage: Test
     script:
     - ./mvnw clean verify
+    cache:
+      directories:
+      - .autoconf
+      - $HOME/.m2
+    after_success:
+    - sonar-scanner
   - stage: Build and Deploy Snapshots
     script:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
@@ -50,15 +56,15 @@ jobs:
     - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
     - ./mvnw clean install -Pmac,!linux
     - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
+    cache:
+      directories:
+      - .autoconf
+      - $HOME/.m2
   - stage: Build and Deploy Linux
     script:
     - ./mvnw clean install -Plinux
     after_success:
     - sonar-scanner
-    cache:
-      directories:
-      - .autoconf
-      - $HOME/.m2
     before_deploy:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
     deploy:
@@ -78,12 +84,6 @@ jobs:
   - stage: Build and Deploy Windows
     script:
     - ./mvnw clean install -Pwindows,!linux
-    after_success:
-    - sonar-scanner
-    cache:
-      directories:
-      - .autoconf
-      - $HOME/.m2
     before_deploy:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
     deploy:
@@ -103,12 +103,6 @@ jobs:
   - stage: Build and Deploy Mac
     script:
     - ./mvnw clean install -Pmac,!linux
-    after_success:
-    - sonar-scanner
-    cache:
-      directories:
-      - .autoconf
-      - $HOME/.m2
     before_deploy:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
     deploy:
