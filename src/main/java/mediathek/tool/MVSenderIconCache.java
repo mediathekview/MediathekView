@@ -4,16 +4,19 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.gui.messages.SenderIconStyleChangedEvent;
 import net.engio.mbassy.listener.Handler;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -25,9 +28,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This class will load only one instance for all used sender icons.
  */
 public class MVSenderIconCache {
+    public static final String CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local";
     private final static int ICON_SIZE_LARGE = 32;
     private final static int ICON_SIZE_SMALL = 16;
-    public static final String CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local";
     private static final Logger logger = LogManager.getLogger(MVSenderIconCache.class);
     private final AtomicBoolean useLocalIcons = new AtomicBoolean(false);
     private final LoadingCache<String, Optional<ImageIcon>> senderCache_small = CacheBuilder.newBuilder()
@@ -89,7 +92,6 @@ public class MVSenderIconCache {
             this.height = height;
         }
 
-        @Deprecated
         private ImageIcon scaleImage(String source, int maxHeight) {
             int newWidth, priorHeight, priorWidth; // Variables for the old - new ICON_SIZE_LARGE and width
             Image image;
@@ -127,8 +129,17 @@ public class MVSenderIconCache {
             ImageIcon icon = null;
 
             if (!useLocalIcons.get()) {
-                try {
-                    icon = scaleImage(new ImageIcon(new URL(networkResource)), height);
+                final Request request = new Request.Builder()
+                        .url(networkResource)
+                        .get()
+                        .build();
+
+                try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+                     ResponseBody body = response.body()) {
+                    if (response.isSuccessful() && body != null) {
+                        icon = scaleImage(new ImageIcon(body.bytes()), height);
+                    } else
+                        icon = null;
                 } catch (Exception ex) {
                     icon = null;
                 }
@@ -168,7 +179,7 @@ public class MVSenderIconCache {
                     break;
 
                 case "HR":
-                    icon = getIcon(WIKI_BASE_URL + "/6/63/HR_Logo.svg/519px-HR_Logo.svg.png","/mediathek/res/sender/hr.png");
+                    icon = getIcon(WIKI_BASE_URL + "/6/63/HR_Logo.svg/519px-HR_Logo.svg.png", "/mediathek/res/sender/hr.png");
                     break;
 
                 case "KiKA":
