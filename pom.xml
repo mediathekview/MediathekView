@@ -344,6 +344,7 @@
 			<resource>
 				<directory>res</directory>
 			        <filtering>true</filtering>
+				<outputDirectory>${basedir}/target/res</outputDirectory>
 			</resource>
 		</resources>
 		<plugins>
