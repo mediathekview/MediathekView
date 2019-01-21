@@ -437,6 +437,7 @@
 						<phase>package</phase>
 						<goals><goal>launch4j</goal></goals>
 						<configuration>
+							<headerType>gui</headerType>
 							<outfile>target/MediathekView.exe</outfile>
 							<dontWrapJar>true</dontWrapJar>
 							<mainClassName>${mainclass}</mainClassName>
@@ -455,6 +456,7 @@
 						<phase>package</phase>
 						<goals><goal>launch4j</goal></goals>
 						<configuration>
+							<headerType>gui</headerType>
 							<outfile>target/MediathekView_ipv4.exe</outfile>
 							<dontWrapJar>true</dontWrapJar>
 							<mainClassName>${mainclass}</mainClassName>
@@ -476,6 +478,7 @@
 						<phase>package</phase>
 						<goals><goal>launch4j</goal></goals>
 						<configuration>
+							<headerType>gui</headerType>
 							<outfile>target/MediathekView_Portable.exe</outfile>
 							<dontWrapJar>true</dontWrapJar>
 							<mainClassName>${mainclass}</mainClassName>
