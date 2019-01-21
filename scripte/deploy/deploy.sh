@@ -1,7 +1,7 @@
 #!/bin/sh
 
 BATCHDATEI="target/uploadbatch"
-LOCAL="target/distributions"
+LOCAL="target"
 REMOTE="upload"
 
 STATUSDATEI="target/upload.status"
@@ -31,7 +31,7 @@ fi
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for i in `ls -x -1 $LOCAL`; do
+for file in "$LOCAL"/*.{zip,gz,bz2} ; do
   # einzelne fertige Dateien hochladen
   echo "put $LOCAL/$i" >> $BATCHDATEI
 done
