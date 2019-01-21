@@ -403,6 +403,28 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.2</version>
 			</plugin>
+			<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+					<executions>
+						<execution>
+							<id>copy-resources</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${basedir}/target/res</outputDirectory>
+								<resources>
+									<resource>
+										<directory>res</directory>
+										<filtering>true</filtering>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+			</plugin>
 		</plugins>
 
 	</build>
@@ -425,31 +447,6 @@
 			</dependencies>
 			<build>
 			<plugins>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
-					<executions>
-						<execution>
-							<id>copy-resources</id>
-							<phase>validate</phase>
-							<goals>
-								<goal>copy-resources</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${basedir}/target/res</outputDirectory>
-								<resources>
-									<resource>
-										<directory>res</directory>
-										<filtering>true</filtering>
-										<excludes>
-											<exclude>*.sh</exclude>
-										</excludes>
-									</resource>
-								</resources>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<!-- Distribution Exe, and Archives -->
 				<plugin>
 						<groupId>com.akathist.maven.plugins.launch4j</groupId>
@@ -558,31 +555,6 @@
 			</dependencies>
 			<build>
 			<plugins>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
-					<executions>
-						<execution>
-							<id>copy-resources</id>
-							<phase>validate</phase>
-							<goals>
-								<goal>copy-resources</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${basedir}/target/res</outputDirectory>
-								<resources>
-									<resource>
-										<directory>res</directory>
-										<filtering>true</filtering>
-										<excludes>
-											<exclude>*.exe</exclude>
-										</excludes>
-									</resource>
-								</resources>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<version>2.5.3</version>
