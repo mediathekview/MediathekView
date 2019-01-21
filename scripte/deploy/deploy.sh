@@ -31,7 +31,7 @@ fi
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for file in $LOCAL/*.{zip,gz} ; do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done
