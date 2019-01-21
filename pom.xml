@@ -75,6 +75,7 @@
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
 		<javafx.version>12-ea+9</javafx.version>
+		<mainclass>mediathek.Main</mainclass>
 	</properties>
 
 	<dependencies>
@@ -338,6 +339,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>MediathekView</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -392,7 +394,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>mediathek.Main</mainClass>
+									<mainClass>${mainclass}</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
@@ -419,6 +421,90 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.2</version>
 			</plugin>
+			<!-- Distribution Exe, and Archives -->
+			<plugin>
+        			<groupId>com.akathist.maven.plugins.launch4j</groupId>
+			        <artifactId>launch4j-maven-plugin</artifactId>
+			        <executions>
+					<execution>
+						<id>mv-exe</id>
+						<phase>package</phase>
+						<goals><goal>launch4j</goal></goals>
+						<configuration>
+							<outfile>target/MediathekView.exe</outfile>
+							<dontWrapJar>true</dontWrapJar>
+							<mainClassName>${mainclass}</mainClassName>
+							<icon>res/MediathekView.ico</icon>
+							<initialHeapSize>256</initialHeapSize>
+							<maxHeapSize>1024</maxHeapSize>
+							<maxHeapPercent>80</maxHeapPercent>
+							<jar>target/MediathekView.jar</jar>
+							<jre>
+								<minVersion>11</minVersion>
+							</jre>
+						</configuration>
+					</execution>
+					<execution>
+						<id>mv-ipv4-exe</id>
+						<phase>package</phase>
+						<goals><goal>launch4j</goal></goals>
+						<configuration>
+							<outfile>target/MediathekView_ipv4.exe</outfile>
+							<dontWrapJar>true</dontWrapJar>
+							<mainClassName>${mainclass}</mainClassName>
+							<icon>res/MediathekView.ico</icon>
+							<initialHeapSize>256</initialHeapSize>
+							<maxHeapSize>1024</maxHeapSize>
+							<maxHeapPercent>80</maxHeapPercent>
+							<jar>target/MediathekView.jar</jar>
+							<jre>
+								<minVersion>11</minVersion>
+							</jre>
+							<opts>
+								<opt>-Djava.net.preferIPv4Stack=true</opt>
+							</opts>
+						</configuration>
+					</execution>
+					<execution>
+						<id>mv-portable-exe</id>
+						<phase>package</phase>
+						<goals><goal>launch4j</goal></goals>
+						<configuration>
+							<outfile>target/MediathekView_Portable.exe</outfile>
+							<dontWrapJar>true</dontWrapJar>
+							<mainClassName>${mainclass}</mainClassName>
+							<icon>res/MediathekView.ico</icon>
+							<cmdLine>Einstellungen/.mediathek3</cmdLine>
+							<initialHeapSize>256</initialHeapSize>
+							<maxHeapSize>1024</maxHeapSize>
+							<maxHeapPercent>80</maxHeapPercent>
+							<jar>target/MediathekView.jar</jar>
+							<jre>
+								<minVersion>11</minVersion>
+							</jre>
+							<opts>
+								<opt>-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log</opt>
+							</opts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+        			<artifactId>maven-assembly-plugin</artifactId>
+        			<version>2.5.3</version>
+        			<configuration>
+          			<descriptor>src/assembly/dep.xml</descriptor>
+        			</configuration>
+			        <executions>
+          		  		<execution>
+            			    		<id>create-archive</id>
+            			    		<phase>package</phase>
+            			    		<goals>
+              			      			<goal>single</goal>
+            			    		</goals>
+          				</execution>
+        			</executions>
+      			</plugin>
 		</plugins>
 
 	</build>
