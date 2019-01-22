@@ -2,8 +2,8 @@ package mediathek.tool.table;
 
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVConfig;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelFilm;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelFilm;
 
 public class MVFilmTable extends MVTable {
     private static final long serialVersionUID = -5362792359176783146L;

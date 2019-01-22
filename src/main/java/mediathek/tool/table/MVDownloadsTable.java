@@ -4,8 +4,8 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelDownload;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelDownload;
 
 import javax.activation.DataHandler;
 import javax.swing.*;

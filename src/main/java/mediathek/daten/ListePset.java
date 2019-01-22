@@ -25,7 +25,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;

@@ -31,8 +31,8 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
+import mediathek.tool.models.TModel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

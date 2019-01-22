@@ -26,7 +26,7 @@ import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModelMediaDB;
+import mediathek.tool.models.TModelMediaDB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

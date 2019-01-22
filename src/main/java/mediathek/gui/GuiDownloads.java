@@ -57,6 +57,7 @@ import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
+import mediathek.tool.models.TModelDownload;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;

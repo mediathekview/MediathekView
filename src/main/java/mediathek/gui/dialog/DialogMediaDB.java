@@ -31,6 +31,7 @@ import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
+import mediathek.tool.models.TModelMediaDB;
 import mediathek.tool.table.MVMediaDbTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;

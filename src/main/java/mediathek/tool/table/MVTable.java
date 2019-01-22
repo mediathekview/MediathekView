@@ -21,7 +21,7 @@ package mediathek.tool.table;
 
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;

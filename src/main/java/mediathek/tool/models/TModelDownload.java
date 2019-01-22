@@ -17,21 +17,35 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.models;
 
-import mediathek.config.MVColor;
+import mSearch.tool.Datum;
+import mediathek.daten.DatenDownload;
+import mediathek.tool.MVFilmSize;
 
 @SuppressWarnings("serial")
-public class TModelColor extends TModel {
+public class TModelDownload extends TModel {
     private final Class<?>[] types;
 
-    public TModelColor(Object[][] data, Object[] columnNames) {
+    public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[MVColor.MVC_MAX];
-        for (int i = 0; i < MVColor.MVC_MAX; ++i) {
+        types = new Class<?>[DatenDownload.MAX_ELEM];
+        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             switch (i) {
-                case MVColor.MVC_COLOR:
-                    types[i] = MVC.class;
+                case DatenDownload.DOWNLOAD_NR:
+                    types[i] = Integer.class;
+                    break;
+                case DatenDownload.DOWNLOAD_FILM_NR:
+                    types[i] = Integer.class;
+                    break;
+                case DatenDownload.DOWNLOAD_DATUM:
+                    types[i] = Datum.class;
+                    break;
+                case DatenDownload.DOWNLOAD_GROESSE:
+                    types[i] = MVFilmSize.class;
+                    break;
+                case DatenDownload.DOWNLOAD_REF:
+                    types[i] = DatenDownload.class;
                     break;
                 default:
                     types[i] = String.class;

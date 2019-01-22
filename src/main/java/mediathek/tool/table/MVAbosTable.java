@@ -2,8 +2,8 @@ package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelAbo;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelAbo;
 
 public class MVAbosTable extends MVTable {
     private static final long serialVersionUID = 679215520194372998L;
