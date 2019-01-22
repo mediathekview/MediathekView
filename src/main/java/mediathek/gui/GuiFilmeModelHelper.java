@@ -7,8 +7,8 @@ import mediathek.config.Daten;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelFilm;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVTable;
 
 import java.util.concurrent.TimeUnit;

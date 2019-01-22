@@ -2,7 +2,7 @@ package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 
 public class MVMediaDbTable extends MVTable {
     private static final long serialVersionUID = 5220131462717851342L;

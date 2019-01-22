@@ -26,8 +26,8 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
+import mediathek.tool.models.TModel;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;

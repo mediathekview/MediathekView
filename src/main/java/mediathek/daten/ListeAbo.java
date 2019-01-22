@@ -32,7 +32,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModelAbo;
+import mediathek.tool.models.TModelAbo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

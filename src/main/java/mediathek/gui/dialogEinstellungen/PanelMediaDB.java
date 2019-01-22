@@ -31,7 +31,12 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
-import mediathek.tool.*;
+import mediathek.tool.CellRendererMediaDB;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.TextCopyPaste;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 

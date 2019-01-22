@@ -17,30 +17,43 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.models;
 
-import mediathek.daten.DatenMediaDB;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Datum;
+import mediathek.tool.MVFilmSize;
 
 @SuppressWarnings("serial")
-public class TModelMediaDB extends TModel {
-    private final Class<?>[] types;
-
-    public TModelMediaDB(Object[][] data, Object[] columnNames) {
+public class TModelFilm extends TModel {
+    public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[DatenMediaDB.MAX_ELEM];
-        for (int i = 0; i < DatenMediaDB.MAX_ELEM; ++i) {
-            switch (i) {
-                case DatenMediaDB.MEDIA_DB_SIZE:
-                    types[i] = MVMediaDBFileSize.class;
-                    break;
-                default:
-                    types[i] = String.class;
-            }
-        }
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return types[columnIndex];
+        Class<?> result;
+        switch (columnIndex) {
+            case DatenFilm.FILM_NR:
+                result = Integer.class;
+                break;
+
+            case DatenFilm.FILM_DATUM:
+                result = Datum.class;
+                break;
+
+            case DatenFilm.FILM_GROESSE:
+                result = MVFilmSize.class;
+                break;
+
+            case DatenFilm.FILM_REF:
+                result = DatenFilm.class;
+                break;
+
+            default:
+                result = String.class;
+                break;
+        }
+
+        return result;
     }
 }

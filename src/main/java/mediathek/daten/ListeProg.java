@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 
 import java.util.Iterator;
 import java.util.LinkedList;

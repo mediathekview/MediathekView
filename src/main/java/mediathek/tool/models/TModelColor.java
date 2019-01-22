@@ -17,42 +17,29 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.models;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
+import mediathek.config.MVColor;
+import mediathek.tool.MVC;
 
 @SuppressWarnings("serial")
-public class TModelFilm extends TModel {
-    public TModelFilm(Object[][] data, Object[] columnNames) {
+public class TModelColor extends TModel {
+    private final Class<?>[] types;
+
+    public TModelColor(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
+        types = new Class<?>[MVColor.MVC_MAX];
+        for (int i = 0; i < MVColor.MVC_MAX; ++i) {
+            if (i == MVColor.MVC_COLOR) {
+                types[i] = MVC.class;
+            } else {
+                types[i] = String.class;
+            }
+        }
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        Class<?> result;
-        switch (columnIndex) {
-            case DatenFilm.FILM_NR:
-                result = Integer.class;
-                break;
-
-            case DatenFilm.FILM_DATUM:
-                result = Datum.class;
-                break;
-
-            case DatenFilm.FILM_GROESSE:
-                result = MVFilmSize.class;
-                break;
-
-            case DatenFilm.FILM_REF:
-                result = DatenFilm.class;
-                break;
-
-            default:
-                result = String.class;
-                break;
-        }
-
-        return result;
+        return types[columnIndex];
     }
 }

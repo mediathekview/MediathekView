@@ -29,8 +29,8 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
+import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;

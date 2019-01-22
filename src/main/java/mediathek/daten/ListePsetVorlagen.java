@@ -25,7 +25,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;

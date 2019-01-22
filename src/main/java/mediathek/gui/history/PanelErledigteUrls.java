@@ -30,7 +30,7 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
+import mediathek.tool.models.TModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

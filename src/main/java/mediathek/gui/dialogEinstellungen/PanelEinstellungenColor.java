@@ -23,7 +23,11 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.*;
+import mediathek.tool.CellRendererColor;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVC;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelColor;
 
 import javax.swing.*;
 import java.awt.*;
