@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -19,11 +19,11 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 import org.jetbrains.annotations.NotNull;
 
-public class DatenAbo extends MVData<DatenAbo> {
-    //Tags Abo
+public class DatenAbo implements Comparable<DatenAbo> {
 
     public static final int ABO_NR = 0;
     public static final int ABO_EINGESCHALTET = 1;
@@ -39,20 +39,21 @@ public class DatenAbo extends MVData<DatenAbo> {
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
-        "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
+            "Sender", "Thema", "Titel", "Thema-Titel",
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
     public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
-        "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
+            "Sender", "Thema", "Titel", "Thema-Titel",
+            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    private final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public int mindestdauerMinuten;
     public boolean min = true;
     public String[] arr;
     public int nr;
-    String[] titel, thema, irgendwo;
+    public String[] titel, thema, irgendwo;
 
     public DatenAbo() {
         makeArr();
@@ -71,6 +72,10 @@ public class DatenAbo extends MVData<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+    }
+
+    public static boolean anzeigen(int i) {
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
     public DatenAbo getCopy() {
@@ -121,10 +126,6 @@ public class DatenAbo extends MVData<DatenAbo> {
             return true;
         }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
-    }
-
-    public static boolean anzeigen(int i) {
-        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
     private void aboEin() {
