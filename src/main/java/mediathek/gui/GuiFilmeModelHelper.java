@@ -7,7 +7,6 @@ import mediathek.config.Daten;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
-import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVTable;
 
@@ -17,7 +16,7 @@ public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
     private final Daten daten;
     private final MVTable tabelle;
-    private final TModel tModel;
+    private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
@@ -39,7 +38,7 @@ public class GuiFilmeModelHelper {
         this.daten = daten;
         this.tabelle = tabelle;
 
-        tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
+        filmModel = new TModelFilm();
         listeFilme = daten.getListeFilmeNachBlackList();
 
     }
@@ -241,7 +240,7 @@ public class GuiFilmeModelHelper {
         } else {
             performTableFiltering();
         }
-        tabelle.setModel(tModel);
+        tabelle.setModel(filmModel);
     }
 
     public void prepareTableModel() {
@@ -249,7 +248,7 @@ public class GuiFilmeModelHelper {
             fillTableModel();
 
         //use empty model
-        tabelle.setModel(tModel);
+        tabelle.setModel(filmModel);
     }
 
     private void addAllFilmsToTableModel() {
@@ -261,30 +260,9 @@ public class GuiFilmeModelHelper {
     }
 
     private void addFilmToTableModel(DatenFilm film) {
-        Object[] object = new Object[DatenFilm.MAX_ELEM];
+        Object[] object = new Object[1];
+        object[0] = film;
 
-        object[DatenFilm.FILM_NR] = film.getFilmNr();
-        object[DatenFilm.FILM_SENDER] = film.getSender();
-        object[DatenFilm.FILM_THEMA] = film.getThema();
-        object[DatenFilm.FILM_TITEL] = film.getTitle();
-        object[DatenFilm.FILM_ABSPIELEN] = film.arr[DatenFilm.FILM_ABSPIELEN];
-        object[DatenFilm.FILM_AUFZEICHNEN] = film.arr[DatenFilm.FILM_AUFZEICHNEN];
-        object[DatenFilm.FILM_DATUM] = film.datumFilm;
-        object[DatenFilm.FILM_ZEIT] = film.getSendeZeit();
-        object[DatenFilm.FILM_DAUER] = film.getDauer();
-        object[DatenFilm.FILM_GROESSE] = film.getFilmSize();
-        object[DatenFilm.FILM_HD] = film.isHD() ? "1" : "0";
-        object[DatenFilm.FILM_UT] = film.hasSubtitle() ? "1" : "0";
-        object[DatenFilm.FILM_GEO] = film.getGeo();
-        object[DatenFilm.FILM_URL] = film.getUrl();
-        object[DatenFilm.FILM_ABO_NAME] = film.arr[DatenFilm.FILM_ABO_NAME];
-        object[DatenFilm.FILM_URL_SUBTITLE] = film.getUrlSubtitle();
-        object[DatenFilm.FILM_URL_KLEIN] = film.arr[DatenFilm.FILM_URL_KLEIN];
-        object[DatenFilm.FILM_URL_HD] = film.arr[DatenFilm.FILM_URL_HD];
-        object[DatenFilm.FILM_URL_HISTORY] = film.arr[DatenFilm.FILM_URL_HISTORY];
-        object[DatenFilm.FILM_DATUM_LONG] = film.arr[DatenFilm.FILM_DATUM_LONG];
-        object[DatenFilm.FILM_REF] = film;
-
-        tModel.addRow(object);
+        filmModel.addRow(object);
     }
 }

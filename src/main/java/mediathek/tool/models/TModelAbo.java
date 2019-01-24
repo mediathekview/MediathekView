@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -24,28 +24,27 @@ import mediathek.daten.DatenAbo;
 
 @SuppressWarnings("serial")
 public class TModelAbo extends TModel {
-    private final Class<?>[] types;
-
     public TModelAbo(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[DatenAbo.MAX_ELEM];
-        for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
-            switch (i) {
-                case DatenAbo.ABO_NR:
-                case DatenAbo.ABO_MINDESTDAUER:
-                    types[i] = Integer.class;
-                    break;
-                case DatenAbo.ABO_DOWN_DATUM:
-                    types[i] = Datum.class;
-                    break;
-                default:
-                    types[i] = String.class;
-            }
-        }
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return types[columnIndex];
+        Class<?> result;
+        switch (columnIndex) {
+            case DatenAbo.ABO_NR:
+            case DatenAbo.ABO_MINDESTDAUER:
+                result = Integer.class;
+                break;
+
+            case DatenAbo.ABO_DOWN_DATUM:
+                result = Datum.class;
+                break;
+
+            default:
+                result = String.class;
+                break;
+        }
+        return result;
     }
 }

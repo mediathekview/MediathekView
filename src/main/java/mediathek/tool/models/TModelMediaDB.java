@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -24,22 +24,20 @@ import mediathek.tool.MVMediaDBFileSize;
 
 @SuppressWarnings("serial")
 public class TModelMediaDB extends TModel {
-    private final Class<?>[] types;
 
     public TModelMediaDB(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[DatenMediaDB.MAX_ELEM];
-        for (int i = 0; i < DatenMediaDB.MAX_ELEM; ++i) {
-            if (i == DatenMediaDB.MEDIA_DB_SIZE) {
-                types[i] = MVMediaDBFileSize.class;
-            } else {
-                types[i] = String.class;
-            }
-        }
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return types[columnIndex];
+        Class<?> result;
+        if (columnIndex == DatenMediaDB.MEDIA_DB_SIZE) {
+            result = MVMediaDBFileSize.class;
+        } else {
+            result = String.class;
+        }
+
+        return result;
     }
 }

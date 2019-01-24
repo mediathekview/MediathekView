@@ -122,16 +122,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                         setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
                     break;
-                case DatenFilm.FILM_HD:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenFilm.isHD());
-                    setText("");
-                    break;
-                case DatenFilm.FILM_UT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenFilm.hasSubtitle());
-                    setText("");
-                    break;
             }
 
             setColor(this, datenFilm, datenDownload, isSelected);

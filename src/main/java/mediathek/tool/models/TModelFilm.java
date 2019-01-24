@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -23,10 +23,32 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mediathek.tool.MVFilmSize;
 
+import java.util.Vector;
+
 @SuppressWarnings("serial")
 public class TModelFilm extends TModel {
-    public TModelFilm(Object[][] data, Object[] columnNames) {
-        super(data, columnNames);
+    private static final int COLUMN_COUNT = 15;
+
+    /**
+     * Liefert die model row in der die erste Spalte idx enthält.
+     * Die Indexspalte ist die SPALTE 0!!!!
+     */
+    @Override
+    public int getIdxRow(int idxWert) {
+        int ret = 0;
+        for (Vector<?> list : getDataVector()) {
+            final DatenFilm film = (DatenFilm) list.get(0);
+            if (film.getFilmNr() == idxWert) {
+                return ret;
+            }
+            ++ret;
+        }
+        return -1;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return COLUMN_COUNT;
     }
 
     @Override
@@ -45,13 +67,176 @@ public class TModelFilm extends TModel {
                 result = MVFilmSize.class;
                 break;
 
-            case DatenFilm.FILM_REF:
-                result = DatenFilm.class;
+            case DatenFilm.FILM_HD:
+            case DatenFilm.FILM_UT:
+                result = Boolean.class;
                 break;
 
             default:
                 result = String.class;
                 break;
+        }
+
+        return result;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        String result;
+
+        switch (column) {
+            case DatenFilm.FILM_NR:
+                result = "Nr";
+                break;
+
+            case DatenFilm.FILM_SENDER:
+                result = "Sender";
+                break;
+
+            case DatenFilm.FILM_THEMA:
+                result = "Thema";
+                break;
+
+            case DatenFilm.FILM_TITEL:
+                result = "Titel";
+                break;
+
+            case DatenFilm.FILM_ABSPIELEN:
+            case DatenFilm.FILM_AUFZEICHNEN:
+                result = "";
+                break;
+
+            case DatenFilm.FILM_DATUM:
+                result = "Datum";
+                break;
+
+            case DatenFilm.FILM_ZEIT:
+                result = "Zeit";
+                break;
+
+            case DatenFilm.FILM_DAUER:
+                result = "Dauer";
+                break;
+
+            case DatenFilm.FILM_GROESSE:
+                result = "Größe [MB]";
+                break;
+
+            case DatenFilm.FILM_HD:
+                result = "HD";
+                break;
+
+            case DatenFilm.FILM_UT:
+                result = "UT";
+                break;
+
+            case DatenFilm.FILM_GEO:
+                result = "Geo";
+                break;
+
+            case DatenFilm.FILM_URL:
+                result = "URL";
+                break;
+
+            case DatenFilm.FILM_ABO_NAME:
+                result = "Abo";
+                break;
+
+            default:
+                throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Object getValueAt(int row, int column) {
+        final DatenFilm film = (DatenFilm) dataVector.elementAt(row).elementAt(0);
+        Object result;
+        switch (column) {
+            case DatenFilm.FILM_NR:
+                result = film.getFilmNr();
+                break;
+
+            case DatenFilm.FILM_SENDER:
+                result = film.getSender();
+                break;
+
+            case DatenFilm.FILM_THEMA:
+                result = film.getThema();
+                break;
+
+            case DatenFilm.FILM_TITEL:
+                result = film.getTitle();
+                break;
+
+            case DatenFilm.FILM_ABSPIELEN:
+            case DatenFilm.FILM_AUFZEICHNEN:
+                result = "";
+                break;
+
+            case DatenFilm.FILM_DATUM:
+                result = film.datumFilm;
+                break;
+
+            case DatenFilm.FILM_ZEIT:
+                result = film.getSendeZeit();
+                break;
+
+            case DatenFilm.FILM_DAUER:
+                result = film.getDauer();
+                break;
+
+            case DatenFilm.FILM_GROESSE:
+                result = film.getSize();
+                break;
+
+            case DatenFilm.FILM_HD:
+                result = film.isHD();
+                break;
+
+            case DatenFilm.FILM_UT:
+                result = film.hasSubtitle();
+                break;
+
+            case DatenFilm.FILM_GEO:
+                result = film.getGeo();
+                break;
+
+            case DatenFilm.FILM_URL:
+                result = film.getUrl();
+                break;
+
+            case DatenFilm.FILM_ABO_NAME:
+                result = film.getAboName();
+                break;
+
+            case DatenFilm.FILM_URL_SUBTITLE:
+                result = film.getUrlSubtitle();
+                break;
+
+            case DatenFilm.FILM_URL_KLEIN:
+                result = film.getUrlKlein();
+                break;
+
+            case DatenFilm.FILM_URL_HD:
+                result = film.getUrlHd();
+                break;
+
+            case DatenFilm.FILM_URL_HISTORY:
+                result = film.getUrlHistory();
+                break;
+
+            case DatenFilm.FILM_REF:
+                result = film;
+                break;
+
+            case DatenFilm.FILM_DATUM_LONG:
+                result = film.getDatumLong();
+                break;
+
+            default:
+                throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         }
 
         return result;
