@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -25,36 +25,36 @@ import mediathek.tool.MVFilmSize;
 
 @SuppressWarnings("serial")
 public class TModelDownload extends TModel {
-    private final Class<?>[] types;
 
     public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-        types = new Class<?>[DatenDownload.MAX_ELEM];
-        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-            switch (i) {
-                case DatenDownload.DOWNLOAD_NR:
-                    types[i] = Integer.class;
-                    break;
-                case DatenDownload.DOWNLOAD_FILM_NR:
-                    types[i] = Integer.class;
-                    break;
-                case DatenDownload.DOWNLOAD_DATUM:
-                    types[i] = Datum.class;
-                    break;
-                case DatenDownload.DOWNLOAD_GROESSE:
-                    types[i] = MVFilmSize.class;
-                    break;
-                case DatenDownload.DOWNLOAD_REF:
-                    types[i] = DatenDownload.class;
-                    break;
-                default:
-                    types[i] = String.class;
-            }
-        }
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return types[columnIndex];
+        Class<?> result;
+        switch (columnIndex) {
+            case DatenDownload.DOWNLOAD_NR:
+            case DatenDownload.DOWNLOAD_FILM_NR:
+                result = Integer.class;
+                break;
+
+            case DatenDownload.DOWNLOAD_DATUM:
+                result = Datum.class;
+                break;
+
+            case DatenDownload.DOWNLOAD_GROESSE:
+                result = MVFilmSize.class;
+                break;
+
+            case DatenDownload.DOWNLOAD_REF:
+                result = DatenDownload.class;
+                break;
+
+            default:
+                result = String.class;
+                break;
+        }
+        return result;
     }
 }

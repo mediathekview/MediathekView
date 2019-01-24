@@ -438,7 +438,7 @@ public class GuiFilme extends JPanel {
 
         setupKeyMapping();
 
-        tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
+        tabelle.setModel(new TModelFilm());
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(event -> {
@@ -451,25 +451,13 @@ public class GuiFilme extends JPanel {
         setupCellRenderer();
 
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
-        final int[] hiddenColumns = new int[]{
-                DatenFilm.FILM_NR,
-                DatenFilm.FILM_ABSPIELEN,
-                DatenFilm.FILM_AUFZEICHNEN,
-                DatenFilm.FILM_DATUM_LONG,
-                DatenFilm.FILM_REF,
-                DatenFilm.FILM_URL_HISTORY,
-                DatenFilm.FILM_URL_SUBTITLE,
-                DatenFilm.FILM_URL_KLEIN,
-                DatenFilm.FILM_URL_HD
-        };
 
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
-                DatenFilm.COLUMN_NAMES,
+        final var headerListener = new BeobTableHeader(tabelle,
                 DatenFilm.spaltenAnzeigen,
-                hiddenColumns,
-                //buttons
+                HIDDEN_COLUMNS,
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
-                true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
+                true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
+        tabelle.getTableHeader().addMouseListener(headerListener);
 
         Icon closeIcon = IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16);
         jCheckBoxProgamme.setIcon(closeIcon);
@@ -486,6 +474,10 @@ public class GuiFilme extends JPanel {
         }
     }
 
+    private static final int[] HIDDEN_COLUMNS = new int[]{
+            DatenFilm.FILM_ABSPIELEN,
+            DatenFilm.FILM_AUFZEICHNEN
+    };
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {

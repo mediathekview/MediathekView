@@ -47,6 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
+    //FIXME convert indices to int!!
     public static final String AUFLOESUNG_NORMAL = "normal";
     public static final String AUFLOESUNG_HD = "hd";
     public static final String AUFLOESUNG_KLEIN = "klein";
@@ -71,51 +72,23 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public static final int FILM_GEO = 12;// Geoblocking
     public static final int FILM_URL = 13;
     public static final int FILM_ABO_NAME = 14;// wird vor dem Speichern gelöscht!
-    public static final int FILM_URL_SUBTITLE = 15;
-    public static final int FILM_URL_KLEIN = 16;
-    public static final int FILM_URL_HD = 17;
-    public static final int FILM_URL_HISTORY = 18;
-    public static final int FILM_DATUM_LONG = 19;// Datum als Long ABER Sekunden!!
-    public static final int FILM_REF = 20;// Referenz auf this
+    public static final int FILM_DATUM_LONG = 15;// Datum als Long ABER Sekunden!!
+    public static final int FILM_URL_HISTORY = 16;
+    public static final int FILM_REF = 17;// Referenz auf this
+    public static final int FILM_URL_HD = 18;
+    public static final int FILM_URL_SUBTITLE = 19;
+    public static final int FILM_URL_KLEIN = 20;
     public static final int MAX_ELEM = 21;
-
     //Indices without storage context !!!
     public static final int FILM_NEU = 21;
-
-    //TODO get rid out of DatenFilm
-    public static final String[] COLUMN_NAMES = new String[MAX_ELEM];
     /**
      * The database instance for all descriptions.
      */
     private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
+    //TODO das muss hier raus...
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-
-    static {
-        COLUMN_NAMES[FILM_NR] = "Nr";
-        COLUMN_NAMES[FILM_SENDER] = "Sender";
-        COLUMN_NAMES[FILM_THEMA] = "Thema";
-        COLUMN_NAMES[FILM_TITEL] = "Titel";
-        COLUMN_NAMES[FILM_ABSPIELEN] = "";
-        COLUMN_NAMES[FILM_AUFZEICHNEN] = "";
-        COLUMN_NAMES[FILM_DATUM] = "Datum";
-        COLUMN_NAMES[FILM_ZEIT] = "Zeit";
-        COLUMN_NAMES[FILM_DAUER] = "Dauer";
-        COLUMN_NAMES[FILM_GROESSE] = "Größe [MB]";
-        COLUMN_NAMES[FILM_HD] = "HD";
-        COLUMN_NAMES[FILM_UT] = "UT";
-        COLUMN_NAMES[FILM_GEO] = "Geo";
-        COLUMN_NAMES[FILM_URL] = "URL";
-        COLUMN_NAMES[FILM_ABO_NAME] = "Abo";
-        COLUMN_NAMES[FILM_URL_SUBTITLE] = "URL Untertitel";
-        COLUMN_NAMES[FILM_URL_KLEIN] = "URL Klein";
-        COLUMN_NAMES[FILM_URL_HD] = "URL HD";
-        COLUMN_NAMES[FILM_URL_HISTORY] = "URL History";
-        COLUMN_NAMES[FILM_REF] = "Ref";
-        COLUMN_NAMES[FILM_DATUM_LONG] = "DatumL";
-    }
-
     /**
      * The magic arr array.
      * Here all the film information with some minor exceptions.
@@ -156,7 +129,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private String websiteLink = null;
     private String description = null;
     private boolean livestream = false;
-
     public DatenFilm() {
         setupArr();
 
@@ -165,6 +137,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         writeFilmNumberToDatabase();
 
         setupDatabaseCleanup();
+    }
+
+    public String getUrlKlein() {
+        return arr[FILM_URL_KLEIN];
+    }
+
+    public String getUrlHd() {
+        return arr[FILM_URL_HD];
+    }
+
+    public String getAboName() {
+        return arr[FILM_ABO_NAME];
+    }
+
+    public String getDatumLong() {
+        return arr[FILM_DATUM_LONG];
     }
 
     private void writeFilmNumberToDatabase() {

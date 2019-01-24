@@ -26,26 +26,34 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Rechte Maustaste in der Tabelle (Kontextmenü)
+ */
 public class BeobTableHeader extends MouseAdapter {
-    //rechhte Maustaste in der Tabelle
-
     private final MVTable tabelle;
     private final String[] columns;
     private final boolean[] spaltenAnzeigen;
-    private JCheckBoxMenuItem[] box;
     private final int[] ausblenden;
     private final int[] button;
     private final boolean icon;
     private final MVConfig.Configs configs;
+    private JCheckBoxMenuItem[] box;
 
-    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon, MVConfig.Configs configs) {
+    public BeobTableHeader(MVTable tabelle, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon, MVConfig.Configs configs) {
         this.tabelle = tabelle;
-        this.columns = columns;
         this.icon = icon;
         spaltenAnzeigen = spalten;
         this.ausblenden = aausblenden;
         this.configs = configs;
         button = bbutton;
+
+        //dynamically query column names from table
+        final var colModel = tabelle.getTableHeader().getColumnModel();
+        final int colCount = colModel.getColumnCount();
+        columns = new String[colCount];
+        for (int index = 0; index < colCount; index++) {
+            columns[index] = (String) colModel.getColumn(index).getHeaderValue();
+        }
     }
 
     @Override

@@ -48,6 +48,14 @@ import java.util.stream.Stream;
 public class MVInfoFile {
 
     private static final Logger logger = LogManager.getLogger(MVInfoFile.class);
+    private static final String FILM_GROESSE = "Größe [MB]";
+    private static final String FILM_SENDER = "Sender";
+    private static final String FILM_THEMA = "Thema";
+    private static final String FILM_TITEL = "Titel";
+    private static final String FILM_DATUM = "Datum";
+    private static final String FILM_ZEIT = "Zeit";
+    private static final String FILM_DAUER = "Dauer";
+    private static final String FILM_URL = "URL";
 
     protected static String formatFilmAsString(DatenFilm film, int maxLengthHeaders) {
 
@@ -58,13 +66,13 @@ public class MVInfoFile {
 
         StringBuilder sb = new StringBuilder();
 
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER], film.getSender());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA], film.getThema()).append(System.lineSeparator());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL], film.getTitle()).append(System.lineSeparator());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM], film.getSendeDatum());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_ZEIT], film.getSendeZeit());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DAUER], film.getDauer());
-        sb = appendFormatedTableLine(sb, formatString, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE], film.getSize()).append(System.lineSeparator());
+        sb = appendFormatedTableLine(sb, formatString, FILM_SENDER, film.getSender());
+        sb = appendFormatedTableLine(sb, formatString, FILM_THEMA, film.getThema()).append(System.lineSeparator());
+        sb = appendFormatedTableLine(sb, formatString, FILM_TITEL, film.getTitle()).append(System.lineSeparator());
+        sb = appendFormatedTableLine(sb, formatString, FILM_DATUM, film.getSendeDatum());
+        sb = appendFormatedTableLine(sb, formatString, FILM_ZEIT, film.getSendeZeit());
+        sb = appendFormatedTableLine(sb, formatString, FILM_DAUER, film.getDauer());
+        sb = appendFormatedTableLine(sb, formatString, FILM_GROESSE, film.getSize()).append(System.lineSeparator());
 
         sb.append("Website");
         sb.append(System.lineSeparator());
@@ -72,7 +80,7 @@ public class MVInfoFile {
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
 
-        sb.append(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL]);
+        sb.append(FILM_URL);
         sb.append(System.lineSeparator());
         sb.append(film.getUrl());
         sb.append(System.lineSeparator());
@@ -140,12 +148,12 @@ public class MVInfoFile {
              DataOutputStream dos = new DataOutputStream(os);
              OutputStreamWriter osw = new OutputStreamWriter(dos);
              BufferedWriter br = new BufferedWriter(osw)) {
-            br.write(formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
+            br.write(formatFilmAsString(film, FILM_GROESSE.length() + 2));
             br.flush();
 
             showSuccessDialog();
         } catch (IOException ex) {
-            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,"Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
+            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
             logger.error("Ziel: {}", dialog.ziel, ex);
         }
     }
@@ -172,13 +180,13 @@ public class MVInfoFile {
              BufferedWriter br = new BufferedWriter(osw)) {
             final DatenFilm film = datenDownload.film;
             if (film != null) {
-                br.write(formatFilmAsString(film, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2));
+                br.write(formatFilmAsString(film, FILM_GROESSE.length() + 2));
                 br.flush();
             }
 
             logger.info("Infodatei geschrieben");
         } catch (IOException ex) {
-            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,"Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
+            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
             logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex);
         }
     }

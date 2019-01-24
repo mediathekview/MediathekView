@@ -564,7 +564,6 @@ public class GuiDownloads extends JPanel {
 
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
-                DatenDownload.COLUMN_NAMES,
                 DatenDownload.spaltenAnzeigen,
                 COLUMNS_DISABLED,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},

@@ -17,7 +17,7 @@ public class MVFilmTable extends MVTable {
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
 
-        setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
+        setModel(new TModelFilm());
     }
 
     private void resetFilmeTab(int i) {

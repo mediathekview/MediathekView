@@ -1,14 +1,13 @@
 package mediathek.tool;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import mSearch.daten.DatenFilm;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class MVInfoFileTest {
@@ -123,7 +122,7 @@ class MVInfoFileTest {
       "ein paradiesmatisches Land, in dem einem gebratene Satzteile" + System.lineSeparator() +
       "in den Mund fliegen." + System.lineSeparator() + System.lineSeparator();
 
-    assertThat(MVInfoFile.formatFilmAsString(datenFilm, DatenFilm.COLUMN_NAMES[DatenFilm.FILM_GROESSE].length() + 2)).isEqualTo(result);
+    assertThat(MVInfoFile.formatFilmAsString(datenFilm, "Größe [MB]".length() + 2)).isEqualTo(result);
   }
 
 }
