@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
-public final class DatenDownload extends MVData<DatenDownload> {
+public final class DatenDownload implements Comparable<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
