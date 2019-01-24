@@ -43,10 +43,6 @@ import java.util.stream.Stream;
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
-    /**
-     * List for dynamic application of filters
-     */
-    private final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -137,7 +133,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * Main filtering routine
      */
     public synchronized void filterListe() {
-        Daten daten = Daten.getInstance();
+        final Daten daten = Daten.getInstance();
         final ListeFilme listeFilme = daten.getListeFilme();
         final ListeFilme listeRet = daten.getListeFilmeNachBlackList();
 
@@ -159,7 +155,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     //always filter for date
                     .filter(this::checkDate);
 
-            filterList.clear();
+            final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
             if (blacklistIsActive) {
                 //add the filter predicates to the list
                 if (doNotShowGeoBlockedFilms) {
@@ -177,6 +173,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     initialStream = initialStream.filter(pred);
                 }
             }
+            filterList.clear();
 
             final List<DatenFilm> col = initialStream.collect(Collectors.toList());
             //are there new film entries?
