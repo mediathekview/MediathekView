@@ -21,7 +21,6 @@ package mediathek.controller.starter;
 
 import com.google.common.util.concurrent.RateLimiter;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -38,7 +37,6 @@ import net.engio.mbassy.listener.Handler;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +64,6 @@ public class DirectHttpDownload extends Thread {
     private final DatenDownload datenDownload;
     private final Start start;
     private final java.util.Timer bandwidthCalculationTimer;
-    private final Configuration config = ApplicationConfiguration.getConfiguration();
     /**
      * The number of times how often the system should try a restart of the download.
      */
@@ -79,8 +76,6 @@ public class DirectHttpDownload extends Thread {
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
     private long downloaded = 0;
     private File file = null;
-    private String responseCode;
-    private String exMessage;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private CompletableFuture<Void> infoFuture = null;
@@ -134,7 +129,7 @@ public class DirectHttpDownload extends Thread {
      * @return the limit in KB/s
      */
     private long getDownloadLimit() {
-        final int downloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
+        final long downloadLimit = ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
         return calculateDownloadLimit(downloadLimit);
     }
 
@@ -148,7 +143,7 @@ public class DirectHttpDownload extends Thread {
         long contentSize = -1;
 
         final Request request = new Request.Builder().url(url).get()
-                .header("User-Agent", config.getString(ApplicationConfiguration.APPLICATION_USER_AGENT))
+                .header("User-Agent", getUserAgent())
                 .build();
 
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
@@ -161,11 +156,14 @@ public class DirectHttpDownload extends Thread {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Log.errorLog(643298301, ex);
+            logger.error("getContentLength()", ex);
         }
 
         return contentSize;
+    }
+
+    private String getUserAgent() {
+        return ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT);
     }
 
     /**
@@ -175,7 +173,7 @@ public class DirectHttpDownload extends Thread {
      */
     private void setupHttpConnection(HttpURLConnection conn) {
         conn.setRequestProperty("Range", "bytes=" + downloaded + '-');
-        conn.setRequestProperty("User-Agent", config.getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+        conn.setRequestProperty("User-Agent", getUserAgent());
         conn.setDoInput(true);
         conn.setDoOutput(true);
     }
@@ -347,9 +345,9 @@ public class DirectHttpDownload extends Thread {
                         } else {
                             // ==================================
                             // dann wars das
-                            responseCode = "Responsecode: " + conn.getResponseCode() + '\n' + conn.getResponseMessage();
-                            Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + ' ' + conn.getResponseMessage());
-                            displayErrorDialog();
+                            final String responseCode = "Responsecode: " + conn.getResponseCode() + '\n' + conn.getResponseMessage();
+                            logger.error("HTTP-Fehler: {} {}", conn.getResponseCode(), conn.getResponseMessage());
+                            displayErrorDialog(responseCode);
                             state = HttpDownloadState.ERROR;
                         }
                     }
@@ -377,10 +375,9 @@ public class DirectHttpDownload extends Thread {
                     restart = true;
                 } else {
                     // dann weiß der Geier!
-                    exMessage = ex.getLocalizedMessage();
-                    Log.errorLog(316598941, ex, "Fehler");
+                    logger.error("run()", ex);
                     start.status = Start.STATUS_ERR;
-                        SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
+                    SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
                 }
             }
         }
@@ -410,13 +407,13 @@ public class DirectHttpDownload extends Thread {
         }
     }
 
-    private void displayErrorDialog() {
-            //i really don´t know why maxRestarts/2 has to be used...but it works now
-            if (!(start.countRestarted < maxRestarts / 2)) {
-                SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
-                        + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
-                        + responseCode + '\n', datenDownload).setVisible(true));
-            }
+    private void displayErrorDialog(String responseCode) {
+        //i really don´t know why maxRestarts/2 has to be used...but it works now
+        if (!(start.countRestarted < maxRestarts / 2)) {
+            SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
+                    + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
+                    + responseCode + '\n', datenDownload).setVisible(true));
+        }
     }
 
     private void printTimeoutMessage(final int restartCount) {
