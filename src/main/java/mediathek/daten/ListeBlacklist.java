@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
+    private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -179,7 +180,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             //are there new film entries?
             col.parallelStream()
                     .filter(DatenFilm::isNew)
-                    .findFirst()
+                    .findAny()
                     .ifPresent(ignored -> listeRet.neueFilme = true);
 
             listeRet.addAll(col);
@@ -192,7 +193,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         logger.debug("filterListe(): {}", stopwatch);
     }
 
-    private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     /**
      * Filterfunction for Abos dialog.
      *
@@ -310,18 +310,59 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if film can be displayed
      */
     private boolean applyBlacklistFilters(DatenFilm film) {
+        final boolean isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
+
         for (DatenBlacklist entry : this) {
-            if (Filter.filterAufFilmPruefen(entry.arr[DatenBlacklist.BLACKLIST_SENDER], entry.arr[DatenBlacklist.BLACKLIST_THEMA],
-                    entry.patternTitle
-                            ? new String[]{entry.arr[DatenBlacklist.BLACKLIST_TITEL]} : entry.arr[DatenBlacklist.BLACKLIST_TITEL].split(","),
-                    entry.patternThema
-                            ? new String[]{entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].split(","),
-                    new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
-            )) {
-                return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
+            final String titel = entry.arr[DatenBlacklist.BLACKLIST_TITEL];
+            final String themaTitel = entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL];
+
+            if (performFiltering(
+                    entry,
+                    entry.patternTitle ? new String[]{titel} : titel.split(","),
+                    entry.patternThema ? new String[]{themaTitel} : themaTitel.split(","),
+                    film)) {
+                return isWhitelist;
             }
         }
-        return !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
+        return !isWhitelist;
+    }
+
+    private boolean performFiltering(final DatenBlacklist entry,
+                                     final String[] titelSuchen, final String[] themaTitelSuchen,
+                                     final DatenFilm film) {
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
+        // senderSuchen exakt mit sender
+        // themaSuchen exakt mit thema
+        // titelSuchen muss im Titel nur enthalten sein
+
+        boolean result = false;
+        final String thema = film.getThema();
+        final String title = film.getTitle();
+
+
+        final String senderSuchen = entry.arr[DatenBlacklist.BLACKLIST_SENDER];
+        final String themaSuchen = entry.arr[DatenBlacklist.BLACKLIST_THEMA];
+
+        if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
+            if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
+                if (titelSuchen.length == 0 || Filter.pruefen(titelSuchen, title)) {
+                    if (themaTitelSuchen.length == 0
+                            || Filter.pruefen(themaTitelSuchen, thema)
+                            || Filter.pruefen(themaTitelSuchen, title)) {
+                        // die Länge soll mit geprüft werden
+                        if (checkLengthWithMin(film.getFilmLength())) {
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private boolean checkLengthWithMin(long filmLaenge) {
+        return Filter.lengthCheck(0, filmLaenge) || filmLaenge > 0;
     }
 
     /**
