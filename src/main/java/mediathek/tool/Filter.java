@@ -44,6 +44,7 @@ public class Filter {
     private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(new PatternCacheLoader());
+    private static final Logger logger = LogManager.getLogger(Filter.class);
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -127,7 +128,7 @@ public class Filter {
         return result;
     }
 
-    private static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
+    public static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
         return filterLaengeInMinuten == 0 || filmLaenge == 0;
     }
 
@@ -137,7 +138,7 @@ public class Filter {
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge < filterLength;
     }
 
-    private static boolean checkLengthWithMin(int filterLaengeInMinuten, long filmLaenge) {
+    public static boolean checkLengthWithMin(int filterLaengeInMinuten, long filmLaenge) {
         final int filterLength = filterLaengeInMinuten * 60;
 
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge > filterLength;
@@ -156,14 +157,16 @@ public class Filter {
 
     public static boolean pruefen(String[] filter, final String im) {
         // wenn einer passt, dann ists gut
-        Pattern p;
+
         if (filter.length == 1) {
             if (filter[0].isEmpty()) {
-                // Filter ist leer, das wars
-                return true;
-            } else if ((p = makePattern(filter[0])) != null) {
-                // dann ists eine RegEx
-                return (p.matcher(im).matches());
+                return true; // Filter ist leer, das wars
+            } else {
+                final Pattern p;
+                if ((p = makePattern(filter[0])) != null) {
+                    // dann ists eine RegEx
+                    return p.matcher(im).matches();
+                }
             }
         }
 
@@ -175,7 +178,7 @@ public class Filter {
      * @param im     checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    private static boolean checkLowercase(String[] filter, String im) {
+    public static boolean checkLowercase(String[] filter, String im) {
         for (String s : filter) {
             // dann jeden Suchbegriff checken
             if (im.contains(s)) {
@@ -224,8 +227,6 @@ public class Filter {
             tf.setBackground(Color.WHITE);
         }
     }
-
-    private static final Logger logger = LogManager.getLogger(Filter.class);
 
     /**
      * This loader will compile regexp patterns when they are not in cache.
