@@ -24,7 +24,6 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -32,13 +31,12 @@ import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.tool.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
@@ -150,15 +148,19 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 entry.toLower();
                 entry.hasPattern();
             });
+
             listeRet.neueFilme = false;
 
-            Stream<DatenFilm> initialStream = listeFilme.parallelStream()
-                    //always filter for date
-                    .filter(this::checkDate);
-
             final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
+            if (days != 0)
+                filterList.add(this::checkDate);
+
             if (blacklistIsActive) {
                 //add the filter predicates to the list
+                if (!isEmpty()) {
+                    filterList.add(this::applyBlacklistFilters);
+                }
+
                 if (doNotShowGeoBlockedFilms) {
                     filterList.add(this::checkGeoBlockedFilm);
                 }
@@ -166,25 +168,21 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     filterList.add(this::checkIfFilmIsInFuture);
                 }
                 filterList.add(this::checkFilmLength);
-                if (!isEmpty()) {
-                    filterList.add(this::applyBlacklistFilters);
-                }
-
-                for (Predicate<DatenFilm> pred : filterList) {
-                    initialStream = initialStream.filter(pred);
-                }
             }
+
+            final Predicate<DatenFilm> pred=filterList.stream().reduce(Predicate::and).orElse(x->true);
             filterList.clear();
 
-            final List<DatenFilm> col = initialStream.collect(Collectors.toList());
+            Stopwatch stopwatch2 = Stopwatch.createStarted();
+            listeFilme.parallelStream().filter(pred).forEachOrdered(listeRet::add);
+            stopwatch2.stop();
+            logger.debug("FILTERING and ADDING() took: {}", stopwatch2);
+
             //are there new film entries?
-            col.parallelStream()
+            listeRet.stream()
                     .filter(DatenFilm::isNew)
                     .findAny()
                     .ifPresent(ignored -> listeRet.neueFilme = true);
-
-            listeRet.addAll(col);
-            col.clear();
 
             // Array mit Sendernamen/Themen füllen
             listeRet.fillSenderList();
@@ -390,13 +388,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @param film item to be checked.
      * @return true if it should be displayed.
      */
-    private boolean checkIfFilmIsInFuture(DatenFilm film) {
+    private boolean checkIfFilmIsInFuture(@NotNull DatenFilm film) {
         try {
             if (film.datumFilm.getTime() > System.currentTimeMillis()) {
                 return false;
             }
         } catch (Exception ex) {
-            Log.errorLog(696987123, ex);
+            logger.error("checkIfFilmIsInFuture()", ex);
         }
         return true;
     }
@@ -407,7 +405,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @param film item to check
      * @return true if film should be displayed
      */
-    private boolean checkFilmLength(DatenFilm film) {
+    private boolean checkFilmLength(@NotNull DatenFilm film) {
         final long filmLength = film.getFilmLength();
         return !(filmlaengeSoll != 0 && filmLength != 0 && filmlaengeSoll > filmLength);
 
