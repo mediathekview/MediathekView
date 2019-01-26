@@ -151,44 +151,63 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
             listeRet.neueFilme = false;
 
-            final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
-            if (days != 0)
-                filterList.add(this::checkDate);
-
-            if (blacklistIsActive) {
-                //add the filter predicates to the list
-                if (!isEmpty()) {
-                    filterList.add(this::applyBlacklistFilters);
-                }
-
-                if (doNotShowGeoBlockedFilms) {
-                    filterList.add(this::checkGeoBlockedFilm);
-                }
-                if (doNotShowFutureFilms) {
-                    filterList.add(this::checkIfFilmIsInFuture);
-                }
-                filterList.add(this::checkFilmLength);
-            }
-
-            final Predicate<DatenFilm> pred=filterList.stream().reduce(Predicate::and).orElse(x->true);
-            filterList.clear();
+            final Predicate<DatenFilm> pred = createPredicate();
 
             Stopwatch stopwatch2 = Stopwatch.createStarted();
             listeFilme.parallelStream().filter(pred).forEachOrdered(listeRet::add);
             stopwatch2.stop();
             logger.debug("FILTERING and ADDING() took: {}", stopwatch2);
 
-            //are there new film entries?
-            listeRet.stream()
-                    .filter(DatenFilm::isNew)
-                    .findAny()
-                    .ifPresent(ignored -> listeRet.neueFilme = true);
+            setupNewEntries();
 
             // Array mit Sendernamen/Themen füllen
             listeRet.fillSenderList();
         }
         stopwatch.stop();
         logger.debug("filterListe(): {}", stopwatch);
+    }
+
+    /**
+     * Setup dynamically the list of filter to be applied to blacklist film list
+     *
+     * @return The reduced filter predicates.
+     */
+    private Predicate<DatenFilm> createPredicate() {
+        final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
+        if (days != 0)
+            filterList.add(this::checkDate);
+
+        if (blacklistIsActive) {
+            //add the filter predicates to the list
+            if (!isEmpty()) {
+                filterList.add(this::applyBlacklistFilters);
+            }
+
+            if (doNotShowGeoBlockedFilms) {
+                filterList.add(this::checkGeoBlockedFilm);
+            }
+            if (doNotShowFutureFilms) {
+                filterList.add(this::checkIfFilmIsInFuture);
+            }
+            filterList.add(this::checkFilmLength);
+        }
+
+        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(x -> true);
+        filterList.clear();
+
+        return pred;
+    }
+
+    /**
+     * Detect if there are new entried in the blacklist filtered film list.
+     */
+    private void setupNewEntries() {
+        //are there new film entries?
+        final Daten daten = Daten.getInstance();
+        daten.getListeFilmeNachBlackList().stream()
+                .filter(DatenFilm::isNew)
+                .findAny()
+                .ifPresent(ignored -> daten.getListeFilmeNachBlackList().neueFilme = true);
     }
 
     /**

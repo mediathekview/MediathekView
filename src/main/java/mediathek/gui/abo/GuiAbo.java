@@ -100,10 +100,6 @@ public class GuiAbo extends JPanel {
         aboLoeschen();
     }
 
-    public void invertSelection() {
-        tabelle.invertSelection();
-    }
-
     private void setCellRenderer() {
         final CellRendererAbo cellRenderer = new CellRendererAbo(daten.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
@@ -159,9 +155,6 @@ public class GuiAbo extends JPanel {
         JMenuItem itemNeu = new JMenuItem();
         itemNeu.setAction(createAboAction);
 
-        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
-        miInvertSelection.addActionListener(e -> invertSelection());
-
         JPopupMenu jPopupMenu = new JPopupMenu();
         jPopupMenu.add(itemEinschalten);
         jPopupMenu.add(itemDeaktivieren);
@@ -169,8 +162,6 @@ public class GuiAbo extends JPanel {
         jPopupMenu.add(itemNeu);
         jPopupMenu.add(itemLoeschen);
         jPopupMenu.add(itemAendern);
-        jPopupMenu.addSeparator();
-        jPopupMenu.add(miInvertSelection);
 
         return jPopupMenu;
     }
