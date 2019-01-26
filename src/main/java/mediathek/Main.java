@@ -198,6 +198,8 @@ public class Main {
 
         checkMemoryRequirements();
 
+        deleteDatabase();
+
         if (MemoryUtils.isLowMemoryEnvironment()) {
             setupDatabase();
             DatenFilm.Database.initializeDatabase();
@@ -208,6 +210,18 @@ public class Main {
         installSingleInstanceHandler();
 
         new Main().start(args);
+    }
+
+    private static void deleteDatabase() {
+        if (!MemoryUtils.isLowMemoryEnvironment()) {
+            //we can delete the database as it is not needed.
+            try {
+                final String dbLocation = PooledDatabaseConnection.getInstance().getDatabaseLocation() + "mediathekview.mv.db";
+                Files.deleteIfExists(Paths.get(dbLocation));
+            } catch (IOException e) {
+                logger.error("deleteDatabase()", e);
+            }
+        }
     }
 
     private static void setupDatabase() {

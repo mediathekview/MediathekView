@@ -35,7 +35,7 @@ public class PooledDatabaseConnection {
      *
      * @return string to database location based on OS
      */
-    private String getDatabaseLocation() {
+    public String getDatabaseLocation() {
         String strDatabase;
 
         if (Config.isPortableMode()) {
