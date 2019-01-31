@@ -74,7 +74,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
-		<javafx.version>12-ea+9</javafx.version>
+		<javafx.version>12-ea+10</javafx.version>
 		<mainclass>mediathek.Main</mainclass>
 	</properties>
 
