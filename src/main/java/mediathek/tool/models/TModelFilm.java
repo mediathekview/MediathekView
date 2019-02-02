@@ -188,7 +188,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_GROESSE:
-                result = film.getSize();
+                result = film.getFilmSize();
                 break;
 
             case DatenFilm.FILM_HD:
