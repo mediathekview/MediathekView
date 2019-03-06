@@ -213,17 +213,20 @@ public class StarterClass {
         }
 
         Platform.runLater(() -> {
-            Notifications msg = Notifications.create();
-            msg.text(meldung.toString());
+            try {
+                Notifications msg = Notifications.create();
+                msg.text(meldung.toString());
 
-            if (erfolgreich) {
-                msg.title("Download war erfolgreich");
-                msg.showInformation();
-            } else {
-                msg.title("Download war fehlerhaft");
-                msg.showError();
+                if (erfolgreich) {
+                    msg.title("Download war erfolgreich");
+                    msg.showInformation();
+                } else {
+                    msg.title("Download war fehlerhaft");
+                    msg.showError();
+                }
             }
-
+            catch (NullPointerException ignored) {
+            }
         });
     }
 

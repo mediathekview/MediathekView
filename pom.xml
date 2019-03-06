@@ -158,7 +158,34 @@
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
-			<version>9.0.0</version>
+			<version>11.0.0-RC1</version>
+			<exclusions>
+			<exclusion>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-base</artifactId>
+			</exclusion>
+				<exclusion>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+				</exclusion>
+
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
