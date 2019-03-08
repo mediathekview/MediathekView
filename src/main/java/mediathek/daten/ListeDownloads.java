@@ -578,18 +578,30 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return Optional.empty();
     }
 
-    private boolean maxSenderLaufen(DatenDownload d, int max) {
+    /**
+     * Check if host is part of a CDN server network.
+     * Currently we only check for Akamai
+     * @param host url
+     * @return true if it belongs to a CDN
+     */
+    private boolean isCDN(final String host) {
+        return "akamaihd.net".equals(host);
+    }
+
+    private boolean maxSenderLaufen(DatenDownload d, final int max) {
         //true wenn bereits die maxAnzahl pro Sender läuft
         try {
             int counter = 0;
-            String host = getHost(d);
+            final String host = getHost(d);
             for (DatenDownload download : this) {
                 if (download.start != null) {
                     if (download.start.status == Start.STATUS_RUN
                             && getHost(download).equalsIgnoreCase(host)) {
-                        counter++;
-                        if (counter >= max) {
-                            return true;
+                        if (!isCDN(host)) {
+                            counter++;
+                            if (counter >= max) {
+                                return true;
+                            }
                         }
                     }
                 }
