@@ -46,9 +46,9 @@ import static mediathek.controller.starter.StarterClass.*;
 public class ExternalProgramDownload extends Thread
 {
 
-    private Daten daten;
-    private DatenDownload datenDownload;
-    private Start start;
+    private final Daten daten;
+    private final DatenDownload datenDownload;
+    private final Start start;
     private File file;
     private String exMessage = "";
     private boolean retAbbrechen;

@@ -67,7 +67,6 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final int PGR_INFO_NR = 5;
     public static final int PGR_MAX_ELEM = 6;
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
-    private final static int TIMEOUT = 10000;
 
     public TModel getTModel(String bs) {
         LinkedList<String[]> tmp = new LinkedList<>();

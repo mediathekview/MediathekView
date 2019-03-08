@@ -476,11 +476,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
-        cbUseWikipediaSenderLogos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbUseWikipediaSenderLogosActionPerformed(evt);
-            }
-        });
+        cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

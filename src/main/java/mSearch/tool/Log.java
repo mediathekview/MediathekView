@@ -101,7 +101,7 @@ public class Log {
         fehlermeldung_(fehlerNummer, ex, new String[]{text});
     }
 
-    public static synchronized void errorLog(int fehlerNummer, Exception ex, String text[]) {
+    public static synchronized void errorLog(int fehlerNummer, Exception ex, String[] text) {
         fehlermeldung_(fehlerNummer, ex, text);
     }
 
