@@ -12,7 +12,7 @@ import org.tbee.javafx.scene.layout.MigPane;
  * messages used as a glass pane overlay during app termination.
  */
 public class AppTerminationIndefiniteProgress extends JFXPanel {
-    private boolean willBeShutDown;
+    private final boolean willBeShutDown;
     private Label lblMessage;
 
     public AppTerminationIndefiniteProgress(boolean willbeShutDown) {
