@@ -1260,10 +1260,16 @@ public class GuiFilme extends JPanel {
 
     private void setupZeitraumListener() {
         PauseTransition trans = new PauseTransition(Duration.millis(250));
-        trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
-            daten.getListeBlacklist().filterListe();
-            loadTable();
-        }));
+        trans.setOnFinished(evt -> {
+            //reset sender filter first
+            fap.senderList.getCheckModel().clearChecks();
+                    SwingUtilities.invokeLater(() -> {
+                                daten.getListeBlacklist().filterListe();
+                                loadTable();
+                            }
+                    );
+                }
+        );
         fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
     }
 

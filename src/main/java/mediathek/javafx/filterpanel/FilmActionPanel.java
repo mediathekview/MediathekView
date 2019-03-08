@@ -385,8 +385,9 @@ public class FilmActionPanel {
     }
 
     public void updateThemaBox() {
-        themaBox.getItems().clear();
-        themaBox.getItems().add("");
+        final var items = themaBox.getItems();
+        items.clear();
+        items.add("");
 
         List<String> finalList = new ArrayList<>();
         List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
@@ -403,15 +404,14 @@ public class FilmActionPanel {
             }
         }
 
-        themaBox.getItems()
-                .addAll(finalList.stream()
+        items.addAll(finalList.stream()
                         .distinct()
                         .sorted(GermanStringSorter.getInstance())
                         .collect(Collectors.toList()));
         finalList.clear();
 
         themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
+        themaSuggestionProvider.addPossibleSuggestions(items);
         themaBox.getSelectionModel().select(0);
     }
 
