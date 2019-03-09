@@ -214,11 +214,30 @@ public class MediathekGui extends JFrame {
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
 
+        setupTaskbarMenu();
+
         setupShutdownCommand();
 
         loadFilmlist();
 
         setupUpdateCheck();
+    }
+
+    private void setupTaskbarMenu() {
+        var taskbar = Taskbar.getTaskbar();
+        if (taskbar.isSupported(Taskbar.Feature.MENU)) {
+            PopupMenu popupMenu = taskbar.getMenu();
+            if (popupMenu == null)
+                popupMenu = new PopupMenu();
+
+            MenuItem miLoadNewFilmlist = new MenuItem("Neue Filmliste laden");
+            miLoadNewFilmlist.addActionListener(e -> performFilmListLoadOperation(false));
+
+            popupMenu.addSeparator();
+            popupMenu.add(miLoadNewFilmlist);
+
+            taskbar.setMenu(popupMenu);
+        }
     }
 
     /**
