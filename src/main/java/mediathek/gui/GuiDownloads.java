@@ -232,6 +232,26 @@ public class GuiDownloads extends JPanel {
                 tabVisible.set(false);
             }
         });
+
+        setupTaskbarMenu();
+    }
+
+    private void setupTaskbarMenu() {
+        var taskbar = Taskbar.getTaskbar();
+        if (taskbar.isSupported(Taskbar.Feature.MENU)) {
+            PopupMenu popupMenu = taskbar.getMenu();
+            if (popupMenu == null)
+                popupMenu = new PopupMenu();
+
+            MenuItem miStartAllDownloads = new MenuItem("Alle Downloads starten");
+            miStartAllDownloads.addActionListener(e -> starten(true));
+            MenuItem miStopAllDownloads = new MenuItem("Alle Downloads stoppen");
+            miStopAllDownloads.addActionListener(e -> stoppen(true));
+            popupMenu.add(miStartAllDownloads);
+            popupMenu.add(miStopAllDownloads);
+
+            taskbar.setMenu(popupMenu);
+        }
     }
 
     private final AtomicBoolean tabVisible = new AtomicBoolean(false);
@@ -496,6 +516,7 @@ public class GuiDownloads extends JPanel {
             }
         }
     }
+
     private void setupKeyMappings() {
         final InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_EDIT_DOWNLOAD);
