@@ -214,7 +214,8 @@ public class MediathekGui extends JFrame {
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
 
-        setupTaskbarMenu();
+        if (Taskbar.isTaskbarSupported())
+            setupTaskbarMenu();
 
         setupShutdownCommand();
 
