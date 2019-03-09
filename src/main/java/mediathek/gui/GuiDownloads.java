@@ -233,7 +233,8 @@ public class GuiDownloads extends JPanel {
             }
         });
 
-        setupTaskbarMenu();
+        if (Taskbar.isTaskbarSupported())
+            setupTaskbarMenu();
     }
 
     private void setupTaskbarMenu() {
