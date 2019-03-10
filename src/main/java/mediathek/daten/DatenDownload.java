@@ -638,6 +638,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
         final String downloadUrl = this.arr[DatenDownload.DOWNLOAD_URL];
         //special case only for austrian ORF and m3u8 files
+        //github issue #388
         if (downloadUrl.endsWith(".m3u8") && downloadUrl.contains(".at")) {
             String field = getField(GuiFunktionen.getDateiName(downloadUrl), laenge);
 
