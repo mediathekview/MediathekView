@@ -33,6 +33,7 @@ import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
@@ -634,7 +635,24 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%t", getField(film.getThema(), laenge));
         replStr = StringUtils.replace(replStr, "%T", getField(film.getTitle(), laenge));
         replStr = StringUtils.replace(replStr, "%s", getField(film.getSender(), laenge));
-        replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
+
+        final String downloadUrl = this.arr[DatenDownload.DOWNLOAD_URL];
+        //special case only for austrian ORF and m3u8 files
+        if (downloadUrl.endsWith(".m3u8") && downloadUrl.contains(".at")) {
+            String field = getField(GuiFunktionen.getDateiName(downloadUrl), laenge);
+
+            final HttpUrl url = HttpUrl.parse(downloadUrl);
+            if (url != null) {
+                final var segments = url.pathSegments();
+                final var segment = segments.get(segments.size() - 2);
+                field = getField(GuiFunktionen.getDateiName(segment), laenge);
+                field = org.apache.commons.io.FilenameUtils.removeExtension(field);
+            }
+
+            replStr = StringUtils.replace(replStr, "%N", field);
+        }
+        else
+            replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
         replStr = StringUtils.replace(replStr, "%D", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
@@ -661,11 +679,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
         replStr = StringUtils.replace(replStr, "%q", res);
 
-        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
-        replStr = StringUtils.replace(replStr, "%Z", getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(downloadUrl));
+        replStr = StringUtils.replace(replStr, "%Z", getHash(downloadUrl));
 
-        replStr = StringUtils.replace(replStr, "%z", getHash(this.arr[DatenDownload.DOWNLOAD_URL])
-                + '.' + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%z", getHash(downloadUrl)
+                + '.' + GuiFunktionen.getSuffixFromUrl(downloadUrl));
 
         return replStr;
     }
