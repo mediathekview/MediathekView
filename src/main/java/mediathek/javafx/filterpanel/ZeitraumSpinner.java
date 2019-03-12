@@ -15,8 +15,8 @@ public class ZeitraumSpinner extends Spinner<String> {
             days.add(String.valueOf(i));
 
         SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(days);
-        valueFactory.setValue(UNLIMITED_VALUE);
         setValueFactory(valueFactory);
-        setEditable(false);
+        valueFactory.setValue(UNLIMITED_VALUE);
+        setEditable(true);
     }
 }
