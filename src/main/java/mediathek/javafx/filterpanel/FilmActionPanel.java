@@ -479,6 +479,7 @@ public class FilmActionPanel {
 
 
         zeitraumSpinner = new ZeitraumSpinner();
+        zeitraumSpinner.setEditable(true);
         zeitraumProperty = zeitraumSpinner.valueProperty();
 
         Label days = new Label("Tage");
