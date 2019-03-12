@@ -48,7 +48,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -148,8 +147,8 @@ public class FilmActionPanel {
         }
 
         try {
-            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM));
-        } catch (NoSuchElementException ignored) {
+            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, ZeitraumSpinner.UNLIMITED_VALUE));
+        } catch (Exception ignored) {
         }
     }
 
@@ -405,9 +404,9 @@ public class FilmActionPanel {
         }
 
         items.addAll(finalList.stream()
-                        .distinct()
-                        .sorted(GermanStringSorter.getInstance())
-                        .collect(Collectors.toList()));
+                .distinct()
+                .sorted(GermanStringSorter.getInstance())
+                .collect(Collectors.toList()));
         finalList.clear();
 
         themaSuggestionProvider.clearSuggestions();
@@ -479,7 +478,6 @@ public class FilmActionPanel {
 
 
         zeitraumSpinner = new ZeitraumSpinner();
-        zeitraumSpinner.setEditable(true);
         zeitraumProperty = zeitraumSpinner.valueProperty();
 
         Label days = new Label("Tage");
