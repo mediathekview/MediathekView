@@ -262,17 +262,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public boolean runNotFinished() {
-        if (start != null && start.status < Start.STATUS_FERTIG) {
-            return true;
-        }
-        return false;
+        return start != null && start.status < Start.STATUS_FERTIG;
     }
 
     public boolean running() {
-        if (start != null && start.status == Start.STATUS_RUN) {
-            return true;
-        }
-        return false;
+        return start != null && start.status == Start.STATUS_RUN;
     }
 
     public void resetDownload() {
