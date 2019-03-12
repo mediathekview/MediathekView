@@ -89,15 +89,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public boolean isEmpty() {
         //liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde
         //ist dann offensichtlich falsch!!
-        if (arr[ABO_SENDER].isEmpty()
+        return arr[ABO_SENDER].isEmpty()
                 && arr[ABO_THEMA].isEmpty()
                 && arr[ABO_TITEL].isEmpty()
                 && arr[ABO_THEMA_TITEL].isEmpty()
-                && arr[ABO_IRGENDWO].isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+                && arr[ABO_IRGENDWO].isEmpty();
     }
 
     public final void setMindestDauerMinuten(int d) {
