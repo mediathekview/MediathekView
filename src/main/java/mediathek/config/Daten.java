@@ -37,6 +37,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.UIProgressState;
+import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.INotificationCenter;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -62,6 +64,9 @@ import java.util.Date;
 
 public class Daten {
 
+    INotificationCenter notificationCenter;
+    public INotificationCenter notificationCenter() { return notificationCenter;
+    }
     // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     private static final Logger logger = LogManager.getLogger(Daten.class);
@@ -106,6 +111,7 @@ public class Daten {
     private MVSenderIconCache senderIconCache;
 
     private Daten() {
+        notificationCenter = new GenericNotificationCenter();
         start();
     }
 
