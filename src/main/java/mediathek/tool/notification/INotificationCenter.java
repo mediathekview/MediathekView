@@ -1,5 +1,7 @@
 package mediathek.tool.notification;
 
+import mediathek.tool.notification.thrift.NotificationMessage;
+
 /**
  * Interface for the platform specific notification implementation
  */

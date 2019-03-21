@@ -26,8 +26,8 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
-import mediathek.tool.notification.NotificationMessage;
 import mediathek.tool.notification.thrift.MessageType;
+import mediathek.tool.notification.thrift.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -190,9 +190,9 @@ public final class MVTray {
 
     private void addNotification(String meldung) {
         final NotificationMessage msg = new NotificationMessage();
-        msg.title = "Programminfos";
-        msg.message = meldung;
-        msg.type = MessageType.INFO;
+        msg.setTitle("Programminfos");
+        msg.setMessage(meldung);
+        msg.setType(MessageType.INFO);
         daten.notificationCenter().displayNotification(msg);
     }
 
