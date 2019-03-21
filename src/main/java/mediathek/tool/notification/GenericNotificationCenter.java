@@ -2,6 +2,7 @@ package mediathek.tool.notification;
 
 import javafx.application.Platform;
 import mSearch.tool.ApplicationConfiguration;
+import mediathek.tool.notification.thrift.NotificationMessage;
 import org.controlsfx.control.Notifications;
 
 /**
@@ -16,10 +17,10 @@ public class GenericNotificationCenter implements INotificationCenter {
         Platform.runLater(() -> {
             try {
                 final Notifications msg = Notifications.create();
-                msg.text(notificationMessage.message);
-                msg.title(notificationMessage.title);
+                msg.text(notificationMessage.getMessage());
+                msg.title(notificationMessage.getTitle());
 
-                switch (notificationMessage.type) {
+                switch (notificationMessage.getType()) {
                     case INFO:
                         msg.showInformation();
                         break;

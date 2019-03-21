@@ -30,8 +30,8 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
-import mediathek.tool.notification.NotificationMessage;
 import mediathek.tool.notification.thrift.MessageType;
+import mediathek.tool.notification.thrift.NotificationMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -208,14 +208,14 @@ public class StarterClass {
         }
 
         final NotificationMessage msg = new NotificationMessage();
-        msg.message = meldung.toString();
+        msg.setMessage(meldung.toString());
         if (erfolgreich) {
-            msg.type = MessageType.INFO;
-            msg.title = "Download war erfolgreich";
+            msg.setType(MessageType.INFO);
+            msg.setTitle("Download war erfolgreich");
         }
         else {
-            msg.type = MessageType.ERROR;
-            msg.title = "Download war fehlerhaft";
+            msg.setType(MessageType.ERROR);
+            msg.setTitle("Download war fehlerhaft");
         }
 
         Daten.getInstance().notificationCenter().displayNotification(msg);

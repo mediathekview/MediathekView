@@ -5,12 +5,12 @@ enum MessageType {
 	ERROR
 }
 
-struct ThriftNotificationMessage {
+struct NotificationMessage {
 	1: required string title;
 	2: required string message;
 	3: required MessageType type;
 }
 
 service ThriftNotificationCenter {
-	oneway void displayNotification(1: ThriftNotificationMessage message),
+	oneway void displayNotification(1: NotificationMessage message),
 }
