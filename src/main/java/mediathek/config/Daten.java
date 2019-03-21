@@ -39,6 +39,7 @@ import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.UIProgressState;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
+import mediathek.tool.notification.NativeNotificationCenter;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -111,7 +112,11 @@ public class Daten {
     private MVSenderIconCache senderIconCache;
 
     private Daten() {
-        notificationCenter = new GenericNotificationCenter();
+        if (SystemUtils.IS_OS_MAC_OSX)
+            notificationCenter = new NativeNotificationCenter();
+        else
+            notificationCenter = new GenericNotificationCenter();
+
         start();
     }
 
