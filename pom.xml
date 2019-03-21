@@ -85,6 +85,11 @@
 			<version>1.6.5</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.12.0</version>
+		</dependency>
 		<!--
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -312,6 +317,25 @@
 	<build>
 		<finalName>MediathekView</finalName>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.thrift.tools</groupId>
+				<artifactId>maven-thrift-plugin</artifactId>
+				<version>0.1.11</version>
+				<configuration>
+					<thriftExecutable>/usr/local/bin/thrift</thriftExecutable>
+					<generator>java:generated_annotations=suppress</generator>
+                </configuration>
+				<executions>
+					<execution>
+						<id>thrift-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>
