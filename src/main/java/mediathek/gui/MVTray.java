@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import javafx.application.Platform;
-import mSearch.tool.ApplicationConfiguration;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -28,10 +26,11 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
+import mediathek.tool.notification.MessageType;
+import mediathek.tool.notification.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -190,14 +189,11 @@ public final class MVTray {
     }
 
     private void addNotification(String meldung) {
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true)) {
-            Platform.runLater(() -> {
-                Notifications msg = Notifications.create();
-                msg.title("Programminfos");
-                msg.text(meldung);
-                msg.showInformation();
-            });
-        }
+        final NotificationMessage msg = new NotificationMessage();
+        msg.title = "Programminfos";
+        msg.message = meldung;
+        msg.type = MessageType.INFO;
+        daten.notificationCenter().displayNotification(msg);
     }
 
 }

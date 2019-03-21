@@ -19,9 +19,7 @@
  */
 package mediathek.controller.starter;
 
-import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -32,11 +30,12 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
+import mediathek.tool.notification.MessageType;
+import mediathek.tool.notification.NotificationMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.Notifications;
 
 import java.awt.*;
 import java.io.File;
@@ -197,10 +196,6 @@ public class StarterClass {
      * Post a notification dialog whether download was successful or not.
      */
     private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true))
-            return;
-
-
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
@@ -212,22 +207,18 @@ public class StarterClass {
             meldung.append(s).append('\n');
         }
 
-        Platform.runLater(() -> {
-            try {
-                Notifications msg = Notifications.create();
-                msg.text(meldung.toString());
+        final NotificationMessage msg = new NotificationMessage();
+        msg.message = meldung.toString();
+        if (erfolgreich) {
+            msg.type = MessageType.INFO;
+            msg.title = "Download war erfolgreich";
+        }
+        else {
+            msg.type = MessageType.ERROR;
+            msg.title = "Download war fehlerhaft";
+        }
 
-                if (erfolgreich) {
-                    msg.title("Download war erfolgreich");
-                    msg.showInformation();
-                } else {
-                    msg.title("Download war fehlerhaft");
-                    msg.showError();
-                }
-            }
-            catch (NullPointerException ignored) {
-            }
-        });
+        Daten.getInstance().notificationCenter().displayNotification(msg);
     }
 
     private static void writeSpotlightComment(DatenDownload datenDownload, DirectHttpDownload.HttpDownloadState state) {
