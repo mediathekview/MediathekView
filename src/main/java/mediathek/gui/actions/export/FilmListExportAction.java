@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import mediathek.MediathekGui;
+import mediathek.config.Konstanten;
 import mediathek.javafx.tool.FXProgressPane;
 import org.controlsfx.control.StatusBar;
 
@@ -17,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
  * Exports the current film list to JSON file.
  */
 public class FilmListExportAction extends AbstractAction {
-    private final static String TITLE = "MediathekView";
     private final static String HEADER = "Export der Filmliste";
     private final MediathekGui gui;
 
@@ -50,7 +50,7 @@ public class FilmListExportAction extends AbstractAction {
 
     private void showError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(TITLE);
+        alert.setTitle(Konstanten.PROGRAMMNAME);
         alert.setHeaderText(HEADER);
         alert.setContentText("Es gab einen Fehler beim Export der Filmliste.");
         alert.initModality(Modality.APPLICATION_MODAL);
@@ -59,7 +59,7 @@ public class FilmListExportAction extends AbstractAction {
 
     private void showSuccess() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(TITLE);
+        alert.setTitle(Konstanten.PROGRAMMNAME);
         alert.setHeaderText(HEADER);
         alert.setContentText("Der Export wurde erfolgreich beendet.");
         alert.initModality(Modality.APPLICATION_MODAL);

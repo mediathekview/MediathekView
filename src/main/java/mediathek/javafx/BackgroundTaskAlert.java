@@ -3,6 +3,7 @@ package mediathek.javafx;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
+import mediathek.config.Konstanten;
 
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class BackgroundTaskAlert {
     private void createBackgroundTaskAlert() {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("MediathekView");
+            alert.setTitle(Konstanten.PROGRAMMNAME);
             alert.setHeaderText("Abschluss der Hintergrund-Tasks");
             alert.setContentText("MediathekView muss auf den Abschluss der laufenden Hintergrund-Tasks warten.\n" +
                     "Dies kann einige Sekunden dauern");
