@@ -2,6 +2,7 @@ package mSearch.tool;
 
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -117,7 +118,7 @@ public class ApplicationConfiguration {
 
     private void createDefaultConfigSettings() {
         try {
-            config.setProperty(APPLICATION_USER_AGENT, "MediathekView");
+            config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
             config.setProperty(GEO_REPORT, true);
             config.setProperty(GEO_LOCATION, DatenFilm.GEO_DE);
 
