@@ -147,14 +147,14 @@ public class Daten {
     private void setupNotifications() {
         final var config = ApplicationConfiguration.getConfiguration();
 
-        if (config.getBoolean(ApplicationConfiguration.NATIVE_NOTIFICATIONS, false)) {
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS, false)) {
             //TODO currently notifications native only for macOS
             if (SystemUtils.IS_OS_MAC_OSX)
                 notificationCenter = new NativeNotificationCenter();
             else {
                 notificationCenter = new GenericNotificationCenter();
                 //deactivate native notifications for non-macOS platforms
-                config.setProperty(ApplicationConfiguration.NATIVE_NOTIFICATIONS, false);
+                config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS, false);
             }
         }
         else
