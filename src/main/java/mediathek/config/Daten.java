@@ -20,7 +20,6 @@
 package mediathek.config;
 
 import mSearch.daten.ListeFilme;
-import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
@@ -37,9 +36,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.UIProgressState;
-import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
-import mediathek.tool.notification.NativeNotificationCenter;
+import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -65,9 +63,6 @@ import java.util.Date;
 
 public class Daten {
 
-    private INotificationCenter notificationCenter;
-    public INotificationCenter notificationCenter() { return notificationCenter;
-    }
     // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     private static final Logger logger = LogManager.getLogger(Daten.class);
@@ -87,15 +82,6 @@ public class Daten {
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
-    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    /**
-     * alle angesehenen Filme.
-     */
-    private SeenHistoryController history;
-    /**
-     * erfolgreich geladene Abos.
-     */
-    private AboHistoryController erledigteAbos;
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     /**
      * "source" list of all entries, contains everything
@@ -112,10 +98,19 @@ public class Daten {
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
+    private final MVSenderIconCache senderIconCache;
+    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private INotificationCenter notificationCenter;
+    /**
+     * alle angesehenen Filme.
+     */
+    private SeenHistoryController history;
+    /**
+     * erfolgreich geladene Abos.
+     */
+    private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private final MVSenderIconCache senderIconCache;
-
     private Daten() {
         setupNotifications();
         setupMessageBus();
@@ -144,21 +139,8 @@ public class Daten {
         setupRepeatingTimer();
     }
 
-    private void setupNotifications() {
-        final var config = ApplicationConfiguration.getConfiguration();
-
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS, false)) {
-            //TODO currently notifications native only for macOS
-            if (SystemUtils.IS_OS_MAC_OSX)
-                notificationCenter = new NativeNotificationCenter();
-            else {
-                notificationCenter = new GenericNotificationCenter();
-                //deactivate native notifications for non-macOS platforms
-                config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS, false);
-            }
-        }
-        else
-            notificationCenter = new GenericNotificationCenter();
+    public void setupNotifications() {
+        notificationCenter = NotificationFactory.createNotificationCenter();
     }
 
     public static boolean isStartMaximized() {
@@ -289,6 +271,14 @@ public class Daten {
      */
     public static void closeSplashScreen() {
         splashScreenManager = null;
+    }
+
+    public INotificationCenter notificationCenter() {
+        return notificationCenter;
+    }
+
+    public void setNotificationCenter(INotificationCenter center) {
+        notificationCenter = center;
     }
 
     public MVSenderIconCache getSenderIconCache() {

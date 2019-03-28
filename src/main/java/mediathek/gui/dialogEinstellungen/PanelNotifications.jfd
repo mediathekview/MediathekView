@@ -1,0 +1,31 @@
+JFDML JFormDesigner: "7.0.0.0.170" Java: "1.8.0_202-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[fill][fill]"
+			"$rowConstraints": "[][][]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "cbShowNotifications"
+				"text": "Benachrichtigungen anzeigen"
+				"toolTipText": "Zeige Programminformationen als Benachrichtigungen in einem Popup-Fenster an."
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "cbNativeNotifications"
+				"text": "Benachrichtigungen im Betriebssystem anzeigen"
+				"toolTipText": "Wenn das Betriebssystem unterstützt wird, werden die Benachrichtigungen in den vom Betriebssystem bereitgestelltem Benachrichtigungssystem angezeigt anstatt in MediathekView."
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}
