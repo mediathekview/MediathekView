@@ -198,6 +198,7 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_SETTINGS_DIALOG);
         initializeSettingsDialog();
+        initializeMediaDbDialog();
 
         //register message bus handler
         daten.getMessageBus().subscribe(this);
@@ -347,14 +348,18 @@ public class MediathekGui extends JFrame {
         });
     }
 
+    private DialogMediaDB dialogMediaDB;
+
+    public DialogMediaDB getMediaDatabaseDialog() { return dialogMediaDB;}
+
+    private void initializeMediaDbDialog() {
+        dialogMediaDB = new DialogMediaDB(this);
+        dialogMediaDB.setVis();
+    }
+
     private void initializeSettingsDialog() {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(daten);
-        final var mediaDbDialog = new DialogMediaDB(this);
-
-        daten.setDialogMediaDB(mediaDbDialog);
-
-        mediaDbDialog.setVis();
     }
 
     private void loadDaten() {
@@ -697,7 +702,7 @@ public class MediathekGui extends JFrame {
         cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         cbSearchMediaDb.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(cbSearchMediaDb.isSelected()));
-            daten.getDialogMediaDB().setVis();
+            dialogMediaDB.setVis();
         });
 
         jMenuAnsicht.add(cbVideoplayer);
@@ -790,7 +795,7 @@ public class MediathekGui extends JFrame {
         // Infodialog/Bandwidth
         bandwidthMonitor.writeConfig();
         // MediaDB
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.getDialogMediaDB());
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, dialogMediaDB);
     }
 
     private void closeControlsFxWorkaroundStage() {
@@ -840,7 +845,7 @@ public class MediathekGui extends JFrame {
         tabDownloads.tabelleSpeichern();
 
         dialog.setStatusText(4, "MediaDB sichern");
-        daten.getDialogMediaDB().tabelleSpeichern();
+        dialogMediaDB.tabelleSpeichern();
 
         dialog.setStatusText(5, "Downloads anhalten");
         stopDownloads();

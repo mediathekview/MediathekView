@@ -507,15 +507,17 @@ public class GuiDownloads extends JPanel {
             final int row = tabelle.getSelectedRow();
             if (row != -1) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                daten.getDialogMediaDB().setVis();
-
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
-                if (datenDownload != null) {
-                    daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-                }
-
+                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                searchInMediaDb(datenDownload);
             }
         }
+    }
+
+    private void searchInMediaDb(DatenDownload datenDownload) {
+        final var mediaDB = mediathekGui.getMediaDatabaseDialog();
+        mediaDB.setVis();
+        if (datenDownload != null)
+            mediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
     }
 
     private void setupKeyMappings() {
@@ -856,13 +858,9 @@ public class GuiDownloads extends JPanel {
     }
 
     private void searchInMediaDb() {
-        DatenDownload datenDownload = getSelDownload();
+        final DatenDownload datenDownload = getSelDownload();
         MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        daten.getDialogMediaDB().setVis();
-
-        if (datenDownload != null) {
-            daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-        }
+        searchInMediaDb(datenDownload);
     }
 
     public synchronized void updateDownloads() {
