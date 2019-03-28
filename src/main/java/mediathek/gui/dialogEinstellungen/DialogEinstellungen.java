@@ -50,10 +50,12 @@ public class DialogEinstellungen extends JFrame {
     private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
+    private JPanel panelNotifications;
     private final JPanel panelLeer = new JPanel();
 
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
+    private static final String NAME_notifications = "Benachrichtigungen";
     private static final String NAME_bandwidth = "Download";
     private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
@@ -71,6 +73,7 @@ public class DialogEinstellungen extends JFrame {
     // ######## Einstellulngen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
+    private final DefaultMutableTreeNode treeNodeNotifications = new DefaultMutableTreeNode(NAME_notifications);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
@@ -114,6 +117,8 @@ public class DialogEinstellungen extends JFrame {
         panelDateinamen = new PanelDateinamen(ddaten, this);
         panelPset = new PanelPset(ddaten, this);
         panelPsetVorlagen = new PanelPsetImport(ddaten, this);
+
+        panelNotifications = new PanelNotifications();
     }
 
     private void initTree() {
@@ -122,6 +127,7 @@ public class DialogEinstellungen extends JFrame {
         // ===============================================================================
         // ######## Einstellulngen ############
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
+        treeNodeEinstellungen.add(treeNodeNotifications);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
@@ -159,6 +165,12 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_einstellungen:
                         jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
                         break;
+
+                    case NAME_notifications:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelNotifications);
+                        break;
+
                     case NAME_bandwidth:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDownload);
