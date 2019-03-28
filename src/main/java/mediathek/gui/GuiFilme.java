@@ -386,8 +386,9 @@ public class GuiFilme extends JPanel {
             final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
             filmSelection.ifPresent(film -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                daten.getDialogMediaDB().setVis();
-                daten.getDialogMediaDB().setFilter(film.getTitle());
+                final var mediaDB = mediathekGui.getMediaDatabaseDialog();
+                mediaDB.setVis();
+                mediaDB.setFilter(film.getTitle());
             });
         }
     }

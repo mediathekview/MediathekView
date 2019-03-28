@@ -31,7 +31,6 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.SplashScreenManager;
-import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
@@ -113,7 +112,6 @@ public class Daten {
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
-    private DialogMediaDB dialogMediaDB;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
     private final MVSenderIconCache senderIconCache;
@@ -541,13 +539,4 @@ public class Daten {
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
     }
-
-    public DialogMediaDB getDialogMediaDB() {
-        return dialogMediaDB;
-    }
-
-    public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB) {
-        dialogMediaDB = aDialogMediaDB;
-    }
-
 }
