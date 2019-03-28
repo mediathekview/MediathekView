@@ -117,6 +117,10 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
+    private final JFXPanel statusBarPanel;
+    private final LoadFilmListAction loadFilmListAction;
+    private final MemoryMonitorAction showMemoryMonitorAction;
+    private final SearchProgramUpdateAction searchProgramUpdateAction;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     /**
@@ -141,6 +145,8 @@ public class MediathekGui extends JFrame {
      * Progress indicator thread for OS X and windows.
      */
     private IndicatorThread progressIndicatorThread;
+    private DialogMediaDB dialogMediaDB;
+    private ManageAboAction manageAboAction;
 
     public MediathekGui() {
         super();
@@ -225,6 +231,15 @@ public class MediathekGui extends JFrame {
         setupUpdateCheck();
     }
 
+    /**
+     * Return the user interface instance
+     *
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
+    }
+
     private void setupTaskbarMenu() {
         var taskbar = Taskbar.getTaskbar();
         if (taskbar.isSupported(Taskbar.Feature.MENU)) {
@@ -240,15 +255,6 @@ public class MediathekGui extends JFrame {
 
             taskbar.setMenu(popupMenu);
         }
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     private void setIconAndWindowImage() {
@@ -348,9 +354,9 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    private DialogMediaDB dialogMediaDB;
-
-    public DialogMediaDB getMediaDatabaseDialog() { return dialogMediaDB;}
+    public DialogMediaDB getMediaDatabaseDialog() {
+        return dialogMediaDB;
+    }
 
     private void initializeMediaDbDialog() {
         dialogMediaDB = new DialogMediaDB(this);
@@ -379,8 +385,6 @@ public class MediathekGui extends JFrame {
     public IntegerProperty getSelectedItemsProperty() {
         return selectedItemsProperty;
     }
-
-    private final JFXPanel statusBarPanel;
 
     /**
      * Create the status bar item.
@@ -662,8 +666,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private final LoadFilmListAction loadFilmListAction;
-
     private void createFileMenu() {
         jMenuDatei.add(loadFilmListAction);
         jMenuDatei.add(new FilmListExportAction(this));
@@ -715,9 +717,6 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(cbSearchMediaDb);
     }
 
-    private final MemoryMonitorAction showMemoryMonitorAction;
-    private final SearchProgramUpdateAction searchProgramUpdateAction;
-
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();
@@ -743,8 +742,6 @@ public class MediathekGui extends JFrame {
         createAboMenu();
         createHelpMenu();
     }
-
-    private ManageAboAction manageAboAction;
 
     private void createAboMenu() {
         jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
