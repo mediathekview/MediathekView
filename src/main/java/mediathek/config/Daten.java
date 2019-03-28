@@ -65,7 +65,7 @@ import java.util.Date;
 
 public class Daten {
 
-    INotificationCenter notificationCenter;
+    private INotificationCenter notificationCenter;
     public INotificationCenter notificationCenter() { return notificationCenter;
     }
     // zentrale Klassen
@@ -96,28 +96,54 @@ public class Daten {
      * erfolgreich geladene Abos.
      */
     private AboHistoryController erledigteAbos;
-    private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
-    private ListeFilme listeFilme;
-    private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
-    private ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
-    private ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
-    private ListeBlacklist listeBlacklist;
-    private ListeMediaDB listeMediaDB;
-    private ListeMediaPath listeMediaPath;
-    private ListeAbo listeAbo;
-    private DownloadInfos downloadInfos;
+    private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
+    private final ListeFilme listeFilme;
+    private final ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
+    private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
+    private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
+    private final ListeBlacklist listeBlacklist;
+    private final ListeMediaDB listeMediaDB;
+    private final ListeMediaPath listeMediaPath;
+    private final ListeAbo listeAbo;
+    private final DownloadInfos downloadInfos;
     private DialogMediaDB dialogMediaDB;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private MVSenderIconCache senderIconCache;
+    private final MVSenderIconCache senderIconCache;
 
     private Daten() {
+        setupNotifications();
+        setupMessageBus();
+
+        listeFilme = new ListeFilme();
+        filmeLaden = new FilmeLaden(this);
+
+        senderIconCache = new MVSenderIconCache(this);
+
+        listeFilmeNachBlackList = new ListeFilme();
+        listeBlacklist = new ListeBlacklist();
+
+        listePset = new ListePset();
+
+        listeAbo = new ListeAbo(this);
+
+        listeDownloads = new ListeDownloads(this);
+        listeDownloadsButton = new ListeDownloads(this);
+
+        listeMediaDB = new ListeMediaDB(this);
+        listeMediaPath = new ListeMediaPath();
+
+        downloadInfos = new DownloadInfos(messageBus);
+        starterClass = new StarterClass(this);
+
+        setupRepeatingTimer();
+    }
+
+    private void setupNotifications() {
         if (SystemUtils.IS_OS_MAC_OSX)
             notificationCenter = new NativeNotificationCenter();
         else
             notificationCenter = new GenericNotificationCenter();
-
-        start();
     }
 
     public static boolean isStartMaximized() {
@@ -254,10 +280,6 @@ public class Daten {
         return senderIconCache;
     }
 
-    private void loadSenderIcons() {
-        senderIconCache = new MVSenderIconCache(this);
-    }
-
     public Cleaner getCleaner() {
         return cleaner;
     }
@@ -294,30 +316,7 @@ public class Daten {
         return erledigteAbos;
     }
 
-    private void start() {
-        setupMessageBus();
-
-        listeFilme = new ListeFilme();
-        filmeLaden = new FilmeLaden(this);
-
-        loadSenderIcons();
-
-        listeFilmeNachBlackList = new ListeFilme();
-        listeBlacklist = new ListeBlacklist();
-
-        listePset = new ListePset();
-
-        listeAbo = new ListeAbo(this);
-
-        listeDownloads = new ListeDownloads(this);
-        listeDownloadsButton = new ListeDownloads(this);
-
-        listeMediaDB = new ListeMediaDB(this);
-        listeMediaPath = new ListeMediaPath();
-
-        downloadInfos = new DownloadInfos(messageBus);
-        starterClass = new StarterClass(this);
-
+    private void setupRepeatingTimer() {
         Timer timer = new Timer(1000, e -> messageBus.publishAsync(new TimerEvent()));
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
