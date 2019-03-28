@@ -1,5 +1,6 @@
 package mediathek.tool.notification;
 
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Konstanten;
 import mediathek.tool.notification.thrift.NotificationMessage;
@@ -13,6 +14,9 @@ import org.apache.thrift.transport.TTransport;
 public class NativeNotificationCenter implements INotificationCenter {
     @Override
     public void displayNotification(NotificationMessage msg) {
+        if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true))
+            return;
+
         try (TTransport transport = new TSocket("localhost", 9090)){
             transport.open();
 
