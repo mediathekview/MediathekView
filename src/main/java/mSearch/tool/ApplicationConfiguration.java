@@ -26,6 +26,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER = "application.ui.install_tab_listeners";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.show_notifications";
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
+    public static final String APPLICATION_NATIVE_NOTIFICATIONS = "application.notifications.native";
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
@@ -61,8 +62,6 @@ public class ApplicationConfiguration {
 
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
-
-    public static final String NATIVE_NOTIFICATIONS = "app.notifications.native";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
