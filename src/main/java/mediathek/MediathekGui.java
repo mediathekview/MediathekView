@@ -350,8 +350,11 @@ public class MediathekGui extends JFrame {
     private void initializeSettingsDialog() {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(daten);
-        daten.setDialogMediaDB(new DialogMediaDB(this));
-        daten.getDialogMediaDB().setVis();
+        final var mediaDbDialog = new DialogMediaDB(this);
+
+        daten.setDialogMediaDB(mediaDbDialog);
+
+        mediaDbDialog.setVis();
     }
 
     private void loadDaten() {
