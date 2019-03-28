@@ -20,6 +20,7 @@
 package mediathek.config;
 
 import mSearch.daten.ListeFilme;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
@@ -97,8 +98,14 @@ public class Daten {
      */
     private AboHistoryController erledigteAbos;
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
+    /**
+     * "source" list of all entries, contains everything
+     */
     private final ListeFilme listeFilme;
-    private final ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
+    /**
+     * "the" final list of films after all filtering is done
+     */
+    private final ListeFilme listeFilmeNachBlackList;
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
@@ -140,8 +147,18 @@ public class Daten {
     }
 
     private void setupNotifications() {
-        if (SystemUtils.IS_OS_MAC_OSX)
-            notificationCenter = new NativeNotificationCenter();
+        final var config = ApplicationConfiguration.getConfiguration();
+
+        if (config.getBoolean(ApplicationConfiguration.NATIVE_NOTIFICATIONS, false)) {
+            //TODO currently notifications native only for macOS
+            if (SystemUtils.IS_OS_MAC_OSX)
+                notificationCenter = new NativeNotificationCenter();
+            else {
+                notificationCenter = new GenericNotificationCenter();
+                //deactivate native notifications for non-macOS platforms
+                config.setProperty(ApplicationConfiguration.NATIVE_NOTIFICATIONS, false);
+            }
+        }
         else
             notificationCenter = new GenericNotificationCenter();
     }
