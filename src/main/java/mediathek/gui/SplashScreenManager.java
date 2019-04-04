@@ -33,6 +33,9 @@ public class SplashScreenManager {
     }
 
     private void updateSplashScreenText(final String text) {
+        if (splash == null)
+            return;
+
         if (!splash.isVisible())
             return;
 
