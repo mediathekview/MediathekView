@@ -10,7 +10,6 @@ import mediathek.MediathekGui;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
-import mediathek.tool.OsxPowerManager;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 

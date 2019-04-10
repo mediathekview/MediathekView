@@ -1,4 +1,4 @@
-package mediathek.tool;
+package mediathek.mac;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
