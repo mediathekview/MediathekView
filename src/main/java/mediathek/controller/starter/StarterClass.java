@@ -292,7 +292,7 @@ public class StarterClass {
         if (!url.isEmpty()) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
-            starten.startStarten(d);
+            starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
 
@@ -324,7 +324,6 @@ public class StarterClass {
          * calculation tasks.
          */
         private final java.util.Timer bandwidthCalculationTimer;
-        private DatenDownload datenDownload;
 
         public Starten() {
             super();
@@ -337,8 +336,9 @@ public class StarterClass {
         public void run() {
             while (!isInterrupted()) {
                 try {
+                    DatenDownload datenDownload;
                     while ((datenDownload = getNextStart()) != null) {
-                        startStarten(datenDownload);
+                        launchDownloadThread(datenDownload);
                         //alle 3 Sekunden einen Download starten
                         TimeUnit.SECONDS.sleep(3);
                     }
@@ -376,7 +376,7 @@ public class StarterClass {
          *
          * @param datenDownload The {@link mediathek.daten.DatenDownload} info object for download.
          */
-        private void startStarten(DatenDownload datenDownload) {
+        private void launchDownloadThread(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
             daten.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
 

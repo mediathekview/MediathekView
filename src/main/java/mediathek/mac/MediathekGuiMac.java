@@ -10,6 +10,7 @@ import mediathek.MediathekGui;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.tool.OsxPowerManager;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 
@@ -75,14 +76,23 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void handleDownloadStart(DownloadStartEvent msg) {
         super.handleDownloadStart(msg);
+        powerManager.disablePowerManagement();
+
         setDownloadsBadge(numDownloadsStarted.get());
     }
 
     @Override
     protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
         super.handleDownloadFinishedEvent(msg);
-        setDownloadsBadge(numDownloadsStarted.get());
+
+        final int numDownloads = numDownloadsStarted.get();
+        if (numDownloads == 0)
+            powerManager.enablePowerManagement();
+
+        setDownloadsBadge(numDownloads);
     }
+
+    private final OsxPowerManager powerManager = new OsxPowerManager();
 
     /**
      * Set the OS X dock icon badge to the number of running downloads.
