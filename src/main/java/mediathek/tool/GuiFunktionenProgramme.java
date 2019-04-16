@@ -110,43 +110,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfad;
     }
 
-    @Deprecated
-    public static String getMusterPfadFlv() {
-        // liefert den Standardpfad für das entsprechende BS 
-        // bei Win+Mac wird das Programm mitgeliefert und liegt 
-        // im Ordner "bin" der mit dem Programm mitgeliefert wird
-        // bei Linux muss das Programm auf dem Rechner instelliert sein
-        final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
-        final String PFAD_FREEBSD = "/usr/local/bin/flvstreamer";
-        final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
-        final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
-        String pfad = "";
-        try {
-            switch (getOs()) {
-                case LINUX:
-                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-                        pfad = PFAD_FREEBSD;
-                    } else {
-                        pfad = PFAD_LINUX_FLV;
-                    }
-                    break;
-                case MAC:
-                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
-                    break;
-                default:
-                    pfad = PFAD_WINDOWS_FLV;
-            }
-            if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
-                pfad = System.getenv("PATH_FLVSTREAMER");
-            }
-            if (!new File(pfad).exists()) {
-                pfad = "";
-            }
-        } catch (Exception ignore) {
-        }
-        return pfad;
-    }
-
     public static String getMusterPfadFFmpeg() {
         // liefert den Standardpfad für das entsprechende BS 
         // bei Win+Mac wird das Programm mitgeliefert und liegt 
