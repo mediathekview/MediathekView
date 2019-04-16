@@ -110,6 +110,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfad;
     }
 
+    @Deprecated
     public static String getMusterPfadFlv() {
         // liefert den Standardpfad für das entsprechende BS 
         // bei Win+Mac wird das Programm mitgeliefert und liegt 

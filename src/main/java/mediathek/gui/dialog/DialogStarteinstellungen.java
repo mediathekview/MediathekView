@@ -31,18 +31,14 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 import static mSearch.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class DialogStarteinstellungen extends JDialog {
+    private enum State { START, PFAD, PSET, FERTIG}
     private final Daten daten;
-    private final static int STAT_START = 1;
-    private final static int STAT_PFAD = 2;
-    private final static int STAT_PSET = 3;
-    private final static int STAT_FERTIG = 4;
-    private int status = STAT_START;
+    private State status = State.START;
     private final JFrame parentComponent;
     private boolean anpassen = false;
 
@@ -52,14 +48,14 @@ public class DialogStarteinstellungen extends JDialog {
         initComponents();
         daten = dd;
         this.setTitle("Erster Start");
-        jButtonStandard.addActionListener((ActionEvent e) -> weiter());
-        jButtonAnpassen.addActionListener((ActionEvent e) -> {
+        jButtonStandard.addActionListener(e -> weiter());
+        jButtonAnpassen.addActionListener(e -> {
             anpassen = true;
             weiter();
         });
         jCheckBoxAlleEinstellungen.setVisible(false);
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
-            status = STAT_PSET;
+            status = State.PSET;
             weiter();
         });
 
@@ -71,9 +67,8 @@ public class DialogStarteinstellungen extends JDialog {
         createLayout();
 
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
-            //dann fehlt eine Programm
+            //dann fehlt ein Programm
             jButtonStandard.setEnabled(false);
             anpassen = true;
         }
@@ -88,13 +83,13 @@ public class DialogStarteinstellungen extends JDialog {
     private void weiter() {
         jButtonStandard.setEnabled(true);
         switch (status) {
-            case STAT_START:
+            case START:
                 statusStart();
                 break;
-            case STAT_PFAD:
+            case PFAD:
                 statusPfade();
                 break;
-            case STAT_PSET:
+            case PSET:
                 statusPset();
                 break;
             default:
@@ -109,15 +104,15 @@ public class DialogStarteinstellungen extends JDialog {
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
-            status = STAT_PFAD;
+            status = State.PFAD;
         } else if (anpassen) {
             // der Benutzer wills verstellen
-            status = STAT_PFAD;
+            status = State.PFAD;
         } else // nur dann automatisch Standardprogramme einrichten, sonst fragen
          if (addStandarSet(parentComponent, daten)) {
-                status = STAT_FERTIG;
+                status = State.FERTIG;
             } else {
-                status = STAT_PSET;
+                status = State.PSET;
             }
         weiter();
     }
@@ -137,7 +132,7 @@ public class DialogStarteinstellungen extends JDialog {
                 // da brauchs alles
                 jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /* flvstreamer */, true /*ffmpeg*/));
         }
-        status = STAT_PSET;
+        status = State.PSET;
         jButtonStandard.setText("Weiter");
     }
 
@@ -154,7 +149,7 @@ public class DialogStarteinstellungen extends JDialog {
         } else {
             jScrollPane1.setViewportView(new PanelPsetKurz(daten, parentComponent, Daten.listePset));
         }
-        status = STAT_FERTIG;
+        status = State.FERTIG;
         jButtonStandard.setText("Weiter");
     }
 

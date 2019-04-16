@@ -309,6 +309,7 @@ public class MVConfig {
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
+        @Deprecated
         SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer", GuiFunktionenProgramme.getMusterPfadFlv()),
         SYSTEM_PFAD_FFMPEG("pfad-ffmpeg", GuiFunktionenProgramme.getMusterPfadFFmpeg()),
         SYSTEM_VERSION_PROGRAMMSET("Version-Programmset"),
