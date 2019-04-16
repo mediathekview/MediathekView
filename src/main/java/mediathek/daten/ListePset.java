@@ -158,18 +158,15 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public static boolean progMusterErsetzen(JFrame parent, ListePset liste) {
-        boolean ret = true;
+    public static void progMusterErsetzen(JFrame parent, ListePset liste) {
         for (DatenPset pSet : liste) {
-            if (!progMusterErsetzen(parent, pSet)) {
-                ret = false;
-            }
+            progMusterErsetzen(parent, pSet);
         }
+
         Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
-        return ret;
     }
 
-    private static boolean progMusterErsetzen(JFrame parent, DatenPset pSet) {
+    private static void progMusterErsetzen(JFrame parent, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String vlc = "";
         String flvstreamer = "";
@@ -220,7 +217,6 @@ public class ListePset extends LinkedList<DatenPset> {
             prog.arr[DatenProg.PROGRAMM_SCHALTER]
                     = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
         }
-        return true;
     }
 
     private static String getPfadVlc(JFrame parent) {
@@ -231,6 +227,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC);
     }
 
+    @Deprecated
     private static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()) {
