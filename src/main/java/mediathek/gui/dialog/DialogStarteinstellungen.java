@@ -61,7 +61,6 @@ public class DialogStarteinstellungen extends JDialog {
 
         // setzt die Standardpfade für die wichtigsten Programme
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
 
         createLayout();
@@ -101,7 +100,6 @@ public class DialogStarteinstellungen extends JDialog {
     private void statusStart() {
         jButtonStandard.setText("Weiter");
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
             status = State.PFAD;
@@ -126,11 +124,11 @@ public class DialogStarteinstellungen extends JDialog {
             case WIN32:
             case WIN64:
                 // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /* flvstreamer */, false /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /*ffmpeg*/));
                 break;
             default:
                 // da brauchs alles
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /* flvstreamer */, true /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /*ffmpeg*/));
         }
         status = State.PSET;
         jButtonStandard.setText("Weiter");

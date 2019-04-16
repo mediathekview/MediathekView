@@ -39,13 +39,12 @@ import java.io.File;
 @SuppressWarnings("serial")
 public class PanelProgrammPfade extends JPanel {
     public JDialog dialog = null;
-    private final boolean vlc, flvstreamer, ffmpeg;
+    private final boolean vlc, ffmpeg;
     private final JFrame parentComponent;
 
-    public PanelProgrammPfade(JFrame parentFrame, boolean vvlc, boolean fflvstreamer, boolean fffmpeg) {
+    public PanelProgrammPfade(JFrame parentFrame, boolean vvlc, boolean fffmpeg) {
         initComponents();
         vlc = vvlc;
-        flvstreamer = fflvstreamer;
         ffmpeg = fffmpeg;
         parentComponent = parentFrame;
         init();
@@ -54,42 +53,32 @@ public class PanelProgrammPfade extends JPanel {
 
     private void init() {
         jButtonVlcPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonFlvPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonFFmpegPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jPanelVlc.setVisible(vlc);
-        jPanelFlv.setVisible(flvstreamer);
+
         jPanelFFmpeg.setVisible(ffmpeg);
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-        }
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         }
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
         }
         jTextFieldVlc.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC));
-        jTextFieldFlv.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER));
         jTextFieldFFmpeg.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG));
     }
 
     private void initBeob() {
         jTextFieldVlc.getDocument().addDocumentListener(new BeobDoc());
-        jTextFieldFlv.getDocument().addDocumentListener(new BeobDoc());
         jTextFieldFFmpeg.getDocument().addDocumentListener(new BeobDoc());
 
         jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
-        jButtonFlvPfad.addActionListener(new BeobPfad(jTextFieldFlv));
         jButtonFFmpegPfad.addActionListener(new BeobPfad(jTextFieldFFmpeg));
         jButtonVlcSuchen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, "");
             jTextFieldVlc.setText(GuiFunktionenProgramme.getMusterPfadVlc());
         });
-        jButtonFlvSuchen.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, "");
-            jTextFieldFlv.setText(GuiFunktionenProgramme.getMusterPfadFlv());
-        });
+
         jButtonFFmpegSuchen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, "");
             jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
@@ -99,10 +88,10 @@ public class PanelProgrammPfade extends JPanel {
 
     private void check() {
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, jTextFieldVlc.getText());
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, jTextFieldFlv.getText());
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, jTextFieldFFmpeg.getText());
+
         try {
-            if (jTextFieldVlc.getText().equals("")) {
+            if (jTextFieldVlc.getText().isEmpty()) {
                 jTextFieldVlc.setBackground(new Color(255, 200, 200));
             } else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC)).exists()) {
                 jTextFieldVlc.setBackground(new Color(255, 200, 200));
@@ -112,19 +101,9 @@ public class PanelProgrammPfade extends JPanel {
         } catch (Exception ex) {
             jTextFieldVlc.setBackground(new Color(255, 200, 200));
         }
+
         try {
-            if (jTextFieldFlv.getText().equals("")) {
-                jTextFieldFlv.setBackground(new Color(255, 200, 200));
-            } else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER)).exists()) {
-                jTextFieldFlv.setBackground(new Color(255, 200, 200));
-            } else {
-                jTextFieldFlv.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
-            }
-        } catch (Exception ex) {
-            jTextFieldFlv.setBackground(new Color(255, 200, 200));
-        }
-        try {
-            if (jTextFieldFFmpeg.getText().equals("")) {
+            if (jTextFieldFFmpeg.getText().isEmpty()) {
                 jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
             } else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG)).exists()) {
                 jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
@@ -212,10 +191,6 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldVlc = new javax.swing.JTextField();
         jButtonVlcPfad = new javax.swing.JButton();
         jButtonVlcSuchen = new javax.swing.JButton();
-        jPanelFlv = new javax.swing.JPanel();
-        jTextFieldFlv = new javax.swing.JTextField();
-        jButtonFlvPfad = new javax.swing.JButton();
-        jButtonFlvSuchen = new javax.swing.JButton();
         jButtonHilfe = new javax.swing.JButton();
         jPanelFFmpeg = new javax.swing.JPanel();
         jTextFieldFFmpeg = new javax.swing.JTextField();
@@ -255,40 +230,6 @@ public class PanelProgrammPfade extends JPanel {
         );
 
         jPanelVlcLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonVlcPfad, jTextFieldVlc});
-
-        jPanelFlv.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum flvstreamer auswählen"));
-
-        jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonFlvPfad.setToolTipText("Programm auswählen");
-
-        jButtonFlvSuchen.setText("suchen");
-        jButtonFlvSuchen.setToolTipText("nach dem Programm suchen");
-
-        javax.swing.GroupLayout jPanelFlvLayout = new javax.swing.GroupLayout(jPanelFlv);
-        jPanelFlv.setLayout(jPanelFlvLayout);
-        jPanelFlvLayout.setHorizontalGroup(
-            jPanelFlvLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFlvLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextFieldFlv, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonFlvPfad)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonFlvSuchen)
-                .addContainerGap())
-        );
-        jPanelFlvLayout.setVerticalGroup(
-            jPanelFlvLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFlvLayout.createSequentialGroup()
-                .addGap(1, 1, 1)
-                .addGroup(jPanelFlvLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jTextFieldFlv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonFlvPfad)
-                    .addComponent(jButtonFlvSuchen))
-                .addContainerGap())
-        );
-
-        jPanelFlvLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFlvPfad, jTextFieldFlv});
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe anzeigen");
@@ -334,7 +275,6 @@ public class PanelProgrammPfade extends JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelFlv, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanelVlc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -348,12 +288,10 @@ public class PanelProgrammPfade extends JPanel {
                 .addContainerGap()
                 .addComponent(jPanelVlc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelFlv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelFFmpeg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonHilfe)
-                .addContainerGap())
+                .addContainerGap(84, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -379,16 +317,12 @@ public class PanelProgrammPfade extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonFFmpegPfad;
     private javax.swing.JButton jButtonFFmpegSuchen;
-    private javax.swing.JButton jButtonFlvPfad;
-    private javax.swing.JButton jButtonFlvSuchen;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonVlcPfad;
     private javax.swing.JButton jButtonVlcSuchen;
     private javax.swing.JPanel jPanelFFmpeg;
-    private javax.swing.JPanel jPanelFlv;
     private javax.swing.JPanel jPanelVlc;
     private javax.swing.JTextField jTextFieldFFmpeg;
-    private javax.swing.JTextField jTextFieldFlv;
     private javax.swing.JTextField jTextFieldVlc;
     // End of variables declaration//GEN-END:variables
 }
