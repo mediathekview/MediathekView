@@ -117,7 +117,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
         final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
-        final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
+        final String PFAD_MAC_FFMPEG = "/Applications/MediathekView.app/Contents/Resources/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad = "";
         try {
@@ -130,7 +130,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     }
                     break;
                 case MAC:
-                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
+                    pfad = PFAD_MAC_FFMPEG;
                     break;
                 default:
                     pfad = PFAD_WINDOWS_FFMPEG;
