@@ -29,7 +29,7 @@ addons:
 stages:
 - Test
 - name: Build and Deploy Snapshots
-  if: branch IN (master,develop) AND env(TRAVIS_EVENT_TYPE) = cron
+  if: branch IN (master,develop) AND type = cron
 - name: Build and Deploy Linux
   if: branch = master OR tag = true
 - name: Build and Deploy Windows
