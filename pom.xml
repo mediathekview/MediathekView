@@ -96,6 +96,18 @@
 			<artifactId>jmdns</artifactId>
 			<version>3.5.5</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>5.3.0</version>
+		</dependency>
 		<!--
 		<dependency>
 			<groupId>org.xerial</groupId>
