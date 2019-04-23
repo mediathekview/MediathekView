@@ -38,13 +38,13 @@ public class TaskbarIndicatorThread extends IndicatorThread {
 
     @Override
     public void run() {
-        disableStandby();
-
         try {
             while (!isInterrupted()) {
                 final int percentage = (int) calculateOverallPercentage();
                 taskbar.setWindowProgressValue(parent,percentage);
                 taskbar.setWindowProgressState(parent,Taskbar.State.NORMAL);
+
+                disableStandby();
 
                 TimeUnit.MILLISECONDS.sleep(500);
             }
