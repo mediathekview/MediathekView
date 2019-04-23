@@ -22,6 +22,7 @@ import java.net.InetAddress;
 public class NativeNotificationCenter implements INotificationCenter, ServiceListener {
     private static final Logger logger = LogManager.getLogger(NativeNotificationCenter.class);
     private static final String NOTIFICATION_SERVICE_NAME = "NotificationService";
+    private static final int PORT_UNDEFINED = -1;
     private int serverPort;
     private InetAddress serverAddress;
 
@@ -43,7 +44,7 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
         if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true))
             return;
 
-        if (serverPort == -1 || serverAddress == null) {
+        if (serverPort == PORT_UNDEFINED || serverAddress == null) {
             showErrorDialog(new IllegalArgumentException("server port or server address not set"));
             return;
         }
@@ -69,21 +70,31 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
 
     @Override
     public void serviceAdded(ServiceEvent serviceEvent) {
+        setServiceInfo(serviceEvent);
+    }
+
+    private void setServiceInfo(ServiceEvent serviceEvent) {
         var info = serviceEvent.getInfo();
-        serverAddress = info.getInetAddress();
-        serverPort = info.getPort();
+        InetAddress[] addrs = info.getInetAddresses();
+        if (addrs.length > 0) {
+            serverAddress = addrs[0];
+            serverPort = info.getPort();
+        } else {
+            logger.trace("getInetAddresses returned empty list");
+            serverAddress = null;
+            serverPort = PORT_UNDEFINED;
+        }
+
     }
 
     @Override
     public void serviceRemoved(ServiceEvent serviceEvent) {
-        serverPort = -1;
+        serverPort = PORT_UNDEFINED;
         serverAddress = null;
     }
 
     @Override
     public void serviceResolved(ServiceEvent serviceEvent) {
-        var info = serviceEvent.getInfo();
-        serverAddress = info.getInetAddress();
-        serverPort = info.getPort();
+        setServiceInfo(serviceEvent);
     }
 }
