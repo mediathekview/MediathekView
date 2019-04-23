@@ -70,7 +70,6 @@ public class MVConfig {
         logger.debug("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
         logger.debug("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         logger.debug("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
-        logger.debug("Downloadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
         logger.debug("=======================================");
     }
@@ -229,7 +228,6 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
-        SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
 
         //============================================
         //Programm-Configs, änderbar über Gui

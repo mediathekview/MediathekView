@@ -19,14 +19,11 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Log;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.tool.MVFilmSize;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 
@@ -59,8 +56,7 @@ public class DownloadInfos {
      * Anzahl gestarteter Downloads
      */
     private int anzDownloadsRun = 0;
-    // Prozent fertig (alle)
-    private int percent = -1;
+
     private String bandwidthStr = "";
 
     public DownloadInfos(MBassador<BaseEvent> messageBus) {
@@ -92,7 +88,7 @@ public class DownloadInfos {
         return bandwidthStr;
     }
 
-    public String roundBandwidth() {
+    public void formatBandwidthString() {
         if (bandwidth > 1_000_000.0) {
             bandwidthStr = formatter.format(bandwidth / 1_000_000.0) + " MByte/s";
         } else if (bandwidth > 1_000.0) {
@@ -100,7 +96,6 @@ public class DownloadInfos {
         } else {
             bandwidthStr = Math.round(bandwidth) + " Byte/s";
         }
-        return bandwidthStr;
     }
 
     public String getGesamtRestzeit() {
@@ -172,34 +167,11 @@ public class DownloadInfos {
                 timeRestAllDownloads = 0; // gibt ja nur noch einen
             }
         }
-        if (byteAlleDownloads > 0) {
-            percent = (int) (byteAktDownloads * 100 / byteAlleDownloads);
-            progressMsg();
-        }
-        roundBandwidth();
 
+        formatBandwidthString();
+
+        //TODO put status values in Info Event message
         messageBus.publishAsync(new DownloadInfoUpdateAvailableEvent());
-    }
-
-    private void progressMsg() {
-        if (!MVConfig.getBool(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS)) {
-            return;
-        }
-        final int progress = percent;
-        if (progress >= 0) {
-            StringBuilder text = new StringBuilder("  [ ");
-            final int a = progress / 10;
-            for (int i = 0; i < a; ++i) {
-                text.append("#");
-            }
-            for (int i = 0; i < (10 - a); ++i) {
-                text.append("-");
-            }
-            text.append(" ]  ").append(MVFilmSize.getGroesse(byteAktDownloads)).append(" von ").append(MVFilmSize.getGroesse(byteAlleDownloads)).append(" MByte /");
-            text.append(" Downloads: ").append(anzDownloadsRun).append(" /");
-            text.append(" Bandbreite: ").append(roundBandwidth());
-            Log.progress(text.toString());
-        }
     }
 
     private void resetData() {
@@ -209,7 +181,6 @@ public class DownloadInfos {
         timeRestAktDownloads = 0;
         timeRestAllDownloads = 0;
         bandwidth = 0;
-        percent = -1;
     }
 
 }
