@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TMultiplexedProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
@@ -19,9 +20,10 @@ import javax.jmdns.ServiceListener;
 import java.net.InetAddress;
 
 public class NativeNotificationCenter implements INotificationCenter, ServiceListener {
+    private static final Logger logger = LogManager.getLogger(NativeNotificationCenter.class);
+    private static final String NOTIFICATION_SERVICE_NAME = "NotificationService";
     private int serverPort;
     private InetAddress serverAddress;
-    private static final Logger logger = LogManager.getLogger(NativeNotificationCenter.class);
 
     public NativeNotificationCenter() {
         setupJmdnsListener();
@@ -51,8 +53,9 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
+            TMultiplexedProtocol mp = new TMultiplexedProtocol(protocol, NOTIFICATION_SERVICE_NAME);
 
-            ThriftNotificationCenter.Client client = new ThriftNotificationCenter.Client(protocol);
+            ThriftNotificationCenter.Client client = new ThriftNotificationCenter.Client(mp);
             client.displayNotification(msg);
         } catch (TException e) {
             showErrorDialog(e);
