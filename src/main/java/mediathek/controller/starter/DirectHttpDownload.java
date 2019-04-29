@@ -40,12 +40,10 @@ import okhttp3.ResponseBody;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -53,7 +51,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 
 public class DirectHttpDownload extends Thread {
@@ -72,7 +69,6 @@ public class DirectHttpDownload extends Thread {
      * Instance which will limit the download speed
      */
     private final RateLimiter rateLimiter;
-    private HttpURLConnection conn = null;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
     private long downloaded = 0;
     private File file = null;
@@ -174,7 +170,6 @@ public class DirectHttpDownload extends Thread {
     private void setupHttpConnection(HttpURLConnection conn) {
         conn.setRequestProperty("Range", "bytes=" + downloaded + '-');
         conn.setRequestProperty("User-Agent", getUserAgent());
-        conn.setDoInput(true);
         conn.setDoOutput(true);
     }
 
@@ -202,7 +197,7 @@ public class DirectHttpDownload extends Thread {
      *
      * @throws IOException the io errors that may occur.
      */
-    private void downloadContent() throws IOException {
+    private void downloadContent(@NotNull InputStream inputStream) throws IOException {
         startInfoFileDownload();
 
         downloadSubtitleFile();
@@ -217,7 +212,7 @@ public class DirectHttpDownload extends Thread {
 
         try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
              BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
-             ThrottlingInputStream tis = new ThrottlingInputStream(conn.getInputStream(), rateLimiter);
+             ThrottlingInputStream tis = new ThrottlingInputStream(inputStream, rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
             start.mVBandwidthCountingInputStream = mvis;
             datenDownload.mVFilmSize.addAktSize(downloaded);
@@ -291,10 +286,10 @@ public class DirectHttpDownload extends Thread {
         }
     }
 
-    private void setupHttpTimeout() {
-        final int timeout = (int) TimeUnit.MILLISECONDS.convert(MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN), TimeUnit.SECONDS);
-        conn.setConnectTimeout(timeout);
-        conn.setReadTimeout(timeout);
+    private HttpURLConnection getNetworkConnection(@NotNull URL url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        setupHttpConnection(conn);
+        return conn;
     }
 
     @Override
@@ -312,19 +307,18 @@ public class DirectHttpDownload extends Thread {
 
         while (restart) {
             restart = false;
+            HttpURLConnection conn = null;
+
             try {
                 final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+                conn = getNetworkConnection(url);
+
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
 
                 if (!cancelDownload()) {
 
                     datenDownload.mVFilmSize.setSize(getContentLength(url));
                     datenDownload.mVFilmSize.setAktSize(0);
-
-                    conn = (HttpURLConnection) url.openConnection();
-
-                    setupHttpTimeout();
-                    setupHttpConnection(conn);
 
                     conn.connect();
                     final int httpResponseCode = conn.getResponseCode();
@@ -352,9 +346,10 @@ public class DirectHttpDownload extends Thread {
                         }
                     }
                 }
+
                 switch (state) {
                     case DOWNLOAD:
-                        downloadContent();
+                        downloadContent(conn.getInputStream());
                         break;
                     case CANCEL:
                         break;
@@ -380,9 +375,13 @@ public class DirectHttpDownload extends Thread {
                     SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
                 }
             }
+            finally {
+                if (conn != null)
+                    conn.disconnect();
+            }
         }
 
-        performCleanup();
+        waitForPendingDownloads();
 
         StarterClass.finalizeDownload(datenDownload, start, state);
 
@@ -391,11 +390,8 @@ public class DirectHttpDownload extends Thread {
         daten.getMessageBus().unsubscribe(this);
     }
 
-    private void performCleanup() {
+    private void waitForPendingDownloads() {
         try {
-            if (conn != null)
-                conn.disconnect();
-
             if (infoFuture != null)
                 infoFuture.get();
 
@@ -403,7 +399,7 @@ public class DirectHttpDownload extends Thread {
                 subtitleFuture.get();
 
         } catch (InterruptedException | ExecutionException e) {
-            logger.error("Error performing cleanup.", e);
+            logger.error("waitForPendingDownloads().", e);
         }
     }
 
