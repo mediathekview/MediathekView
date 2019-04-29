@@ -25,16 +25,18 @@ import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class MeldungDownloadfehler extends JDialog {
-    private Timer countdownTimer = null;
+    private final Timer countdownTimer;
 
-    public MeldungDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
+    public MeldungDownloadfehler(Frame parent, String text, DatenDownload datenDownload) {
         super(parent, false);
         initComponents();
+
         setFocusableWindowState(false);
         setFocusable(false);
         setTitle("Downloadfehler");
@@ -46,7 +48,7 @@ public class MeldungDownloadfehler extends JDialog {
 
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-        jButtonOk.addActionListener(e -> beenden());
+        jButtonOk.addActionListener(e -> dispose());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
 
@@ -64,12 +66,29 @@ public class MeldungDownloadfehler extends JDialog {
                 && MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN) > 0) {
             super.setVisible(vis);
         } else {
-            beenden();
+            dispose();
         }
     }
 
-    private void beenden() {
-        this.dispose();
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+
+        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN);
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                jLabelTime.setText(w + " s");
+                if (countdownTimer != null) {
+                    countdownTimer.setDelay(1000);
+                }
+            } else {
+                MeldungDownloadfehler.this.dispose();
+            }
+            w--;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -160,25 +179,4 @@ public class MeldungDownloadfehler extends JDialog {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * Implements the countdown based on Swing Timer for automatic placement on EDT.
-     */
-    private class CountdownAction implements ActionListener {
-
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN);
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (w > 0) {
-                jLabelTime.setText(w + " s");
-                if (countdownTimer != null) {
-                    countdownTimer.setDelay(1000);
-                }
-            } else {
-                beenden();
-            }
-            w--;
-        }
-    }
 }
