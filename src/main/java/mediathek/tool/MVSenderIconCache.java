@@ -238,6 +238,10 @@ public class MVSenderIconCache {
                     icon = getIcon(WIKI_BASE_URL + "/d/de/Phoenix_Logo_2018_ohne_Claim.svg/640px-Phoenix_Logo_2018_ohne_Claim.svg.png", "/mediathek/res/sender/phoenix.png");
                     break;
 
+                case "Funk.net":
+                    icon = getIcon(WIKI_BASE_URL + "/9/99/Funk_Logo.svg/454px-Funk_Logo.svg.png", "/mediathek/res/sender/funk_net.png");
+                    break;
+
                 default:
                     icon = null;
                     break;
