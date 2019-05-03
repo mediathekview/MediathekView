@@ -29,13 +29,13 @@ addons:
 stages:
 - Test
 - name: Build and Deploy Snapshots
-  if: branch IN (master,develop) AND type = cron
+  if: branch = develop AND type = cron
 - name: Build and Deploy Linux
-  if: branch = master OR tag = true
+  if: tag = true
 - name: Build and Deploy Windows
-  if: branch = master OR tag = true
+  if: tag = true
 - name: Build and Deploy Mac
-  if: branch = master OR tag = true
+  if: tag = true
 jobs:
   include:
   - stage: Test
@@ -72,7 +72,6 @@ jobs:
       script: scripte/deploy/deploy.sh
       skip_cleanup: true
       true:
-        branch: master
         tags: true
     - provider: releases
       api_key:
@@ -91,7 +90,6 @@ jobs:
       script: scripte/deploy/deploy.sh
       skip_cleanup: true
       true:
-        branch: master
         tags: true
     - provider: releases
       api_key:
@@ -110,7 +108,6 @@ jobs:
       script: scripte/deploy/deploy.sh
       skip_cleanup: true
       true:
-        branch: master
         tags: true
     - provider: releases
       api_key:
