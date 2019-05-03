@@ -1,13 +1,12 @@
 package mediathek.tool.notification;
 
 import mSearch.tool.ApplicationConfiguration;
-import org.apache.commons.lang3.SystemUtils;
 
 public class NotificationFactory {
     private final static boolean bNativeNotifications;
 
     static {
-        bNativeNotifications = SystemUtils.IS_OS_MAC_OSX;
+        bNativeNotifications = false;//SystemUtils.IS_OS_MAC_OSX;
     }
 
     /**
