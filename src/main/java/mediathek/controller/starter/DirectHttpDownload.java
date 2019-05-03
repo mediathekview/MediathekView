@@ -33,7 +33,9 @@ import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.*;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
+import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -44,8 +46,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -69,8 +69,14 @@ public class DirectHttpDownload extends Thread {
      * Instance which will limit the download speed
      */
     private final RateLimiter rateLimiter;
+    private final MBassador<BaseEvent> messageBus;
+    private final OkHttpClient httpClient;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
-    private long downloaded = 0;
+    /**
+     * number of bytes already downloaded.
+     * 0 if nothing has been downloaded before.
+     */
+    private long alreadyDownloaded = 0;
     private File file = null;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
@@ -80,11 +86,12 @@ public class DirectHttpDownload extends Thread {
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
 
+        httpClient = MVHttpClient.getInstance().getHttpClient();
         rateLimiter = RateLimiter.create(getDownloadLimit());
+        messageBus = daten.getMessageBus();
+        messageBus.subscribe(this);
 
-        daten.getMessageBus().subscribe(this);
-
-        maxRestarts = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP);
+        maxRestarts = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART);
 
         this.daten = daten;
         this.bandwidthCalculationTimer = bandwidthCalculationTimer;
@@ -135,7 +142,7 @@ public class DirectHttpDownload extends Thread {
      * @param url {@link java.net.URL} to the specified content.
      * @return Length in bytes or -1 on error.
      */
-    private long getContentLength(final URL url) {
+    private long getContentLength(final URL url) throws IOException {
         long contentSize = -1;
 
         final Request request = new Request.Builder().url(url).get()
@@ -151,8 +158,6 @@ public class DirectHttpDownload extends Thread {
                     contentSize = -1;
                 }
             }
-        } catch (IOException ex) {
-            logger.error("getContentLength()", ex);
         }
 
         return contentSize;
@@ -160,17 +165,6 @@ public class DirectHttpDownload extends Thread {
 
     private String getUserAgent() {
         return ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT);
-    }
-
-    /**
-     * Setup the HTTP connection common settings
-     *
-     * @param conn The active connection.
-     */
-    private void setupHttpConnection(HttpURLConnection conn) {
-        conn.setRequestProperty("Range", "bytes=" + downloaded + '-');
-        conn.setRequestProperty("User-Agent", getUserAgent());
-        conn.setDoOutput(true);
     }
 
     private void startInfoFileDownload() {
@@ -197,7 +191,7 @@ public class DirectHttpDownload extends Thread {
      *
      * @throws IOException the io errors that may occur.
      */
-    private void downloadContent(@NotNull InputStream inputStream) throws IOException {
+    private void downloadContent(InputStream inputStream) throws IOException {
         startInfoFileDownload();
 
         downloadSubtitleFile();
@@ -210,12 +204,12 @@ public class DirectHttpDownload extends Thread {
          */
         final int bufferSize = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE, 64 * 1024);
 
-        try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
+        try (FileOutputStream fos = new FileOutputStream(file, (alreadyDownloaded != 0));
              BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
              ThrottlingInputStream tis = new ThrottlingInputStream(inputStream, rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
             start.mVBandwidthCountingInputStream = mvis;
-            datenDownload.mVFilmSize.addAktSize(downloaded);
+            datenDownload.mVFilmSize.addAktSize(alreadyDownloaded);
             final byte[] buffer = new byte[1024];
             long p, pp = 0, startProzent = -1;
             int len;
@@ -223,7 +217,7 @@ public class DirectHttpDownload extends Thread {
             boolean melden = false;
 
             while ((len = start.mVBandwidthCountingInputStream.read(buffer)) != -1 && (!start.stoppen)) {
-                downloaded += len;
+                alreadyDownloaded += len;
                 bos.write(buffer, 0, len);
                 datenDownload.mVFilmSize.addAktSize(len);
 
@@ -286,108 +280,90 @@ public class DirectHttpDownload extends Thread {
         }
     }
 
-    private HttpURLConnection getNetworkConnection(@NotNull URL url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        setupHttpConnection(conn);
-        return conn;
+    private void printHttpErrorMessage(Response response) {
+        final String responseCode = "Responsecode: " + response.code() + '\n' + response.message();
+        logger.error("HTTP-Fehler: {} {}", response.code(), response.message());
+
+        if (!(start.countRestarted < maxRestarts)) {
+            SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
+                    + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
+                    + responseCode + '\n', datenDownload).setVisible(true));
+        }
+
+        state = HttpDownloadState.ERROR;
+        start.status = Start.STATUS_ERR;
+    }
+
+    private Request buildDownloadRequest(@NotNull URL url) {
+        return new Request.Builder().url(url).get()
+                .header("User-Agent", getUserAgent())
+                .header("Range", "bytes=" + alreadyDownloaded + '-')
+                .build();
     }
 
     @Override
     public synchronized void run() {
         StarterClass.startmeldung(datenDownload, start);
-        daten.getMessageBus().publishAsync(new DownloadStartEvent());
 
+        messageBus.publishAsync(new DownloadStartEvent());
+
+        Response response = null;
+        ResponseBody body = null;
         try {
-            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
-        } catch (IOException ignored) {
-        }
+            createDirectory();
+            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
 
-        int restartCount = 0;
-        boolean restart = true;
-
-        while (restart) {
-            restart = false;
-            HttpURLConnection conn = null;
-
-            try {
+            if (!cancelDownload()) {
                 final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-                conn = getNetworkConnection(url);
+                datenDownload.mVFilmSize.setSize(getContentLength(url));
+                datenDownload.mVFilmSize.setAktSize(0);
 
-                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+                Request request = buildDownloadRequest(url);
+                response = httpClient.newCall(request).execute();
+                body = response.body();
+                if (response.isSuccessful() && body != null) {
+                    downloadContent(body.byteStream());
+                } else {
+                    if (response.code() == HTTP_RANGE_NOT_SATISFIABLE) {
+                        //close old stuff first
+                        if (body != null)
+                            body.close();
+                        response.close();
 
-                if (!cancelDownload()) {
-
-                    datenDownload.mVFilmSize.setSize(getContentLength(url));
-                    datenDownload.mVFilmSize.setAktSize(0);
-
-                    conn.connect();
-                    final int httpResponseCode = conn.getResponseCode();
-                    if (httpResponseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
-                        //Range passt nicht, also neue Verbindung versuchen...
-                        if (httpResponseCode == HTTP_RANGE_NOT_SATISFIABLE) {
-                            conn.disconnect();
-                            //Get a new connection and reset download param...
-                            conn = (HttpURLConnection) url.openConnection();
-                            downloaded = 0;
-                            setupHttpConnection(conn);
-                            conn.connect();
-                            //hier war es dann nun wirklich...
-                            if (conn.getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST)
-                                state = HttpDownloadState.ERROR;
-                            else
-                                state = HttpDownloadState.DOWNLOAD;
-                        } else {
-                            // ==================================
-                            // dann wars das
-                            final String responseCode = "Responsecode: " + conn.getResponseCode() + '\n' + conn.getResponseMessage();
-                            logger.error("HTTP-Fehler: {} {}", conn.getResponseCode(), conn.getResponseMessage());
-                            displayErrorDialog(responseCode);
-                            state = HttpDownloadState.ERROR;
+                        //reset download count
+                        alreadyDownloaded = 0;
+                        request = buildDownloadRequest(url);
+                        response = httpClient.newCall(request).execute();
+                        body = response.body();
+                        if (response.isSuccessful() && body != null)
+                            downloadContent(body.byteStream());
+                        else {
+                            printHttpErrorMessage(response);
                         }
+                    } else {
+                        printHttpErrorMessage(response);
                     }
                 }
-
-                switch (state) {
-                    case DOWNLOAD:
-                        downloadContent(conn.getInputStream());
-                        break;
-                    case CANCEL:
-                        break;
-                    case ERROR:
-                        start.status = Start.STATUS_ERR;
-                        break;
-                }
-            } catch (SocketTimeoutException ex) {
-                if (restartCount < maxRestarts) {
-                    printTimeoutMessage(restartCount);
-
-                    restartCount++;
-                    restart = true;
-                }
-            } catch (IOException ex) {
-                if (restartCount < maxRestarts) {
-                    restartCount++;
-                    restart = true;
-                } else {
-                    // dann weiß der Geier!
-                    logger.error("run()", ex);
-                    start.status = Start.STATUS_ERR;
-                    SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
-                }
             }
-            finally {
-                if (conn != null)
-                    conn.disconnect();
-            }
+        } catch (IOException ex) {
+            logger.error("run()", ex);
+            start.status = Start.STATUS_ERR;
+            state = HttpDownloadState.ERROR;
+            SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
+        } finally {
+            if (body != null)
+                body.close();
+
+            if (response != null)
+                response.close();
         }
 
         waitForPendingDownloads();
 
         StarterClass.finalizeDownload(datenDownload, start, state);
 
-        daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
-
-        daten.getMessageBus().unsubscribe(this);
+        messageBus.publishAsync(new DownloadFinishedEvent());
+        messageBus.unsubscribe(this);
     }
 
     private void waitForPendingDownloads() {
@@ -401,21 +377,6 @@ public class DirectHttpDownload extends Thread {
         } catch (InterruptedException | ExecutionException e) {
             logger.error("waitForPendingDownloads().", e);
         }
-    }
-
-    private void displayErrorDialog(String responseCode) {
-        //i really don´t know why maxRestarts/2 has to be used...but it works now
-        if (!(start.countRestarted < maxRestarts / 2)) {
-            SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
-                    + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
-                    + responseCode + '\n', datenDownload).setVisible(true));
-        }
-    }
-
-    private void printTimeoutMessage(final int restartCount) {
-        logger.error("Timeout, Download Restarts: {}", restartCount);
-        logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        logger.error("URL: {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
     }
 
     private boolean cancelDownload() {
@@ -444,6 +405,13 @@ public class DirectHttpDownload extends Thread {
         return retAbbrechen;
     }
 
+    private void createDirectory() {
+        try {
+            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
+        } catch (IOException ignored) {
+        }
+    }
+
     private boolean abbrechen_() {
         boolean result = false;
         if (file.exists()) {
@@ -458,16 +426,13 @@ public class DirectHttpDownload extends Thread {
                     break;
 
                 case CONTINUE:
-                    downloaded = file.length();
+                    alreadyDownloaded = file.length();
                     break;
 
                 case RESTART_WITH_NEW_NAME:
                     if (dialogContinueDownload.isNewName()) {
                         daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
-                        try {
-                            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
-                        } catch (IOException ignored) {
-                        }
+                        createDirectory();
                         file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                     }
                     break;
