@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
-			<version>11.0.0-RC2</version>
+			<version>11.0.0</version>
 			<exclusions>
 			<exclusion>
 				<groupId>org.openjfx</groupId>

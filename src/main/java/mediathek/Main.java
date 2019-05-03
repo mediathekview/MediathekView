@@ -47,8 +47,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -264,8 +262,6 @@ public class Main {
     }
 
     private void start(String... args) {
-        proxyAuthentication();
-
         if (args != null) {
             processArgs(args);
         }
@@ -369,31 +365,6 @@ public class Main {
                     Daten.setStartMaximized(true);
                     break;
             }
-        }
-    }
-
-    private void proxyAuthentication() {
-        //TODO remove if not used anymore by URLConnection
-        try {
-            final var prxUser = System.getProperty(HTTP_PROXY_USER, null);
-            final var prxPassword = System.getProperty(HTTP_PROXY_PW, null);
-            if (prxUser != null && prxPassword != null) {
-                final var authenticator = new PasswordAuthentication(prxUser, prxPassword.toCharArray());
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return authenticator;
-                    }
-                });
-                logger.debug(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
-            } else if (prxUser != null && prxPassword == null) {
-                logger.debug(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
-            } else {
-                logger.debug(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
-            }
-
-        } catch (SecurityException se) {
-            logger.warn(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
         }
     }
 

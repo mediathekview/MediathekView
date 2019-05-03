@@ -58,13 +58,11 @@ public class MVConfig {
 
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, 5, 1000);
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, 0, 100);
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP, 0, 100);
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, 5, 1000);
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, 5, 1000);
 
         logger.debug("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
         logger.debug("max. Download-Restart: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART));
-        logger.debug("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
         logger.debug("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         logger.debug("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
@@ -221,7 +219,6 @@ public class MVConfig {
         //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
-        SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
 
