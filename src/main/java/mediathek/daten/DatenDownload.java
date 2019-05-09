@@ -180,7 +180,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
                 mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
             } else {
-                mVFilmSize.setSize("");
+                mVFilmSize.setSize(0);
             }
         }
     }

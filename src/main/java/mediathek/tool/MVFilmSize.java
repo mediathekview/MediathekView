@@ -19,16 +19,28 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
     private long aktSizeL = -1L;
     private Long sizeL = 0L;
-    private String sizeStr = "";
+    private static final Logger logger = LogManager.getLogger(MVFilmSize.class);
 
     public MVFilmSize() {
+    }
+
+    public static String getGroesse(long l) {
+        String ret = "";
+        if (l > 1_000_000) {
+            // größer als 1MB sonst kann ich mirs sparen
+            ret = String.valueOf(l / 1_000_000);
+        } else if (l > 0) {
+            ret = "1";
+        }
+        return ret;
     }
 
     @Override
@@ -38,7 +50,15 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
 
     @Override
     public String toString() {
-        return sizeStr;
+        return prepareString();
+    }
+
+    public void reset() {
+        aktSizeL = -1L;
+    }
+
+    public long getSize() {
+        return sizeL;
     }
 
     public void setSize(String size) {
@@ -46,49 +66,35 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         if (size.isEmpty()) {
             aktSizeL = -1L;
             sizeL = 0L;
-            sizeStr = "";
         } else {
             try {
-                sizeL = Long.valueOf(size);
-                sizeL *= 1000 * 1000;
-                sizeStr = size;
+                sizeL = Long.valueOf(size) * 1_000_000;
             } catch (Exception ex) {
-                Log.errorLog(978745320, ex, "String: " + size);
+                logger.error("string: {}, ex: {}", size, ex);
                 sizeL = 0L;
-                sizeStr = "";
             }
         }
     }
 
-    public void reset() {
-        aktSizeL = -1L;
-        setString();
-    }
-
     public void setSize(long l) {
         sizeL = l;
-        setString();
-    }
-
-    public long getSize() {
-        return sizeL;
-    }
-
-    public void setAktSize(long l) {
-        aktSizeL = l;
-        setString();
     }
 
     public void addAktSize(long l) {
         aktSizeL += l;
-        setString();
     }
 
     public long getAktSize() {
         return aktSizeL;
     }
 
-    public void setString() {
+    public void setAktSize(long l) {
+        aktSizeL = l;
+    }
+
+    private String prepareString() {
+        String sizeStr;
+
         if (aktSizeL <= 0) {
             if (sizeL > 0) {
                 sizeStr = getGroesse(sizeL);
@@ -100,16 +106,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         } else {
             sizeStr = getGroesse(aktSizeL);
         }
-    }
 
-    public static String getGroesse(long l) {
-        String ret = "";
-        if (l > 1000 * 1000) {
-            // größer als 1MB sonst kann ich mirs sparen
-            ret = String.valueOf(l / (1000 * 1000));
-        } else if (l > 0) {
-            ret = "1";
-        }
-        return ret;
+        return sizeStr;
     }
 }
