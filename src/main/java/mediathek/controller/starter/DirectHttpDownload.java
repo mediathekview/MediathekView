@@ -295,10 +295,12 @@ public class DirectHttpDownload extends Thread {
     }
 
     private Request buildDownloadRequest(@NotNull URL url) {
-        return new Request.Builder().url(url).get()
-                .header("User-Agent", getUserAgent())
-                .header("Range", "bytes=" + alreadyDownloaded + '-')
-                .build();
+        var request = new Request.Builder().url(url).get()
+                .header("User-Agent", getUserAgent());
+        if (alreadyDownloaded != 0)
+            request.header("Range", "bytes=" + alreadyDownloaded + '-');
+
+        return request.build();
     }
 
     @Override
