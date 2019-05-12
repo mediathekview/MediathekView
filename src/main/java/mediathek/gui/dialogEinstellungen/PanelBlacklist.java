@@ -108,19 +108,19 @@ public class PanelBlacklist extends PanelVorlage {
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jRadioButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxGeo.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxAbo.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
@@ -134,11 +134,11 @@ public class PanelBlacklist extends PanelVorlage {
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jButtonHinzufuegen.addActionListener(e -> {
-            String se = jComboBoxSender.getSelectedItem().toString();
-            String th = jComboBoxThema.getSelectedItem().toString();
+            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
@@ -147,8 +147,8 @@ public class PanelBlacklist extends PanelVorlage {
             }
         });
         jButtonAendern.addActionListener(e -> {
-            String se = jComboBoxSender.getSelectedItem().toString();
-            String th = jComboBoxThema.getSelectedItem().toString();
+            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
@@ -163,7 +163,7 @@ public class PanelBlacklist extends PanelVorlage {
                     bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL] = thti;
                     tabelleLaden();
                     jTableBlacklist.addRowSelectionInterval(row, row);
-                    notifyBlack();
+                    notifyBlacklistChanged();
                 }
             }
 
@@ -196,7 +196,7 @@ public class PanelBlacklist extends PanelVorlage {
             }
             if (!jSliderMinuten.getValueIsAdjusting()) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
-                notifyBlack();
+                notifyBlacklistChanged();
             }
         });
 
@@ -207,7 +207,7 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel.addMouseListener(new TextCopyPaste());
     }
 
-    private void notifyBlack() {
+    private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
@@ -255,6 +255,83 @@ public class PanelBlacklist extends PanelVorlage {
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
             daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
+        }
+    }
+
+    private class BeobachterTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                tableSelect();
+            }
+        }
+    }
+
+    private class BeobMausTabelle extends MouseAdapter {
+
+        //rechhte Maustaste in der Tabelle
+        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            int nr;
+            Point p = evt.getPoint();
+            nr = jTableBlacklist.rowAtPoint(p);
+            if (nr >= 0) {
+                jTableBlacklist.setRowSelectionInterval(nr, nr);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            //löschen
+            JMenuItem item = new JMenuItem("Zeile löschen");
+            item.addActionListener(beobLoeschen);
+            jPopupMenu.add(item);
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private class BeobLoeschen implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelleZeileLoeschen();
+            }
+        }
+    }
+
+    private class BeobFilterTitelDoc implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            Filter.checkPattern1(jTextFieldThemaTitel);
+            Filter.checkPattern1(jTextFieldTitel);
         }
     }
 
@@ -650,82 +727,4 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                tableSelect();
-            }
-        }
-    }
-
-    private class BeobMausTabelle extends MouseAdapter {
-
-        //rechhte Maustaste in der Tabelle
-        BeobLoeschen beobLoeschen = new BeobLoeschen();
-        private Point p;
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            int nr;
-            p = evt.getPoint();
-            nr = jTableBlacklist.rowAtPoint(p);
-            if (nr >= 0) {
-                jTableBlacklist.setRowSelectionInterval(nr, nr);
-            }
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            //löschen
-            JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(beobLoeschen);
-            jPopupMenu.add(item);
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobLoeschen implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelleZeileLoeschen();
-            }
-        }
-    }
-
-    private class BeobFilterTitelDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(jTextFieldThemaTitel);
-            Filter.checkPattern1(jTextFieldTitel);
-        }
-    }
 }
