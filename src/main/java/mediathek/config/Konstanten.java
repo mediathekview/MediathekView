@@ -31,6 +31,8 @@ public class Konstanten {
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_MEDIA_DB = "mediadb.txt";
 
+    public static final int MAX_DOWNLOAD_RESTARTS = 3;
+
     // MediathekView URLs
     public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";

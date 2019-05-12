@@ -24,7 +24,7 @@ import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.MVHttpClient;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
+import mediathek.config.Konstanten;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.controller.ThrottlingInputStream;
 import mediathek.daten.DatenDownload;
@@ -62,10 +62,6 @@ public class DirectHttpDownload extends Thread {
     private final Start start;
     private final java.util.Timer bandwidthCalculationTimer;
     /**
-     * The number of times how often the system should try a restart of the download.
-     */
-    private final int maxRestarts;
-    /**
      * Instance which will limit the download speed
      */
     private final RateLimiter rateLimiter;
@@ -90,8 +86,6 @@ public class DirectHttpDownload extends Thread {
         rateLimiter = RateLimiter.create(getDownloadLimit());
         messageBus = daten.getMessageBus();
         messageBus.subscribe(this);
-
-        maxRestarts = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART);
 
         this.daten = daten;
         this.bandwidthCalculationTimer = bandwidthCalculationTimer;
@@ -284,7 +278,7 @@ public class DirectHttpDownload extends Thread {
         final String responseCode = "Responsecode: " + response.code() + '\n' + response.message();
         logger.error("HTTP-Fehler: {} {}", response.code(), response.message());
 
-        if (!(start.countRestarted < maxRestarts)) {
+        if (!(start.countRestarted < Konstanten.MAX_DOWNLOAD_RESTARTS)) {
             SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
                     + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                     + responseCode + '\n', datenDownload).setVisible(true));
