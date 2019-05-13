@@ -382,7 +382,7 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
             try (FileInputStream fis = new FileInputStream(source);
-                 BufferedInputStream bis = new BufferedInputStream(fis, (int) (64 * FileUtils.ONE_KB));
+                 BufferedInputStream bis = new BufferedInputStream(fis, (int) (8 * FileUtils.ONE_MB));
                  InputStream input = new ProgressMonitorInputStream(bis, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
                  JsonParser jp = new JsonFactory().createParser(in)) {
