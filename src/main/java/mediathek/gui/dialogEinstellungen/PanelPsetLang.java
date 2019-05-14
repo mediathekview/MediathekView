@@ -103,12 +103,23 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgPraefix.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSuffix.getDocument().addDocumentListener(beobDoc);
 
-        jTextFieldProgPfad.addMouseListener(new TextCopyPaste());
-        jTextFieldProgSchalter.addMouseListener(new TextCopyPaste());
-        jTextFieldProgName.addMouseListener(new TextCopyPaste());
-        jTextFieldProgZielDateiName.addMouseListener(new TextCopyPaste());
-        jTextFieldProgPraefix.addMouseListener(new TextCopyPaste());
-        jTextFieldProgSuffix.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldProgPfad);
+        jTextFieldProgPfad.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldProgSchalter);
+        jTextFieldProgSchalter.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldProgName);
+        jTextFieldProgName.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldProgZielDateiName);
+        jTextFieldProgZielDateiName.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldProgPraefix);
+        jTextFieldProgPraefix.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldProgSuffix);
+        jTextFieldProgSuffix.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldProgPfad.setEnabled(false);
         jTextFieldProgSchalter.setEnabled(false);
@@ -227,7 +238,8 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
 
         jTextAreaSetBeschreibung.getDocument().addDocumentListener(new BeobDoc(jTextAreaSetBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG));
-        jTextAreaSetBeschreibung.addMouseListener(new TextCopyPaste());
+        var handler2 = new TextCopyPasteHandler<>(jTextAreaSetBeschreibung);
+        jTextAreaSetBeschreibung.setComponentPopupMenu(handler2.getPopupMenu());
 
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
         jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
@@ -239,11 +251,20 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(jTextFieldGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD));
 
-        jTextFieldSetName.addMouseListener(new TextCopyPaste());
-        jTextFieldGruppeDirektSuffix.addMouseListener(new TextCopyPaste());
-        jTextFieldGruppeDirektPraefix.addMouseListener(new TextCopyPaste());
-        jTextFieldGruppeZielName.addMouseListener(new TextCopyPaste());
-        jTextFieldGruppeZielPfad.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldSetName);
+        jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldGruppeDirektSuffix);
+        jTextFieldGruppeDirektSuffix.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldGruppeDirektPraefix);
+        jTextFieldGruppeDirektPraefix.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldGruppeZielName);
+        jTextFieldGruppeZielName.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldGruppeZielPfad);
+        jTextFieldGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
 
         //rest
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
@@ -256,7 +277,7 @@ public class PanelPsetLang extends PanelVorlage {
         tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
         tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
-//        spaltenSetzen();
+
         if (tabellePset.getRowCount() > 0) {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));

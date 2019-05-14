@@ -10,7 +10,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -65,7 +65,8 @@ public class PanelFilmlisteLaden extends JPanel {
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        jTextFieldUrl.addMouseListener(new TextCopyPaste());
+        TextCopyPasteHandler handler = new TextCopyPasteHandler<>(jTextFieldUrl);
+        jTextFieldUrl.setComponentPopupMenu(handler.getPopupMenu());
     }
 
     @Handler
