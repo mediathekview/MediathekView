@@ -136,13 +136,11 @@ public class PanelEinstellungenColor extends PanelVorlage {
 
     public class BeobMausTabelle extends MouseAdapter {
 
-        private Point p;
-
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() == 1) {
-                    p = arg0.getPoint();
+                    Point p = arg0.getPoint();
                     int row = jTable1.rowAtPoint(p);
                     int column = jTable1.columnAtPoint(p);
                     if (row >= 0) {
