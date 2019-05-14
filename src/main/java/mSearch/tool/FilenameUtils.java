@@ -110,7 +110,7 @@ public class FilenameUtils {
     private static String removeStartingDots(String fileName) {
         // machte unter OS X/Linux Probleme, zB. bei dem Titel: "....Paula"
         while (!fileName.isEmpty() && (fileName.startsWith("."))) {
-            fileName = fileName.substring(1, fileName.length());
+            fileName = fileName.substring(1);
         }
         return fileName;
     }

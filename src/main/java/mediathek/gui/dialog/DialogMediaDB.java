@@ -433,8 +433,6 @@ public class DialogMediaDB extends JDialog {
 
     public class BeobMausTabelle extends MouseAdapter {
 
-        private Point p;
-
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -450,7 +448,7 @@ public class DialogMediaDB extends JDialog {
         }
 
         private void showMenu(MouseEvent evt) {
-            p = evt.getPoint();
+            Point p = evt.getPoint();
             int nr = tabelleFilme.rowAtPoint(p);
             if (nr >= 0) {
                 tabelleFilme.setRowSelectionInterval(nr, nr);

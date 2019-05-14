@@ -128,7 +128,6 @@ public abstract class PanelErledigteUrls extends JPanel {
         //rechte Maustaste in der Tabelle
         private final BeobLoeschen beobLoeschen = new BeobLoeschen();
         private final BeobUrl beobUrl = new BeobUrl();
-        private Point p;
         private DatenFilm film;
 
         @Override
@@ -146,7 +145,7 @@ public abstract class PanelErledigteUrls extends JPanel {
         }
 
         private void showMenu(MouseEvent evt) {
-            p = evt.getPoint();
+            Point p = evt.getPoint();
             int nr = jTable1.rowAtPoint(p);
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
