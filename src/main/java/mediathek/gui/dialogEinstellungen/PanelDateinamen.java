@@ -26,7 +26,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import net.engio.mbassy.listener.Handler;
 
@@ -124,8 +124,12 @@ public class PanelDateinamen extends PanelVorlage {
                 setNach();
             }
         });
-        jTextFieldNach.addMouseListener(new TextCopyPaste());
-        jTextFieldVon.addMouseListener(new TextCopyPaste());
+
+        var handler = new TextCopyPasteHandler<>(jTextFieldNach);
+        jTextFieldNach.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldVon);
+        jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
         jCheckBoxTable.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));

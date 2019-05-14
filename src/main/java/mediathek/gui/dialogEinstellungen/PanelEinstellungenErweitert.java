@@ -31,7 +31,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -55,10 +55,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         setIcon();
         setHelp();
 
-//        jRadioButtonAuto.addActionListener(e -> setUserAgent());
-//        jRadioButtonManuel.addActionListener(e -> setUserAgent());
-//
-//        jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
         Listener.addListener(new Listener(Listener.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -78,15 +74,18 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
-        jTextFieldProgrammDateimanager.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldProgrammDateimanager);
+        jTextFieldProgrammDateimanager.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN));
         jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
-        jTextFieldVideoplayer.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldVideoplayer);
+        jTextFieldVideoplayer.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
-        jTextFieldProgrammUrl.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldProgrammUrl);
+        jTextFieldProgrammUrl.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN));
         if (jTextFieldProgrammShutdown.getText().isEmpty()) {
@@ -94,7 +93,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
-        jTextFieldProgrammShutdown.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
+        jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
         if (getOs() != OperatingSystemType.LINUX) {
             // Funktion ist nur für Linux
@@ -105,32 +105,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void init() {
-//        // UserAgent
-//        jRadioButtonAuto.setSelected(Daten.isUserAgentAuto());
-//        jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
-//
-//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-//        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.Configs.SYSTEM_USER_AGENT));
-//        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
-
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
     }
 
-//    private void setUserAgent() {
-//        if (jRadioButtonAuto.isSelected()) {
-//            Daten.setUserAgentAuto();
-//        } else {
-//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-//        }
-//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-//    }
-
     private void setHelp() {
-//        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-//                + "Dieser Text wird als User-Agent\n"
-//                + "an den Webserver übertragen. Das entspricht\n"
-//                + "der Kennung, die auch die Browser senden.").setVisible(true));
         jButtonHilfeProgrammDateimanager.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Im Tab \"Downloads\" kann man mit der rechten\n"
                 + "Maustaste den Downloadordner (Zielordner)\n"
@@ -173,7 +152,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void setIcon() {
-//        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeNeuladen.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
@@ -184,6 +162,100 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        MVConfig.Configs config;
+        JTextField txt;
+
+        public BeobDoc(MVConfig.Configs config, JTextField txt) {
+            this.config = config;
+            this.txt = txt;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            MVConfig.add(config, txt.getText());
+        }
+
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        MVConfig.Configs config;
+        String title;
+        JTextField textField;
+
+        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
+            this.config = config;
+            this.title = title;
+            this.textField = textField;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), title);
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        textField.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(915263014, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!textField.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(textField.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(751214501, ex);
+                    }
+                }
+            }
+            // merken und prüfen
+            MVConfig.add(config, textField.getText());
+            String programm = textField.getText();
+            if (!programm.equals("")) {
+                try {
+                    if (!new File(programm).exists()) {
+                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else if (!new File(programm).canExecute()) {
+                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -437,120 +509,4 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgrammUrl;
     private javax.swing.JTextField jTextFieldVideoplayer;
     // End of variables declaration//GEN-END:variables
-
-//    private class BeobUserAgent implements DocumentListener {
-//
-//        @Override
-//        public void insertUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        @Override
-//        public void removeUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        @Override
-//        public void changedUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        private void tus() {
-//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-//        }
-//    }
-
-    private class BeobDoc implements DocumentListener {
-
-        MVConfig.Configs config;
-        JTextField txt;
-
-        public BeobDoc(MVConfig.Configs config, JTextField txt) {
-            this.config = config;
-            this.txt = txt;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            MVConfig.add(config, txt.getText());
-        }
-
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        MVConfig.Configs config;
-        String title;
-        JTextField textField;
-
-        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
-            this.config = config;
-            this.title = title;
-            this.textField = textField;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), title);
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        textField.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(915263014, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!textField.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(textField.getText()));
-                } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(751214501, ex);
-                    }
-                }
-            }
-            // merken und prüfen
-            MVConfig.add(config, textField.getText());
-            String programm = textField.getText();
-            if (!programm.equals("")) {
-                try {
-                    if (!new File(programm).exists()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                    } else if (!new File(programm).canExecute()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-
-        }
-
-    }
 }

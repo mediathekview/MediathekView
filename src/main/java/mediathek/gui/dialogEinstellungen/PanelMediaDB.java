@@ -34,7 +34,7 @@ import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
@@ -111,11 +111,17 @@ public class PanelMediaDB extends PanelVorlage {
                 MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
         });
+
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
-        jTextFieldExportPath.addMouseListener(new TextCopyPaste());
-        jTextFieldPath.addMouseListener(new TextCopyPaste());
-        jTextFieldSuffix.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldExportPath);
+        jTextFieldExportPath.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldPath);
+        jTextFieldPath.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldSuffix);
+        jTextFieldSuffix.setComponentPopupMenu(handler.getPopupMenu());
 
         jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
         jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));

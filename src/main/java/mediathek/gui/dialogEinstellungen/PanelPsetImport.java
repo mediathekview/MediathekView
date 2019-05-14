@@ -29,7 +29,7 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -61,14 +61,17 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonImportDatei.setEnabled(false);
         jButtonImportText.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
+
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
-        jTextFieldDatei.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldDatei);
+        jTextFieldDatei.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextAreaImport.getDocument().addDocumentListener(new BeobTextArea());
-        jTextAreaImport.addMouseListener(new TextCopyPaste());
+        var handler2 = new TextCopyPasteHandler<>(jTextAreaImport);
+        jTextAreaImport.setComponentPopupMenu(handler2.getPopupMenu());
 
         jButtonImportVorlage.addActionListener(e -> {
-            if (!jTextFieldUrl.getText().equals("")) {
+            if (!jTextFieldUrl.getText().isEmpty()) {
                 importDatei(jTextFieldUrl.getText());
             }
         });

@@ -26,7 +26,7 @@ import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
@@ -58,7 +58,9 @@ public class PanelImport extends PanelVorlage {
         jCheckBoxErsetzungstabelle.addActionListener(e -> setButtonImport());
         final Path xmlFilePath = Daten.getMediathekXmlFilePath();
         jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
-        jTextFieldDatei.addMouseListener(new TextCopyPaste());
+
+        var handler = new TextCopyPasteHandler<>(jTextFieldDatei);
+        jTextFieldDatei.setComponentPopupMenu(handler.getPopupMenu());
     }
 
     private void importDatei(String datei) {

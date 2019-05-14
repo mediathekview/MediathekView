@@ -31,7 +31,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 
 import javax.swing.*;
@@ -203,8 +203,12 @@ public class PanelBlacklist extends PanelVorlage {
         jComboBoxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
 
         comboThemaLaden();
-        jTextFieldThemaTitel.addMouseListener(new TextCopyPaste());
-        jTextFieldTitel.addMouseListener(new TextCopyPaste());
+
+        var handler = new TextCopyPasteHandler<>(jTextFieldThemaTitel);
+        jTextFieldThemaTitel.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldTitel);
+        jTextFieldTitel.setComponentPopupMenu(handler.getPopupMenu());
     }
 
     private void notifyBlacklistChanged() {

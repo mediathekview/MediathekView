@@ -29,7 +29,7 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -82,9 +82,12 @@ public class PanelPsetKurz extends PanelVorlage {
 
     private void initBeob() {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
+        var handler = new TextCopyPasteHandler<>(jTextFieldName);
+        jTextFieldName.setComponentPopupMenu(handler.getPopupMenu());
+
         jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
-        jTextFieldName.addMouseListener(new TextCopyPaste());
-        jTextFieldZiel.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldZiel);
+        jTextFieldZiel.setComponentPopupMenu(handler.getPopupMenu());
 
         jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
     }
@@ -174,7 +177,8 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weightx = 10;
         JTextField textField = new JTextField(arr[idx]);
         textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, idx));
-        textField.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(textField);
+        textField.setComponentPopupMenu(handler.getPopupMenu());
         gridbag.setConstraints(textField, c);
         panel.add(textField);
         // Button
