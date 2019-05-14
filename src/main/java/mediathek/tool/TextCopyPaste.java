@@ -107,7 +107,7 @@ public class TextCopyPaste extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getModifiersEx() == InputEvent.BUTTON3_DOWN_MASK) {
+        if (e.getModifiersEx() == InputEvent.META_DOWN_MASK) {
             if (!(e.getSource() instanceof JTextComponent)) {
                 return;
             }
