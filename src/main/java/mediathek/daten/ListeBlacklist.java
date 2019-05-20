@@ -29,6 +29,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.tool.Filter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +43,7 @@ import java.util.function.Predicate;
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
+    private static final String[] EMPTY_STRING = new String[]{""};
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -320,6 +322,21 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return result;
     }
 
+    private String[] mySplit(final String inputString) {
+        final String[] pTitle = StringUtils.split(inputString, ',');
+        if (pTitle.length == 0)
+            return EMPTY_STRING;
+        else
+            return pTitle;
+    }
+
+    private String[] createPattern(final boolean isPattern, final String inputString) {
+        if (isPattern)
+            return new String[]{inputString};
+        else
+            return mySplit(inputString);
+    }
+
     /**
      * Apply filters to film.
      *
@@ -330,13 +347,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         final boolean isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
 
         for (DatenBlacklist entry : this) {
-            final String titel = entry.arr[DatenBlacklist.BLACKLIST_TITEL];
-            final String themaTitel = entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL];
+            final String[] pTitel = createPattern(entry.patternTitle, entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
+            final String[] pThema = createPattern(entry.patternThema, entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
 
             if (performFiltering(
                     entry,
-                    entry.patternTitle ? new String[]{titel} : titel.split(","),
-                    entry.patternThema ? new String[]{themaTitel} : themaTitel.split(","),
+                    pTitel,
+                    pThema,
                     film)) {
                 return isWhitelist;
             }
