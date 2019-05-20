@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mediathek.config.MVConfig;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
@@ -142,6 +142,32 @@ public class DialogContinueDownload extends JDialog {
         dispose();
     }
 
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+
+        private int w = Konstanten.CONTINUE_DOWNLOAD;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                if (!direkterDownload) {
+                    jButtonWeiter.setText("Überschreiben in " + w + 's');
+                } else {
+                    jButtonWeiter.setText("Weiterführen in " + w + 's');
+                }
+                if (countdownTimer != null) {
+                    countdownTimer.setDelay(1000);
+                }
+            } else {
+                result = DownloadResult.CONTINUE;
+                beenden();
+            }
+            w--;
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -236,30 +262,4 @@ public class DialogContinueDownload extends JDialog {
     private javax.swing.JPanel jPanelNewName;
     private javax.swing.JPanel jPanelPath;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * Implements the countdown based on Swing Timer for automatic placement on EDT.
-     */
-    private class CountdownAction implements ActionListener {
-
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN);
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (w > 0) {
-                if (!direkterDownload) {
-                    jButtonWeiter.setText("Überschreiben in " + w + 's');
-                } else {
-                    jButtonWeiter.setText("Weiterführen in " + w + 's');
-                }
-                if (countdownTimer != null) {
-                    countdownTimer.setDelay(1000);
-                }
-            } else {
-                result = DownloadResult.CONTINUE;
-                beenden();
-            }
-            w--;
-        }
-    }
 }
