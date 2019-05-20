@@ -56,10 +56,8 @@ public class MVConfig {
 
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
 
-        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, 5, 1000);
         check(Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, 5, 1000);
 
-        logger.debug("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         logger.debug("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
     }
@@ -213,7 +211,6 @@ public class MVConfig {
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
-        SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
 
         //============================================
