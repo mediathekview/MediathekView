@@ -176,7 +176,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_DATUM:
-                result = film.datumFilm;
+                result = film.getDatumFilm();
                 break;
 
             case DatenFilm.FILM_ZEIT:

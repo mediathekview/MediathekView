@@ -42,6 +42,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.tukaani.xz.XZInputStream;
 
 import javax.swing.event.EventListenerList;
@@ -432,18 +433,14 @@ public class FilmListReader implements AutoCloseable {
         }
     }
 
-    private boolean checkDate(DatenFilm film) {
-        // true wenn der Film angezeigt werden kann!
-        try {
-            if (film.datumFilm.getTime() != 0) {
-                if (film.datumFilm.getTime() < milliseconds) {
-                    return false;
-                }
-            }
-        } catch (Exception ex) {
-            logger.error(ex);
-        }
-        return true;
+    /**
+     *
+     * @param film film to be checked.
+     * @return true if film should be displayed
+     */
+    private boolean checkDate(@NotNull DatenFilm film) {
+        final var time = film.getDatumFilm().getTime();
+        return time == 0 || time >= milliseconds;
     }
 
     private void notifyStart(String url) {

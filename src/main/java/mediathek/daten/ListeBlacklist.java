@@ -405,17 +405,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @param film item to be checked
      * @return true if film can be displayed
      */
-    private boolean checkDate(DatenFilm film) {
-        boolean result = true;
-
+    private boolean checkDate(@NotNull DatenFilm film) {
         if (days != 0) {
-            final long filmTime = film.datumFilm.getTime();
-            if (filmTime != 0 && filmTime < days) {
-                result = false;
-            }
+            final long filmTime = film.getDatumFilm().getTime();
+            return filmTime == 0 || filmTime >= days;
         }
 
-        return result;
+        return true;
     }
 
     /**
@@ -426,7 +422,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private boolean checkIfFilmIsInFuture(@NotNull DatenFilm film) {
         try {
-            if (film.datumFilm.getTime() > System.currentTimeMillis()) {
+            if (film.getDatumFilm().getTime() > System.currentTimeMillis()) {
                 return false;
             }
         } catch (Exception ex) {
