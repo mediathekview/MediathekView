@@ -36,9 +36,6 @@ public class MVFunctionSys {
         Log.versionMsg(MVFunctionSys.getProgName());
         logger.info("Programmpfad: " + MVFunctionSys.getPathJar());
         logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-        logger.info("");
-        logger.info("");
-        logger.info("");
     }
 
     private static final Logger logger = LogManager.getLogger(MVFunctionSys.class);
