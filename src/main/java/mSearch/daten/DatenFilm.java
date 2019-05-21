@@ -23,6 +23,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.sansorm.SqlClosure;
 import mSearch.tool.*;
 import mediathek.config.Daten;
+import mediathek.daten.DatenAbo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,7 +94,16 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Beware it is a dangerous string collection...
      */
     public final String[] arr = new String[MAX_ELEM];
-    public Object abo = null;
+
+    public DatenAbo getAbo() {
+        return abo;
+    }
+
+    public void setAbo(DatenAbo abo) {
+        this.abo = abo;
+    }
+
+    private DatenAbo abo = null;
     /**
      * film date stored IN SECONDS!!!
      */

@@ -212,7 +212,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public DatenAbo getAboFuerFilm_schnell(DatenFilm film, boolean laengePruefen) {
         // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
         // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
-        final var abo = (DatenAbo)film.abo;
+        final var abo = film.getAbo();
         if (abo == null) {
             return null;
         } else {
@@ -228,7 +228,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     private void deleteAboInFilm(DatenFilm film) {
         // für jeden Film Abo löschen
         film.arr[DatenFilm.FILM_ABO_NAME] = "";
-        film.abo = null;
+        film.setAbo(null);
     }
 
     private void createAbo(DatenAbo abo) {
@@ -278,7 +278,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         } else {
             film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
         }
-        film.abo = foundAbo;
+        film.setAbo(foundAbo);
     }
 
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
