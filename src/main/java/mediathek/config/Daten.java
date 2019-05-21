@@ -19,6 +19,7 @@
  */
 package mediathek.config;
 
+import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
@@ -62,14 +63,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Daten {
-
-    // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     private static final Logger logger = LogManager.getLogger(Daten.class);
     /**
      * Maximum number of backup files to be stored.
      */
     private final static int MAX_COPY = 5;
+    public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
     private static Daten instance;
     // flags
@@ -137,10 +137,6 @@ public class Daten {
         starterClass = new StarterClass(this);
 
         setupRepeatingTimer();
-    }
-
-    public void setupNotifications() {
-        notificationCenter = NotificationFactory.createNotificationCenter();
     }
 
     public static boolean isStartMaximized() {
@@ -271,6 +267,10 @@ public class Daten {
      */
     public static void closeSplashScreen() {
         splashScreenManager = null;
+    }
+
+    public void setupNotifications() {
+        notificationCenter = NotificationFactory.createNotificationCenter();
     }
 
     public INotificationCenter notificationCenter() {

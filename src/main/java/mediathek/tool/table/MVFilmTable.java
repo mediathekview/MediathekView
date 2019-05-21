@@ -1,6 +1,7 @@
 package mediathek.tool.table;
 
 import mSearch.daten.DatenFilm;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelFilm;
@@ -11,7 +12,7 @@ public class MVFilmTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenFilm.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
+        spaltenAnzeigen = getSpaltenEinAus(Daten.spaltenAnzeigenFilme, DatenFilm.MAX_ELEM);
         indexSpalte = DatenFilm.FILM_NR;
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;

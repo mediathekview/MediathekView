@@ -87,8 +87,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
-    //TODO das muss hier raus...
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     /**
      * The magic arr array.
      * Here all the film information with some minor exceptions.
