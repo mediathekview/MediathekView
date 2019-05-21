@@ -312,14 +312,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if it is NOT blocked, false if it IS blocked
      */
     private boolean checkGeoBlockedFilm(DatenFilm film) {
-        boolean result = true;
         final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
         final String geo = film.getGeo();
-        if (!geo.isEmpty() && !geo.contains(geoLocation)) {
-            result = false;
-        }
 
-        return result;
+        return geo.isEmpty() || geo.contains(geoLocation);
     }
 
     private String[] mySplit(final String inputString) {
@@ -421,14 +417,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if it should be displayed.
      */
     private boolean checkIfFilmIsInFuture(@NotNull DatenFilm film) {
-        try {
-            if (film.getDatumFilm().getTime() > System.currentTimeMillis()) {
-                return false;
-            }
-        } catch (Exception ex) {
-            logger.error("checkIfFilmIsInFuture()", ex);
-        }
-        return true;
+        return film.getDatumFilm().getTime() <= System.currentTimeMillis();
     }
 
     /**
