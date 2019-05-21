@@ -20,6 +20,7 @@
 package mediathek.gui.dialog;
 
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
@@ -62,8 +63,7 @@ public class MeldungDownloadfehler extends JDialog {
 
     @Override
     public void setVisible(boolean vis) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG))
-                && MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN) > 0) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG))) {
             super.setVisible(vis);
         } else {
             dispose();
@@ -75,7 +75,7 @@ public class MeldungDownloadfehler extends JDialog {
      */
     private class CountdownAction implements ActionListener {
 
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN);
+        private int w = Konstanten.DOWNLOAD_ERROR_DISPLAY_DURATION;
 
         @Override
         public void actionPerformed(ActionEvent e) {
