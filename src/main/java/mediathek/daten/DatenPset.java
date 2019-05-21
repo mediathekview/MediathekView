@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
+import mSearch.daten.FilmResolution;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -299,6 +299,6 @@ public class DatenPset extends MVData<DatenPset> {
         arr[PROGRAMMSET_INFODATEI] = Boolean.toString(false);
         arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemUtils.IS_OS_MAC_OSX);
         arr[PROGRAMMSET_SUBTITLE] = Boolean.toString(false);
-        arr[PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_NORMAL;
+        arr[PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_NORMAL;
     }
 }

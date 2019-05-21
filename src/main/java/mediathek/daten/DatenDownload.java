@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
+import mSearch.daten.FilmResolution;
 import mSearch.tool.Datum;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.GermanStringSorter;
@@ -665,11 +666,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
         String res = "";
-        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL))) {
             res = "H";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD))) {
             res = "HD";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
         replStr = StringUtils.replace(replStr, "%q", res);
