@@ -34,13 +34,14 @@ import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class StarterClass {
@@ -109,6 +110,8 @@ public class StarterClass {
         }
     }
 
+    private static final FastDateFormat formatter = FastDateFormat.getInstance("HH:mm:ss");
+
     static void startmeldung(DatenDownload datenDownload, Start start) {
         ArrayList<String> text = new ArrayList<>();
         boolean abspielen = datenDownload.quelle == DatenDownload.QUELLE_BUTTON;
@@ -124,7 +127,7 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
+        text.add("Startzeit: " + formatter.format(start.startZeit));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
@@ -161,8 +164,9 @@ public class StarterClass {
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]);
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
-        text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
+
+        text.add("Startzeit: " + formatter.format(start.startZeit));
+        text.add("Endzeit: " + formatter.format(new Date().getTime()));
         text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
         long dauer = start.startZeit.diffInMinuten();

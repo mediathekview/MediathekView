@@ -25,7 +25,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class Datum extends Date {
-    private final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
+    protected final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
 
     public Datum() {
         super();
@@ -37,7 +37,7 @@ public class Datum extends Date {
 
     @Override
     public String toString() {
-        if (this.getTime() == 0) {
+        if (getTime() == 0) {
             return "";
         } else {
             return dateFormatter1.format(this);
@@ -50,7 +50,7 @@ public class Datum extends Date {
      * @return Differenz in Sekunden.
      */
     public int diffInSekunden() {
-        final int ret = Long.valueOf((this.getTime() - new Datum().getTime()) / (1000)).intValue();
+        final int ret = Long.valueOf((getTime() - new Date().getTime()) / 1000).intValue();
         return Math.abs(ret);
     }
 
