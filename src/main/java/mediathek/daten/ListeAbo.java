@@ -212,16 +212,16 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public DatenAbo getAboFuerFilm_schnell(DatenFilm film, boolean laengePruefen) {
         // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
         // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
-        if (film.abo == null) {
+        final var abo = (DatenAbo)film.abo;
+        if (abo == null) {
             return null;
         } else {
             if (laengePruefen) {
-                if (!Filter.laengePruefen(((DatenAbo) film.abo).mindestdauerMinuten, film.getFilmLength(),
-                        ((DatenAbo) film.abo).min)) {
+                if (!Filter.laengePruefen(abo.mindestdauerMinuten, film.getFilmLength(), abo.min)) {
                     return null;
                 }
             }
-            return (DatenAbo) film.abo;
+            return abo;
         }
     }
 
