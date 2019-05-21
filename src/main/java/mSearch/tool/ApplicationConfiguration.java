@@ -1,6 +1,6 @@
 package mSearch.tool;
 
-import mSearch.daten.DatenFilm;
+import mSearch.daten.GeoblockingField;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import org.apache.commons.configuration2.Configuration;
@@ -121,7 +121,7 @@ public class ApplicationConfiguration {
         try {
             config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
             config.setProperty(GEO_REPORT, true);
-            config.setProperty(GEO_LOCATION, DatenFilm.GEO_DE);
+            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
 
             handler.save();
         } catch (ConfigurationException e) {
@@ -141,7 +141,7 @@ public class ApplicationConfiguration {
         try {
             String s = config.getString(GEO_LOCATION);
         } catch (NoSuchElementException ignored) {
-            config.setProperty(GEO_LOCATION, DatenFilm.GEO_DE);
+            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
         }
         try {
             boolean b = config.getBoolean(APPLICATION_INSTALL_TAB_SWITCH_LISTENER);

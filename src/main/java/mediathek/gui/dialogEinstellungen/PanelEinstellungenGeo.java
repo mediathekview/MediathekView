@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.daten.DatenFilm;
+import mSearch.daten.GeoblockingField;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
@@ -45,39 +45,39 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         final Configuration config = ApplicationConfiguration.getConfiguration();
 
         switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
-            case DatenFilm.GEO_CH:
+            case GeoblockingField.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
-            case DatenFilm.GEO_AT:
+            case GeoblockingField.GEO_AT:
                 jRadioButtonAt.setSelected(true);
                 break;
-            case DatenFilm.GEO_EU:
+            case GeoblockingField.GEO_EU:
                 jRadioButtonEu.setSelected(true);
                 break;
-            case DatenFilm.GEO_WELT:
+            case GeoblockingField.GEO_WELT:
                 jRadioButtonSonst.setSelected(true);
                 break;
             default:
                 jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_DE);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_DE);
             melden();
         });
         jRadioButtonCH.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_CH);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_CH);
             melden();
         });
         jRadioButtonAt.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_AT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_AT);
             melden();
         });
         jRadioButtonEu.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_EU);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_EU);
             melden();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_WELT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_WELT);
             melden();
         });
 
