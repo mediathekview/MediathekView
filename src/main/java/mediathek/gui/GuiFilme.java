@@ -454,7 +454,7 @@ public class GuiFilme extends JPanel {
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
 
         final var headerListener = new BeobTableHeader(tabelle,
-                DatenFilm.spaltenAnzeigen,
+                Daten.spaltenAnzeigenFilme,
                 HIDDEN_COLUMNS,
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
                 true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
