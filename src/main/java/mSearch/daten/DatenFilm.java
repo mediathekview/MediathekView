@@ -48,12 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
-    public static final String GEO_DE = "DE"; // nur in .. zu sehen
-    public static final String GEO_AT = "AT";
-    public static final String GEO_CH = "CH";
-    public static final String GEO_EU = "EU";
-    public static final String GEO_WELT = "WELT";
-    //
     public static final int FILM_NR = 0; // wird vor dem Speichern gelöscht!
     public static final int FILM_SENDER = 1;
     public static final int FILM_THEMA = 2;
