@@ -1515,23 +1515,23 @@ public class GuiDownloads extends JPanel {
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(e -> {
-                int nr1 = tabelle.rowAtPoint(p);
+                final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
-                    DatenPset gruppe = Daten.listePset.getPsetAbspielen();
-                    if (gruppe != null) {
-                        DatenDownload datenDownload1 = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF);
-                        if (datenDownload1 != null) {
-                            if (datenDownload1.film != null) {
-                                DatenFilm filmDownload = datenDownload1.film.getCopy();
+                    Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
+                    optPSetPlay.ifPresentOrElse(gruppe -> {
+                        Optional<DatenDownload> optDL = Optional.ofNullable((DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF));
+                        optDL.ifPresent(dl -> {
+                            if (dl.film != null) {
+                                DatenFilm filmDownload = dl.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.setUrl(datenDownload1.arr[DatenDownload.DOWNLOAD_URL]);
+                                filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN] = "";
                                 // und starten
-                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);
+                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
                             }
-                        }
-                    } else {
-                        String menuPath;
+                        });
+                    }, () -> {
+                        final String menuPath;
                         if (SystemUtils.IS_OS_MAC_OSX) {
                             menuPath = "MediathekView->Einstellungen…->Aufzeichnen und Abspielen->Set bearbeiten";
                         } else {
@@ -1539,7 +1539,7 @@ public class GuiDownloads extends JPanel {
                         }
                         MVMessageDialog.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                 "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    });
                 }
             });
             jPopupMenu.add(itemPlayer);
