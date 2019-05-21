@@ -95,11 +95,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Beware it is a dangerous string collection...
      */
     public final String[] arr = new String[MAX_ELEM];
+    public Object abo = null;
     /**
      * film date stored IN SECONDS!!!
      */
-    public DatumFilm datumFilm = new DatumFilm(0);
-    public Object abo = null;
+    private DatumFilm datumFilm = new DatumFilm(0);
     /**
      * File size in MByte
      */
@@ -137,6 +137,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         writeFilmNumberToDatabase();
 
         setupDatabaseCleanup();
+    }
+
+    public DatumFilm getDatumFilm() {
+        return datumFilm;
     }
 
     public String getUrlKlein() {
