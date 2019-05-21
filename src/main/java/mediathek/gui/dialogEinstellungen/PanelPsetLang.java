@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.daten.DatenFilm;
+import mSearch.daten.FilmResolution;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -288,19 +288,19 @@ public class PanelPsetLang extends PanelVorlage {
         if (jRadioButtonAufloesungNormal.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_NORMAL;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_NORMAL;
             }
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_HD;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_HD;
             }
         }
         if (jRadioButtonAufloesungKlein.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_KLEIN;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_KLEIN;
             }
         }
     }
@@ -381,10 +381,10 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]) {
-                case DatenFilm.AUFLOESUNG_HD:
+                case FilmResolution.AUFLOESUNG_HD:
                     jRadioButtonAufloesungHD.setSelected(true);
                     break;
-                case DatenFilm.AUFLOESUNG_KLEIN:
+                case FilmResolution.AUFLOESUNG_KLEIN:
                     jRadioButtonAufloesungKlein.setSelected(true);
                     break;
                 default:

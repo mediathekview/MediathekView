@@ -31,6 +31,7 @@ import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
+import mSearch.daten.FilmResolution;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
@@ -357,9 +358,9 @@ public class GuiFilme extends JPanel {
         final ActionMap actionMap = tabelle.getActionMap();
         actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
-        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_HD));
-        actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_KLEIN));
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_NORMAL));
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_HD));
+        actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_KLEIN));
         actionMap.put(ACTION_MAP_KEY_MEDIA_DB, mediensammlungAction);
         actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
         actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
@@ -584,7 +585,7 @@ public class GuiFilme extends JPanel {
                 //dann alle Downloads im Dialog abfragen
                 String aufloesung = "";
                 if (fap.showOnlyHd.getValue()) {
-                    aufloesung = DatenFilm.AUFLOESUNG_HD;
+                    aufloesung = FilmResolution.AUFLOESUNG_HD;
                 }
                 DialogAddDownload dialog = new DialogAddDownload(mediathekGui, daten, datenFilm, pSet, aufloesung);
                 dialog.setVisible(true);
@@ -604,7 +605,7 @@ public class GuiFilme extends JPanel {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
             if (fap.showOnlyHd.getValue()) {
-                aufloesung = DatenFilm.AUFLOESUNG_HD;
+                aufloesung = FilmResolution.AUFLOESUNG_HD;
             } else
                 aufloesung = "";
 
@@ -909,9 +910,9 @@ public class GuiFilme extends JPanel {
             //Url
             res.ifPresent(film -> {
                 JMenuItem item;
-                String uNormal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
-                String uHd = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD);
-                String uLow = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN);
+                String uNormal = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL);
+                String uHd = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD);
+                String uLow = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN);
                 if (uHd.equals(uNormal)) {
                     uHd = ""; // dann gibts keine
                 }
@@ -921,13 +922,13 @@ public class GuiFilme extends JPanel {
                 if (!uNormal.isEmpty()) {
                     jPopupMenu.addSeparator();
 
-                    final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+                    final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL));
                     if (!uHd.isEmpty() || !uLow.isEmpty()) {
                         JMenu submenueURL = new JMenu("Film-URL kopieren");
                         // HD
                         if (!uHd.isEmpty()) {
                             item = new JMenuItem("in HD-Auflösung");
-                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
+                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD)));
                             submenueURL.add(item);
                         }
 
@@ -939,7 +940,7 @@ public class GuiFilme extends JPanel {
                         // kleine Auflösung
                         if (!uLow.isEmpty()) {
                             item = new JMenuItem("in geringer Auflösung");
-                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
+                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN)));
                             submenueURL.add(item);
                         }
                         jPopupMenu.add(submenueURL);

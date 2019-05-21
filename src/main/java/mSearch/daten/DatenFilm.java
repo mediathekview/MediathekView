@@ -48,10 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
-    //FIXME convert indices to int!!
-    public static final String AUFLOESUNG_NORMAL = "normal";
-    public static final String AUFLOESUNG_HD = "hd";
-    public static final String AUFLOESUNG_KLEIN = "klein";
     public static final String GEO_DE = "DE"; // nur in .. zu sehen
     public static final String GEO_AT = "AT";
     public static final String GEO_CH = "CH";
@@ -341,11 +337,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public String getUrlFuerAufloesung(String aufloesung) {
         final String ret;
         switch (aufloesung) {
-            case AUFLOESUNG_KLEIN:
+            case FilmResolution.AUFLOESUNG_KLEIN:
                 ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_KLEIN);
                 break;
 
-            case AUFLOESUNG_HD:
+            case FilmResolution.AUFLOESUNG_HD:
                 ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_HD);
                 break;
 
