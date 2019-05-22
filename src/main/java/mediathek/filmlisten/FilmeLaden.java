@@ -293,6 +293,8 @@ public class FilmeLaden {
         findAndMarkNewFilms(daten.getListeFilme());
 
         final boolean writeFilmList;
+        final var listeFilme = daten.getListeFilme();
+        final var ui = MediathekGui.ui();
 
         istAmLaufen = false;
         if (event.fehler) {
@@ -307,21 +309,22 @@ public class FilmeLaden {
             });
 
             // dann die alte Liste wieder laden
-            daten.getListeFilme().clear();
+            listeFilme.clear();
 
             try (FilmListReader reader = new FilmListReader()) {
-                reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
             logger.info("");
 
             writeFilmList = false;
         } else {
-            writeFilmList = true;
+            writeFilmList = !Daten.dontWriteFilmlistOnStartup.get();
         }
+
         logger.info("");
-        logger.info("Jetzige Liste erstellt am: {}", daten.getListeFilme().genDate());
-        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
-        logger.info("  Anzahl Neue:  {}", daten.getListeFilme().countNewFilms());
+        logger.info("Jetzige Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms());
         logger.info("");
 
         Platform.runLater(() -> {
@@ -329,7 +332,7 @@ public class FilmeLaden {
 
             FilmListFilterTask task = new FilmListFilterTask(true);
             task.setOnRunning(e -> {
-                MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().add(hb);
+                ui.getStatusBarController().getStatusBar().getRightItems().add(hb);
                 hb.lb.textProperty().bind(task.messageProperty());
                 hb.prog.progressProperty().bind(task.progressProperty());
             });
@@ -340,7 +343,7 @@ public class FilmeLaden {
                 hb.prog.progressProperty().bind(writerTask.progressProperty());
             });
             
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
             writerTask.setOnSucceeded(workerStateEventEventHandler);
             writerTask.setOnFailed(workerStateEventEventHandler);
 
@@ -350,7 +353,7 @@ public class FilmeLaden {
             else {
                 //TODO this is not beautiful
                 //manual cleanup as ui cleanup is not
-                MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb);
+                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
             }
         });
     }
