@@ -61,9 +61,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
+    /**
+     * Prevent the unnecessary writing of a filmlist on startup when reading is enough
+     */
+    public static final AtomicBoolean dontWriteFilmlistOnStartup = new AtomicBoolean(true);
     private static final Logger logger = LogManager.getLogger(Daten.class);
     /**
      * Maximum number of backup files to be stored.
@@ -111,6 +116,7 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
+
     private Daten() {
         setupNotifications();
         setupMessageBus();
@@ -529,4 +535,5 @@ public class Daten {
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
     }
+
 }

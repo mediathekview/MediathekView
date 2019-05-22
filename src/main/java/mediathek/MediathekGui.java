@@ -331,6 +331,12 @@ public class MediathekGui extends JFrame {
      */
     private void loadFilmlist() {
         Platform.runLater(() -> {
+            //don´t write filmlist when we are reading only...
+            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
+                Daten.dontWriteFilmlistOnStartup.set(false);
+            } else
+                Daten.dontWriteFilmlistOnStartup.set(true);
+
             FXProgressPane progressPane = new FXProgressPane();
 
             FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
@@ -351,6 +357,9 @@ public class MediathekGui extends JFrame {
             CompletableFuture.runAsync(filmListReaderTask)
                     .thenRun(networkTask)
                     .thenRun(filterTask);
+
+            //reset after first load has happened
+            Daten.dontWriteFilmlistOnStartup.set(false);
         });
     }
 
