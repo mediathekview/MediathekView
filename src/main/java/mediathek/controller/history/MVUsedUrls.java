@@ -144,7 +144,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         sendChangeMessage();
     }
 
-    public synchronized void urlAusLogfileLoeschen(ArrayList<DatenFilm> filme) {
+    public synchronized void urlAusLogfileLoeschen(List<DatenFilm> filme) {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
         //wenn die URL im Logfiel ist, dann true zurück
         String zeile;
@@ -216,7 +216,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         sendChangeMessage();
     }
 
-    public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
+    public synchronized void zeileSchreiben(List<DatenFilm> arrayFilms) {
         final String datum = SDF.format(new Date());
 
         checkUrlFilePath();

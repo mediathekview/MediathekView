@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import com.google.common.collect.Lists;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -978,16 +979,19 @@ public class GuiFilme extends JPanel {
                 JMenuItem miHistory;
                 if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
                     miHistory = new JMenuItem("Film als ungesehen markieren");
-                    miHistory.addActionListener(new BeobHistory(false));
+                    miHistory.addActionListener(unseenActionListener);
                 } else {
                     miHistory = new JMenuItem("Film als gesehen markieren");
-                    miHistory.addActionListener(new BeobHistory(true));
+                    miHistory.addActionListener(seenActionListener);
                 }
                 jPopupMenu.add(miHistory);
             });
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
+
+        private final ActionListener unseenActionListener = new BeobHistory(false);
+        private final ActionListener seenActionListener = new BeobHistory(true);
 
         private class BeobHistory implements ActionListener {
 
@@ -998,17 +1002,20 @@ public class GuiFilme extends JPanel {
             }
 
             private void updateHistory(DatenFilm film) {
+                final var list = Lists.newArrayList(film);
+                final var history = daten.getSeenHistoryController();
                 if (eintragen) {
-                    daten.getSeenHistoryController().zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
+                    history.markAsSeen(list);
                 } else {
-                    daten.getSeenHistoryController().urlAusLogfileLoeschen(film.getUrlHistory());
+                    history.markAsUnseen(list);
                 }
+                list.clear();
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 final int nr = tabelle.rowAtPoint(p);
-                if (nr >= 0) {
+                if (nr != -1) {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(this::updateHistory);
                 }
