@@ -702,12 +702,7 @@ public class GuiDownloads extends JPanel {
             info += "<br />";
             info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
         }
-        // Bandbreite
-        if (downloadInfos.getBandwidth() > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += downloadInfos.getBandwidthStr() + "</span>";
-        }
+
         info += END;
 
         txtDownload.setText(info);
