@@ -400,7 +400,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.getSeenHistoryController().setGesehen(true, getSelFilme());
+            daten.getSeenHistoryController().markAsSeen(getSelFilme());
         }
     }
 
@@ -412,7 +412,7 @@ public class GuiFilme extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            daten.getSeenHistoryController().setGesehen(false, getSelFilme());
+            daten.getSeenHistoryController().markAsUnseen(getSelFilme());
         }
     }
 

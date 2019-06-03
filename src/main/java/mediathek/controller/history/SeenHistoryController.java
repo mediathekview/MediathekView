@@ -27,7 +27,15 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
         super.zeileSchreiben(arrayFilms);
     }
 
-    public synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms) {
+    public void markAsSeen(ArrayList<DatenFilm> filmList) {
+        setGesehen(true, filmList);
+    }
+
+    public void markAsUnseen(ArrayList<DatenFilm> filmList) {
+        setGesehen(false, filmList);
+    }
+
+    private synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms) {
         logger.trace("setGesehen({})", gesehen);
         if (arrayFilms.isEmpty()) {
             return;
