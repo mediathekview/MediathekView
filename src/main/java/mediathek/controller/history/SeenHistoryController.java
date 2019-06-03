@@ -6,7 +6,8 @@ import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEvent> {
     private static final Logger logger = LogManager.getLogger(SeenHistoryController.class);
@@ -22,20 +23,20 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
     }
 
     @Override
-    public synchronized void zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
+    public synchronized void zeileSchreiben(List<DatenFilm> arrayFilms) {
         logger.trace("zeileSchreiben(thema: {})", arrayFilms);
         super.zeileSchreiben(arrayFilms);
     }
 
-    public void markAsSeen(ArrayList<DatenFilm> filmList) {
+    public void markAsSeen(List<DatenFilm> filmList) {
         setGesehen(true, filmList);
     }
 
-    public void markAsUnseen(ArrayList<DatenFilm> filmList) {
+    public void markAsUnseen(List<DatenFilm> filmList) {
         setGesehen(false, filmList);
     }
 
-    private synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms) {
+    private synchronized void setGesehen(boolean gesehen, List<DatenFilm> arrayFilms) {
         logger.trace("setGesehen({})", gesehen);
         if (arrayFilms.isEmpty()) {
             return;
@@ -43,10 +44,11 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
         if (!gesehen) {
             urlAusLogfileLoeschen(arrayFilms);
         } else {
-            ArrayList<DatenFilm> neueFilme = new ArrayList<>();
-            arrayFilms.stream().filter(film -> !urlPruefen(film.getUrlHistory()))
-                    .forEach(neueFilme::add);
+            List<DatenFilm> neueFilme = arrayFilms.stream()
+                    .filter(film -> !urlPruefen(film.getUrlHistory()))
+                    .collect(Collectors.toList());
             zeileSchreiben(neueFilme);
+            neueFilme.clear();
         }
     }
 }
