@@ -229,6 +229,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private void setupArr() {
         for (int i = 0; i < MAX_ELEM; i++)
             arr[i] = "";
+
+        arr[FILM_URL_HISTORY] = null;
     }
 
     @Override
@@ -356,11 +358,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public String getUrlHistory() {
-        if (arr[DatenFilm.FILM_URL_HISTORY].isEmpty()) {
-            return arr[DatenFilm.FILM_URL];
-        } else {
-            return arr[DatenFilm.FILM_URL_HISTORY];
-        }
+        return arr[DatenFilm.FILM_URL];
     }
 
     public String getIndex() {
