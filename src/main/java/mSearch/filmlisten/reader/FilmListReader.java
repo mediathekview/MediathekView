@@ -298,7 +298,7 @@ public class FilmListReader implements AutoCloseable {
                 parseDefault(jp, datenFilm, DatenFilm.FILM_URL_HD);
                 skipToken(jp);
                 parseDefault(jp, datenFilm, DatenFilm.FILM_DATUM_LONG);
-                parseDefault(jp, datenFilm, DatenFilm.FILM_URL_HISTORY);
+                skipToken(jp); //HISTORY_URL
                 parseGeo(jp, datenFilm);
                 parseNeu(jp, datenFilm);
 
