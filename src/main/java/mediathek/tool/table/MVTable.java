@@ -35,29 +35,25 @@ public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
     private static final String SORT_DESCENDING = "DESCENDING";
-    final int[] breite;
-    final int[] reihe;
-    private boolean showSenderIcon = false;
+    protected final int[] breite;
+    protected final int[] reihe;
+    /**
+     * This is the UI provided default font used for calculating the size area
+     */
+    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
     public boolean useSmallSenderIcons = false;
-    private boolean lineBreak = true;
-    int maxSpalten;
-    private List<? extends RowSorter.SortKey> listeSortKeys = null;
-    int indexSpalte = 0;
-    int[] selRows;
-    int[] selIndexes = null;
-    int selRow = -1;
+    protected int maxSpalten;
+    protected int indexSpalte = 0;
+    protected int[] selRows;
+    protected int[] selIndexes = null;
+    protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
-    MVConfig.Configs nrDatenSystem = null;
-    MVConfig.Configs iconAnzeigenStr = null;
-    MVConfig.Configs iconKleinStr = null;
-
-    public boolean showSenderIcons() {
-        return showSenderIcon;
-    }
-
-    public void setShowIcon(boolean newVal) {
-        showSenderIcon = newVal;
-    }
+    protected MVConfig.Configs nrDatenSystem = null;
+    protected MVConfig.Configs iconAnzeigenStr = null;
+    protected MVConfig.Configs iconKleinStr = null;
+    private boolean showSenderIcon = false;
+    private boolean lineBreak = true;
+    private List<? extends RowSorter.SortKey> listeSortKeys = null;
 
     public MVTable() {
         setAutoCreateRowSorter(true);
@@ -97,16 +93,24 @@ public abstract class MVTable extends JTable {
         return sk;
     }
 
+    public boolean showSenderIcons() {
+        return showSenderIcon;
+    }
+
+    public void setShowIcon(boolean newVal) {
+        showSenderIcon = newVal;
+    }
+
     /**
      * Setup table specific stuff here.
      */
     protected abstract void setupTableType();
 
+    public boolean isLineBreak() { return lineBreak;}
+
     public void setLineBreak(boolean lb) {
         lineBreak = lb;
     }
-
-    public boolean isLineBreak() { return lineBreak;}
 
     public void invertSelection() {
         final ListSelectionModel mdl = getSelectionModel();
@@ -118,11 +122,6 @@ public abstract class MVTable extends JTable {
         }
         mdl.setValueIsAdjusting(false);
     }
-
-    /**
-     * This is the UI provided default font used for calculating the size area
-     */
-    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
 
     protected int getSizeArea() {
         int sizeArea = 0;
