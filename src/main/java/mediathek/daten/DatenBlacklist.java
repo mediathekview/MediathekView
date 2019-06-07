@@ -21,6 +21,8 @@ package mediathek.daten;
 
 import mediathek.tool.Filter;
 
+import java.util.Arrays;
+
 public class DatenBlacklist extends MVData<DatenBlacklist> {
 
     public static final int BLACKLIST_NR = 0;
@@ -39,11 +41,11 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
     public String[] arr;
 
     public DatenBlacklist() {
-        makeArr();
+        initialize();
     }
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
-        makeArr();
+        initialize();
         arr[BLACKLIST_NR] = "";
         arr[BLACKLIST_SENDER] = sender;
         arr[BLACKLIST_THEMA] = thema;
@@ -60,10 +62,8 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
         arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
         arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
     }
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
     }
 }

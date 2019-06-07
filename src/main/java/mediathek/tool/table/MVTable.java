@@ -28,6 +28,7 @@ import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -64,8 +65,11 @@ public abstract class MVTable extends JTable {
         getTableHeader().addMouseListener(new WidthAdjuster(this));
 
 
-        breite = getArray(maxSpalten);
-        reihe = getArray(maxSpalten);
+        breite = new int[maxSpalten];
+        Arrays.fill(breite,-1);
+
+        reihe = new int[maxSpalten];
+        Arrays.fill(reihe, -1);
 
         if (iconAnzeigenStr != null) {
             showSenderIcon = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
@@ -430,14 +434,6 @@ public abstract class MVTable extends JTable {
         if (iconKleinStr != null) {
             MVConfig.add(iconKleinStr, String.valueOf(useSmallSenderIcons));
         }
-    }
-
-    private int[] getArray(int anzahl) {
-        final int[] arr = new int[anzahl];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = -1;
-        }
-        return arr;
     }
 
     private boolean arrLesen(String s, int[] arr) {

@@ -21,6 +21,8 @@ package mediathek.daten;
 
 import mediathek.tool.GuiFunktionenProgramme;
 
+import java.util.Arrays;
+
 import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 
 public class DatenProg extends MVData<DatenProg> {
@@ -45,13 +47,13 @@ public class DatenProg extends MVData<DatenProg> {
     public String[] arr;
 
     public DatenProg() {
-        makeArr();
+        initialize();
         arr[PROGRAMM_RESTART] = Boolean.toString(false);
         arr[PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(false);
     }
 
     public DatenProg(String name, String programmpfad, String schalter, String restart, String downloadmanager) {
-        makeArr();
+        initialize();
         arr[PROGRAMM_NAME] = name;
         arr[PROGRAMM_PROGRAMMPFAD] = programmpfad;
         arr[PROGRAMM_SCHALTER] = schalter;
@@ -129,10 +131,8 @@ public class DatenProg extends MVData<DatenProg> {
         return ret;
     }
 
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
     }
 }
