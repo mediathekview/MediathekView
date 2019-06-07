@@ -28,6 +28,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class DatenPset extends MVData<DatenPset> {
@@ -69,12 +70,12 @@ public class DatenPset extends MVData<DatenPset> {
     public String[] arr;
 
     public DatenPset() {
-        makeArray();
+        initialize();
     }
 
     public DatenPset(String name) {
         // neue Pset sind immer gleich Button
-        makeArray();
+        initialize();
         arr[PROGRAMMSET_NAME] = name;
         arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
     }
@@ -280,15 +281,11 @@ public class DatenPset extends MVData<DatenPset> {
         ret += "|_______________________________________________" + System.lineSeparator();
         return ret;
     }
-    //===================================
-    // Private
-    //===================================
 
-    private void makeArray() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+
         arr[PROGRAMMSET_THEMA_ANLEGEN] = Boolean.toString(true);
         arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_SPEICHERN] = Boolean.toString(false);

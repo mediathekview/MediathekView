@@ -33,6 +33,7 @@ import java.lang.ref.Cleaner;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
@@ -227,8 +228,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void setupArr() {
-        for (int i = 0; i < MAX_ELEM; i++)
-            arr[i] = "";
+        Arrays.fill(arr, "");
 
         arr[FILM_URL_HISTORY] = null;
     }

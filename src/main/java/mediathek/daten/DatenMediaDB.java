@@ -22,6 +22,8 @@ package mediathek.daten;
 import mediathek.tool.MVMediaDBFileSize;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+
 public class DatenMediaDB extends MVData<DatenMediaDB> {
 
     public final static int MEDIA_DB_NAME = 0;
@@ -33,11 +35,12 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
     public final static String[] COLUMN_NAMES = {"Name", "Pfad", "Größe [MB]", "Extern"};
     public final static String[] XML_NAMES = {"Name", "Pfad", "Groesse", "Extern"};
 
-    public String[] arr;
+    public String[] arr = new String[MAX_ELEM];
     public MVMediaDBFileSize mVMediaDBFileSize;
 
     public DatenMediaDB(String name, String pfad, long size, boolean extern) {
-        makeArr();
+        Arrays.fill(arr,"");
+
         arr[MEDIA_DB_NAME] = putzen(name);
         arr[MEDIA_DB_PATH] = putzen(pfad);
         mVMediaDBFileSize = new MVMediaDBFileSize(size);
@@ -91,12 +94,4 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
         }
         return ret;
     }
-
-    private void makeArr() {
-        arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
-    }
-
 }

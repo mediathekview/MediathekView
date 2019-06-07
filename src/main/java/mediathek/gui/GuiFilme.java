@@ -432,8 +432,7 @@ public class GuiFilme extends AGuiTabPanel {
         setupKeyMapping();
 
         tabelle.setModel(new TModelFilm());
-        BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
-        tabelle.addMouseListener(beobMausTabelle);
+        tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(event -> {
             final ListSelectionModel m = (ListSelectionModel) event.getSource();
             if (!m.isSelectionEmpty() && !m.getValueIsAdjusting() && !stopBeob) {
@@ -445,12 +444,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
 
-        final var headerListener = new BeobTableHeader(tabelle,
-                Daten.spaltenAnzeigenFilme,
-                HIDDEN_COLUMNS,
-                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
-                true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
-        tabelle.getTableHeader().addMouseListener(headerListener);
+        setupHeaderPopupMenu();
 
         Icon closeIcon = IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16);
         jCheckBoxProgamme.setIcon(closeIcon);
@@ -467,10 +461,20 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
+    private void setupHeaderPopupMenu() {
+        final var headerListener = new BeobTableHeader(tabelle,
+                Daten.spaltenAnzeigenFilme,
+                HIDDEN_COLUMNS,
+                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
+                true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
+        tabelle.getTableHeader().addMouseListener(headerListener);
+    }
+
     private static final int[] HIDDEN_COLUMNS = new int[]{
             DatenFilm.FILM_ABSPIELEN,
             DatenFilm.FILM_AUFZEICHNEN
     };
+
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {

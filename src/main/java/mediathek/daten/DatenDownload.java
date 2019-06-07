@@ -40,6 +40,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -138,11 +139,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public byte art = ART_DOWNLOAD;
 
     public DatenDownload() {
-        makeArr();
+        initialize();
     }
 
     public DatenDownload(DatenPset pSet, DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
-        makeArr();
+        initialize();
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
@@ -806,11 +807,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+
         arr[DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString();
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
     }

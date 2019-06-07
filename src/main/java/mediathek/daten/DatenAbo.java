@@ -23,6 +23,8 @@ import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class DatenAbo implements Comparable<DatenAbo> {
 
     public static final int ABO_NR = 0;
@@ -56,11 +58,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public String[] titel, thema, irgendwo;
 
     public DatenAbo() {
-        makeArr();
+        initialize();
     }
 
     public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
-        makeArr();
+        initialize();
         arr[ABO_NAME] = name;
         arr[ABO_SENDER] = sender;
         arr[ABO_THEMA] = thema;
@@ -128,11 +130,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
     }
 
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
         // neue Abos sind immer ein
         aboEin();
     }
