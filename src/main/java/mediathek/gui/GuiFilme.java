@@ -64,7 +64,6 @@ import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVFilmTable;
-import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -79,19 +78,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @SuppressWarnings("serial")
-public class GuiFilme extends JPanel {
+public class GuiFilme extends AGuiTabPanel {
 
-    private final MVTable tabelle;
     public static final String NAME = "Filme";
-    private final Daten daten;
     private boolean stopBeob = false;
-    private final MediathekGui mediathekGui;
-
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
-    }
 
     /**
      * Update the property with the current number of selected entries from the JTable.

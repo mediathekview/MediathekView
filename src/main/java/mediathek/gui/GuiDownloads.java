@@ -59,7 +59,6 @@ import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelDownload;
 import mediathek.tool.table.MVDownloadsTable;
-import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -79,7 +78,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("serial")
-public class GuiDownloads extends JPanel {
+public class GuiDownloads extends AGuiTabPanel {
     private final AtomicLong _lastUpdate = new AtomicLong(0);
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
@@ -99,11 +98,7 @@ public class GuiDownloads extends JPanel {
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private boolean loadFilmlist = false;
-    private final MVTable tabelle;
     public static final String NAME = "Downloads";
-    private final Daten daten;
-    private final MediathekGui mediathekGui;
-
 
 
     /**
@@ -460,12 +455,6 @@ public class GuiDownloads extends JPanel {
                 ex.printStackTrace();
             }
         });
-    }
-
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
     }
 
     public void onComponentShown() {
