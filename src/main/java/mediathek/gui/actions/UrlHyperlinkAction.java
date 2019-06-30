@@ -58,8 +58,8 @@ public class UrlHyperlinkAction extends AbstractAction {
             } else {
                 programm = MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
             }
-            String[] cmd = {programm, url};
-            Runtime.getRuntime().exec(cmd);
+
+            launchApplication(programm, url);
 
             MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, programm);
             Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
@@ -69,6 +69,13 @@ public class UrlHyperlinkAction extends AbstractAction {
         }
     }
 
+    private static void launchApplication(String app, String url) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder(app, url);
+        var env = builder.environment();
+        env.remove("GDK_SCALE");
+        builder.start();
+    }
+
     private static void launchMacDefaultBrowser(String url) throws IOException {
         final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
         String command = "open location \"" + url + '"';
@@ -76,10 +83,6 @@ public class UrlHyperlinkAction extends AbstractAction {
         builder.start();
     }
 
-    private static void launchXdgBrowser(String url) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder("xdg-open", url);
-        builder.start();
-    }
     private static final Logger logger = LogManager.getLogger(UrlHyperlinkAction.class);
 
     /**
@@ -103,7 +106,7 @@ public class UrlHyperlinkAction extends AbstractAction {
         } else if (SystemUtils.IS_OS_LINUX) {
             try {
                 logger.trace("trying to use xdg-open to start web browser");
-                launchXdgBrowser(url);
+                launchApplication("xdg-open", url);
             } catch (IOException e) {
                 logger.error("Failed to launch web browser with xdg-open");
                 launchFailed = true;
