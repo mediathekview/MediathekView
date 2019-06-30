@@ -76,6 +76,10 @@ public class UrlHyperlinkAction extends AbstractAction {
         builder.start();
     }
 
+    private static void launchXdgBrowser(String url) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder("xdg-open", url);
+        builder.start();
+    }
     private static final Logger logger = LogManager.getLogger(UrlHyperlinkAction.class);
 
     /**
@@ -94,6 +98,14 @@ public class UrlHyperlinkAction extends AbstractAction {
                 launchMacDefaultBrowser(url);
             } catch (IOException e) {
                 logger.error("Failed to launch default macOS web browser, using custom...");
+                launchFailed = true;
+            }
+        } else if (SystemUtils.IS_OS_LINUX) {
+            try {
+                logger.trace("trying to use xdg-open to start web browser");
+                launchXdgBrowser(url);
+            } catch (IOException e) {
+                logger.error("Failed to launch web browser with xdg-open");
                 launchFailed = true;
             }
         } else {
