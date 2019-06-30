@@ -20,7 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -29,9 +28,11 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -46,6 +47,11 @@ import static mSearch.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends PanelVorlage {
+    @Handler
+    private void handleProgramLocationChangedEvent(ProgramLocationChangedEvent e) {
+        SwingUtilities.invokeLater(this::init);
+    }
+
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -55,18 +61,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         setIcon();
         setHelp();
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                init();
-            }
-        });
         jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
         jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
         jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
         jCheckBoxDownloadSofortStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
 
-        // ====================================
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
         jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
         jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
@@ -82,7 +81,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldVideoplayer);
         jTextFieldVideoplayer.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammUrl);
         jTextFieldProgrammUrl.setComponentPopupMenu(handler.getPopupMenu());
@@ -102,11 +101,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jTextFieldProgrammShutdown.setEnabled(false);
             jButtonProgrammShutdown.setEnabled(false);
         }
+
+        daten.getMessageBus().subscribe(this);
+    }
+
+    private String getWebBrowserLocation() {
+        return MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
     }
 
     private void init() {
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
     }
 
     private void setHelp() {
@@ -225,7 +230,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!textField.getText().equals("")) {
+                if (!textField.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 } else {
                     chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
@@ -243,7 +248,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             // merken und prüfen
             MVConfig.add(config, textField.getText());
             String programm = textField.getText();
-            if (!programm.equals("")) {
+            if (!programm.isEmpty()) {
                 try {
                     if (!new File(programm).exists()) {
                         MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
