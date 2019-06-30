@@ -19,11 +19,11 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+import mediathek.gui.messages.ProgramLocationChangedEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,9 +81,9 @@ public class DirOpenAction {
                     arrProgCallArray[0] = programm;
                     arrProgCallArray[1] = sFile.getAbsolutePath();
                     Runtime.getRuntime().exec(arrProgCallArray);
-                    //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+
                     MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, programm);
-                    Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                    Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                     gut = true;
                 }
             } catch (Exception eex) {
@@ -92,7 +92,7 @@ public class DirOpenAction {
         } finally {
             if (!gut) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "");
-                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

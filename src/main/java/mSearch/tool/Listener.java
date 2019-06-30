@@ -30,7 +30,6 @@ public abstract class Listener implements EventListener {
 
     public static final int EREIGNIS_LISTE_PSET = 2;
 
-    public static final int EREIGNIS_PROGRAMM_OEFFNEN = 16;
     public static final int EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN = 21;
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 27;
     public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
