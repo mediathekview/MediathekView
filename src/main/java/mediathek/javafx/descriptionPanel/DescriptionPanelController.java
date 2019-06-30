@@ -3,19 +3,18 @@ package mediathek.javafx.descriptionPanel;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.*;
 import mSearch.daten.DatenFilm;
 import mediathek.MediathekGui;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
-import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
@@ -35,17 +34,18 @@ public class DescriptionPanelController {
     private EventHandler<Event> closeHandler;
     private DatenFilm currentFilm = null;
     private ContextMenu contextMenu;
+    private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
 
     private void setupWebsiteLink() {
         websiteLink.setOnAction(e -> {
-            try {
-                final Desktop desktop = Desktop.getDesktop();
-                if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                    desktop.browse(new URI(currentFilm.getWebsiteLink()));
+            final var link = currentFilm.getWebsiteLink();
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    UrlHyperlinkAction.openURL(MediathekGui.ui(), link);
+                } catch (URISyntaxException ex) {
+                    logger.error("Failed to launch web browser for URL: {}", link);
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            });
         });
     }
 

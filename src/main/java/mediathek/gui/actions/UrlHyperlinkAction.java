@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -20,10 +20,11 @@
 package mediathek.gui.actions;
 
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,66 +44,85 @@ public class UrlHyperlinkAction extends AbstractAction {
         super.putValue(SHORT_DESCRIPTION, url);
     }
 
+    private static void configureAndStartCustomWebBrowser(JFrame paFrame, String url) {
+        try {
+            String programm = "";
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).isEmpty()) {
+                String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
+                DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
+                dialog.setVisible(true);
+                if (dialog.ok) {
+                    programm = dialog.ziel;
+                }
+            } else {
+                programm = MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
+            }
+            String[] cmd = {programm, url};
+            Runtime.getRuntime().exec(cmd);
+
+            MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, programm);
+            Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
+        } catch (Exception ex) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
+            logger.error("Failed to launch URL {} with custom browser", url);
+        }
+    }
+
+    private static void launchMacDefaultBrowser(String url) throws IOException {
+        final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
+        String command = "open location \"" + url + '"';
+        builder.command().add(command);
+        builder.start();
+    }
+
+    private static final Logger logger = LogManager.getLogger(UrlHyperlinkAction.class);
+
+    /**
+     * Try to open a browser window.
+     *
+     * @param paFrame the parent window.
+     * @param url     URL to be opened. Here in string format.
+     * @throws URISyntaxException when URL is malformed.
+     */
+    public static void openURL(JFrame paFrame, String url) throws URISyntaxException {
+        boolean launchFailed = false;
+
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            try {
+                logger.trace("trying to launch macOS default web browser");
+                launchMacDefaultBrowser(url);
+            } catch (IOException e) {
+                logger.error("Failed to launch default macOS web browser, using custom...");
+                launchFailed = true;
+            }
+        } else {
+            if (Desktop.isDesktopSupported()) {
+                logger.trace("trying to launch java desktop default web browser");
+                try {
+                    final Desktop d = Desktop.getDesktop();
+                    if (d.isSupported(Desktop.Action.BROWSE)) {
+                        d.browse(new URI(url));
+                    }
+                } catch (IOException e) {
+                    logger.error("Failed to launch java desktop supported web browser, using custom...");
+                    launchFailed = true;
+                }
+            } else {
+                logger.trace("trying to launch custom web browser");
+                //Desktop not supported, we need to work custom
+                configureAndStartCustomWebBrowser(paFrame, url);
+            }
+        }
+
+        if (launchFailed)
+            configureAndStartCustomWebBrowser(paFrame,url);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
             openURL(jFrameParent, e.getActionCommand());
         } catch (URISyntaxException ignored) {
-        }
-    }
-
-    /**
-     * Try to open a browser window.
-     * @param paFrame the parent window.
-     * @param url URL to be opened. Here in string format.
-     * @throws URISyntaxException when URL is malformed.
-     */
-    public static void openURL(JFrame paFrame, String url) throws URISyntaxException {
-        if (Desktop.isDesktopSupported()) {
-            Desktop d = Desktop.getDesktop();
-            try {
-                if (d.isSupported(Desktop.Action.BROWSE)) {
-                    d.browse(new URI(url));
-                    return;
-                }
-            } catch (RuntimeException ex) {
-                //catch bug that certain urls will cause Desktop.browse to fail on OS X.
-                //try to use applescript to launch safari
-                if (SystemUtils.IS_OS_MAC_OSX) {
-                    try {
-                        final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
-                        String command = "tell application \"Safari\" to open location \"" + url + '"';
-                        builder.command().add(command);
-                        command = "-e tell application \"Safari\" to activate";
-                        builder.command().add(command);
-                        builder.start();
-                        return;
-                    } catch (Exception ignored) {
-                    }
-                }
-            } catch (IOException ignored) {
-            }
-
-            try {
-                String programm = "";
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).isEmpty()) {
-                    String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
-                    DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
-                    dialog.setVisible(true);
-                    if (dialog.ok) {
-                        programm = dialog.ziel;
-                    }
-                } else {
-                    programm = MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
-                }
-                String[] cmd = {programm, url};
-                Runtime.getRuntime().exec(cmd);
-                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, programm);
-                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
-            } catch (Exception ex) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
-                Log.errorLog(316497658, ex, "URL öffnen: " + url);
-            }
         }
     }
 }
