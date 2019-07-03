@@ -29,11 +29,7 @@ MediathekView startet nicht:
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* Java ist nicht oder nicht in der richtigen Version installiert (Java8). Zum 
-  Java-Download: http://java.com/de/
-  Unter Linux müssen dazu 2 Pakete installiert werden!
-  bei arch: java-openjfx und jre8-openjdk,
-  bei Ubuntu 16.04: default-jre (entspricht openjdk-8-jre) und openjfx
+* MediathekView benötigt mindestens Java 11 auf dem Rechner installiert.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -64,7 +60,7 @@ ZIP-Datei ist quasi die Installation:
 https://mediathekview.de/anleitung/#windows
 
 *OS X:
-Für OS X 10.7.3 (und neuer) gibt es eine separate Applikation "MediathekView.app"
+Für OS X 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app"
 https://mediathekview.de/anleitung/#mac
 
 *Linux:
@@ -87,11 +83,6 @@ Für OS X 10.7.3 und neuer besteht eine eigenständige Applikation (MediathekVie
 Ansonsten kann man die Programmdatei auch so starten:
 Windows: Doppelklick auf "MediathekView.jar"
 Linux (in der Konsole): java -jar MediathekView.jar
-OS X: Doppelklick auf die separate Startdatei "MediathekView.command"
-    oder via Terminalbefehl: java -jar MediathekView.jar
-    (beide Varianten stehen nur zur Verfügung, wenn man die ZIP-Datei ohne die 
-    Angabe "OSX" im Dateinamen heruntergeladen hat)
-
 
 
 ===========================================================    
@@ -111,35 +102,11 @@ gespeichert (beim Start ohne die Angabe eines Pfades).
 Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
 "-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 512MB ist nicht möglich.)
 
-java -Xmx1G -jar MediathekView.jar -v
-Das Programm gibt nur die Versionsnummer aus.
-
-
 
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-portable
-
-
-
-===========================================================    
-Auto
------------------------------------------------------------
-
-java -Xmx1G -jar MediathekView.jar [Pfad] -auto
-java -Xmx1G -jar MediathekView.jar -auto
-java -Xmx1G -jar MediathekView.jar -fastauto
-
-Das Programm startet im Auto-Modus. Es wird die Filmliste aktualisiert und dann 
-alle neuen Abos geladen. Das Programm beendet sich dann selbst wieder. Diese 
-Funktion eignet sich dazu, alles automatisch aktuell zu halten.
-
-java -Xmx1G -Djava.awt.headless=true -jar MediathekView.jar -auto
-Wird das Programm ohne GUI (-auto) auf einem Rechner mit grafischer Oberfläche 
-gestartet, kann man damit den Splashscreen unterdrücken.
-
-
 
 
 ###########################################################################
