@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
@@ -90,7 +89,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset getStandarset(JFrame parent, Daten ddaten, boolean replaceMuster) {
+    public static ListePset getStandarset(JFrame parent, boolean replaceMuster) {
         ListePset listePset = null;
         String[] vorlage = null;
         ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
@@ -103,7 +102,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
             if (vorlage != null) {
                 if (!vorlage[PGR_URL_NR].isEmpty()) {
-                    listePset = ListePsetVorlagen.importPsetFile(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                    listePset = ListePsetVorlagen.importPsetFile(vorlage[ListePsetVorlagen.PGR_URL_NR], true);
                     if (listePset != null) {
                         listePset.version = vorlage[PGR_VERSION_NR];
                     }
@@ -181,7 +180,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static ListePset importPsetFile(JFrame parent, String dateiUrl, boolean log) {
+    public static ListePset importPsetFile(String dateiUrl, boolean log) {
         try {
             ListePset result = null;
 
@@ -212,7 +211,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset importPsetText(Daten dd, String text, boolean log) {
+    public static ListePset importPsetText(String text, boolean log) {
         ListePset result = null;
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());

@@ -49,7 +49,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
         try {
             SwingUtilities.invokeLater(() -> {
                 final var parent = MediathekGui.ui();
-                ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
+                ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, false);
                 String version = MVConfig.get(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET);
                 if (listePsetStandard != null) {
                     if (!Daten.listePset.isEmpty()) {
