@@ -19,10 +19,10 @@
  */
 package mediathek.controller.history;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
+import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
+import mediathek.tool.GermanStringSorter;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

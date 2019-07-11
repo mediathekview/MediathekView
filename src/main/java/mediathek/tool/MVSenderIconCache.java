@@ -3,8 +3,6 @@ package mediathek.tool;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.gui.messages.SenderIconStyleChangedEvent;
 import net.engio.mbassy.listener.Handler;

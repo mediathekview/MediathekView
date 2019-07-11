@@ -1,11 +1,11 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
 import mediathek.gui.PanelVorlage;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
 import org.apache.commons.lang3.SystemUtils;

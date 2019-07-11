@@ -1,14 +1,14 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.daten.GeoblockingField;
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.GeoStateChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.Listener;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;

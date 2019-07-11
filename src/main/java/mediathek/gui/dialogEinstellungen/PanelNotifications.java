@@ -4,8 +4,8 @@
 
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.NotificationFactory;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;

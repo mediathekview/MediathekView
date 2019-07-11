@@ -1,8 +1,8 @@
 package mediathek.gui.actions;
 
 import javafx.concurrent.Task;
-import mSearch.filmlisten.writer.FilmListWriter;
 import mediathek.config.Daten;
+import mediathek.filmlisten.writer.FilmListWriter;
 
 public class FilmListWriteWorkerTask extends Task<Void> {
 

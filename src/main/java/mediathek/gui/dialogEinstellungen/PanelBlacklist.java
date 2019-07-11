@@ -1,17 +1,17 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Listener;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 

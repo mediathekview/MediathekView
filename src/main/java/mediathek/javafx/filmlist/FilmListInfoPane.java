@@ -2,9 +2,9 @@ package mediathek.javafx.filmlist;
 
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;

@@ -1,7 +1,7 @@
 package mediathek.javafx.filmlist;
 
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
+import mediathek.daten.ListeFilme;
 import mediathek.javafx.tool.ComputedLabel;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 

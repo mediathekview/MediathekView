@@ -2,13 +2,13 @@ package mediathek.update;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import mSearch.tool.Log;
-import mSearch.tool.MVHttpClient;
-import mSearch.tool.Version;
-import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.tool.Log;
+import mediathek.tool.MVHttpClient;
+import mediathek.tool.Version;
+import mediathek.tool.javafx.FXErrorDialog;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;

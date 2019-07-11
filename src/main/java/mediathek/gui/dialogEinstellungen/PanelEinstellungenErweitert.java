@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -10,7 +8,9 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
+import mediathek.tool.Functions.OperatingSystemType;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends PanelVorlage {

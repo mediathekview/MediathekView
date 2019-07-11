@@ -1,9 +1,6 @@
 package mediathek.config;
 
-import mSearch.tool.ApplicationConfiguration;
-import mediathek.tool.FilmListUpdateType;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -167,7 +164,7 @@ public class MVConfig {
 
     private static void listeSort(LinkedList<String[]> liste) {
         //Stringliste alphabetisch sortieren
-        mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
         if (liste != null) {
             String str1;
             String str2;

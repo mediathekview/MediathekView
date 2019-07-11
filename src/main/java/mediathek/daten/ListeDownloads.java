@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;

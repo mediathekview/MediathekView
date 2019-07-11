@@ -19,7 +19,7 @@
  */
 package mediathek.config;
 
-import mSearch.tool.Version;
+import mediathek.tool.Version;
 import org.apache.commons.io.FileUtils;
 
 public class Konstanten {

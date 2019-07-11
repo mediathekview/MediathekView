@@ -1,6 +1,6 @@
 package mediathek.filmlisten;
 
-import mSearch.daten.ListeFilme;
+import mediathek.daten.ListeFilme;
 
 interface IDownloadAction {
     boolean performDownload(String dateiUrl, ListeFilme listeFilme, int days);

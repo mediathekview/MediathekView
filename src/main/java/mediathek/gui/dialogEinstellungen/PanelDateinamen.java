@@ -1,12 +1,12 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.ReplaceList;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import net.engio.mbassy.listener.Handler;

@@ -1,9 +1,9 @@
 package mediathek.gui;
 
 import javafx.collections.ObservableList;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.ListeFilme;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;

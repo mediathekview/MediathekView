@@ -1,12 +1,12 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;

@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.daten.DatenMediaDB;
 

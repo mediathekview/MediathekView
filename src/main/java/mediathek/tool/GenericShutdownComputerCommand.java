@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 public class GenericShutdownComputerCommand extends ShutdownComputerCommand {
     private final Logger logger = LogManager.getLogger(ShutdownComputerCommand.class);

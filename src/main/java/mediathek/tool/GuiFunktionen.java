@@ -1,13 +1,12 @@
 package mediathek.tool;
 
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mSearch.daten.ListeFilme;
-import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
+import mediathek.daten.ListeFilme;
+import mediathek.tool.Functions.OperatingSystemType;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -16,7 +15,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
 

@@ -1,16 +1,12 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
-import mediathek.tool.FilmListUpdateType;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 

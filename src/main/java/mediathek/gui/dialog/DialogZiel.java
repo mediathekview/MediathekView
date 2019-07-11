@@ -1,9 +1,9 @@
 package mediathek.gui.dialog;
 
-import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;

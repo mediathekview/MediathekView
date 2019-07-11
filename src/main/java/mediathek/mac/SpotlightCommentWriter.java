@@ -1,8 +1,8 @@
 package mediathek.mac;
 
-import mSearch.tool.Log;
-import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Log;
+import mediathek.tool.javafx.FXErrorDialog;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Files;

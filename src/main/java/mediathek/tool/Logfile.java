@@ -1,8 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
-
 import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

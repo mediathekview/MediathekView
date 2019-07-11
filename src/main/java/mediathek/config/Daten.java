@@ -1,8 +1,5 @@
 package mediathek.config;
 
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -14,10 +11,7 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVSenderIconCache;
-import mediathek.tool.UIProgressState;
+import mediathek.tool.*;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
@@ -65,7 +59,7 @@ public class Daten {
     private static String basisverzeichnis;
     private static SplashScreenManager splashScreenManager = new SplashScreenManager();
     /**
-     * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
+     * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste

@@ -1,8 +1,8 @@
 package mediathek.tool.notification;
 
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Konstanten;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import mediathek.tool.notification.thrift.ThriftNotificationCenter;
 import org.apache.logging.log4j.LogManager;

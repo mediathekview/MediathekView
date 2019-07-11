@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
+import mediathek.daten.DatenFilm;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

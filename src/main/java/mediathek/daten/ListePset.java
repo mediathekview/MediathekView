@@ -19,12 +19,12 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Listener;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.StringUtils;
 
