@@ -1,10 +1,10 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
 

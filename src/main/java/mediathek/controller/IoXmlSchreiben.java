@@ -19,12 +19,12 @@
  */
 package mediathek.controller;
 
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import mediathek.tool.Log;
+import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,7 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.MVHttpClient;
 import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -23,7 +21,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 

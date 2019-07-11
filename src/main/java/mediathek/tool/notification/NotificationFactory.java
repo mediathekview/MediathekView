@@ -1,6 +1,6 @@
 package mediathek.tool.notification;
 
-import mSearch.tool.ApplicationConfiguration;
+import mediathek.tool.ApplicationConfiguration;
 
 public class NotificationFactory {
     private final static boolean bNativeNotifications;

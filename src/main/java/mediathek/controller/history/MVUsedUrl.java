@@ -19,8 +19,8 @@
  */
 package mediathek.controller.history;
 
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
+import mediathek.tool.Functions;
+import mediathek.tool.Log;
 import org.apache.commons.lang3.StringUtils;
 
 public class MVUsedUrl {

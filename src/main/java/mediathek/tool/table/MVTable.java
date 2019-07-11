@@ -1,7 +1,7 @@
 package mediathek.tool.table;
 
-import mSearch.tool.Log;
 import mediathek.config.MVConfig;
+import mediathek.tool.Log;
 import mediathek.tool.models.TModel;
 
 import javax.swing.*;

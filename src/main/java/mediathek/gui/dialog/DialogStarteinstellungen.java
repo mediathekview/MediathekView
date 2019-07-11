@@ -13,7 +13,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import javax.swing.*;
 import java.awt.*;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class DialogStarteinstellungen extends JDialog {

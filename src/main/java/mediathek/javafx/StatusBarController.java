@@ -8,10 +8,10 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Config;
 import mediathek.config.Daten;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.javafx.filmlist.FilmListInfoPane;
 import org.controlsfx.control.StatusBar;
 

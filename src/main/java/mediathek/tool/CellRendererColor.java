@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 

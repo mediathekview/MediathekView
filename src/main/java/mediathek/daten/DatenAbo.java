@@ -1,7 +1,7 @@
 package mediathek.daten;
 
-import mSearch.tool.GermanStringSorter;
-import mSearch.tool.Log;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

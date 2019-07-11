@@ -1,6 +1,6 @@
 package mediathek.file;
 
-import mSearch.tool.Log;
+import mediathek.tool.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;

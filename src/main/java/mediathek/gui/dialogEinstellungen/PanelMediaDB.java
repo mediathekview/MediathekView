@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -12,10 +11,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
-import mediathek.tool.CellRendererMediaDB;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.*;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;

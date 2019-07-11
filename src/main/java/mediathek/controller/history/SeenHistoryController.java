@@ -1,7 +1,7 @@
 package mediathek.controller.history;
 
-import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
+import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

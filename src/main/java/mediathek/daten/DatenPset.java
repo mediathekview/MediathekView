@@ -19,10 +19,9 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.FilmResolution;
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
 

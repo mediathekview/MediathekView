@@ -1,7 +1,7 @@
 package mediathek.tool.models;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
+import mediathek.daten.DatenFilm;
+import mediathek.tool.Datum;
 import mediathek.tool.MVFilmSize;
 
 import java.util.Vector;

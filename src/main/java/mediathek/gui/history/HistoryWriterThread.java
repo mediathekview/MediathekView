@@ -1,8 +1,8 @@
 package mediathek.gui.history;
 
-import mSearch.tool.Functions;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.history.MVUsedUrlModelHelper;
+import mediathek.tool.Functions;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;

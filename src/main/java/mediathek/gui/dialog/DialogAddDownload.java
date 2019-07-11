@@ -1,17 +1,13 @@
 package mediathek.gui.dialog;
 
-import mSearch.daten.DatenFilm;
-import mSearch.daten.FilmResolution;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
+import mediathek.daten.FilmResolution;
 import mediathek.gui.messages.DownloadListChangedEvent;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 

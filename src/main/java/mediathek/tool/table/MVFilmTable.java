@@ -1,8 +1,8 @@
 package mediathek.tool.table;
 
-import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.daten.DatenFilm;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelFilm;
 

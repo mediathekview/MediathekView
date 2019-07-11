@@ -1,8 +1,6 @@
 package mediathek.controller.starter;
 
 import com.google.common.util.concurrent.RateLimiter;
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.MVHttpClient;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -12,6 +10,8 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.*;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MVHttpClient;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 import net.engio.mbassy.bus.MBassador;

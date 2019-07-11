@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Config;
 import mediathek.config.Daten;
@@ -10,6 +9,7 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.SystemUtils;

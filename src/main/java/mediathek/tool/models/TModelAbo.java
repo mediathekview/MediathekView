@@ -1,7 +1,7 @@
 package mediathek.tool.models;
 
-import mSearch.tool.Datum;
 import mediathek.daten.DatenAbo;
+import mediathek.tool.Datum;
 
 @SuppressWarnings("serial")
 public class TModelAbo extends TModel {

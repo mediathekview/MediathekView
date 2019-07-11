@@ -1,7 +1,7 @@
 package mediathek.tool.notification;
 
 import javafx.application.Platform;
-import mSearch.tool.ApplicationConfiguration;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import org.controlsfx.control.Notifications;
 

@@ -1,7 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.MVHttpClient;
-import mSearch.tool.TimedTextMarkupLanguageParser;
 import mediathek.daten.DatenDownload;
 import okhttp3.Request;
 import okhttp3.Response;

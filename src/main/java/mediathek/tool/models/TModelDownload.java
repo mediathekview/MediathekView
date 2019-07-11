@@ -19,8 +19,8 @@
  */
 package mediathek.tool.models;
 
-import mSearch.tool.Datum;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Datum;
 import mediathek.tool.MVFilmSize;
 
 @SuppressWarnings("serial")

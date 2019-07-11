@@ -1,6 +1,5 @@
 package mediathek.controller.starter;
 
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
@@ -10,6 +9,7 @@ import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.tool.Log;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 

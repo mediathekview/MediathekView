@@ -1,10 +1,10 @@
 package mediathek.tool.cellrenderer;
 
-import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.GeoStateChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;

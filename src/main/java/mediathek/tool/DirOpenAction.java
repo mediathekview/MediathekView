@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;

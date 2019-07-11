@@ -2,9 +2,9 @@ package mediathek.gui.dialog;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import mSearch.daten.DatenFilm;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
+import mediathek.daten.DatenFilm;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVInfoFile;
 import net.miginfocom.layout.AC;

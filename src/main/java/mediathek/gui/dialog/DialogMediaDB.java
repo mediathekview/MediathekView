@@ -2,7 +2,6 @@ package mediathek.gui.dialog;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mSearch.tool.FilenameUtils;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;

@@ -1,14 +1,11 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.daten.FilmResolution;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
+import mediathek.daten.FilmResolution;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
