@@ -6,11 +6,6 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * User: Christian F.
- * Date: 15.06.16
- * Time: 14:03
- */
 public class ProgressMonitorInputStream extends FilterInputStream {
     /**
      * Creates a <code>FilterInputStream</code>
