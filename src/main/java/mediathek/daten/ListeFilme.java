@@ -5,7 +5,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import mediathek.config.Const;
+import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -230,7 +230,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return true if too old or if the list is empty.
      */
     public synchronized boolean isTooOld() {
-        return (isEmpty()) || (isOlderThan(Const.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
+        return (isEmpty()) || (isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
     }
 
     /**
@@ -243,7 +243,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             return true;
         }
         try {
-            final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Const.TIME_MAX_AGE_FOR_DIFF + ":00:00";
+            final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Konstanten.TIME_MAX_AGE_FOR_DIFF + ":00:00";
             final Date dateMaxDiff = new SimpleDateFormat("yyyy.MM.dd__HH:mm:ss").parse(dateMaxDiff_str);
             final Date dateFilmliste = getAgeAsDate();
             if (dateFilmliste != null) {

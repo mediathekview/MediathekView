@@ -143,9 +143,7 @@ public class DatenPset extends MVData<DatenPset> {
     public boolean isLable() {
         // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
-            if (!this.arr[PROGRAMMSET_NAME].equals("")) {
-                return true;
-            }
+            return !this.arr[PROGRAMMSET_NAME].equals("");
         }
         return false;
     }
@@ -257,11 +255,10 @@ public class DatenPset extends MVData<DatenPset> {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT].equals("")
                 || !this.arr[PROGRAMMSET_SUFFIX_DIREKT].equals("")) {
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false)) {
-                return true;
-            }
+            return GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false);
         }
+
         return false;
     }
 

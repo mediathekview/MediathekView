@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.base.Stopwatch;
-import mediathek.config.Const;
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -72,7 +71,7 @@ public class FilmListReader implements AutoCloseable {
         final InputStream is;
 
         switch (source.substring(source.lastIndexOf('.'))) {
-            case Const.FORMAT_XZ:
+            case Konstanten.FORMAT_XZ:
                 is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
                 break;
 
