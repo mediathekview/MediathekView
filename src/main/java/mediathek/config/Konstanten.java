@@ -22,8 +22,16 @@ package mediathek.config;
 import mediathek.tool.Version;
 import org.apache.commons.io.FileUtils;
 
+import java.util.concurrent.TimeUnit;
+
 public class Konstanten {
-    public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekview.de/";
+    public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekviewweb.de/";
+
+    public static final String FORMAT_ZIP = ".zip";
+    public static final String FORMAT_XZ = ".xz";
+
+    public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
+    public static final String TIME_MAX_AGE_FOR_DIFF = "09"; // Uhrzeit ab der die Diffliste alle Änderungen abdeckt, die Filmliste darf also nicht vor xx erstellt worden sein
 
     public static final Version MVVERSION = new Version(13, 3, 0);
     public static final String PROGRAMMNAME = "MediathekView";

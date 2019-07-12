@@ -1,7 +1,7 @@
 package mediathek.tool;
 
-import mediathek.config.Const;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
@@ -197,7 +197,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     // und Tschüss
                     return false;
                 }
-                if (datei.endsWith(Const.FORMAT_ZIP)) {
+                if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
                     if (!entpacken(zipFile, new File(zielPfad))) {
                         // und Tschüss
                         return false;
@@ -221,7 +221,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         try (InputStream is = body.byteStream();
                              BufferedInputStream bis = new BufferedInputStream(is)) {
                             final byte[] buffer = new byte[64 * 1024];
-                            if (datei.endsWith(Const.FORMAT_ZIP)) {
+                            if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
                                 File tmpFile = File.createTempFile("mediathek", null);
                                 tmpFile.deleteOnExit();
                                 try (FileOutputStream fOut = new FileOutputStream(tmpFile)) {

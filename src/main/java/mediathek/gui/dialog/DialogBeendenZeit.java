@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
@@ -127,7 +128,7 @@ public class DialogBeendenZeit extends JDialog {
         cbShutdownComputer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
 
         btnContinue.addActionListener(e -> {
-            final String strSelectedItem = comboActions.getSelectedItem().toString();
+            final String strSelectedItem = Objects.requireNonNull(comboActions.getSelectedItem()).toString();
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
 
             SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
@@ -164,16 +165,13 @@ public class DialogBeendenZeit extends JDialog {
 
     private void setCbShutdownCoputer() {
         final String strSelectedItem = (String) comboActions.getSelectedItem();
-        switch (strSelectedItem) {
-            case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                cbShutdownComputer.setEnabled(true);
-                break;
-            default:
-                //manually reset shutdown state
-                cbShutdownComputer.setEnabled(false);
-                cbShutdownComputer.setSelected(false);
-                shutdown = false;
-                break;
+        if (WAIT_FOR_DOWNLOADS_AND_TERMINATE.equals(strSelectedItem)) {
+            cbShutdownComputer.setEnabled(true);
+        } else {
+            //manually reset shutdown state
+            cbShutdownComputer.setEnabled(false);
+            cbShutdownComputer.setSelected(false);
+            shutdown = false;
         }
     }
 

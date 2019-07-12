@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import mediathek.config.Const;
+import mediathek.config.Konstanten;
 import org.apache.commons.lang3.ArchUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -62,12 +62,13 @@ public class Functions {
     }
 
     public static String getPathJar() {
+        //FIXME get rid of version.properties
         // liefert den Pfad der Programmdatei mit File.separator am Schluss
         String pFilePath = "version.properties";
         File propFile = new File(pFilePath);
         if (!propFile.exists()) {
             try {
-                CodeSource cS = Const.class.getProtectionDomain().getCodeSource();
+                CodeSource cS = Konstanten.class.getProtectionDomain().getCodeSource();
                 File jarFile = new File(cS.getLocation().toURI().getPath());
                 String jarDir = jarFile.getParentFile().getPath();
                 propFile = new File(jarDir + File.separator + pFilePath);

@@ -23,7 +23,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class MVInfoFile {
 
@@ -86,9 +85,7 @@ public class MVInfoFile {
     }
 
     public static int getMaxLengthFromStringArray(String[] array) {
-        return Optional.ofNullable(array)
-                .map(Arrays::stream)
-                .orElseGet(Stream::empty)
+        return Optional.ofNullable(array).stream().flatMap(Arrays::stream)
                 .max(Comparator.comparing(String::length))
                 .map(String::length)
                 .orElse(0);
