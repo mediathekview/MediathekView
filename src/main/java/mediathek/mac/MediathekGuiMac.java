@@ -124,7 +124,6 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     private void setupDockIcon() {
-        //TODO maybe useful on other platforms as well?
         //setup the MediathekView Dock Icon
         try {
             final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
