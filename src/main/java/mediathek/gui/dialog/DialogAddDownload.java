@@ -8,6 +8,7 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.tool.*;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -42,6 +43,8 @@ public class DialogAddDownload extends JDialog {
     private boolean nameGeaendert = false;
     private boolean stopBeob = false;
     private final JTextComponent cbPathTextComponent;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
+
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -200,8 +203,9 @@ public class DialogAddDownload extends JDialog {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-        jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
+
+        jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
+        jCheckBoxPfadSpeichern.addActionListener(e -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
@@ -304,8 +308,10 @@ public class DialogAddDownload extends JDialog {
 
     public static void setModelPfad(String pfad, JComboBox<String> jcb) {
         ArrayList<String> pfade = new ArrayList<>();
+        final boolean showLastUsedPath = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true);
+
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (!showLastUsedPath && !pfad.isEmpty()) {
             // aktueller Pfad an Platz 1
             pfade.add(pfad);
 
@@ -318,7 +324,7 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         }
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (showLastUsedPath && !pfad.isEmpty()) {
             // aktueller Pfad zum Schluss
             if (!pfade.contains(pfad)) {
                 pfade.add(pfad);
@@ -330,7 +336,8 @@ public class DialogAddDownload extends JDialog {
     public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
         ArrayList<String> pfade = new ArrayList<>();
         String s = Objects.requireNonNull(jcb.getSelectedItem()).toString();
-        if (!s.equals(orgPath) || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
+
+        if (!s.equals(orgPath) || ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)) {
             pfade.add(s);
         }
         for (int i = 0; i < jcb.getItemCount(); ++i) {

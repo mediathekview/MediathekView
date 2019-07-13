@@ -281,7 +281,6 @@ public class MVConfig {
         SYSTEM_MAX_DOWNLOAD("maxDownload", "1"),
         SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
-        SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN("Letzen-Pfad-anzeigen"),
         // Abo
         SYSTEM_ABO_MIN_SIZE("Abo-Mindestdauer-Minuten"),
         // MediaDB
