@@ -523,7 +523,7 @@ public class DialogAddDownload extends JDialog {
         jCheckBoxStarten.setSelected(true);
         jCheckBoxStarten.setText("Download sofort starten");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Film speichen"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Film speichern"));
 
         jButtonZiel.setText("File");
         jButtonZiel.setToolTipText("Zielpfad auswählen");
