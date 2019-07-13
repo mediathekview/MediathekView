@@ -47,8 +47,10 @@ public class CreateProtocolFileAction extends AbstractAction {
         o.closeArchiveEntry();
     }
 
+    private String destDirFile;
+
     private void createArchive(File destDirectory) throws Exception {
-        final String destDirFile = destDirectory.toString() + File.separator + "mv_protokoll.tar.gz";
+        destDirFile = destDirectory.toString() + File.separator + "mv_protokoll.tar.gz";
         final String settingsDir = Daten.getSettingsDirectory_String();
 
         try (OutputStream fo = Files.newOutputStream(Paths.get(destDirFile));
@@ -77,11 +79,11 @@ public class CreateProtocolFileAction extends AbstractAction {
         }
     }
 
-    private void success() {
+    private void success(String logFile) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Konstanten.PROGRAMMNAME);
         alert.setHeaderText(HEADER);
-        alert.setContentText("Protokolldatei wurde erfolgreich angelegt.");
+        alert.setContentText("Protokolldatei " + logFile + " wurde erfolgreich angelegt.");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.showAndWait();
     }
@@ -105,7 +107,7 @@ public class CreateProtocolFileAction extends AbstractAction {
                 System.out.println("DIRECTORY: " + dir.toString());
                 try {
                     createArchive(dir);
-                    success();
+                    success(destDirFile);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     error();
