@@ -72,9 +72,10 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void setupTabUI() {
-        jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP)));
+        final boolean tabPositionTop = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
+        jCheckBoxTabsTop.setSelected(tabPositionTop);
         jCheckBoxTabsTop.addActionListener(ae -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
             Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
         jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON)));

@@ -185,7 +185,6 @@ public class MVConfig {
 
     public enum Configs {
         //Programm-Configs, änderbar über Gui
-        SYSTEM_TABS_TOP("Tabs-oben", SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemUtils.IS_OS_MAC_OSX ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
