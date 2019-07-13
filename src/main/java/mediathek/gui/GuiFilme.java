@@ -895,19 +895,19 @@ public class GuiFilme extends AGuiTabPanel {
                         JMenu submenueURL = new JMenu("Film-URL kopieren");
                         // HD
                         if (!uHd.isEmpty()) {
-                            item = new JMenuItem("in HD-Auflösung");
+                            item = new JMenuItem("in höchster/hoher Qualität");
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD)));
                             submenueURL.add(item);
                         }
 
                         // normale Auflösung, gibts immer
-                        item = new JMenuItem("in hoher Auflösung");
+                        item = new JMenuItem("in mittlerer Qualität");
                         item.addActionListener(copyNormalUrlListener);
                         submenueURL.add(item);
 
                         // kleine Auflösung
                         if (!uLow.isEmpty()) {
-                            item = new JMenuItem("in geringer Auflösung");
+                            item = new JMenuItem("in niedriger Qualität");
                             item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN)));
                             submenueURL.add(item);
                         }
