@@ -410,7 +410,7 @@ public class DialogAddDownload extends JDialog {
                 if (!pfad.substring(pfad.length() - 1).equals(File.separator)) {
                     pfad += File.separator;
                 }
-                if (GuiFunktionenProgramme.checkPfadBeschreibbar(pfad)) {
+                if (GuiFunktionenProgramme.checkPathWriteable(pfad)) {
                     ok = true;
                 } else {
                     MVMessageDialog.showMessageDialog(this, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);

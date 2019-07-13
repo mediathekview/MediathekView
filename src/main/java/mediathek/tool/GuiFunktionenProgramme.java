@@ -12,10 +12,14 @@ import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -133,8 +137,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
             case LINUX:
-                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
-                break;
             case MAC:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
@@ -325,26 +327,36 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    public static boolean checkPfadBeschreibbar(String pfad) {
-        boolean ret = false;
-        File testPfad = new File(pfad);
+    /**
+     * Test if a path is a directory and writeable.
+     * Path directories will be created before trying write test.
+     *
+     * @param pfad path to the directory
+     * @return true if we can write a file there, false if not.
+     */
+    public static boolean checkPathWriteable(@NotNull String pfad) {
+        boolean result = false;
+
+        if (pfad.isEmpty())
+            return false;
+
+        Path path = Paths.get(pfad);
         try {
-            if (!testPfad.exists()) {
-                testPfad.mkdirs();
-            }
-            if (pfad.isEmpty()) {
-            } else if (!testPfad.isDirectory()) {
-            } else if (testPfad.canWrite()) {
-                File tmpFile = File.createTempFile("mediathek", "tmp", testPfad);
-                tmpFile.delete();
-                ret = true;
+            Files.createDirectories(path);
+            if (Files.isDirectory(path) && Files.isWritable(path)) {
+                var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
+                Files.delete(tmpPath);
+
+                result = true;
             }
         } catch (Exception ignored) {
+            result = false;
         }
-        return ret;
+
+        return result;
     }
 
-    public static boolean programmePruefen(JFrame jFrame, Daten daten) {
+    public static boolean programmePruefen(JFrame jFrame) {
         // prüfen ob die eingestellten Programmsets passen
         final String PIPE = "| ";
         final String LEER = "      ";
@@ -365,7 +377,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else // Pfad beschreibbar?
-                        if (!checkPfadBeschreibbar(zielPfad)) {
+                        if (!checkPathWriteable(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";

@@ -886,7 +886,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            GuiFunktionenProgramme.programmePruefen(parentComponent, daten);
+            GuiFunktionenProgramme.programmePruefen(parentComponent);
         }
     }
 
