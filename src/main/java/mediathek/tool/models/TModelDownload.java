@@ -225,4 +225,10 @@ public class TModelDownload extends TModel {
     public int getColumnCount() {
         return DatenDownload.MAX_ELEM;
     }
+
+    @Override
+    public Object getValueAt(int row, int column) {
+        //FIXME change to DatenDowload model getters!
+        return super.getValueAt(row, column);
+    }
 }
