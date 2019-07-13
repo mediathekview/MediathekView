@@ -87,7 +87,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final int MAX_ELEM = 40;
     public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",
-        "Datum", "Zeit", "Dauer", "HD", "UT",
+        "Datum", "Zeit", "Dauer", "(U)HD", "UT",
         "Pause", "Geo", "Url Film", "Url History", "Url", "Url RTMP", "Url Untertitel",
         "Programmset", "Programm", "Programmaufruf", "Programmaufruf Array", "Restart",
         "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
