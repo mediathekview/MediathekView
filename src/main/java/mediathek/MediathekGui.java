@@ -549,8 +549,8 @@ public class MediathekGui extends JFrame {
      * Change placement of tabs based on settings
      */
     private void configureTabPlacement() {
-        final boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP));
-        if (top)
+        final boolean topPosition = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
+        if (topPosition)
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
         else
             tabbedPane.setTabPlacement(JTabbedPane.LEFT);
