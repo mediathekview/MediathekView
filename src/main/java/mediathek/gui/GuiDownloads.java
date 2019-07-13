@@ -543,7 +543,7 @@ public class GuiDownloads extends AGuiTabPanel {
         tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
 
-        model = new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES);
+        model = new TModelDownload();
         tabelle.setModel(model);
         tabelle.addMouseListener(new BeobMausTabelle());
         tabelle.getSelectionModel().addListSelectionListener(event -> {
@@ -905,7 +905,7 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         }
         DatenDownload datenDownloadKopy = datenDownload.getCopy();
-        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, true, datenDownloadKopy, gestartet);
+        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, true, datenDownloadKopy, gestartet,tabelle.getColumnModel());
         dialog.setVisible(true);
         if (dialog.ok) {
             datenDownload.aufMichKopieren(datenDownloadKopy);

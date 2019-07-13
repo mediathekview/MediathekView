@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,8 +44,9 @@ public class DialogEditDownload extends JDialog {
     private final JLabel jLabelFilmHD = new JLabel();
     private final JLabel jLabelFilmUT = new JLabel();
     private static ImageIcon ja_sw_16 = null;
+    private final TableColumnModel columnModel;
 
-    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
+    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet, TableColumnModel colModel) {
         super(parent, modal);
         initComponents();
         this.parent = parent;
@@ -52,6 +54,7 @@ public class DialogEditDownload extends JDialog {
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
+        columnModel = colModel;
 
         orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
@@ -163,8 +166,8 @@ public class DialogEditDownload extends JDialog {
 
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
-        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-            JLabel label = new JLabel("  " + DatenDownload.COLUMN_NAMES[i] + ": ");
+        for (int i = 0; i < columnModel.getColumnCount(); ++i) {
+            JLabel label = new JLabel("  " + columnModel.getColumn(i).getHeaderValue() + ": ");
             labelListe[i] = label;
             JTextField textfeld = new JTextField();
             textfeld.setEditable(false);
