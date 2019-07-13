@@ -4,9 +4,11 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.Log;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -28,6 +30,7 @@ public class DialogAddMoreDownload extends JDialog {
     private final JFrame parent;
     private final DatenPset pSet;
     private final String orgPfad;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     public DialogAddMoreDownload(JFrame parent, DatenPset pSet) {
         super(parent, true);
@@ -48,8 +51,8 @@ public class DialogAddMoreDownload extends JDialog {
         chkStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         chkStart.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(chkStart.isSelected())));
 
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-        jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
+        jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
+        jCheckBoxPfadSpeichern.addActionListener(e -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
 
         btnChange.addActionListener(l -> beenden());
         btnOk.addActionListener(e -> {
@@ -115,6 +118,51 @@ public class DialogAddMoreDownload extends JDialog {
         DialogAddDownload.saveComboPfad(jComboBoxPath, orgPfad);
         dispose();
     }
+
+
+    private class ZielBeobachter implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native directory chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(parent, "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        final String path = chooser.getDirectory() + chooser.getFile();
+                        jComboBoxPath.addItem(path);
+                        jComboBoxPath.setSelectedItem(path);
+                    } catch (Exception ex) {
+                        Log.errorLog(356871087, ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jComboBoxPath.getSelectedItem().toString().isEmpty()) {
+                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        final String absolutePath = chooser.getSelectedFile().getAbsolutePath();
+                        jComboBoxPath.addItem(absolutePath);
+                        jComboBoxPath.setSelectedItem(absolutePath);
+                    } catch (Exception ex) {
+                        Log.errorLog(356871087, ex);
+                    }
+                }
+            }
+        }
+    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -257,48 +305,4 @@ public class DialogAddMoreDownload extends JDialog {
     private javax.swing.JCheckBox jCheckBoxPfadSpeichern;
     private javax.swing.JComboBox<String> jComboBoxPath;
     // End of variables declaration//GEN-END:variables
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(parent, "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        final String path = chooser.getDirectory() + chooser.getFile();
-                        jComboBoxPath.addItem(path);
-                        jComboBoxPath.setSelectedItem(path);
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jComboBoxPath.getSelectedItem().toString().equals("")) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        final String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-                        jComboBoxPath.addItem(absolutePath);
-                        jComboBoxPath.setSelectedItem(absolutePath);
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-            }
-        }
-    }
-
 }

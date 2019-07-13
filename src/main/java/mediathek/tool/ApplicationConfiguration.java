@@ -57,6 +57,7 @@ public class ApplicationConfiguration {
     public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 
     public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
+    public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
 
     public static final String SEARCH_USE_FILM_DESCRIPTIONS = "searchfield.film.search_through_description";
 
