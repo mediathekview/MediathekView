@@ -258,7 +258,7 @@ public class DialogAddDownload extends JDialog {
     }
 
     private final TitledBorder filmBorder;
-    private static final String TITLED_BORDER_STRING = "Film laden";
+    private static final String TITLED_BORDER_STRING = "Download-Qualität";
 
     /**
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
@@ -271,7 +271,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
@@ -615,16 +615,16 @@ public class DialogAddDownload extends JDialog {
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonZiel, jTextFieldName});
 
-        jPanelSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Film laden in"));
+        jPanelSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Download-Qualität"));
 
         buttonGroup1.add(jRadioButtonAufloesungHd);
-        jRadioButtonAufloesungHd.setText("HD");
+        jRadioButtonAufloesungHd.setText("Höchste/Hoch");
 
         buttonGroup1.add(jRadioButtonAufloesungHoch);
-        jRadioButtonAufloesungHoch.setText("hoher Auflösung");
+        jRadioButtonAufloesungHoch.setText("Mittel");
 
         buttonGroup1.add(jRadioButtonAufloesungKlein);
-        jRadioButtonAufloesungKlein.setText("niedriger Auflösung");
+        jRadioButtonAufloesungKlein.setText("Niedrig");
 
         javax.swing.GroupLayout jPanelSizeLayout = new javax.swing.GroupLayout(jPanelSize);
         jPanelSize.setLayout(jPanelSizeLayout);
