@@ -121,7 +121,7 @@
                   <Component id="jRadioButtonResHi" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jRadioButtonResLo" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="237" max="32767" attributes="0"/>
+                  <EmptySpace pref="304" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -143,7 +143,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabelRes">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Aufl&#xf6;sung &#xe4;ndern:"/>
+            <Property name="text" type="java.lang.String" value="Download-Qualit&#xe4;t:"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -155,7 +155,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="HD"/>
+            <Property name="text" type="java.lang.String" value="H&#xf6;chste/Hoch"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonResHi">
@@ -163,7 +163,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="hoher Aufl&#xf6;sung"/>
+            <Property name="text" type="java.lang.String" value="Mittel"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonResLo">
@@ -171,7 +171,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="buttonGroup1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="niedriger Aufl&#xf6;sung"/>
+            <Property name="text" type="java.lang.String" value="Niedrig"/>
           </Properties>
         </Component>
       </SubComponents>

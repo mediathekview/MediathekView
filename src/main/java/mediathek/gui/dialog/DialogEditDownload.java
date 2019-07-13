@@ -534,16 +534,16 @@ public class DialogEditDownload extends JDialog {
 
         jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabelRes.setText("Auflösung ändern:");
+        jLabelRes.setText("Download-Qualität:");
 
         buttonGroup1.add(jRadioButtonResHd);
-        jRadioButtonResHd.setText("HD");
+        jRadioButtonResHd.setText("Höchste/Hoch");
 
         buttonGroup1.add(jRadioButtonResHi);
-        jRadioButtonResHi.setText("hoher Auflösung");
+        jRadioButtonResHi.setText("Mittel");
 
         buttonGroup1.add(jRadioButtonResLo);
-        jRadioButtonResLo.setText("niedriger Auflösung");
+        jRadioButtonResLo.setText("Niedrig");
 
         javax.swing.GroupLayout jPanelResLayout = new javax.swing.GroupLayout(jPanelRes);
         jPanelRes.setLayout(jPanelResLayout);
@@ -558,7 +558,7 @@ public class DialogEditDownload extends JDialog {
                 .addComponent(jRadioButtonResHi)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonResLo)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addContainerGap(304, Short.MAX_VALUE))
         );
         jPanelResLayout.setVerticalGroup(
             jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
