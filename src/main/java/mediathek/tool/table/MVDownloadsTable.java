@@ -30,7 +30,7 @@ public class MVDownloadsTable extends MVTable {
 
         setupDragnDrop();
 
-        setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
+        setModel(new TModelDownload());
     }
 
     private void setupDragnDrop() {
