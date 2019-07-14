@@ -42,6 +42,18 @@ public class TModelDownload extends TModel {
                 result = MVFilmSize.class;
                 break;
 
+            case DatenDownload.DOWNLOAD_HD:
+            case DatenDownload.DOWNLOAD_UT:
+            case DatenDownload.DOWNLOAD_SPOTLIGHT:
+            case DatenDownload.DOWNLOAD_UNTERBROCHEN:
+            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
+            case DatenDownload.DOWNLOAD_INFODATEI:
+            case DatenDownload.DOWNLOAD_SUBTITLE:
+            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
+            case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
+                result = Boolean.class;
+                break;
+
             case DatenDownload.DOWNLOAD_REF:
                 result = DatenDownload.class;
                 break;
@@ -207,7 +219,7 @@ public class TModelDownload extends TModel {
                 break;
 
             case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
-                result = "Remote Download";
+                result = "Remote DL";
                 break;
 
             case DatenDownload.DOWNLOAD_REF:
@@ -228,7 +240,51 @@ public class TModelDownload extends TModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        //FIXME change to DatenDowload model getters!
-        return super.getValueAt(row, column);
+        Object result;
+        final DatenDownload download = (DatenDownload) dataVector.elementAt(row).elementAt(DatenDownload.DOWNLOAD_REF);
+
+        switch (column) {
+            case DatenDownload.DOWNLOAD_HD:
+                result = (download.film != null) && download.film.isHD();
+                break;
+
+            case DatenDownload.DOWNLOAD_UT:
+                result = download.film != null && download.film.hasSubtitle();
+                break;
+
+            case DatenDownload.DOWNLOAD_SPOTLIGHT:
+                result = download.isSpotlight();
+                break;
+
+            case DatenDownload.DOWNLOAD_UNTERBROCHEN:
+                result = download.isInterrupted();
+                break;
+
+            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
+                result = download.isRestart();
+                break;
+
+            case DatenDownload.DOWNLOAD_INFODATEI:
+                result = download.isInfoFile();
+                break;
+
+            case DatenDownload.DOWNLOAD_SUBTITLE:
+                result = download.isSubtitle();
+                break;
+
+            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
+                result = download.isDownloadManager();
+                break;
+
+            case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
+                result = download.istZurueckgestellt();
+                break;
+
+            default:
+                result = super.getValueAt(row, column);
+                break;
+        }
+
+        return result;
     }
 }

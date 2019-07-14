@@ -137,8 +137,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
         arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo();
         // und jetzt noch die Dateigröße für die entsp. URL
-        setGroesseFromFilm();
-        //setGroesse(""); //dann dauert das Starten uu sehr lange
+        setSizeFromUrl();
 
         aufrufBauen(pSet, film, abo, name, pfad);
         init();
@@ -152,6 +151,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                 mVFilmSize.setSize(0);
             }
         }
+    }
+
+    public void setSizeFromUrl() {
+        setGroesse("");
     }
 
     public void setGroesse(String groesse) {
@@ -471,16 +474,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             return;
         }
 
-        // ##############################################
         // Name
-        // ##############################################
         if (!nname.isEmpty()) {
             // wenn vorgegeben, dann den nehmen
             name = nname;
         } else {
             name = pSet.getZielDateiname(arr[DOWNLOAD_URL]);
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
-            // ##############################
             // Name sinnvoll belegen
             if (name.isEmpty()) {
                 name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
@@ -527,9 +527,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             }
         }
 
-        // ##############################################
         // Pfad
-        // ##############################################
         if (!ppfad.isEmpty()) {
             // wenn vorgegeben, dann den nehmen
             path = ppfad;
@@ -563,7 +561,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             path = path.substring(0, path.length() - 1);
         }
 
-        //###########################################################
         // zur Sicherheit bei Unsinn im Set
         if (path.isEmpty()) {
             path = GuiFunktionen.getStandardDownloadPath();
