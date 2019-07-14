@@ -127,7 +127,7 @@ public class TModelDownload extends TModel {
                 break;
 
             case DatenDownload.DOWNLOAD_HD:
-                result = "(U)HD";
+                result = "HQ";
                 break;
 
             case DatenDownload.DOWNLOAD_UT:
