@@ -61,7 +61,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .forEach(d ->
                 {
                     d.film = daten.getListeFilme().getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
-                    d.setGroesseFromFilm();
+                    d.setSizeFromUrl();
                 });
     }
 
@@ -111,7 +111,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void abosAuffrischen() {
         // fehlerhafte und nicht gestartete löschen, wird nicht gemeldet ob was gefunden wurde
-        //boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
@@ -127,16 +126,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (d.start == null) {
                 // noch nicht gestartet
                 it.remove();
-                //gefunden = true;
             } else if (d.start.status == Start.STATUS_ERR) {
                 // fehlerhafte
                 d.resetDownload();
-                //gefunden = true;
             }
         }
-//        if (gefunden) {
-//            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-//        }
+
         this.forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
