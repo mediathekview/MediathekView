@@ -104,7 +104,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_HD:
-                result = "(U)HD";
+                result = "HQ";
                 break;
 
             case DatenFilm.FILM_UT:
