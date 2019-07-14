@@ -187,16 +187,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
 
-                case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isRestart());
-                    break;
-
-                case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isDownloadManager());
-                    break;
-
                 case DatenDownload.DOWNLOAD_ART:
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD:
@@ -222,30 +212,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                             setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                             break;
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_UNTERBROCHEN:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isInterrupted());
-                    break;
-
-                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.istZurueckgestellt());
-                    break;
-
-                case DatenDownload.DOWNLOAD_INFODATEI:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isInfoFile());
-                    break;
-
-                case DatenDownload.DOWNLOAD_SUBTITLE:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isSubtitle());
-                    break;
-
-                case DatenDownload.DOWNLOAD_SPOTLIGHT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isSpotlight());
                     break;
 
                 case DatenDownload.DOWNLOAD_BUTTON_START:
@@ -276,17 +242,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     if (((MVTable) table).showSenderIcons()) {
                         setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_HD:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.isHD());
-                    setText("");//im Modle brauchen wir den Text zum Sortieren
-                    break;
-
-                case DatenDownload.DOWNLOAD_UT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.hasSubtitle());
-                    setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
             }
 
