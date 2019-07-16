@@ -6,6 +6,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ParallelDownloadNumberChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -44,11 +45,14 @@ public class PanelDownload extends PanelVorlage {
 
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
         cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
-        jCheckBoxBeep.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP)));
-        jCheckBoxBeep.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected())));
+
+        jCheckBoxBeep.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));
+        jCheckBoxBeep.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
+
+        jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
+
         jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
         jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
-        jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
     }
 
     private class BeobSpinnerDownload implements ChangeListener {
