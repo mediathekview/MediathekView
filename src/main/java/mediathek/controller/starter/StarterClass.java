@@ -2,7 +2,6 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -10,6 +9,7 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Datum;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
@@ -112,13 +112,15 @@ public class StarterClass {
         logger.info(text);
     }
 
-    private static void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP))) {
-            try {
-                Toolkit.getDefaultToolkit().beep();
-            } catch (Exception ignored) {
-            }
+    private static void makeBeep() {
+        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP, false)) {
+            Toolkit.getDefaultToolkit().beep();
         }
+    }
+
+    private static void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
+        makeBeep();
+
         ArrayList<String> text = new ArrayList<>();
         if (abgebrochen) {
             text.add("Download wurde abgebrochen");

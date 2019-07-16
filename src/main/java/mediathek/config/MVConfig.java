@@ -275,7 +275,6 @@ public class MVConfig {
         SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT("Dialog-Download-Starten-Zeit"),
         SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
         SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten", Boolean.FALSE.toString()),
-        SYSTEM_DOWNLOAD_BEEP("Download-Beep"),
         SYSTEM_DOWNLOAD_ERRORMSG("download-error-msg", Boolean.TRUE.toString()),
         SYSTEM_MAX_DOWNLOAD("maxDownload", "1"),
         SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
