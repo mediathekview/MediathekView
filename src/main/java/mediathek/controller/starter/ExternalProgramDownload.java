@@ -148,7 +148,7 @@ public class ExternalProgramDownload extends Thread
                             } else if (filesize == -1)
                             {
                                 //noch nichts geladen
-                                deleteIfEmpty(file);
+                                deleteIfEmpty(file.toPath());
                                 if (file.exists())
                                 {
                                     // dann bestehende Datei weitermachen

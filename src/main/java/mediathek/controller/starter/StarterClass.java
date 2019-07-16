@@ -21,6 +21,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -67,27 +71,17 @@ public class StarterClass {
     /**
      * Delete the file if filesize is less that a constant value.
      *
-     * @param file The file which is to be deleted.
+     * @param path The file which is to be deleted.
      */
-    static void deleteIfEmpty(File file) {
+    static void deleteIfEmpty(Path path) {
         try {
-            if (file.exists()) {
+            if (Files.exists(path)) {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                if (file.length() == 0) {
-                    // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    logger.info("Restart/Aufräumen: leere Datei löschen: {}", file.getAbsolutePath());
-                    if (!file.delete()) {
-                        throw new Exception();
-                    }
-                } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
-                    logger.info("Restart/Aufräumen: Zu kleine Datei löschen ({})", file.getAbsolutePath());
-                    if (!file.delete()) {
-                        throw new Exception();
-                    }
-                }
+                if (Files.size(path) < Konstanten.MIN_FILM_FILE_SIZE_KB)
+                    Files.delete(path);
             }
-        } catch (Exception ex) {
-            logger.error("Fehler beim Löschen: {}", file.getAbsolutePath());
+        } catch (IOException ex) {
+            logger.error("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
         }
     }
 
@@ -217,7 +211,7 @@ public class StarterClass {
     }
 
     public static void finalizeDownload(DatenDownload datenDownload, Start start, DirectHttpDownload.HttpDownloadState state) {
-        deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
+        deleteIfEmpty(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
         if (SystemUtils.IS_OS_MAC_OSX) {
