@@ -1,10 +1,11 @@
 package mediathek.daten;
 
 import mediathek.tool.Filter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class DatenBlacklist extends MVData<DatenBlacklist> {
+public class DatenBlacklist implements Comparable<DatenBlacklist> {
 
     public static final int BLACKLIST_NR = 0;
     public static final int BLACKLIST_SENDER = 1;
@@ -46,5 +47,10 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
     private void initialize() {
         arr = new String[MAX_ELEM];
         Arrays.fill(arr,"");
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenBlacklist o) {
+        return 0;
     }
 }

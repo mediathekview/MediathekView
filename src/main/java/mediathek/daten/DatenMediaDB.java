@@ -2,10 +2,11 @@ package mediathek.daten;
 
 import mediathek.tool.MVMediaDBFileSize;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class DatenMediaDB extends MVData<DatenMediaDB> {
+public class DatenMediaDB implements Comparable<DatenMediaDB> {
 
     public final static int MEDIA_DB_NAME = 0;
     public final static int MEDIA_DB_PATH = 1;
@@ -14,7 +15,6 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
 
     public final static int MAX_ELEM = 4;
     public final static String[] COLUMN_NAMES = {"Name", "Pfad", "Größe [MB]", "Extern"};
-    public final static String[] XML_NAMES = {"Name", "Pfad", "Groesse", "Extern"};
 
     public String[] arr = new String[MAX_ELEM];
     public MVMediaDBFileSize mVMediaDBFileSize;
@@ -53,12 +53,6 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
         return Boolean.parseBoolean(arr[MEDIA_DB_EXTERN]);
     }
 
-    public boolean equal(DatenMediaDB m) {
-        return m.arr[MEDIA_DB_NAME].equals(this.arr[MEDIA_DB_NAME])
-                && m.arr[MEDIA_DB_PATH].equals(this.arr[MEDIA_DB_PATH])
-                && m.arr[MEDIA_DB_SIZE].equals(this.arr[MEDIA_DB_SIZE]);
-    }
-
     public String getEqual() {
         return arr[MEDIA_DB_NAME] + arr[MEDIA_DB_PATH] + arr[MEDIA_DB_SIZE];
     }
@@ -74,5 +68,10 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
             }
         }
         return ret;
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenMediaDB o) {
+        return 0;
     }
 }

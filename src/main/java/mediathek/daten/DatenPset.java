@@ -24,13 +24,14 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class DatenPset extends MVData<DatenPset> {
+public class DatenPset implements Comparable<DatenPset> {
 
     //Tags Programmgruppen
     public static final int PROGRAMMSET_NAME = 0;
@@ -293,5 +294,10 @@ public class DatenPset extends MVData<DatenPset> {
         arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemUtils.IS_OS_MAC_OSX);
         arr[PROGRAMMSET_SUBTITLE] = Boolean.toString(false);
         arr[PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_NORMAL;
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenPset o) {
+        return 0;
     }
 }
