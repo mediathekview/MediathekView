@@ -557,8 +557,8 @@ public class PanelPsetLang extends PanelVorlage {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
 
-                final IoXmlSchreiben configWriter = new IoXmlSchreiben();
-                configWriter.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+                IoXmlSchreiben configWriter = new IoXmlSchreiben();
+                configWriter.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
             }
         } else {
             NoSelectionErrorDialog.show();

@@ -60,7 +60,7 @@ public class DialogEditAbo extends JDialog {
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
         }
-        comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
         comboboxPfad.setEditable(true);
         checkPfad();
         ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).setOpaque(true);
