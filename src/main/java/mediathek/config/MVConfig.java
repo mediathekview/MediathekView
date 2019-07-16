@@ -202,11 +202,7 @@ public class MVConfig {
         SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
         SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
-        SYSTEM_PANEL_ABO_DIVIDER("system-panel-abo-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
-
-        SYSTEM_DOWNLOAD_INFO_TOP("system-download-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
-        SYSTEM_DOWNLOAD_INFO_DECORATED("system-download-info-border", Boolean.FALSE.toString()),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
@@ -216,23 +212,7 @@ public class MVConfig {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
         SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
-        SYSTEM_ICON_STANDARD("Icon-Standard", Boolean.TRUE.toString()),
-        SYSTEM_ICON_PFAD("Icon-Pfad"),
-        SYSTEM_BREITE_MELDUNGEN("breite-Meldungen"),
-        SYSTEM_TOOLBAR_ALLES("Toolbar-Alles"),
-        SYSTEM_TOOLBAR_DOWNLOAD_EXTERN("Toolbar-Download-Extern"),
-        SYSTEM_TOOLBAR_ABO_EXTERN("Toolbar-Abo-Extern"),
-        SYSTEM_TOOLBAR_MELDUNGEN("Toolbar-Meldungen"),
-        SYSTEM_ICON_KLEIN_ALLES("system-icon-groesse-alles"),
-        SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN("system-icon-groesse-Download-Extern"),
-        SYSTEM_ICON_KLEIN_ABOS_EXTERN("system-icon-groesse-Abos-Extern"),
         SYSTEM_ICON_KLEIN("system-icon-klein"),
-        SYSTEM_TOOLBAR_FILME("Toolbar-Filme"),
-        SYSTEM_ICON_KLEIN_FILME("system-icon-groesse-Filme"),
-        SYSTEM_TOOLBAR_DOWNLOAD("Toolbar-Download"),
-        SYSTEM_ICON_KLEIN_DOWNLOAD("system-icon-groesse-Download"),
-        SYSTEM_TOOLBAR_ABO("Toolbar-Abo"),
-        SYSTEM_ICON_KLEIN_ABO("system-icon-groesse-Abo"),
         SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
@@ -244,19 +224,11 @@ public class MVConfig {
         SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
         SYSTEM_TAB_ABO_LINEBREAK("system-tab-abo-linebreak", Boolean.FALSE.toString()),
         // Extrafenster
-        SYSTEM_FENSTER_DOWNLOAD("Fenster-Download"),
-        SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),
-        SYSTEM_FENSTER_ABO("Fenster-Abo"),
-        SYSTEM_GROESSE_ABO("Groesse-Abo"),
-        SYSTEM_FENSTER_FILTER("Fenster-Filter"),
-        SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         SYSTEM_GROESSE_FILTER_DIALOG_NEW("filter-dialog-new"),
         SYSTEM_GROESSE_MANAGE_ABO("manage-abo-dialog-size"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
-        SYSTEM_URL_FILMLISTEN("system-url-filmlisten"),
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
-        SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
