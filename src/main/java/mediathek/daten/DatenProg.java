@@ -1,12 +1,13 @@
 package mediathek.daten;
 
 import mediathek.tool.GuiFunktionenProgramme;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 
-public class DatenProg extends MVData<DatenProg> {
+public class DatenProg implements Comparable<DatenProg> {
 
     public static final int PROGRAMM_NAME = 0;
     public static final int PROGRAMM_ZIEL_DATEINAME = 1;
@@ -115,5 +116,10 @@ public class DatenProg extends MVData<DatenProg> {
     private void initialize() {
         arr = new String[MAX_ELEM];
         Arrays.fill(arr,"");
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenProg o) {
+        return 0;
     }
 }
