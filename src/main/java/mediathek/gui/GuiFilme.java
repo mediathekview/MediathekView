@@ -127,7 +127,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
-        setupPanelVideoplayer();
+        setupButtonPanel();
         setupDescriptionPanel();
 
         setupFilmActionPanel();
@@ -424,7 +424,7 @@ public class GuiFilme extends AGuiTabPanel {
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
-            setupPanelVideoplayer();
+            setupButtonPanel();
         });
 
         setVisFilterPanelAndLoad();
@@ -479,7 +479,7 @@ public class GuiFilme extends AGuiTabPanel {
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                setupPanelVideoplayer();
+                setupButtonPanel();
             }
         });
 
@@ -632,7 +632,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
-    private void setupPanelVideoplayer() {
+    private void setupButtonPanel() {
         // erst sauber machen
         // zum Anlegen der Button:
         // Programmgruppe ohne Namen: Leerfeld
@@ -1129,7 +1129,7 @@ public class GuiFilme extends AGuiTabPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
             jSpinner.addChangeListener(e -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
-                setupPanelVideoplayer();
+                setupButtonPanel();
             });
             JPanel jPanelAnzahl = new JPanel();
             jPanelAnzahl.setLayout(new BorderLayout());

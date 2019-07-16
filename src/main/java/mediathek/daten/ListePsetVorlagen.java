@@ -20,6 +20,7 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static mediathek.tool.Functions.getOs;
@@ -50,11 +51,10 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
 
     public TModel getTModel(String bs) {
-        LinkedList<String[]> tmp = new LinkedList<>();
         String[][] object;
         if (this.size() > 0) {
             if (!bs.isEmpty()) {
-                tmp.addAll(this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList()));
+                List<String[]> tmp = this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList());
                 object = new String[tmp.size()][PGR_MAX_ELEM];
                 for (int i = 0; i < tmp.size(); i++) {
                     object[i] = tmp.get(i);
@@ -125,7 +125,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-            final Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
+            Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
             try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
@@ -133,7 +133,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                          InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                         parser = inFactory.createXMLStreamReader(inReader);
                         while (parser.hasNext()) {
-                            final int event = parser.next();
+                            int event = parser.next();
                             if (event == XMLStreamConstants.START_ELEMENT) {
                                 if (parser.getLocalName().equals(PGR)) {
                                     //wieder ein neuer Server, toll
@@ -167,7 +167,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             ListePset result = null;
 
             if (GuiFunktionen.istUrl(dateiUrl)) {
-                final Request request = new Request.Builder().url(dateiUrl).get().build();
+                Request request = new Request.Builder().url(dateiUrl).get().build();
                 try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
                      ResponseBody body = response.body()) {
                     if (response.isSuccessful() && body != null) {
@@ -214,7 +214,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLStreamReader parser;
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
-                final int event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     switch (parser.getLocalName()) {
                         case DatenPset.TAG:
@@ -267,7 +267,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         try {
             while (parser.hasNext()) {
-                final int event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     if (parser.getLocalName().equals(xmlElem)) {
                         break;
