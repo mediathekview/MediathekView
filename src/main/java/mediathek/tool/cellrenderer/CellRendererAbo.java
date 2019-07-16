@@ -19,6 +19,8 @@
  */
 package mediathek.tool.cellrenderer;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
@@ -34,9 +36,15 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class CellRendererAbo extends CellRendererBase {
     private static final Logger logger = LogManager.getLogger(CellRendererAbo.class);
+    private final Icon checkedIcon;
+    private final Icon uncheckedIcon;
 
     public CellRendererAbo(MVSenderIconCache cache) {
         super(cache);
+
+
+        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
+        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
     }
 
     @Override
@@ -125,4 +133,20 @@ public class CellRendererAbo extends CellRendererBase {
             setFont(getFont().deriveFont(Font.ITALIC));
         }
     }
+
+    /**
+     * Set icon either to yes or no based on condition
+     *
+     * @param condition yes if true, no if false
+     */
+    private void setCheckedOrUncheckedIcon(final boolean condition) {
+        final Icon icon;
+        if (condition)
+            icon = checkedIcon;
+        else
+            icon = uncheckedIcon;
+
+        setIcon(icon);
+    }
+
 }

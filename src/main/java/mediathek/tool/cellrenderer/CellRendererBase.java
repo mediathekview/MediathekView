@@ -1,7 +1,5 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.tool.MVSenderIconCache;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -16,15 +14,10 @@ import java.util.Optional;
 public class CellRendererBase extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 4187677730323830219L;
     private final MVSenderIconCache senderIconCache;
-    private final Icon checkedIcon;
-    private final Icon uncheckedIcon;
 
     public CellRendererBase(MVSenderIconCache cache) {
         super();
         senderIconCache = cache;
-
-        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
-        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
     }
 
     /**
@@ -58,20 +51,5 @@ public class CellRendererBase extends DefaultTableCellRenderer {
 
             c.setFont(font);
         }
-    }
-
-    /**
-     * Set icon either to yes or no based on condition
-     *
-     * @param condition yes if true, no if false
-     */
-    protected void setCheckedOrUncheckedIcon(final boolean condition) {
-        final Icon icon;
-        if (condition)
-            icon = checkedIcon;
-        else
-            icon = uncheckedIcon;
-
-        setIcon(icon);
     }
 }
