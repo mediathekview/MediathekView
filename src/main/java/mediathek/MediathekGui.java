@@ -53,6 +53,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -209,6 +210,23 @@ public class MediathekGui extends JFrame {
         loadFilmlist();
 
         setupUpdateCheck();
+
+        showVlcHintForAustrianUsers();
+    }
+
+    private void showVlcHintForAustrianUsers() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                var location = config.getString(ApplicationConfiguration.GEO_LOCATION);
+                if (location.equals("AT")) {
+                    // show help dialog
+                    //FIXME implement info dialog for Austrian problems
+                    System.out.println("SHOW HELP DIALOG");
+                }
+            }
+            catch (NoSuchElementException ignored) {
+            }
+        });
     }
 
     /**
@@ -668,19 +686,19 @@ public class MediathekGui extends JFrame {
     }
 
     private void createViewMenu() {
-        JCheckBoxMenuItem cbVideoplayer = new JCheckBoxMenuItem("Buttons anzeigen");
+        JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
         if (!SystemUtils.IS_OS_MAC_OSX)
-            cbVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-        cbVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-        cbVideoplayer.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbVideoplayer.isSelected()));
+            cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+        cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        cbShowButtons.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbShowButtons.isSelected()));
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
         });
 
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                cbVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+                cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
             }
         });
 
@@ -696,7 +714,7 @@ public class MediathekGui extends JFrame {
             dialogMediaDB.setVis();
         });
 
-        jMenuAnsicht.add(cbVideoplayer);
+        jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
