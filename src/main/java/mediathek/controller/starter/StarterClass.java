@@ -217,7 +217,10 @@ public class StarterClass {
         setFileSize(datenDownload);
 
         if (SystemUtils.IS_OS_MAC_OSX) {
-            writeSpotlightComment(datenDownload, state);
+            var version = SystemUtils.OS_VERSION;
+            boolean isBuggy = (version.contains("10.14") || (version.contains("10.15")));
+            if (!isBuggy)
+                writeSpotlightComment(datenDownload, state);
         }
 
         fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);

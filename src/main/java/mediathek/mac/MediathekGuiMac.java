@@ -9,15 +9,19 @@ import mediathek.MediathekGui;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Log;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
@@ -25,6 +29,32 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
+
+            var versionCheckThread = new CheckMacOSVersion();
+            versionCheckThread.start();
+    }
+
+    class CheckMacOSVersion extends Thread {
+        @Override
+        public void run() {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                SwingUtilities.invokeLater(() -> {
+                    var version = SystemUtils.OS_VERSION;
+                    if (version.contains("10.14") || version.contains("10.15")) {
+                        var config = ApplicationConfiguration.getConfiguration();
+                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
+                        if (showWarning) {
+                            JOptionPane.showMessageDialog(MediathekGui.ui(), "<html>Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von Spotlight-Kommentaren deaktiviert.<br>" +
+                                    "Wir arbeiten an einer Lösung.<br><br>Dieser Dialog wird nicht mehr angezeigt werden.</html>", "Spotlight-Kommentare deaktiviert", JOptionPane.INFORMATION_MESSAGE);
+                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
+                        }
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

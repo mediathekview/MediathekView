@@ -28,6 +28,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS = "application.notifications.native";
+    public static final String APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING = "application.spotlight.disabled_warning.show";
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
