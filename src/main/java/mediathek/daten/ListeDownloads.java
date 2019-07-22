@@ -592,7 +592,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (download.start != null) {
                     if (download.start.status == Start.STATUS_RUN
                             && getHost(download).equalsIgnoreCase(host)) {
-                        if (!isCDN(download.arr[DatenDownload.DOWNLOAD_FILM_URL])) {
+                        if (!isCDN(d.arr[DatenDownload.DOWNLOAD_FILM_URL])) {
                             counter++;
                             if (counter >= max) {
                                 return true;
