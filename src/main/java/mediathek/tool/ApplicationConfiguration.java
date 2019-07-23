@@ -29,6 +29,11 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS = "application.notifications.native";
     public static final String APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING = "application.spotlight.disabled_warning.show";
+    public static final String APPLICATION_DEBUG_HTTP_TRAFFIC = "application.debug.http_traffic";
+    /**
+     * can be BASIC, HEADERS, BODY
+     */
+    public static final String APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL = "application.debug.http_traffic_trace_level";
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
