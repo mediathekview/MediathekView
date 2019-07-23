@@ -2,7 +2,7 @@ package mediathek.tool;
 
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -23,24 +23,42 @@ public class FileSize {
     }
 
     /**
+     * Get the content length from Http Header. Used with HEAD requests
+     * @param response the response for reading length
+     * @return the length if available, -1 otherwise.
+     */
+    public static long getContentLength(@NotNull Response response) {
+        var sizeStr = response.headers().get("Content-Length");
+        long respLength = -1;
+
+        if (sizeStr != null) {
+            try {
+                respLength = Long.parseLong(sizeStr);
+            }
+            catch (NumberFormatException ignored) {}
+        }
+
+        return respLength;
+    }
+
+    /**
      * Return the size of a URL in bytes.
      *
      * @param url URL as String to query.
      * @return size in bytes or -1.
      */
-    private static long getFileSizeFromUrl(String url) {
+    private static long getFileSizeFromUrl(@NotNull String url) {
         if (!url.toLowerCase().startsWith("http")) {
             return -1;
         }
 
-        final Request request = new Request.Builder().url(url).get().build();
+        final Request request = new Request.Builder().url(url).head().build();
         long respLength = -1;
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
-             ResponseBody body = response.body()) {
-            if (body != null && response.isSuccessful())
-                respLength = body.contentLength();
+        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                respLength = getContentLength(response);
+            }
         } catch (IOException ignored) {
-            respLength = -1;
         }
 
         if (respLength < 1_000_000) {

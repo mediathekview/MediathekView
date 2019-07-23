@@ -10,10 +10,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.*;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.MVHttpClient;
-import mediathek.tool.MVInfoFile;
-import mediathek.tool.MVSubtitle;
+import mediathek.tool.*;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 import okhttp3.OkHttpClient;
@@ -120,14 +117,14 @@ public class DirectHttpDownload extends Thread {
     private long getContentLength(final URL url) throws IOException {
         long contentSize = -1;
 
-        final Request request = new Request.Builder().url(url).get()
+        final Request request = new Request.Builder().url(url).head()
                 .header("User-Agent", getUserAgent())
                 .build();
 
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
-             ResponseBody body = response.body()) {
-            if (response.isSuccessful() && body != null) {
-                contentSize = body.contentLength();
+        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                contentSize = FileSize.getContentLength(response);
+
                 // alles unter 300k sind Playlisten, ...
                 if (contentSize < 300_000) {
                     contentSize = -1;
