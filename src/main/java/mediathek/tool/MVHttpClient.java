@@ -3,6 +3,7 @@ package mediathek.tool;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,10 +64,26 @@ public class MVHttpClient {
      * @return A Builder with default settings.
      */
     private OkHttpClient.Builder getDefaultClientBuilder() {
-        return new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
+        var builder = new OkHttpClient.Builder();
+        var config = ApplicationConfiguration.getConfiguration();
+
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC,false)) {
+            var interceptor = new HttpLoggingInterceptor(logger::trace);
+            HttpLoggingInterceptor.Level level = HttpLoggingInterceptor.Level.BASIC;
+            try {
+                var levelName = config.getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL);
+                level = HttpLoggingInterceptor.Level.valueOf(levelName);
+            }
+            catch (Exception ignored) {
+                logger.error("Error reading http traffic debug trace level, using BASIC");
+            }
+            interceptor.setLevel(level);
+            builder.addInterceptor(interceptor);
+        }
+        builder.connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS);
+        return builder;
     }
 
     private Authenticator createAuthenticator(String prxUser, String prxPassword) {
