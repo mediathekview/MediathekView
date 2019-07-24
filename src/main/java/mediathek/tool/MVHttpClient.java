@@ -77,7 +77,7 @@ public class MVHttpClient {
             catch (Exception ignored) {
                 logger.error("Error reading http traffic debug trace level, using BASIC");
             }
-            interceptor.setLevel(level);
+            interceptor.level(level);
             builder.addInterceptor(interceptor);
         }
         builder.connectTimeout(30, TimeUnit.SECONDS)

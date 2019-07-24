@@ -28,7 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -290,7 +290,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
      */
     public void toSrt(Path srtFile) {
         try (FileOutputStream fos = new FileOutputStream(srtFile.toFile());
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8"));
+             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
              PrintWriter writer = new PrintWriter(osw)) {
             long counter = 1;
             for (Subtitle title : subtitleList) {

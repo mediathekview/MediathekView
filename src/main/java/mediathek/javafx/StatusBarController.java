@@ -82,8 +82,8 @@ public class StatusBarController {
                 progressBar.setProgress(-1d);
                 progressLabel.setText(event.text);
             } else {
-                final double max = (double) event.max;
-                final double progress = (double) event.progress;
+                final double max = event.max;
+                final double progress = event.progress;
 
                 progressBar.setProgress(progress / max);
                 progressLabel.setText(event.text);

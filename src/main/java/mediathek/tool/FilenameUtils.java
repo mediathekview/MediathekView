@@ -5,10 +5,7 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CodingErrorAction;
+import java.nio.charset.*;
 
 /**
  * User: crystalpalace1977
@@ -171,7 +168,7 @@ public class FilenameUtils {
 
         //convert our filename to OS encoding...
         try {
-            final CharsetEncoder charsetEncoder = Charset.forName("US-ASCII").newEncoder();
+            final CharsetEncoder charsetEncoder = StandardCharsets.US_ASCII.newEncoder();
             charsetEncoder.onMalformedInput(CodingErrorAction.REPLACE); // otherwise breaks on first unconvertable char
             charsetEncoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
             charsetEncoder.replaceWith(new byte[]{'_'});
