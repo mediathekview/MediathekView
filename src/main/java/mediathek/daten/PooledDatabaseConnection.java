@@ -61,7 +61,7 @@ public class PooledDatabaseConnection {
         HikariConfig config = new HikariConfig();
         config.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
         config.addDataSourceProperty("URL", driverCommand);
-        config.setMaximumPoolSize(Runtime.getRuntime().availableProcessors() * 2 + 1);
+        config.setMaximumPoolSize(Runtime.getRuntime().availableProcessors());
 
         return new HikariDataSource(config);
     }
