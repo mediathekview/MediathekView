@@ -342,7 +342,7 @@ public class Main {
         }
     }
 
-    private final class ProgramArguments {
+    private final static class ProgramArguments {
         private static final String STARTUPMODE_DEBUG = "-d";
         private static final String STARTUPMODE_MAXIMIZED = "-m";
         private static final String STARTUPMODE_VERBOSE = "-v";
