@@ -340,7 +340,7 @@ public class FilmeLaden {
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
+        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrl).collect(Collectors.toList()));
     }
 
     /**
@@ -352,7 +352,7 @@ public class FilmeLaden {
         Stopwatch stopwatch = Stopwatch.createStarted();
         listeFilme.parallelStream()
                 .peek(film -> film.setNew(false))
-                .filter(film -> !hashSet.contains(film.getUrlHistory()))
+                .filter(film -> !hashSet.contains(film.getUrl()))
                 .forEach(film
                         -> {
                     film.setNew(true);

@@ -45,7 +45,7 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
             urlAusLogfileLoeschen(arrayFilms);
         } else {
             List<DatenFilm> neueFilme = arrayFilms.stream()
-                    .filter(film -> !urlPruefen(film.getUrlHistory()))
+                    .filter(film -> !urlPruefen(film.getUrl()))
                     .collect(Collectors.toList());
             zeileSchreiben(neueFilme);
             neueFilme.clear();
