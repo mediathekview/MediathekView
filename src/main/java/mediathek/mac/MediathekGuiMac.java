@@ -34,7 +34,7 @@ public class MediathekGuiMac extends MediathekGui {
             versionCheckThread.start();
     }
 
-    class CheckMacOSVersion extends Thread {
+    static class CheckMacOSVersion extends Thread {
         @Override
         public void run() {
             try {
