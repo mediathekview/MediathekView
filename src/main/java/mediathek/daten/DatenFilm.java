@@ -337,10 +337,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
     }
 
-    public String getUrlHistory() {
-        return arr[DatenFilm.FILM_URL];
-    }
-
     public String getIndex() {
         // liefert einen eindeutigen Index für die Filmliste
         // URL beim KiKa und ORF ändern sich laufend!

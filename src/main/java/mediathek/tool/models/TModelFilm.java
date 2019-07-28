@@ -205,7 +205,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_URL_HISTORY:
-                result = film.getUrlHistory();
+                result = film.getUrl();
                 break;
 
             case DatenFilm.FILM_REF:

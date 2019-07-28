@@ -355,7 +355,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
-            if (daten.getAboHistoryController().urlPruefen(film.getUrlHistory())) {
+            if (daten.getAboHistoryController().urlPruefen(film.getUrl())) {
                 // ist schon mal geladen worden
                 continue;
             }
