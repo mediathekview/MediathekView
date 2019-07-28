@@ -579,8 +579,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @return true if it belongs to a CDN
      */
     private boolean isCDN(final String host) {
-        boolean isCDN = host.contains("akamaihd.net") || host.contains("cdn-storage.br.de");
-        return isCDN;
+        return host.contains("akamaihd.net") || host.contains("cdn-storage.br.de");
     }
 
     private boolean maxSenderLaufen(DatenDownload d, final int max) {

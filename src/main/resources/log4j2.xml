@@ -5,7 +5,7 @@
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern=". %msg%n"></PatternLayout>
+            <PatternLayout pattern="[%-5level] [%t] %c - %msg%n"></PatternLayout>
         </Console>
 
         <File name="LogFile" filename="${sys:mvLogOutputPath}" append="false">
@@ -21,7 +21,7 @@
 
     <Loggers>
         <Root level="trace">
-            <AppenderRef ref="console" level="info"></AppenderRef>
+            <AppenderRef ref="console" level="trace"></AppenderRef>
             <AppenderRef ref="Async"></AppenderRef>
         </Root>
         <Logger name="hsqldb.db" level="warn"></Logger>
