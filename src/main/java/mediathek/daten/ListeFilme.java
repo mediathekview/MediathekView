@@ -273,15 +273,21 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     public void fillSenderList() {
-        Platform.runLater(() -> {
-            var writeLock = m_senderList.getReadWriteLock().writeLock();
-            try {
-                writeLock.lock();
+        var writeLock = m_senderList.getReadWriteLock().writeLock();
+
+        try {
+            writeLock.lock();
+            var list = stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList());
+            Platform.runLater(() -> {
                 m_senderList.clear();
-                m_senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
-            } finally {
-                writeLock.unlock();
-            }
-        });
+                m_senderList.addAll(list);
+            });
+        }
+        catch (Exception e) {
+            logger.error("error fillSenderList", e);
+        }
+        finally {
+            writeLock.unlock();
+        }
     }
 }
