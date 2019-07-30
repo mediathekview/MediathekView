@@ -25,7 +25,7 @@ public class PanelEinstellungen extends JPanel {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final JFrame parent;
     private final Daten daten;
-    
+
     private void setupProxySettings() {
 
         jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
