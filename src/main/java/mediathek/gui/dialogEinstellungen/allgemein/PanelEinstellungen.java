@@ -416,6 +416,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
 
         cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
+        cbUseDatabaseCleaner.setToolTipText("<html>Wenn aktiviert werden ungültige Datenbankeinträge sofort aus der Datenbank gelöscht um Speicher zu sparen.<br/>Dies wird für Rechner mit wenig Arbeitsspeicher empfohlen, verringert jedoch die Performance von MediathekView deutlich beim Laden einer neuen Filmliste.</html>");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -458,7 +459,11 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
-        cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
+        cbUseWikipediaSenderLogos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbUseWikipediaSenderLogosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
