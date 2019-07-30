@@ -4,7 +4,6 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.*;
 import mediathek.tool.ApplicationConfiguration;
@@ -21,10 +20,12 @@ import java.awt.*;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
-public class PanelEinstellungen extends PanelVorlage {
+public class PanelEinstellungen extends JPanel {
     private final static String ALLE = " Alle ";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-
+    private final JFrame parent;
+    private final Daten daten;
+    
     private void setupProxySettings() {
 
         jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
@@ -50,9 +51,14 @@ public class PanelEinstellungen extends PanelVorlage {
         jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
+    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {
+        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
+        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
+    }
+
     private void setupDays() {
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, '\n'
+        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parent, true, '\n'
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
                 + '\n'
@@ -120,7 +126,8 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     public PanelEinstellungen(Daten d, JFrame parent) {
-        super(d, parent);
+        super();
+        this.parent = parent;
         daten = d;
 
         initComponents();
@@ -146,6 +153,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         setupTabSwitchListener();
 
+        cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
         final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
     }
@@ -459,7 +467,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(cbUseDatabaseCleaner)
-                        .addContainerGap(381, Short.MAX_VALUE))
+                        .addContainerGap(408, Short.MAX_VALUE))
             );
             jPanel7Layout.setVerticalGroup(
                 jPanel7Layout.createParallelGroup()
@@ -484,7 +492,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(300, Short.MAX_VALUE))
+                        .addContainerGap(335, Short.MAX_VALUE))
             );
             jPanel8Layout.setVerticalGroup(
                 jPanel8Layout.createParallelGroup()
@@ -500,7 +508,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         //---- cbUseWikipediaSenderLogos ----
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
-        cbUseWikipediaSenderLogos.addActionListener(e -> cbUseWikipediaSenderLogosActionPerformed(e));
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -509,15 +516,19 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(0, 15, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup()
+                                .addComponent(jPanel3, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jPanel2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(jCheckBoxTray)
-                        .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbUseWikipediaSenderLogos)))
+                        .addComponent(cbUseWikipediaSenderLogos)
+                        .addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup()
@@ -538,16 +549,9 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
-                    .addContainerGap(10, Short.MAX_VALUE))
+                    .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUseWikipediaSenderLogosActionPerformed
-        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
-        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
-    }//GEN-LAST:event_cbUseWikipediaSenderLogosActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JCheckBox jCheckBoxTabsTop;

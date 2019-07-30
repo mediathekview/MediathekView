@@ -3,9 +3,9 @@ JFDML JFormDesigner: "7.0.0.3.238" Java: "11.0.3" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel7::l:p::p, comp jPanel3::l:p::p, comp jPanel5::l:p::p, par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp jPanel8::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p}}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space ::10:x}}"
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :0:15:x, par l {comp jPanel3::t:p::p, comp jPanel5::t:p::p}}, comp jPanel7::t:::x, par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp jPanel8::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space ::7:x}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
@@ -153,7 +153,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space ::381:x}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space ::408:x}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel7"
@@ -168,7 +168,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space ::300:x}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space ::335:x}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel8"
@@ -188,10 +188,9 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "cbUseWikipediaSenderLogos"
 				"text": "Senderlogos von Wikipedia verwenden"
-				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cbUseWikipediaSenderLogosActionPerformed", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 645, 475 )
+			"size": new java.awt.Dimension( 645, 450 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
