@@ -29,12 +29,6 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private static final String HTTP_PROXY_USER = "http.proxyUser";
-    private static final String HTTP_PROXY_PW = "http.proxyPassword";
-    private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
-    private static final String LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED = "Proxy Authentication: not configured";
-    private static final String LOG_TEXT_PROXY_PASSWORD_NOT_SET = "Proxy Authentication: Password is not set";
-    private static final String LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW = "Proxy Authentication: cannot access proxyUser / proxyPassword";
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
     private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
