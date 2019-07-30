@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :0:15:x, par l {comp jPanel3::t:p::p, comp jPanel5::t:p::p}}, comp jPanel7::t:::x, par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp jPanel8::l:::x}, space :::p}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel7::t:::x, comp jPanel8::l:::x, comp jPanel3:::::x, seq {par l {par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p}, space :0:1:x}, comp jPanel5::t:::x}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space ::7:x}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p}}"
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p, space ::20:x}}"
 				"$verticalGroup": "par l {seq {space :5:5:p, par l {comp jCheckBoxTabsTop:::p::p, comp jCheckBoxTabIcon:::p::p, comp cbAutomaticMenuTabSwitching:::p::p}}}"
 			} ) {
 				name: "jPanel5"
@@ -33,7 +33,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel3:::p::p, space :5:5:p, comp jtfUserAgent:::p::p}}"
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel3:::p::p, space :5:5:p, comp jtfUserAgent:::p::p, space ::15:x}}"
 				"$verticalGroup": "par l {seq {space :10:10:p, comp jLabel3:::p::p}, seq {space :5:5:p, comp jtfUserAgent:::p::p}}"
 			} ) {
 				name: "jPanel3"
