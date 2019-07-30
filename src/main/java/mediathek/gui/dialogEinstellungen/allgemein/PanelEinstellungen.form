@@ -457,6 +457,7 @@
         <Component class="javax.swing.JCheckBox" name="cbUseDatabaseCleaner">
           <Properties>
             <Property name="text" type="java.lang.String" value="Bereinigung w&#xe4;hrend Laufzeit"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Wenn aktiviert werden ung&#xfc;ltige Datenbankeintr&#xe4;ge sofort aus der Datenbank gel&#xf6;scht um Speicher zu sparen.&lt;br/&gt;Dies wird f&#xfc;r Rechner mit wenig Arbeitsspeicher empfohlen, verringert jedoch die Performance von MediathekView deutlich beim Laden einer neuen Filmliste.&lt;/html&gt;"/>
           </Properties>
         </Component>
       </SubComponents>
