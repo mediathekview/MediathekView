@@ -33,7 +33,7 @@ public class Konstanten {
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
     public static final String TIME_MAX_AGE_FOR_DIFF = "09"; // Uhrzeit ab der die Diffliste alle Änderungen abdeckt, die Filmliste darf also nicht vor xx erstellt worden sein
 
-    public static final Version MVVERSION = new Version(13, 3, 0);
+    public static final Version MVVERSION = new Version(13, 4, 0);
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
