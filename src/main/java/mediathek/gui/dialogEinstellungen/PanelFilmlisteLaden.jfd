@@ -43,9 +43,10 @@ new FormModel {
 					"value": "cell 1 1,alignx trailing,growx 0"
 				} )
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, par l {seq t {comp jLabel1:::p::p, space :::p, comp jTextFieldUrl:::::x:1, space :::p, comp jButtonDateiAuswaehlen:::p::p}, comp jScrollPane3::l:::x, seq t {comp jCheckBoxUpdate:::p::p, space ::298:x, comp jButtonFilmeLaden:::p::p}}, space :::p}}"
-				"$verticalGroup": "par l {seq l {comp jScrollPane3:::p::p, space u:::p, par b {comp jTextFieldUrl:1:b:p::p, comp jLabel1:1:b:p::p, comp jButtonDateiAuswaehlen:1:b:p::p}, space s:p::p, par b {comp jButtonFilmeLaden::b:p::p, comp jCheckBoxUpdate::b:p::p}, space :::p}}"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+				"$columnConstraints": "[fill][grow,fill][fill][fill]"
+				"$rowConstraints": "[fill][fill][fill]"
 			} ) {
 				name: "jPanelManuel"
 				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 255, 255 ), 1, false ), "Filmliste nur manuell laden" )
@@ -58,18 +59,26 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldUrl"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 1 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonDateiAuswaehlen"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "URL oder lokale Filmliste auswählen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 1"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonFilmeLaden"
 					"text": "Filme jetzt laden"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 2 2 1"
 				} )
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "jScrollPane3"
@@ -81,13 +90,19 @@ new FormModel {
 						"editable": false
 						"columns": 20
 						"rows": 4
-						"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden angegeben werden."
+						"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."
 						"margin": new java.awt.Insets( 4, 4, 4, 4 )
+						"wrapStyleWord": true
+						"lineWrap": true
 					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0 4 1"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxUpdate"
 					"text": "alte Filmliste nicht löschen, nur erweitern"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2 2 1"
 				} )
 			} )
 			add( new FormComponent( "javax.swing.JRadioButton" ) {
@@ -129,7 +144,7 @@ new FormModel {
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 765, 430 )
+			"size": new java.awt.Dimension( 735, 415 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
