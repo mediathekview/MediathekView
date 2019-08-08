@@ -1,14 +1,16 @@
 package mediathek.gui.dialogEinstellungen;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.controller.IoXmlLesen;
 import mediathek.tool.Log;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.javafx.FXErrorDialog;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -21,11 +23,9 @@ import java.io.File;
 
 @SuppressWarnings("serial")
 public class PanelImport extends JPanel {
-    private final JFrame parentComponent;
 
-    public PanelImport(JFrame parentComponent) {
+    public PanelImport() {
         super();
-        this.parentComponent = parentComponent;
         initComponents();
         init();
     }
@@ -45,16 +45,29 @@ public class PanelImport extends JPanel {
     }
 
     private void importDatei(String datei) {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        final IoXmlLesen configReader = new IoXmlLesen();
-        final ImmutableTriple<Integer, Integer, Integer> result = configReader.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
-        String text = "Es wurden\n"
-                + result.left + " Abos und\n"
-                + result.middle + " Blacklisteinträge\n"
-                + result.right + " Ersetzungen\n"
-                + "hinzugefügt";
-        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        MVMessageDialog.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            final IoXmlLesen configReader = new IoXmlLesen();
+            var result = configReader.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
+            String text = "Es wurden\n"
+                    + result.left + " Abos und\n"
+                    + result.middle + " Blacklisteinträge\n"
+                    + result.right + " Ersetzungen\n"
+                    + "hinzugefügt.";
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Einstellungen importieren");
+                alert.setContentText(text);
+                alert.showAndWait();
+            });
+        }
+        catch (Exception ex) {
+            FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
+                    "Fehler beim Importieren der Einstellungen",
+                    "Es trat ein Fehler beim Import der Einstellungen auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                    ex);
+
+        }
     }
 
     private void setButtonImport() {
