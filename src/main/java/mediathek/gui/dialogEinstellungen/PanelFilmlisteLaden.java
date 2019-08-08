@@ -196,6 +196,19 @@ public class PanelFilmlisteLaden extends JPanel {
         cbAudio = new JCheckBox();
 
         //======== this ========
+        setMinimumSize(new Dimension(746, 400));
+        setPreferredSize(new Dimension(746, 400));
+        setLayout(new MigLayout(
+            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+            // columns
+            new AC()
+                .fill().gap()
+                .grow().fill(),
+            // rows
+            new AC()
+                .fill().gap()
+                .fill().gap()
+                .fill()));
 
         //======== jPanelAuto ========
         {
@@ -230,6 +243,7 @@ public class PanelFilmlisteLaden extends JPanel {
             jButtonLoad.setText("Filme jetzt laden"); //NON-NLS
             jPanelAuto.add(jButtonLoad, new CC().cell(1, 1).alignX("trailing").growX(0)); //NON-NLS
         }
+        add(jPanelAuto, new CC().cell(1, 0));
 
         //======== jPanelManuel ========
         {
@@ -256,7 +270,7 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- jButtonDateiAuswaehlen ----
             jButtonDateiAuswaehlen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste ausw\u00e4hlen"); //NON-NLS
-            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1));
+            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1).alignX("left").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
 
             //---- jButtonFilmeLaden ----
             jButtonFilmeLaden.setText("Filme jetzt laden"); //NON-NLS
@@ -281,6 +295,9 @@ public class PanelFilmlisteLaden extends JPanel {
             jCheckBoxUpdate.setText("alte Filmliste nicht l\u00f6schen, nur erweitern"); //NON-NLS
             jPanelManuel.add(jCheckBoxUpdate, new CC().cell(0, 2, 2, 1));
         }
+        add(jPanelManuel, new CC().cell(1, 1));
+        add(jRadioButtonAuto, new CC().cell(0, 0).alignY("top").growY(0)); //NON-NLS
+        add(jRadioButtonManuell, new CC().cell(0, 1).alignY("top").growY(0)); //NON-NLS
 
         //======== jPanel1 ========
         {
@@ -309,38 +326,7 @@ public class PanelFilmlisteLaden extends JPanel {
             cbAudio.setText("H\u00f6rfassungen"); //NON-NLS
             jPanel1.add(cbAudio, new CC().cell(1, 0));
         }
-
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(jRadioButtonAuto)
-                        .addComponent(jRadioButtonManuell))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(jPanelAuto, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanelManuel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(jRadioButtonAuto)
-                        .addComponent(jPanelAuto, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(jRadioButtonManuell)
-                        .addComponent(jPanelManuel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        add(jPanel1, new CC().cell(1, 2));
 
         //---- buttonGroup1 ----
         var buttonGroup1 = new ButtonGroup();

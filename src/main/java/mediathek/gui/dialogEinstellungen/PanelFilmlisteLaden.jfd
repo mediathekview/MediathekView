@@ -3,11 +3,14 @@ JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jRadioButtonAuto:::p::p, comp jRadioButtonManuell::l:p::p}, space :::p, par l {comp jPanelAuto:::::x:2, comp jPanelManuel:::::x:2, comp jPanel1::l:::x}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, par l {comp jRadioButtonAuto:::p::p, comp jPanelAuto:::p::p}, space u:p::p, par l {comp jRadioButtonManuell:::p::p, comp jPanelManuel:::p::p}, space :::p, comp jPanel1:::p::p, space :::x}}"
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+			"$columnConstraints": "[fill][grow,fill]"
+			"$rowConstraints": "[fill][fill][fill]"
 		} ) {
 			name: "this"
+			"minimumSize": new java.awt.Dimension( 746, 400 )
+			"preferredSize": new java.awt.Dimension( 746, 400 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[grow,fill][grow,fill]"
@@ -42,6 +45,8 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 1,alignx trailing,growx 0"
 				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
@@ -72,7 +77,7 @@ new FormModel {
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "URL oder lokale Filmliste auswählen"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 3 1"
+					"value": "cell 3 1,alignx left,growx 0,width 32:32:32,height 32:32:32"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonFilmeLaden"
@@ -104,14 +109,20 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2 2 1"
 				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1"
 			} )
 			add( new FormComponent( "javax.swing.JRadioButton" ) {
 				name: "jRadioButtonAuto"
 				"$buttonGroup": new FormReference( "buttonGroup1" )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,aligny top,growy 0"
 			} )
 			add( new FormComponent( "javax.swing.JRadioButton" ) {
 				name: "jRadioButtonManuell"
 				"$buttonGroup": new FormReference( "buttonGroup1" )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1,aligny top,growy 0"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
@@ -142,9 +153,11 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 735, 415 )
+			"size": new java.awt.Dimension( 735, 400 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
