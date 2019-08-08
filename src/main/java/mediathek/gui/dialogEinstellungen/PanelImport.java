@@ -18,7 +18,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Path;
 
 @SuppressWarnings("serial")
 public class PanelImport extends JPanel {
@@ -40,8 +39,6 @@ public class PanelImport extends JPanel {
         jCheckBoxAbo.addActionListener(e -> setButtonImport());
         jCheckBoxBlack.addActionListener(e -> setButtonImport());
         jCheckBoxErsetzungstabelle.addActionListener(e -> setButtonImport());
-        final Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
 
         var handler = new TextCopyPasteHandler<>(jTextFieldDatei);
         jTextFieldDatei.setComponentPopupMenu(handler.getPopupMenu());
@@ -137,8 +134,6 @@ public class PanelImport extends JPanel {
         var jTextArea1 = new JTextArea();
         jCheckBoxAbo = new JCheckBox();
         jCheckBoxBlack = new JCheckBox();
-        var jLabel1 = new JLabel();
-        jTextFieldPfadKonfig = new JTextField();
         jCheckBoxErsetzungstabelle = new JCheckBox();
 
         //======== this ========
@@ -176,13 +171,6 @@ public class PanelImport extends JPanel {
             //---- jCheckBoxBlack ----
             jCheckBoxBlack.setText("Blacklist importieren"); //NON-NLS
 
-            //---- jLabel1 ----
-            jLabel1.setText("aktuelle Konfigurationsdatei:"); //NON-NLS
-
-            //---- jTextFieldPfadKonfig ----
-            jTextFieldPfadKonfig.setEditable(false);
-            jTextFieldPfadKonfig.setText("jTextField1"); //NON-NLS
-
             //---- jCheckBoxErsetzungstabelle ----
             jCheckBoxErsetzungstabelle.setText("Ersetzungstabelle"); //NON-NLS
 
@@ -210,14 +198,7 @@ public class PanelImport extends JPanel {
                                             .addComponent(jCheckBoxBlack)
                                             .addComponent(jCheckBoxErsetzungstabelle))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
-                                        .addComponent(jButtonImportDatei))))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup()
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addGap(0, 497, Short.MAX_VALUE))
-                                    .addComponent(jTextFieldPfadKonfig, GroupLayout.Alignment.TRAILING))))
+                                        .addComponent(jButtonImportDatei)))))
                         .addContainerGap())
             );
             jPanel6Layout.setVerticalGroup(
@@ -240,13 +221,9 @@ public class PanelImport extends JPanel {
                         .addComponent(jCheckBoxErsetzungstabelle)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldPfadKonfig, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
-            jPanel6Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonPfad, jTextFieldDatei, jTextFieldPfadKonfig});
+            jPanel6Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonPfad, jTextFieldDatei});
         }
 
         GroupLayout layout = new GroupLayout(this);
@@ -263,7 +240,7 @@ public class PanelImport extends JPanel {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(5, Short.MAX_VALUE))
+                    .addContainerGap(3, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -274,7 +251,6 @@ public class PanelImport extends JPanel {
     private JButton jButtonImportDatei;
     private JCheckBox jCheckBoxAbo;
     private JCheckBox jCheckBoxBlack;
-    private JTextField jTextFieldPfadKonfig;
     private JCheckBox jCheckBoxErsetzungstabelle;
     // End of variables declaration//GEN-END:variables
 }
