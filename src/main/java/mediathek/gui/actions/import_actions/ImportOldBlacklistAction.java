@@ -27,7 +27,7 @@ public class ImportOldBlacklistAction extends AbstractAction {
                     var configReader = new IoXmlLesen();
                     var result = configReader.importAboBlacklist(selectedFile.getAbsolutePath(), false, true, false);
                     var alert = new ImportSettingsAlert(Alert.AlertType.INFORMATION);
-                    String text = "Es wurden " + result.right + " Einräge importiert.";
+                    String text = "Es wurden " + result.middle + " Einträge importiert.";
                     alert.setContentText(text);
                     alert.showAndWait();
                 } catch (Exception ex) {
