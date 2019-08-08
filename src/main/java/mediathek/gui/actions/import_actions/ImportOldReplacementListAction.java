@@ -27,7 +27,7 @@ public class ImportOldReplacementListAction extends AbstractAction {
                     final IoXmlLesen configReader = new IoXmlLesen();
                     var result = configReader.importAboBlacklist(selectedFile.getAbsolutePath(), false, false, true);
                     var alert = new ImportSettingsAlert(Alert.AlertType.INFORMATION);
-                    String text = "Es wurden " + result.right + " Einräge importiert.";
+                    String text = "Es wurden " + result.right + " Einträge importiert.";
                     alert.setContentText(text);
                     alert.showAndWait();
                 } catch (Exception ex) {
