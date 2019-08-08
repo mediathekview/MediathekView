@@ -234,16 +234,33 @@ public class PanelFilmlisteLaden extends JPanel {
         //======== jPanelManuel ========
         {
             jPanelManuel.setBorder(new TitledBorder(new LineBorder(Color.blue), "Filmliste nur manuell laden")); //NON-NLS
+            jPanelManuel.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .grow().fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
 
             //---- jLabel1 ----
             jLabel1.setText("URL/Datei:"); //NON-NLS
+            jPanelManuel.add(jLabel1, new CC().cell(0, 1));
+            jPanelManuel.add(jTextFieldUrl, new CC().cell(1, 1, 2, 1));
 
             //---- jButtonDateiAuswaehlen ----
             jButtonDateiAuswaehlen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste ausw\u00e4hlen"); //NON-NLS
+            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1));
 
             //---- jButtonFilmeLaden ----
             jButtonFilmeLaden.setText("Filme jetzt laden"); //NON-NLS
+            jPanelManuel.add(jButtonFilmeLaden, new CC().cell(2, 2, 2, 1));
 
             //======== jScrollPane3 ========
             {
@@ -252,50 +269,17 @@ public class PanelFilmlisteLaden extends JPanel {
                 jTextAreaManuell.setEditable(false);
                 jTextAreaManuell.setColumns(20);
                 jTextAreaManuell.setRows(4);
-                jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden angegeben werden."); //NON-NLS
+                jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
                 jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
+                jTextAreaManuell.setWrapStyleWord(true);
+                jTextAreaManuell.setLineWrap(true);
                 jScrollPane3.setViewportView(jTextAreaManuell);
             }
+            jPanelManuel.add(jScrollPane3, new CC().cell(0, 0, 4, 1));
 
             //---- jCheckBoxUpdate ----
             jCheckBoxUpdate.setText("alte Filmliste nicht l\u00f6schen, nur erweitern"); //NON-NLS
-
-            GroupLayout jPanelManuelLayout = new GroupLayout(jPanelManuel);
-            jPanelManuel.setLayout(jPanelManuelLayout);
-            jPanelManuelLayout.setHorizontalGroup(
-                jPanelManuelLayout.createParallelGroup()
-                    .addGroup(jPanelManuelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanelManuelLayout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldUrl)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonDateiAuswaehlen))
-                            .addComponent(jScrollPane3)
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
-                                .addComponent(jCheckBoxUpdate)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 298, Short.MAX_VALUE)
-                                .addComponent(jButtonFilmeLaden)))
-                        .addContainerGap())
-            );
-            jPanelManuelLayout.setVerticalGroup(
-                jPanelManuelLayout.createParallelGroup()
-                    .addGroup(jPanelManuelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanelManuelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(jButtonDateiAuswaehlen))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelManuelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButtonFilmeLaden)
-                            .addComponent(jCheckBoxUpdate))
-                        .addContainerGap())
-            );
-            jPanelManuelLayout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonDateiAuswaehlen, jLabel1, jTextFieldUrl});
+            jPanelManuel.add(jCheckBoxUpdate, new CC().cell(0, 2, 2, 1));
         }
 
         //======== jPanel1 ========
