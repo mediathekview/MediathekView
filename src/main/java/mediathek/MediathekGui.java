@@ -692,6 +692,7 @@ public class MediathekGui extends JFrame {
 
         //on macOS we will use native handlers instead...
         if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuDatei.addSeparator();
             jMenuDatei.add(new SettingsAction(this));
             jMenuDatei.addSeparator();
             jMenuDatei.add(new QuitAction(this));
