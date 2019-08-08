@@ -176,7 +176,6 @@ public class PanelFilmlisteLaden extends JPanel {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         var jPanelAuto = new JPanel();
-        var jScrollPane2 = new JScrollPane();
         jTextAreaAuto = new JTextArea();
         jButtonLoad = new JButton();
         var jPanelManuel = new JPanel();
@@ -184,7 +183,6 @@ public class PanelFilmlisteLaden extends JPanel {
         jTextFieldUrl = new JTextField();
         jButtonDateiAuswaehlen = new JButton();
         jButtonFilmeLaden = new JButton();
-        var jScrollPane3 = new JScrollPane();
         jTextAreaManuell = new JTextArea();
         jCheckBoxUpdate = new JCheckBox();
         jRadioButtonAuto = new JRadioButton();
@@ -221,22 +219,18 @@ public class PanelFilmlisteLaden extends JPanel {
                 // rows
                 new AC()
                     .fill().gap()
-                    .fill()));
+                    .fill().gap()
+                    ));
 
-            //======== jScrollPane2 ========
-            {
-
-                //---- jTextAreaAuto ----
-                jTextAreaAuto.setEditable(false);
-                jTextAreaAuto.setColumns(20);
-                jTextAreaAuto.setRows(4);
-                jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."); //NON-NLS
-                jTextAreaAuto.setMargin(new Insets(4, 4, 4, 4));
-                jTextAreaAuto.setWrapStyleWord(true);
-                jTextAreaAuto.setLineWrap(true);
-                jScrollPane2.setViewportView(jTextAreaAuto);
-            }
-            jPanelAuto.add(jScrollPane2, new CC().cell(0, 0, 2, 1));
+            //---- jTextAreaAuto ----
+            jTextAreaAuto.setEditable(false);
+            jTextAreaAuto.setColumns(20);
+            jTextAreaAuto.setRows(4);
+            jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."); //NON-NLS
+            jTextAreaAuto.setMargin(new Insets(4, 4, 4, 4));
+            jTextAreaAuto.setWrapStyleWord(true);
+            jTextAreaAuto.setLineWrap(true);
+            jPanelAuto.add(jTextAreaAuto, new CC().cell(0, 0, 2, 1));
 
             //---- jButtonLoad ----
             jButtonLoad.setText("Filme jetzt laden"); //NON-NLS
@@ -259,7 +253,8 @@ public class PanelFilmlisteLaden extends JPanel {
                 new AC()
                     .fill().gap()
                     .fill().gap()
-                    .fill()));
+                    .fill().gap()
+                    ));
 
             //---- jLabel1 ----
             jLabel1.setText("URL/Datei:"); //NON-NLS
@@ -275,20 +270,15 @@ public class PanelFilmlisteLaden extends JPanel {
             jButtonFilmeLaden.setText("Filme jetzt laden"); //NON-NLS
             jPanelManuel.add(jButtonFilmeLaden, new CC().cell(2, 2, 2, 1));
 
-            //======== jScrollPane3 ========
-            {
-
-                //---- jTextAreaManuell ----
-                jTextAreaManuell.setEditable(false);
-                jTextAreaManuell.setColumns(20);
-                jTextAreaManuell.setRows(4);
-                jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
-                jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
-                jTextAreaManuell.setWrapStyleWord(true);
-                jTextAreaManuell.setLineWrap(true);
-                jScrollPane3.setViewportView(jTextAreaManuell);
-            }
-            jPanelManuel.add(jScrollPane3, new CC().cell(0, 0, 4, 1));
+            //---- jTextAreaManuell ----
+            jTextAreaManuell.setEditable(false);
+            jTextAreaManuell.setColumns(20);
+            jTextAreaManuell.setRows(4);
+            jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
+            jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
+            jTextAreaManuell.setWrapStyleWord(true);
+            jTextAreaManuell.setLineWrap(true);
+            jPanelManuel.add(jTextAreaManuell, new CC().cell(0, 0, 4, 1));
 
             //---- jCheckBoxUpdate ----
             jCheckBoxUpdate.setText("alte Filmliste nicht l\u00f6schen, nur erweitern"); //NON-NLS

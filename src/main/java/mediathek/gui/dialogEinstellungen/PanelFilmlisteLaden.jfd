@@ -14,28 +14,22 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[grow,fill][grow,fill]"
-				"$rowConstraints": "[fill][fill]"
+				"$rowConstraints": "[fill][fill][]"
 			} ) {
 				name: "jPanelAuto"
 				"border": new javax.swing.border.TitledBorder( "Die Filmliste automatisch laden" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane2"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "jTextAreaAuto"
-						"editable": false
-						"columns": 20
-						"rows": 4
-						"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn sie älter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."
-						"margin": new java.awt.Insets( 4, 4, 4, 4 )
-						"wrapStyleWord": true
-						"lineWrap": true
-					} )
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextAreaAuto"
+					"editable": false
+					"columns": 20
+					"rows": 4
+					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn sie älter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."
+					"margin": new java.awt.Insets( 4, 4, 4, 4 )
+					"wrapStyleWord": true
+					"lineWrap": true
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0 2 1"
 				} )
@@ -51,7 +45,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[fill][grow,fill][fill][fill]"
-				"$rowConstraints": "[fill][fill][fill]"
+				"$rowConstraints": "[fill][fill][fill][]"
 			} ) {
 				name: "jPanelManuel"
 				"border": new javax.swing.border.TitledBorder( "Filmliste nur manuell laden" )
@@ -85,21 +79,15 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 2 2 2 1"
 				} )
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "jScrollPane3"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "jTextAreaManuell"
-						"editable": false
-						"columns": 20
-						"rows": 4
-						"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."
-						"margin": new java.awt.Insets( 4, 4, 4, 4 )
-						"wrapStyleWord": true
-						"lineWrap": true
-					} )
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextAreaManuell"
+					"editable": false
+					"columns": 20
+					"rows": 4
+					"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."
+					"margin": new java.awt.Insets( 4, 4, 4, 4 )
+					"wrapStyleWord": true
+					"lineWrap": true
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0 4 1"
 				} )
