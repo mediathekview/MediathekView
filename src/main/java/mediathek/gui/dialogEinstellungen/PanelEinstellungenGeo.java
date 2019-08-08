@@ -4,7 +4,6 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
@@ -14,11 +13,13 @@ import org.apache.commons.configuration2.Configuration;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class PanelEinstellungenGeo extends PanelVorlage {
-    public PanelEinstellungenGeo(Daten d, JFrame pparentComponent) {
-        super(d, pparentComponent);
+public class PanelEinstellungenGeo extends JPanel {
+    private final JFrame parentComponent;
+
+    public PanelEinstellungenGeo(JFrame pparentComponent) {
+        parentComponent = pparentComponent;
+
         initComponents();
-        daten = d;
         init();
     }
 
@@ -72,6 +73,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void melden() {
+        var daten = Daten.getInstance();
         daten.getListeBlacklist().filterListe();
         daten.getMessageBus().publishAsync(new GeoStateChangedEvent());
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, PanelEinstellungenGeo.class.getSimpleName());

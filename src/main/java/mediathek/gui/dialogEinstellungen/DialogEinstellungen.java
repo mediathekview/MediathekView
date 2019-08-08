@@ -87,7 +87,7 @@ public class DialogEinstellungen extends JFrame {
         panelDownload = new PanelDownload(ddaten, this);
         panelMediaDB = new PanelMediaDB(ddaten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, this);
-        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, this);
+        panelEinstellungenGeo = new PanelEinstellungenGeo(this);
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
         panelImportFilme = new PanelFilmlisteLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
