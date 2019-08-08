@@ -25,7 +25,7 @@ public class FilmListExportAction extends AbstractAction {
         super();
         this.gui = gui;
 
-        putValue(NAME, "Filmliste exportieren...");
+        putValue(NAME, "Filmliste...");
     }
 
     private void export(File selectedFile) {
