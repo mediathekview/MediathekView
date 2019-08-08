@@ -47,7 +47,8 @@ new FormModel {
 						"columns": 20
 						"lineWrap": true
 						"rows": 5
-						"text": "Damit können Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angehängt.\n"
+						"text": "Damit können Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten Konfigurationsdatei importiert werden (mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..).\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden, sollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden an die vorhandenen angehängt.\n"
+						"wrapStyleWord": true
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}

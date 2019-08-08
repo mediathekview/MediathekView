@@ -165,7 +165,8 @@ public class PanelImport extends JPanel {
                 jTextArea1.setColumns(20);
                 jTextArea1.setLineWrap(true);
                 jTextArea1.setRows(5);
-                jTextArea1.setText("Damit k\u00f6nnen Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gel\u00f6scht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angeh\u00e4ngt.\n"); //NON-NLS
+                jTextArea1.setText("Damit k\u00f6nnen Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten Konfigurationsdatei importiert werden (mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..).\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden, sollten die aktuellen zuerst gel\u00f6scht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden an die vorhandenen angeh\u00e4ngt.\n"); //NON-NLS
+                jTextArea1.setWrapStyleWord(true);
                 jScrollPane1.setViewportView(jTextArea1);
             }
 
