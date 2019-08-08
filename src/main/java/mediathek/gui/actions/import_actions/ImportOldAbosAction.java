@@ -2,7 +2,10 @@ package mediathek.gui.actions.import_actions;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
 import mediathek.config.Konstanten;
+import mediathek.controller.IoXmlLesen;
+import mediathek.tool.javafx.FXErrorDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,17 +13,33 @@ import java.awt.event.ActionEvent;
 public class ImportOldAbosAction extends AbstractAction {
     public ImportOldAbosAction() {
         putValue(Action.NAME, "Alte Abos...");
-        //putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
-        //putValue(Action.SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.COGS, 16));
+        putValue(Action.SHORT_DESCRIPTION, "Ermöglicht den Import der Abos aus einer alten Konfigurationsdatei.");
     }
     @Override
     public void actionPerformed(ActionEvent e) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText("Abos importieren");
-            alert.setContentText("Diese Funktion ist noch nicht implementiert");
-            alert.showAndWait();
-        });
-    }
+            var fileChooser = new FileChooser();
+            fileChooser.setTitle("Konfigurationsdatei öffnen");
+            var selectedFile = fileChooser.showOpenDialog(null);
+            if (selectedFile != null) {
+                try {
+                    var configReader = new IoXmlLesen();
+                    var result = configReader.importAboBlacklist(selectedFile.getAbsolutePath(), true, false, false);
+                    var alert = new ImportSettingsAlert(Alert.AlertType.INFORMATION);
+                    String text = "Es wurden " + result.right + " Einräge importiert.";
+                    alert.setContentText(text);
+                    alert.showAndWait();
+                } catch (Exception ex) {
+                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
+                            "Fehler beim Importieren der Abos",
+                            "Es trat ein Fehler beim Import der Abos auf.\n" +
+                                    "Sollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                            ex);
+                }
+            } else {
+                var alert = new ImportSettingsAlert(Alert.AlertType.WARNING);
+                alert.setContentText("Der Import der Abos wurde abgebrochen.");
+                alert.showAndWait();
+            }
+        });    }
 }
