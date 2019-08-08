@@ -41,5 +41,6 @@ public class ImportOldAbosAction extends AbstractAction {
                 alert.setContentText("Der Import der Abos wurde abgebrochen.");
                 alert.showAndWait();
             }
-        });    }
+        });
+    }
 }
