@@ -1,0 +1,86 @@
+JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, comp jPanel6:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space ::5:x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {par l {seq t {space :::p, comp jScrollPane1:::::x}, seq l {space ::12:p, comp jLabel7:::p::p, space :::p, par l {seq {comp jTextFieldDatei:::::x, space :::p, comp jButtonPfad:::p::p}, seq l {par l {comp jCheckBoxAbo:::p::p, comp jCheckBoxBlack:::p::p, comp jCheckBoxErsetzungstabelle::l:p::p}, space ::401:x, comp jButtonImportDatei:::p::p}}}, seq {space :::p, par l {seq l {comp jLabel1:::p::p, space :0:497:x}, comp jTextFieldPfadKonfig::t:::x}}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par l {comp jButtonPfad:1::p::p, par b {comp jTextFieldDatei:1:b:p::p, comp jLabel7::b:p::p}}, space s:::p, par l {comp jButtonImportDatei::l:p::p, seq l {comp jCheckBoxAbo:::p::p, space :::p, comp jCheckBoxBlack:::p::p}}, space :::p, comp jCheckBoxErsetzungstabelle:::p::p, space :::p, comp jScrollPane1:::p:205:p, space :::p, comp jLabel1:::p::p, space :::p, comp jTextFieldPfadKonfig:1::p::p, space :::x}}"
+			} ) {
+				name: "jPanel6"
+				"border": new javax.swing.border.TitledBorder( "Abos und Blacklist aus Datei importieren" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldDatei"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonPfad"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Datei auswählen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonImportDatei"
+					"text": "Import"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel7"
+					"text": "Datei:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "jTextArea1"
+						"editable": false
+						"columns": 20
+						"lineWrap": true
+						"rows": 5
+						"text": "Damit können Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angehängt.\n"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxAbo"
+					"text": "Abos importieren"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxBlack"
+					"text": "Blacklist importieren"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "aktuelle Konfigurationsdatei:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldPfadKonfig"
+					"editable": false
+					"text": "jTextField1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxErsetzungstabelle"
+					"text": "Ersetzungstabelle"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 710, 430 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
