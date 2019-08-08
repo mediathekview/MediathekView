@@ -17,7 +17,7 @@ new FormModel {
 				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanelAuto"
-				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 255, 255 ), 1, false ), "Die Filmliste automatisch laden" )
+				"border": new javax.swing.border.TitledBorder( "Die Filmliste automatisch laden" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -54,7 +54,7 @@ new FormModel {
 				"$rowConstraints": "[fill][fill][fill]"
 			} ) {
 				name: "jPanelManuel"
-				"border": new javax.swing.border.TitledBorder( new javax.swing.border.LineBorder( new java.awt.Color( 0, 0, 255, 255 ), 1, false ), "Filmliste nur manuell laden" )
+				"border": new javax.swing.border.TitledBorder( "Filmliste nur manuell laden" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}

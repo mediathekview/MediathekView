@@ -15,7 +15,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -212,7 +211,7 @@ public class PanelFilmlisteLaden extends JPanel {
 
         //======== jPanelAuto ========
         {
-            jPanelAuto.setBorder(new TitledBorder(new LineBorder(Color.blue), "Die Filmliste automatisch laden")); //NON-NLS
+            jPanelAuto.setBorder(new TitledBorder("Die Filmliste automatisch laden")); //NON-NLS
             jPanelAuto.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
                 // columns
@@ -247,7 +246,7 @@ public class PanelFilmlisteLaden extends JPanel {
 
         //======== jPanelManuel ========
         {
-            jPanelManuel.setBorder(new TitledBorder(new LineBorder(Color.blue), "Filmliste nur manuell laden")); //NON-NLS
+            jPanelManuel.setBorder(new TitledBorder("Filmliste nur manuell laden")); //NON-NLS
             jPanelManuel.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
                 // columns
