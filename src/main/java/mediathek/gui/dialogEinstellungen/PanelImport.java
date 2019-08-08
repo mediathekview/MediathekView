@@ -4,7 +4,6 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
-import mediathek.gui.PanelVorlage;
 import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
@@ -12,6 +11,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -21,9 +21,12 @@ import java.io.File;
 import java.nio.file.Path;
 
 @SuppressWarnings("serial")
-public class PanelImport extends PanelVorlage {
-    public PanelImport(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+public class PanelImport extends JPanel {
+    private final JFrame parentComponent;
+
+    public PanelImport(JFrame parentComponent) {
+        super();
+        this.parentComponent = parentComponent;
         initComponents();
         init();
     }
@@ -60,141 +63,6 @@ public class PanelImport extends PanelVorlage {
     private void setButtonImport() {
         jButtonImportDatei.setEnabled(!jTextFieldDatei.getText().isEmpty() && (jCheckBoxAbo.isSelected() || jCheckBoxBlack.isSelected() || jCheckBoxErsetzungstabelle.isSelected()));
     }
-
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        jTextFieldDatei = new javax.swing.JTextField();
-        jButtonPfad = new javax.swing.JButton();
-        jButtonImportDatei = new javax.swing.JButton();
-        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
-        jCheckBoxAbo = new javax.swing.JCheckBox();
-        jCheckBoxBlack = new javax.swing.JCheckBox();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jTextFieldPfadKonfig = new javax.swing.JTextField();
-        jCheckBoxErsetzungstabelle = new javax.swing.JCheckBox();
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
-
-        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonPfad.setToolTipText("Datei auswählen");
-
-        jButtonImportDatei.setText("Import");
-
-        jLabel7.setText("Datei:");
-
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Damit können Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angehängt.\n");
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jCheckBoxAbo.setText("Abos importieren");
-
-        jCheckBoxBlack.setText("Blacklist importieren");
-
-        jLabel1.setText("aktuelle Konfigurationsdatei:");
-
-        jTextFieldPfadKonfig.setEditable(false);
-        jTextFieldPfadKonfig.setText("jTextField1");
-
-        jCheckBoxErsetzungstabelle.setText("Ersetzungstabelle");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jTextFieldPfadKonfig))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jScrollPane1))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel1)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                                                .addContainerGap(12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel7)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                                                .addComponent(jTextFieldDatei)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jButtonPfad))
-                                                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                                                .addComponent(jCheckBoxAbo)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 379, Short.MAX_VALUE)
-                                                                .addComponent(jButtonImportDatei))
-                                                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(jCheckBoxErsetzungstabelle)
-                                                                        .addComponent(jCheckBoxBlack))
-                                                                .addGap(0, 0, Short.MAX_VALUE)))))
-                                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jButtonPfad)
-                                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(jTextFieldDatei, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel7)))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jButtonImportDatei)
-                                        .addComponent(jCheckBoxAbo))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBoxBlack)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBoxErsetzungstabelle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldPfadKonfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-        );
-
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonPfad, jTextFieldDatei, jTextFieldPfadKonfig});
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonImportDatei;
-    private javax.swing.JButton jButtonPfad;
-    private javax.swing.JCheckBox jCheckBoxAbo;
-    private javax.swing.JCheckBox jCheckBoxBlack;
-    private javax.swing.JCheckBox jCheckBoxErsetzungstabelle;
-    private javax.swing.JTextField jTextFieldDatei;
-    private javax.swing.JTextField jTextFieldPfadKonfig;
-    // End of variables declaration//GEN-END:variables
 
     private class BeobPfadDoc implements DocumentListener {
 
@@ -255,4 +123,157 @@ public class PanelImport extends PanelVorlage {
             }
         }
     }
+
+
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
+    private void initComponents() {
+        var jPanel6 = new JPanel();
+        jTextFieldDatei = new JTextField();
+        jButtonPfad = new JButton();
+        jButtonImportDatei = new JButton();
+        var jLabel7 = new JLabel();
+        var jScrollPane1 = new JScrollPane();
+        var jTextArea1 = new JTextArea();
+        jCheckBoxAbo = new JCheckBox();
+        jCheckBoxBlack = new JCheckBox();
+        var jLabel1 = new JLabel();
+        jTextFieldPfadKonfig = new JTextField();
+        jCheckBoxErsetzungstabelle = new JCheckBox();
+
+        //======== this ========
+
+        //======== jPanel6 ========
+        {
+            jPanel6.setBorder(new TitledBorder("Abos und Blacklist aus Datei importieren")); //NON-NLS
+
+            //---- jButtonPfad ----
+            jButtonPfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonPfad.setToolTipText("Datei ausw\u00e4hlen"); //NON-NLS
+
+            //---- jButtonImportDatei ----
+            jButtonImportDatei.setText("Import"); //NON-NLS
+
+            //---- jLabel7 ----
+            jLabel7.setText("Datei:"); //NON-NLS
+
+            //======== jScrollPane1 ========
+            {
+
+                //---- jTextArea1 ----
+                jTextArea1.setEditable(false);
+                jTextArea1.setColumns(20);
+                jTextArea1.setLineWrap(true);
+                jTextArea1.setRows(5);
+                jTextArea1.setText("Damit k\u00f6nnen Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gel\u00f6scht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angeh\u00e4ngt.\n"); //NON-NLS
+                jScrollPane1.setViewportView(jTextArea1);
+            }
+
+            //---- jCheckBoxAbo ----
+            jCheckBoxAbo.setText("Abos importieren"); //NON-NLS
+
+            //---- jCheckBoxBlack ----
+            jCheckBoxBlack.setText("Blacklist importieren"); //NON-NLS
+
+            //---- jLabel1 ----
+            jLabel1.setText("aktuelle Konfigurationsdatei:"); //NON-NLS
+
+            //---- jTextFieldPfadKonfig ----
+            jTextFieldPfadKonfig.setEditable(false);
+            jTextFieldPfadKonfig.setText("jTextField1"); //NON-NLS
+
+            //---- jCheckBoxErsetzungstabelle ----
+            jCheckBoxErsetzungstabelle.setText("Ersetzungstabelle"); //NON-NLS
+
+            GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
+            jPanel6.setLayout(jPanel6Layout);
+            jPanel6Layout.setHorizontalGroup(
+                jPanel6Layout.createParallelGroup()
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addContainerGap(12, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel6Layout.createParallelGroup()
+                                    .addGroup(jPanel6Layout.createSequentialGroup()
+                                        .addComponent(jTextFieldDatei)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonPfad))
+                                    .addGroup(jPanel6Layout.createSequentialGroup()
+                                        .addGroup(jPanel6Layout.createParallelGroup()
+                                            .addComponent(jCheckBoxAbo)
+                                            .addComponent(jCheckBoxBlack)
+                                            .addComponent(jCheckBoxErsetzungstabelle))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 401, Short.MAX_VALUE)
+                                        .addComponent(jButtonImportDatei))))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel6Layout.createParallelGroup()
+                                    .addGroup(jPanel6Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(0, 497, Short.MAX_VALUE))
+                                    .addComponent(jTextFieldPfadKonfig, GroupLayout.Alignment.TRAILING))))
+                        .addContainerGap())
+            );
+            jPanel6Layout.setVerticalGroup(
+                jPanel6Layout.createParallelGroup()
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel6Layout.createParallelGroup()
+                            .addComponent(jButtonPfad)
+                            .addGroup(jPanel6Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jTextFieldDatei, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel7)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel6Layout.createParallelGroup()
+                            .addComponent(jButtonImportDatei)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxAbo)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBoxBlack)))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBoxErsetzungstabelle)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPfadKonfig, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            jPanel6Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonPfad, jTextFieldDatei, jTextFieldPfadKonfig});
+        }
+
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(5, Short.MAX_VALUE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JTextField jTextFieldDatei;
+    private JButton jButtonPfad;
+    private JButton jButtonImportDatei;
+    private JCheckBox jCheckBoxAbo;
+    private JCheckBox jCheckBoxBlack;
+    private JTextField jTextFieldPfadKonfig;
+    private JCheckBox jCheckBoxErsetzungstabelle;
+    // End of variables declaration//GEN-END:variables
 }
