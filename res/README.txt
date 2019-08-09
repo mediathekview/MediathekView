@@ -37,9 +37,8 @@ https://mediathekview.de/faq/#mediathekview-startet-nicht
   kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
 
 * Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows): Die 
-  benötigten Java-Bibliotheken (libs) oder die Hilfsprogramme (im Ordner "bin") 
-  fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
-  wurden -> Neuinstallation.
+  benötigten Hilfsprogramme (im Ordner "bin") fehlen, da Dateien aus dem 
+  MediathekView-Programmordner gelöscht oder verschoben wurden -> Neuinstallation.
 
 
 ###########################################################################
@@ -78,11 +77,10 @@ Starten:
 Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
-Für OS X 10.7.3 und neuer besteht eine eigenständige Applikation (MediathekView.app);
+Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
-Ansonsten kann man die Programmdatei auch so starten:
-Windows: Doppelklick auf "MediathekView.jar"
-Linux (in der Konsole): java -jar MediathekView.jar
+Ansonsten kann man die Programmdatei unter Linux auch so starten:
+java -Xmx1G -jar MediathekView.jar
 
 
 ===========================================================    
@@ -100,7 +98,7 @@ Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
 Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
-"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 512MB ist nicht möglich.)
+"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 1GB ist nicht möglich.)
 
 
 ===========================================================    
@@ -130,9 +128,6 @@ Einstellungen			F4
 neue Filmliste			F5
 Programm beenden		ctrl + q
 
-Filter löschen			ctrl + l
-Blacklist anzeigen		ctrl + b
-
 Beschreibung anzeigen	F10
 Buttons anzeigen		F11
 
@@ -143,17 +138,9 @@ ctrl + p	Film abspielen
 return		Film abspielen (in der Tabelle Filme)
 ctrl + d	Download erstellen
 
-ctrl + t	springt in die Tabelle
-ctrl + s	Die Tabelle wird nach Sender sortiert und der Focus wir auf 
-			die erste Tabellenzeile gesetzt
-ctrl + f	springt ins Suchfeld 
-			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es 
-			angezeigt wird)
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
-ctrl + u	Film-URL kopieren
-ctrl + h	Film-URL in "HD" kopieren (wenn nicht vorhanden, dann normale URL)
-ctrl + k	Film-URL in "Klein" kopieren (wenn nicht vorhanden, dann normale URL)
+
 ctrl + g	Filme als gesehen markieren
 ctrl + n	Filme als ungesehen markieren
 
@@ -166,17 +153,12 @@ Entf		Download dauerhaft löschen
 ctrl + w	Downloads aktualisieren
 return		Download ändern (in der Tabelle Downloads)
 
-ctrl + t	springt in die Tabelle
+
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
-ctrl + u	URL kopieren
-ctrl + g	Filme als gesehen markieren
-ctrl + n	Filme als ungesehen markieren	
 
 
 Tab Abos
 =========
 Entf		Abos löschen
 Return		Abos ändern (in der Tabelle Abos)
-
-ctrl + t	springt in die Tabelle
