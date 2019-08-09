@@ -1,27 +1,6 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2012   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.DatenProg;
@@ -29,7 +8,10 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.Listener;
+import mediathek.tool.Log;
+import mediathek.tool.TextCopyPasteHandler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -81,9 +63,12 @@ public class PanelPsetKurz extends PanelVorlage {
 
     private void initBeob() {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
+        var handler = new TextCopyPasteHandler<>(jTextFieldName);
+        jTextFieldName.setComponentPopupMenu(handler.getPopupMenu());
+
         jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
-        jTextFieldName.addMouseListener(new TextCopyPaste());
-        jTextFieldZiel.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldZiel);
+        jTextFieldZiel.setComponentPopupMenu(handler.getPopupMenu());
 
         jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
     }
@@ -173,7 +158,8 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weightx = 10;
         JTextField textField = new JTextField(arr[idx]);
         textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, idx));
-        textField.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(textField);
+        textField.setComponentPopupMenu(handler.getPopupMenu());
         gridbag.setConstraints(textField, c);
         panel.add(textField);
         // Button
@@ -376,12 +362,12 @@ public class PanelPsetKurz extends PanelVorlage {
                 return;
             }
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 if (!file) {
                     System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 }
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

@@ -1,11 +1,12 @@
 package mediathek.tool.cellrenderer;
 
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
-import mediathek.config.Icons;
+import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.GeoStateChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVSenderIconCache;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
@@ -15,8 +16,6 @@ import java.awt.*;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
-    protected static final ImageIcon film_start_tab = Icons.ICON_TABELLE_FILM_START;
-    protected static final ImageIcon film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
     private static final long serialVersionUID = 1659689253119935809L;
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected boolean geoMelden;
@@ -24,13 +23,14 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     public CellRendererBaseWithStart(MVSenderIconCache cache) {
         super(cache);
 
+        Daten.getInstance().getMessageBus().subscribe(this);
+
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererBaseWithStart.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
-            }
-        });
+    }
+
+    @Handler
+    private void handleGeoStateChanged(GeoStateChangedEvent e) {
+        SwingUtilities.invokeLater(() -> geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false));
     }
 
     protected void setBackgroundColor(final Component c, final Start s, final boolean isSelected) {

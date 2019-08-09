@@ -1,30 +1,14 @@
-/*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.update;
 
-import mSearch.tool.Log;
-import mSearch.tool.MVHttpClient;
-import mSearch.tool.Version;
-import mediathek.config.Daten;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.tool.Log;
+import mediathek.tool.MVHttpClient;
+import mediathek.tool.Version;
+import mediathek.tool.javafx.FXErrorDialog;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -44,43 +28,44 @@ import java.util.Optional;
 
 public class ProgrammUpdateSuchen {
     private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
-    private static final String UPDATE_ERROR_MESSAGE = "<html>Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.<br>" +
-            "Die aktuelle Version konnte nicht ermittelt werden.</html>";
-    /**
-     * Connection timeout in milliseconds.
-     */
-    private final ArrayList<String[]> listInfos = new ArrayList<>();
-
+    private static final String UPDATE_ERROR_MESSAGE = "Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.\n" +
+            "Die aktuelle Version konnte nicht ermittelt werden.";
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
+    private final ArrayList<String[]> listInfos = new ArrayList<>();
 
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        if (!opt.isPresent()) {
-            logger.warn("did not receive ServerProgramInformation");
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE));
-        }
-        else {
+        opt.ifPresentOrElse(progInfo -> {
             // Update-Info anzeigen
-            final ServerProgramInformation progInfo = opt.get();
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
                 if (progInfo.getVersion().toNumber() == 0) {
-                    JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
+                    Exception ex = new RuntimeException("progInfo.getVersion() == 0");
+                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("getVersion().toNumber() == 0");
-                }
-                else {
+                } else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(Daten.getInstance().getMediathekGui(), "Software Update", progInfo);
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo);
                         dlg.setVisible(true);
                     } else if (anzeigen) {
-                        JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle(Konstanten.PROGRAMMNAME);
+                            alert.setHeaderText(UPDATE_SEARCH_TITLE);
+                            alert.setContentText("Sie benutzen die neueste Version von MediathekView.");
+                            alert.show();
+                        });
                     }
                 }
             });
-        }
+        }, () -> {
+            logger.warn("did not receive ServerProgramInformation");
+            Exception ex = new RuntimeException("Did not receive ServerProgramInformation");
+            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
+        });
     }
 
     private void displayInfoMessages(boolean showAll) {
@@ -116,7 +101,13 @@ public class ProgrammUpdateSuchen {
     }
 
     private void displayNoNewInfoMessage() {
-        JOptionPane.showMessageDialog(null, "Es liegen keine Programminfos vor.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Konstanten.PROGRAMMNAME);
+            alert.setHeaderText(UPDATE_SEARCH_TITLE);
+            alert.setContentText("Es liegen keine Programminfos vor.");
+            alert.showAndWait();
+        });
     }
 
     private void showProgramInformation(boolean showAll) {

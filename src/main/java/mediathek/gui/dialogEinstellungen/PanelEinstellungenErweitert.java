@@ -1,37 +1,20 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.ProgramLocationChangedEvent;
+import mediathek.tool.Functions.OperatingSystemType;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.TextCopyPasteHandler;
+import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -41,10 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends PanelVorlage {
+    @Handler
+    private void handleProgramLocationChangedEvent(ProgramLocationChangedEvent e) {
+        SwingUtilities.invokeLater(this::init);
+    }
+
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -54,22 +42,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         setIcon();
         setHelp();
 
-//        jRadioButtonAuto.addActionListener(e -> setUserAgent());
-//        jRadioButtonManuel.addActionListener(e -> setUserAgent());
-//
-//        jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
-        Listener.addListener(new Listener(Listener.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                init();
-            }
-        });
         jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
         jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
         jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
         jCheckBoxDownloadSofortStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
 
-        // ====================================
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
         jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
         jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
@@ -77,15 +54,18 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
-        jTextFieldProgrammDateimanager.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldProgrammDateimanager);
+        jTextFieldProgrammDateimanager.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN));
         jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
-        jTextFieldVideoplayer.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldVideoplayer);
+        jTextFieldVideoplayer.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
-        jTextFieldProgrammUrl.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldProgrammUrl);
+        jTextFieldProgrammUrl.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN));
         if (jTextFieldProgrammShutdown.getText().isEmpty()) {
@@ -93,7 +73,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
-        jTextFieldProgrammShutdown.addMouseListener(new TextCopyPaste());
+        handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
+        jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
         if (getOs() != OperatingSystemType.LINUX) {
             // Funktion ist nur für Linux
@@ -101,35 +82,20 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jTextFieldProgrammShutdown.setEnabled(false);
             jButtonProgrammShutdown.setEnabled(false);
         }
+
+        daten.getMessageBus().subscribe(this);
+    }
+
+    private String getWebBrowserLocation() {
+        return MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
     }
 
     private void init() {
-//        // UserAgent
-//        jRadioButtonAuto.setSelected(Daten.isUserAgentAuto());
-//        jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
-//
-//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-//        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.Configs.SYSTEM_USER_AGENT));
-//        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
-
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
     }
 
-//    private void setUserAgent() {
-//        if (jRadioButtonAuto.isSelected()) {
-//            Daten.setUserAgentAuto();
-//        } else {
-//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-//        }
-//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-//    }
-
     private void setHelp() {
-//        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-//                + "Dieser Text wird als User-Agent\n"
-//                + "an den Webserver übertragen. Das entspricht\n"
-//                + "der Kennung, die auch die Browser senden.").setVisible(true));
         jButtonHilfeProgrammDateimanager.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Im Tab \"Downloads\" kann man mit der rechten\n"
                 + "Maustaste den Downloadordner (Zielordner)\n"
@@ -172,7 +138,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void setIcon() {
-//        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeNeuladen.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
@@ -183,6 +148,100 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        MVConfig.Configs config;
+        JTextField txt;
+
+        public BeobDoc(MVConfig.Configs config, JTextField txt) {
+            this.config = config;
+            this.txt = txt;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            MVConfig.add(config, txt.getText());
+        }
+
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        MVConfig.Configs config;
+        String title;
+        JTextField textField;
+
+        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
+            this.config = config;
+            this.title = title;
+            this.textField = textField;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), title);
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        textField.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(915263014, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!textField.getText().isEmpty()) {
+                    chooser.setCurrentDirectory(new File(textField.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(751214501, ex);
+                    }
+                }
+            }
+            // merken und prüfen
+            MVConfig.add(config, textField.getText());
+            String programm = textField.getText();
+            if (!programm.isEmpty()) {
+                try {
+                    if (!new File(programm).exists()) {
+                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else if (!new File(programm).canExecute()) {
+                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -436,120 +495,4 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgrammUrl;
     private javax.swing.JTextField jTextFieldVideoplayer;
     // End of variables declaration//GEN-END:variables
-
-//    private class BeobUserAgent implements DocumentListener {
-//
-//        @Override
-//        public void insertUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        @Override
-//        public void removeUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        @Override
-//        public void changedUpdate(DocumentEvent e) {
-//            tus();
-//        }
-//
-//        private void tus() {
-//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-//        }
-//    }
-
-    private class BeobDoc implements DocumentListener {
-
-        MVConfig.Configs config;
-        JTextField txt;
-
-        public BeobDoc(MVConfig.Configs config, JTextField txt) {
-            this.config = config;
-            this.txt = txt;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            MVConfig.add(config, txt.getText());
-        }
-
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        MVConfig.Configs config;
-        String title;
-        JTextField textField;
-
-        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
-            this.config = config;
-            this.title = title;
-            this.textField = textField;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), title);
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        textField.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(915263014, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!textField.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(textField.getText()));
-                } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(751214501, ex);
-                    }
-                }
-            }
-            // merken und prüfen
-            MVConfig.add(config, textField.getText());
-            String programm = textField.getText();
-            if (!programm.equals("")) {
-                try {
-                    if (!new File(programm).exists()) {
-                        MVMessageDialog.showMessageDialog(daten.getMediathekGui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                    } else if (!new File(programm).canExecute()) {
-                        MVMessageDialog.showMessageDialog(daten.getMediathekGui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-
-        }
-
-    }
 }

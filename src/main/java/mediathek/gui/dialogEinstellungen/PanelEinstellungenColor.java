@@ -1,28 +1,14 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.*;
+import mediathek.tool.CellRendererColor;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVC;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +32,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
         jTable1.setModel(getModel());
         jButtonReset.addActionListener(e -> {
             Daten.mVColor.reset();
-            GuiFunktionen.updateGui(daten.getMediathekGui());
+            GuiFunktionen.updateGui(MediathekGui.ui());
             Daten.mVColor.save();
         });
     }
@@ -58,7 +44,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
             if (!dialog.farbe.equals(mvc.color)) {
                 mvc.set(dialog.farbe);
                 jTable1.setModel(getModel());
-                GuiFunktionen.updateGui(daten.getMediathekGui());
+                GuiFunktionen.updateGui(MediathekGui.ui());
                 Daten.mVColor.save();
             }
         }
@@ -131,13 +117,11 @@ public class PanelEinstellungenColor extends PanelVorlage {
 
     public class BeobMausTabelle extends MouseAdapter {
 
-        private Point p;
-
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() == 1) {
-                    p = arg0.getPoint();
+                    Point p = arg0.getPoint();
                     int row = jTable1.rowAtPoint(p);
                     int column = jTable1.columnAtPoint(p);
                     if (row >= 0) {

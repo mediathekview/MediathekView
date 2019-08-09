@@ -1,31 +1,12 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Log;
-import mediathek.config.Daten;
+import mediathek.MediathekGui;
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,15 +16,14 @@ import java.io.File;
 
 @SuppressWarnings("serial")
 public class DialogZielExportPset extends javax.swing.JDialog {
-    private final Daten daten;
 
     public boolean ok = false;
     public String ziel = "";
-    private Component parentComponent = null;
+    private final Component parentComponent;
 
     public DialogZielExportPset(JFrame parent, boolean modal, String pfad, String name) {
         super(parent, modal);
-        daten = Daten.getInstance();
+
         parentComponent = parent;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -173,8 +153,8 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Logdatei speichern");
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

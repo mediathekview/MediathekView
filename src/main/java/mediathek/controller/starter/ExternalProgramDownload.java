@@ -1,33 +1,15 @@
-/*
- * MediathekView
- * Copyright (C) 2014 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.controller.starter;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.tool.Log;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 
@@ -45,9 +27,9 @@ import static mediathek.controller.starter.StarterClass.*;
 public class ExternalProgramDownload extends Thread
 {
 
-    private Daten daten;
-    private DatenDownload datenDownload;
-    private Start start;
+    private final Daten daten;
+    private final DatenDownload datenDownload;
+    private final Start start;
     private File file;
     private String exMessage = "";
     private boolean retAbbrechen;
@@ -166,7 +148,7 @@ public class ExternalProgramDownload extends Thread
                             } else if (filesize == -1)
                             {
                                 //noch nichts geladen
-                                deleteIfEmpty(file);
+                                deleteIfEmpty(file.toPath());
                                 if (file.exists())
                                 {
                                     // dann bestehende Datei weitermachen
@@ -229,12 +211,7 @@ public class ExternalProgramDownload extends Thread
             exMessage = ex.getLocalizedMessage();
             Log.errorLog(395623710, ex);
             SwingUtilities.invokeLater(() ->
-            {
-                if (!Daten.isAuto())
-                {
-                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
-                }
-            });
+                    new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
         }
         finalizeDownload(datenDownload, start, state);
         daten.getMessageBus().publish(new DownloadFinishedEvent());
@@ -268,20 +245,6 @@ public class ExternalProgramDownload extends Thread
             // dann ist alles OK
             return false;
         }
-        if (Daten.isAuto())
-        {
-            // dann mit gleichem Namen und Datei vorher löschen
-            try
-            {
-                Files.deleteIfExists(file.toPath());
-                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-            } catch (IOException ex)
-            {
-                // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                Log.errorLog(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-            }
-            return false; //auf keinen Fall den Dialog starten :)
-        }
 
         dialogAbbrechenIsVis = true;
         retAbbrechen = true;
@@ -313,7 +276,7 @@ public class ExternalProgramDownload extends Thread
         boolean result = false;
         if (file.exists())
         {
-            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, false /*weiterführen*/);
+            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(MediathekGui.ui(), datenDownload, false /*weiterführen*/);
             dialogContinueDownload.setVisible(true);
 
             switch (dialogContinueDownload.getResult())
@@ -342,7 +305,7 @@ public class ExternalProgramDownload extends Thread
                     {
                         // jetzt den Programmaufruf nochmal mit dem geänderten Dateinamen nochmal bauen
                         datenDownload.aufrufBauen();
-                        Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
                         try
                         {
                             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));

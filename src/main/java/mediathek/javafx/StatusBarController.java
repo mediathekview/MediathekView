@@ -1,20 +1,17 @@
 package mediathek.javafx;
 
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import mSearch.Config;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.config.Config;
 import mediathek.config.Daten;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.javafx.filmlist.FilmListInfoPane;
 import org.controlsfx.control.StatusBar;
 
@@ -26,15 +23,11 @@ public class StatusBarController {
      */
     private final StatusBar statusBar = new StatusBar();
     private final FilmListInfoPane filmListInfoPane;
-    private final FilmListInformationLabel filmListInformationLabel;
-    private final SelectedItemsLabel selectedItemsLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private Pane progressPane;
 
-    public StatusBarController(Daten daten, IntegerProperty selectedItemsProperty) {
-        selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
+    public StatusBarController(Daten daten) {
         filmListInfoPane = new FilmListInfoPane(daten);
-        filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
 
         daten.getMessageBus().subscribe(this);
 
@@ -89,8 +82,8 @@ public class StatusBarController {
                 progressBar.setProgress(-1d);
                 progressLabel.setText(event.text);
             } else {
-                final double max = (double) event.max;
-                final double progress = (double) event.progress;
+                final double max = event.max;
+                final double progress = event.progress;
 
                 progressBar.setProgress(progress / max);
                 progressLabel.setText(event.text);
@@ -117,33 +110,24 @@ public class StatusBarController {
 
     private void setupLeftPane() {
         ObservableList<Node> leftItems = statusBar.getLeftItems();
-        leftItems.add(new CenteredBorderPane(selectedItemsLabel));
-        leftItems.add(new VerticalSeparator());
 
         if (Config.isDebuggingEnabled()) {
             leftItems.add(btnGc);
             leftItems.add(new VerticalSeparator());
         }
-        CenteredBorderPane pane = new CenteredBorderPane(filmListInformationLabel);
-        leftItems.add(pane);
-        leftItems.add(new VerticalSeparator());
     }
 
     private void setupRightPane() {
         statusBar.getRightItems().add(filmListInfoPane);
     }
 
-    private Scene createStatusBarScene() {
+    public StatusBar createStatusBar() {
         //reset text
         statusBar.setText("");
 
         setupLeftPane();
         setupRightPane();
 
-        return new Scene(statusBar);
-    }
-
-    public void installStatusBar(JFXPanel jfxPanel) {
-        Platform.runLater(() -> jfxPanel.setScene(createStatusBarScene()));
+        return statusBar;
     }
 }

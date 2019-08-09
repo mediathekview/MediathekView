@@ -1,34 +1,20 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Listener;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
+import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
+import mediathek.gui.messages.mediadb.MediaDbStartEvent;
+import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
+import mediathek.tool.models.TModelMediaDB;
 import mediathek.tool.table.MVMediaDbTable;
 import mediathek.tool.table.MVTable;
+import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,14 +34,34 @@ import java.io.File;
 public class DialogMediaDB extends JDialog {
     private final JFrame parent;
     private final Daten daten;
+    private final MVTable tabelleFilme;
 
+    @Handler
+    private void handleMediaDbStartEvent(MediaDbStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB suchen
+            makeIndex(true);
+            jLabelSum.setText("0");
+        });
+    }
 
-    //    private boolean init = false;
-    private MVTable tabelleFilme;
+    @Handler
+    private void handleMediaDbStopEvent(MediaDbStopEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB liegt vor
+            makeIndex(false);
+            jLabelSum.setText(Integer.toString(daten.getListeMediaDB().size()));
+            searchFilmInDb();
+        });
+    }
+
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
         daten = Daten.getInstance();
         initComponents();
+
+        daten.getMessageBus().subscribe(this);
+
         this.parent = pparent;
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -64,23 +70,6 @@ public class DialogMediaDB extends JDialog {
             }
         });
         this.setTitle("Mediensammlung durchsuchen");
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, DialogMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB suchen
-                makeIndex(true);
-                jLabelSum.setText("0");
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, DialogMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB liegt vor
-                makeIndex(false);
-                jLabelSum.setText(daten.getListeMediaDB().size() + "");
-                searchFilmInDb();
-            }
-        });
 
         tabelleFilme = new MVMediaDbTable();
         jScrollPane3.setViewportView(tabelleFilme);
@@ -127,7 +116,7 @@ public class DialogMediaDB extends JDialog {
 
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        Listener.notify(Listener.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
+        daten.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
     }
 
     public void tabelleSpeichern() {
@@ -165,7 +154,7 @@ public class DialogMediaDB extends JDialog {
             String s = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             DirOpenAction.zielordnerOeffnen(parent, s);
         } else {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -176,7 +165,7 @@ public class DialogMediaDB extends JDialog {
             String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             OpenPlayerAction.filmAbspielen(parent, path + File.separator + file);
         } else {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
         }
     }
 
@@ -197,7 +186,7 @@ public class DialogMediaDB extends JDialog {
         String del = "";
         int row = tabelleFilme.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(parent);
+            NoSelectionErrorDialog.show();
             return;
         }
         try {
@@ -424,8 +413,6 @@ public class DialogMediaDB extends JDialog {
 
     public class BeobMausTabelle extends MouseAdapter {
 
-        private Point p;
-
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -441,7 +428,7 @@ public class DialogMediaDB extends JDialog {
         }
 
         private void showMenu(MouseEvent evt) {
-            p = evt.getPoint();
+            Point p = evt.getPoint();
             int nr = tabelleFilme.rowAtPoint(p);
             if (nr >= 0) {
                 tabelleFilme.setRowSelectionInterval(nr, nr);
@@ -450,7 +437,7 @@ public class DialogMediaDB extends JDialog {
 
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(Icons.ICON_MENUE_FILM_START);
+            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
             itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
 

@@ -1,40 +1,24 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class MeldungDownloadfehler extends JDialog {
-    private Timer countdownTimer = null;
+    private final Timer countdownTimer;
 
-    public MeldungDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
+    public MeldungDownloadfehler(Frame parent, String text, DatenDownload datenDownload) {
         super(parent, false);
         initComponents();
+
         setFocusableWindowState(false);
         setFocusable(false);
         setTitle("Downloadfehler");
@@ -46,7 +30,7 @@ public class MeldungDownloadfehler extends JDialog {
 
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-        jButtonOk.addActionListener(e -> beenden());
+        jButtonOk.addActionListener(e -> dispose());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
 
@@ -60,16 +44,32 @@ public class MeldungDownloadfehler extends JDialog {
 
     @Override
     public void setVisible(boolean vis) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG))
-                && MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN) > 0) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG))) {
             super.setVisible(vis);
         } else {
-            beenden();
+            dispose();
         }
     }
 
-    private void beenden() {
-        this.dispose();
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+
+        private int w = Konstanten.DOWNLOAD_ERROR_DISPLAY_DURATION;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                jLabelTime.setText(w + " s");
+                if (countdownTimer != null) {
+                    countdownTimer.setDelay(1000);
+                }
+            } else {
+                MeldungDownloadfehler.this.dispose();
+            }
+            w--;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -160,25 +160,4 @@ public class MeldungDownloadfehler extends JDialog {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * Implements the countdown based on Swing Timer for automatic placement on EDT.
-     */
-    private class CountdownAction implements ActionListener {
-
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN);
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (w > 0) {
-                jLabelTime.setText(w + " s");
-                if (countdownTimer != null) {
-                    countdownTimer.setDelay(1000);
-                }
-            } else {
-                beenden();
-            }
-            w--;
-        }
-    }
 }

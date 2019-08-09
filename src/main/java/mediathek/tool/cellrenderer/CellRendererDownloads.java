@@ -1,32 +1,14 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool.cellrenderer;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Log;
-import mediathek.config.Icons;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Log;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -40,30 +22,36 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
-    private static ImageIcon download_stop_tab = null;
-    private static ImageIcon download_start_tab = null;
-    private static ImageIcon download_stop_sw_tab = null;
-    private static ImageIcon download_start_sw_tab = null;
-    private static ImageIcon download_clear_tab = null;
-    private static ImageIcon download_clear_sw_tab = null;
-    private static ImageIcon download_del_tab = null;
-    private static ImageIcon download_del_sw_tab = null;
-    private JProgressBar progressBar;
+    private final Icon film_start_tab;
+    private final Icon film_start_sw_tab;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
+    private final Icon download_stop_tab;
+    private final Icon download_stop_sw_tab;
+    private final Icon download_start_tab;
+    private final Icon download_start_sw_tab;
+    private final Icon download_clear_tab_selected;
+    private final Icon download_clear_sw_tab;
+    private final Icon download_del_tab_selected;
+    private final Icon download_del_sw_tab;
+    private JProgressBar progressBar;
 
     public CellRendererDownloads(MVSenderIconCache cache) {
         super(cache);
 
-        download_stop_tab = Icons.ICON_TABELLE_DOWNOAD_STOP;
-        download_stop_sw_tab = Icons.ICON_TABELLE_DOWNOAD_STOP_SW;
-        download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
-        download_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_START_SW;
-        download_clear_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR;
-        download_clear_sw_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR_SW;
-        download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
-        download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
+        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
+        download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
+        download_start_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16, Color.WHITE);
+        download_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16);
+        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, Color.WHITE);
+        download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
+
+        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, Color.WHITE);
+        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TRASH, 16);
+
+        film_start_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
+        film_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
         setupProgressBar();
 
@@ -75,7 +63,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         progressBar = new JProgressBar(0, 1000);
         progressBar.setStringPainted(true);
         //on OSX the OS provided progress bar looks much better...
-        if (!SystemInfo.isMacOSX()) {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             progressBar.setUI(new BasicProgressBarUI() {
                 @Override
                 protected Color getSelectionBackground() {
@@ -84,7 +72,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 @Override
                 protected Color getSelectionForeground() {
-                    return Color.white;
+                    return Color.WHITE;
                 }
             });
         }
@@ -106,7 +94,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF);
 
-            if (((MVTable) table).lineBreak) {
+            if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
                     case DatenDownload.DOWNLOAD_TITEL:
@@ -141,7 +129,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable) table).getShowIcons() && !((MVTable) table).iconKlein) {
+                    if (((MVTable) table).showSenderIcons() && !((MVTable) table).useSmallSenderIcons) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);
@@ -180,16 +168,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
 
-                case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isRestart());
-                    break;
-
-                case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isDownloadManager());
-                    break;
-
                 case DatenDownload.DOWNLOAD_ART:
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD:
@@ -215,30 +193,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                             setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                             break;
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_UNTERBROCHEN:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isInterrupted());
-                    break;
-
-                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.istZurueckgestellt());
-                    break;
-
-                case DatenDownload.DOWNLOAD_INFODATEI:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isInfoFile());
-                    break;
-
-                case DatenDownload.DOWNLOAD_SUBTITLE:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isSubtitle());
-                    break;
-
-                case DatenDownload.DOWNLOAD_SPOTLIGHT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.isSpotlight());
                     break;
 
                 case DatenDownload.DOWNLOAD_BUTTON_START:
@@ -266,20 +220,9 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     break;
 
                 case DatenDownload.DOWNLOAD_SENDER:
-                    if (((MVTable) table).getShowIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
+                    if (((MVTable) table).showSenderIcons()) {
+                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_HD:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.isHD());
-                    setText("");//im Modle brauchen wir den Text zum Sortieren
-                    break;
-
-                case DatenDownload.DOWNLOAD_UT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.hasSubtitle());
-                    setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
             }
 
@@ -369,7 +312,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (datenDownload.start != null) {
             if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                setIcons(download_clear_tab, download_clear_sw_tab, DOWNLOAD_ENTFERNEN, isSelected);
+                setIcons(download_clear_tab_selected, download_clear_sw_tab, DOWNLOAD_ENTFERNEN, isSelected);
             } else {
                 setupDownloadLoeschen(isSelected);
             }
@@ -390,6 +333,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     }
 
     private void setupDownloadLoeschen(final boolean isSelected) {
-        setIcons(download_del_tab, download_del_sw_tab, DOWNLOAD_LOESCHEN, isSelected);
+        setIcons(download_del_tab_selected, download_del_sw_tab, DOWNLOAD_LOESCHEN, isSelected);
     }
 }

@@ -14,3 +14,5 @@ res/Icons/Sender
 /src/main/resources/version.properties
 deploy.key
 RepoZugang.properties
+/target/
+/dependency-reduced-pom.xml

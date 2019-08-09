@@ -1,22 +1,3 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
 import mediathek.config.Daten;
@@ -31,18 +12,14 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class DialogStarteinstellungen extends JDialog {
+    private enum State { START, PFAD, PSET, FERTIG}
     private final Daten daten;
-    private final static int STAT_START = 1;
-    private final static int STAT_PFAD = 2;
-    private final static int STAT_PSET = 3;
-    private final static int STAT_FERTIG = 4;
-    private int status = STAT_START;
+    private State status = State.START;
     private final JFrame parentComponent;
     private boolean anpassen = false;
 
@@ -52,28 +29,26 @@ public class DialogStarteinstellungen extends JDialog {
         initComponents();
         daten = dd;
         this.setTitle("Erster Start");
-        jButtonStandard.addActionListener((ActionEvent e) -> weiter());
-        jButtonAnpassen.addActionListener((ActionEvent e) -> {
+        jButtonStandard.addActionListener(e -> weiter());
+        jButtonAnpassen.addActionListener(e -> {
             anpassen = true;
             weiter();
         });
         jCheckBoxAlleEinstellungen.setVisible(false);
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
-            status = STAT_PSET;
+            status = State.PSET;
             weiter();
         });
 
         // setzt die Standardpfade für die wichtigsten Programme
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
 
         createLayout();
 
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
-            //dann fehlt eine Programm
+            //dann fehlt ein Programm
             jButtonStandard.setEnabled(false);
             anpassen = true;
         }
@@ -88,13 +63,13 @@ public class DialogStarteinstellungen extends JDialog {
     private void weiter() {
         jButtonStandard.setEnabled(true);
         switch (status) {
-            case STAT_START:
+            case START:
                 statusStart();
                 break;
-            case STAT_PFAD:
+            case PFAD:
                 statusPfade();
                 break;
-            case STAT_PSET:
+            case PSET:
                 statusPset();
                 break;
             default:
@@ -106,18 +81,17 @@ public class DialogStarteinstellungen extends JDialog {
     private void statusStart() {
         jButtonStandard.setText("Weiter");
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
-            status = STAT_PFAD;
+            status = State.PFAD;
         } else if (anpassen) {
             // der Benutzer wills verstellen
-            status = STAT_PFAD;
+            status = State.PFAD;
         } else // nur dann automatisch Standardprogramme einrichten, sonst fragen
          if (addStandarSet(parentComponent, daten)) {
-                status = STAT_FERTIG;
+                status = State.FERTIG;
             } else {
-                status = STAT_PSET;
+                status = State.PSET;
             }
         weiter();
     }
@@ -131,13 +105,13 @@ public class DialogStarteinstellungen extends JDialog {
             case WIN32:
             case WIN64:
                 // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /* flvstreamer */, false /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /*ffmpeg*/));
                 break;
             default:
                 // da brauchs alles
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /* flvstreamer */, true /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /*ffmpeg*/));
         }
-        status = STAT_PSET;
+        status = State.PSET;
         jButtonStandard.setText("Weiter");
     }
 
@@ -154,13 +128,13 @@ public class DialogStarteinstellungen extends JDialog {
         } else {
             jScrollPane1.setViewportView(new PanelPsetKurz(daten, parentComponent, Daten.listePset));
         }
-        status = STAT_FERTIG;
+        status = State.FERTIG;
         jButtonStandard.setText("Weiter");
     }
 
     private boolean addStandarSet(JFrame parent, Daten daten) {
         boolean ret = false;
-        ListePset pSet = ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/);
+        ListePset pSet = ListePsetVorlagen.getStandarset(parent, true);
         if (pSet != null) {
             Daten.listePset.addPset(pSet);
             MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version);

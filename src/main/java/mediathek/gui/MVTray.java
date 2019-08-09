@@ -1,34 +1,17 @@
-/*
- * MediathekView
- * Copyright (C) 2014 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui;
 
-import javafx.application.Platform;
-import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
+import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.gui.messages.TrayIconEvent;
+import mediathek.tool.notification.thrift.MessageType;
+import mediathek.tool.notification.thrift.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,14 +42,14 @@ public final class MVTray {
             }
 
             // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-            int[] starts = daten.getDownloadInfos().downloadStarts;
-            if (starts[6] > 0) {
+            DownloadStartInfo info = daten.getListeDownloads().getStarts();
+            if (info.error > 0) {
                 // es gibt welche mit Fehler
                 if (trayState != 2) {
                     trayState = 2;
                     trayIcon.setImage(Icons.ICON_TRAY_ERROR);
                 }
-            } else if (starts[4] > 0) {
+            } else if (info.running > 0) {
                 // es laufen welche
                 if (trayState != 1) {
                     trayState = 1;
@@ -105,16 +88,16 @@ public final class MVTray {
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
-                daten.getMediathekGui().setVisible(true); // WICHTIG!!
+                MediathekGui.ui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
-                daten.getMediathekGui().setTray();
-                Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
+                MediathekGui.ui().setTray();
+                daten.getMessageBus().publishAsync(new TrayIconEvent());
             });
             popup.add(itemRemoveTray);
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> daten.getMediathekGui().beenden(false, false));
+            itemBeenden.addActionListener(e -> MediathekGui.ui().beenden(false, false));
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
@@ -137,10 +120,11 @@ public final class MVTray {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 1) {
-                        daten.getMediathekGui().setVisible(!daten.getMediathekGui().isVisible());
-                        if (daten.getMediathekGui().isVisible()) {
-                            daten.getMediathekGui().toFront();
-                            daten.getMediathekGui().requestFocus();
+                        final MediathekGui ui = MediathekGui.ui();
+                        ui.setVisible(!ui.isVisible());
+                        if (ui.isVisible()) {
+                            ui.toFront();
+                            ui.requestFocus();
                         }
                     }
                 }
@@ -161,64 +145,36 @@ public final class MVTray {
     }
 
     private String getInfoTextDownloads() {
-        String text;
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = daten.getDownloadInfos().downloadStarts;
-        text = "Downloads: " + starts[0];
+        final DownloadStartInfo info = daten.getListeDownloads().getStarts();
+        String text = "Downloads: " + info.total_starts;
 
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
+        if (info.hasValues()) {
             text += "   [ ";
-            if (starts[4] == 1) {
-                text += "1 läuft";
-            } else {
-                text += starts[4] + " laufen";
-            }
+            text += (info.running == 1) ? "1 läuft" : info.running + " laufen";
 
-            if (starts[4] > 0) {
-                text += " (" + daten.getDownloadInfos().bandwidthStr + ')';
-            }
+            if (info.running > 0)
+                text += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
 
-            if (starts[3] == 1) {
-                text += ", 1 wartet";
-            } else {
-                text += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    text += ", 1 fertig";
-                } else {
-                    text += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    text += ", 1 fehlerhaft";
-                } else {
-                    text += ", " + starts[6] + " fehlerhaft";
-                }
-            }
+            text += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
+
+            if (info.finished > 0)
+                text += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
+
+            if (info.error > 0)
+                text += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
+
             text += " ]";
         }
+
         return text;
     }
 
     private void addNotification(String meldung) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
-
-            Platform.runLater(() -> {
-                Notifications msg = Notifications.create();
-                msg.title("Programminfos");
-                msg.text(meldung);
-                msg.showInformation();
-            });
-        }
+        final NotificationMessage msg = new NotificationMessage();
+        msg.setTitle("Programminfos");
+        msg.setMessage(meldung);
+        msg.setType(MessageType.INFO);
+        daten.notificationCenter().displayNotification(msg);
     }
 
 }

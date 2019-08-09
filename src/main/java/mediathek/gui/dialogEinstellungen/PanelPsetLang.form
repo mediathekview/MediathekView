@@ -819,7 +819,7 @@
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Aufl&#xf6;sung"/>
+                        <TitledBorder title="Film downloaden in"/>
                       </Border>
                     </Property>
                   </Properties>
@@ -866,7 +866,7 @@
                           <ComponentRef name="buttonGroup1"/>
                         </Property>
                         <Property name="selected" type="boolean" value="true"/>
-                        <Property name="text" type="java.lang.String" value="Film in hoher Aufl&#xf6;sung laden"/>
+                        <Property name="text" type="java.lang.String" value="Mittlere Qualit&#xe4;t"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="jRadioButtonAufloesungKlein">
@@ -874,7 +874,7 @@
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="buttonGroup1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Film in niedriger Aufl&#xf6;sung laden"/>
+                        <Property name="text" type="java.lang.String" value="Niedrige Qualit&#xe4;t"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="jRadioButtonAufloesungHD">
@@ -882,12 +882,12 @@
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="buttonGroup1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Film in HD laden"/>
+                        <Property name="text" type="java.lang.String" value="H&#xf6;chste/Hohe Qualit&#xe4;t"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel14">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Wenn es die Aufl&#xf6;sung nicht gibt, wird die n&#xe4;chstkleinere genommen."/>
+                        <Property name="text" type="java.lang.String" value="Wenn es die Qualit&#xe4;tstufe im Angebot nicht gibt, wird die n&#xe4;chstkleinere genommen."/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>

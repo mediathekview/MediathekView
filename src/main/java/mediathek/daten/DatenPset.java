@@ -19,18 +19,19 @@
  */
 package mediathek.daten;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Iterator;
 
-public class DatenPset extends MVData<DatenPset> {
+public class DatenPset implements Comparable<DatenPset> {
 
     //Tags Programmgruppen
     public static final int PROGRAMMSET_NAME = 0;
@@ -51,7 +52,6 @@ public class DatenPset extends MVData<DatenPset> {
     public static final int PROGRAMMSET_AUFLOESUNG = 15;
     public static final int PROGRAMMSET_ADD_ON = 16;
     public static final int PROGRAMMSET_BESCHREIBUNG = 17;
-    public static final int PROGRAMMSET_INFO_URL = 18;
     public static final int PROGRAMMSET_INFODATEI = 19;
     public static final int PROGRAMMSET_SPOTLIGHT = 20;
     public static final int PROGRAMMSET_SUBTITLE = 21;
@@ -65,17 +65,17 @@ public class DatenPset extends MVData<DatenPset> {
     public static final String[] XML_NAMES = {"Name", "Praefix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
         "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
         "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
-    private ListeProg listeProg = new ListeProg();
+    private final ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
     public DatenPset() {
-        makeArray();
+        initialize();
     }
 
     public DatenPset(String name) {
         // neue Pset sind immer gleich Button
-        makeArray();
+        initialize();
         arr[PROGRAMMSET_NAME] = name;
         arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
     }
@@ -144,9 +144,7 @@ public class DatenPset extends MVData<DatenPset> {
     public boolean isLable() {
         // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
-            if (!this.arr[PROGRAMMSET_NAME].equals("")) {
-                return true;
-            }
+            return !this.arr[PROGRAMMSET_NAME].equals("");
         }
         return false;
     }
@@ -156,7 +154,7 @@ public class DatenPset extends MVData<DatenPset> {
         return this.arr[PROGRAMMSET_NAME].equals("");
     }
 
-    public void setAbspielen(Daten daten) {
+    public void setAbspielen() {
         for (DatenPset datenPset : Daten.listePset) {
             datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = Boolean.FALSE.toString();
         }
@@ -258,38 +256,33 @@ public class DatenPset extends MVData<DatenPset> {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT].equals("")
                 || !this.arr[PROGRAMMSET_SUFFIX_DIREKT].equals("")) {
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false)) {
-                return true;
-            }
+            return GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false);
         }
+
         return false;
     }
 
     @Override
     public String toString() {
         String ret = "";
-        ret += "================================================" + Daten.LINE_SEPARATOR;
-        ret += "| Programmset" + Daten.LINE_SEPARATOR;
+        ret += "================================================" + System.lineSeparator();
+        ret += "| Programmset" + System.lineSeparator();
         for (int i = 0; i < MAX_ELEM; ++i) {
-            ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+            ret += "| " + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
         }
         for (Object aListeProg : listeProg) {
-            ret += "|" + Daten.LINE_SEPARATOR;
+            ret += "|" + System.lineSeparator();
             ret += aListeProg.toString();
         }
-        ret += "|_______________________________________________" + Daten.LINE_SEPARATOR;
+        ret += "|_______________________________________________" + System.lineSeparator();
         return ret;
     }
-    //===================================
-    // Private
-    //===================================
 
-    private void makeArray() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+
         arr[PROGRAMMSET_THEMA_ANLEGEN] = Boolean.toString(true);
         arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_SPEICHERN] = Boolean.toString(false);
@@ -298,8 +291,13 @@ public class DatenPset extends MVData<DatenPset> {
         arr[PROGRAMMSET_LAENGE_BESCHRAENKEN] = Boolean.toString(false);
         arr[PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = Boolean.toString(false);
         arr[PROGRAMMSET_INFODATEI] = Boolean.toString(false);
-        arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemInfo.isMacOSX());
+        arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemUtils.IS_OS_MAC_OSX);
         arr[PROGRAMMSET_SUBTITLE] = Boolean.toString(false);
-        arr[PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_NORMAL;
+        arr[PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_NORMAL;
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenPset o) {
+        return 0;
     }
 }

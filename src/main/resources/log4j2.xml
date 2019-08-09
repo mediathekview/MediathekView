@@ -13,15 +13,17 @@
                 <Pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n</Pattern>
             </PatternLayout>
         </File>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="console"></AppenderRef>
-            <AppenderRef ref="LogFile"></AppenderRef>
-        </Root>
 
-        <Logger name="hsqldb.db" level="warn">
-            <AppenderRef ref="console"></AppenderRef>
-        </Logger>
+        <Async name="Async">
+            <AppenderRef ref="LogFile"></AppenderRef>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="console" level="info"></AppenderRef>
+            <AppenderRef ref="Async"></AppenderRef>
+        </Root>
+        <Logger name="hsqldb.db" level="warn"></Logger>
     </Loggers>
 </Configuration>

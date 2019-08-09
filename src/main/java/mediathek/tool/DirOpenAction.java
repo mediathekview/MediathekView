@@ -1,29 +1,9 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+import mediathek.gui.messages.ProgramLocationChangedEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,9 +61,9 @@ public class DirOpenAction {
                     arrProgCallArray[0] = programm;
                     arrProgCallArray[1] = sFile.getAbsolutePath();
                     Runtime.getRuntime().exec(arrProgCallArray);
-                    //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+
                     MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, programm);
-                    Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                    Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                     gut = true;
                 }
             } catch (Exception eex) {
@@ -92,7 +72,7 @@ public class DirOpenAction {
         } finally {
             if (!gut) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "");
-                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

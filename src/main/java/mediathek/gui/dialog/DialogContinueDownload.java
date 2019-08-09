@@ -1,25 +1,6 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
-import mediathek.config.MVConfig;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
@@ -41,8 +22,8 @@ public class DialogContinueDownload extends JDialog {
     private DownloadResult result;
 
     private boolean isNewName = false;
-    private MVPanelDownloadZiel mVPanelDownloadZiel;
-    private Timer countdownTimer = null;
+    private final MVPanelDownloadZiel mVPanelDownloadZiel;
+    private final Timer countdownTimer;
     private final boolean direkterDownload;
     final private JFrame parent;
 
@@ -142,6 +123,32 @@ public class DialogContinueDownload extends JDialog {
         dispose();
     }
 
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+
+        private int w = Konstanten.CONTINUE_DOWNLOAD;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                if (!direkterDownload) {
+                    jButtonWeiter.setText("Überschreiben in " + w + 's');
+                } else {
+                    jButtonWeiter.setText("Weiterführen in " + w + 's');
+                }
+                if (countdownTimer != null) {
+                    countdownTimer.setDelay(1000);
+                }
+            } else {
+                result = DownloadResult.CONTINUE;
+                beenden();
+            }
+            w--;
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -236,30 +243,4 @@ public class DialogContinueDownload extends JDialog {
     private javax.swing.JPanel jPanelNewName;
     private javax.swing.JPanel jPanelPath;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * Implements the countdown based on Swing Timer for automatic placement on EDT.
-     */
-    private class CountdownAction implements ActionListener {
-
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN);
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (w > 0) {
-                if (!direkterDownload) {
-                    jButtonWeiter.setText("Überschreiben in " + w + 's');
-                } else {
-                    jButtonWeiter.setText("Weiterführen in " + w + 's');
-                }
-                if (countdownTimer != null) {
-                    countdownTimer.setDelay(1000);
-                }
-            } else {
-                result = DownloadResult.CONTINUE;
-                beenden();
-            }
-            w--;
-        }
-    }
 }

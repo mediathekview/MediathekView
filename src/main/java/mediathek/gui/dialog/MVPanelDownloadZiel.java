@@ -1,33 +1,14 @@
-/*
- * MediathekView
- * Copyright (C) 2014 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,8 +26,8 @@ import java.util.Date;
 public class MVPanelDownloadZiel extends JPanel {
     public boolean nameGeaendert = false;
     private final DatenDownload datenDownload;
-    private JFrame parent = null;
-    boolean letztenPfadAnzeigen = false;
+    private final JFrame parent;
+    boolean letztenPfadAnzeigen;
 
     public MVPanelDownloadZiel(JFrame p, DatenDownload download, boolean letzterPfad) {
         initComponents();
@@ -146,7 +127,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 pfade.add(pfad);
             }
         }
-        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
     }
 
     private void checkPfadName() {
@@ -293,7 +274,7 @@ public class MVPanelDownloadZiel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(parent, "Film speichern");

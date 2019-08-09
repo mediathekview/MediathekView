@@ -19,12 +19,10 @@
  */
 package mediathek.filmlisten;
 
-import mSearch.Config;
-import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlistenSuchen;
-import mSearch.filmlisten.reader.FilmListReader;
+import mediathek.daten.ListeFilme;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.filmlisten.reader.FilmListReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,12 +33,11 @@ public class ImportFilmliste {
     private static final Logger logger = LogManager.getLogger(ImportFilmliste.class);
     private final EventListenerList listeners;
     private final FilmListReader msFilmListReader;
-    public FilmlistenSuchen msFilmlistenSuchen;
 
     public ImportFilmliste() {
         listeners = new EventListenerList();
         msFilmListReader = new FilmListReader();
-        msFilmlistenSuchen = new FilmlistenSuchen();
+
         msFilmListReader.addAdListener(new ListenerFilmeLaden() {
             @Override
             public synchronized void start(ListenerFilmeLadenEvent event) {
@@ -56,10 +53,6 @@ public class ImportFilmliste {
 
                 }
             }
-
-            @Override
-            public synchronized void fertig(ListenerFilmeLadenEvent event) {
-            }
         });
     }
 
@@ -67,8 +60,7 @@ public class ImportFilmliste {
      * Filmeliste importieren, URL automatisch wählen
      */
     public void importFromUrl(ListeFilme listeFilme, ListeFilme listeFilmeDiff, int days) {
-        Config.setStop(false);
-        Thread importThread = new FilmeImportierenAutoThread(msFilmlistenSuchen, listeFilme, listeFilmeDiff, days,
+        Thread importThread = new FilmeImportierenAutoThread(listeFilme, listeFilmeDiff, days,
                 this::urlLaden, this::fertigMelden);
         importThread.start();
     }
@@ -77,7 +69,6 @@ public class ImportFilmliste {
      * Filmeliste importieren, mit fester URL/Pfad
      */
     public void importFromFile(String pfad, ListeFilme listeFilme, int days) {
-        Config.setStop(false);
         Thread importThread = new FilmeImportierenDateiThread(pfad, listeFilme, days,
                 this::urlLaden, this::fertigMelden);
         importThread.start();
@@ -91,7 +82,7 @@ public class ImportFilmliste {
         boolean ret = false;
         try {
             if (!dateiUrl.isEmpty()) {
-                logger.info("Filmliste laden von: {}", dateiUrl);
+                logger.trace("Filmliste laden von: {}", dateiUrl);
                 msFilmListReader.readFilmListe(dateiUrl, listeFilme, days);
                 if (!listeFilme.isEmpty()) {
                     ret = true;

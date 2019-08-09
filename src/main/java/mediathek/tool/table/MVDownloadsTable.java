@@ -1,12 +1,11 @@
 package mediathek.tool.table;
 
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVFont;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelDownload;
+import mediathek.gui.messages.DownloadQueueRankChangedEvent;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelDownload;
 
 import javax.activation.DataHandler;
 import javax.swing.*;
@@ -31,7 +30,7 @@ public class MVDownloadsTable extends MVTable {
 
         setupDragnDrop();
 
-        setModel(new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES));
+        setModel(new TModelDownload());
     }
 
     private void setupDragnDrop() {
@@ -117,17 +116,6 @@ public class MVDownloadsTable extends MVTable {
                     break;
             }
         }
-    }
-
-    @Override
-    protected int getSizeArea() {
-        int sizeArea = 0;
-
-        if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-
-        return sizeArea;
     }
 
     @Override
@@ -269,7 +257,8 @@ public class MVDownloadsTable extends MVTable {
             setRowSorter(null);
             setAutoCreateRowSorter(true);
             setSelected();
-            Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVTable.class.getSimpleName());
+
+            daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
         }
 
         @Override

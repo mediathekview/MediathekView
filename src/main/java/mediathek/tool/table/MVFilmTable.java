@@ -1,10 +1,10 @@
 package mediathek.tool.table;
 
-import mSearch.daten.DatenFilm;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelFilm;
+import mediathek.daten.DatenFilm;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelFilm;
 
 public class MVFilmTable extends MVTable {
     private static final long serialVersionUID = -5362792359176783146L;
@@ -12,13 +12,13 @@ public class MVFilmTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenFilm.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
+        spaltenAnzeigen = getSpaltenEinAus(Daten.spaltenAnzeigenFilme, DatenFilm.MAX_ELEM);
         indexSpalte = DatenFilm.FILM_NR;
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
 
-        setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
+        setModel(new TModelFilm());
     }
 
     private void resetFilmeTab(int i) {
@@ -67,7 +67,6 @@ public class MVFilmTable extends MVTable {
                 case DatenFilm.FILM_NEU:
                 case DatenFilm.FILM_URL_HD:
                 case DatenFilm.FILM_URL_KLEIN:
-                case DatenFilm.FILM_DATUM_LONG:
                 case DatenFilm.FILM_URL_HISTORY:
                 case DatenFilm.FILM_URL_SUBTITLE:
                 case DatenFilm.FILM_REF:
@@ -75,17 +74,6 @@ public class MVFilmTable extends MVTable {
                     break;
             }
         }
-    }
-
-    @Override
-    protected int getSizeArea() {
-        int sizeArea = 0;
-
-        if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-
-        return sizeArea;
     }
 
     @Override

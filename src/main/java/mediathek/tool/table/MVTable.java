@@ -1,35 +1,15 @@
-/*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool.table;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mediathek.config.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.TModel;
+import mediathek.tool.Log;
+import mediathek.tool.models.TModel;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -37,29 +17,25 @@ public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
     private static final String SORT_DESCENDING = "DESCENDING";
-    final int[] breite;
-    final int[] reihe;
-    private boolean iconAnzeigen = false;
-    public boolean iconKlein = false;
-    public boolean lineBreak = true;
-    int maxSpalten;
-    private List<? extends RowSorter.SortKey> listeSortKeys = null;
-    int indexSpalte = 0;
-    int[] selRows;
-    int[] selIndexes = null;
-    int selRow = -1;
+    protected final int[] breite;
+    protected final int[] reihe;
+    /**
+     * This is the UI provided default font used for calculating the size area
+     */
+    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
+    public boolean useSmallSenderIcons = false;
+    protected int maxSpalten;
+    protected int indexSpalte = 0;
+    protected int[] selRows;
+    protected int[] selIndexes = null;
+    protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
-    MVConfig.Configs nrDatenSystem = null;
-    MVConfig.Configs iconAnzeigenStr = null;
-    MVConfig.Configs iconKleinStr = null;
-
-    public boolean getShowIcons() {
-        return iconAnzeigen;
-    }
-
-    public void setShowIcon(boolean newVal) {
-        iconAnzeigen = newVal;
-    }
+    protected MVConfig.Configs nrDatenSystem = null;
+    protected MVConfig.Configs iconAnzeigenStr = null;
+    protected MVConfig.Configs iconKleinStr = null;
+    private boolean showSenderIcon = false;
+    private boolean lineBreak = true;
+    private List<? extends RowSorter.SortKey> listeSortKeys = null;
 
     public MVTable() {
         setAutoCreateRowSorter(true);
@@ -70,23 +46,20 @@ public abstract class MVTable extends JTable {
         getTableHeader().addMouseListener(new WidthAdjuster(this));
 
 
-        breite = getArray(maxSpalten);
-        reihe = getArray(maxSpalten);
+        breite = new int[maxSpalten];
+        Arrays.fill(breite,-1);
+
+        reihe = new int[maxSpalten];
+        Arrays.fill(reihe, -1);
 
         if (iconAnzeigenStr != null) {
-            iconAnzeigen = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
+            showSenderIcon = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
         if (iconKleinStr != null) {
-            iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
+            useSmallSenderIcons = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
 
         setHeight();
-        Listener.addListener(new Listener(Listener.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setHeight();
-            }
-        });
     }
 
     private static SortKey sortKeyLesen(String s, String upDown) {
@@ -105,10 +78,20 @@ public abstract class MVTable extends JTable {
         return sk;
     }
 
+    public boolean showSenderIcons() {
+        return showSenderIcon;
+    }
+
+    public void setShowIcon(boolean newVal) {
+        showSenderIcon = newVal;
+    }
+
     /**
      * Setup table specific stuff here.
      */
     protected abstract void setupTableType();
+
+    public boolean isLineBreak() { return lineBreak;}
 
     public void setLineBreak(boolean lb) {
         lineBreak = lb;
@@ -125,35 +108,37 @@ public abstract class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
-    /**
-     * Helper function for setHeight().
-     *
-     * @return sizeArea
-     */
     protected int getSizeArea() {
-        return 0;
+        int sizeArea = 0;
+
+        if (lineBreak)
+            sizeArea = defaultFont.getSize() * 4;
+
+        return sizeArea;
     }
 
     public void setHeight() {
         final int sizeArea = getSizeArea();
+        final int defaultFontSize = defaultFont.getSize();
+        final int internalDefaultSize = defaultFontSize + defaultFontSize / 3;
 
         int size;
-        if (!iconAnzeigen) {
-            if (MVFont.fontSize < 15) {
+        if (!showSenderIcon) {
+            if (defaultFontSize < 15) {
                 size = 18;
             } else {
-                size = MVFont.fontSize + MVFont.fontSize / 3;
+                size = internalDefaultSize;
             }
-        } else if (iconKlein) {
-            if (MVFont.fontSize < 18) {
+        } else if (useSmallSenderIcons) {
+            if (defaultFontSize < 18) {
                 size = 20;
             } else {
-                size = MVFont.fontSize + MVFont.fontSize / 3;
+                size = internalDefaultSize;
             }
-        } else if (MVFont.fontSize < 30) {
+        } else if (defaultFontSize < 30) {
             size = 36;
         } else {
-            size = MVFont.fontSize + MVFont.fontSize / 3;
+            size = internalDefaultSize;
         }
 
         setRowHeight(size > sizeArea ? size : sizeArea);
@@ -236,30 +221,6 @@ public abstract class MVTable extends JTable {
         ((TModel) getModel()).fireTableDataChanged();
         if (setSpalten) {
             setSelected();
-        }
-    }
-
-    public void requestFocusSelect(JScrollPane jScrollPane) {
-        requestFocus();
-        if (getRowCount() > 0) {
-            // sonst ist schon eine Zeile markiert
-            if (getSelectedRow() == -1) {
-                setRowSelectionInterval(0, 0);
-            }
-            final int firstSelectedRow = getSelectedRow();
-            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
-            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
-        }
-    }
-
-    public void requestFocusSelect(JScrollPane jScrollPane, int zeile) {
-        requestFocus();
-        if (getRowCount() > 0) {
-            // sonst ist schon eine Zeile markiert
-            setRowSelectionInterval(zeile, zeile);
-            final int firstSelectedRow = getSelectedRow();
-            Rectangle cellLocation = getCellRect(firstSelectedRow, 0, false);
-            jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
         }
     }
 
@@ -420,8 +381,8 @@ public abstract class MVTable extends JTable {
         // Tabellendaten ind die Daten.system schreiben
         // erst die Breite, dann die Reihenfolge
         String b, r, s = "", upDown = "";
-        int reihe_[] = new int[maxSpalten];
-        int breite_[] = new int[maxSpalten];
+        int[] reihe_ = new int[maxSpalten];
+        int[] breite_ = new int[maxSpalten];
         for (int i = 0; i < reihe_.length && i < getModel().getColumnCount(); ++i) {
             reihe_[i] = convertColumnIndexToModel(i);
         }
@@ -434,8 +395,8 @@ public abstract class MVTable extends JTable {
         b = Integer.toString(breite_[0]);
         r = Integer.toString(reihe_[0]);
         for (int i = 1; i < breite.length; i++) {
-            b = b + ',' + Integer.toString(breite_[i]);
-            r = r + ',' + Integer.toString(reihe_[i]);
+            b = b + ',' + breite_[i];
+            r = r + ',' + reihe_[i];
         }
 
         listeSortKeys = this.getRowSorter().getSortKeys();
@@ -449,19 +410,11 @@ public abstract class MVTable extends JTable {
 
         MVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
         if (iconAnzeigenStr != null) {
-            MVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
+            MVConfig.add(iconAnzeigenStr, String.valueOf(showSenderIcon));
         }
         if (iconKleinStr != null) {
-            MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
+            MVConfig.add(iconKleinStr, String.valueOf(useSmallSenderIcons));
         }
-    }
-
-    private int[] getArray(int anzahl) {
-        final int[] arr = new int[anzahl];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = -1;
-        }
-        return arr;
     }
 
     private boolean arrLesen(String s, int[] arr) {

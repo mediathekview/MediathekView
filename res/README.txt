@@ -29,11 +29,7 @@ MediathekView startet nicht:
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* Java ist nicht oder nicht in der richtigen Version installiert (Java8). Zum 
-  Java-Download: http://java.com/de/
-  Unter Linux müssen dazu 2 Pakete installiert werden!
-  bei arch: java-openjfx und jre8-openjdk,
-  bei Ubuntu 16.04: default-jre (entspricht openjdk-8-jre) und openjfx
+* MediathekView benötigt mindestens Java 11 auf dem Rechner installiert.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -41,9 +37,8 @@ https://mediathekview.de/faq/#mediathekview-startet-nicht
   kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
 
 * Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows): Die 
-  benötigten Java-Bibliotheken (libs) oder die Hilfsprogramme (im Ordner "bin") 
-  fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
-  wurden -> Neuinstallation.
+  benötigten Hilfsprogramme (im Ordner "bin") fehlen, da Dateien aus dem 
+  MediathekView-Programmordner gelöscht oder verschoben wurden -> Neuinstallation.
 
 
 ###########################################################################
@@ -64,7 +59,7 @@ ZIP-Datei ist quasi die Installation:
 https://mediathekview.de/anleitung/#windows
 
 *OS X:
-Für OS X 10.7.3 (und neuer) gibt es eine separate Applikation "MediathekView.app"
+Für OS X 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app"
 https://mediathekview.de/anleitung/#mac
 
 *Linux:
@@ -82,16 +77,10 @@ Starten:
 Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
-Für OS X 10.7.3 und neuer besteht eine eigenständige Applikation (MediathekView.app);
+Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
-Ansonsten kann man die Programmdatei auch so starten:
-Windows: Doppelklick auf "MediathekView.jar"
-Linux (in der Konsole): java -jar MediathekView.jar
-OS X: Doppelklick auf die separate Startdatei "MediathekView.command"
-    oder via Terminalbefehl: java -jar MediathekView.jar
-    (beide Varianten stehen nur zur Verfügung, wenn man die ZIP-Datei ohne die 
-    Angabe "OSX" im Dateinamen heruntergeladen hat)
-
+Ansonsten kann man die Programmdatei unter Linux auch so starten:
+java -Xmx1G -jar MediathekView.jar
 
 
 ===========================================================    
@@ -109,37 +98,13 @@ Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
 Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
-"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 512MB ist nicht möglich.)
-
-java -Xmx1G -jar MediathekView.jar -v
-Das Programm gibt nur die Versionsnummer aus.
-
+"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 1GB ist nicht möglich.)
 
 
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-portable
-
-
-
-===========================================================    
-Auto
------------------------------------------------------------
-
-java -Xmx1G -jar MediathekView.jar [Pfad] -auto
-java -Xmx1G -jar MediathekView.jar -auto
-java -Xmx1G -jar MediathekView.jar -fastauto
-
-Das Programm startet im Auto-Modus. Es wird die Filmliste aktualisiert und dann 
-alle neuen Abos geladen. Das Programm beendet sich dann selbst wieder. Diese 
-Funktion eignet sich dazu, alles automatisch aktuell zu halten.
-
-java -Xmx1G -Djava.awt.headless=true -jar MediathekView.jar -auto
-Wird das Programm ohne GUI (-auto) auf einem Rechner mit grafischer Oberfläche 
-gestartet, kann man damit den Splashscreen unterdrücken.
-
-
 
 
 ###########################################################################
@@ -163,9 +128,6 @@ Einstellungen			F4
 neue Filmliste			F5
 Programm beenden		ctrl + q
 
-Filter löschen			ctrl + l
-Blacklist anzeigen		ctrl + b
-
 Beschreibung anzeigen	F10
 Buttons anzeigen		F11
 
@@ -176,17 +138,9 @@ ctrl + p	Film abspielen
 return		Film abspielen (in der Tabelle Filme)
 ctrl + d	Download erstellen
 
-ctrl + t	springt in die Tabelle
-ctrl + s	Die Tabelle wird nach Sender sortiert und der Focus wir auf 
-			die erste Tabellenzeile gesetzt
-ctrl + f	springt ins Suchfeld 
-			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es 
-			angezeigt wird)
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
-ctrl + u	Film-URL kopieren
-ctrl + h	Film-URL in "HD" kopieren (wenn nicht vorhanden, dann normale URL)
-ctrl + k	Film-URL in "Klein" kopieren (wenn nicht vorhanden, dann normale URL)
+
 ctrl + g	Filme als gesehen markieren
 ctrl + n	Filme als ungesehen markieren
 
@@ -199,17 +153,12 @@ Entf		Download dauerhaft löschen
 ctrl + w	Downloads aktualisieren
 return		Download ändern (in der Tabelle Downloads)
 
-ctrl + t	springt in die Tabelle
+
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
-ctrl + u	URL kopieren
-ctrl + g	Filme als gesehen markieren
-ctrl + n	Filme als ungesehen markieren	
 
 
 Tab Abos
 =========
 Entf		Abos löschen
 Return		Abos ändern (in der Tabelle Abos)
-
-ctrl + t	springt in die Tabelle

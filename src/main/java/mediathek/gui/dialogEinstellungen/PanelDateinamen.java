@@ -1,33 +1,15 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Listener;
-import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.TModel;
-import mediathek.tool.TextCopyPaste;
+import mediathek.gui.messages.ReplaceListChangedEvent;
+import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.ReplaceList;
+import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.models.TModel;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -35,7 +17,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.util.Iterator;
 
 @SuppressWarnings("serial")
 public class PanelDateinamen extends PanelVorlage {
@@ -44,17 +25,21 @@ public class PanelDateinamen extends PanelVorlage {
     private static final Color cGruen = new Color(0, 153, 51);
     private static final Color cRot = new Color(255, 0, 0);
 
+    @Handler
+    private void handleReplaceListChange(ReplaceListChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            tabelleLaden();
+            setTextfelder();
+        });
+    }
+
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
         daten = d;
-        Listener.addListener(new Listener(Listener.EREIGNIS_REPLACELIST_CHANGED, PanelDateinamen.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleLaden();
-                setTextfelder();
-            }
-        });
+
+        daten.getMessageBus().subscribe(this);
+
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
         jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
@@ -74,8 +59,8 @@ public class PanelDateinamen extends PanelVorlage {
             setTextfelder();
         });
         jButtonMinus.addActionListener(e -> {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.remove(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
@@ -120,8 +105,12 @@ public class PanelDateinamen extends PanelVorlage {
                 setNach();
             }
         });
-        jTextFieldNach.addMouseListener(new TextCopyPaste());
-        jTextFieldVon.addMouseListener(new TextCopyPaste());
+
+        var handler = new TextCopyPasteHandler<>(jTextFieldNach);
+        jTextFieldNach.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldVon);
+        jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
         jCheckBoxTable.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
@@ -144,10 +133,8 @@ public class PanelDateinamen extends PanelVorlage {
 
     private void setVon() {
         if (!stopBeob) {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
-//                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
-//                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
@@ -156,8 +143,8 @@ public class PanelDateinamen extends PanelVorlage {
 
     private void setNach() {
         if (!stopBeob) {
-            int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
                 ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.NACH_NR] = jTextFieldNach.getText();
                 tabelleLaden();
             }
@@ -165,15 +152,15 @@ public class PanelDateinamen extends PanelVorlage {
     }
 
     private void upDown(boolean auf) {
-        int rows = tabelle.getSelectedRow();
+        final int rows = tabelle.getSelectedRow();
         if (rows != -1) {
-            int row = tabelle.convertRowIndexToModel(rows);
-            int neu = ReplaceList.up(row, auf);
+            final int row = tabelle.convertRowIndexToModel(rows);
+            final int neu = ReplaceList.up(row, auf);
             tabelleLaden();
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
         } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            NoSelectionErrorDialog.show();
         }
 
     }
@@ -181,23 +168,21 @@ public class PanelDateinamen extends PanelVorlage {
     private void tabelleLaden() {
         stopBeob = true;
         int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow >= 0) {
+        if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
-        }
+
         TModel model = new TModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
-        Object[] object;
         model.setRowCount(0);
-        Iterator<String[]> iterator = ReplaceList.list.iterator();
-        object = new Object[ReplaceList.MAX_ELEM];
-        while (iterator.hasNext()) {
-            String[] s = iterator.next();
+        Object[] object = new Object[ReplaceList.MAX_ELEM];
+        for (String[] s : ReplaceList.list) {
             //object[i] = datenAbo.arr;
             object[0] = s[0];
             object[1] = s[1];
             model.addRow(object);
         }
+
         tabelle.setModel(model);
-        if (selectedTableRow >= 0) {
+        if (selectedTableRow != -1) {
             if (tabelle.getRowCount() > 0 && selectedTableRow < tabelle.getRowCount()) {
                 tabelle.setRowSelectionInterval(selectedTableRow, selectedTableRow);
             } else if (tabelle.getRowCount() > 0 && selectedTableRow > 0) {
@@ -213,9 +198,8 @@ public class PanelDateinamen extends PanelVorlage {
     }
 
     private void setTextfelder() {
-        int selectedTableRow = tabelle.getSelectedRow();
-
-        if (selectedTableRow >= 0) {
+        final int selectedTableRow = tabelle.getSelectedRow();
+        if (selectedTableRow != -1) {
             jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.VON_NR).toString());
             jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.NACH_NR).toString());
         } else {

@@ -1,41 +1,34 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Log;
+import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
+import mediathek.daten.ListeFilme;
+import mediathek.tool.Functions.OperatingSystemType;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.InputEvent;
 import java.io.File;
-import java.lang.reflect.Field;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
+
+    private final static int WIN_MAX_PATH_LENGTH = 250;
+    private final static int X_MAX_NAME_LENGTH = 255;
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUS = 0;
+    /**
+     * legacy constant, used internally only
+     */
+    private static final int UPDATE_FILME_AUTO = 2;
 
     public static void updateGui(MediathekGui mediathekGui) {
         try {
@@ -73,7 +66,6 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         c.setLocation(x, y);
     }
-
 
     public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {
@@ -123,7 +115,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static boolean setSize(Configs nr, JDialog jDialog, JFrame relativFrame) {
+    public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
         breite = 0;
@@ -187,11 +179,8 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    private final static int WIN_MAX_PATH_LENGTH = 250;
-    private final static int X_MAX_NAME_LENGTH = 255;
-
     public static String[] checkLengthPath(String[] pathName) {
-        if (SystemInfo.isWindows()) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
@@ -204,7 +193,7 @@ public class GuiFunktionen extends MVFunctionSys {
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else // für X-Systeme
-         if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
+            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
                 Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
@@ -241,16 +230,6 @@ public class GuiFunktionen extends MVFunctionSys {
             Log.errorLog(395019631, pfad);
         }
         return ret;
-    }
-
-    public static String getHash(String pfad) {
-        //Hash eines Dateinamens zB. 1433245578
-        final int h = Math.abs(pfad.hashCode());
-        String hh = Integer.toString(h);
-        while (hh.length() < 10) {
-            hh = '0' + hh;
-        }
-        return hh;
     }
 
     public static String getSuffixFromUrl(String pfad) {
@@ -293,22 +272,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    public static String getFileNameSuffix(String pfad) {
-        // Suffix einer Pfad/Dateinamen extrahieren
-        // FILENAME.SUFF
-        String ret = "";
-        if (pfad != null) {
-            if (!pfad.isEmpty() && pfad.contains(".")) {
-                ret = pfad.substring(pfad.lastIndexOf('.') + 1);
-            }
-        }
-        if (ret.isEmpty()) {
-            ret = pfad;
-            Log.errorLog(802103647, pfad);
-        }
-        return ret;
-    }
-
     /**
      * Return the path to the user´s home directory.
      *
@@ -331,49 +294,75 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static String[] addLeerListe(String[] str) {
-        //ein Leerzeichen der Liste voranstellen
-        int len = str.length + 1;
-        String[] liste = new String[len];
-        liste[0] = "";
-        System.arraycopy(str, 0, liste, 1, len - 1);
-        return liste;
+    public static ComboBoxModel<String> getSenderListComboBoxModel(ListeFilme listeFilme) {
+        DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList(listeFilme.getBaseSenderList()));
+        senderModel.setSelectedItem("");
+
+        return senderModel;
     }
 
-    public static int getImportArtFilme() {
+    /**
+     * Maps the "command" key to the correspondig icon based on operating system.
+     *
+     * @return an InputEvent modifier based on operating system.
+     */
+    public static int getPlatformControlKey() {
+        int result;
+
+        if (getOs() == OperatingSystemType.MAC) {
+            result = InputEvent.META_DOWN_MASK;
+        } else {
+            result = InputEvent.CTRL_DOWN_MASK;
+        }
+
+        return result;
+    }
+
+    public static FilmListUpdateType getImportArtFilme() {
+        FilmListUpdateType result;
+
         int ret;
         try {
             ret = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-            ret = Konstanten.UPDATE_FILME_AUTO;
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(UPDATE_FILME_AUTO));
+            ret = UPDATE_FILME_AUTO;
         }
-        return ret;
+
+        switch (ret) {
+            case UPDATE_FILME_AUTO:
+                result = FilmListUpdateType.AUTOMATIC;
+                break;
+
+            case UPDATE_FILME_AUS:
+                result = FilmListUpdateType.MANUAL;
+                break;
+
+            default:
+                result = FilmListUpdateType.AUTOMATIC;
+                break;
+        }
+
+        return result;
     }
 
-    public static void setParent(Dialog dialog, Container aParent) {
-        try {
-            dialog.dispose();
-            Field declaredField = Component.class.getDeclaredField("parent");
-            declaredField.setAccessible(true);
-            declaredField.set(dialog, aParent);
-            dialog.setVisible(true);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-    }
+    public static void setImportArtFilme(FilmListUpdateType type) {
+        final int value;
+        switch (type) {
+            case AUTOMATIC:
+                value = UPDATE_FILME_AUTO;
+                break;
 
-    public static void setDialogDecorated(Dialog dialog, JComponent panel, boolean set) {
-        boolean vis = dialog.isVisible();
-        dialog.dispose();
-        if (set) {
-            dialog.setUndecorated(false);
-            panel.setBorder(null);
-        } else {
-            dialog.setUndecorated(true);
-            panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+            case MANUAL:
+                value = UPDATE_FILME_AUS;
+                break;
+
+            default:
+                value = UPDATE_FILME_AUTO;
+                break;
         }
-        dialog.setVisible(vis);
+
+        MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));
     }
 
     public static void enableComponents(Container container, boolean enable) {

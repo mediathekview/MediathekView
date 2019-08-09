@@ -1,31 +1,12 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
-import mSearch.tool.FilenameUtils;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -58,6 +39,7 @@ public class DialogEditAbo extends JDialog {
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
+
         Daten daten = Daten.getInstance();
         this.change = change;
         aktAbo = aktA;
@@ -70,14 +52,15 @@ public class DialogEditAbo extends JDialog {
             b = false;
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
-        comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen())));
+        comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(Daten.getInstance().getListeFilme()));
+
         // Zeilpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
         }
-        comboboxPfad.setModel(new javax.swing.DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
         comboboxPfad.setEditable(true);
         checkPfad();
         ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).setOpaque(true);

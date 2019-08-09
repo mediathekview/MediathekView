@@ -1,32 +1,14 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.GeoStateChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.Listener;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
@@ -44,39 +26,39 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         final Configuration config = ApplicationConfiguration.getConfiguration();
 
         switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
-            case DatenFilm.GEO_CH:
+            case GeoblockingField.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
-            case DatenFilm.GEO_AT:
+            case GeoblockingField.GEO_AT:
                 jRadioButtonAt.setSelected(true);
                 break;
-            case DatenFilm.GEO_EU:
+            case GeoblockingField.GEO_EU:
                 jRadioButtonEu.setSelected(true);
                 break;
-            case DatenFilm.GEO_WELT:
+            case GeoblockingField.GEO_WELT:
                 jRadioButtonSonst.setSelected(true);
                 break;
             default:
                 jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_DE);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_DE);
             melden();
         });
         jRadioButtonCH.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_CH);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_CH);
             melden();
         });
         jRadioButtonAt.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_AT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_AT);
             melden();
         });
         jRadioButtonEu.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_EU);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_EU);
             melden();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_WELT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_WELT);
             melden();
         });
 
@@ -91,7 +73,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
     private void melden() {
         daten.getListeBlacklist().filterListe();
-        Listener.notify(Listener.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
+        daten.getMessageBus().publishAsync(new GeoStateChangedEvent());
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, PanelEinstellungenGeo.class.getSimpleName());
 
     }

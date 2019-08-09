@@ -1,8 +1,11 @@
 package mediathek.javafx.filmlist;
 
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
+import mediathek.daten.ListeFilme;
 import mediathek.javafx.tool.ComputedLabel;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import java.time.Duration;
 
 /**
  * Label which will compute the age of the filmlist when updated.
@@ -15,32 +18,14 @@ class FilmListAgeLabel extends ComputedLabel {
         this.daten = daten;
     }
 
-    public void computeAge() {
-        final ListeFilme listeFilme = daten.getListeFilme();
+    public void setAgeToLabel() {
+      final ListeFilme listeFilme = daten.getListeFilme();
 
-        String strText = "Alter: ";
+      setComputedText(computeAge(listeFilme.getAge()));
+    }
 
-        final int sekunden = listeFilme.getAge();
-        if (sekunden != 0) {
-            final int minuten = sekunden / 60;
-            String strSekunde = String.valueOf(sekunden % 60);
-            if (strSekunde.length() < 2) {
-                strSekunde = '0' + strSekunde;
-            }
-
-            String strMinute = String.valueOf(minuten % 60);
-            if (strMinute.length() < 2) {
-                strMinute = '0' + strMinute;
-            }
-
-            String strStunde = String.valueOf(minuten / 60);
-            if (strStunde.length() < 2) {
-                strStunde = '0' + strStunde;
-            }
-
-            strText += strStunde + ':' + strMinute + ':' + strSekunde;
-        }
-
-        setComputedText(strText);
+    public String computeAge(long seconds) {
+      Duration duration = Duration.ofSeconds(seconds);
+      return String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
     }
 }

@@ -1,29 +1,13 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.daten;
 
-import mediathek.config.Daten;
-import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.jetbrains.annotations.NotNull;
 
-public class DatenProg extends MVData<DatenProg> {
+import java.util.Arrays;
+
+import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
+
+public class DatenProg implements Comparable<DatenProg> {
 
     public static final int PROGRAMM_NAME = 0;
     public static final int PROGRAMM_ZIEL_DATEINAME = 1;
@@ -45,13 +29,13 @@ public class DatenProg extends MVData<DatenProg> {
     public String[] arr;
 
     public DatenProg() {
-        makeArr();
+        initialize();
         arr[PROGRAMM_RESTART] = Boolean.toString(false);
         arr[PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(false);
     }
 
     public DatenProg(String name, String programmpfad, String schalter, String restart, String downloadmanager) {
-        makeArr();
+        initialize();
         arr[PROGRAMM_NAME] = name;
         arr[PROGRAMM_PROGRAMMPFAD] = programmpfad;
         arr[PROGRAMM_SCHALTER] = schalter;
@@ -121,21 +105,21 @@ public class DatenProg extends MVData<DatenProg> {
         String ret = "";
         for (int i = 0; i < MAX_ELEM; ++i) {
             if (i == 0) {
-                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "| ***|" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             } else {
-                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + Daten.LINE_SEPARATOR;
+                ret += "|    |" + COLUMN_NAMES[i] + ": " + arr[i] + System.lineSeparator();
             }
         }
         return ret;
     }
 
-    //===================================
-    // Private
-    //===================================
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenProg o) {
+        return 0;
     }
 }
