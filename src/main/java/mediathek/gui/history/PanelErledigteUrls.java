@@ -1,0 +1,277 @@
+package mediathek.gui.history;
+
+import mediathek.MediathekGui;
+import mediathek.config.Daten;
+import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrlModelHelper;
+import mediathek.controller.history.MVUsedUrls;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
+import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.gui.dialog.DialogZiel;
+import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.models.TModel;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.List;
+
+@SuppressWarnings("serial")
+public abstract class PanelErledigteUrls extends JPanel {
+    protected final Daten daten;
+    protected MVUsedUrls<?> workList;
+
+    public PanelErledigteUrls(Daten d) {
+        this.daten = d;
+
+        initComponents();
+        jTable1.addMouseListener(new BeobMausTabelle());
+        jButtonLoeschen.setEnabled(false);
+        jButtonExport.addActionListener((ActionEvent e) -> export());
+        initListeners();
+    }
+
+    protected void changeListHandler() {
+        if (jToggleButtonLaden.isSelected())
+            updateModelAndRecalculate(createDataModel());
+    }
+
+    private void initListeners() {
+        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
+            if (jToggleButtonLaden.isSelected()) {
+                jButtonLoeschen.setEnabled(true);
+                updateModelAndRecalculate(createDataModel());
+            } else {
+                jButtonLoeschen.setEnabled(false);
+                updateModelAndRecalculate(new TModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
+            }
+        });
+
+        jButtonLoeschen.addActionListener((ActionEvent e) -> {
+            final int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                workList.alleLoeschen();
+            }
+        });
+    }
+
+    private void updateModelAndRecalculate(@NotNull TModel model) {
+        jTable1.setModel(model);
+        setsum();
+    }
+
+    protected TModel createDataModel() {
+        final var data = MVUsedUrlModelHelper.getObjectData(workList.getListeUrlsSortDate());
+        return new TModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
+    }
+
+    private void setsum() {
+        if (jTable1.getRowCount() <= 0) {
+            jLabelSum.setText("");
+        } else {
+            jLabelSum.setText("Anzahl: " + jTable1.getRowCount());
+        }
+    }
+
+    protected String getExportFileLocation() {
+        DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
+        dialog.setVisible(true);
+        if (!dialog.ok)
+            return "";
+        else
+            return dialog.ziel;
+
+    }
+
+    protected List<MVUsedUrl> getExportableList() {
+        return workList.getSortedList();
+    }
+
+    private void export() {
+        if (jTable1.getModel().getRowCount() <= 0)
+            return;
+
+        final String ziel = getExportFileLocation();
+        if (!ziel.isEmpty())
+            new HistoryWriterThread(ziel, getExportableList()).start();
+
+    }
+
+    class BeobMausTabelle extends MouseAdapter {
+
+        //rechte Maustaste in der Tabelle
+        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
+        private final BeobUrl beobUrl = new BeobUrl();
+        private DatenFilm film;
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            Point p = evt.getPoint();
+            int nr = jTable1.rowAtPoint(p);
+            if (nr >= 0) {
+                jTable1.setRowSelectionInterval(nr, nr);
+                String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrlModelHelper.USED_URL_URL).toString();
+                film = daten.getListeFilme().getFilmByUrl(url);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            //löschen
+            JMenuItem item = new JMenuItem("Url aus der Liste löschen");
+            item.addActionListener(beobLoeschen);
+            jPopupMenu.add(item);
+            //Url
+            item = new JMenuItem("URL kopieren");
+            item.addActionListener(beobUrl);
+            jPopupMenu.add(item);
+            // Infos anzeigen
+            item = new JMenuItem("Infos zum Film anzeigen");
+            item.addActionListener(new BeobInfo());
+            jPopupMenu.add(item);
+            if (film == null) {
+                item.setEnabled(false);
+            }
+            // Download anlegen
+            item = new JMenuItem("Download noch einmal anlegen");
+            item.addActionListener(new BeobDownload());
+            jPopupMenu.add(item);
+            if (film == null) {
+                item.setEnabled(false);
+            }
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        class BeobDownload implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrl());
+                if (datenDownload != null) {
+                    int ret = JOptionPane.showConfirmDialog(getParent(), "Download für den Film existiert bereits.\n"
+                            + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
+                    if (ret != JOptionPane.OK_OPTION) {
+                        return;
+                    }
+                }
+                // weiter
+                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, film, null, "");
+                dialog.setVisible(true);
+            }
+
+        }
+
+        class BeobInfo implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final InfoDialog dlg = MediathekGui.ui().getFilmInfoDialog();
+                dlg.updateCurrentFilm(film);
+                dlg.showInfo();
+            }
+        }
+
+        class BeobUrl implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow != -1) {
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
+                    GuiFunktionen.copyToClipboard(del);
+                }
+            }
+        }
+
+        private class BeobLoeschen implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final int selectedTableRow = jTable1.getSelectedRow();
+                if (selectedTableRow != -1) {
+                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
+                    workList.urlAusLogfileLoeschen(del);
+                }
+            }
+        }
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButtonLoeschen = new javax.swing.JButton();
+        jToggleButtonLaden = new javax.swing.JToggleButton();
+        jButtonExport = new javax.swing.JButton();
+        jLabelSum = new javax.swing.JLabel();
+
+        jTable1.setModel(new TModel());
+        jScrollPane1.setViewportView(jTable1);
+
+        jButtonLoeschen.setText("Liste löschen");
+
+        jToggleButtonLaden.setText("Laden");
+
+        jButtonExport.setText("Liste exportieren");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jToggleButtonLaden)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelSum)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonExport)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonLoeschen)))
+                .addContainerGap())
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonLoeschen, jToggleButtonLaden});
+
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jToggleButtonLaden)
+                    .addComponent(jLabelSum)
+                    .addComponent(jButtonExport)
+                    .addComponent(jButtonLoeschen))
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonExport;
+    protected javax.swing.JButton jButtonLoeschen;
+    private javax.swing.JLabel jLabelSum;
+    protected javax.swing.JTable jTable1;
+    protected javax.swing.JToggleButton jToggleButtonLaden;
+    // End of variables declaration//GEN-END:variables
+}

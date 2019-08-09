@@ -1,9 +1,8 @@
 package mediathek.mac;
 
-import mSearch.tool.Log;
-import mSearch.tool.javafx.FXErrorDialog;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.Log;
+import mediathek.tool.javafx.FXErrorDialog;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Files;
@@ -14,12 +13,6 @@ import java.nio.file.Paths;
  * Writes spotlight comments to the downloaded file on OS X.
  */
 public class SpotlightCommentWriter {
-    private final Daten daten;
-
-    public SpotlightCommentWriter() {
-        daten = Daten.getInstance();
-    }
-
     /**
      * Log that MV wasn´t used via the official mac app.
      * This is relevant to know for bug reports.
@@ -61,13 +54,11 @@ public class SpotlightCommentWriter {
                     builder.command().add(script);
                     builder.start();
                 } catch (Exception ex) {
-                    if (daten.getMediathekGui() != null) {
-                        FXErrorDialog.showErrorDialog("Fehler",
-                                "Fehler beim Schreiben des Spotlight-Kommentars",
-                                "Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.\n" +
-                                        "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                                ex);
-                    }
+                    FXErrorDialog.showErrorDialog("Fehler",
+                            "Fehler beim Schreiben des Spotlight-Kommentars",
+                            "Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.\n" +
+                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                            ex);
                     Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.

@@ -1,27 +1,11 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.daten;
 
 import mediathek.tool.Filter;
+import org.jetbrains.annotations.NotNull;
 
-public class DatenBlacklist extends MVData<DatenBlacklist> {
+import java.util.Arrays;
+
+public class DatenBlacklist implements Comparable<DatenBlacklist> {
 
     public static final int BLACKLIST_NR = 0;
     public static final int BLACKLIST_SENDER = 1;
@@ -39,11 +23,11 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
     public String[] arr;
 
     public DatenBlacklist() {
-        makeArr();
+        initialize();
     }
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
-        makeArr();
+        initialize();
         arr[BLACKLIST_NR] = "";
         arr[BLACKLIST_SENDER] = sender;
         arr[BLACKLIST_THEMA] = thema;
@@ -60,10 +44,13 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
         arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
         arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
     }
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+    }
+
+    @Override
+    public int compareTo(@NotNull DatenBlacklist o) {
+        return 0;
     }
 }

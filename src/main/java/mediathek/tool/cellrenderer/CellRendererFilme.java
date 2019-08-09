@@ -1,34 +1,13 @@
-/*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool.cellrenderer;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVSenderIconCache;
+import mediathek.daten.DatenFilm;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,23 +20,23 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final MVUsedUrls history;
+    private final SeenHistoryController history;
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;
     private final Icon normalPlayIcon;
 
-    public CellRendererFilme(Daten d, MVSenderIconCache cache) {
-        super(cache);
+    public CellRendererFilme(Daten d) {
+        super(d.getSenderIconCache());
 
-        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, new Color(255, 255, 255));
+        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, Color.WHITE);
         normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
 
-        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, new Color(255, 255, 255));
+        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
         normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
-        history = d.history;
-        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, new Color(255, 255, 255));
+        history = d.getSeenHistoryController();
+        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
     }
 
@@ -80,9 +59,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
+            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
 
-            if (((MVTable) table).lineBreak) {
+            if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA:
@@ -120,19 +99,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     handleButtonDownloadColumn(isSelected);
                     break;
                 case DatenFilm.FILM_SENDER:
-                    if (((MVTable) table).getShowIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
+                    if (((MVTable) table).showSenderIcons()) {
+                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
-                    break;
-                case DatenFilm.FILM_HD:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenFilm.isHD());
-                    setText("");//im Modle brauchen wir den Text zum Sortieren
-                    break;
-                case DatenFilm.FILM_UT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenFilm.hasSubtitle());
-                    setText("");
                     break;
             }
 
@@ -144,19 +113,15 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
-        final boolean live = datenFilm.getThema().equals(ListeFilme.THEMA_LIVE);
-        boolean start = false;
+        // gestarteter Film
+        final boolean start = (datenDownload != null) && (datenDownload.start != null);
 
-        if (datenDownload != null) {
-            // gestarteter Film
-            if (datenDownload.start != null) {
-                start = true;
-                setBackgroundColor(c, datenDownload.start, isSelected);
-            }
-        }
-
-        if (!start) {
-            if (live) {
+        if (start) {
+            //film is started for download
+            setBackgroundColor(c, datenDownload.start, isSelected);
+        } else {
+            //not a start, set specific background colors
+            if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
             } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
@@ -168,11 +133,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 if (!isSelected)
                     c.setForeground(MVColor.FILM_NEU.color);
             }
-        }
 
-        if (geoMelden) {
-            if (!start)
-                setupGeoblockingBackground(c, datenFilm.arr[DatenFilm.FILM_GEO], isSelected);
+            if (geoMelden)
+                setupGeoblockingBackground(c, datenFilm.getGeo(), isSelected);
         }
     }
 

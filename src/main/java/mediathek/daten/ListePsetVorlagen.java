@@ -1,31 +1,12 @@
-/*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package mediathek.daten;
 
-import mSearch.tool.Log;
-import mSearch.tool.MVHttpClient;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
+import mediathek.tool.Log;
+import mediathek.tool.MVHttpClient;
+import mediathek.tool.models.TModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -39,10 +20,11 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static mSearch.tool.Functions.getOs;
-import static mSearch.tool.Functions.getOsString;
+import static mediathek.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOsString;
 
 @SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {
@@ -67,14 +49,12 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final int PGR_INFO_NR = 5;
     public static final int PGR_MAX_ELEM = 6;
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
-    private final static int TIMEOUT = 10000;
 
     public TModel getTModel(String bs) {
-        LinkedList<String[]> tmp = new LinkedList<>();
         String[][] object;
         if (this.size() > 0) {
             if (!bs.isEmpty()) {
-                tmp.addAll(this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList()));
+                List<String[]> tmp = this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList());
                 object = new String[tmp.size()][PGR_MAX_ELEM];
                 for (int i = 0; i < tmp.size(); i++) {
                     object[i] = tmp.get(i);
@@ -91,7 +71,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset getStandarset(JFrame parent, Daten ddaten, boolean replaceMuster) {
+    public static ListePset getStandarset(JFrame parent, boolean replaceMuster) {
         ListePset listePset = null;
         String[] vorlage = null;
         ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
@@ -104,7 +84,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
             if (vorlage != null) {
                 if (!vorlage[PGR_URL_NR].isEmpty()) {
-                    listePset = ListePsetVorlagen.importPsetFile(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                    listePset = ListePsetVorlagen.importPsetFile(vorlage[ListePsetVorlagen.PGR_URL_NR], true);
                     if (listePset != null) {
                         listePset.version = vorlage[PGR_VERSION_NR];
                     }
@@ -145,7 +125,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-            final Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
+            Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
             try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
@@ -153,7 +133,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                          InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                         parser = inFactory.createXMLStreamReader(inReader);
                         while (parser.hasNext()) {
-                            final int event = parser.next();
+                            int event = parser.next();
                             if (event == XMLStreamConstants.START_ELEMENT) {
                                 if (parser.getLocalName().equals(PGR)) {
                                     //wieder ein neuer Server, toll
@@ -182,12 +162,12 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static ListePset importPsetFile(JFrame parent, String dateiUrl, boolean log) {
+    public static ListePset importPsetFile(String dateiUrl, boolean log) {
         try {
             ListePset result = null;
 
             if (GuiFunktionen.istUrl(dateiUrl)) {
-                final Request request = new Request.Builder().url(dateiUrl).get().build();
+                Request request = new Request.Builder().url(dateiUrl).get().build();
                 try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
                      ResponseBody body = response.body()) {
                     if (response.isSuccessful() && body != null) {
@@ -213,7 +193,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public static ListePset importPsetText(Daten dd, String text, boolean log) {
+    public static ListePset importPsetText(String text, boolean log) {
         ListePset result = null;
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());
@@ -234,7 +214,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLStreamReader parser;
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
-                final int event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     switch (parser.getLocalName()) {
                         case DatenPset.TAG:
@@ -287,7 +267,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         try {
             while (parser.hasNext()) {
-                final int event = parser.next();
+                int event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     if (parser.getLocalName().equals(xmlElem)) {
                         break;

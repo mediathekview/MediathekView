@@ -1,27 +1,7 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool;
 
-import mSearch.Const;
-import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
@@ -29,18 +9,23 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
@@ -108,42 +93,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfad;
     }
 
-    public static String getMusterPfadFlv() {
-        // liefert den Standardpfad für das entsprechende BS 
-        // bei Win+Mac wird das Programm mitgeliefert und liegt 
-        // im Ordner "bin" der mit dem Programm mitgeliefert wird
-        // bei Linux muss das Programm auf dem Rechner instelliert sein
-        final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
-        final String PFAD_FREEBSD = "/usr/local/bin/flvstreamer";
-        final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
-        final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
-        String pfad = "";
-        try {
-            switch (getOs()) {
-                case LINUX:
-                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-                        pfad = PFAD_FREEBSD;
-                    } else {
-                        pfad = PFAD_LINUX_FLV;
-                    }
-                    break;
-                case MAC:
-                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
-                    break;
-                default:
-                    pfad = PFAD_WINDOWS_FLV;
-            }
-            if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
-                pfad = System.getenv("PATH_FLVSTREAMER");
-            }
-            if (!new File(pfad).exists()) {
-                pfad = "";
-            }
-        } catch (Exception ignore) {
-        }
-        return pfad;
-    }
-
     public static String getMusterPfadFFmpeg() {
         // liefert den Standardpfad für das entsprechende BS 
         // bei Win+Mac wird das Programm mitgeliefert und liegt 
@@ -151,7 +100,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
         final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
-        final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
+        final String PFAD_MAC_FFMPEG = "/Applications/MediathekView.app/Contents/Resources/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad = "";
         try {
@@ -164,7 +113,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     }
                     break;
                 case MAC:
-                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
+                    pfad = PFAD_MAC_FFMPEG;
                     break;
                 default:
                     pfad = PFAD_WINDOWS_FFMPEG;
@@ -188,8 +137,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
             case LINUX:
-                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
-                break;
             case MAC:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
@@ -199,12 +146,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
-    public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean auto, boolean setVersion) {
+    public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean setVersion) {
         if (pSet == null) {
-            if (!auto) {
-                MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                        "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
+            MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                    "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (parent != null) {
@@ -214,10 +159,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON].isEmpty()) {
                 if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON])) {
                     // und Tschüss
-                    if (!auto) {
-                        MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                                "Fehler", JOptionPane.ERROR_MESSAGE);
-                    }
+                    MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                            "Fehler", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
@@ -225,28 +168,21 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         if (parent != null) {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
-        if (auto) {
+
+        DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
+        dialog.setVisible(true);
+        if (dialog.ok) {
             if (Daten.listePset.addPset(pSet)) {
                 if (setVersion) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 }
-            }
-        } else {
-            DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                if (Daten.listePset.addPset(pSet)) {
-                    if (setVersion) {
-                        MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
-                    }
-                    MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
-                            "Ok", JOptionPane.INFORMATION_MESSAGE);
+                MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
+                        "Ok", JOptionPane.INFORMATION_MESSAGE);
 
-                } else {
-                    MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
-                            "Fehler", JOptionPane.ERROR_MESSAGE);
+            } else {
+                MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
+                        "Fehler", JOptionPane.ERROR_MESSAGE);
 
-                }
             }
         }
     }
@@ -254,9 +190,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     private static boolean addOnZip(String datei) {
         String zielPfad = addsPfad(getPathJar(), "bin");
         File zipFile;
-        int timeout = 10_000; //10 Sekunden
         int n;
-        URLConnection conn;
+
         try {
             if (!GuiFunktionen.istUrl(datei)) {
                 zipFile = new File(datei);
@@ -264,7 +199,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     // und Tschüss
                     return false;
                 }
-                if (datei.endsWith(Const.FORMAT_ZIP)) {
+                if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
                     if (!entpacken(zipFile, new File(zielPfad))) {
                         // und Tschüss
                         return false;
@@ -272,42 +207,43 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 } else {
                     try (FileInputStream in = new FileInputStream(datei);
                          FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei))) {
-                        final byte[] buffer = new byte[1024];
+                        final byte[] buffer = new byte[64 * 1024];
                         while ((n = in.read(buffer)) != -1) {
                             fOut.write(buffer, 0, n);
                         }
                     }
                 }
             } else {
-                conn = new URL(datei).openConnection();
-                conn.setConnectTimeout(timeout);
-                conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", ApplicationConfiguration.getConfiguration()
-                        .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-                if (datei.endsWith(Const.FORMAT_ZIP)) {
-
-                    File tmpFile = File.createTempFile("mediathek", null);
-                    tmpFile.deleteOnExit();
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                         FileOutputStream fOut = new FileOutputStream(tmpFile)) {
-                        final byte[] buffer = new byte[1024];
-                        while ((n = in.read(buffer)) != -1) {
-                            fOut.write(buffer, 0, n);
-                        }
-                    }
-                    if (!entpacken(tmpFile, new File(zielPfad))) {
-                        // und Tschüss
-                        return false;
-                    }
-
-                } else {
-                    String file = GuiFunktionen.getDateiName(datei);
-                    File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                         FileOutputStream fOut = new FileOutputStream(f)) {
-                        final byte[] buffer = new byte[1024];
-                        while ((n = in.read(buffer)) != -1) {
-                            fOut.write(buffer, 0, n);
+                final Request request = new Request.Builder().url(datei).get()
+                        .header("User-Agent", ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT))
+                        .get().build();
+                try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+                     ResponseBody body = response.body()) {
+                    if (response.isSuccessful() && body != null) {
+                        try (InputStream is = body.byteStream();
+                             BufferedInputStream bis = new BufferedInputStream(is)) {
+                            final byte[] buffer = new byte[64 * 1024];
+                            if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
+                                File tmpFile = File.createTempFile("mediathek", null);
+                                tmpFile.deleteOnExit();
+                                try (FileOutputStream fOut = new FileOutputStream(tmpFile)) {
+                                    while ((n = bis.read(buffer)) != -1) {
+                                        fOut.write(buffer, 0, n);
+                                    }
+                                }
+                                if (!entpacken(tmpFile, new File(zielPfad))) {
+                                    // und Tschüss
+                                    return false;
+                                }
+                            } else {
+                                String file = GuiFunktionen.getDateiName(datei);
+                                File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
+                                try (FileOutputStream fOut = new FileOutputStream(f)) {
+                                    while ((n = bis.read(buffer)) != -1) {
+                                        fOut.write(buffer, 0, n);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -380,7 +316,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             break;
                         }
                     } else //Suffix prüfen
-                     if (url.endsWith(s1.toLowerCase())) {
+                        if (url.endsWith(s1.toLowerCase())) {
                             ret = true;
                             break;
                         }
@@ -391,26 +327,36 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    public static boolean checkPfadBeschreibbar(String pfad) {
-        boolean ret = false;
-        File testPfad = new File(pfad);
+    /**
+     * Test if a path is a directory and writeable.
+     * Path directories will be created before trying write test.
+     *
+     * @param pfad path to the directory
+     * @return true if we can write a file there, false if not.
+     */
+    public static boolean checkPathWriteable(@NotNull String pfad) {
+        boolean result = false;
+
+        if (pfad.isEmpty())
+            return false;
+
+        Path path = Paths.get(pfad);
         try {
-            if (!testPfad.exists()) {
-                testPfad.mkdirs();
-            }
-            if (pfad.isEmpty()) {
-            } else if (!testPfad.isDirectory()) {
-            } else if (testPfad.canWrite()) {
-                File tmpFile = File.createTempFile("mediathek", "tmp", testPfad);
-                tmpFile.delete();
-                ret = true;
+            Files.createDirectories(path);
+            if (Files.isDirectory(path) && Files.isWritable(path)) {
+                var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
+                Files.delete(tmpPath);
+
+                result = true;
             }
         } catch (Exception ignored) {
+            result = false;
         }
-        return ret;
+
+        return result;
     }
 
-    public static boolean programmePruefen(JFrame jFrame, Daten daten) {
+    public static boolean programmePruefen(JFrame jFrame) {
         // prüfen ob die eingestellten Programmsets passen
         final String PIPE = "| ";
         final String LEER = "      ";
@@ -431,7 +377,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else // Pfad beschreibbar?
-                     if (!checkPfadBeschreibbar(zielPfad)) {
+                        if (!checkPathWriteable(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";

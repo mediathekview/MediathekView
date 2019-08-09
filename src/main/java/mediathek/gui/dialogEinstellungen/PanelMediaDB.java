@@ -1,27 +1,6 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -30,7 +9,13 @@ import mediathek.daten.DatenMediaPath;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.mediadb.MediaDbStartEvent;
+import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelMediaDB;
+import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,28 +30,32 @@ public class PanelMediaDB extends PanelVorlage {
     private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
 
+    @Handler
+    private void handleMediaDbStartEvent(MediaDbStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB suchen
+            setIndex(false);
+            modelMediaDB.setRowCount(0);
+            jToggleButtonLoad.setSelected(false);
+        });
+    }
+
+    @Handler
+    private void handleMediaDbStopEvent(MediaDbStopEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            // neue DB liegt vor
+            jLabelSizeIndex.setText(daten.getListeMediaDB().size() + "");
+            setIndex(true);
+        });
+    }
+
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         daten = d;
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, PanelMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB suchen
-                setIndex(false);
-                modelMediaDB.setRowCount(0);
-                jToggleButtonLoad.setSelected(false);
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, PanelMediaDB.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // neue DB liegt vor
-                jLabelSizeIndex.setText(daten.getListeMediaDB().size() + "");
-                setIndex(true);
-            }
-        });
+        daten.getMessageBus().subscribe(this);
+
         progress.setVisible(false);
         progress.setIndeterminate(true);
         progress.setMaximum(0);
@@ -99,11 +88,17 @@ public class PanelMediaDB extends PanelVorlage {
                 MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
         });
+
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
-        jTextFieldExportPath.addMouseListener(new TextCopyPaste());
-        jTextFieldPath.addMouseListener(new TextCopyPaste());
-        jTextFieldSuffix.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldExportPath);
+        jTextFieldExportPath.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldPath);
+        jTextFieldPath.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldSuffix);
+        jTextFieldSuffix.setComponentPopupMenu(handler.getPopupMenu());
 
         jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
         jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
@@ -118,7 +113,7 @@ public class PanelMediaDB extends PanelVorlage {
             daten.getListeMediaDB().createMediaDB("");
         });
         btnDel.addActionListener(l -> {
-            int ret = MVMessageDialog.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
+            final int ret = JOptionPane.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
             if (ret == JOptionPane.YES_OPTION) {
                 //alles löschen
                 daten.getListeMediaDB().delList(false);
@@ -134,7 +129,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonAdd.addActionListener((ActionEvent e) -> addPath());
         jButtonRemove.addActionListener((ActionEvent e) -> removePath());
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(daten.getMediathekGui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
+        jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonExport.addActionListener(new BeobExport());
         jButtonExportPath.addActionListener(new BeobPfad());
@@ -213,7 +208,7 @@ public class PanelMediaDB extends PanelVorlage {
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(daten.getMediathekGui());
+            NoSelectionErrorDialog.show();
             return;
         }
         String path = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
@@ -730,10 +725,10 @@ public class PanelMediaDB extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Pfad zu den Filmen wählen");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pfad zu den Filmen wählen");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
@@ -801,8 +796,8 @@ public class PanelMediaDB extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filme exportieren");
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

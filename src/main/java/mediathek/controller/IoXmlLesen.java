@@ -15,14 +15,12 @@
  */
 package mediathek.controller;
 
-import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
-import mediathek.filmlisten.FilmeLaden;
+import mediathek.gui.messages.ReplaceListChangedEvent;
+import mediathek.tool.Log;
+import mediathek.tool.ReplaceList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.xml.stream.XMLInputFactory;
@@ -36,23 +34,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+
 public class IoXmlLesen {
 
     private final XMLInputFactory inFactory;
     private final Daten daten;
-    private final FilmeLaden filmeLaden;
 
     public IoXmlLesen() {
         inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
         daten = Daten.getInstance();
-
-        filmeLaden = daten.getFilmeLaden();
-    }
-
-    public boolean einstellungenExistieren() {
-        return Files.exists(Daten.getMediathekXmlFilePath());
     }
 
     public ImmutableTriple<Integer, Integer, Integer> importAboBlacklist(String datei, boolean abo, boolean black,
@@ -107,12 +99,12 @@ public class IoXmlLesen {
         if (foundAbos > 0) {
             daten.getListeAbo().aenderungMelden();
         }
-        if (foundBlacklistEntries > 0) {
+
+        if (foundBlacklistEntries > 0)
             daten.getListeBlacklist().filterListAndNotifyListeners();
-        }
-        if (foundReplaceListEntries > 0) {
-            Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
-        }
+
+        if (foundReplaceListEntries > 0)
+            daten.getMessageBus().publishAsync(new ReplaceListChangedEvent());
 
         return new ImmutableTriple<>(foundAbos, foundBlacklistEntries, foundReplaceListEntries);
     }
@@ -202,24 +194,6 @@ public class IoXmlLesen {
         }
     }
 
-    private void readUpdateServers(XMLStreamReader parser) {
-        // Urls Filmlisten
-        DatenFilmlisteUrl datenFilmlisteUrl = new DatenFilmlisteUrl();
-        if (get(parser, DatenFilmlisteUrl.FILM_UPDATE_SERVER,
-                DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenFilmlisteUrl.arr)) {
-            switch (datenFilmlisteUrl.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR]) {
-                case DatenFilmlisteUrl.SERVER_ART_AKT:
-                    filmeLaden.getDownloadUrlsFilmlisten_akt()
-                            .addWithCheck(datenFilmlisteUrl);
-                    break;
-                case DatenFilmlisteUrl.SERVER_ART_DIFF:
-                    filmeLaden.getDownloadUrlsFilmlisten_diff()
-                            .addWithCheck(datenFilmlisteUrl);
-                    break;
-            }
-        }
-    }
-
     private void readMediaPath(XMLStreamReader parser) {
         DatenMediaPath mp = new DatenMediaPath();
         if (get(parser, DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr)) {
@@ -281,10 +255,6 @@ public class IoXmlLesen {
                             case DatenMediaPath.TAG:
                                 readMediaPath(parser);
                                 break;
-
-                            case DatenFilmlisteUrl.FILM_UPDATE_SERVER:
-                                readUpdateServers(parser);
-                                break;
                         }
                     }
                 }
@@ -312,13 +282,6 @@ public class IoXmlLesen {
     private void sortLists() {
         daten.getListeDownloads().listeNummerieren();
         daten.getListeAbo().sort();
-
-        buildUpdateServerLists();
     }
 
-    private void buildUpdateServerLists() {
-        // ListeFilmUpdateServer aufbauen
-        filmeLaden.getDownloadUrlsFilmlisten_akt().sort();
-        filmeLaden.getDownloadUrlsFilmlisten_diff().sort();
-    }
 }

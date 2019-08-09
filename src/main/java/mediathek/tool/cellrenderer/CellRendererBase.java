@@ -1,14 +1,12 @@
 package mediathek.tool.cellrenderer;
 
-import com.jidesoft.utils.SystemInfo;
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
-import mediathek.tool.MVFont;
 import mediathek.tool.MVSenderIconCache;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * Base class for all cell renderer.
@@ -16,15 +14,10 @@ import java.awt.*;
 public class CellRendererBase extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 4187677730323830219L;
     private final MVSenderIconCache senderIconCache;
-    private final Icon checkedIcon;
-    private final Icon uncheckedIcon;
 
     public CellRendererBase(MVSenderIconCache cache) {
         super();
         senderIconCache = cache;
-
-        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
-        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
     }
 
     /**
@@ -34,11 +27,11 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      */
     protected void setSenderIcon(String sender, boolean small) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        final ImageIcon icon = senderIconCache.get(sender, small);
-        if (icon != null) {
+        final Optional<ImageIcon> optIcon = senderIconCache.get(sender, small);
+        optIcon.ifPresent(icon -> {
             setText("");
             setIcon(icon);
-        }
+        });
     }
 
     /**
@@ -49,29 +42,14 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      * @param isSelected is the component selected
      */
     protected void setSelectionFont(final Component c, final boolean isSelected) {
-        if (!SystemInfo.isMacOSX()) {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             final Font font;
             if (isSelected)
-                font = new Font("Dialog", Font.BOLD, MVFont.fontSize);
+                font = c.getFont().deriveFont(Font.BOLD);
             else
-                font = new Font("Dialog", Font.PLAIN, MVFont.fontSize);
+                font = c.getFont().deriveFont(Font.PLAIN);
 
             c.setFont(font);
         }
-    }
-
-    /**
-     * Set icon either to yes or no based on condition
-     *
-     * @param condition yes if true, no if false
-     */
-    protected void setCheckedOrUncheckedIcon(final boolean condition) {
-        final Icon icon;
-        if (condition)
-            icon = checkedIcon;
-        else
-            icon = uncheckedIcon;
-
-        setIcon(icon);
     }
 }

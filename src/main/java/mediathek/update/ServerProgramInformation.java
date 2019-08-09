@@ -1,6 +1,6 @@
 package mediathek.update;
 
-import mSearch.tool.Version;
+import mediathek.tool.Version;
 
 /**
  * Encapsulates the retrieved update information.

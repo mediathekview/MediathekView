@@ -1,24 +1,6 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -46,15 +28,15 @@ public class DialogEinstellungen extends JFrame {
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelBlacklist panelBlacklist;
-    private PanelErledigteUrls panelErledigteAbos;
-    private PanelErledigteUrls panelHistory;
     private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
+    private JPanel panelNotifications;
     private final JPanel panelLeer = new JPanel();
 
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
+    private static final String NAME_notifications = "Benachrichtigungen";
     private static final String NAME_bandwidth = "Download";
     private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
@@ -68,12 +50,11 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_dateiname = "Datei- und Pfadnamen";
     private static final String NAME_programmset = "Set bearbeiten";
     private static final String NAME_programmsetImportieren = "Set importieren";
-    private static final String NAME_infos = "Infos";
-    private static final String NAME_history = "History";
-    private static final String NAME_logfile = "Erledigte Abos";
+
     // ######## Einstellulngen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
+    private final DefaultMutableTreeNode treeNodeNotifications = new DefaultMutableTreeNode(NAME_notifications);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
@@ -90,10 +71,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
-    // ####### Infos #########
-    private final DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
-    private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
-    private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
 
     public DialogEinstellungen(Daten d) {
         initComponents();
@@ -101,7 +78,7 @@ public class DialogEinstellungen extends JFrame {
         ddaten = d;
         init();
         initTree();
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.getInstance().getMediathekGui());
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
 
@@ -116,15 +93,13 @@ public class DialogEinstellungen extends JFrame {
         panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, this);
         panelImport = new PanelImport(ddaten, this);
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten, this);
+        panelImportFilme = new PanelFilmlisteLaden(ddaten);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
-        panelHistory = new PanelErledigteUrls(ddaten, this);
-        panelHistory.initHistory();
-        panelErledigteAbos = new PanelErledigteUrls(ddaten, this);
-        panelErledigteAbos.initAbo();
         panelDateinamen = new PanelDateinamen(ddaten, this);
         panelPset = new PanelPset(ddaten, this);
         panelPsetVorlagen = new PanelPsetImport(ddaten, this);
+
+        panelNotifications = new PanelNotifications();
     }
 
     private void initTree() {
@@ -133,6 +108,7 @@ public class DialogEinstellungen extends JFrame {
         // ===============================================================================
         // ######## Einstellulngen ############
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
+        treeNodeEinstellungen.add(treeNodeNotifications);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
@@ -151,11 +127,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeDownload.add(treeNodeProgramme);
         treeNodeDownload.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownload);
-        // ===============================================================================
-        // ####### Infos #########
-        treeNodeInfos.add(treeNodeHistory);
-        treeNodeInfos.add(treeNodeLogfile);
-        treeNodeStart.add(treeNodeInfos);
 
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
@@ -175,6 +146,12 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_einstellungen:
                         jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
                         break;
+
+                    case NAME_notifications:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelNotifications);
+                        break;
+
                     case NAME_bandwidth:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDownload);
@@ -231,18 +208,7 @@ public class DialogEinstellungen extends JFrame {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPsetVorlagen);
                         break;
-                    //Infos
-                    case NAME_infos:
-                        jTree1.setSelectionPath(new TreePath(treeNodeHistory.getPath()));
-                        break;
-                    case NAME_history:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelHistory);
-                        break;
-                    case NAME_logfile:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelErledigteAbos);
-                        break;
+
                     default:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);
@@ -253,9 +219,9 @@ public class DialogEinstellungen extends JFrame {
             jPanelExtra.updateUI();
         });
         // und jetzt noch aufklappen
-        for (int i = 0; i < jTree1.getRowCount(); ++i) {
+        for (int i = 0; i < jTree1.getRowCount(); ++i)
             jTree1.expandRow(i);
-        }
+
         // und den Start setzen
         TreePath tp = new TreePath(treeNodeAllgemeineEinstellungen.getPath());
         jTree1.setSelectionPath(tp);

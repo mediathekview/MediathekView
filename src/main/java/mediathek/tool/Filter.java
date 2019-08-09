@@ -1,49 +1,31 @@
-/*
- *    MediathekView
- *    Copyright (C) 2013   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.tool;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import mSearch.daten.DatenFilm;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenFilm;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Filter {
-
     /**
      * The cache for already compiled RegExp.
-     * Entries will be removed if the haven´t been accessed for more than 10 minutes.
+     * Entries will be removed if the haven´t been accessed for more than 5 minutes.
      */
-    private static final Cache<String, Pattern> CACHE;
-
-    static {
-        CACHE = CacheBuilder.newBuilder()
-                .expireAfterAccess(10, TimeUnit.MINUTES)
-                .build();
-    }
+    private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build(new PatternCacheLoader());
+    private static final Logger logger = LogManager.getLogger(Filter.class);
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -127,7 +109,7 @@ public class Filter {
         return result;
     }
 
-    private static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
+    public static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
         return filterLaengeInMinuten == 0 || filmLaenge == 0;
     }
 
@@ -137,7 +119,7 @@ public class Filter {
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge < filterLength;
     }
 
-    private static boolean checkLengthWithMin(int filterLaengeInMinuten, long filmLaenge) {
+    public static boolean checkLengthWithMin(int filterLaengeInMinuten, long filmLaenge) {
         final int filterLength = filterLaengeInMinuten * 60;
 
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge > filterLength;
@@ -156,14 +138,16 @@ public class Filter {
 
     public static boolean pruefen(String[] filter, final String im) {
         // wenn einer passt, dann ists gut
-        Pattern p;
+
         if (filter.length == 1) {
             if (filter[0].isEmpty()) {
-                // Filter ist leer, das wars
-                return true;
-            } else if ((p = makePattern(filter[0])) != null) {
-                // dann ists eine RegEx
-                return (p.matcher(im).matches());
+                return true; // Filter ist leer, das wars
+            } else {
+                final Pattern p;
+                if ((p = makePattern(filter[0])) != null) {
+                    // dann ists eine RegEx
+                    return p.matcher(im).matches();
+                }
             }
         }
 
@@ -175,7 +159,7 @@ public class Filter {
      * @param im     checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    private static boolean checkLowercase(String[] filter, String im) {
+    public static boolean checkLowercase(String[] filter, String im) {
         for (String s : filter) {
             // dann jeden Suchbegriff checken
             if (im.contains(s)) {
@@ -185,7 +169,6 @@ public class Filter {
 
         return false;
     }
-
 
     public static boolean isPattern(final String textSuchen) {
         return textSuchen.startsWith("#:");
@@ -200,16 +183,10 @@ public class Filter {
     public static Pattern makePattern(final String textSuchen) {
         Pattern p;
         if (isPattern(textSuchen)) {
-            p = CACHE.getIfPresent(textSuchen);
-            if (p == null) {
-                //nothing in cache, so we have to compile...
-                try {
-                    p = Pattern.compile(textSuchen.substring(2),
-                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
-                    CACHE.put(textSuchen, p);
-                } catch (Exception ignored) {
-                    p = null;
-                }
+            try {
+                p = CACHE.get(textSuchen);
+            } catch (ExecutionException ex) {
+                p = null;
             }
         } else
             p = null;
@@ -229,6 +206,22 @@ public class Filter {
             }
         } else {
             tf.setBackground(Color.WHITE);
+        }
+    }
+
+    /**
+     * This loader will compile regexp patterns when they are not in cache.
+     */
+    static class PatternCacheLoader extends CacheLoader<String, Pattern> {
+
+        @Override
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+            logger.debug("COMPILING PATTERN: " + pattern);
+            Pattern p;
+            p = Pattern.compile(pattern.substring(2),
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+
+            return p;
         }
     }
 }

@@ -19,7 +19,11 @@
  */
 package mediathek.daten;
 
-public class DatenMediaPath extends MVData<DatenMediaPath> {
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
+public class DatenMediaPath implements Comparable<DatenMediaPath> {
 
     public final static int MEDIA_PATH_PATH = 0;
     public final static int MEDIA_PATHE_SAVE = 1;
@@ -31,27 +35,27 @@ public class DatenMediaPath extends MVData<DatenMediaPath> {
     public String[] arr;
 
     public DatenMediaPath(String pfad, boolean sichern) {
-        makeArr();
+        initialize();
+
         arr[MEDIA_PATH_PATH] = pfad;
         arr[MEDIA_PATHE_SAVE] = Boolean.toString(sichern);
     }
 
     public DatenMediaPath() {
-        makeArr();
+        initialize();
     }
 
     public boolean savePath() {
         return Boolean.parseBoolean(arr[MEDIA_PATHE_SAVE]);
     }
 
-    //===================================
-    // Private
-    //===================================
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
     }
 
+    @Override
+    public int compareTo(@NotNull DatenMediaPath o) {
+        return 0;
+    }
 }

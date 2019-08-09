@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-BATCHDATEI="build/uploadbatch"
-LOCAL="build/distributions"
+BATCHDATEI="target/uploadbatch"
+LOCAL="target"
 REMOTE="upload"
 
-STATUSDATEI="build/upload.status"
-COMMITDATEI="build/gitcommithash.txt"
+STATUSDATEI="target/upload.status"
+COMMITDATEI="target/gitcommithash.txt"
 
 PORT="22"
 ADRESSE="deploy@mediathekview.de"
@@ -31,9 +31,9 @@ fi
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for i in `ls -x -1 $LOCAL`; do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' \)); do
   # einzelne fertige Dateien hochladen
-  echo "put $LOCAL/$i" >> $BATCHDATEI
+  echo "put $file" >> $BATCHDATEI
 done
 
 echo "cd ../" >> $BATCHDATEI

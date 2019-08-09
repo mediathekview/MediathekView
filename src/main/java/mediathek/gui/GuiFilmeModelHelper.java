@@ -1,13 +1,13 @@
 package mediathek.gui;
 
 import javafx.collections.ObservableList;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.ListeFilme;
 import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelFilm;
+import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVTable;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
     private final Daten daten;
     private final MVTable tabelle;
-    private final TModel tModel;
+    private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
@@ -38,7 +38,7 @@ public class GuiFilmeModelHelper {
         this.daten = daten;
         this.tabelle = tabelle;
 
-        tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
+        filmModel = new TModelFilm();
         listeFilme = daten.getListeFilmeNachBlackList();
 
     }
@@ -75,7 +75,7 @@ public class GuiFilmeModelHelper {
                 && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
-                && ((int) fap.filmLengthSlider.getHighValue() == FilmActionPanel.UNLIMITED_VALUE)
+                && ((int) fap.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !fap.dontShowAbos.getValue()
                 && !fap.showUnseenOnly.getValue()
                 && !fap.showOnlyHd.getValue()
@@ -130,7 +130,7 @@ public class GuiFilmeModelHelper {
             if (filmLength < minLengthInSeconds)
                 continue;
 
-            if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
+            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
                 if (filmLength > maxLengthInSeconds)
                     continue;
 
@@ -141,7 +141,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyLivestreams) {
-                if (!film.getThema().equals(ListeFilme.THEMA_LIVE)) {
+                if (!film.isLivestream()) {
                     continue;
                 }
             }
@@ -161,7 +161,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (kGesehen) {
-                if (daten.history.urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
                     continue;
                 }
             }
@@ -201,20 +201,32 @@ public class GuiFilmeModelHelper {
      * Perform the last stage of filtering.
      * Rework!!!
      */
-    public boolean finalStageFiltering(final DatenFilm film) {
+    private boolean finalStageFiltering(final DatenFilm film) {
+        boolean result;
+
+        if (searchThroughDescriptions && !film.getDescription().isEmpty())
+            result = searchEntriesWithDescription(film);
+        else
+            result = searchEntries(film);
+
+        return result;
+    }
+
+    private boolean searchEntries(DatenFilm film) {
+        boolean result = false;
+        if (Filter.pruefen(arrIrgendwo, film.getThema())
+                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
+            result = true;
+        }
+        return result;
+    }
+
+    private boolean searchEntriesWithDescription(DatenFilm film) {
         boolean result = false;
 
-        if (searchThroughDescriptions) {
-            if (Filter.pruefen(arrIrgendwo, film.getDescription())
-                    || Filter.pruefen(arrIrgendwo, film.getThema())
-                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-                result = true;
-            }
-        } else {
-            if (Filter.pruefen(arrIrgendwo, film.getThema())
-                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-                result = true;
-            }
+        if (Filter.pruefen(arrIrgendwo, film.getDescription())
+                || searchEntries(film)) {
+            result = true;
         }
 
         return result;
@@ -228,7 +240,7 @@ public class GuiFilmeModelHelper {
         } else {
             performTableFiltering();
         }
-        tabelle.setModel(tModel);
+        tabelle.setModel(filmModel);
     }
 
     public void prepareTableModel() {
@@ -236,7 +248,7 @@ public class GuiFilmeModelHelper {
             fillTableModel();
 
         //use empty model
-        tabelle.setModel(tModel);
+        tabelle.setModel(filmModel);
     }
 
     private void addAllFilmsToTableModel() {
@@ -248,33 +260,9 @@ public class GuiFilmeModelHelper {
     }
 
     private void addFilmToTableModel(DatenFilm film) {
-        Object[] object = new Object[DatenFilm.MAX_ELEM];
-        for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
-            switch (m) {
-                case DatenFilm.FILM_NR:
-                    object[m] = film.getFilmNr();
-                    break;
-                case DatenFilm.FILM_DATUM:
-                    object[m] = film.datumFilm;
-                    break;
-                case DatenFilm.FILM_GROESSE:
-                    object[m] = film.getFilmSize();
-                    break;
-                case DatenFilm.FILM_REF:
-                    object[m] = film;
-                    break;
-                case DatenFilm.FILM_HD:
-                    object[m] = film.isHD() ? "1" : "0";
-                    break;
-                case DatenFilm.FILM_UT:
-                    object[m] = film.hasSubtitle() ? "1" : "0";
-                    break;
-                default:
-                    object[m] = film.arr[m];
-                    break;
-            }
-        }
+        Object[] object = new Object[1];
+        object[0] = film;
 
-        tModel.addRow(object);
+        filmModel.addRow(object);
     }
 }

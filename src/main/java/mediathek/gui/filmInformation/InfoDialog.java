@@ -1,13 +1,22 @@
 package mediathek.gui.filmInformation;
 
 import com.jidesoft.swing.MultilineLabel;
-import mSearch.daten.DatenFilm;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.ApplicationConfiguration;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import mediathek.config.Daten;
-import mediathek.gui.HyperlinkButton;
+import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
 import net.miginfocom.swing.MigLayout;
@@ -15,6 +24,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -22,12 +32,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class InfoDialog extends JDialog {
     private static final long serialVersionUID = -890508930316467747L;
     private static final String FILM_INFO_VISIBLE = "film.information.visible";
     private static final String FILM_INFO_LOCATION_X = "film.information.location.x";
     private static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+    private static final String COPY_URL_TEXT = "URL kopieren";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final MVSenderIconCache senderIconCache;
     private DatenFilm currentFilm = null;
@@ -42,19 +54,13 @@ public class InfoDialog extends JDialog {
     private JCheckBox cbSubtitle;
     private JLabel lblGeo;
     private JLabel lblAbo;
-    private HyperlinkButton btnLinkWebsite;
+    private JFXPanel fxPanel;
+    private Hyperlink hyperlink;
     private JTextArea lblDescription;
 
-    private JMenuItem createCopyLinkToClipboardItem() {
-        JMenuItem item = new JMenuItem("URL kopieren");
-        item.addActionListener(e -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink()));
-
-        return item;
-    }
-
-    public InfoDialog(Window parent, MVSenderIconCache cache) {
+    public InfoDialog(Window parent) {
         super(parent);
-        senderIconCache = cache;
+        senderIconCache = Daten.getInstance().getSenderIconCache();
 
         setType(Window.Type.UTILITY);
         setTitle("Filminformation");
@@ -63,19 +69,8 @@ public class InfoDialog extends JDialog {
 
         buildLayout();
 
-        btnLinkWebsite.addActionListener((e) -> {
-            if (currentFilm != null) {
-                try {
-                    UrlHyperlinkAction.openURL(null, currentFilm.getWebsiteLink());
-                } catch (URISyntaxException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(createCopyLinkToClipboardItem());
-        btnLinkWebsite.setComponentPopupMenu(popupMenu);
+        installCopyUrlHandler(lblThema);
+        installCopyUrlHandler(lblTitel);
 
         updateTextFields();
 
@@ -108,33 +103,14 @@ public class InfoDialog extends JDialog {
         });
     }
 
-    private void addFilmlistLoadListener() {
-        //TODO here is a bug with displaying film data
-        Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            private boolean tempVisibility;
-
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                tempVisibility = isVisible();
-                if (isVisible()) {
-                    setVisible(!tempVisibility);
-                }
-            }
-
-            @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                setVisible(tempVisibility);
-            }
-
-            @Override
-            public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
-            }
-        });
+    private void installCopyUrlHandler(JTextComponent component) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item = new JMenuItem(COPY_URL_TEXT);
+        item.addActionListener(e -> GuiFunktionen.copyToClipboard(component.getText()));
+        menu.add(item);
+        component.setComponentPopupMenu(menu);
     }
+
     /**
      * Restore window position from config settings.
      */
@@ -192,16 +168,18 @@ public class InfoDialog extends JDialog {
         cbSubtitle.setSelected(false);
         lblGeo.setText("");
         lblAbo.setText("");
-        btnLinkWebsite.setToolTipText("");
-        btnLinkWebsite.setEnabled(false);
+        Platform.runLater(() -> {
+            hyperlink.setTooltip(null);
+            hyperlink.setDisable(true);
+        });
     }
 
     private void setSenderIcon(final JLabel control) {
-        final ImageIcon icon = senderIconCache.get(currentFilm.getSender(), true);
-        if (icon != null) {
+        final Optional<ImageIcon> optIcon = senderIconCache.get(currentFilm.getSender(), true);
+        optIcon.ifPresent(icon -> {
             control.setText("");
             control.setIcon(icon);
-        }
+        });
     }
 
     private void updateTextFields() {
@@ -217,18 +195,20 @@ public class InfoDialog extends JDialog {
             lblDescription.setCaretPosition(0);
 
             lblSize.setText(currentFilm.getSize());
-            lblDatum.setText(currentFilm.arr[DatenFilm.FILM_DATUM]);
-            lblUhrzeit.setText(currentFilm.arr[DatenFilm.FILM_ZEIT]);
-            lblDauer.setText(currentFilm.arr[DatenFilm.FILM_DAUER]);
+            lblDatum.setText(currentFilm.getSendeDatum());
+            lblUhrzeit.setText(currentFilm.getSendeZeit());
+            lblDauer.setText(currentFilm.getDauer());
 
             cbHD.setSelected(currentFilm.isHD());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
 
-            lblGeo.setText(currentFilm.arr[DatenFilm.FILM_GEO]);
+            lblGeo.setText(currentFilm.getGeo());
             lblAbo.setText(currentFilm.arr[DatenFilm.FILM_ABO_NAME]);
 
-            btnLinkWebsite.setToolTipText(currentFilm.getWebsiteLink());
-            btnLinkWebsite.setEnabled(true);
+            Platform.runLater(() -> {
+                hyperlink.setTooltip(new Tooltip(currentFilm.getWebsiteLink()));
+                hyperlink.setDisable(false);
+            });
         }
     }
 
@@ -362,10 +342,30 @@ public class InfoDialog extends JDialog {
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         contentPane.add(label, "cell 0 11");
 
-        btnLinkWebsite = new HyperlinkButton();
-        btnLinkWebsite.setText("Hier klicken");
-        contentPane.add(btnLinkWebsite, "cell 1 11,growx,wmax 250");
+        fxPanel = new JFXPanel();
+        contentPane.add(fxPanel, "cell 1 11,growx,wmax 250");
 
+        Platform.runLater(() -> {
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem mi = new MenuItem(COPY_URL_TEXT);
+            mi.setOnAction(e -> SwingUtilities.invokeLater(() -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink())));
+            contextMenu.getItems().add(mi);
+
+            hyperlink = new Hyperlink("Hier klicken");
+            hyperlink.setContextMenu(contextMenu);
+            hyperlink.setUnderline(true);
+            hyperlink.setBackground(new Background(new BackgroundFill(Color.rgb(236, 236, 236), CornerRadii.EMPTY, Insets.EMPTY)));
+            hyperlink.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (currentFilm != null) {
+                    try {
+                        UrlHyperlinkAction.openURL(null, currentFilm.getWebsiteLink());
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }));
+            fxPanel.setScene(new Scene(hyperlink));
+        });
         label = new JLabel();
         label.setText("Beschreibung:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);

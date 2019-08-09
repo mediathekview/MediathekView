@@ -1,23 +1,3 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    Copyright (C) 2014   Christian F.
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
 import mediathek.config.Daten;
@@ -36,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
@@ -117,7 +98,7 @@ public class DialogBeendenZeit extends JDialog {
         if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
             try {
                 String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                heute = heute + MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
+                heute += MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
                 Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
 
                 if (start.after(startDate)) {
@@ -147,7 +128,7 @@ public class DialogBeendenZeit extends JDialog {
         cbShutdownComputer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
 
         btnContinue.addActionListener(e -> {
-            final String strSelectedItem = comboActions.getSelectedItem().toString();
+            final String strSelectedItem = Objects.requireNonNull(comboActions.getSelectedItem()).toString();
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
 
             SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
@@ -184,16 +165,13 @@ public class DialogBeendenZeit extends JDialog {
 
     private void setCbShutdownCoputer() {
         final String strSelectedItem = (String) comboActions.getSelectedItem();
-        switch (strSelectedItem) {
-            case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                cbShutdownComputer.setEnabled(true);
-                break;
-            default:
-                //manually reset shutdown state
-                cbShutdownComputer.setEnabled(false);
-                cbShutdownComputer.setSelected(false);
-                shutdown = false;
-                break;
+        if (WAIT_FOR_DOWNLOADS_AND_TERMINATE.equals(strSelectedItem)) {
+            cbShutdownComputer.setEnabled(true);
+        } else {
+            //manually reset shutdown state
+            cbShutdownComputer.setEnabled(false);
+            cbShutdownComputer.setSelected(false);
+            shutdown = false;
         }
     }
 
@@ -257,7 +235,7 @@ public class DialogBeendenZeit extends JDialog {
         setTextWait();
         glassPane.setVisible(true);
 
-        downloadMonitorWorker = new SwingWorker<Void, Void>() {
+        downloadMonitorWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((((Date) jSpinnerTime.getValue())).after(new Date())) {
@@ -267,7 +245,7 @@ public class DialogBeendenZeit extends JDialog {
                 progressPanel.setMessage("Warte auf Abschluss der Downloads...");
                 DatenDownload.startenDownloads(daten, listeDownloadsStarten);
 
-                while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {
+                while ((Daten.getInstance().getListeDownloads().unfinishedDownloads() > 0) && !isCancelled()) {
                     TimeUnit.SECONDS.sleep(1);
                 }
 

@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -19,15 +19,17 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.tool.*;
+import com.google.common.base.Stopwatch;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.tool.Filter;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModelAbo;
+import mediathek.gui.messages.AboListChangedEvent;
+import mediathek.tool.*;
+import mediathek.tool.models.TModelAbo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -38,15 +40,14 @@ import java.util.LinkedList;
 
 @SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
-    private final Daten daten;
     private static final String[] LEER = {""};
-    //private String[] titel, thema, irgendwo;
+    private static final Logger logger = LogManager.getLogger(ListeAbo.class);
+    private final Daten daten;
+    private int nr;
 
     public ListeAbo(Daten ddaten) {
         daten = ddaten;
     }
-
-    private int nr;
 
     public void addAbo(String aboName) {
         addAbo(aboName, "", "", "");
@@ -70,7 +71,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.getInstance().getMediathekGui(), true, daten, datenAbo, false /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false /*onlyOne*/);
+        dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
@@ -103,17 +105,31 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         add(datenAbo);
     }
 
-    public void aboLoeschen(DatenAbo abo) {
-        if (abo != null) {
-            this.remove(abo);
+    public void aboLoeschen(@NotNull DatenAbo abo) {
+            remove(abo);
             aenderungMelden();
-        }
+    }
+
+    /**
+     * Get the number of abos which are active and used.
+     * @return num of used abos
+     */
+    public long activeAbos() {
+        return stream().filter(DatenAbo::aboIstEingeschaltet).count();
+    }
+
+    /**
+     * Get the number of abos which are created but offline.
+     * @return number of abos which are offline
+     */
+    public long inactiveAbos() {
+        return stream().filter(abo -> !abo.aboIstEingeschaltet()).count();
     }
 
     public void aenderungMelden() {
         // Filmliste anpassen
-        setAboFuerFilm(Daten.getInstance().getListeFilme(), true /*aboLoeschen*/);
-        Listener.notify(Listener.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        setAboFuerFilm(daten.getListeFilme(), true);
+        daten.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
     public DatenAbo getAboNr(int i) {
@@ -190,23 +206,23 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public DatenAbo getAboFuerFilm_schnell(DatenFilm film, boolean laengePruefen) {
         // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
         // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
-        if (film.abo == null) {
+        final var abo = film.getAbo();
+        if (abo == null) {
             return null;
         } else {
             if (laengePruefen) {
-                if (!Filter.laengePruefen(((DatenAbo) film.abo).mindestdauerMinuten, film.getFilmLength(),
-                        ((DatenAbo) film.abo).min)) {
+                if (!Filter.laengePruefen(abo.mindestdauerMinuten, film.getFilmLength(), abo.min)) {
                     return null;
                 }
             }
-            return (DatenAbo) film.abo;
+            return abo;
         }
     }
 
     private void deleteAboInFilm(DatenFilm film) {
         // für jeden Film Abo löschen
         film.arr[DatenFilm.FILM_ABO_NAME] = "";
-        film.abo = null;
+        film.setAbo(null);
     }
 
     private void createAbo(DatenAbo abo) {
@@ -236,34 +252,33 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      *
      * @param film assignee
      */
-    private void assignAboToFilm(DatenFilm film) {
-        final DatenAbo foundAbo = this.stream().filter(abo
+    private void assignAboToFilm(@NotNull DatenFilm film) {
+        stream().filter(abo
                 -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
                 abo.titel,
                 abo.thema,
                 abo.irgendwo,
                 abo.mindestdauerMinuten,
                 abo.min,
-                film, false)).findFirst().orElse(null);
+                film, false))
+                .findFirst().
+                ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
+    }
 
-        if (foundAbo != null) {
-            if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
-                // dann ist der Film zu kurz
-                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
-            } else {
-                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
-            }
-            film.abo = foundAbo;
+    private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
+        if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
+            // dann ist der Film zu kurz
+            film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
         } else {
-            deleteAboInFilm(film);
+            film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
         }
+        film.setAbo(foundAbo);
     }
 
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
-
-        Duration.counterStart("Abo in Filmliste eintragen");
 
         if (this.isEmpty() && aboLoeschen) {
             listeFilme.parallelStream().forEach(this::deleteAboInFilm);
@@ -271,7 +286,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
 
         // leere Abos löschen, die sind Fehler
-        this.stream().filter((datenAbo) -> (datenAbo.isEmpty())).forEach(this::remove);
+        this.stream().filter(DatenAbo::isEmpty).forEach(this::remove);
 
         // und jetzt erstellen
         forEach(this::createAbo);
@@ -286,6 +301,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo.irgendwo = LEER;
         });
 
-        Duration.counterStop("Abo in Filmliste eintragen");
+        stopwatch.stop();
+        logger.debug("setAboFuerFilm: {}", stopwatch);
     }
 }

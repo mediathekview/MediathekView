@@ -1,52 +1,34 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek;
 
-import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mSearch.Config;
-import mSearch.tool.Log;
-import mSearch.tool.SingleInstance;
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.PooledDatabaseConnection;
+import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.*;
 import mediathek.windows.MediathekGuiWindows;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
@@ -67,50 +49,10 @@ public class Main {
     private static void cleanupOsxFiles() {
         if (!Config.isPortableMode()) {
             try {
-                Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
+                var oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
-            } catch (Exception ignored) {
+            } catch (IOException ignored) {
             }
-        }
-    }
-
-    /**
-     * Tests if javafx is in the classpath by loading a well known class.
-     */
-    private static void checkForJavaFX() {
-        final String message = "MediathekView benötigt ein installiertes JavaFX.";
-
-        try {
-            Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
-        } catch (ClassNotFoundException e) {
-            logger.error("JavaFX was not found on system.", e);
-            if (GraphicsEnvironment.isHeadless()) {
-                System.err.println(message);
-            } else {
-                //we have a screen
-                JOptionPane.showMessageDialog(null,
-                        message,
-                        "JavaFX nicht gefunden", JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(3);
-        }
-    }
-
-    private static void printBanner() {
-        if (!SystemInfo.isMacOSX()) {
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println("___  ___         _ _       _   _          _    _   _ _               ");
-            System.out.println("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
-            System.out.println("| .  . | ___  __| |_  __ _| |_| |__   ___| | _| | | |_  _____      __");
-            System.out.println("| |\\/| |/ _ \\/ _` | |/ _` | __| '_ \\ / _ \\ |/ / | | | |/ _ \\ \\ /\\ / /");
-            System.out.println("| |  | |  __/ (_| | | (_| | |_| | | |  __/   <\\ \\_/ / |  __/\\ V  V / ");
-            System.out.println("\\_|  |_/\\___|\\__,_|_|\\__,_|\\__|_| |_|\\___|_|\\_\\\\___/|_|\\___| \\_/\\_/  ");
-            System.out.println();
-            System.out.println();
         }
     }
 
@@ -121,7 +63,7 @@ public class Main {
     }
 
     private static String readPfadFromArguments(final String... aArguments) {
-        String pfad = "";
+        var pfad = "";
         if (aArguments != null && aArguments.length > 0) {
             for (String arg : aArguments) {
                 if (!arg.startsWith("-")) {
@@ -138,7 +80,7 @@ public class Main {
 
     private static void setupPortableMode(String... args) {
         printArguments(args);
-        final String basePath = readPfadFromArguments(args);
+        final var basePath = readPfadFromArguments(args);
         if (!basePath.isEmpty()) {
             Config.setPortableMode(true);
             logger.info("Portable Mode: true");
@@ -150,37 +92,137 @@ public class Main {
     }
 
     /**
+     * Due to a controlsfx bug no notifications on windows
+     */
+    private static void disableNotifications() {
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, false);
+    }
+
+    /**
+     * Query the class name for Nimbus L&F.
+     * @return the class name for Nimbus, otherwise return the system default l&f class name.
+     */
+    private static String queryNimbusLaFName() {
+        String systemLaF = UIManager.getSystemLookAndFeelClassName();
+
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    systemLaF = info.getClassName();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            systemLaF = UIManager.getSystemLookAndFeelClassName();
+        }
+
+        return systemLaF;
+    }
+
+    /**
+     * Set the look and feel for various OS.
+     * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
+     * On windows, use the system windows l&f for swing.
+     * On Linux, use Nimbus l&f which is more modern than Metal.
+     *
+     * One can override the L&F stuff for non-macOS by supplying -Dswing.defaultlaf=class_name and the class name on the CLI.
+     */
+    private static void setSystemLookAndFeel() {
+        //don´t set L&F on macOS...
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return;
+
+        final String laf = System.getProperty("swing.defaultlaf");
+        if (laf == null || laf.isEmpty()) {
+            //only set L&F if there was no define on CLI
+            logger.trace("L&F property is empty, setting L&F");
+            //use system for windows and macOS
+            String systemLaF = UIManager.getSystemLookAndFeelClassName();
+            //on linux, use more modern Nimbus L&F...
+            if (SystemUtils.IS_OS_LINUX) {
+                systemLaF = queryNimbusLaFName();
+            }
+
+            //set the L&F...
+            try {
+                UIManager.setLookAndFeel(systemLaF);
+            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+                logger.error("L&F error: " , e);
+            }
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        printBanner();
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
+            System.exit(1);
+        }
+
+        setSystemLookAndFeel();
+
+        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
+            disableNotifications();
 
         setupPortableMode(args);
 
         checkMemoryRequirements();
-        checkJava8Compatibility();
-        checkForJavaFX();
+
+        deleteDatabase();
+
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            setupDatabase();
+            DatenFilm.Database.initializeDatabase();
+        }
 
         IconFontSwing.register(FontAwesome.getIconFont());
+
+        installSingleInstanceHandler();
+
         new Main().start(args);
     }
 
+    private static void deleteDatabase() {
+        if (!MemoryUtils.isLowMemoryEnvironment()) {
+            //we can delete the database as it is not needed.
+            try {
+                final String dbLocation = PooledDatabaseConnection.getInstance().getDatabaseLocation() + "mediathekview.mv.db";
+                Files.deleteIfExists(Paths.get(dbLocation));
+            } catch (IOException e) {
+                logger.error("deleteDatabase()", e);
+            }
+        }
+    }
+
+    private static void setupDatabase() {
+        logger.trace("setupDatabase()");
+        SansOrm.initializeTxSimple(PooledDatabaseConnection.getInstance().getDataSource());
+    }
+
+    private static void installSingleInstanceHandler() {
+        //prevent startup of multiple instances...
+        var singleInstanceWatcher = new SingleInstance();
+        if (singleInstanceWatcher.isAppAlreadyActive()) {
+            JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+            System.exit(1);
+        }
+    }
+
     private static void checkForOfficialOSXAppUse() {
-        final String osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        final var osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
         if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
-            JOptionPane.showMessageDialog(null,
-                    "Bitte nutzen Sie die offizielle macOS Applikation für das beste Nutzererlebnis.",
-                    "Anwendungshinweis",
-                    JOptionPane.WARNING_MESSAGE);
+            logger.warn("WARN: macOS app NOT launched from official launcher!");
         }
     }
 
     private static void checkMemoryRequirements() {
-        final long maxMem = Runtime.getRuntime().maxMemory();
+        final var maxMem = Runtime.getRuntime().maxMemory();
         // more than 450MB avail...
-        if (maxMem < 450 * 1024 * 1024) {
+        if (maxMem < 450 * FileUtils.ONE_MB) {
             if (GraphicsEnvironment.isHeadless()) {
-                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen.");
+                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen bekommen.");
                 System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
             } else {
                 JOptionPane.showMessageDialog(null,
@@ -193,32 +235,12 @@ public class Main {
         }
     }
 
-    private static void checkJava8Compatibility() {
-        if (SystemInfo.isJdk9Above()) {
-            logger.error("JVM is not Java 8");
-            if (GraphicsEnvironment.isHeadless()) {
-                System.err.println("MediathekView ist NUR mit Java 8 kompatibel.");
-                System.err.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
-            } else {
-                //we have a screen
-                JOptionPane.showMessageDialog(null,
-                        "MediathekView ist NUR mit Java 8 kompatibel.",
-                        "Falsche Java-Version", JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(3);
-        }
-    }
-
     private void start(String... args) {
-        StartupMode startupMode = StartupMode.GUI;
-
-        proxyAuthentication();
-
         if (args != null) {
-            startupMode = processArgs(startupMode, args);
+            processArgs(args);
         }
 
-        startUI(startupMode, args);
+        startGuiMode();
     }
 
     /*
@@ -233,35 +255,18 @@ public class Main {
      *
      * */
 
-    private void startUI(StartupMode aStartupMode, final String... aArguments) {
-        aStartupMode = switchToCLIModeIfNecessary(aStartupMode);
-        switch (aStartupMode) {
-            case AUTO:
-                startAutoMode(aArguments);
-                break;
-
-            case FASTAUTO:
-                startFastAutoMode(aArguments);
-                break;
-
-            case GUI:
-                startGuiMode();
-                break;
-            default:
-                startUI(StartupMode.GUI);
-        }
-    }
-
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
-            if (SystemInfo.isMacOSX())
-                checkForOfficialOSXAppUse();
+            final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
+            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
 
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            if (SystemInfo.isMacOSX()) {
+            splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
                 cleanupOsxFiles();
             }
@@ -269,16 +274,12 @@ public class Main {
             if (Config.isDebuggingEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+                logger.info("Swing Thread checking repaint manager installed.");
             }
 
-            //prevent startup of multiple instances...
-            SingleInstance singleInstanceWatcher = new SingleInstance();
-            if (singleInstanceWatcher.isAppAlreadyActive()) {
-                JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
-                System.exit(1);
-            }
+            startMeldungen();
 
-
+            splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
         });
     }
@@ -286,12 +287,12 @@ public class Main {
     private MediathekGui getPlatformWindow() {
         MediathekGui window;
 
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
-        } else if (SystemInfo.isWindows()) {
+        } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
         } else {
-            if (SystemInfo.isUnix()) {
+            if (SystemUtils.IS_OS_UNIX) {
                 setupX11WindowManagerClassName();
             }
             window = new MediathekGui();
@@ -306,53 +307,19 @@ public class Main {
      */
     private void setupX11WindowManagerClassName() {
         try {
-            Toolkit xToolkit = Toolkit.getDefaultToolkit();
+            var xToolkit = Toolkit.getDefaultToolkit();
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
-        } catch (Exception ignored) {
+        } catch (NoSuchFieldException|IllegalAccessException e) {
             logger.warn("Could not set awtAppClassName");
         }
     }
 
-    private void startFastAutoMode(final String[] args) {
-        final MediathekAuto mvAuto = new MediathekAuto(args);
-        mvAuto.setFastAuto(true);
-        mvAuto.starten();
-    }
-
-    private void startAutoMode(final String[] args) {
-        new MediathekAuto(args).starten();
-    }
-
-    private StartupMode switchToCLIModeIfNecessary(final StartupMode aState) {
-    /*
-     If user tries to start MV from command-line without proper options,
-     instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
-     */
-        if (GraphicsEnvironment.isHeadless() && (aState == StartupMode.GUI)) {
-            logger.warn("Headless environment detected but -auto was not specified.");
-            System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
-            System.err.println("Startmodus wurde auf -auto geändert.");
-            System.err.println();
-            return StartupMode.AUTO;
-        }
-        return aState;
-    }
-
-    private StartupMode processArgs(final StartupMode aStartupMode, final String... aArguments) {
-        StartupMode newStartupMode = null;
+    private void processArgs(final String... aArguments) {
         for (String argument : aArguments) {
             argument = argument.toLowerCase();
             switch (argument) {
-                case ProgramArguments.STARTUPMODE_AUTO:
-                    newStartupMode = StartupMode.AUTO;
-                    break;
-
-                case ProgramArguments.STARTUPMODE_FASTAUTO:
-                    newStartupMode = StartupMode.FASTAUTO;
-                    break;
-
                 case ProgramArguments.STARTUPMODE_VERBOSE:
                     EventQueue.invokeLater(() ->
                     {
@@ -373,43 +340,9 @@ public class Main {
                     break;
             }
         }
-
-        return newStartupMode == null ? aStartupMode : newStartupMode;
-    }
-
-    private void proxyAuthentication() {
-        //TODO remove if not used anymore by URLConnection
-        try {
-            final String prxUser = System.getProperty(HTTP_PROXY_USER, null);
-            final String prxPassword = System.getProperty(HTTP_PROXY_PW, null);
-            if (prxUser != null && prxPassword != null) {
-                final PasswordAuthentication authenticator = new PasswordAuthentication(prxUser, prxPassword.toCharArray());
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return authenticator;
-                    }
-                });
-                logger.info(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
-            } else if (prxUser != null && prxPassword == null) {
-                logger.info(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
-            } else {
-                logger.info(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
-            }
-
-        } catch (SecurityException se) {
-            logger.warn(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
-        }
-    }
-
-    private enum StartupMode {
-
-        GUI, AUTO, FASTAUTO
     }
 
     private final class ProgramArguments {
-        private static final String STARTUPMODE_AUTO = "-auto";
-        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
         private static final String STARTUPMODE_DEBUG = "-d";
         private static final String STARTUPMODE_MAXIMIZED = "-m";
         private static final String STARTUPMODE_VERBOSE = "-v";

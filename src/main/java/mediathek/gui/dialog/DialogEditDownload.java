@@ -1,29 +1,11 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialog;
 
-import mSearch.daten.DatenFilm;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenProg;
+import mediathek.daten.FilmResolution;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
@@ -33,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,12 +40,13 @@ public class DialogEditDownload extends JDialog {
     private String dateiGroesse_Klein = "";
     private JFrame parent = null;
     private String orgProgArray = "";
-    private String resolution = DatenFilm.AUFLOESUNG_NORMAL;
+    private String resolution = FilmResolution.AUFLOESUNG_NORMAL;
     private final JLabel jLabelFilmHD = new JLabel();
     private final JLabel jLabelFilmUT = new JLabel();
     private static ImageIcon ja_sw_16 = null;
+    private final TableColumnModel columnModel;
 
-    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
+    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet, TableColumnModel colModel) {
         super(parent, modal);
         initComponents();
         this.parent = parent;
@@ -70,6 +54,7 @@ public class DialogEditDownload extends JDialog {
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
+        columnModel = colModel;
 
         orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
@@ -102,16 +87,16 @@ public class DialogEditDownload extends JDialog {
         }
         if (datenDownload.film != null) {
             jRadioButtonResHi.setEnabled(!gestartet);
-            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
-            dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL)));
+            dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL));
             if (!dateiGroesse_Hoch.isEmpty()) {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
             }
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD].isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
-                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
-                dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD)));
+                dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD));
                 if (!dateiGroesse_HD.isEmpty()) {
                     jRadioButtonResHd.setText(jRadioButtonResHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
                 }
@@ -119,33 +104,34 @@ public class DialogEditDownload extends JDialog {
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN].isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
-                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
-                dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN)));
+                dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN));
                 if (!dateiGroesse_Klein.isEmpty()) {
                     jRadioButtonResLo.setText(jRadioButtonResLo.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
                 }
             }
 
         }
+
+        resolution = getRadioButtonResolution();
+    }
+
+    private String getRadioButtonResolution() {
+        String res;
         if (jRadioButtonResHd.isSelected()) {
-            resolution = DatenFilm.AUFLOESUNG_HD;
+            res = FilmResolution.AUFLOESUNG_HD;
         } else if (jRadioButtonResLo.isSelected()) {
-            resolution = DatenFilm.AUFLOESUNG_KLEIN;
+            res = FilmResolution.AUFLOESUNG_KLEIN;
         } else {
-            resolution = DatenFilm.AUFLOESUNG_NORMAL;
+            res = FilmResolution.AUFLOESUNG_NORMAL;
         }
+
+        return res;
     }
 
     private void changeRes() {
         // RadioButton sind nur enabled wenn "datenDownload.film" vorhanden
-        final String res;
-        if (jRadioButtonResHd.isSelected()) {
-            res = DatenFilm.AUFLOESUNG_HD;
-        } else if (jRadioButtonResLo.isSelected()) {
-            res = DatenFilm.AUFLOESUNG_KLEIN;
-        } else {
-            res = DatenFilm.AUFLOESUNG_NORMAL;
-        }
+        final String res = getRadioButtonResolution();
         datenDownload.arr[DatenDownload.DOWNLOAD_URL] = datenDownload.film.getUrlFuerAufloesung(res);
         textfeldListe[DatenDownload.DOWNLOAD_URL].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
 
@@ -180,8 +166,8 @@ public class DialogEditDownload extends JDialog {
 
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
-        for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-            JLabel label = new JLabel("  " + DatenDownload.COLUMN_NAMES[i] + ": ");
+        for (int i = 0; i < columnModel.getColumnCount(); ++i) {
+            JLabel label = new JLabel("  " + columnModel.getColumn(i).getHeaderValue() + ": ");
             labelListe[i] = label;
             JTextField textfeld = new JTextField();
             textfeld.setEditable(false);
@@ -495,9 +481,9 @@ public class DialogEditDownload extends JDialog {
 
     private boolean check() {
         mVPanelDownloadZiel.setPfadName_geaendert();
-        if ((jRadioButtonResHd.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_HD))
-                || (jRadioButtonResLo.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_KLEIN))
-                || (jRadioButtonResHi.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_NORMAL))) {
+        if ((jRadioButtonResHd.isSelected() && !resolution.equals(FilmResolution.AUFLOESUNG_HD))
+                || (jRadioButtonResLo.isSelected() && !resolution.equals(FilmResolution.AUFLOESUNG_KLEIN))
+                || (jRadioButtonResHi.isSelected() && !resolution.equals(FilmResolution.AUFLOESUNG_NORMAL))) {
             // dann wurde die Auflösung geändert -> Film kann nicht weitergeführt werden
             ok = downloadDateiLoeschen(datenDownload);
         } else {
@@ -548,16 +534,16 @@ public class DialogEditDownload extends JDialog {
 
         jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabelRes.setText("Auflösung ändern:");
+        jLabelRes.setText("Download-Qualität:");
 
         buttonGroup1.add(jRadioButtonResHd);
-        jRadioButtonResHd.setText("HD");
+        jRadioButtonResHd.setText("Höchste/Hoch");
 
         buttonGroup1.add(jRadioButtonResHi);
-        jRadioButtonResHi.setText("hoher Auflösung");
+        jRadioButtonResHi.setText("Mittel");
 
         buttonGroup1.add(jRadioButtonResLo);
-        jRadioButtonResLo.setText("niedriger Auflösung");
+        jRadioButtonResLo.setText("Niedrig");
 
         javax.swing.GroupLayout jPanelResLayout = new javax.swing.GroupLayout(jPanelRes);
         jPanelRes.setLayout(jPanelResLayout);
@@ -572,7 +558,7 @@ public class DialogEditDownload extends JDialog {
                 .addComponent(jRadioButtonResHi)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonResLo)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addContainerGap(304, Short.MAX_VALUE))
         );
         jPanelResLayout.setVerticalGroup(
             jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

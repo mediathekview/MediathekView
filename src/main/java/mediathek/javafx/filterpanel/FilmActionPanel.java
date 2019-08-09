@@ -7,34 +7,34 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.GermanStringSorter;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
+import mediathek.javafx.tool.FilmInformationButton;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.CheckListView;
-import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
@@ -44,9 +44,10 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -54,10 +55,8 @@ import java.util.stream.Collectors;
  * search is exposed via a readonly property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
-    public final static int UNLIMITED_VALUE = 110;
     private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
     private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
-    private final PopOver filterPopover;
     private final Daten daten;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
@@ -67,6 +66,11 @@ public class FilmActionPanel {
     private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
+    private final ManageAboButton btnManageAbos = new ManageAboButton();
+    private final Button btnDownload = new DownloadButton();
+    private final Button btnShowFilter = new FilterButton();
+    private final Button btnRecord = new RecordButton();
+    private final Button btnPlay = new PlayButton();
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -82,13 +86,11 @@ public class FilmActionPanel {
     public ComboBox<String> themaBox;
     public RangeSlider filmLengthSlider;
     public CheckListView<String> senderList;
+    public JDialog filterDialog;
+    public ManageAboAction manageAboAction;
     private Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
-    private Button btnDownload;
     private Button btnFilmInformation;
-    private Button btnPlay;
-    private Button btnRecord;
-    private Button btnNewFilter;
     private BlacklistButton btnBlacklist;
     private Button btnEditBlacklist;
     /**
@@ -100,7 +102,7 @@ public class FilmActionPanel {
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
-        filterPopover = createFilterPopover();
+        createFilterDialog();
 
         restoreConfigSettings();
 
@@ -109,8 +111,21 @@ public class FilmActionPanel {
         daten.getMessageBus().subscribe(this);
     }
 
-    public CustomTextField getSearchField() {
-        return jfxSearchField;
+    private void createFilterDialog() {
+        VBox vb = getFilterDialogContent();
+        SwingUtilities.invokeLater(() -> {
+            filterDialog = new SwingFilterDialog(MediathekGui.ui(), vb);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                filterDialog.setSize(410, 582);
+            }
+            filterDialog.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                    GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW, filterDialog);
+                }
+            });
+
+        });
     }
 
     private void restoreConfigSettings() {
@@ -132,8 +147,8 @@ public class FilmActionPanel {
         }
 
         try {
-            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM));
-        } catch (NoSuchElementException ignored) {
+            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, ZeitraumSpinner.UNLIMITED_VALUE));
+        } catch (Exception ignored) {
         }
     }
 
@@ -155,22 +170,21 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
-    private Parent createLeft() {
-        HBox hb = new HBox();
-        hb.setPadding(new Insets(5, 5, 5, 5));
-        hb.setSpacing(4.0);
-        hb.setAlignment(Pos.CENTER_LEFT);
-
+    private void createLeft(ToolBar toolBar) {
         btnBlacklist = new BlacklistButton(daten);
-        hb.getChildren().addAll(createDownloadButton(),
+
+        toolBar.getItems().addAll(btnDownload,
                 new VerticalSeparator(),
                 createFilmInformationButton(),
                 new VerticalSeparator(),
-                createPlayButton(),
-                createRecordButton(),
+                btnPlay,
+                btnRecord,
                 new VerticalSeparator(),
                 btnBlacklist,
-                createEditBlacklistButton());
+                createEditBlacklistButton(),
+                new VerticalSeparator(),
+                btnManageAbos);
+
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -183,8 +197,6 @@ public class FilmActionPanel {
                 setupLeftButtons(false);
             }
         });
-
-        return hb;
     }
 
     @Handler
@@ -197,40 +209,15 @@ public class FilmActionPanel {
         Platform.runLater(() -> btnDownload.setDisable(false));
     }
 
-    private Button createDownloadButton() {
-        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
-        btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
-        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().loadFilmlistDialog(daten, false)));
-
-        return btnDownload;
-    }
-
-    private Button createPlayButton() {
-        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
-        btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.playAction.actionPerformed(null)));
-
-        return btnPlay;
-    }
-
     private Button createFilmInformationButton() {
-        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
-        btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
-        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(Daten.filmInfo::showInfo));
+        btnFilmInformation = new FilmInformationButton();
+        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
         return btnFilmInformation;
     }
 
-    private Button createRecordButton() {
-        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.saveFilmAction.actionPerformed(null)));
-        btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
-
-        return btnRecord;
-    }
-
     private Button createEditBlacklistButton() {
-        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS));
+        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
         btnEditBlacklist.setTooltip(new Tooltip("Blacklist bearbeiten"));
         btnEditBlacklist.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             DialogLeer dialog = new DialogLeer(null, true);
@@ -248,6 +235,7 @@ public class FilmActionPanel {
             btnPlay.setDisable(disabled);
             btnRecord.setDisable(disabled);
             btnEditBlacklist.setDisable(disabled);
+            btnManageAbos.setDisable(disabled);
         });
     }
 
@@ -278,7 +266,7 @@ public class FilmActionPanel {
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
 
-        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.filterFilmAction.actionPerformed(null)));
+        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null)));
         textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
 
         roSearchStringProperty.bind(textProperty);
@@ -316,43 +304,9 @@ public class FilmActionPanel {
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private Parent createRight() {
-        setupSearchField();
-
-        HBox hb = new HBox();
-        hb.setPadding(new Insets(5, 5, 5, 5));
-        hb.setSpacing(4);
-        hb.setAlignment(Pos.CENTER_RIGHT);
-
-        btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
-        btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
-        btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
-
-        setupSearchThroughDescriptionButton();
-
-        hb.getChildren().addAll(btnNewFilter,
-                new VerticalSeparator(),
-                jfxSearchField,
-                btnSearchThroughDescription);
-
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                setupRightButtons(true);
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                setupRightButtons(false);
-            }
-        });
-
-        return hb;
-    }
-
     private void setupRightButtons(boolean disabled) {
         Platform.runLater(() -> {
-            btnNewFilter.setDisable(disabled);
+            btnShowFilter.setDisable(disabled);
             btnBlacklist.setDisable(disabled);
             jfxSearchField.setDisable(disabled);
             btnSearchThroughDescription.setDisable(disabled);
@@ -361,6 +315,8 @@ public class FilmActionPanel {
     }
 
     private VBox createCommonViewSettingsPane() {
+        Button btnDeleteFilterSettings = new DeleteFilterSettingsButton();
+
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
 
@@ -390,7 +346,12 @@ public class FilmActionPanel {
 
         VBox vBox = new VBox();
         vBox.setSpacing(4d);
-        vBox.getChildren().addAll(cbShowOnlyHd,
+        Node senderBox = createSenderBox();
+        VBox.setVgrow(senderBox, Priority.ALWAYS);
+        vBox.getChildren().addAll(
+                btnDeleteFilterSettings,
+                new Separator(),
+                cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
                 cbShowOnlyLivestreams,
@@ -401,7 +362,7 @@ public class FilmActionPanel {
                 cbDontShowTrailers,
                 cbDontShowAudioVersions,
                 new Separator(),
-                createSenderBox(),
+                senderBox,
                 new Separator(),
                 createThemaBox(),
                 new Separator(),
@@ -423,8 +384,9 @@ public class FilmActionPanel {
     }
 
     public void updateThemaBox() {
-        themaBox.getItems().clear();
-        themaBox.getItems().add("");
+        final var items = themaBox.getItems();
+        items.clear();
+        items.add("");
 
         List<String> finalList = new ArrayList<>();
         List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
@@ -441,24 +403,22 @@ public class FilmActionPanel {
             }
         }
 
-        themaBox.getItems()
-                .addAll(finalList.stream()
-                        .distinct()
-                        .sorted(GermanStringSorter.getInstance())
-                        .collect(Collectors.toList()));
+        items.addAll(finalList.stream()
+                .distinct()
+                .sorted(GermanStringSorter.getInstance())
+                .collect(Collectors.toList()));
         finalList.clear();
 
         themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
+        themaSuggestionProvider.addPossibleSuggestions(items);
         themaBox.getSelectionModel().select(0);
     }
 
     private Node createSenderBox() {
         VBox vb = new VBox();
 
-        senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
-        senderList.setPrefHeight(150d);
-        senderList.setMinHeight(100d);
+        senderList = new SenderListBox();
+        VBox.setVgrow(senderList, Priority.ALWAYS);
         vb.getChildren().addAll(
                 new Label("Sender:"),
                 senderList);
@@ -498,25 +458,7 @@ public class FilmActionPanel {
         vb2.getChildren().add(hb);
         vb2.getChildren().add(hb2);
 
-        filmLengthSlider = new RangeSlider(0, UNLIMITED_VALUE, 0, UNLIMITED_VALUE);
-        filmLengthSlider.setShowTickMarks(true);
-        filmLengthSlider.setShowTickLabels(true);
-        filmLengthSlider.setBlockIncrement(1);
-        filmLengthSlider.setMajorTickUnit(10);
-        filmLengthSlider.setLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                if (object.intValue() == UNLIMITED_VALUE)
-                    return "∞";
-                else
-                    return String.valueOf(object.intValue());
-            }
-
-            @Override
-            public Number fromString(String string) {
-                return Double.parseDouble(string);
-            }
-        });
+        filmLengthSlider = new FilmLengthSlider();
 
         lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
         lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
@@ -533,17 +475,9 @@ public class FilmActionPanel {
 
     private Node createZeitraumPane() {
         Label zeitraum = new Label("Zeitraum:");
-        ObservableList<String> months = FXCollections.observableArrayList("∞");
-        for (int i = 1; i <= 30; i++)
-            months.add(String.valueOf(i));
 
-        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(months);
 
-        valueFactory.setValue("∞");
-
-        zeitraumSpinner = new Spinner<>();
-        zeitraumSpinner.setValueFactory(valueFactory);
-        zeitraumSpinner.setEditable(false);
+        zeitraumSpinner = new ZeitraumSpinner();
         zeitraumProperty = zeitraumSpinner.valueProperty();
 
         Label days = new Label("Tage");
@@ -554,44 +488,126 @@ public class FilmActionPanel {
         return root;
     }
 
-    private PopOver createFilterPopover() {
-        PopOver popover = new PopOver();
-        popover.setTitle("Filter");
-        popover.setAnimated(true);
-        popover.setCloseButtonEnabled(true);
-        popover.setAutoFix(true);
-        popover.setDetachable(true);
-        popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-        popover.setPrefWidth(200);
-
+    private VBox getFilterDialogContent() {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
         vb.getChildren().add(createCommonViewSettingsPane());
-        popover.setContentNode(vb);
+
+        return vb;
+    }
+
+    public Scene getFilmActionPanelScene() {
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        setupSearchField();
+
+        setupSearchThroughDescriptionButton();
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> popover.getContentNode().setDisable(true));
+                setupRightButtons(true);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> popover.getContentNode().setDisable(false));
-
+                setupRightButtons(false);
             }
         });
 
-        return popover;
+        javafx.scene.control.ToolBar toolBar = new javafx.scene.control.ToolBar();
+        createLeft(toolBar);
+
+        toolBar.getItems().addAll(spacer,
+                btnShowFilter,
+                jfxSearchField,
+                btnSearchThroughDescription);
+
+        return new Scene(toolBar);
     }
 
-    public Scene getFilmActionPanelScene() {
-        HBox hb = new HBox();
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        hb.getChildren().addAll(createLeft(), spacer, createRight());
+    private class SenderListBox extends CheckListView<String> {
+        public SenderListBox() {
+            super(daten.getListeFilmeNachBlackList().getSenders());
+            setPrefHeight(150d);
+            setMinHeight(100d);
+        }
+    }
 
-        return new Scene(hb);
+    private class PlayButton extends Button {
+        public PlayButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.PLAY).size(16d));
+            setTooltip(new Tooltip("Film abspielen"));
+            setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
+        }
+    }
+
+    private class RecordButton extends Button {
+        public RecordButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD).size(16d));
+            setTooltip(new Tooltip("Film aufzeichnen"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
+        }
+    }
+
+    private class DeleteFilterSettingsButton extends Button {
+        public DeleteFilterSettingsButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
+            setTooltip(new Tooltip("Filter zurücksetzen"));
+            setOnAction(e -> {
+                showOnlyHd.setValue(false);
+                showSubtitlesOnly.setValue(false);
+                showNewOnly.setValue(false);
+                showLivestreamsOnly.setValue(false);
+                showUnseenOnly.setValue(false);
+                dontShowAbos.setValue(false);
+                dontShowSignLanguage.setValue(false);
+                dontShowTrailers.setValue(false);
+                dontShowAudioVersions.setValue(false);
+
+                senderList.getCheckModel().clearChecks();
+                themaBox.getSelectionModel().select("");
+
+                filmLengthSlider.lowValueProperty().setValue(0);
+                filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+                zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+            });
+        }
+    }
+
+    private class FilterButton extends Button {
+        public FilterButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+            setTooltip(new Tooltip("Filter anzeigen"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (filterDialog != null) {
+                    if (!filterDialog.isVisible()) {
+                        filterDialog.setVisible(true);
+                    }
+                }
+            }));
+        }
+    }
+
+    private class DownloadButton extends Button {
+        public DownloadButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD).size(16d));
+            setTooltip(new Tooltip("Neue Filmliste laden"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
+        }
+    }
+
+    private class ManageAboButton extends Button {
+        public ManageAboButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.DATABASE).size(16d));
+            setTooltip(new Tooltip("Abos verwalten"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (manageAboAction.isEnabled())
+                    manageAboAction.actionPerformed(null);
+            }));
+        }
     }
 }

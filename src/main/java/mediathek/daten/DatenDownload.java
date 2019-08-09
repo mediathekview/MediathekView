@@ -1,43 +1,24 @@
-/*
- *   MediathekView
- *   Copyright (C) 2008 W. Xaver
- *   W.Xaver[at]googlemail.com
- *   http://zdfmediathk.sourceforge.net/
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFilmSize;
+import mediathek.tool.*;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 
-public final class DatenDownload extends MVData<DatenDownload> {
+public final class DatenDownload implements Comparable<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
@@ -56,8 +37,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public static final String ART_PROGRAMM_TXT = "Programm";
 
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
-    private static final SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-    private static final SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+    private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
+    private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
 
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
@@ -104,13 +85,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
     //
     public static final String TAG = "Downlad";
     public static final int MAX_ELEM = 40;
-    public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
-        "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",
-        "Datum", "Zeit", "Dauer", "HD", "UT",
-        "Pause", "Geo", "Url Film", "Url History", "Url", "Url RTMP", "Url Untertitel",
-        "Programmset", "Programm", "Programmaufruf", "Programmaufruf Array", "Restart",
-        "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
-        "Zurückgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote Download", "Ref"};
     public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
         "Datum", "Zeit", "Dauer", "HD", "UT",
@@ -132,11 +106,11 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public byte art = ART_DOWNLOAD;
 
     public DatenDownload() {
-        makeArr();
+        initialize();
     }
 
     public DatenDownload(DatenPset pSet, DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
-        makeArr();
+        initialize();
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
@@ -144,7 +118,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DOWNLOAD_SENDER] = film.getSender();
         arr[DOWNLOAD_THEMA] = film.getThema();
         arr[DOWNLOAD_TITEL] = film.getTitle();
-        arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL];
+        arr[DOWNLOAD_FILM_URL] = film.getUrl();
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM];
         arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT];
@@ -161,10 +135,9 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
-        arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO];
+        arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo();
         // und jetzt noch die Dateigröße für die entsp. URL
-        setGroesseFromFilm();
-        //setGroesse(""); //dann dauert das Starten uu sehr lange
+        setSizeFromUrl();
 
         aufrufBauen(pSet, film, abo, name, pfad);
         init();
@@ -172,12 +145,16 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public void setGroesseFromFilm() {
         if (film != null) {
-            if (film.arr[DatenFilm.FILM_URL].equals(arr[DOWNLOAD_URL])) {
+            if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
                 mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
             } else {
-                mVFilmSize.setSize("");
+                mVFilmSize.setSize(0);
             }
         }
+    }
+
+    public void setSizeFromUrl() {
+        setGroesse("");
     }
 
     public void setGroesse(String groesse) {
@@ -241,7 +218,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public void interruptRestart() {
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
-        Listener.notify(Listener.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
+        Daten.getInstance().getMessageBus().publishAsync(new RestartDownloadEvent());
     }
 
     public boolean notStarted() {
@@ -257,17 +234,11 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     public boolean runNotFinished() {
-        if (start != null && start.status < Start.STATUS_FERTIG) {
-            return true;
-        }
-        return false;
+        return start != null && start.status < Start.STATUS_FERTIG;
     }
 
     public boolean running() {
-        if (start != null && start.status == Start.STATUS_RUN) {
-            return true;
-        }
-        return false;
+        return start != null && start.status == Start.STATUS_RUN;
     }
 
     public void resetDownload() {
@@ -278,17 +249,13 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public void startDownload(Daten aDaten) {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
-        // gestartete Filme (originalURL des Films) auch in die History eintragen
-        if (film != null) {
-            aDaten.getListeFilmeHistory().add(film);
-        }
-        aDaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        aDaten.getSeenHistoryController().zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         aDaten.getMessageBus().publishAsync(new StartEvent());
     }
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        final String zeit = sdf_datum.format(new Date());
         LinkedList<MVUsedUrl> urlList = new LinkedList<>();
         for (DatenDownload d : downloads) {
             d.start = new Start();
@@ -298,7 +265,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
                     d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
         }
         if (!urlList.isEmpty()) {
-            ddaten.history.zeilenSchreiben(urlList);
+            ddaten.getSeenHistoryController().createLineWriterThread(urlList);
         }
         ddaten.getMessageBus().publishAsync(new StartEvent());
     }
@@ -375,7 +342,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {
 
                 if (start.restSekunden > 300) {
-                    return Long.toString(Math.round(start.restSekunden / 60.0)) + " Min.";
+                    return Math.round(start.restSekunden / 60.0) + " Min.";
                 } else if (start.restSekunden > 230) {
                     return "5 Min.";
                 } else if (start.restSekunden > 170) {
@@ -507,16 +474,13 @@ public final class DatenDownload extends MVData<DatenDownload> {
             return;
         }
 
-        // ##############################################
         // Name
-        // ##############################################
         if (!nname.isEmpty()) {
             // wenn vorgegeben, dann den nehmen
             name = nname;
         } else {
             name = pSet.getZielDateiname(arr[DOWNLOAD_URL]);
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
-            // ##############################
             // Name sinnvoll belegen
             if (name.isEmpty()) {
                 name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
@@ -563,9 +527,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             }
         }
 
-        // ##############################################
         // Pfad
-        // ##############################################
         if (!ppfad.isEmpty()) {
             // wenn vorgegeben, dann den nehmen
             path = ppfad;
@@ -599,7 +561,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
             path = path.substring(0, path.length() - 1);
         }
 
-        //###########################################################
         // zur Sicherheit bei Unsinn im Set
         if (path.isEmpty()) {
             path = GuiFunktionen.getStandardDownloadPath();
@@ -634,7 +595,25 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%t", getField(film.getThema(), laenge));
         replStr = StringUtils.replace(replStr, "%T", getField(film.getTitle(), laenge));
         replStr = StringUtils.replace(replStr, "%s", getField(film.getSender(), laenge));
-        replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
+
+        final String downloadUrl = this.arr[DatenDownload.DOWNLOAD_URL];
+        //special case only for austrian ORF and m3u8 files
+        //github issue #388
+        if (downloadUrl.endsWith(".m3u8") && downloadUrl.contains(".at")) {
+            String field = getField(GuiFunktionen.getDateiName(downloadUrl), laenge);
+
+            final HttpUrl url = HttpUrl.parse(downloadUrl);
+            if (url != null) {
+                final var segments = url.pathSegments();
+                final var segment = segments.get(segments.size() - 2);
+                field = getField(GuiFunktionen.getDateiName(segment), laenge);
+                field = org.apache.commons.io.FilenameUtils.removeExtension(field);
+            }
+
+            replStr = StringUtils.replace(replStr, "%N", field);
+        }
+        else
+            replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
         replStr = StringUtils.replace(replStr, "%D", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
@@ -652,22 +631,32 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
         String res = "";
-        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL))) {
             res = "H";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD))) {
             res = "HD";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
         replStr = StringUtils.replace(replStr, "%q", res);
 
-        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
-        replStr = StringUtils.replace(replStr, "%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(downloadUrl));
+        replStr = StringUtils.replace(replStr, "%Z", getHash(downloadUrl));
 
-        replStr = StringUtils.replace(replStr, "%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL])
-                + '.' + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%z", getHash(downloadUrl)
+                + '.' + GuiFunktionen.getSuffixFromUrl(downloadUrl));
 
         return replStr;
+    }
+
+    private String getHash(String pfad) {
+        //Hash eines Dateinamens zB. 1433245578
+        final int h = Math.abs(pfad.hashCode());
+        StringBuilder hh = new StringBuilder(Integer.toString(h));
+        while (hh.length() < 10) {
+            hh.insert(0, '0');
+        }
+        return hh.toString();
     }
 
     private String getField(String name, int length) {
@@ -686,19 +675,19 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     private String getJetzt_HHMMSS() {
-        return new SimpleDateFormat("HHmmss").format(new Date());
+        return FastDateFormat.getInstance("HHmmss").format(new Date());
     }
 
     private String getJetzt_HH_MM_SS() {
-        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+        return FastDateFormat.getInstance("HH:mm:ss").format(new Date());
     }
 
     private String getHeute_yyyyMMdd() {
-        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return FastDateFormat.getInstance("yyyyMMdd").format(new Date());
     }
 
     private String getHeute_yyyy_MM_dd() {
-        return new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        return sdf_datum.format(new Date());
     }
 
     private static String getDMY(String s, String datum) {
@@ -782,11 +771,10 @@ public final class DatenDownload extends MVData<DatenDownload> {
         return ret;
     }
 
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
+
         arr[DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString();
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
     }

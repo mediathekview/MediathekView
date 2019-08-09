@@ -1,27 +1,7 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2012   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.Config;
-import mSearch.tool.Log;
+import mediathek.MediathekGui;
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePset;
@@ -29,8 +9,10 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.TModel;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.Log;
+import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.models.TModel;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -60,14 +42,17 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonImportDatei.setEnabled(false);
         jButtonImportText.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
+
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
-        jTextFieldDatei.addMouseListener(new TextCopyPaste());
+        var handler = new TextCopyPasteHandler<>(jTextFieldDatei);
+        jTextFieldDatei.setComponentPopupMenu(handler.getPopupMenu());
 
         jTextAreaImport.getDocument().addDocumentListener(new BeobTextArea());
-        jTextAreaImport.addMouseListener(new TextCopyPaste());
+        var handler2 = new TextCopyPasteHandler<>(jTextAreaImport);
+        jTextAreaImport.setComponentPopupMenu(handler2.getPopupMenu());
 
         jButtonImportVorlage.addActionListener(e -> {
-            if (!jTextFieldUrl.getText().equals("")) {
+            if (!jTextFieldUrl.getText().isEmpty()) {
                 importDatei(jTextFieldUrl.getText());
             }
         });
@@ -86,31 +71,28 @@ public class PanelPsetImport extends PanelVorlage {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
         }
-        jButtonImportStandard.addActionListener(e -> {
-            //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-            GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
-        });
+        jButtonImportStandard.addActionListener(e -> GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, true), true));
     }
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ListePset listePset = ListePsetVorlagen.importPsetFile(parentComponent, datei, true);
+        ListePset listePset = ListePsetVorlagen.importPsetFile(datei, true);
         if (listePset != null) {
             // damit die Variablen ersetzt werden
             ListePset.progMusterErsetzen(parentComponent, listePset);
         }
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
     }
 
     private void importText() {
-        ListePset listePset = ListePsetVorlagen.importPsetText( daten, jTextAreaImport.getText(), true);
+        ListePset listePset = ListePsetVorlagen.importPsetText(jTextAreaImport.getText(), true);
         if (listePset != null) {
             // damit die Variablen ersetzt werden
             ListePset.progMusterErsetzen(parentComponent, listePset);
         }
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
     }
 
     private void tabelleLaden() {
@@ -494,7 +476,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (ListePsetVorlagen.importPsetFile(parentComponent, jTextFieldDatei.getText(), false) != null) {
+                if (ListePsetVorlagen.importPsetFile(jTextFieldDatei.getText(), false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));
@@ -525,7 +507,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextAreaImport.getText().equals("")) {
                 jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
             } else {
-                if (ListePsetVorlagen.importPsetText( daten, jTextAreaImport.getText(), false) != null) {
+                if (ListePsetVorlagen.importPsetText(jTextAreaImport.getText(), false) != null) {
                     jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
                     jButtonImportText.setEnabled(true);
                 } else {
@@ -541,8 +523,8 @@ public class PanelPsetImport extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Programmset auswählen");
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programmset auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

@@ -3,6 +3,7 @@ package mediathek.javafx.filterpanel;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -14,6 +15,8 @@ public class JFXSearchPanel extends CustomTextField {
         init();
 
         setPrefWidth(350d);
+        setMinWidth(350d);
+        setMaxWidth(350d);
     }
 
     private void init() {
@@ -22,12 +25,10 @@ public class JFXSearchPanel extends CustomTextField {
         setRight(fontAwesome.create(FontAwesome.Glyph.REMOVE));
 
         setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    if (!getText().isEmpty())
-                        setText("");
-                    event.consume();
-                    break;
+            if (event.getCode() == KeyCode.ESCAPE) {
+                if (!getText().isEmpty())
+                    setText("");
+                event.consume();
             }
         });
 

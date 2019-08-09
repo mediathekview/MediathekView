@@ -1,38 +1,19 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
-import mediathek.tool.TextCopyPaste;
+import mediathek.tool.Listener;
+import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.models.TModel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -51,8 +32,6 @@ public class PanelBlacklist extends PanelVorlage {
     public boolean ok = false;
     public String ziel;
     private final String name;
-    private static final Color cGruen = new Color(0, 153, 51);
-    private static final Color cRot = new Color(255, 0, 0);
 
     public PanelBlacklist(Daten d, JFrame parentComponent, String nname) {
         super(d, parentComponent);
@@ -72,7 +51,6 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void ping() {
                 jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
-                setCheckBlacklist();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
@@ -94,7 +72,6 @@ public class PanelBlacklist extends PanelVorlage {
         jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
         jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
 
-        setCheckBlacklist();
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
         jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
         try {
@@ -112,40 +89,37 @@ public class PanelBlacklist extends PanelVorlage {
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jRadioButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxGeo.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jCheckBoxAbo.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
             Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
         jCheckBoxStart.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
             Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
-            setCheckBlacklist();
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
-            notifyBlack();
+            notifyBlacklistChanged();
         });
         jButtonHinzufuegen.addActionListener(e -> {
-            String se = jComboBoxSender.getSelectedItem().toString();
-            String th = jComboBoxThema.getSelectedItem().toString();
+            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
@@ -154,8 +128,8 @@ public class PanelBlacklist extends PanelVorlage {
             }
         });
         jButtonAendern.addActionListener(e -> {
-            String se = jComboBoxSender.getSelectedItem().toString();
-            String th = jComboBoxThema.getSelectedItem().toString();
+            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
@@ -170,7 +144,7 @@ public class PanelBlacklist extends PanelVorlage {
                     bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL] = thti;
                     tabelleLaden();
                     jTableBlacklist.addRowSelectionInterval(row, row);
-                    notifyBlack();
+                    notifyBlacklistChanged();
                 }
             }
 
@@ -203,22 +177,22 @@ public class PanelBlacklist extends PanelVorlage {
             }
             if (!jSliderMinuten.getValueIsAdjusting()) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
-                notifyBlack();
+                notifyBlacklistChanged();
             }
         });
-        initCombo();
+
+        jComboBoxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
+
         comboThemaLaden();
-        jTextFieldThemaTitel.addMouseListener(new TextCopyPaste());
-        jTextFieldTitel.addMouseListener(new TextCopyPaste());
+
+        var handler = new TextCopyPasteHandler<>(jTextFieldThemaTitel);
+        jTextFieldThemaTitel.setComponentPopupMenu(handler.getPopupMenu());
+
+        handler = new TextCopyPasteHandler<>(jTextFieldTitel);
+        jTextFieldTitel.setComponentPopupMenu(handler.getPopupMenu());
     }
 
-    private void setCheckBlacklist() {
-        jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
-        jCheckBoxStart.setForeground(jCheckBoxStart.isSelected() ? cGruen : cRot);
-        jCheckBoxAbo.setForeground(jCheckBoxAbo.isSelected() ? cGruen : cRot);
-    }
-
-    private void notifyBlack() {
+    private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
@@ -237,12 +211,6 @@ public class PanelBlacklist extends PanelVorlage {
         jComboBoxThema.setModel(model);
 
         lst.clear();
-    }
-
-    private void initCombo() {
-        // der erste Sender ist ""
-        final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
-        jComboBoxSender.setModel(new DefaultComboBoxModel<>(sender));
     }
 
     private void tabelleLaden() {
@@ -272,6 +240,83 @@ public class PanelBlacklist extends PanelVorlage {
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
             daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
+        }
+    }
+
+    private class BeobachterTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                tableSelect();
+            }
+        }
+    }
+
+    private class BeobMausTabelle extends MouseAdapter {
+
+        //rechhte Maustaste in der Tabelle
+        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            int nr;
+            Point p = evt.getPoint();
+            nr = jTableBlacklist.rowAtPoint(p);
+            if (nr >= 0) {
+                jTableBlacklist.setRowSelectionInterval(nr, nr);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            //löschen
+            JMenuItem item = new JMenuItem("Zeile löschen");
+            item.addActionListener(beobLoeschen);
+            jPopupMenu.add(item);
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private class BeobLoeschen implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabelleZeileLoeschen();
+            }
+        }
+    }
+
+    private class BeobFilterTitelDoc implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            Filter.checkPattern1(jTextFieldThemaTitel);
+            Filter.checkPattern1(jTextFieldTitel);
         }
     }
 
@@ -319,9 +364,10 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonHilfe = new javax.swing.JButton();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
+        javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
+        jCheckBoxStart = new javax.swing.JCheckBox();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
-        jCheckBoxStart = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -386,7 +432,7 @@ public class PanelBlacklist extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel13))
-                        .addGap(0, 230, Short.MAX_VALUE)))
+                        .addGap(0, 267, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -458,7 +504,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
 
         jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
@@ -579,7 +625,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonWhitelist)
                             .addComponent(jRadioButtonBlacklist))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 286, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -599,7 +645,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addComponent(jRadioButtonWhitelist))
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)
@@ -611,11 +657,18 @@ public class PanelBlacklist extends PanelVorlage {
 
         jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
 
-        jCheckBoxBlacklistEingeschaltet.setText("Blacklist im Tab Filme ist eingeschaltet");
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Allgemeine Einstellungen"));
+        jPanel8.setLayout(new java.awt.GridLayout(3, 1));
 
-        jCheckBoxAbo.setText("Die Blacklist beim Suchen der Abos berücksichtigen (sonst komplette Filmliste)");
+        jCheckBoxStart.setText("Beim Programmstart einschalten");
+        jPanel8.add(jCheckBoxStart);
 
-        jCheckBoxStart.setText("Blacklist beim Programmstart einschalten");
+        jCheckBoxBlacklistEingeschaltet.setText("Im Tab Filme einschalten");
+        jPanel8.add(jCheckBoxBlacklistEingeschaltet);
+
+        jCheckBoxAbo.setText("Bei der Suche nach Abos berücksichtigen");
+        jCheckBoxAbo.setToolTipText("<html>Die Blacklist beim Suchen nach Abos berücksichtigen.<br/>Ansonsten wird die komplette Filmliste durchsucht.</html>");
+        jPanel8.add(jCheckBoxAbo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -624,29 +677,15 @@ public class PanelBlacklist extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jCheckBoxStart)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTabbedPaneBlacklist)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBoxAbo)
-                                    .addComponent(jCheckBoxBlacklistEingeschaltet))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                    .addComponent(jTabbedPaneBlacklist)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxBlacklistEingeschaltet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxStart)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxAbo)
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPaneBlacklist)
                 .addContainerGap())
@@ -673,82 +712,4 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                tableSelect();
-            }
-        }
-    }
-
-    private class BeobMausTabelle extends MouseAdapter {
-
-        //rechhte Maustaste in der Tabelle
-        BeobLoeschen beobLoeschen = new BeobLoeschen();
-        private Point p;
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            int nr;
-            p = evt.getPoint();
-            nr = jTableBlacklist.rowAtPoint(p);
-            if (nr >= 0) {
-                jTableBlacklist.setRowSelectionInterval(nr, nr);
-            }
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            //löschen
-            JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(beobLoeschen);
-            jPopupMenu.add(item);
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobLoeschen implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelleZeileLoeschen();
-            }
-        }
-    }
-
-    private class BeobFilterTitelDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(jTextFieldThemaTitel);
-            Filter.checkPattern1(jTextFieldTitel);
-        }
-    }
 }

@@ -1,62 +1,31 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.config;
 
-import com.jidesoft.utils.SystemInfo;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
-import mSearch.Config;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.writer.FilmListWriter;
-import mSearch.tool.Listener;
-import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.history.AboHistoryController;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.actions.FilmListWriteWorkerTask;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.javafx.CenteredBorderPane;
-import mediathek.javafx.VerticalSeparator;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
+import mediathek.tool.notification.INotificationCenter;
+import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.config.IBusConfiguration;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.Cleaner;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,57 +36,88 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
-
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    // zentrale Klassen
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
+    /**
+     * Prevent the unnecessary writing of a filmlist on startup when reading is enough
+     */
+    public static final AtomicBoolean dontWriteFilmlistOnStartup = new AtomicBoolean(true);
     private static final Logger logger = LogManager.getLogger(Daten.class);
     /**
      * Maximum number of backup files to be stored.
      */
     private final static int MAX_COPY = 5;
+    public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
-    //alle Programmeinstellungen
-    public static InfoDialog filmInfo; // Infos zum Film
     private static Daten instance;
     // flags
     private static boolean startMaximized; // Fenster maximieren
-    private static boolean auto; // Version: MediathekAuto
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private MediathekGui mediathekGui; // JFrame der Gui
-    public MVUsedUrls history; // alle angesehenen Filme
-    public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
+    private static SplashScreenManager splashScreenManager = new SplashScreenManager();
+    /**
+     * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
+     */
+    private final Cleaner cleaner = Cleaner.create();
+    private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
+    /**
+     * "source" list of all entries, contains everything
+     */
+    private final ListeFilme listeFilme;
+    /**
+     * "the" final list of films after all filtering is done
+     */
+    private final ListeFilme listeFilmeNachBlackList;
+    private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
+    private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
+    private final ListeBlacklist listeBlacklist;
+    private final ListeMediaDB listeMediaDB;
+    private final ListeMediaPath listeMediaPath;
+    private final ListeAbo listeAbo;
+    private final DownloadInfos downloadInfos;
+    private final MVSenderIconCache senderIconCache;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
-    private ListeFilme listeFilme;
-    private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
-    private ListeFilme listeFilmeHistory; // für die HEUTIGE HISTORY
-    private ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
-    private ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
-    private ListeBlacklist listeBlacklist;
-    private ListeMediaDB listeMediaDB;
-    private ListeMediaPath listeMediaPath;
-    private ListeAbo listeAbo;
-    private DownloadInfos downloadInfos;
-    private DialogMediaDB dialogMediaDB;
+    private INotificationCenter notificationCenter;
+    /**
+     * alle angesehenen Filme.
+     */
+    private SeenHistoryController history;
+    /**
+     * erfolgreich geladene Abos.
+     */
+    private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private FilmListWriteWorkerTask writerTask;
 
     private Daten() {
-        mediathekGui = null;
-        start();
-    }
+        setupNotifications();
+        setupMessageBus();
 
-    private Daten(MediathekGui aMediathekGui) {
-        mediathekGui = aMediathekGui;
-        start();
+        listeFilme = new ListeFilme();
+        filmeLaden = new FilmeLaden(this);
+
+        senderIconCache = new MVSenderIconCache(this);
+
+        listeFilmeNachBlackList = new ListeFilme();
+        listeBlacklist = new ListeBlacklist();
+
+        listePset = new ListePset();
+
+        listeAbo = new ListeAbo(this);
+
+        listeDownloads = new ListeDownloads(this);
+        listeDownloadsButton = new ListeDownloads(this);
+
+        listeMediaDB = new ListeMediaDB(this);
+        listeMediaPath = new ListeMediaPath();
+
+        downloadInfos = new DownloadInfos(messageBus);
+        starterClass = new StarterClass(this);
+
+        setupRepeatingTimer();
     }
 
     public static boolean isStartMaximized() {
@@ -126,14 +126,6 @@ public class Daten {
 
     public static void setStartMaximized(final boolean aIsStartMaximized) {
         startMaximized = aIsStartMaximized;
-    }
-
-    public static boolean isAuto() {
-        return auto;
-    }
-
-    public static void setAuto(final boolean aIsAuto) {
-        auto = aIsAuto;
     }
 
     public static boolean isReset() {
@@ -149,15 +141,6 @@ public class Daten {
         return getInstance();
     }
 
-    public static Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1) {
-        basisverzeichnis = aBasisverzeichnis;
-        return getInstance(aMediathekGui1);
-    }
-
-    private static Daten getInstance(MediathekGui aMediathekGui) {
-        return instance == null ? instance = new Daten(aMediathekGui) : instance;
-    }
-
     public static Daten getInstance() {
         return instance == null ? instance = new Daten() : instance;
     }
@@ -169,15 +152,16 @@ public class Daten {
      */
     public static String getDateiFilmliste() {
         String strFile;
+        final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
 
-        if (Config.isPortableMode()) {
-            strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
-        } else {
-            if (SystemInfo.isMacOSX()) {
+        if (Config.isPortableMode())
+            strFile = getSettingsDirectory_String() + filePart;
+        else {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + filePart;
             } else {
-                strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+                strFile = getSettingsDirectory_String() + filePart;
             }
         }
 
@@ -255,8 +239,35 @@ public class Daten {
         return cal.getTimeInMillis();
     }
 
-    public FutureTask<Void> getWriterTask() {
-        return writerTask;
+    public static SplashScreenManager getSplashScreenManager() {
+        return splashScreenManager;
+    }
+
+    /**
+     * Do not keep splash screen object in memory
+     */
+    public static void closeSplashScreen() {
+        splashScreenManager = null;
+    }
+
+    public void setupNotifications() {
+        notificationCenter = NotificationFactory.createNotificationCenter();
+    }
+
+    public INotificationCenter notificationCenter() {
+        return notificationCenter;
+    }
+
+    public void setNotificationCenter(INotificationCenter center) {
+        notificationCenter = center;
+    }
+
+    public MVSenderIconCache getSenderIconCache() {
+        return senderIconCache;
+    }
+
+    public Cleaner getCleaner() {
+        return cleaner;
     }
 
     public MBassador<BaseEvent> getMessageBus() {
@@ -275,101 +286,30 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
-    private void start() {
-        setupMessageBus();
+    public SeenHistoryController getSeenHistoryController() {
+        return history;
+    }
 
-        listeFilme = new ListeFilme();
-        filmeLaden = new FilmeLaden(this);
-        listeFilmeHistory = new ListeFilme();
+    public void setSeenHistoryController(SeenHistoryController controller) {
+        history = controller;
+    }
 
-        updateSplashScreen("Lade Blacklist...");
-        listeFilmeNachBlackList = new ListeFilme();
-        listeBlacklist = new ListeBlacklist();
+    public void setAboHistoryList(AboHistoryController controller) {
+        erledigteAbos = controller;
+    }
 
-        updateSplashScreen("Lade Programmsets...");
-        listePset = new ListePset();
+    public AboHistoryController getAboHistoryController() {
+        return erledigteAbos;
+    }
 
-        updateSplashScreen("Lade Abos...");
-        listeAbo = new ListeAbo(this);
-
-        updateSplashScreen("Lade Downloads...");
-        listeDownloads = new ListeDownloads(this);
-        listeDownloadsButton = new ListeDownloads(this);
-
-        updateSplashScreen("Lade erledigte Abos...");
-        erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
-
-        updateSplashScreen("Lade History...");
-        history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
-
-        listeMediaDB = new ListeMediaDB(this);
-        listeMediaPath = new ListeMediaPath();
-
-        downloadInfos = new DownloadInfos(this);
-        starterClass = new StarterClass(this);
-
-        Timer timer = new Timer(1000, e ->
-        {
-            downloadInfos.makeDownloadInfos();
-            messageBus.publishAsync(new TimerEvent());
-        });
+    private void setupRepeatingTimer() {
+        Timer timer = new Timer(1000, e -> messageBus.publishAsync(new TimerEvent()));
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
     }
 
-    public void filmlisteSpeichern() {
-        try {
-            if (writerTask != null) {
-                logger.info("Waiting for worker task");
-                writerTask.get();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            logger.error("Error waiting for worker task", e);
-        }
-
-        if (mediathekGui != null) {
-            Platform.runLater(() -> {
-                HBox hb = new HBox();
-                hb.setSpacing(4d);
-                Label lb = new Label("");
-                ProgressBar prog = new ProgressBar();
-                prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-                hb.getChildren().addAll(
-                        new VerticalSeparator(),
-                        new CenteredBorderPane(lb),
-                        new CenteredBorderPane(prog)
-                );
-
-                writerTask = new FilmListWriteWorkerTask(this);
-                writerTask.setOnRunning(e -> {
-                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().add(hb);
-                    lb.textProperty().bind(writerTask.messageProperty());
-                    prog.progressProperty().bind(writerTask.progressProperty());
-                });
-                writerTask.setOnSucceeded(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
-                writerTask.setOnFailed(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
-                new Thread(writerTask).start();
-            });
-        } else {
-            FilmListWriter writer = new FilmListWriter();
-            writer.writeFilmList(getDateiFilmliste(), listeFilme, null);
-        }
-    }
-
-    /**
-     * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
-     *
-     * @param text The displayed text on the splash graphics.
-     */
-    private void updateSplashScreen(String text) {
-        if (mediathekGui != null) {
-            mediathekGui.updateSplashScreenText(text);
-        }
-    }
-
     public boolean allesLaden() {
-        updateSplashScreen("Lade Konfigurationsdaten...");
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_CONFIG);
 
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");
@@ -379,10 +319,7 @@ public class Daten {
         }
         logger.info("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
-        MVFont.initFont(); // Fonts einrichten
 
-        // erst die Systemdaten, dann die Filmliste
-        updateSplashScreen("Lade Filmliste...");
         return true;
     }
 
@@ -429,7 +366,6 @@ public class Daten {
 
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
-        mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
                 + "Soll versucht werden, mit gesicherten\n"
@@ -479,8 +415,8 @@ public class Daten {
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
-                if (mediathekGui != null) {
-                    MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                if (MediathekGui.ui() != null) {
+                    MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                             + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                             + getSettingsDirectory_String() + '\n'
                             + "von Hand löschen und dann das Programm wieder starten.\n\n"
@@ -547,10 +483,6 @@ public class Daten {
         return listeFilmeNachBlackList;
     }
 
-    public ListeFilme getListeFilmeHistory() {
-        return listeFilmeHistory;
-    }
-
     public ListeDownloads getListeDownloads() {
         return listeDownloads;
     }
@@ -577,22 +509,6 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
-    }
-
-    public MediathekGui getMediathekGui() {
-        return mediathekGui;
-    }
-
-    public void setMediathekGui(MediathekGui gui) {
-        mediathekGui = gui;
-    }
-
-    public DialogMediaDB getDialogMediaDB() {
-        return dialogMediaDB;
-    }
-
-    public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB) {
-        dialogMediaDB = aDialogMediaDB;
     }
 
 }

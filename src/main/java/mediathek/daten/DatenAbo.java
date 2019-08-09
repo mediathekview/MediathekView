@@ -1,29 +1,12 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.daten;
 
-import mSearch.tool.Log;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.Log;
 import org.jetbrains.annotations.NotNull;
 
-public class DatenAbo extends MVData<DatenAbo> {
-    //Tags Abo
+import java.util.Arrays;
+
+public class DatenAbo implements Comparable<DatenAbo> {
 
     public static final int ABO_NR = 0;
     public static final int ABO_EINGESCHALTET = 1;
@@ -39,27 +22,28 @@ public class DatenAbo extends MVData<DatenAbo> {
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
-        "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
+            "Sender", "Thema", "Titel", "Thema-Titel",
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
     public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
-        "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
+            "Sender", "Thema", "Titel", "Thema-Titel",
+            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    private final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public int mindestdauerMinuten;
     public boolean min = true;
     public String[] arr;
     public int nr;
-    String[] titel, thema, irgendwo;
+    public String[] titel, thema, irgendwo;
 
     public DatenAbo() {
-        makeArr();
+        initialize();
     }
 
     public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
-        makeArr();
+        initialize();
         arr[ABO_NAME] = name;
         arr[ABO_SENDER] = sender;
         arr[ABO_THEMA] = thema;
@@ -73,6 +57,10 @@ public class DatenAbo extends MVData<DatenAbo> {
         arr[ABO_PSET] = pset;
     }
 
+    public static boolean anzeigen(int i) {
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
     public DatenAbo getCopy() {
         DatenAbo ret = new DatenAbo();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
@@ -84,15 +72,11 @@ public class DatenAbo extends MVData<DatenAbo> {
     public boolean isEmpty() {
         //liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde
         //ist dann offensichtlich falsch!!
-        if (arr[ABO_SENDER].isEmpty()
+        return arr[ABO_SENDER].isEmpty()
                 && arr[ABO_THEMA].isEmpty()
                 && arr[ABO_TITEL].isEmpty()
                 && arr[ABO_THEMA_TITEL].isEmpty()
-                && arr[ABO_IRGENDWO].isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+                && arr[ABO_IRGENDWO].isEmpty();
     }
 
     public final void setMindestDauerMinuten(int d) {
@@ -123,19 +107,13 @@ public class DatenAbo extends MVData<DatenAbo> {
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
     }
 
-    public static boolean anzeigen(int i) {
-        return spaltenAnzeigen == null || spaltenAnzeigen[i];
-    }
-
     private void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
     }
 
-    private void makeArr() {
+    private void initialize() {
         arr = new String[MAX_ELEM];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = "";
-        }
+        Arrays.fill(arr,"");
         // neue Abos sind immer ein
         aboEin();
     }

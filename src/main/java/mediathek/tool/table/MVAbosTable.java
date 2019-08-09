@@ -2,9 +2,8 @@ package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
-import mediathek.tool.MVFont;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelAbo;
+import mediathek.tool.models.TModel;
+import mediathek.tool.models.TModelAbo;
 
 public class MVAbosTable extends MVTable {
     private static final long serialVersionUID = 679215520194372998L;
@@ -58,17 +57,6 @@ public class MVAbosTable extends MVTable {
         for (int i = 0; i < maxSpalten; ++i) {
             spaltenAusschaltenAbos(i);
         }
-    }
-
-    @Override
-    protected int getSizeArea() {
-        int sizeArea = 0;
-
-        if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-
-        return sizeArea;
     }
 
     @Override
