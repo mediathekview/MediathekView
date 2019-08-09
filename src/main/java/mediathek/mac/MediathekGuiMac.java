@@ -2,10 +2,12 @@ package mediathek.mac;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import mediathek.MediathekGui;
+import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
@@ -34,7 +36,7 @@ public class MediathekGuiMac extends MediathekGui {
             versionCheckThread.start();
     }
 
-    class CheckMacOSVersion extends Thread {
+    static class CheckMacOSVersion extends Thread {
         @Override
         public void run() {
             try {
@@ -45,8 +47,17 @@ public class MediathekGuiMac extends MediathekGui {
                         var config = ApplicationConfiguration.getConfiguration();
                         boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
                         if (showWarning) {
-                            JOptionPane.showMessageDialog(MediathekGui.ui(), "<html>Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von Spotlight-Kommentaren deaktiviert.<br>" +
-                                    "Wir arbeiten an einer Lösung.<br><br>Dieser Dialog wird nicht mehr angezeigt werden.</html>", "Spotlight-Kommentare deaktiviert", JOptionPane.INFORMATION_MESSAGE);
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle(Konstanten.PROGRAMMNAME);
+                                alert.setHeaderText("Spotlight-Kommentare schreiben");
+                                alert.setContentText("Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von " +
+                                        "Spotlight-Kommentaren deaktiviert.\n" +
+                                        "Wir arbeiten an einer zukünftigen Lösung.\n\n" +
+                                        "Dieser Dialog wird nicht mehr angezeigt werden.");
+                                alert.showAndWait();
+                            });
+
                             config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
                         }
                     }

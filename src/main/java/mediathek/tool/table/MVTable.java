@@ -141,7 +141,7 @@ public abstract class MVTable extends JTable {
             size = internalDefaultSize;
         }
 
-        setRowHeight(size > sizeArea ? size : sizeArea);
+        setRowHeight(Math.max(size, sizeArea));
     }
 
     public void initTabelle() {
@@ -404,7 +404,7 @@ public abstract class MVTable extends JTable {
             if (!listeSortKeys.isEmpty()) {
                 SortKey sk = listeSortKeys.get(0);
                 s = String.valueOf(sk.getColumn());
-                upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
+                upDown = sk.getSortOrder() == SortOrder.ASCENDING ? SORT_ASCENDING : SORT_DESCENDING;
             }
         }
 

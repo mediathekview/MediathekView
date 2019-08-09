@@ -161,7 +161,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (kGesehen) {
-                if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryController().urlPruefen(film.getUrl())) {
                     continue;
                 }
             }

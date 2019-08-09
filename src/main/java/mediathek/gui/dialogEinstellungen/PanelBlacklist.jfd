@@ -1,0 +1,277 @@
+JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel8:::::x, comp jTabbedPaneBlacklist:::::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel8:::p:97:p, space :::p, comp jTabbedPaneBlacklist:::p:510:p, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "jTabbedPaneBlacklist"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel6::l:::x, comp jPanel5::l:::x, comp jPanel7::l:::x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p::p, comp jPanel5:::p::p, space :::p, comp jPanel6:::p::p, space :::p, comp jPanel7:::p::p, space ::205:x}}"
+				} ) {
+					name: "jPanel3"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, par l {comp jLabel3:::p::p, comp jCheckBoxZukunftNichtAnzeigen:::p::p}, space :::x}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp jLabel3:::p::p, space u:::p, comp jCheckBoxZukunftNichtAnzeigen:::p::p, space :::x}}"
+					} ) {
+						name: "jPanel5"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel3"
+							"text": "Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "jCheckBoxZukunftNichtAnzeigen"
+							"text": "Filme mit Datum in der Zukunft nicht anzeigen"
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp jSliderMinuten::l:::x, seq {par l {seq l {comp jLabel1:::p::p, space :::p, comp jTextFieldMinuten:::p:81:p}, comp jLabel13::l:p::p}, space :0:405:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq t {space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldMinuten::b:p::p}, space u:p::p, comp jLabel13:::p::p, space :::x, comp jSliderMinuten:::p::p, space :::p}}"
+					} ) {
+						name: "jPanel6"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JSlider" ) {
+							name: "jSliderMinuten"
+							"value": 0
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel1"
+							"text": "Nur Filme anzeigen mit einer Länge von mehr als [min]:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldMinuten"
+							"editable": false
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel13"
+							"text": "Filme, die keine Längenangabe haben, werden immer angezeigt."
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :12:12:p, comp jLabel9:::p::p}, comp jLabel4:::p::p, comp jCheckBoxGeo::l:p::p}, space :::x}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp jLabel4:::p::p, space :::p, comp jLabel9:::p::p, space u:::p, comp jCheckBoxGeo:::p::p, space :::x}}"
+					} ) {
+						name: "jPanel7"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel4"
+							"text": "Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden."
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "jCheckBoxGeo"
+							"text": "Filme, die per Geoblocking gesperrt sind, nicht anzeigen"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel9"
+							"text": "(Dazu muss die eigene Position in den Einstellungen angegeben werden)"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Blacklist allgemein"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, comp jPanel4::l:::x, seq {par l {comp jRadioButtonWhitelist:::p::p, comp jRadioButtonBlacklist::l:p::p}, space ::386:x, comp jButtonHilfe:::p::p}, seq t {space :0:0:x, comp jLabel10:::p::p, space :::p, comp jButtonTabelleLoeschen:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p::p, par l {seq {comp jRadioButtonBlacklist:::p::p, space :::p, comp jRadioButtonWhitelist:::p::p}, comp jButtonHilfe::l:p::p}, space :p::p, comp jScrollPane1::::115:x, space :p::p, par c {comp jLabel10::c:p::p, comp jButtonTabelleLoeschen::c:p::p}, space u:p::p, comp jPanel4:::p::p, space :p::p}}"
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "jTableBlacklist"
+							"autoCreateRowSorter": true
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :p::p, par l {seq {comp jLabel7:::p::p, space :::x}, seq {par l {seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l:::x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}}, space :p:12:p}}}, seq t {space :::x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :p:23:p, comp jLabel7:::p::p, space :::p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space u:::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space :::x}}"
+					} ) {
+						name: "jPanel4"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel5"
+							"text": "Sender:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxSender"
+							"model": new javax.swing.DefaultComboBoxModel
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel6"
+							"text": "Thema:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxThema"
+							"model": new javax.swing.DefaultComboBoxModel
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonHinzufuegen"
+							"text": "Hinzufügen"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel7"
+							"text": "Sender, Thema, Titel oder Thema/Titel:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel8"
+							"text": "Titel:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldTitel"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel2"
+							"text": "Thema oder Titel:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldThemaTitel"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonAendern"
+							"text": "Ändern"
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonBlacklist"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"selected": true
+						"text": "\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonWhitelist"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonHilfe"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+						"toolTipText": "Hilfe anzeigen"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel10"
+						"text": "alle Einträge löschen:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonTabelleLoeschen"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Sender-Thema-Titel"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 1
+				"rows": 3
+			} ) {
+				name: "jPanel8"
+				"border": new javax.swing.border.TitledBorder( "Allgemeine Einstellungen" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxStart"
+					"text": "Beim Programmstart einschalten"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxBlacklistEingeschaltet"
+					"text": "Im Tab Filme einschalten"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxAbo"
+					"text": "Bei der Suche nach Abos berücksichtigen"
+					"toolTipText": "<html>Die Blacklist beim Suchen nach Abos berücksichtigen.<br/>Ansonsten wird die komplette Filmliste durchsucht.</html>"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 870, 625 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {space :0:100:x}"
+			"$verticalGroup": "par l {space :0:100:x}"
+		} ) {
+			name: "jPanel2"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 432 )
+		} )
+	}
+}

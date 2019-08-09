@@ -49,7 +49,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
             sizeL = 0L;
         } else {
             try {
-                sizeL = Long.valueOf(size) * 1_000_000;
+                sizeL = Long.parseLong(size) * 1_000_000;
             } catch (Exception ex) {
                 logger.error("string: {}, ex: {}", size, ex);
                 sizeL = 0L;

@@ -25,6 +25,9 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
+import mediathek.gui.actions.import_actions.ImportOldAbosAction;
+import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
+import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -675,10 +678,21 @@ public class MediathekGui extends JFrame {
 
     private void createFileMenu() {
         jMenuDatei.add(loadFilmListAction);
-        jMenuDatei.add(new FilmListExportAction(this));
+        jMenuDatei.addSeparator();
+        var exportMenu = new JMenu("Export");
+        exportMenu.add(new FilmListExportAction(this));
+
+        var importMenu = new JMenu("Import");
+        importMenu.add(new ImportOldAbosAction());
+        importMenu.add(new ImportOldBlacklistAction());
+        importMenu.add(new ImportOldReplacementListAction());
+
+        jMenuDatei.add(exportMenu);
+        jMenuDatei.add(importMenu);
 
         //on macOS we will use native handlers instead...
         if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuDatei.addSeparator();
             jMenuDatei.add(new SettingsAction(this));
             jMenuDatei.addSeparator();
             jMenuDatei.add(new QuitAction(this));

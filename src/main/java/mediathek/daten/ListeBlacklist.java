@@ -231,7 +231,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             days = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            filmlaengeSoll = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
