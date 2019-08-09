@@ -2,6 +2,8 @@ language: java
 jdk:
 - oraclejdk11
 sudo: required
+before_install:
+- git lfs pull
 install:
 - sudo apt-get update
 - sudo apt-get install lib32ncurses5 lib32z1 -y
