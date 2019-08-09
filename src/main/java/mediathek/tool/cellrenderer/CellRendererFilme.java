@@ -124,7 +124,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
-            } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
+            } else if (history.urlPruefen(datenFilm.getUrl())) {
                 if (!isSelected) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }

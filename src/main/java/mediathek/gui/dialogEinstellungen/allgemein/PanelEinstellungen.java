@@ -4,7 +4,6 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.*;
 import mediathek.tool.ApplicationConfiguration;
@@ -14,14 +13,18 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
-public class PanelEinstellungen extends PanelVorlage {
+public class PanelEinstellungen extends JPanel {
     private final static String ALLE = " Alle ";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
+    private final JFrame parent;
+    private final Daten daten;
 
     private void setupProxySettings() {
 
@@ -48,9 +51,14 @@ public class PanelEinstellungen extends PanelVorlage {
         jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
+    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {
+        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
+        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
+    }
+
     private void setupDays() {
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, '\n'
+        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parent, true, '\n'
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
                 + '\n'
@@ -118,7 +126,8 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     public PanelEinstellungen(Daten d, JFrame parent) {
-        super(d, parent);
+        super();
+        this.parent = parent;
         daten = d;
 
         initComponents();
@@ -144,6 +153,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         setupTabSwitchListener();
 
+        cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
         final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
     }
@@ -206,322 +216,360 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jPanel5 = new JPanel();
+        jCheckBoxTabsTop = new JCheckBox();
+        jCheckBoxTabIcon = new JCheckBox();
+        cbAutomaticMenuTabSwitching = new JCheckBox();
+        var jPanel3 = new JPanel();
+        var jLabel3 = new JLabel();
+        jtfUserAgent = new JTextField();
+        var jPanel4 = new JPanel();
+        var jLabel4 = new JLabel();
+        jtfProxyHost = new JTextField();
+        var jLabel5 = new JLabel();
+        jtfProxyPort = new JTextField();
+        var jLabel7 = new JLabel();
+        jtfProxyUser = new JTextField();
+        var jLabel8 = new JLabel();
+        jpfProxyPassword = new JPasswordField();
+        var jPanel2 = new JPanel();
+        var jPanel6 = new JPanel();
+        var jLabel6 = new JLabel();
+        jSpinnerDays = new JSpinner();
+        jButtonLoad = new JButton();
+        jButtonHelpDays = new JButton();
+        var jPanel7 = new JPanel();
+        cbUseDatabaseCleaner = new JCheckBox();
+        var jPanel8 = new JPanel();
+        cbSaveHumanReadableFilmlist = new JCheckBox();
+        jCheckBoxTray = new JCheckBox();
+        cbUseWikipediaSenderLogos = new JCheckBox();
 
-        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        jCheckBoxTabsTop = new javax.swing.JCheckBox();
-        jCheckBoxTabIcon = new javax.swing.JCheckBox();
-        cbAutomaticMenuTabSwitching = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jtfUserAgent = new javax.swing.JTextField();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jtfProxyHost = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jtfProxyPort = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
-        jtfProxyUser = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
-        jpfProxyPassword = new javax.swing.JPasswordField();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
-        jSpinnerDays = new javax.swing.JSpinner();
-        jButtonLoad = new javax.swing.JButton();
-        jButtonHelpDays = new javax.swing.JButton();
-        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
-        cbUseDatabaseCleaner = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
-        cbSaveHumanReadableFilmlist = new javax.swing.JCheckBox();
-        jCheckBoxTray = new javax.swing.JCheckBox();
-        cbUseWikipediaSenderLogos = new javax.swing.JCheckBox();
+        //======== this ========
+        setMaximumSize(new Dimension(10, 10));
 
-        setMaximumSize(new java.awt.Dimension(10, 10));
-        setMinimumSize(getMaximumSize());
+        //======== jPanel5 ========
+        {
+            jPanel5.setBorder(new TitledBorder("Tab-Verhalten")); //NON-NLS
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab-Verhalten"));
+            //---- jCheckBoxTabsTop ----
+            jCheckBoxTabsTop.setText("Tabs oben anzeigen"); //NON-NLS
 
-        jCheckBoxTabsTop.setText("Tabs oben anzeigen");
+            //---- jCheckBoxTabIcon ----
+            jCheckBoxTabIcon.setText("Icons anzeigen"); //NON-NLS
+            jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen"); //NON-NLS
 
-        jCheckBoxTabIcon.setText("Icons anzeigen");
-        jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
+            //---- cbAutomaticMenuTabSwitching ----
+            cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um"); //NON-NLS
 
-        cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Menünutzung um");
+            GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
+            jPanel5.setLayout(jPanel5Layout);
+            jPanel5Layout.setHorizontalGroup(
+                jPanel5Layout.createParallelGroup()
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jCheckBoxTabsTop)
+                        .addGap(5, 5, 5)
+                        .addComponent(jCheckBoxTabIcon)
+                        .addGap(5, 5, 5)
+                        .addComponent(cbAutomaticMenuTabSwitching)
+                        .addContainerGap(20, Short.MAX_VALUE))
+            );
+            jPanel5Layout.setVerticalGroup(
+                jPanel5Layout.createParallelGroup()
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addGroup(jPanel5Layout.createParallelGroup()
+                            .addComponent(jCheckBoxTabsTop)
+                            .addComponent(jCheckBoxTabIcon)
+                            .addComponent(cbAutomaticMenuTabSwitching)))
+            );
+        }
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jCheckBoxTabsTop)
-                .addGap(5, 5, 5)
-                .addComponent(jCheckBoxTabIcon)
-                .addGap(5, 5, 5)
-                .addComponent(cbAutomaticMenuTabSwitching))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxTabsTop)
-                    .addComponent(jCheckBoxTabIcon)
-                    .addComponent(cbAutomaticMenuTabSwitching)))
-        );
+        //======== jPanel3 ========
+        {
+            jPanel3.setBorder(new TitledBorder("Download")); //NON-NLS
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Download"));
+            //---- jLabel3 ----
+            jLabel3.setText("User-Agent:"); //NON-NLS
 
-        jLabel3.setText("User-Agent:");
+            //---- jtfUserAgent ----
+            jtfUserAgent.setMinimumSize(new Dimension(200, 26));
+            jtfUserAgent.setPreferredSize(new Dimension(520, 26));
 
-        jtfUserAgent.setMinimumSize(new java.awt.Dimension(200, 26));
-        jtfUserAgent.setPreferredSize(new java.awt.Dimension(520, 26));
+            GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
+            jPanel3.setLayout(jPanel3Layout);
+            jPanel3Layout.setHorizontalGroup(
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel3)
+                        .addGap(5, 5, 5)
+                        .addComponent(jtfUserAgent, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(15, Short.MAX_VALUE))
+            );
+            jPanel3Layout.setVerticalGroup(
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel3))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jtfUserAgent, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            );
+        }
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel3)
-                .addGap(5, 5, 5)
-                .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel3))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        //======== jPanel4 ========
+        {
+            jPanel4.setBorder(new TitledBorder("HTTP-Proxy (Neustart erforderlich!)")); //NON-NLS
+            jPanel4.setToolTipText(""); //NON-NLS
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
-        jPanel4.setToolTipText("");
+            //---- jLabel4 ----
+            jLabel4.setText("Host:"); //NON-NLS
 
-        jLabel4.setText("Host:");
+            //---- jLabel5 ----
+            jLabel5.setText("Port:"); //NON-NLS
 
-        jLabel5.setText("Port:");
+            //---- jLabel7 ----
+            jLabel7.setText("User:"); //NON-NLS
 
-        jLabel7.setText("User:");
+            //---- jLabel8 ----
+            jLabel8.setText("Passwort:"); //NON-NLS
 
-        jLabel8.setText("Passwort:");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
+            jPanel4.setLayout(jPanel4Layout);
+            jPanel4Layout.setHorizontalGroup(
+                jPanel4Layout.createParallelGroup()
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtfProxyHost, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtfProxyHost, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtfProxyUser)))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup()
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jtfProxyPort, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jpfProxyPassword))
+                        .addContainerGap())
+            );
+            jPanel4Layout.setVerticalGroup(
+                jPanel4Layout.createParallelGroup()
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtfProxyUser)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jtfProxyPort, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 160, Short.MAX_VALUE))
-                    .addComponent(jpfProxyPassword))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jtfProxyHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jtfProxyPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jtfProxyUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(jpfProxyPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jtfProxyHost, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jtfProxyPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jtfProxyUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(jpfProxyPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+        }
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        //======== jPanel2 ========
+        {
+            jPanel2.setBorder(new TitledBorder("")); //NON-NLS
 
-        jLabel6.setText("nur die Filme der letzten Tage laden:");
+            //======== jPanel6 ========
+            {
 
-        jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"}));
+                //---- jLabel6 ----
+                jLabel6.setText("nur die Filme der letzten Tage laden:"); //NON-NLS
 
-        jButtonLoad.setText("Filmliste jetzt neu laden");
+                //---- jSpinnerDays ----
+                jSpinnerDays.setModel(new SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"})); //NON-NLS
 
-        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHelpDays.setToolTipText("Hilfe anzeigen");
+                //---- jButtonLoad ----
+                jButtonLoad.setText("Filmliste jetzt neu laden"); //NON-NLS
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel6)
-                .addGap(5, 5, 5)
-                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonLoad)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonHelpDays)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel6))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                //---- jButtonHelpDays ----
+                jButtonHelpDays.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+                jButtonHelpDays.setToolTipText("Hilfe anzeigen"); //NON-NLS
+
+                GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
+                jPanel6.setLayout(jPanel6Layout);
+                jPanel6Layout.setHorizontalGroup(
+                    jPanel6Layout.createParallelGroup()
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addGap(5, 5, 5)
+                            .addComponent(jLabel6)
+                            .addGap(5, 5, 5)
+                            .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonLoad)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jButtonHelpDays)
-                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButtonLoad)))))
-                .addGap(2, 2, 2))
-        );
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+                jPanel6Layout.setVerticalGroup(
+                    jPanel6Layout.createParallelGroup()
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addGroup(jPanel6Layout.createParallelGroup()
+                                .addGroup(jPanel6Layout.createSequentialGroup()
+                                    .addGap(11, 11, 11)
+                                    .addComponent(jLabel6))
+                                .addGroup(jPanel6Layout.createSequentialGroup()
+                                    .addGap(6, 6, 6)
+                                    .addGroup(jPanel6Layout.createParallelGroup()
+                                        .addComponent(jButtonHelpDays)
+                                        .addGroup(jPanel6Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jButtonLoad)))))
+                            .addGap(2, 2, 2))
+                );
+            }
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            );
+        }
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
+        //======== jPanel7 ========
+        {
+            jPanel7.setBorder(new TitledBorder("Datenbank (Neustart erforderlich!)")); //NON-NLS
 
-        cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
+            //---- cbUseDatabaseCleaner ----
+            cbUseDatabaseCleaner.setText("Bereinigung w\u00e4hrend Laufzeit"); //NON-NLS
+            cbUseDatabaseCleaner.setToolTipText("<html>Wenn aktiviert werden ung\u00fcltige Datenbankeintr\u00e4ge sofort aus der Datenbank gel\u00f6scht um Speicher zu sparen.<br/>Dies wird f\u00fcr Rechner mit wenig Arbeitsspeicher empfohlen, verringert jedoch die Performance von MediathekView deutlich beim Laden einer neuen Filmliste.</html>"); //NON-NLS
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbUseDatabaseCleaner)
-                .addContainerGap(381, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbUseDatabaseCleaner)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+            GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
+            jPanel7.setLayout(jPanel7Layout);
+            jPanel7Layout.setHorizontalGroup(
+                jPanel7Layout.createParallelGroup()
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbUseDatabaseCleaner)
+                        .addContainerGap(408, Short.MAX_VALUE))
+            );
+            jPanel7Layout.setVerticalGroup(
+                jPanel7Layout.createParallelGroup()
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbUseDatabaseCleaner)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+        }
 
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Speicherung der Filmliste"));
+        //======== jPanel8 ========
+        {
+            jPanel8.setBorder(new TitledBorder("Speicherung der Filmliste")); //NON-NLS
 
-        cbSaveHumanReadableFilmlist.setText("in les- und editierbarem Format speichern");
+            //---- cbSaveHumanReadableFilmlist ----
+            cbSaveHumanReadableFilmlist.setText("in les- und editierbarem Format speichern"); //NON-NLS
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbSaveHumanReadableFilmlist)
-                .addContainerGap(300, Short.MAX_VALUE))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbSaveHumanReadableFilmlist)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+            GroupLayout jPanel8Layout = new GroupLayout(jPanel8);
+            jPanel8.setLayout(jPanel8Layout);
+            jPanel8Layout.setHorizontalGroup(
+                jPanel8Layout.createParallelGroup()
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbSaveHumanReadableFilmlist)
+                        .addContainerGap(335, Short.MAX_VALUE))
+            );
+            jPanel8Layout.setVerticalGroup(
+                jPanel8Layout.createParallelGroup()
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(cbSaveHumanReadableFilmlist)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+        }
 
-        jCheckBoxTray.setText("Programm ins Tray minimieren");
+        //---- jCheckBoxTray ----
+        jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
 
-        cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
-        cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
+        //---- cbUseWikipediaSenderLogos ----
+        cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBoxTray)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(cbUseWikipediaSenderLogos))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jPanel2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jCheckBoxTray)
+                                .addComponent(cbUseWikipediaSenderLogos))
+                            .addGap(0, 1, Short.MAX_VALUE))
+                        .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxTray)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbUseWikipediaSenderLogos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jCheckBoxTray)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(cbUseWikipediaSenderLogos)
+                    .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUseWikipediaSenderLogosActionPerformed
-        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
-        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
-    }//GEN-LAST:event_cbUseWikipediaSenderLogosActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox cbAutomaticMenuTabSwitching;
-    private javax.swing.JCheckBox cbSaveHumanReadableFilmlist;
-    private javax.swing.JCheckBox cbUseDatabaseCleaner;
-    private javax.swing.JCheckBox cbUseWikipediaSenderLogos;
-    private javax.swing.JButton jButtonHelpDays;
-    private javax.swing.JButton jButtonLoad;
-    private javax.swing.JCheckBox jCheckBoxTabIcon;
-    private javax.swing.JCheckBox jCheckBoxTabsTop;
-    private javax.swing.JCheckBox jCheckBoxTray;
-    private javax.swing.JSpinner jSpinnerDays;
-    private javax.swing.JPasswordField jpfProxyPassword;
-    private javax.swing.JTextField jtfProxyHost;
-    private javax.swing.JTextField jtfProxyPort;
-    private javax.swing.JTextField jtfProxyUser;
-    private javax.swing.JTextField jtfUserAgent;
+    // Generated using JFormDesigner non-commercial license
+    private JCheckBox jCheckBoxTabsTop;
+    private JCheckBox jCheckBoxTabIcon;
+    private JCheckBox cbAutomaticMenuTabSwitching;
+    private JTextField jtfUserAgent;
+    private JTextField jtfProxyHost;
+    private JTextField jtfProxyPort;
+    private JTextField jtfProxyUser;
+    private JPasswordField jpfProxyPassword;
+    private JSpinner jSpinnerDays;
+    private JButton jButtonLoad;
+    private JButton jButtonHelpDays;
+    private JCheckBox cbUseDatabaseCleaner;
+    private JCheckBox cbSaveHumanReadableFilmlist;
+    private JCheckBox jCheckBoxTray;
+    private JCheckBox cbUseWikipediaSenderLogos;
     // End of variables declaration//GEN-END:variables
 }

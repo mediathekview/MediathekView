@@ -126,7 +126,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
-        arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
+        arr[DOWNLOAD_HISTORY_URL] = film.getUrl();
         if (aufloesung.isEmpty()) {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
         } else {

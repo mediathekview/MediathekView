@@ -944,7 +944,7 @@ public class GuiFilme extends AGuiTabPanel {
             //History
             res.ifPresent(film -> {
                 JMenuItem miHistory;
-                if (daten.getSeenHistoryController().urlPruefen(film.getUrlHistory())) {
+                if (daten.getSeenHistoryController().urlPruefen(film.getUrl())) {
                     miHistory = new JMenuItem("Film als ungesehen markieren");
                     miHistory.addActionListener(unseenActionListener);
                 } else {

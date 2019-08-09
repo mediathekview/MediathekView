@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +49,7 @@ public class IoXmlLesen {
     }
 
     public ImmutableTriple<Integer, Integer, Integer> importAboBlacklist(String datei, boolean abo, boolean black,
-                                                                         boolean replace) {
+                                                                         boolean replace)  throws IOException, XMLStreamException {
         int foundAbos = 0;
         int foundBlacklistEntries = 0;
         int foundReplaceListEntries = 0;
@@ -86,9 +87,8 @@ public class IoXmlLesen {
                     }
                 }
             }
-        } catch (Exception ex) {
-            Log.errorLog(302045698, ex);
-        } finally {
+        }
+        finally {
             if (parser != null) {
                 try {
                     parser.close();

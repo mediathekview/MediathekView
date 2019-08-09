@@ -10,8 +10,9 @@ import java.awt.*;
 public class LoadFilmListDialog extends StandardCloseDialog {
     public LoadFilmListDialog(Frame owner) {
         super(owner,"Filmliste laden",true);
-        setResizable(false);
         pack();
+
+        setResizable(false);
         GuiFunktionen.centerOnScreen(this,false);
     }
 
