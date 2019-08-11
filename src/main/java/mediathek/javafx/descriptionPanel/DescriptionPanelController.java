@@ -9,6 +9,7 @@ import mediathek.MediathekGui;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
+import mediathek.tool.GuiFunktionen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -76,21 +77,44 @@ public class DescriptionPanelController {
         });
     }
 
+    public static String getStringFromTextFlow(TextFlow tf) {
+        StringBuilder sb = new StringBuilder();
+        tf.getChildren().stream()
+                .filter(t -> Text.class.equals(t.getClass()))
+                .forEach(t -> sb.append(((Text) t).getText()));
+        return sb.toString();
+    }
+
     private ContextMenu createContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
+
         MenuItem edit = new MenuItem("Beschreibung ändern");
         edit.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), currentFilm);
             dialog.setVisible(true);
         }));
 
-        contextMenu.getItems().add(edit);
+        MenuItem copyToClipboard = new MenuItem("In Zwischenablage kopieren");
+        copyToClipboard.setOnAction(e -> {
+            var text = getStringFromTextFlow(textField);
+            GuiFunktionen.copyToClipboard(text);
+        });
+
+        var items = contextMenu.getItems();
+        items.add(edit);
+        items.add(new SeparatorMenuItem());
+        items.add(copyToClipboard);
+
         contextMenu.setOnShowing(e -> {
-            //if there is no film do not offer edit capability
-            if (currentFilm == null)
+            //if there is no film do not offer edit or copy capability
+            if (currentFilm == null) {
                 edit.setDisable(true);
-            else
+                copyToClipboard.setDisable(true);
+            }
+            else {
                 edit.setDisable(false);
+                copyToClipboard.setDisable(false);
+            }
         });
 
         return contextMenu;
