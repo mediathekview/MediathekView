@@ -12,6 +12,7 @@ import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.lang3.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -20,6 +21,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.DosFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -328,6 +330,20 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     /**
+     * Workaround for windows SMB share bug.
+     * Read the file/directory attributes and check them instead of calling NIO API.
+     */
+    private static boolean writableWorkAround(Path path) throws IOException {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            var dosAttrs = Files.readAttributes(path, DosFileAttributes.class);
+            return !dosAttrs.isReadOnly();
+        }
+        else {
+            return Files.isWritable(path);
+        }
+    }
+
+    /**
      * Test if a path is a directory and writeable.
      * Path directories will be created before trying write test.
      *
@@ -343,7 +359,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         Path path = Paths.get(pfad);
         try {
             Files.createDirectories(path);
-            if (Files.isDirectory(path) && Files.isWritable(path)) {
+
+            if (Files.isDirectory(path) && writableWorkAround(path)) {
                 var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
                 Files.delete(tmpPath);
 
