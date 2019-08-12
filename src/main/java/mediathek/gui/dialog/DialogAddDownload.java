@@ -166,12 +166,12 @@ public class DialogAddDownload extends JDialog {
             private void tus() {
                 if (!stopBeob) {
                     nameGeaendert = true;
-                    String s = cbPathTextComponent.getText();
-                    if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
+                    /*String s = cbPathTextComponent.getText();
+                    if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
                         jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
                         jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
-                    }
+                    }*/
                     calculateAndCheckDiskSpace();
                 }
 
