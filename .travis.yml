@@ -1,22 +1,26 @@
 language: java
 jdk:
-- oraclejdk11
+  - openjdk12
 sudo: required
 before_install:
-- git lfs pull
+  - git lfs pull
 install:
-- sudo apt-get update
-- sudo apt-get install lib32ncurses5 lib32z1 -y
+  - sudo apt-get update
+  - sudo apt-get install lib32ncurses5 lib32z1 -y
+  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_1.tar.gz
+  - tar zxvf install4j_unix_8_0_1.tar.gz
+  - mvn clean
+  - mvn install4j:install-license -Pinstall4j-linux
 notifications:
   webhooks:
     urls:
-    - https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MGFsZXglM0FtYXRyaXguZWxhb24uZGUvJTIxdWpSeXlUSGxQcXlRb2prcG1vJTNBbWF0cml4LmVsYW9uLmRl
+      - https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MGFsZXglM0FtYXRyaXguZWxhb24uZGUvJTIxdWpSeXlUSGxQcXlRb2prcG1vJTNBbWF0cml4LmVsYW9uLmRl
     on_success: change
     on_failure: always
     on_start: never
 addons:
   ssh_known_hosts:
-  - mediathekview.de
+    - mediathekview.de
   sonarcloud:
     organization: mediathekview
     token:
@@ -24,82 +28,82 @@ addons:
     github_token:
       secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
     branches:
-    - master
-    - develop
-    - feature/.*
-    - hotfix/.*
+      - master
+      - develop
+      - feature/.*
+      - hotfix/.*
 stages:
-- Test
-- name: Build and Deploy Snapshots
-  if: branch = develop AND type = cron
-- name: Build and Deploy Linux
-  if: tag IS present
-- name: Build and Deploy Windows
-  if: tag IS present
+  - Test
+  - name: Build and Deploy Snapshots
+    if: branch = develop AND type = cron
+  - name: Build and Deploy Linux
+    if: tag IS present
+  - name: Build and Deploy Windows
+    if: tag IS present
 #- name: Build and Deploy Mac
 #  if: tag IS present
 jobs:
   include:
-  - stage: Test
-    script:
-    - ./mvnw clean verify
-    cache:
-      directories:
-      - .autoconf
-      - $HOME/.m2
-    after_success:
-    - sonar-scanner
-  - stage: Build and Deploy Snapshots
-    script:
-    - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-    - ./mvnw clean install -Plinux
-    - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
-    - ./mvnw clean install -Pwindows,!linux
-    - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
-    - ./mvnw clean install -Pmac,!linux
-    - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
-    cache:
-      directories:
-      - .autoconf
-      - $HOME/.m2
-  - stage: Build and Deploy Linux
-    script:
-    - ./mvnw clean install -Plinux
-    after_success:
-    - sonar-scanner
-    before_deploy:
-    - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-    deploy:
-    - provider: script
-      script: scripte/deploy/deploy.sh
-      skip_cleanup: true
-      true:
-        tags: true
-    - provider: releases
-      api_key:
-        secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-      file_glob: true
-      file:
-      - target/*
-      skip_cleanup: true
-  - stage: Build and Deploy Windows
-    script:
-    - ./mvnw clean install -Pwindows,!linux
-    before_deploy:
-    - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-    deploy:
-    - provider: script
-      script: scripte/deploy/deploy.sh
-      skip_cleanup: true
-      true:
-        tags: true
-    - provider: releases
-      api_key:
-        secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-      file_glob: true
-      file:
-      - target/*
-      skip_cleanup: true
+    - stage: Test
+      script:
+        - ./mvnw clean verify
+      cache:
+        directories:
+          - .autoconf
+          - $HOME/.m2
+      after_success:
+        - sonar-scanner
+    - stage: Build and Deploy Snapshots
+      script:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+        - ./mvnw clean install -Plinux,install4j-linux
+        - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
+        - ./mvnw clean install -Pwindows,install4j-win,!linux
+        - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
+        - ./mvnw clean install -Pmac,!linux
+        - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
+      cache:
+        directories:
+          - .autoconf
+          - $HOME/.m2
+    - stage: Build and Deploy Linux
+      script:
+        - ./mvnw clean install -Plinux -Pinstall4j-linux
+      after_success:
+        - sonar-scanner
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+      deploy:
+        - provider: script
+          script: scripte/deploy/deploy.sh
+          skip_cleanup: true
+          true:
+            tags: true
+        - provider: releases
+          api_key:
+            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+          file_glob: true
+          file:
+            - target/*
+          skip_cleanup: true
+    - stage: Build and Deploy Windows
+      script:
+        - ./mvnw clean install -Pwindows,!linux,install4j-win
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+      deploy:
+        - provider: script
+          script: scripte/deploy/deploy.sh
+          skip_cleanup: true
+          true:
+            tags: true
+        - provider: releases
+          api_key:
+            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+          file_glob: true
+          file:
+            - target/*
+          skip_cleanup: true
 #  - stage: Build and Deploy Mac
 #    script:
 #    - ./mvnw clean install -Pmac,!linux

@@ -76,6 +76,8 @@
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
 		<javafx.version>13-ea+11</javafx.version>
 		<mainclass>mediathek.Main</mainclass>
+		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
+		<install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
 	</properties>
 
 	<dependencies>
@@ -436,10 +438,26 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/res</outputDirectory>
+							<outputDirectory>${project.build.directory}/res</outputDirectory>
 							<resources>
 								<resource>
 									<directory>res</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>filter-install4j</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>.install4j</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
@@ -540,102 +558,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- Distribution Exe, and Archives -->
-					<plugin>
-						<groupId>com.akathist.maven.plugins.launch4j</groupId>
-						<artifactId>launch4j-maven-plugin</artifactId>
-						<version>1.7.25</version>
-						<executions>
-							<execution>
-								<id>mv-exe</id>
-								<phase>package</phase>
-								<goals>
-									<goal>launch4j</goal>
-								</goals>
-								<configuration>
-									<headerType>gui</headerType>
-									<outfile>target/MediathekView.exe</outfile>
-									<dontWrapJar>true</dontWrapJar>
-									<mainClassName>${mainclass}</mainClassName>
-									<icon>res/MediathekView.ico</icon>
-									<initialHeapSize>256</initialHeapSize>
-									<maxHeapSize>1024</maxHeapSize>
-									<maxHeapPercent>80</maxHeapPercent>
-									<jar>MediathekView.jar</jar>
-									<jre>
-										<minVersion>11</minVersion>
-									</jre>
-								</configuration>
-							</execution>
-							<execution>
-								<id>mv-ipv4-exe</id>
-								<phase>package</phase>
-								<goals>
-									<goal>launch4j</goal>
-								</goals>
-								<configuration>
-									<headerType>gui</headerType>
-									<outfile>target/MediathekView_ipv4.exe</outfile>
-									<dontWrapJar>true</dontWrapJar>
-									<mainClassName>${mainclass}</mainClassName>
-									<icon>res/MediathekView.ico</icon>
-									<initialHeapSize>256</initialHeapSize>
-									<maxHeapSize>1024</maxHeapSize>
-									<maxHeapPercent>80</maxHeapPercent>
-									<jar>MediathekView.jar</jar>
-									<jre>
-										<minVersion>11</minVersion>
-									</jre>
-									<opts>
-										<opt>-Djava.net.preferIPv4Stack=true</opt>
-									</opts>
-								</configuration>
-							</execution>
-							<execution>
-								<id>mv-portable-exe</id>
-								<phase>package</phase>
-								<goals>
-									<goal>launch4j</goal>
-								</goals>
-								<configuration>
-									<headerType>gui</headerType>
-									<outfile>target/MediathekView_Portable.exe</outfile>
-									<dontWrapJar>true</dontWrapJar>
-									<mainClassName>${mainclass}</mainClassName>
-									<icon>res/MediathekView.ico</icon>
-									<cmdLine>Einstellungen/.mediathek3</cmdLine>
-									<initialHeapSize>256</initialHeapSize>
-									<maxHeapSize>1024</maxHeapSize>
-									<maxHeapPercent>80</maxHeapPercent>
-									<jar>MediathekView.jar</jar>
-									<jre>
-										<minVersion>11</minVersion>
-									</jre>
-									<opts>
-										<opt>-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log</opt>
-									</opts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-							<finalName>MediathekView-${project.version}-win</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptor>src/assembly/dep_win.xml</descriptor>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-archive</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -725,24 +647,6 @@
 										<exclude>res/*</exclude>
 									</excludes>
 								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-							<finalName>MediathekView-${project.version}-linux</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptor>src/assembly/dep_linux.xml</descriptor>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-archive</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
 							</execution>
 						</executions>
 					</plugin>
@@ -853,6 +757,64 @@
 								<goals>
 									<goal>single</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>install4j-win</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.install4j</groupId>
+						<artifactId>install4j-maven-plugin</artifactId>
+						<version>1.1.1</version>
+						<executions>
+							<execution>
+								<id>compile-installers</id>
+								<phase>package</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<projectFile>${project.build.directory}/mediathekview_windows.install4j</projectFile>
+									<installDir>${install4j.home}</installDir>
+									<jvmArguments>
+										<arg>-Xmx2G</arg>
+									</jvmArguments>
+									<attach>true</attach>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>install4j-linux</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.install4j</groupId>
+						<artifactId>install4j-maven-plugin</artifactId>
+						<version>1.1.1</version>
+						<executions>
+							<execution>
+								<id>compile-installers</id>
+								<phase>package</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<projectFile>${project.build.directory}/mediathekview_linux.install4j</projectFile>
+									<installDir>${install4j.home}</installDir>
+									<jvmArguments>
+										<arg>-Xmx2G</arg>
+									</jvmArguments>
+									<attach>true</attach>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
