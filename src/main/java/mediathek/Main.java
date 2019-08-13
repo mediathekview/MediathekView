@@ -157,7 +157,7 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
+        if (SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
         setupPortableMode(args);
