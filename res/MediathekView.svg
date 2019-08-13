@@ -13,8 +13,11 @@
    id="svg3570"
    height="660"
    width="660"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="MediathekView_mitPfad.svg">
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   sodipodi:docname="MediathekView.svg"
+   inkscape:export-filename="/home/nicklas/git/MediathekView/res/MediathekView@x16.png"
+   inkscape:export-xdpi="2.3272727"
+   inkscape:export-ydpi="2.3272727">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -24,16 +27,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1599"
-     inkscape:window-height="955"
+     inkscape:window-width="1920"
+     inkscape:window-height="1054"
      id="namedview83"
      showgrid="false"
      inkscape:zoom="1.0269366"
-     inkscape:cx="150.50138"
+     inkscape:cx="-109.00831"
      inkscape:cy="347.22691"
-     inkscape:window-x="57"
-     inkscape:window-y="34"
-     inkscape:window-maximized="0"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg3570"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -183,11 +186,11 @@
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <cc:license
-           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
-        <dc:title></dc:title>
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:title />
       </cc:Work>
       <cc:License
-         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
         <cc:permits
            rdf:resource="http://creativecommons.org/ns#Reproduction" />
         <cc:permits
