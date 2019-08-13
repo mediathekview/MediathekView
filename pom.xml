@@ -558,25 +558,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- Distribution Archives -->
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-							<finalName>MediathekView-${project.version}-win</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptor>src/assembly/dep_win.xml</descriptor>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-archive</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -666,24 +647,6 @@
 										<exclude>res/*</exclude>
 									</excludes>
 								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-							<finalName>MediathekView-${project.version}-linux</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptor>src/assembly/dep_linux.xml</descriptor>
-						</configuration>
-						<executions>
-							<execution>
-								<id>create-archive</id>
-								<phase>package</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
 							</execution>
 						</executions>
 					</plugin>
