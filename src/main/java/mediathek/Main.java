@@ -86,13 +86,6 @@ public class Main {
     }
 
     /**
-     * Due to a controlsfx bug no notifications on windows
-     */
-    private static void disableNotifications() {
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, false);
-    }
-
-    /**
      * Query the class name for Nimbus L&F.
      * @return the class name for Nimbus, otherwise return the system default l&f class name.
      */
@@ -156,9 +149,6 @@ public class Main {
         }
 
         setSystemLookAndFeel();
-
-        if (SystemUtils.IS_OS_LINUX)
-            disableNotifications();
 
         setupPortableMode(args);
 
