@@ -35,8 +35,7 @@ addons:
 stages:
   - Test
   - name: Build and Deploy Snapshots
-    # No check to see if travis can build with install4j
-    #if: branch = develop AND type = cron
+    if: branch = develop AND type = cron
   - name: Build and Deploy Linux
     if: tag IS present
   - name: Build and Deploy Windows
