@@ -21,7 +21,7 @@
   </files>
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
-      <executable name="MediathekView" iconSet="true" iconFile="${project.build.directory}/res/MediathekView.ico" executableMode="gui" singleInstance="true" />
+      <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx1G">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
@@ -31,10 +31,11 @@
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
-      <executable name="MediathekView_ipv4" iconSet="true" iconFile="${project.build.directory}/res/MediathekView.ico" executableMode="gui" singleInstance="true" />
+      <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx1G -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
@@ -44,10 +45,11 @@
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
-      <executable name="MediathekView_Portable" iconSet="true" iconFile="${project.build.directory}/res/MediathekView.ico" executableMode="gui" />
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx1G" arguments="-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
@@ -57,6 +59,7 @@
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
