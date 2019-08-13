@@ -780,6 +780,7 @@
 								</goals>
 								<configuration>
 									<projectFile>${project.build.directory}/mediathekview_windows.install4j</projectFile>
+									<installDir>${install4j.home}</installDir>
 									<jvmArguments>
 										<arg>-Xmx2G</arg>
 									</jvmArguments>
@@ -808,6 +809,7 @@
 								</goals>
 								<configuration>
 									<projectFile>${project.build.directory}/mediathekview_linux.install4j</projectFile>
+									<installDir>${install4j.home}</installDir>
 									<jvmArguments>
 										<arg>-Xmx2G</arg>
 									</jvmArguments>
