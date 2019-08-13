@@ -2,6 +2,7 @@
 
 BATCHDATEI="target/uploadbatch"
 LOCAL="target"
+LOCAL_INSTALL4J="target/media"
 REMOTE="upload"
 
 STATUSDATEI="target/upload.status"
@@ -32,6 +33,12 @@ fi
 echo "cd $REMOTE" >> $BATCHDATEI
 
 for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' \)); do
+  # einzelne fertige Dateien hochladen
+  echo "put $file" >> $BATCHDATEI
+done
+
+# Upload install4j results
+for file in $(find $LOCAL_INSTALL4J/ -type f \( -name '*.deb' -o -name '*.rpm' -o -name '*.sh' -o -name '*.gz' -o -name '*.exe'  -o -name '*.zip' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done

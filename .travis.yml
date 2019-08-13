@@ -1,12 +1,14 @@
 language: java
 jdk:
-- oraclejdk11
+- openjdk12
 sudo: required
 before_install:
 - git lfs pull
 install:
 - sudo apt-get update
 - sudo apt-get install lib32ncurses5 lib32z1 -y
+- wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_1.tar.gz
+- tar zxvf install4j_unix_8_0_1.tar.gz
 notifications:
   webhooks:
     urls:
@@ -31,7 +33,8 @@ addons:
 stages:
 - Test
 - name: Build and Deploy Snapshots
-  if: branch = develop AND type = cron
+  # No check to see if travis can build with install4j
+  #if: branch = develop AND type = cron
 - name: Build and Deploy Linux
   if: tag IS present
 - name: Build and Deploy Windows
@@ -52,9 +55,9 @@ jobs:
   - stage: Build and Deploy Snapshots
     script:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-    - ./mvnw clean install -Plinux
+    - ./mvnw clean install -Plinux,install4j-linux
     - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
-    - ./mvnw clean install -Pwindows,!linux
+    - ./mvnw clean install -Pwindows,install4j-win,!linux
     - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
     - ./mvnw clean install -Pmac,!linux
     - scripte/deploy/deploy.sh nightly $TRAVIS_COMMIT
@@ -64,7 +67,7 @@ jobs:
       - $HOME/.m2
   - stage: Build and Deploy Linux
     script:
-    - ./mvnw clean install -Plinux
+    - ./mvnw clean install -Plinux -Pinstall4j-linux
     after_success:
     - sonar-scanner
     before_deploy:
@@ -84,7 +87,7 @@ jobs:
       skip_cleanup: true
   - stage: Build and Deploy Windows
     script:
-    - ./mvnw clean install -Pwindows,!linux
+    - ./mvnw clean install -Pwindows,!linux,install4j-win
     before_deploy:
     - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
     deploy:
