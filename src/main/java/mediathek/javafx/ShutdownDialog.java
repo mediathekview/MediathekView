@@ -28,9 +28,7 @@ public class ShutdownDialog {
 
         Platform.runLater(() -> {
             stage = new Stage();
-            stage.setOnHidden(e -> {
-                hidden = true;
-            });
+            stage.setOnHidden(e -> hidden = true);
             stage.setAlwaysOnTop(true);
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
