@@ -110,7 +110,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    protected BandwidthMonitorController bandwidthMonitor;
+    private BandwidthMonitorController bandwidthMonitor;
     protected Stage controlsFxWorkaroundStage;
     /**
      * the global configuration for this app.
@@ -134,6 +134,8 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         super();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
         showMemoryMonitorAction = new MemoryMonitorAction();
@@ -833,7 +835,7 @@ public class MediathekGui extends JFrame {
             if (showOptionTerminate) {
                 dialogBeenden.setComboWaitAndTerminate();
             }
-            dialogBeenden.setModal(true);
+
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.applicationCanTerminate()) {
                 return false;
