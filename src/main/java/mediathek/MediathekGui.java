@@ -897,7 +897,7 @@ public class MediathekGui extends JFrame {
         dispose();
 
         //shutdown JavaFX
-        Platform.runLater(Platform::exit);
+        Platform.exit();
 
         System.exit(0);
 
