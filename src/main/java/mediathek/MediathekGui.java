@@ -735,7 +735,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(new ShowFilmInformationAction());
+        jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(cbSearchMediaDb);
     }

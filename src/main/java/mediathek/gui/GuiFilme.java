@@ -784,7 +784,7 @@ public class GuiFilme extends AGuiTabPanel {
             return item;
         }
 
-        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
 
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();

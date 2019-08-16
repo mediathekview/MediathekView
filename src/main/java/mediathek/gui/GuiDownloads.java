@@ -1521,7 +1521,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
-        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
     }
 
     /**
