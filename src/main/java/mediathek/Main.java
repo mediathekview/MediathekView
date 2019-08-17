@@ -12,7 +12,10 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.*;
+import mediathek.tool.Log;
+import mediathek.tool.MemoryUtils;
+import mediathek.tool.SingleInstance;
+import mediathek.tool.UIProgressState;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -23,6 +26,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -285,11 +289,33 @@ public class Main {
         return window;
     }
 
+    @SuppressWarnings("unchecked")
+    private void disableAccessWarnings() {
+        try {
+            var unsafeClass = Class.forName("sun.misc.Unsafe");
+            var field = unsafeClass.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            var unsafe = field.get(null);
+
+            var putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile", Object.class, long.class, Object.class);
+            var staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset", Field.class);
+
+            var loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+            var loggerField = loggerClass.getDeclaredField("logger");
+            Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
+            putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+    }
+
     /**
      * Setup the X11 window manager WM_CLASS hint.
      * Enables e.g. GNOME to determine application name and to enable app specific functionality.
      */
     private void setupX11WindowManagerClassName() {
+        disableAccessWarnings();
+
         try {
             var xToolkit = Toolkit.getDefaultToolkit();
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
