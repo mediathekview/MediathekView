@@ -83,7 +83,7 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     public FilmActionPanel fap;
-    private MediensammlungAction mediensammlungAction = new MediensammlungAction();
+    private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     /**
      * The swing helper panel FilmAction bar.
      */
@@ -921,7 +921,7 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].equals("")) {
+                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].isEmpty()) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
