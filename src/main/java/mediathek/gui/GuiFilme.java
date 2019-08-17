@@ -73,8 +73,8 @@ public class GuiFilme extends AGuiTabPanel {
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
-    public final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
-    public final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
     private final JPanel descriptionPanel = new JPanel();
     private final JPanel extensionArea = new JPanel();
@@ -83,7 +83,7 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     public FilmActionPanel fap;
-    public MediensammlungAction mediensammlungAction = new MediensammlungAction();
+    private MediensammlungAction mediensammlungAction = new MediensammlungAction();
     /**
      * The swing helper panel FilmAction bar.
      */
@@ -294,7 +294,7 @@ public class GuiFilme extends AGuiTabPanel {
         descriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
     }
 
-    public void onComponentShown() {
+    private void onComponentShown() {
         mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
 
         updateFilmData();
@@ -735,7 +735,7 @@ public class GuiFilme extends AGuiTabPanel {
     private class CopyUrlToClipboardAction extends AbstractAction {
         private final String resolution;
 
-        public CopyUrlToClipboardAction(String resolution) {
+        CopyUrlToClipboardAction(String resolution) {
             this.resolution = resolution;
         }
 
@@ -792,7 +792,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final ActionListener seenActionListener = new BeobHistory(true);
         private Point p;
 
-        public BeobMausTabelle() {
+        BeobMausTabelle() {
         }
 
         @Override
@@ -1042,7 +1042,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             private final boolean eintragen;
 
-            public BeobHistory(boolean eeintragen) {
+            BeobHistory(boolean eeintragen) {
                 eintragen = eeintragen;
             }
 
@@ -1111,7 +1111,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             private final boolean mitTitel;
 
-            public BeobAbo(boolean mmitTitel) {
+            BeobAbo(boolean mmitTitel) {
                 mitTitel = mmitTitel;
             }
 
@@ -1151,7 +1151,7 @@ public class GuiFilme extends AGuiTabPanel {
             private final boolean sender;
             private final boolean thema;
 
-            public BeobBlacklist(boolean ssender, boolean tthema) {
+            BeobBlacklist(boolean ssender, boolean tthema) {
                 sender = ssender;
                 thema = tthema;
             }
