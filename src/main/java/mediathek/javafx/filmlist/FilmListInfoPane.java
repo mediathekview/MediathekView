@@ -39,7 +39,7 @@ public class FilmListInfoPane extends HBox {
         }));
 
         filmListCreationDateLabel = new FilmListCreationDateLabel(daten);
-        FilmListAgeLabel filmListAgeLabel = new FilmListAgeLabel(daten);
+        FilmListAgeLabel filmListAgeLabel = new FilmListAgeLabel();
         getChildren().addAll(new CenteredBorderPane(filmListCreationDateLabel),
                 new VerticalSeparator(),
                 new CenteredBorderPane(filmListAgeLabel));
