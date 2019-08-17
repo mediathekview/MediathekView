@@ -637,45 +637,127 @@ public class GuiFilme extends AGuiTabPanel {
         SwingUtilities.invokeLater(this::setupButtonPanel);
     }
 
-    private void setupButtonPanel() {
-        // erst sauber machen
-        // zum Anlegen der Button:
-        // Programmgruppe ohne Namen: Leerfeld
-        // Programmgruppe ohen Programme: Label
-        // sonst ein Button
-        jPanelExtraInnen.removeAll();
-        jPanelExtraInnen.updateUI();
-        jPanelExtraInnen.addMouseListener(new BeobMausButton());
-        ListePset listeButton = Daten.listePset.getListeButton();
-        int maxSpalten = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON); //Anzahl der Spalten der Schalter
+    private class ButtonPanelController {
+        public ButtonPanelController() {
+            initComponents();
+        }
 
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(4, 10, 4, 10);
-        jPanelExtraInnen.setLayout(gridbag);
-        int spalte = 0;
-        int zeile = 0;
-        for (int i = 0; i < listeButton.size(); ++i) {
-            if (!listeButton.get(i).isFreeLine()) {
-                addExtraFeld(i, spalte, zeile, gridbag, c, jPanelExtraInnen, listeButton);
-            }
-            ++spalte;
-            if (spalte > maxSpalten - 1) {
-                spalte = 0;
-                ++zeile;
+        private void addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
+            JButton button;
+            c.gridx = spalte;
+            c.gridy = zeile;
+            if (liste.get(i).isLable()) {
+                JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
+                Color col = liste.get(i).getFarbe();
+                if (col != null) {
+                    label.setForeground(col);
+                }
+                gridbag.setConstraints(label, c);
+                panel.add(label);
+            } else {
+                button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
+                button.addActionListener(new BeobOpen(liste.get(i)));
+                Color col = liste.get(i).getFarbe();
+                if (col != null) {
+                    button.setBackground(col);
+                }
+
+                gridbag.setConstraints(button, c);
+                panel.add(button);
             }
         }
-        // zum zusammenschieben
-        c.weightx = 10;
-        c.gridx = maxSpalten + 1;
-        c.gridy = 0;
-        JLabel label = new JLabel();
-        gridbag.setConstraints(label, c);
-        jPanelExtraInnen.add(label);
+
+        private void initComponents() {
+            // erst sauber machen
+            // zum Anlegen der Button:
+            // Programmgruppe ohne Namen: Leerfeld
+            // Programmgruppe ohen Programme: Label
+            // sonst ein Button
+            jPanelExtraInnen.removeAll();
+            jPanelExtraInnen.updateUI();
+            jPanelExtraInnen.addMouseListener(new BeobMausButton());
+            ListePset listeButton = Daten.listePset.getListeButton();
+            int maxSpalten = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON); //Anzahl der Spalten der Schalter
+
+            GridBagLayout gridbag = new GridBagLayout();
+            GridBagConstraints c = new GridBagConstraints();
+            c.weightx = 0;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.insets = new Insets(4, 10, 4, 10);
+            jPanelExtraInnen.setLayout(gridbag);
+            int spalte = 0;
+            int zeile = 0;
+            for (int i = 0; i < listeButton.size(); ++i) {
+                if (!listeButton.get(i).isFreeLine()) {
+                    addExtraFeld(i, spalte, zeile, gridbag, c, jPanelExtraInnen, listeButton);
+                }
+                ++spalte;
+                if (spalte > maxSpalten - 1) {
+                    spalte = 0;
+                    ++zeile;
+                }
+            }
+            // zum zusammenschieben
+            c.weightx = 10;
+            c.gridx = maxSpalten + 1;
+            c.gridy = 0;
+            JLabel label = new JLabel();
+            gridbag.setConstraints(label, c);
+            jPanelExtraInnen.add(label);
+        }
+
+        public void setVisible(boolean visible) {
+            jPanelExtra.setVisible(visible);
+        }
+
+        private class BeobMausButton extends MouseAdapter {
+            JSpinner jSpinner = new JSpinner(new SpinnerNumberModel(4, 2, 10, 1));
+
+            public BeobMausButton() {
+                int start = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON);
+                jSpinner.setValue(start);
+                jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
+            }
+
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    showMenu(arg0);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    showMenu(arg0);
+                }
+            }
+
+            private void showMenu(MouseEvent evt) {
+                JPopupMenu jPopupMenu = new JPopupMenu();
+                jSpinner.addChangeListener(e -> {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
+                    daten.getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
+                });
+                JPanel jPanelAnzahl = new JPanel();
+                jPanelAnzahl.setLayout(new BorderLayout());
+                jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
+                jPanelAnzahl.add(new JLabel("Anzahl Button je Zeile: "), BorderLayout.WEST);
+                jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
+
+                jPopupMenu.add(jPanelAnzahl);
+
+                //anzeigen
+                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            }
+        }
+    }
+
+    private void setupButtonPanel() {
+        ButtonPanelController buttonPanelController = new ButtonPanelController();
         // und jetzt noch anzeigen
-        jPanelExtra.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        buttonPanelController.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+
     }
 
     private class BeobOpen implements ActionListener {
@@ -1103,75 +1185,6 @@ public class GuiFilme extends AGuiTabPanel {
                     });
                 }
             }
-        }
-    }
-
-    private class BeobMausButton extends MouseAdapter {
-
-        JSpinner jSpinner = new JSpinner(new SpinnerNumberModel(4, 4, 10, 1));
-
-        public BeobMausButton() {
-            int start = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON);
-            jSpinner.setValue(start);
-            jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            jSpinner.addChangeListener(e -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
-                daten.getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
-            });
-            JPanel jPanelAnzahl = new JPanel();
-            jPanelAnzahl.setLayout(new BorderLayout());
-            jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
-            jPanelAnzahl.add(new JLabel("Anzahl Button je Zeile: "), BorderLayout.WEST);
-            jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
-
-            jPopupMenu.add(jPanelAnzahl);
-
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-    }
-
-    private void addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
-        JButton button;
-        c.gridx = spalte;
-        c.gridy = zeile;
-        if (liste.get(i).isLable()) {
-            JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
-            Color col = liste.get(i).getFarbe();
-            if (col != null) {
-                label.setForeground(col);
-            }
-            gridbag.setConstraints(label, c);
-            panel.add(label);
-        } else {
-            button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
-            button.addActionListener(new BeobOpen(liste.get(i)));
-            Color col = liste.get(i).getFarbe();
-            if (col != null) {
-                button.setBackground(col);
-            }
-
-            gridbag.setConstraints(button, c);
-            panel.add(button);
         }
     }
 
