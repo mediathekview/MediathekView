@@ -14,7 +14,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
  * Update cycle one second.
  */
 class FilmListAgeLabel extends ComputedLabel {
-    FilmListAgeLabel(Daten daten) {
+    FilmListAgeLabel() {
         super();
 
         setupTimer();
