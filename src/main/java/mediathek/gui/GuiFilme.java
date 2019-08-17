@@ -439,7 +439,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private synchronized void saveFilm(DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            new DialogAboNoSet(mediathekGui, daten).setVisible(true);
+            new DialogAboNoSet(mediathekGui).setVisible(true);
             // Satz mit x, war wohl nix
             return;
         }
@@ -1084,7 +1084,7 @@ public class GuiFilme extends AGuiTabPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1118,7 +1118,7 @@ public class GuiFilme extends AGuiTabPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(mediathekGui, daten).setVisible(true);
+                    new DialogAboNoSet(mediathekGui).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {

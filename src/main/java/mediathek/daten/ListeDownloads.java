@@ -385,7 +385,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 gefunden = true;
             } else if (parent != null) {
                 // sonst sind wir evtl. nur in einer Konsole ohne X
-                new DialogAboNoSet(parent, daten).setVisible(true);
+                new DialogAboNoSet(parent).setVisible(true);
                 break;
             }
         }

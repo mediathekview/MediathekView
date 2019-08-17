@@ -2,6 +2,7 @@ package mediathek.gui.dialog;
 
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -11,12 +12,11 @@ import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class DialogAboNoSet extends JDialog {
-    public DialogAboNoSet(JFrame parent, Daten daten) {
-        super(parent, false);
+    public DialogAboNoSet(JFrame parent) {
+        super(parent, true);
         initComponents();
-        setFocusableWindowState(false);
-        setFocusable(false);
-        setTitle("Kein Set zum Aufzeichnen!");
+
+        setTitle(Konstanten.PROGRAMMNAME);
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -30,7 +30,7 @@ public class DialogAboNoSet extends JDialog {
                 + "ein Programm zum Aufzeichnen für Abos festlegen.\n\n"
                 + "(Oder die Standardsets importieren)");
         jButtonImport.addActionListener(l
-                -> GuiFunktionenProgramme.addSetVorlagen(parent, daten,
+                -> GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(),
                         ListePsetVorlagen.getStandarset(parent, true), true));
         jButtonOk.addActionListener((ActionEvent e) -> dispose());
         jLabelIcon.setText("");
