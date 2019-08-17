@@ -632,6 +632,11 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
+    @Handler
+    private void handlePsetButtonChangedEvent(PsetNumberOfButtonsChangedEvent e) {
+        SwingUtilities.invokeLater(this::setupButtonPanel);
+    }
+
     private void setupButtonPanel() {
         // erst sauber machen
         // zum Anlegen der Button:
@@ -1129,7 +1134,7 @@ public class GuiFilme extends AGuiTabPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
             jSpinner.addChangeListener(e -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
-                setupButtonPanel();
+                daten.getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
             });
             JPanel jPanelAnzahl = new JPanel();
             jPanelAnzahl.setLayout(new BorderLayout());
