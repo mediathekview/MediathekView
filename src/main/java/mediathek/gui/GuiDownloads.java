@@ -45,7 +45,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -410,10 +409,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private void setupDescriptionPanel() {
         Platform.runLater(() -> {
             try {
-                URL url = getClass().getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
-
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(url);
+                loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
 
                 TabPane descriptionPane = loader.load();
                 final DescriptionPanelController descriptionPanelController = loader.getController();
@@ -423,10 +420,10 @@ public class GuiDownloads extends AGuiTabPanel {
                 });
 
                 fxDescriptionPanel.setScene(new Scene(descriptionPane));
-                tabelle.getSelectionModel().addListSelectionListener(e -> {
+                SwingUtilities.invokeLater(() -> tabelle.getSelectionModel().addListSelectionListener(e -> {
                     Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
-                });
+                }));
             }
             catch (Exception ex) {
                 ex.printStackTrace();
