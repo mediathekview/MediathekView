@@ -936,7 +936,7 @@ public class MediathekGui extends JFrame {
     }
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
-        new ProgrammUpdateSuchen().checkVersion(!infos, infos, true);
+        new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
     }
 
     private class MenuTabSwitchListener implements MenuListener {
