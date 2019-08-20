@@ -58,7 +58,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +111,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    private BandwidthMonitorController bandwidthMonitor;
+    private final BandwidthMonitorController bandwidthMonitor;
     protected Stage controlsFxWorkaroundStage;
     /**
      * the global configuration for this app.
@@ -223,18 +222,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void showVlcHintForAustrianUsers() {
-        CompletableFuture.runAsync(() -> {
-            try {
-                var location = config.getString(ApplicationConfiguration.GEO_LOCATION);
-                if (location.equals("AT")) {
-                    // show help dialog
-                    //FIXME implement info dialog for Austrian problems
-                    System.out.println("SHOW HELP DIALOG");
-                }
-            }
-            catch (NoSuchElementException ignored) {
-            }
-        });
+        var thread = new OrfSetupInformationThread();
+        thread.start();
     }
 
     /**
