@@ -254,7 +254,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,0));
 
         lblSender = new JLabel();
-        contentPane.add(lblSender, "cell 1 0,wmax 250");
+        contentPane.add(lblSender, new CC().cell(1,0).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Thema:");
@@ -270,7 +270,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,2));
 
         lblTitel = new MultilineLabel();
-        contentPane.add(lblTitel, "cell 1 2,wmax 250");
+        contentPane.add(lblTitel, new CC().cell(1,2).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Datum:");
@@ -278,7 +278,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,3));
 
         lblDatum = new JLabel();
-        contentPane.add(lblDatum, "cell 1 3,wmax 250");
+        contentPane.add(lblDatum, new CC().cell(1,3).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Uhrzeit:");
@@ -286,7 +286,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,4));
 
         lblUhrzeit = new JLabel();
-        contentPane.add(lblUhrzeit, "cell 1 4,wmax 250");
+        contentPane.add(lblUhrzeit, new CC().cell(1,4).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Dauer:");
@@ -294,7 +294,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,5));
 
         lblDauer = new JLabel();
-        contentPane.add(lblDauer, "cell 1 5,wmax 250");
+        contentPane.add(lblDauer, new CC().cell(1,5).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Größe (MB):");
@@ -302,7 +302,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,6));
 
         lblSize = new JLabel();
-        contentPane.add(lblSize, "cell 1 6,wmax 250");
+        contentPane.add(lblSize, new CC().cell(1,6).maxWidth("250"));
 
         label = new JLabel();
         label.setText("HD:");
@@ -311,7 +311,7 @@ public class InfoDialog extends JDialog {
 
         cbHD = new JCheckBox();
         cbHD.setEnabled(false);
-        contentPane.add(cbHD, "cell 1 7,wmax 250");
+        contentPane.add(cbHD, new CC().cell(1,7).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Untertitel:");
@@ -320,7 +320,7 @@ public class InfoDialog extends JDialog {
 
         cbSubtitle = new JCheckBox();
         cbSubtitle.setEnabled(false);
-        contentPane.add(cbSubtitle, "cell 1 8,wmax 250");
+        contentPane.add(cbSubtitle, new CC().cell(1,8).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Geo:");
@@ -328,7 +328,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,9));
 
         lblGeo = new JLabel();
-        contentPane.add(lblGeo, "cell 1 9,wmax 250");
+        contentPane.add(lblGeo, new CC().cell(1,9).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Abo:");
@@ -336,7 +336,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,10));
 
         lblAbo = new JLabel();
-        contentPane.add(lblAbo, "cell 1 10,wmax 250");
+        contentPane.add(lblAbo, new CC().cell(1,10).maxWidth("250"));
 
         label = new JLabel();
         label.setText("Website:");
@@ -344,7 +344,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(label, new CC().cell(0,11));
 
         fxPanel = new JFXPanel();
-        contentPane.add(fxPanel, "cell 1 11,growx,wmax 250");
+        contentPane.add(fxPanel, new CC().cell(1,11).maxWidth("250"));
 
         Platform.runLater(() -> {
             ContextMenu contextMenu = new ContextMenu();
