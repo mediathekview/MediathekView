@@ -160,7 +160,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private void createIndexThread(Index runner) {
         Thread starter = new Thread(runner);
-        starter.setName("Index Thread");
+        starter.setName("MediaDB Index Thread");
         starter.start();
     }
 

@@ -359,12 +359,16 @@ public class MediathekGui extends JFrame {
     }
 
     public DialogMediaDB getMediaDatabaseDialog() {
+        if (dialogMediaDB == null) {
+            dialogMediaDB = new DialogMediaDB(this);
+        }
         return dialogMediaDB;
     }
 
     private void initializeMediaDbDialog() {
-        dialogMediaDB = new DialogMediaDB(this);
-        dialogMediaDB.setVis();
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))) {
+            getMediaDatabaseDialog().setVis();
+        }
     }
 
     private void initializeSettingsDialog() {
@@ -719,7 +723,7 @@ public class MediathekGui extends JFrame {
         cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         cbSearchMediaDb.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(cbSearchMediaDb.isSelected()));
-            dialogMediaDB.setVis();
+            getMediaDatabaseDialog().setVis();
         });
 
         jMenuAnsicht.add(cbShowButtons);
@@ -807,7 +811,7 @@ public class MediathekGui extends JFrame {
         // Infodialog/Bandwidth
         bandwidthMonitor.writeConfig();
         // MediaDB
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, dialogMediaDB);
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
     private void closeControlsFxWorkaroundStage() {
@@ -857,7 +861,7 @@ public class MediathekGui extends JFrame {
         tabDownloads.tabelleSpeichern();
 
         dialog.setStatusText(4, "MediaDB sichern");
-        dialogMediaDB.tabelleSpeichern();
+        getMediaDatabaseDialog().tabelleSpeichern();
 
         dialog.setStatusText(5, "Downloads anhalten");
         stopDownloads();
