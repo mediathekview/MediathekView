@@ -12,10 +12,12 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MemoryUtils;
 import mediathek.tool.SingleInstance;
 import mediathek.tool.UIProgressState;
 import mediathek.windows.MediathekGuiWindows;
+import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,16 +27,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
-    private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
@@ -264,7 +262,7 @@ public class Main {
                 logger.info("Swing Thread checking repaint manager installed.");
             }
 
-            startMeldungen();
+            MVFunctionSys.startMeldungen();
 
             splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
@@ -278,49 +276,13 @@ public class Main {
             window = new MediathekGuiMac();
         } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else {
-            if (SystemUtils.IS_OS_UNIX) {
-                setupX11WindowManagerClassName();
-            }
-            window = new MediathekGui();
+        } else if (SystemUtils.IS_OS_UNIX){
+                window = new MediathekGuiX11();
         }
+        else
+            throw new IllegalStateException("Unknown operating system detected! Cannot create main window");
 
         return window;
-    }
-
-    private void disableAccessWarnings() {
-        try {
-            var unsafeClass = Class.forName("sun.misc.Unsafe");
-            var field = unsafeClass.getDeclaredField("theUnsafe");
-            field.setAccessible(true);
-            var unsafe = field.get(null);
-
-            var putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile", Object.class, long.class, Object.class);
-            var staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset", Field.class);
-
-            var loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
-            var loggerField = loggerClass.getDeclaredField("logger");
-            Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
-            putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Setup the X11 window manager WM_CLASS hint.
-     * Enables e.g. GNOME to determine application name and to enable app specific functionality.
-     */
-    private void setupX11WindowManagerClassName() {
-        disableAccessWarnings();
-
-        try {
-            var xToolkit = Toolkit.getDefaultToolkit();
-            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
-            awtAppClassNameField.setAccessible(true);
-            awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
-        } catch (NoSuchFieldException|IllegalAccessException e) {
-            logger.warn("Could not set awtAppClassName");
-        }
     }
 
     private void processArgs(final String... aArguments) {
