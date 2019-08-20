@@ -329,18 +329,10 @@ public class GuiFunktionen extends MVFunctionSys {
             ret = UPDATE_FILME_AUTO;
         }
 
-        switch (ret) {
-            case UPDATE_FILME_AUTO:
-                result = FilmListUpdateType.AUTOMATIC;
-                break;
-
-            case UPDATE_FILME_AUS:
-                result = FilmListUpdateType.MANUAL;
-                break;
-
-            default:
-                result = FilmListUpdateType.AUTOMATIC;
-                break;
+        if (ret == UPDATE_FILME_AUS) {
+            result = FilmListUpdateType.MANUAL;
+        } else {
+            result = FilmListUpdateType.AUTOMATIC;
         }
 
         return result;
@@ -348,18 +340,10 @@ public class GuiFunktionen extends MVFunctionSys {
 
     public static void setImportArtFilme(FilmListUpdateType type) {
         final int value;
-        switch (type) {
-            case AUTOMATIC:
-                value = UPDATE_FILME_AUTO;
-                break;
-
-            case MANUAL:
-                value = UPDATE_FILME_AUS;
-                break;
-
-            default:
-                value = UPDATE_FILME_AUTO;
-                break;
+        if (type == FilmListUpdateType.MANUAL) {
+            value = UPDATE_FILME_AUS;
+        } else {
+            value = UPDATE_FILME_AUTO;
         }
 
         MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));
