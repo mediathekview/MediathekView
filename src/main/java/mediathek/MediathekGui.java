@@ -171,11 +171,10 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
         daten.setAboHistoryList(new AboHistoryController());
 
+        splashScreenManager.updateSplashScreenText(UIProgressState.CREATE_STATUS_BAR);
         createStatusBar();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILMINFO_DIALOG);
-        createFilmInformationHUD();
-
+        splashScreenManager.updateSplashScreenText(UIProgressState.SETUP_FILM_LISTENERS);
         setupFilmListListener();
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_TABS);
@@ -415,14 +414,10 @@ public class MediathekGui extends JFrame {
     }
 
     public InfoDialog getFilmInfoDialog() {
-        return filmInfo;
-    }
+        if (filmInfo == null)
+            filmInfo = new InfoDialog(this);
 
-    /**
-     * Create the film information tool window.
-     */
-    private void createFilmInformationHUD() {
-        filmInfo = new InfoDialog(this);
+        return filmInfo;
     }
 
     @Handler
