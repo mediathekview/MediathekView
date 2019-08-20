@@ -111,7 +111,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    private final BandwidthMonitorController bandwidthMonitor;
+    private BandwidthMonitorController bandwidthMonitor;
     protected Stage controlsFxWorkaroundStage;
     /**
      * the global configuration for this app.
@@ -199,7 +199,9 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_BANDWIDTH_MONITOR);
-        bandwidthMonitor = new BandwidthMonitorController(this);
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))) {
+            getBandwidthMonitorController().setVisibility();
+        }
 
         splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
         Daten.closeSplashScreen();
@@ -219,6 +221,13 @@ public class MediathekGui extends JFrame {
         showVlcHintForAustrianUsers();
     }
 
+    private BandwidthMonitorController getBandwidthMonitorController() {
+        if (bandwidthMonitor == null) {
+            bandwidthMonitor = new BandwidthMonitorController(this);
+        }
+
+        return bandwidthMonitor;
+    }
     private void showVlcHintForAustrianUsers() {
         var thread = new OrfSetupInformationThread();
         thread.start();
@@ -706,7 +715,7 @@ public class MediathekGui extends JFrame {
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         cbBandwidthDisplay.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
-            daten.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
+            getBandwidthMonitorController().setVisibility();
         });
 
         cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
@@ -804,7 +813,8 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
 
         // Infodialog/Bandwidth
-        bandwidthMonitor.writeConfig();
+        if (bandwidthMonitor != null)
+            bandwidthMonitor.writeConfig();
 
         // MediaDB
         if (dialogMediaDB != null)
@@ -880,7 +890,8 @@ public class MediathekGui extends JFrame {
 
         tabFilme.fap.filterDialog.dispose();
 
-        bandwidthMonitor.close();
+        if (bandwidthMonitor != null)
+            bandwidthMonitor.close();
 
         Log.endMsg();
 
