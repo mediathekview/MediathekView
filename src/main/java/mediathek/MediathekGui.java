@@ -12,6 +12,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.history.AboHistoryController;
 import mediathek.controller.history.SeenHistoryController;
@@ -133,7 +135,8 @@ public class MediathekGui extends JFrame {
     private ManageAboAction manageAboAction;
 
     public MediathekGui() {
-        super();
+        IconFontSwing.register(FontAwesome.getIconFont());
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);

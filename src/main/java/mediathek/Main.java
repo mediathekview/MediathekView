@@ -3,8 +3,6 @@ package mediathek;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -149,8 +147,6 @@ public class Main {
             System.exit(1);
         }
 
-        setSystemLookAndFeel();
-
         setupPortableMode(args);
 
         checkMemoryRequirements();
@@ -162,9 +158,9 @@ public class Main {
             DatenFilm.Database.initializeDatabase();
         }
 
-        IconFontSwing.register(FontAwesome.getIconFont());
-
         installSingleInstanceHandler();
+
+        setSystemLookAndFeel();
 
         new Main().start(args);
     }
