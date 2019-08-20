@@ -12,6 +12,7 @@ import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -74,7 +75,7 @@ public class DialogEinstellungen extends JFrame {
         setTitle("Einstellungen");
         daten = Daten.getInstance();
 
-        init();
+        initPanels();
         initTree();
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
@@ -83,7 +84,7 @@ public class DialogEinstellungen extends JFrame {
         EscapeKeyHandler.installHandler(this, this::beenden);
     }
 
-    private void init() {
+    private void initPanels() {
         panelEinstellungen = new PanelEinstellungen(daten, this);
         panelDownload = new PanelDownload(daten, this);
         panelMediaDB = new PanelMediaDB(daten, this);
@@ -123,7 +124,7 @@ public class DialogEinstellungen extends JFrame {
         treeNodeStart.add(treeNodeDownload);
 
         // Aufbauen
-        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
+        jTree1.setModel(new DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree1.setRootVisible(false);
         jTree1.addTreeSelectionListener(e -> {
@@ -218,8 +219,11 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void beenden() {
+        //save the dialog size when we are closing...
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this);
+
         daten.allesSpeichern();
-        this.dispose();
+        dispose();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

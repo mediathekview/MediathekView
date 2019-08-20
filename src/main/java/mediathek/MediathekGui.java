@@ -808,14 +808,12 @@ public class MediathekGui extends JFrame {
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
 
-        // Dialog Einstellungen
-        if (dialogEinstellungen != null)
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, getSettingsDialog());
-
         // Infodialog/Bandwidth
         bandwidthMonitor.writeConfig();
+
         // MediaDB
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
+        if (dialogMediaDB != null)
+            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
     private void closeControlsFxWorkaroundStage() {
