@@ -15,7 +15,7 @@ public enum UIProgressState {
     ADD_TABS_TO_UI("Tabs zum UI hinzufügen"),
     CONFIGURE_TABS("Tabs konfigurieren"),
     INIT_MENUS("Menüs initialisieren..."),
-    LOAD_SETTINGS_DIALOG("Einstellungsdialog initialisieren..."),
+    LOAD_MEDIADB_DIALOG("Mediendatenbank-Dialog initialisieren..."),
     LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
     LOAD_BANDWIDTH_MONITOR("Bandbreitendialog initialisieren..."),
     INIT_UI("Benutzeroberfläche initialisieren..."),

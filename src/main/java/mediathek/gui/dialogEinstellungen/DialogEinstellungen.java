@@ -17,7 +17,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 @SuppressWarnings("serial")
 public class DialogEinstellungen extends JFrame {
-    private final Daten ddaten;
+    private final Daten daten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
@@ -49,7 +49,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_programmset = "Set bearbeiten";
     private static final String NAME_programmsetImportieren = "Set importieren";
 
-    // ######## Einstellulngen ############
+    // ######## Einstellungen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
     private final DefaultMutableTreeNode treeNodeNotifications = new DefaultMutableTreeNode(NAME_notifications);
@@ -69,10 +69,11 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
 
-    public DialogEinstellungen(Daten d) {
+    public DialogEinstellungen() {
         initComponents();
         setTitle("Einstellungen");
-        ddaten = d;
+        daten = Daten.getInstance();
+
         init();
         initTree();
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
@@ -83,17 +84,17 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void init() {
-        panelEinstellungen = new PanelEinstellungen(ddaten, this);
-        panelDownload = new PanelDownload(ddaten, this);
-        panelMediaDB = new PanelMediaDB(ddaten, this);
-        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, this);
+        panelEinstellungen = new PanelEinstellungen(daten, this);
+        panelDownload = new PanelDownload(daten, this);
+        panelMediaDB = new PanelMediaDB(daten, this);
+        panelEinstellungenErweitert = new PanelEinstellungenErweitert(daten, this);
         panelEinstellungenGeo = new PanelEinstellungenGeo(this);
         panelEinstellungenColor = new PanelEinstellungenColor(this);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten);
-        panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
-        panelDateinamen = new PanelDateinamen(ddaten, this);
-        panelPset = new PanelPset(ddaten, this);
-        panelPsetVorlagen = new PanelPsetImport(ddaten, this);
+        panelImportFilme = new PanelFilmlisteLaden(daten);
+        panelBlacklist = new PanelBlacklist(daten, this, PanelBlacklist.class.getName());
+        panelDateinamen = new PanelDateinamen(daten, this);
+        panelPset = new PanelPset(daten, this);
+        panelPsetVorlagen = new PanelPsetImport(daten, this);
 
         panelNotifications = new PanelNotifications();
     }
@@ -217,7 +218,7 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void beenden() {
-        ddaten.allesSpeichern();
+        daten.allesSpeichern();
         this.dispose();
     }
 
