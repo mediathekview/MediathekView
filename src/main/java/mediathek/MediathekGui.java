@@ -863,7 +863,8 @@ public class MediathekGui extends JFrame {
         tabDownloads.tabelleSpeichern();
 
         dialog.setStatusText(4, "MediaDB sichern");
-        getMediaDatabaseDialog().tabelleSpeichern();
+        if (dialogMediaDB != null)
+            getMediaDatabaseDialog().tabelleSpeichern();
 
         dialog.setStatusText(5, "Downloads anhalten");
         stopDownloads();
