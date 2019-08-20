@@ -12,7 +12,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.Log;
 import mediathek.tool.MemoryUtils;
 import mediathek.tool.SingleInstance;
 import mediathek.tool.UIProgressState;
@@ -244,7 +243,7 @@ public class Main {
      * */
 
     private void startGuiMode() {
-        EventQueue.invokeLater(() ->
+        SwingUtilities.invokeLater(() ->
         {
             final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
             splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
@@ -289,7 +288,6 @@ public class Main {
         return window;
     }
 
-    @SuppressWarnings("unchecked")
     private void disableAccessWarnings() {
         try {
             var unsafeClass = Class.forName("sun.misc.Unsafe");
@@ -305,7 +303,6 @@ public class Main {
             Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
             putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
         } catch (Exception ignored) {
-            ignored.printStackTrace();
         }
     }
 
@@ -330,17 +327,6 @@ public class Main {
         for (String argument : aArguments) {
             argument = argument.toLowerCase();
             switch (argument) {
-                case ProgramArguments.STARTUPMODE_VERBOSE:
-                    EventQueue.invokeLater(() ->
-                    {
-                        startMeldungen();
-                        logger.info("Systemmeldung");
-                        Log.errorLog(100000000, "Fehlermeldung");
-                        Log.endMsg();
-                        System.exit(0);
-                    });
-                    break;
-
                 case ProgramArguments.STARTUPMODE_DEBUG:
                     Config.enableDebugMode();
                     break;
@@ -355,6 +341,5 @@ public class Main {
     private final static class ProgramArguments {
         private static final String STARTUPMODE_DEBUG = "-d";
         private static final String STARTUPMODE_MAXIMIZED = "-m";
-        private static final String STARTUPMODE_VERBOSE = "-v";
     }
 }
