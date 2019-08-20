@@ -19,6 +19,7 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
+import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
@@ -250,7 +251,7 @@ public class InfoDialog extends JDialog {
         JLabel label = new JLabel();
         label.setText("Sender:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 0");
+        contentPane.add(label, new CC().cell(0,0));
 
         lblSender = new JLabel();
         contentPane.add(lblSender, "cell 1 0,wmax 250");
@@ -258,15 +259,15 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Thema:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 1");
+        contentPane.add(label,new CC().cell(0,1));
 
         lblThema = new MultilineLabel();
-        contentPane.add(lblThema, "cell 1 1");
+        contentPane.add(lblThema, new CC().cell(1,1));
 
         label = new JLabel();
         label.setText("Titel:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 2");
+        contentPane.add(label, new CC().cell(0,2));
 
         lblTitel = new MultilineLabel();
         contentPane.add(lblTitel, "cell 1 2,wmax 250");
@@ -274,7 +275,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Datum:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 3");
+        contentPane.add(label, new CC().cell(0,3));
 
         lblDatum = new JLabel();
         contentPane.add(lblDatum, "cell 1 3,wmax 250");
@@ -282,7 +283,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Uhrzeit:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 4");
+        contentPane.add(label, new CC().cell(0,4));
 
         lblUhrzeit = new JLabel();
         contentPane.add(lblUhrzeit, "cell 1 4,wmax 250");
@@ -290,7 +291,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Dauer:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 5");
+        contentPane.add(label, new CC().cell(0,5));
 
         lblDauer = new JLabel();
         contentPane.add(lblDauer, "cell 1 5,wmax 250");
@@ -298,7 +299,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Größe (MB):");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 6");
+        contentPane.add(label, new CC().cell(0,6));
 
         lblSize = new JLabel();
         contentPane.add(lblSize, "cell 1 6,wmax 250");
@@ -306,7 +307,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("HD:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 7");
+        contentPane.add(label, new CC().cell(0,7));
 
         cbHD = new JCheckBox();
         cbHD.setEnabled(false);
@@ -315,7 +316,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Untertitel:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 8");
+        contentPane.add(label, new CC().cell(0,8));
 
         cbSubtitle = new JCheckBox();
         cbSubtitle.setEnabled(false);
@@ -324,7 +325,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Geo:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 9");
+        contentPane.add(label, new CC().cell(0,9));
 
         lblGeo = new JLabel();
         contentPane.add(lblGeo, "cell 1 9,wmax 250");
@@ -332,7 +333,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Abo:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 10");
+        contentPane.add(label, new CC().cell(0,10));
 
         lblAbo = new JLabel();
         contentPane.add(lblAbo, "cell 1 10,wmax 250");
@@ -340,7 +341,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Website:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 11");
+        contentPane.add(label, new CC().cell(0,11));
 
         fxPanel = new JFXPanel();
         contentPane.add(fxPanel, "cell 1 11,growx,wmax 250");
@@ -369,7 +370,7 @@ public class InfoDialog extends JDialog {
         label = new JLabel();
         label.setText("Beschreibung:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(label, "cell 0 12");
+        contentPane.add(label, new CC().cell(0,12));
 
         final JScrollPane scrollPane = new JScrollPane();
         lblDescription = new JTextArea();
