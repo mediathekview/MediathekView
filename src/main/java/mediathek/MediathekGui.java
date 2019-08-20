@@ -190,8 +190,7 @@ public class MediathekGui extends JFrame {
 
         setSize();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_SETTINGS_DIALOG);
-        initializeSettingsDialog();
+        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEDIADB_DIALOG);
         initializeMediaDbDialog();
 
         //register message bus handler
@@ -369,11 +368,6 @@ public class MediathekGui extends JFrame {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))) {
             getMediaDatabaseDialog().setVis();
         }
-    }
-
-    private void initializeSettingsDialog() {
-        // Dialog mit den Programmeinstellungen einrichten
-        dialogEinstellungen = new DialogEinstellungen(daten);
     }
 
     private void loadDaten() {
@@ -793,8 +787,15 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private DialogEinstellungen getSettingsDialog() {
+        if (dialogEinstellungen == null) {
+            dialogEinstellungen = new DialogEinstellungen();
+        }
+
+        return dialogEinstellungen;
+    }
     public void showSettingsDialog() {
-        dialogEinstellungen.setVisible(true);
+        getSettingsDialog().setVisible(true);
     }
 
     private void writeOldConfiguration() {
@@ -806,8 +807,11 @@ public class MediathekGui extends JFrame {
 
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
+
         // Dialog Einstellungen
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
+        if (dialogEinstellungen != null)
+            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, getSettingsDialog());
+
         // Infodialog/Bandwidth
         bandwidthMonitor.writeConfig();
         // MediaDB
