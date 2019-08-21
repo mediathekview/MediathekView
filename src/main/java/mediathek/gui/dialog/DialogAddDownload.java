@@ -533,8 +533,6 @@ public class DialogAddDownload extends JDialog {
         jCheckBoxStarten.setSelected(true);
         jCheckBoxStarten.setText("Download sofort starten");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Film speichern"));
-
         jButtonZiel.setText("File");
         jButtonZiel.setToolTipText("Zielpfad auswählen");
 
@@ -585,7 +583,7 @@ public class DialogAddDownload extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxInfodatei)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxPfadSpeichern))
                             .addComponent(jTextFieldName))))
                 .addContainerGap())
