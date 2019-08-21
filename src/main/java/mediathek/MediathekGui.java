@@ -31,7 +31,11 @@ import mediathek.gui.actions.import_actions.ImportOldAbosAction;
 import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
-import mediathek.gui.dialog.*;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.LoadFilmListDialog;
+import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
@@ -773,10 +777,10 @@ public class MediathekGui extends JFrame {
      * Display the About Box
      */
     public void showAboutDialog() {
-        AboutDialog aboutDialog = new AboutDialog(this);
-        GuiFunktionen.centerOnScreen(aboutDialog, false);
-        aboutDialog.setVisible(true);
-        aboutDialog.dispose();
+        AboutDialog dialog = new AboutDialog(this);
+        GuiFunktionen.centerOnScreen(dialog, false);
+        dialog.setVisible(true);
+        dialog.dispose();
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
