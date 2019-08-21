@@ -1,0 +1,260 @@
+JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3"
+			"$columnConstraints": "[fill][grow,fill]"
+			"$rowConstraints": "[][][]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblIcon"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/MediathekView.png" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "hidemode 3"
+				"$columnConstraints": "[grow,fill]"
+				"$rowConstraints": "[][][][][]"
+			} ) {
+				name: "panel3"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblAppName"
+					"text": "MediathekView"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 24, true )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "lblVersion"
+					"text": "Version 13.4"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+					"foreground": sfield java.awt.Color gray
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "tabbedPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "panel6"
+						"minimumSize": new java.awt.Dimension( 23, 250 )
+						"preferredSize": new java.awt.Dimension( 147, 300 )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JEditorPane" ) {
+								name: "editorPane1"
+								"editable": false
+								"text": "MediathekView-Client:\nChristian Franzke (derreisende77)\n\nMediathekView-Server:\nNicklas Wiegandt (nicklas2751)\nPeter W. (pidoubleyou)\nSascha Wiegandt (thesasch)\n\nServer-Administration:\nAlexander Finkhäuser (alex1702)"
+								"caretPosition": 1
+								auxiliary() {
+									"JavaCodeGenerator.variableLocal": true
+								}
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "Center"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Aktive Entwickler"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "panel7"
+						"minimumSize": new java.awt.Dimension( 23, 250 )
+						"preferredSize": new java.awt.Dimension( 490, 300 )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane2"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JEditorPane" ) {
+								name: "editorPane2"
+								"editable": false
+								"text": "Gründer des Programms:\nXaver W. (xaverW)\n\nWeitere Beteiligte:\nsiedlerchr\nstyrol\nzxsd\nsiedlerchr\napoleon\nhostis\npmshell\nclel\nthausherr"
+								"caretPosition": 1
+								auxiliary() {
+									"JavaCodeGenerator.variableLocal": true
+								}
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "Center"
+						} )
+					}, new FormLayoutConstraints( null ) {
+						"title": "Ehemalige"
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2,width 250:550,height 200:200:200"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][grow,fill]"
+					"$rowConstraints": "[][]"
+				} ) {
+					name: "pnlProgramPath"
+					"border": new javax.swing.border.TitledBorder( "Programmpfade" )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label13"
+						"text": "Filmliste:"
+						"horizontalAlignment": 4
+						"foreground": sfield java.awt.Color gray
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lblFilmListPath"
+						"text": "path to filmlist"
+						"foreground": sfield java.awt.Color gray
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,growx,width 300:500"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label14"
+						"text": "Einstellungen:"
+						"horizontalAlignment": 4
+						"foreground": sfield java.awt.Color gray
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lblSettingsDirectory"
+						"text": "path to settings directory"
+						"foreground": sfield java.awt.Color gray
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1,growx"
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 4,growx"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0 1 2,aligny top,growy 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "hidemode 3"
+				"$columnConstraints": "[fill]"
+				"$rowConstraints": "[][][][][]"
+			} ) {
+				name: "pnlHyperlinks"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnWebsite"
+					"text": "Website"
+					"horizontalAlignment": 2
+					"buttonStyle": 3
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0,alignx left,growx 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnDonation"
+					"text": "Spende für den Betrieb"
+					"buttonStyle": 3
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1,alignx left,growx 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnSupportClientDev"
+					"text": "Spende an den Client-Entwickler"
+					"buttonStyle": 3
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2,alignx left,growx 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnForum"
+					"text": "Forum"
+					"buttonStyle": 3
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 3,alignx left,growx 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnInstructions"
+					"text": "Anleitung"
+					"buttonStyle": 3
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 4,alignx left,growx 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1,aligny top,growy 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "hidemode 3"
+				"$columnConstraints": "[fill][grow,fill]"
+				"$rowConstraints": "[][]"
+			} ) {
+				name: "panel2"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label7"
+					"text": "Development supported by:"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -2, false )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnJetbrainsLink"
+					"text": "JetBrains IntelliJ"
+					"buttonStyle": 3
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -2, false )
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0,alignx left,growx 0"
+				} )
+				add( new FormComponent( "com.jidesoft.swing.JideButton" ) {
+					name: "btnEjTechLink"
+					"text": "ej-technologies JProfiler and install4j"
+					"buttonStyle": 3
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -2, false )
+					"foreground": new java.awt.Color( 88, 157, 246, 255 )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 1,alignx left,growx 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 2 2 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 860, 540 )
+		} )
+	}
+}
