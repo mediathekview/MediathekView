@@ -60,9 +60,7 @@ public class FXDownloadToolBar extends ToolBar {
         btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::cleanupDownloads));
 
         Button btnFilter = new FilterButton();
-        btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent());
-        }));
+        btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
 
         getItems().addAll(btnFilmInfo,
                 btnUpdateDownloads,
