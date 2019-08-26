@@ -21,6 +21,7 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.File;
@@ -127,7 +128,7 @@ public class Daten {
         reset = aIsReset;
     }
 
-    public static Daten getInstance(String aBasisverzeichnis) {
+    public static Daten getInstance(@NotNull String aBasisverzeichnis) {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance();
     }

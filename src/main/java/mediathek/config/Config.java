@@ -19,11 +19,24 @@
  */
 package mediathek.config;
 
+import picocli.CommandLine;
+
+@CommandLine.Command(name = "MediathekView")
 public class Config {
 
+    @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
+
     private static boolean portableMode;
+
+    @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
+
+    @CommandLine.Parameters(index="0", paramLabel = "<Pfad zum Verzeichnis>",description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
+    public static String baseFilePath;
+
+    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Hilfe anzeigen")
+    private static boolean helpRequested;
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -33,19 +46,11 @@ public class Config {
         Config.portableMode = portableMode;
     }
 
-    public static void enableDebugMode() {
-        debug = true;
-    }
-
     public static boolean isDebugModeEnabled() {
         return debug;
     }
 
     public static boolean isStartMaximized() {
         return startMaximized;
-    }
-
-    public static void setStartMaximized(final boolean maximized) {
-        startMaximized = maximized;
     }
 }

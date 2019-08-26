@@ -1,5 +1,6 @@
 package mediathek;
 
+import com.google.common.base.Stopwatch;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
@@ -10,20 +11,17 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.MemoryUtils;
-import mediathek.tool.SingleInstance;
-import mediathek.tool.UIProgressState;
+import mediathek.tool.*;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -55,37 +53,26 @@ public class Main {
         }
     }
 
-    private static String readPfadFromArguments(final String... aArguments) {
-        var pfad = "";
-        if (aArguments != null && aArguments.length > 0) {
-            for (String arg : aArguments) {
-                if (!arg.startsWith("-")) {
-                    if (!arg.endsWith(File.separator)) {
-                        arg += File.separator;
-                    }
-                    pfad = arg;
-                }
-            }
+    private static void setupPortableMode() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        var portableMode = Config.isPortableMode();
+        logger.info("Portable Mode: {}", portableMode);
+
+        if (portableMode) {
+            logger.trace("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
+            //FIXME check if directory can be accessed
+            Daten.getInstance(Config.baseFilePath);
+        } else {
+            logger.trace("Configuring for non-portable mode");
+            Daten.getInstance();
         }
-
-        return pfad;
-    }
-
-    private static void setupPortableMode(String... args) {
-        printArguments(args);
-        final var basePath = readPfadFromArguments(args);
-        if (!basePath.isEmpty()) {
-            Config.setPortableMode(true);
-        }
-
-        logger.info("Portable Mode: {}", Config.isPortableMode());
-
-        //initialize Daten object now for database
-        Daten.getInstance(basePath);
+        stopwatch.stop();
+        logger.trace("setupPortableMode: {}", stopwatch);
     }
 
     /**
      * Query the class name for Nimbus L&F.
+     *
      * @return the class name for Nimbus, otherwise return the system default l&f class name.
      */
     private static String queryNimbusLaFName() {
@@ -110,7 +97,7 @@ public class Main {
      * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
      * On windows, use the system windows l&f for swing.
      * On Linux, use Nimbus l&f which is more modern than Metal.
-     *
+     * <p>
      * One can override the L&F stuff for non-macOS by supplying -Dswing.defaultlaf=class_name and the class name on the CLI.
      */
     private static void setSystemLookAndFeel() {
@@ -133,7 +120,7 @@ public class Main {
             try {
                 UIManager.setLookAndFeel(systemLaF);
             } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
-                logger.error("L&F error: " , e);
+                logger.error("L&F error: ", e);
             }
         }
     }
@@ -147,7 +134,31 @@ public class Main {
             System.exit(1);
         }
 
-        setupPortableMode(args);
+        CommandLine cmd = new CommandLine(Config.class);
+        try {
+            var parseResult = cmd.parseArgs(args);
+            if (parseResult.isUsageHelpRequested()) {
+                cmd.usage(System.out);
+                System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
+            }
+
+            Log.printVersionInformation();
+            printArguments(args);
+
+            Config.setPortableMode(parseResult.hasMatchedPositional(0));
+            setupPortableMode();
+        } catch (CommandLine.ParameterException ex) {
+            cmd.getErr().println(ex.getMessage());
+            if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, cmd.getErr())) {
+                ex.getCommandLine().usage(cmd.getErr());
+            }
+            System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
+        } catch (Exception ex) {
+            logger.error("Command line parse error: {}", cmd.getErr());
+            System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
+        }
+
+        printDirectoryPaths();
 
         checkMemoryRequirements();
 
@@ -162,7 +173,12 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        new Main().start(args);
+        startGuiMode();
+    }
+
+    private static void printDirectoryPaths() {
+        logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
+        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
     }
 
     private static void deleteDatabase() {
@@ -216,27 +232,7 @@ public class Main {
         }
     }
 
-    private void start(String... args) {
-        if (args != null) {
-            processArgs(args);
-        }
-
-        startGuiMode();
-    }
-
-    /*
-     * Aufruf:
-     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
-     *
-     * Programmschalter:
-     *
-     * -M Fenster maximiert starten
-     * -A Automodus
-     * -noGui ohne GUI starten und die Filmliste laden
-     *
-     * */
-
-    private void startGuiMode() {
+    private static void startGuiMode() {
         SwingUtilities.invokeLater(() ->
         {
             final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
@@ -258,46 +254,23 @@ public class Main {
                 logger.info("Swing Thread checking repaint manager installed.");
             }
 
-            MVFunctionSys.startMeldungen();
-
             splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
             getPlatformWindow().setVisible(true);
         });
     }
 
-    private MediathekGui getPlatformWindow() {
+    private static MediathekGui getPlatformWindow() {
         MediathekGui window;
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
         } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else if (SystemUtils.IS_OS_UNIX){
-                window = new MediathekGuiX11();
-        }
-        else
+        } else if (SystemUtils.IS_OS_UNIX) {
+            window = new MediathekGuiX11();
+        } else
             throw new IllegalStateException("Unknown operating system detected! Cannot create main window");
 
         return window;
-    }
-
-    private void processArgs(final String... aArguments) {
-        for (String argument : aArguments) {
-            argument = argument.toLowerCase();
-            switch (argument) {
-                case ProgramArguments.STARTUPMODE_DEBUG:
-                    Config.enableDebugMode();
-                    break;
-
-                case ProgramArguments.STARTUPMODE_MAXIMIZED:
-                    Config.setStartMaximized(true);
-                    break;
-            }
-        }
-    }
-
-    private final static class ProgramArguments {
-        private static final String STARTUPMODE_DEBUG = "-d";
-        private static final String STARTUPMODE_MAXIMIZED = "-m";
     }
 }
