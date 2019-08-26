@@ -23,6 +23,7 @@ public class Config {
 
     private static boolean debug; // Debugmodus
     private static boolean portableMode;
+    private static boolean startMaximized; // Fenster maximieren
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -38,5 +39,13 @@ public class Config {
 
     public static boolean isDebugModeEnabled() {
         return debug;
+    }
+
+    public static boolean isStartMaximized() {
+        return startMaximized;
+    }
+
+    public static void setStartMaximized(final boolean maximized) {
+        startMaximized = maximized;
     }
 }
