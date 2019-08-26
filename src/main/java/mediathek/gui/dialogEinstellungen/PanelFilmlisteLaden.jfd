@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -14,7 +14,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[grow,fill][grow,fill]"
-				"$rowConstraints": "[fill][fill][]"
+				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanelAuto"
 				"border": new javax.swing.border.TitledBorder( "Die Filmliste automatisch laden" )
@@ -25,11 +25,12 @@ new FormModel {
 					name: "jTextAreaAuto"
 					"editable": false
 					"columns": 20
-					"rows": 4
+					"rows": 3
 					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn sie älter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."
 					"margin": new java.awt.Insets( 4, 4, 4, 4 )
 					"wrapStyleWord": true
 					"lineWrap": true
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0 2 1"
 				} )
@@ -45,7 +46,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[fill][grow,fill][fill][fill]"
-				"$rowConstraints": "[fill][fill][fill][]"
+				"$rowConstraints": "[fill][fill][fill]"
 			} ) {
 				name: "jPanelManuel"
 				"border": new javax.swing.border.TitledBorder( "Filmliste nur manuell laden" )
@@ -83,11 +84,12 @@ new FormModel {
 					name: "jTextAreaManuell"
 					"editable": false
 					"columns": 20
-					"rows": 4
+					"rows": 2
 					"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."
 					"margin": new java.awt.Insets( 4, 4, 4, 4 )
 					"wrapStyleWord": true
 					"lineWrap": true
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0 4 1"
 				} )
@@ -145,7 +147,7 @@ new FormModel {
 				"value": "cell 1 2"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 735, 400 )
+			"size": new java.awt.Dimension( 735, 380 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
