@@ -74,7 +74,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
-		<javafx.version>13-ea+12</javafx.version>
+		<javafx.version>13-ea+13</javafx.version>
 		<mainclass>mediathek.Main</mainclass>
 		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
 		<install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
