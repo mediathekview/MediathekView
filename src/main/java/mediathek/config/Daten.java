@@ -53,7 +53,6 @@ public class Daten {
     public static ListePset listePset;
     private static Daten instance;
     // flags
-    private static boolean startMaximized; // Fenster maximieren
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
@@ -118,14 +117,6 @@ public class Daten {
         starterClass = new StarterClass(this);
 
         setupRepeatingTimer();
-    }
-
-    public static boolean isStartMaximized() {
-        return startMaximized;
-    }
-
-    public static void setStartMaximized(final boolean aIsStartMaximized) {
-        startMaximized = aIsStartMaximized;
     }
 
     public static boolean isReset() {

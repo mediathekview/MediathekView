@@ -290,7 +290,7 @@ public class Main {
                     break;
 
                 case ProgramArguments.STARTUPMODE_MAXIMIZED:
-                    Daten.setStartMaximized(true);
+                    Config.setStartMaximized(true);
                     break;
             }
         }

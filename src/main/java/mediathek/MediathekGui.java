@@ -456,7 +456,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setSize() {
-        if (Daten.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
+        if (Config.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
