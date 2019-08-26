@@ -219,17 +219,17 @@ public class PanelFilmlisteLaden extends JPanel {
                 // rows
                 new AC()
                     .fill().gap()
-                    .fill().gap()
-                    ));
+                    .fill()));
 
             //---- jTextAreaAuto ----
             jTextAreaAuto.setEditable(false);
             jTextAreaAuto.setColumns(20);
-            jTextAreaAuto.setRows(4);
+            jTextAreaAuto.setRows(3);
             jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."); //NON-NLS
             jTextAreaAuto.setMargin(new Insets(4, 4, 4, 4));
             jTextAreaAuto.setWrapStyleWord(true);
             jTextAreaAuto.setLineWrap(true);
+            jTextAreaAuto.setFont(jTextAreaAuto.getFont().deriveFont(jTextAreaAuto.getFont().getSize() - 1f));
             jPanelAuto.add(jTextAreaAuto, new CC().cell(0, 0, 2, 1));
 
             //---- jButtonLoad ----
@@ -253,8 +253,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 new AC()
                     .fill().gap()
                     .fill().gap()
-                    .fill().gap()
-                    ));
+                    .fill()));
 
             //---- jLabel1 ----
             jLabel1.setText("URL/Datei:"); //NON-NLS
@@ -273,11 +272,12 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- jTextAreaManuell ----
             jTextAreaManuell.setEditable(false);
             jTextAreaManuell.setColumns(20);
-            jTextAreaManuell.setRows(4);
+            jTextAreaManuell.setRows(2);
             jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
             jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
             jTextAreaManuell.setWrapStyleWord(true);
             jTextAreaManuell.setLineWrap(true);
+            jTextAreaManuell.setFont(jTextAreaManuell.getFont().deriveFont(jTextAreaManuell.getFont().getSize() - 1f));
             jPanelManuel.add(jTextAreaManuell, new CC().cell(0, 0, 4, 1));
 
             //---- jCheckBoxUpdate ----
