@@ -14,7 +14,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
@@ -88,7 +87,7 @@ public class MediathekGui extends JFrame {
      * Number of active downloads
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
-    private final Daten daten;
+    private final Daten daten = Daten.getInstance();
     private final SplashScreenManager splashScreenManager;
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
@@ -111,15 +110,9 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
     private final JFXPanel statusBarPanel = new JFXPanel();
     private final LoadFilmListAction loadFilmListAction;
-    private MemoryMonitorAction showMemoryMonitorAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
-    /**
-     * Bandwidth monitoring for downloads.
-     */
-    private BandwidthMonitorController bandwidthMonitor;
-    protected Stage controlsFxWorkaroundStage;
     /**
      * the global configuration for this app.
      */
@@ -128,6 +121,11 @@ public class MediathekGui extends JFrame {
      * Used for implementing shutting down the system.
      */
     protected ShutdownComputerCommand shutdownCommand;
+    private MemoryMonitorAction showMemoryMonitorAction;
+    /**
+     * Bandwidth monitoring for downloads.
+     */
+    private BandwidthMonitorController bandwidthMonitor;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private StatusBarController statusBarController;
@@ -140,25 +138,8 @@ public class MediathekGui extends JFrame {
     private DialogMediaDB dialogMediaDB;
     private ManageAboAction manageAboAction;
 
-    static class SeenHistoryCallable implements Callable<SeenHistoryController> {
-
-        @Override
-        public SeenHistoryController call() {
-            return new SeenHistoryController();
-        }
-    }
-
-    static class AboHistoryCallable implements Callable<AboHistoryController> {
-
-        @Override
-        public AboHistoryController call() {
-            return new AboHistoryController();
-        }
-    }
-
     public MediathekGui() {
         ui = this;
-        daten = Daten.getInstance();
 
         var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
 
@@ -272,18 +253,6 @@ public class MediathekGui extends JFrame {
         showVlcHintForAustrianUsers();
     }
 
-    private BandwidthMonitorController getBandwidthMonitorController() {
-        if (bandwidthMonitor == null) {
-            bandwidthMonitor = new BandwidthMonitorController(this);
-        }
-
-        return bandwidthMonitor;
-    }
-    private void showVlcHintForAustrianUsers() {
-        var thread = new OrfSetupInformationThread();
-        thread.start();
-    }
-
     /**
      * Return the user interface instance
      *
@@ -291,6 +260,19 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    private BandwidthMonitorController getBandwidthMonitorController() {
+        if (bandwidthMonitor == null) {
+            bandwidthMonitor = new BandwidthMonitorController(this);
+        }
+
+        return bandwidthMonitor;
+    }
+
+    private void showVlcHintForAustrianUsers() {
+        var thread = new OrfSetupInformationThread();
+        thread.start();
     }
 
     private void setupTaskbarMenu() {
@@ -842,6 +824,7 @@ public class MediathekGui extends JFrame {
 
         return dialogEinstellungen;
     }
+
     public void showSettingsDialog() {
         getSettingsDialog().setVisible(true);
     }
@@ -864,11 +847,8 @@ public class MediathekGui extends JFrame {
             GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
-    private void closeControlsFxWorkaroundStage() {
-        Platform.runLater(() -> {
-            if (controlsFxWorkaroundStage != null)
-                controlsFxWorkaroundStage.close();
-        });
+    protected void closeControlsFxWorkaroundStage() {
+        //not used on windows and linux
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
@@ -985,6 +965,22 @@ public class MediathekGui extends JFrame {
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
+    }
+
+    static class SeenHistoryCallable implements Callable<SeenHistoryController> {
+
+        @Override
+        public SeenHistoryController call() {
+            return new SeenHistoryController();
+        }
+    }
+
+    static class AboHistoryCallable implements Callable<AboHistoryController> {
+
+        @Override
+        public AboHistoryController call() {
+            return new AboHistoryController();
+        }
     }
 
     private class MenuTabSwitchListener implements MenuListener {
