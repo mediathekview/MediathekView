@@ -77,11 +77,47 @@ public class DialogEinstellungen extends JFrame {
 
         initPanels();
         initTree();
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
-        this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
+
+        restoreSizeFromConfig();
+
+        setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
 
         EscapeKeyHandler.installHandler(this, this::beenden);
+    }
+
+    private void restoreSizeFromConfig() {
+        int breite = 0,
+                hoehe = 0,
+                posX = 0,
+                posY = 0;
+
+        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN).split(":");
+        try {
+            if (arr.length == 4) {
+                breite = Integer.parseInt(arr[0]);
+                hoehe = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+
+        if (breite > 0 && hoehe > 0) {
+            setSize(breite, hoehe);
+        }
+
+        if (posX > 0 && posY > 0) {
+            setLocation(posX, posY);
+        } else {
+            final var parentFrame = MediathekGui.ui();
+            if (parentFrame != null)
+                setLocationRelativeTo(parentFrame);
+        }
     }
 
     private void initPanels() {

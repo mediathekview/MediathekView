@@ -474,12 +474,48 @@ public class MediathekGui extends JFrame {
         setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
     }
 
+    /**
+     * load window size and position from config file.
+     * If values aren´t found just maximize the window.
+     */
+    private void restoreSizeFromConfig() {
+        int width = 0,
+                height = 0,
+                posX = 0,
+                posY = 0;
+
+        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_GUI).split(":");
+        try {
+            if (arr.length == 4) {
+                width = Integer.parseInt(arr[0]);
+                height = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            width = 0;
+            height = 0;
+            posX = 0;
+            posY = 0;
+        }
+
+        if (width > 0 && height > 0) {
+            setSize(width, height);
+
+            //only set position if we had a valid size before
+            if (posX > 0 && posY > 0) {
+                setLocation(posX, posY);
+            }
+        }
+        else //we don´t have values yet, so just make us big...
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
+
     private void setApplicationWindowSize() {
         if (Config.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-        } else {
-            GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
-        }
+        } else
+            restoreSizeFromConfig();
     }
 
     private void setupFilmListListener() {

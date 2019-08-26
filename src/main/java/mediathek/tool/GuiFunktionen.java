@@ -85,36 +85,6 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static void setSize(Configs nr, JFrame jFrame, JFrame relativFrame) {
-        int breite, hoehe, posX, posY;
-        breite = 0;
-        hoehe = 0;
-        posX = 0;
-        posY = 0;
-        String[] arr = MVConfig.get(nr).split(":");
-        try {
-            if (arr.length == 4) {
-                breite = Integer.parseInt(arr[0]);
-                hoehe = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
-        }
-        if (breite > 0 && hoehe > 0) {
-            jFrame.setSize(new Dimension(breite, hoehe));
-        }
-        if (posX > 0 && posY > 0) {
-            jFrame.setLocation(posX, posY);
-        } else if (relativFrame != null) {
-            jFrame.setLocationRelativeTo(relativFrame);
-        }
-    }
-
     public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
