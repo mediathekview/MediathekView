@@ -111,6 +111,7 @@ public class MediathekGui extends JFrame {
     private final JFXPanel statusBarPanel = new JFXPanel();
     private final LoadFilmListAction loadFilmListAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
+    private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction();
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     /**
@@ -121,7 +122,6 @@ public class MediathekGui extends JFrame {
      * Used for implementing shutting down the system.
      */
     protected ShutdownComputerCommand shutdownCommand;
-    private MemoryMonitorAction showMemoryMonitorAction;
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -347,8 +347,6 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
-        showMemoryMonitorAction = new MemoryMonitorAction();
-
         if (Config.isDebugModeEnabled())
             showMemoryMonitorAction.showMemoryMonitor();
     }
