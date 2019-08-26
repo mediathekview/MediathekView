@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
     private final OsxPowerManager powerManager = new OsxPowerManager();
+    protected Stage controlsFxWorkaroundStage;
 
     public MediathekGuiMac() {
         super();
@@ -46,6 +47,14 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void initWindowListenerForTray() {
         //don´t install listeners on macOS for tray
+    }
+
+    @Override
+    protected void closeControlsFxWorkaroundStage() {
+        Platform.runLater(() -> {
+            if (controlsFxWorkaroundStage != null)
+                controlsFxWorkaroundStage.close();
+        });
     }
 
     @Override
