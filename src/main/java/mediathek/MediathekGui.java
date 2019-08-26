@@ -1,5 +1,8 @@
 package mediathek;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -53,6 +56,8 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -62,6 +67,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -137,8 +143,55 @@ public class MediathekGui extends JFrame {
     private DialogMediaDB dialogMediaDB;
     private ManageAboAction manageAboAction;
 
+    static class SeenHistoryCallable implements Callable<SeenHistoryController> {
+
+        @Override
+        public SeenHistoryController call() {
+            return new SeenHistoryController();
+        }
+    }
+
+    static class AboHistoryCallable implements Callable<AboHistoryController> {
+
+        @Override
+        public AboHistoryController call() {
+            return new AboHistoryController();
+        }
+    }
+
     public MediathekGui() {
         ui = this;
+        daten = Daten.getInstance();
+
+        var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+
+        var historyFuture = decoratedPool.submit(new SeenHistoryCallable());
+        Futures.addCallback(historyFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
+                SwingUtilities.invokeLater(() -> splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA));
+                daten.setSeenHistoryController(seenHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }, decoratedPool);
+
+        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
+                SwingUtilities.invokeLater(() -> splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA));
+                daten.setAboHistoryList(aboHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }, decoratedPool);
 
         IconFontSwing.register(FontAwesome.getIconFont());
 
@@ -161,15 +214,7 @@ public class MediathekGui extends JFrame {
         remapF10Key();
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_APP_DATA);
-        daten = Daten.getInstance();
-
         loadDaten();
-
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA);
-        daten.setSeenHistoryController(new SeenHistoryController());
-
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
-        daten.setAboHistoryList(new AboHistoryController());
 
         splashScreenManager.updateSplashScreenText(UIProgressState.CREATE_STATUS_BAR);
         createStatusBar();
