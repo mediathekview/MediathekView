@@ -75,12 +75,20 @@
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
 		<javafx.version>13-ea+13</javafx.version>
+		<picocli.version>4.0.2</picocli.version>
+
 		<mainclass>mediathek.Main</mainclass>
 		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
 		<install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>${picocli.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>eu.hansolo</groupId>
 			<artifactId>tilesfx</artifactId>
@@ -406,6 +414,16 @@
 				<version>3.8.0</version>
 				<configuration>
 					<release>11</release>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>info.picocli</groupId>
+							<artifactId>picocli-codegen</artifactId>
+							<version>${picocli.version}</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgs>
+						<arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>

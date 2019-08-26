@@ -46,16 +46,13 @@ public class Log {
 
     private static final Logger logger = LogManager.getLogger(Log.class);
 
-    public static void versionMsg(String progName) {
+    public static void printVersionInformation() {
         logger.info("Programmstart: {}", dateFormatter.format(Log.startZeit));
-
-        final Runtime runtime = Runtime.getRuntime();
-        logger.debug("totalMemory: {} MB", runtime.totalMemory() / TO_MEGABYTE);
-        final long maxMem = runtime.maxMemory();
-        logger.info("maxMemory: {} MB", maxMem / TO_MEGABYTE);
-
         //Version
-        logger.info("Version: {}", progName);
+        logger.info("Version: {}", Konstanten.MVVERSION);
+
+        final long maxMem = Runtime.getRuntime().maxMemory();
+        logger.info("maxMemory: {} MB", maxMem / TO_MEGABYTE);
 
         logger.info("Java:");
         final String[] java = Functions.getJavaVersion();
