@@ -60,7 +60,6 @@ public class Main {
 
         if (portableMode) {
             logger.trace("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-            //FIXME check if directory can be accessed
             Daten.getInstance(Config.baseFilePath);
         } else {
             logger.trace("Configuring for non-portable mode");
