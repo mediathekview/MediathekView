@@ -90,7 +90,7 @@ public final class MVTray {
             itemRemoveTray.addActionListener(e -> {
                 MediathekGui.ui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
-                MediathekGui.ui().setTray();
+                MediathekGui.ui().initializeSystemTray();
                 daten.getMessageBus().publishAsync(new TrayIconEvent());
             });
             popup.add(itemRemoveTray);

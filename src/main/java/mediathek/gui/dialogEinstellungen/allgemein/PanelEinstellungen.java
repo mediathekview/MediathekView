@@ -108,7 +108,7 @@ public class PanelEinstellungen extends JPanel {
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
-                MediathekGui.ui().setTray();
+                MediathekGui.ui().initializeSystemTray();
             });
         }
     }

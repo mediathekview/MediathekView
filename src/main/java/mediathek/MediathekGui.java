@@ -106,9 +106,9 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
-    private final JFXPanel statusBarPanel;
+    private final JFXPanel statusBarPanel = new JFXPanel();
     private final LoadFilmListAction loadFilmListAction;
-    private final MemoryMonitorAction showMemoryMonitorAction;
+    private MemoryMonitorAction showMemoryMonitorAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -138,29 +138,25 @@ public class MediathekGui extends JFrame {
     private ManageAboAction manageAboAction;
 
     public MediathekGui() {
+        ui = this;
+
         IconFontSwing.register(FontAwesome.getIconFont());
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
-        showMemoryMonitorAction = new MemoryMonitorAction();
 
         splashScreenManager = Daten.getSplashScreenManager();
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
 
-        getContentPane().setLayout(new BorderLayout());
-
-        statusBarPanel = new JFXPanel();
-        getContentPane().add(statusBarPanel, BorderLayout.PAGE_END);
-
-        ui = this;
+        var contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(statusBarPanel, BorderLayout.PAGE_END);
 
         setIconAndWindowImage();
 
         createMenuBar();
-
-        fakeInitializeJavaFXRuntime();
 
         remapF10Key();
 
@@ -187,12 +183,6 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.INIT_MENUS);
         initMenus();
 
-        initWindowListener();
-
-        setTray();
-
-        setSize();
-
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEDIADB_DIALOG);
         initializeMediaDbDialog();
 
@@ -210,13 +200,21 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
         Daten.closeSplashScreen();
 
-        if (!SystemUtils.IS_OS_WINDOWS)
-            workaroundControlsFxNotificationBug();
+        workaroundControlsFxNotificationBug();
 
-        if (Taskbar.isTaskbarSupported())
-            setupTaskbarMenu();
+        SwingUtilities.invokeLater(() -> {
+            if (Taskbar.isTaskbarSupported())
+                setupTaskbarMenu();
+        });
 
         setupShutdownCommand();
+
+        SwingUtilities.invokeLater(() -> {
+            initializeSystemTray();
+            initWindowListenerForTray();
+        });
+
+        SwingUtilities.invokeLater(this::setApplicationWindowSize);
 
         loadFilmlist();
 
@@ -281,16 +279,6 @@ public class MediathekGui extends JFrame {
         shutdownCommand = new GenericShutdownComputerCommand();
     }
 
-    /**
-     * Initialize JavaFX runtime by calling swing interop class.
-     * This will start JavaFX thread in case no window has been started yet.
-     * Necessary in case no config is found.
-     */
-    @SuppressWarnings("unused")
-    private void fakeInitializeJavaFXRuntime() {
-        final JFXPanel dummyPanel = new JFXPanel();
-    }
-
     private void createMenuBar() {
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
@@ -328,6 +316,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
+        showMemoryMonitorAction = new MemoryMonitorAction();
+
         if (Config.isDebugModeEnabled())
             showMemoryMonitorAction.showMemoryMonitor();
     }
@@ -455,9 +445,9 @@ public class MediathekGui extends JFrame {
         setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
     }
 
-    private void setSize() {
+    private void setApplicationWindowSize() {
         if (Config.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
-            this.setExtendedState(Frame.MAXIMIZED_BOTH);
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
         }
@@ -502,11 +492,11 @@ public class MediathekGui extends JFrame {
         automaticFilmlistUpdate.start();
     }
 
-    private void initWindowListener() {
+    protected void initWindowListenerForTray() {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                if (tray != null && !SystemUtils.IS_OS_MAC_OSX && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
+                if (tray != null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
                     setVisible(false);
                 } else {
                     beenden(false, false);
@@ -529,10 +519,11 @@ public class MediathekGui extends JFrame {
         programUpdateChecker.start();
     }
 
-    public void setTray() {
-        if (tray == null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
+    public void initializeSystemTray() {
+        final var useTray = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY));
+        if (tray == null && useTray) {
             tray = new MVTray().systemTray();
-        } else if (tray != null && !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
+        } else if (tray != null && !useTray) {
             tray.beenden();
             tray = null;
         }
@@ -807,14 +798,13 @@ public class MediathekGui extends JFrame {
     }
 
     private void writeOldConfiguration() {
-        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+        if ((getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
+            // Hauptfenster
+            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
         }
-
-        // Hauptfenster
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
 
         // Infodialog/Bandwidth
         if (bandwidthMonitor != null)

@@ -27,45 +27,25 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private final OsxPowerManager powerManager = new OsxPowerManager();
+
     public MediathekGuiMac() {
         super();
 
         setupDockIcon();
 
-            var versionCheckThread = new CheckMacOSVersion();
-            versionCheckThread.start();
+        var versionCheckThread = new CheckMacOSVersion();
+        versionCheckThread.start();
     }
 
-    static class CheckMacOSVersion extends Thread {
-        @Override
-        public void run() {
-            try {
-                TimeUnit.SECONDS.sleep(5);
-                SwingUtilities.invokeLater(() -> {
-                    var version = SystemUtils.OS_VERSION;
-                    if (version.contains("10.14") || version.contains("10.15")) {
-                        var config = ApplicationConfiguration.getConfiguration();
-                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
-                        if (showWarning) {
-                            Platform.runLater(() -> {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle(Konstanten.PROGRAMMNAME);
-                                alert.setHeaderText("Spotlight-Kommentare schreiben");
-                                alert.setContentText("Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von " +
-                                        "Spotlight-Kommentaren deaktiviert.\n" +
-                                        "Wir arbeiten an einer zukünftigen Lösung.\n\n" +
-                                        "Dieser Dialog wird nicht mehr angezeigt werden.");
-                                alert.showAndWait();
-                            });
+    @Override
+    public void initializeSystemTray() {
+        //we don´t use it on macOS
+    }
 
-                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
-                        }
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    protected void initWindowListenerForTray() {
+        //don´t install listeners on macOS for tray
     }
 
     @Override
@@ -132,8 +112,6 @@ public class MediathekGuiMac extends MediathekGui {
         setDownloadsBadge(numDownloads);
     }
 
-    private final OsxPowerManager powerManager = new OsxPowerManager();
-
     /**
      * Set the OS X dock icon badge to the number of running downloads.
      *
@@ -172,6 +150,38 @@ public class MediathekGuiMac extends MediathekGui {
             Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
             Log.errorLog(165623698, "OS X Application image could not be loaded");
+        }
+    }
+
+    static class CheckMacOSVersion extends Thread {
+        @Override
+        public void run() {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                SwingUtilities.invokeLater(() -> {
+                    var version = SystemUtils.OS_VERSION;
+                    if (version.contains("10.14") || version.contains("10.15")) {
+                        var config = ApplicationConfiguration.getConfiguration();
+                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
+                        if (showWarning) {
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle(Konstanten.PROGRAMMNAME);
+                                alert.setHeaderText("Spotlight-Kommentare schreiben");
+                                alert.setContentText("Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von " +
+                                        "Spotlight-Kommentaren deaktiviert.\n" +
+                                        "Wir arbeiten an einer zukünftigen Lösung.\n\n" +
+                                        "Dieser Dialog wird nicht mehr angezeigt werden.");
+                                alert.showAndWait();
+                            });
+
+                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
+                        }
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
