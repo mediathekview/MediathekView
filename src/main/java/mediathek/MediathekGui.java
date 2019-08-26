@@ -67,10 +67,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
@@ -169,7 +166,6 @@ public class MediathekGui extends JFrame {
         Futures.addCallback(historyFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
-                SwingUtilities.invokeLater(() -> splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA));
                 daten.setSeenHistoryController(seenHistoryController);
             }
 
@@ -183,7 +179,6 @@ public class MediathekGui extends JFrame {
         Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
-                SwingUtilities.invokeLater(() -> splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA));
                 daten.setAboHistoryList(aboHistoryController);
             }
 
@@ -215,6 +210,15 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_APP_DATA);
         loadDaten();
+
+        try {
+            splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA);
+            historyFuture.get();
+            splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
+            aboHistoryFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         splashScreenManager.updateSplashScreenText(UIProgressState.CREATE_STATUS_BAR);
         createStatusBar();
