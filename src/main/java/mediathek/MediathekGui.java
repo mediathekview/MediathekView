@@ -328,7 +328,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
-        if (Config.isDebuggingEnabled())
+        if (Config.isDebugModeEnabled())
             showMemoryMonitorAction.showMemoryMonitor();
     }
 

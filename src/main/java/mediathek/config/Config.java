@@ -22,6 +22,7 @@ package mediathek.config;
 public class Config {
 
     private static boolean debug; // Debugmodus
+    private static boolean portableMode;
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -31,13 +32,11 @@ public class Config {
         Config.portableMode = portableMode;
     }
 
-    private static boolean portableMode;
-
     public static void enableDebugMode() {
         debug = true;
     }
 
-    public static boolean isDebuggingEnabled() {
+    public static boolean isDebugModeEnabled() {
         return debug;
     }
 }
