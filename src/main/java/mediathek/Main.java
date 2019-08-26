@@ -76,9 +76,9 @@ public class Main {
         final var basePath = readPfadFromArguments(args);
         if (!basePath.isEmpty()) {
             Config.setPortableMode(true);
-            logger.info("Portable Mode: true");
-        } else
-            logger.info("Portable Mode: false");
+        }
+
+        logger.info("Portable Mode: {}", Config.isPortableMode());
 
         //initialize Daten object now for database
         Daten.getInstance(basePath);
@@ -252,7 +252,7 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Config.isDebuggingEnabled()) {
+            if (Config.isDebugModeEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                 logger.info("Swing Thread checking repaint manager installed.");

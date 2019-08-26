@@ -143,7 +143,7 @@ public class Log {
             kl = klasse;
         }
         addFehlerNummer(fehlerNummer, kl, ex != null);
-        if (ex != null || Config.isDebuggingEnabled()) {
+        if (ex != null || Config.isDebugModeEnabled()) {
             // Exceptions immer ausgeben
             resetProgress();
             String x, z;

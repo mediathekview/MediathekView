@@ -66,7 +66,7 @@ public class PanelPsetImport extends PanelVorlage {
         });
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTableVorlagen.setModel(new TModel(new Object[][]{}, ListePsetVorlagen.PGR_COLUMN_NAMES));
-        if (!Config.isDebuggingEnabled()) {
+        if (!Config.isDebugModeEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
@@ -97,7 +97,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void tabelleLaden() {
         jTableVorlagen.setModel(listePsetVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
-        if (!Config.isDebuggingEnabled()) {
+        if (!Config.isDebugModeEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);

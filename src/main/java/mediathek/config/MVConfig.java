@@ -27,7 +27,7 @@ public class MVConfig {
             }
         }
 
-        if (Config.isDebuggingEnabled()) {
+        if (Config.isDebugModeEnabled()) {
             logger.debug("Setting FilmList import mode to MANUAL");
             GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
         }
