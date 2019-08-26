@@ -260,6 +260,7 @@ public class Main {
 
     private static MediathekGui getPlatformWindow() {
         MediathekGui window;
+        Stopwatch watch = Stopwatch.createStarted();
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
@@ -269,6 +270,9 @@ public class Main {
             window = new MediathekGuiX11();
         } else
             throw new IllegalStateException("Unknown operating system detected! Cannot create main window");
+
+        watch.stop();
+        logger.trace("getPlatformWindow(): {}", watch);
 
         return window;
     }
