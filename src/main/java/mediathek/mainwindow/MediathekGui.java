@@ -421,10 +421,11 @@ public class MediathekGui extends JFrame {
         } else {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
-            new DialogStarteinstellungen(this, daten).setVisible(true);
+            var dialog = new DialogStarteinstellungen(this, daten);
+            dialog.setVisible(true);
             MVConfig.loadSystemParameter();
 
-            pack();
+            pack(); //TODO is this really necessary or does it screw up the initial window size?
         }
     }
 
