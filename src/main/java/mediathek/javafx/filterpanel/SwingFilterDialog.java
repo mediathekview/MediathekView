@@ -26,6 +26,7 @@ public class SwingFilterDialog extends JDialog {
             fxPanel.setScene(new Scene(content));
             SwingUtilities.invokeLater(() -> {
                 pack();
+                restoreWindowSizeFromConfig();
                 registerWindowSizeListener();
             });
         });
@@ -45,8 +46,22 @@ public class SwingFilterDialog extends JDialog {
         });
     }
 
+    private void restoreWindowSizeFromConfig() {
+
+    }
+
     private void registerWindowSizeListener() {
         addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
             @Override
             public void componentHidden(ComponentEvent e) {
                 //GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW, SwingFilterDialog.this);
