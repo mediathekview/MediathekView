@@ -4,7 +4,7 @@ import mediathek.controller.history.AboHistoryController;
 
 import java.util.concurrent.Callable;
 
-class AboHistoryCallable implements Callable<AboHistoryController> {
+public class AboHistoryCallable implements Callable<AboHistoryController> {
 
     @Override
     public AboHistoryController call() {

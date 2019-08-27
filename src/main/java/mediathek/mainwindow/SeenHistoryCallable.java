@@ -4,7 +4,7 @@ import mediathek.controller.history.SeenHistoryController;
 
 import java.util.concurrent.Callable;
 
-class SeenHistoryCallable implements Callable<SeenHistoryController> {
+public class SeenHistoryCallable implements Callable<SeenHistoryController> {
 
     @Override
     public SeenHistoryController call() {

@@ -162,6 +162,8 @@ public class Main {
 
         checkMemoryRequirements();
 
+        Daten.getInstance().launchHistoryDataLoading();
+
         deleteDatabase();
 
         if (MemoryUtils.isLowMemoryEnvironment()) {

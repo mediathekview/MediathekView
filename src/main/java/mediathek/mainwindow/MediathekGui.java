@@ -1,6 +1,5 @@
 package mediathek.mainwindow;
 
-import com.google.common.util.concurrent.*;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -15,8 +14,6 @@ import javafx.scene.Scene;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
-import mediathek.controller.history.AboHistoryController;
-import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -53,8 +50,6 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -141,10 +136,6 @@ public class MediathekGui extends JFrame {
         ui = this;
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
-        var historyFuture = launchSeenHistoryController(decoratedPool);
-        var aboHistoryFuture = launchAboHistoryController(decoratedPool);
-
         IconFontSwing.register(FontAwesome.getIconFont());
 
         loadFilmListAction = new LoadFilmListAction(this);
@@ -167,13 +158,10 @@ public class MediathekGui extends JFrame {
         loadDaten();
 
         try {
-            splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA);
-            //be safe and wait if not already finished
-            historyFuture.get();
-            splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
-            aboHistoryFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            splashScreenManager.updateSplashScreenText(UIProgressState.WAIT_FOR_HISTORY_DATA);
+            daten.waitForHistoryDataLoadingToComplete();
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error("waitForHistoryDataLoadingToComplete()", e);
         }
 
         splashScreenManager.updateSplashScreenText(UIProgressState.CREATE_STATUS_BAR);
@@ -239,40 +227,6 @@ public class MediathekGui extends JFrame {
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
-    }
-
-    private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
-        var historyFuture = pool.submit(new SeenHistoryCallable());
-        Futures.addCallback(historyFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
-                daten.setSeenHistoryController(seenHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
-                logger.error("launchHistoryController", throwable);
-            }
-        }, pool);
-
-        return historyFuture;
-    }
-
-    private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
-        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
-        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
-                daten.setAboHistoryList(aboHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
-                logger.error("launchAboHistoryController", throwable);
-            }
-        }, decoratedPool);
-
-        return aboHistoryFuture;
     }
 
     private BandwidthMonitorController getBandwidthMonitorController() {
