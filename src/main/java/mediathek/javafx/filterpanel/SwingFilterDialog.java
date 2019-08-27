@@ -7,11 +7,14 @@ import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.tool.ApplicationConfiguration;
+import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.NoSuchElementException;
 
 public class SwingFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
@@ -31,8 +34,6 @@ public class SwingFilterDialog extends JDialog {
             });
         });
 
-        //GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW,this, MediathekGui.ui());
-
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -47,6 +48,20 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private void restoreWindowSizeFromConfig() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.READ);
+            final int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_WIDTH);
+            final int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT);
+            final int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X);
+            final int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y);
+
+            setBounds(x, y, width, height);
+        } catch (NoSuchElementException ignored) {
+            //do not restore anything
+        } finally {
+            config.unlock(LockMode.READ);
+        }
 
     }
 
@@ -54,17 +69,21 @@ public class SwingFilterDialog extends JDialog {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-
+                storeWindowPosition();
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-
+                storeWindowPosition();
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                //GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW, SwingFilterDialog.this);
+                storeWindowPosition();
+            }
+
+            private void storeWindowPosition() {
+
             }
         });
 
