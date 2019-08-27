@@ -512,7 +512,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void setApplicationWindowSize() {
-        if (Config.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
+        if (Config.isStartMaximized() ||
+                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true)) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         } else
             restoreSizeFromConfig();
@@ -864,10 +865,11 @@ public class MediathekGui extends JFrame {
     }
 
     private void writeOldConfiguration() {
+        var config = ApplicationConfiguration.getConfiguration();
         if ((getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true);
         } else {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, false);
             // Hauptfenster
             GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
         }
@@ -886,9 +888,6 @@ public class MediathekGui extends JFrame {
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
-        //write all settings if not done already...
-        ApplicationConfiguration.getInstance().writeConfiguration();
-
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
@@ -957,6 +956,9 @@ public class MediathekGui extends JFrame {
         }
 
         dispose();
+
+        //write all settings if not done already...
+        ApplicationConfiguration.getInstance().writeConfiguration();
 
         //shutdown JavaFX
         Platform.exit();
