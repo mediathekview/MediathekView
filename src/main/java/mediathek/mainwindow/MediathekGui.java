@@ -202,10 +202,7 @@ public class MediathekGui extends JFrame {
 
         setupShutdownCommand();
 
-        SwingUtilities.invokeLater(() -> {
-            initializeSystemTray();
-            initWindowListenerForTray();
-        });
+        setupSystemTray();
 
         SwingUtilities.invokeLater(this::setApplicationWindowSize);
 
@@ -214,6 +211,13 @@ public class MediathekGui extends JFrame {
         setupUpdateCheck();
 
         showVlcHintForAustrianUsers();
+    }
+
+    private void setupSystemTray() {
+        SwingUtilities.invokeLater(() -> {
+            initializeSystemTray();
+            initWindowListenerForTray();
+        });
     }
 
     /**
