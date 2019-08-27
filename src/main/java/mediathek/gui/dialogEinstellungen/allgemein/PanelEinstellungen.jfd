@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.0.3.238" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -124,7 +124,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "jLabel6"
-						"text": "nur die Filme der letzten Tage laden:"
+						"text": "Nur die Filme der letzten Tage laden:"
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
