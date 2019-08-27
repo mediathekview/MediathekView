@@ -15,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.ManageAboAction;
@@ -30,10 +29,8 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.GermanStringSorter;
-import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.lang3.SystemUtils;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -44,8 +41,6 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,19 +108,7 @@ public class FilmActionPanel {
 
     private void createFilterDialog() {
         VBox vb = getFilterDialogContent();
-        SwingUtilities.invokeLater(() -> {
-            filterDialog = new SwingFilterDialog(MediathekGui.ui(), vb);
-            if (SystemUtils.IS_OS_WINDOWS) {
-                filterDialog.setSize(410, 582);
-            }
-            filterDialog.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentHidden(ComponentEvent e) {
-                    GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER_DIALOG_NEW, filterDialog);
-                }
-            });
-
-        });
+        SwingUtilities.invokeLater(() -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), vb));
     }
 
     private void restoreConfigSettings() {
