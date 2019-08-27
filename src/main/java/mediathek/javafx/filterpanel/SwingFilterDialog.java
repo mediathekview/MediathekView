@@ -69,21 +69,35 @@ public class SwingFilterDialog extends JDialog {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                storeWindowPosition();
+                storeWindowPosition(e);
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                storeWindowPosition();
+                storeWindowPosition(e);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                storeWindowPosition();
+                storeWindowPosition(e);
             }
 
-            private void storeWindowPosition() {
+            private void storeWindowPosition(ComponentEvent e) {
+                var config = ApplicationConfiguration.getConfiguration();
+                var component = e.getComponent();
 
+                var dims = component.getSize();
+                var loc = component.getLocation();
+                try {
+                    config.lock(LockMode.WRITE);
+                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_WIDTH, dims.width);
+                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT, dims.height);
+                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X, loc.x);
+                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y, loc.y);
+                }
+                finally {
+                    config.unlock(LockMode.WRITE);
+                }
             }
         });
 
