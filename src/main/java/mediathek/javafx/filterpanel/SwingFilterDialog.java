@@ -7,7 +7,6 @@ import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +26,6 @@ public class SwingFilterDialog extends JDialog {
             fxPanel.setScene(new Scene(content));
             SwingUtilities.invokeLater(() -> {
                 pack();
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    setSize(410, 582);
-                }
                 registerWindowSizeListener();
             });
         });
