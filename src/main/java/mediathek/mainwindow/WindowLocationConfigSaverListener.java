@@ -15,6 +15,12 @@ class WindowLocationConfigSaverListener extends ComponentAdapter {
         var config = ApplicationConfiguration.getConfiguration();
         var dims = mainWindow.getSize();
 
+        //safety check if the window gets too small..on some systems it is really hard to get it bigger again. (Linux)
+        if (dims.width < 320)
+            dims.width = 320;
+        if (dims.height < 240)
+            dims.height = 240;
+
         try {
             config.lock(LockMode.WRITE);
             final boolean isMaximized = (mainWindow.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH;
