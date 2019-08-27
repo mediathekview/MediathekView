@@ -30,6 +30,7 @@ public class SwingFilterDialog extends JDialog {
             SwingUtilities.invokeLater(() -> {
                 pack();
                 restoreWindowSizeFromConfig();
+                restoreDialogVisibility();
                 registerWindowSizeListener();
             });
         });
@@ -45,6 +46,17 @@ public class SwingFilterDialog extends JDialog {
                 setEnabled(true);
             }
         });
+    }
+
+    private void restoreDialogVisibility() {
+        var config = ApplicationConfiguration.getConfiguration();
+        final boolean visible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, false);
+        setVisible(visible);
+    }
+
+    private void storeDialogVisibility() {
+        var config = ApplicationConfiguration.getConfiguration();
+        config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, isVisible());
     }
 
     private void restoreWindowSizeFromConfig() {
@@ -78,8 +90,14 @@ public class SwingFilterDialog extends JDialog {
             }
 
             @Override
+            public void componentShown(ComponentEvent e) {
+                storeDialogVisibility();
+            }
+
+            @Override
             public void componentHidden(ComponentEvent e) {
                 storeWindowPosition(e);
+                storeDialogVisibility();
             }
 
             private void storeWindowPosition(ComponentEvent e) {
@@ -94,8 +112,7 @@ public class SwingFilterDialog extends JDialog {
                     config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT, dims.height);
                     config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X, loc.x);
                     config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y, loc.y);
-                }
-                finally {
+                } finally {
                     config.unlock(LockMode.WRITE);
                 }
             }
