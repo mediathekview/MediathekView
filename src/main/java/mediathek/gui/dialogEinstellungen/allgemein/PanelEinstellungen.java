@@ -392,7 +392,7 @@ public class PanelEinstellungen extends JPanel {
             {
 
                 //---- jLabel6 ----
-                jLabel6.setText("nur die Filme der letzten Tage laden:"); //NON-NLS
+                jLabel6.setText("Nur die Filme der letzten Tage laden:"); //NON-NLS
 
                 //---- jSpinnerDays ----
                 jSpinnerDays.setModel(new SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"})); //NON-NLS
