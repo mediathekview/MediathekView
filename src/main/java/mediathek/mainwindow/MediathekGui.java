@@ -47,14 +47,15 @@ import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -488,37 +489,7 @@ public class MediathekGui extends JFrame {
         } else
             restoreSizeFromConfig();
 
-        SwingUtilities.invokeLater(this::setupWindowLocationListener);
-    }
-
-    private void setupWindowLocationListener() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                var config = ApplicationConfiguration.getConfiguration();
-                var dims = getSize();
-                try {
-                    config.lock(LockMode.WRITE);
-                    System.out.println("main window resized to w: " + dims.width + " and h: " + dims.height);
-                }
-                finally {
-                    config.unlock(LockMode.WRITE);
-                }
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                var config = ApplicationConfiguration.getConfiguration();
-                var pt = getLocation();
-                try {
-                    config.lock(LockMode.WRITE);
-                    System.out.println("main window moved to x: " + pt.x + " and y: " + pt.y);
-                }
-                finally {
-                    config.unlock(LockMode.WRITE);
-                }
-            }
-        });
+        SwingUtilities.invokeLater(() -> addComponentListener(new WindowLocationConfigSaverListener()));
     }
 
     private void setupFilmListListener() {
@@ -1004,5 +975,4 @@ public class MediathekGui extends JFrame {
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
     }
-
 }
