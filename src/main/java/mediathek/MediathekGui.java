@@ -1,8 +1,6 @@
 package mediathek;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.*;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -66,7 +64,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
@@ -140,38 +141,13 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         ui = this;
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
-
-        var historyFuture = decoratedPool.submit(new SeenHistoryCallable());
-        Futures.addCallback(historyFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
-                daten.setSeenHistoryController(seenHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        }, decoratedPool);
-
-        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
-        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
-                daten.setAboHistoryList(aboHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        }, decoratedPool);
+        var historyFuture = launchSeenHistoryController(decoratedPool);
+        var aboHistoryFuture = launchAboHistoryController(decoratedPool);
 
         IconFontSwing.register(FontAwesome.getIconFont());
-
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
@@ -194,6 +170,7 @@ public class MediathekGui extends JFrame {
 
         try {
             splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_HISTORY_DATA);
+            //be safe and wait if not already finished
             historyFuture.get();
             splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_ABO_HISTORY_DATA);
             aboHistoryFuture.get();
@@ -260,6 +237,40 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
+        var historyFuture = pool.submit(new SeenHistoryCallable());
+        Futures.addCallback(historyFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
+                daten.setSeenHistoryController(seenHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchHistoryController", throwable);
+            }
+        }, pool);
+
+        return historyFuture;
+    }
+
+    private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
+        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
+                daten.setAboHistoryList(aboHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchAboHistoryController", throwable);
+            }
+        }, decoratedPool);
+
+        return aboHistoryFuture;
     }
 
     private BandwidthMonitorController getBandwidthMonitorController() {
@@ -1001,22 +1012,6 @@ public class MediathekGui extends JFrame {
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
-    }
-
-    static class SeenHistoryCallable implements Callable<SeenHistoryController> {
-
-        @Override
-        public SeenHistoryController call() {
-            return new SeenHistoryController();
-        }
-    }
-
-    static class AboHistoryCallable implements Callable<AboHistoryController> {
-
-        @Override
-        public AboHistoryController call() {
-            return new AboHistoryController();
-        }
     }
 
     private class MenuTabSwitchListener implements MenuListener {
