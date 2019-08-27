@@ -1,9 +1,9 @@
 package mediathek.gui.actions;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
 
 import javax.swing.*;

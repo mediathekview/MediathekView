@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.mainwindow;
 
 import com.google.common.util.concurrent.*;
 import javafx.application.Platform;

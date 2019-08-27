@@ -1,7 +1,6 @@
 package mediathek.controller.starter;
 
 import com.google.common.util.concurrent.RateLimiter;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.MVBandwidthCountingInputStream;
@@ -10,6 +9,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.*;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;

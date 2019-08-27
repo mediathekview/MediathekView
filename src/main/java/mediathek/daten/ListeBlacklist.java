@@ -1,10 +1,10 @@
 package mediathek.daten;
 
 import com.google.common.base.Stopwatch;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.Listener;

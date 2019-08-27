@@ -4,9 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
-import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.mainwindow.MediathekGui;
 import org.controlsfx.control.StatusBar;
 
 import javax.swing.*;

@@ -1,7 +1,7 @@
 package mediathek.x11;
 
-import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
+import mediathek.mainwindow.MediathekGui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

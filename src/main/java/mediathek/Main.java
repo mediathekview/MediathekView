@@ -11,6 +11,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;

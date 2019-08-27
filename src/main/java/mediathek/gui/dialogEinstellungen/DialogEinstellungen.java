@@ -1,11 +1,11 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;

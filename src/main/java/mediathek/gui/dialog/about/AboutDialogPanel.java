@@ -5,10 +5,10 @@
 package mediathek.gui.dialog.about;
 
 import com.jidesoft.swing.JideButton;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.mainwindow.MediathekGui;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;

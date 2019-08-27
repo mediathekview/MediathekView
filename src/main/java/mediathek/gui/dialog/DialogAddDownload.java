@@ -1,12 +1,12 @@
 package mediathek.gui.dialog;
 
-import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
 import mediathek.gui.messages.DownloadListChangedEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.io.FileUtils;

@@ -2,8 +2,8 @@ package mediathek.gui.actions;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.javafx.FXErrorDialog;
 
 import javax.swing.*;

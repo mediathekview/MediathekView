@@ -1,6 +1,5 @@
 package mediathek.config;
 
-import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
@@ -11,6 +10,7 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationFactory;

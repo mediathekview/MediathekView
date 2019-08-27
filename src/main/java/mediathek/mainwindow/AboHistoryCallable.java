@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.mainwindow;
 
 import mediathek.controller.history.AboHistoryController;
 
