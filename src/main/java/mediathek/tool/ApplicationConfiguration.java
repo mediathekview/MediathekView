@@ -25,7 +25,13 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_USER_AGENT = "application.user_agent";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER = "application.ui.install_tab_listeners";
     public static final String APPLICATION_UI_TAB_POSITION_TOP = "application.ui.tab_position.top";
+
     public static final String APPLICATION_UI_MAINWINDOW_MAXIMIZED = "application.ui.mainwindow.maximized";
+    public static final String APPLICATION_UI_MAINWINDOW_WIDTH = "application.ui.mainwindow.width";
+    public static final String APPLICATION_UI_MAINWINDOW_HEIGHT = "application.ui.mainwindow.height";
+    public static final String APPLICATION_UI_MAINWINDOW_LOCATION_X = "application.ui.mainwindow.location.x";
+    public static final String APPLICATION_UI_MAINWINDOW_LOCATION_Y = "application.ui.mainwindow.location.y";
+
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS = "application.notifications.native";
