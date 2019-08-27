@@ -1,6 +1,5 @@
 package mediathek.config;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.*;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -367,15 +366,10 @@ public class Daten {
     }
 
     public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
-        logger.trace("waiting for async history data loading to complete...");
-        Stopwatch watch = Stopwatch.createStarted();
-
         historyFuture.get();
         aboHistoryFuture.get();
         historyFuture = null;
         aboHistoryFuture = null;
-        watch.stop();
-        logger.trace("async history data loading completed in {}", watch);
     }
 
     private void clearKonfig() {
