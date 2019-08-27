@@ -1,6 +1,6 @@
 package mediathek.gui.actions;
 
-import mediathek.MediathekGui;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;

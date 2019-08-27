@@ -1,6 +1,5 @@
 package mediathek.gui.history;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.history.MVUsedUrlModelHelper;
@@ -10,6 +9,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.models.TModel;
 import net.miginfocom.layout.AC;

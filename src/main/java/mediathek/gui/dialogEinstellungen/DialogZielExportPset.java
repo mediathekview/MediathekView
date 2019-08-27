@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Icons;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Log;

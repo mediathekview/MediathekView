@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.mainwindow;
 
 import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;

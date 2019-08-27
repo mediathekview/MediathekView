@@ -1,8 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CellRendererColor;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVC;

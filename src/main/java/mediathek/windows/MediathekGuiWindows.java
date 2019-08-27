@@ -1,6 +1,6 @@
 package mediathek.windows;
 
-import mediathek.MediathekGui;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.threads.IndicatorThread;
 
 @SuppressWarnings("serial")

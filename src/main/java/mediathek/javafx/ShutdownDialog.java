@@ -8,7 +8,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.MediathekGui;
+import mediathek.mainwindow.MediathekGui;
 import org.tbee.javafx.scene.layout.MigPane;
 
 /**

@@ -1,7 +1,7 @@
 package mediathek.gui;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
