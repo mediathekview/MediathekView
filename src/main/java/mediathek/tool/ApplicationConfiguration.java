@@ -36,6 +36,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_FILTER_DIALOG_HEIGHT = "application.ui.filter_dialog.height";
     public static final String APPLICATION_UI_FILTER_DIALOG_LOCATION_X = "application.ui.filter_dialog.location.x";
     public static final String APPLICATION_UI_FILTER_DIALOG_LOCATION_Y = "application.ui.filter_dialog.location.y";
+    public static final String APPLICATION_UI_FILTER_DIALOG_VISIBLE = "application.ui.filter_dialog.visible";
 
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE = "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
