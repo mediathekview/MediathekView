@@ -57,8 +57,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -237,6 +235,10 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 
     private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
@@ -517,8 +519,7 @@ public class MediathekGui extends JFrame {
             if (posX > 0 && posY > 0) {
                 setLocation(posX, posY);
             }
-        }
-        else //we don´t have values yet, so just make us big...
+        } else //we don´t have values yet, so just make us big...
             setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
@@ -712,8 +713,8 @@ public class MediathekGui extends JFrame {
      */
     protected void installMenuTabSwitchListener() {
         //initial setup
-        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(TABS.TAB_FILME));
-        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(TABS.TAB_DOWNLOADS));
+        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(this, TABS.TAB_FILME));
+        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, TABS.TAB_DOWNLOADS));
 
         //now assign if really necessary
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
@@ -1014,49 +1015,4 @@ public class MediathekGui extends JFrame {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
     }
 
-    private class MenuTabSwitchListener implements MenuListener {
-
-        private final TABS tabs;
-
-        MenuTabSwitchListener(TABS tabs) {
-            this.tabs = tabs;
-        }
-
-        @Override
-        public void menuSelected(MenuEvent e) {
-            findTab(tabs);
-        }
-
-        @Override
-        public void menuDeselected(MenuEvent e) {
-        }
-
-        @Override
-        public void menuCanceled(MenuEvent e) {
-        }
-
-        private void findTab(TABS state) {
-            switch (state) {
-                case TAB_FILME:
-                    setTabIfContain(tabFilme);
-                    break;
-                case TAB_DOWNLOADS:
-                    setTabIfContain(tabDownloads);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        private void setTabIfContain(Component check) {
-            for (int i = 0; i < tabbedPane.getTabCount(); ++i) {
-                Component c = tabbedPane.getComponentAt(i);
-                if (c.equals(check)) {
-                    tabbedPane.setSelectedIndex(i);
-                    return;
-                }
-            }
-        }
-    }
 }
