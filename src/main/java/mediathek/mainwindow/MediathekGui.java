@@ -47,6 +47,7 @@ import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +58,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -213,13 +215,6 @@ public class MediathekGui extends JFrame {
         showVlcHintForAustrianUsers();
     }
 
-    private void setupSystemTray() {
-        SwingUtilities.invokeLater(() -> {
-            initializeSystemTray();
-            initWindowListenerForTray();
-        });
-    }
-
     /**
      * Return the user interface instance
      *
@@ -227,6 +222,13 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    private void setupSystemTray() {
+        SwingUtilities.invokeLater(() -> {
+            initializeSystemTray();
+            initWindowListenerForTray();
+        });
     }
 
     public JTabbedPane getTabbedPane() {
@@ -451,35 +453,24 @@ public class MediathekGui extends JFrame {
      * If values aren´t found just maximize the window.
      */
     private void restoreSizeFromConfig() {
-        int width = 0,
-                height = 0,
-                posX = 0,
-                posY = 0;
-
-        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_GUI).split(":");
+        /*
+        We are not in maximized mode, so just read all the settings and restore...
+         */
+        var config = ApplicationConfiguration.getConfiguration();
         try {
-            if (arr.length == 4) {
-                width = Integer.parseInt(arr[0]);
-                height = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            width = 0;
-            height = 0;
-            posX = 0;
-            posY = 0;
-        }
+            config.lock(LockMode.READ);
+            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH);
+            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT);
+            int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_X);
+            int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_Y);
 
-        if (width > 0 && height > 0) {
-            setSize(width, height);
-
-            //only set position if we had a valid size before
-            if (posX > 0 && posY > 0) {
-                setLocation(posX, posY);
-            }
-        } else //we don´t have values yet, so just make us big...
+            setBounds(x, y, width, height);
+        } catch (NoSuchElementException e) {
+            //in case of any error, just make the window maximized
             setExtendedState(JFrame.MAXIMIZED_BOTH);
+        } finally {
+            config.unlock(LockMode.READ);
+        }
     }
 
     private void setApplicationWindowSize() {
@@ -838,15 +829,6 @@ public class MediathekGui extends JFrame {
     }
 
     private void writeOldConfiguration() {
-        var config = ApplicationConfiguration.getConfiguration();
-        if ((getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH) {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true);
-        } else {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, false);
-            // Hauptfenster
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
-        }
-
         // Infodialog/Bandwidth
         if (bandwidthMonitor != null)
             bandwidthMonitor.writeConfig();
