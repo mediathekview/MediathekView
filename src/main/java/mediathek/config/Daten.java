@@ -1,5 +1,7 @@
 package mediathek.config;
 
+import com.google.common.base.Stopwatch;
+import com.google.common.util.concurrent.*;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
@@ -10,7 +12,9 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.mainwindow.SeenHistoryCallable;
 import mediathek.tool.*;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationFactory;
@@ -21,6 +25,7 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -37,6 +42,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
@@ -91,6 +98,8 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
+    private ListenableFuture<SeenHistoryController> historyFuture;
+    private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
         setupNotifications();
@@ -313,6 +322,60 @@ public class Daten {
         mVColor.load(); // Farben einrichten
 
         return true;
+    }
+
+    public void launchHistoryDataLoading() {
+        logger.trace("launching async history data loading");
+        var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+        historyFuture = launchSeenHistoryController(decoratedPool);
+        aboHistoryFuture = launchAboHistoryController(decoratedPool);
+
+    }
+
+    private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
+        var historyFuture = pool.submit(new SeenHistoryCallable());
+        Futures.addCallback(historyFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
+                setSeenHistoryController(seenHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchHistoryController", throwable);
+            }
+        }, pool);
+
+        return historyFuture;
+    }
+
+    private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
+        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
+                setAboHistoryList(aboHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchAboHistoryController", throwable);
+            }
+        }, decoratedPool);
+
+        return aboHistoryFuture;
+    }
+
+    public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
+        logger.trace("waiting for async history data loading to complete...");
+        Stopwatch watch = Stopwatch.createStarted();
+
+        historyFuture.get();
+        aboHistoryFuture.get();
+        historyFuture = null;
+        aboHistoryFuture = null;
+        watch.stop();
+        logger.trace("async history data loading completed in {}", watch);
     }
 
     private void clearKonfig() {
