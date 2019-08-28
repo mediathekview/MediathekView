@@ -167,18 +167,6 @@ public class FilmActionPanel {
         return btnFilmInformation;
     }
 
-    private Button createEditBlacklistButton() {
-        Button btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
-        btnEditBlacklist.setTooltip(new Tooltip("Blacklist bearbeiten"));
-        btnEditBlacklist.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            DialogLeer dialog = new DialogLeer(null, true);
-            dialog.init("Blacklist", new PanelBlacklist(daten, null, PanelBlacklist.class.getName() + "_3"));
-            dialog.setVisible(true);
-        }));
-
-        return btnEditBlacklist;
-    }
-
     private void checkPatternValidity() {
         jfxSearchField.setStyle("-fx-text-fill: red");
 
@@ -276,8 +264,10 @@ public class FilmActionPanel {
 
         VBox vBox = new VBox();
         vBox.setSpacing(4d);
-        Node senderBox = createSenderBox();
+
+        Node senderBox = new SenderBoxNode();
         VBox.setVgrow(senderBox, Priority.ALWAYS);
+
         vBox.getChildren().addAll(
                 btnDeleteFilterSettings,
                 new Separator(),
@@ -294,11 +284,11 @@ public class FilmActionPanel {
                 new Separator(),
                 senderBox,
                 new Separator(),
-                createThemaBox(),
+                new ThemaBoxNode(),
                 new Separator(),
-                createFilmLengthSlider(),
+                new FilmLenghtSliderNode(),
                 new Separator(),
-                createZeitraumPane());
+                new ZeitraumPane());
 
         setupSenderListeners();
 
@@ -344,80 +334,6 @@ public class FilmActionPanel {
         themaBox.getSelectionModel().select(0);
     }
 
-    private Node createSenderBox() {
-        VBox vb = new VBox();
-
-        senderList = new SenderListBox();
-        VBox.setVgrow(senderList, Priority.ALWAYS);
-        vb.getChildren().addAll(
-                new Label("Sender:"),
-                senderList);
-
-        return vb;
-    }
-
-    private Node createThemaBox() {
-        HBox hb = new HBox();
-        hb.setSpacing(4d);
-
-        themaBox = new ComboBox<>();
-        themaBox.getItems().addAll("");
-        themaBox.getSelectionModel().select(0);
-        themaBox.setPrefWidth(350d);
-
-        themaBox.setEditable(true);
-        themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
-        TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
-
-        hb.getChildren().addAll(new CenteredBorderPane(new Label("Thema:")), themaBox);
-
-        return hb;
-    }
-
-    private Node createFilmLengthSlider() {
-        HBox hb = new HBox();
-        hb.getChildren().add(new Label("Mindestlänge:"));
-        Label lblMin = new Label("min");
-        hb.getChildren().add(lblMin);
-
-        HBox hb2 = new HBox();
-        hb2.getChildren().add(new Label("Maximallänge:"));
-        Label lblMax = new Label("max");
-        hb2.getChildren().add(lblMax);
-        VBox vb2 = new VBox();
-        vb2.getChildren().add(hb);
-        vb2.getChildren().add(hb2);
-
-        filmLengthSlider = new FilmLengthSlider();
-
-        lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
-        lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
-        filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
-        filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue)));
-        vb2.getChildren().add(filmLengthSlider);
-
-        return Borders.wrap(vb2)
-                .lineBorder()
-                .innerPadding(4)
-                .outerPadding(4)
-                .buildAll();
-    }
-
-    private Node createZeitraumPane() {
-        Label zeitraum = new Label("Zeitraum:");
-
-
-        zeitraumSpinner = new ZeitraumSpinner();
-        zeitraumProperty = zeitraumSpinner.valueProperty();
-
-        Label days = new Label("Tage");
-
-        FlowPane root = new FlowPane();
-        root.setHgap(4);
-        root.getChildren().addAll(zeitraum, zeitraumSpinner, days);
-        return root;
-    }
-
     private VBox getFilterDialogContent() {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
@@ -435,23 +351,7 @@ public class FilmActionPanel {
 
         setupSearchThroughDescriptionButton();
 
-        ToolBar toolBar = new ToolBar();
-        toolBar.getItems().addAll(btnDownload,
-                new VerticalSeparator(),
-                createFilmInformationButton(),
-                new VerticalSeparator(),
-                btnPlay,
-                btnRecord,
-                new VerticalSeparator(),
-                new BlacklistButton(daten),
-                createEditBlacklistButton(),
-                new VerticalSeparator(),
-                btnManageAbos,
-                spacer,
-                btnShowFilter,
-                jfxSearchField,
-                btnSearchThroughDescription);
-
+        ToolBar toolBar = new ItemsToolBar();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -465,6 +365,115 @@ public class FilmActionPanel {
         });
 
         return new Scene(toolBar);
+    }
+
+    class ItemsToolBar extends ToolBar {
+        public ItemsToolBar() {
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            getItems().addAll(btnDownload,
+                    new VerticalSeparator(),
+                    createFilmInformationButton(),
+                    new VerticalSeparator(),
+                    btnPlay,
+                    btnRecord,
+                    new VerticalSeparator(),
+                    new BlacklistButton(daten),
+                    new EditBlacklistButton(),
+                    new VerticalSeparator(),
+                    btnManageAbos,
+                    spacer,
+                    btnShowFilter,
+                    jfxSearchField,
+                    btnSearchThroughDescription);
+        }
+    }
+
+    class EditBlacklistButton extends Button {
+        public EditBlacklistButton() {
+            super("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
+            setTooltip(new Tooltip("Blacklist bearbeiten"));
+            setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                DialogLeer dialog = new DialogLeer(null, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, null, PanelBlacklist.class.getName() + "_3"));
+                dialog.setVisible(true);
+            }));
+        }
+    }
+
+    class SenderBoxNode extends VBox {
+        public SenderBoxNode() {
+            senderList = new SenderListBox();
+            VBox.setVgrow(senderList, Priority.ALWAYS);
+            getChildren().addAll(
+                    new Label("Sender:"),
+                    senderList);
+        }
+    }
+
+    class ThemaBoxNode extends HBox {
+        public ThemaBoxNode() {
+            setSpacing(4d);
+
+            themaBox = new ComboBox<>();
+            themaBox.getItems().addAll("");
+            themaBox.getSelectionModel().select(0);
+            themaBox.setPrefWidth(350d);
+
+            themaBox.setEditable(true);
+            themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
+            TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
+
+            getChildren().addAll(new CenteredBorderPane(new Label("Thema:")), themaBox);
+        }
+    }
+
+    class FilmLenghtSliderNode extends VBox {
+        public FilmLenghtSliderNode() {
+            HBox hb = new HBox();
+            hb.getChildren().add(new Label("Mindestlänge:"));
+            Label lblMin = new Label("min");
+            hb.getChildren().add(lblMin);
+
+            HBox hb2 = new HBox();
+            hb2.getChildren().add(new Label("Maximallänge:"));
+            Label lblMax = new Label("max");
+            hb2.getChildren().add(lblMax);
+            VBox vb2 = new VBox();
+            vb2.getChildren().add(hb);
+            vb2.getChildren().add(hb2);
+
+            filmLengthSlider = new FilmLengthSlider();
+
+            lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
+            lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
+            filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
+            filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue)));
+            vb2.getChildren().add(filmLengthSlider);
+
+            var result = Borders.wrap(vb2)
+                    .lineBorder()
+                    .innerPadding(4)
+                    .outerPadding(4)
+                    .buildAll();
+
+            getChildren().add(result);
+        }
+    }
+
+    class ZeitraumPane extends FlowPane {
+        public ZeitraumPane() {
+            Label zeitraum = new Label("Zeitraum:");
+
+            zeitraumSpinner = new ZeitraumSpinner();
+            zeitraumProperty = zeitraumSpinner.valueProperty();
+
+            Label days = new Label("Tage");
+
+            setHgap(4);
+            getChildren().addAll(zeitraum, zeitraumSpinner, days);
+        }
     }
 
     private class SenderListBox extends CheckListView<String> {
