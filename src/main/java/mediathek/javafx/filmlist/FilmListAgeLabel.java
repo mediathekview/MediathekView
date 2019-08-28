@@ -28,35 +28,13 @@ class FilmListAgeLabel extends ComputedLabel {
     private void installWindowListener() {
         MediathekGui.ui().addWindowListener(new WindowAdapter() {
             @Override
-            public void windowIconified(WindowEvent e) {
-                System.out.println("ICONIFIED");
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-                System.out.println("DEICONIFIED");
-            }
-
-            @Override
             public void windowActivated(WindowEvent e) {
-                System.out.println("ACTIVATED");
                 timeline.play();
             }
 
             @Override
             public void windowDeactivated(WindowEvent e) {
-                System.out.println("DEACTIVATED");
                 timeline.pause();
-            }
-
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                System.out.println("GAINED FOCUS");
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                System.out.println("LOST FOCUS");
             }
         });
     }
