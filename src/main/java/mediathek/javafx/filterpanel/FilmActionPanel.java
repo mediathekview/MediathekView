@@ -85,9 +85,6 @@ public class FilmActionPanel {
     public ManageAboAction manageAboAction;
     private Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
-    private Button btnFilmInformation;
-    private BlacklistButton btnBlacklist;
-    private Button btnEditBlacklist;
     /**
      * Stores the list of thema strings used for autocompletion.
      */
@@ -153,35 +150,6 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
-    private void createLeft(ToolBar toolBar) {
-        btnBlacklist = new BlacklistButton(daten);
-
-        toolBar.getItems().addAll(btnDownload,
-                new VerticalSeparator(),
-                createFilmInformationButton(),
-                new VerticalSeparator(),
-                btnPlay,
-                btnRecord,
-                new VerticalSeparator(),
-                btnBlacklist,
-                createEditBlacklistButton(),
-                new VerticalSeparator(),
-                btnManageAbos);
-
-
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                setupLeftButtons(true);
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                setupLeftButtons(false);
-            }
-        });
-    }
-
     @Handler
     private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
         Platform.runLater(() -> btnDownload.setDisable(true));
@@ -193,14 +161,14 @@ public class FilmActionPanel {
     }
 
     private Button createFilmInformationButton() {
-        btnFilmInformation = new FilmInformationButton();
+        Button btnFilmInformation = new FilmInformationButton();
         btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
         return btnFilmInformation;
     }
 
     private Button createEditBlacklistButton() {
-        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
+        Button btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
         btnEditBlacklist.setTooltip(new Tooltip("Blacklist bearbeiten"));
         btnEditBlacklist.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             DialogLeer dialog = new DialogLeer(null, true);
@@ -209,17 +177,6 @@ public class FilmActionPanel {
         }));
 
         return btnEditBlacklist;
-    }
-
-    private void setupLeftButtons(boolean disabled) {
-        Platform.runLater(() -> {
-            btnDownload.setDisable(disabled);
-            btnFilmInformation.setDisable(disabled);
-            btnPlay.setDisable(disabled);
-            btnRecord.setDisable(disabled);
-            btnEditBlacklist.setDisable(disabled);
-            btnManageAbos.setDisable(disabled);
-        });
     }
 
     private void checkPatternValidity() {
@@ -285,16 +242,6 @@ public class FilmActionPanel {
         jfxSearchField.setTooltip(irgendwoTooltip);
         jfxSearchField.setPromptText(PROMPT_IRGENDWO);
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
-    }
-
-    private void setupRightButtons(boolean disabled) {
-        Platform.runLater(() -> {
-            btnShowFilter.setDisable(disabled);
-            btnBlacklist.setDisable(disabled);
-            jfxSearchField.setDisable(disabled);
-            btnSearchThroughDescription.setDisable(disabled);
-        });
-
     }
 
     private VBox createCommonViewSettingsPane() {
@@ -488,25 +435,34 @@ public class FilmActionPanel {
 
         setupSearchThroughDescriptionButton();
 
+        ToolBar toolBar = new ToolBar();
+        toolBar.getItems().addAll(btnDownload,
+                new VerticalSeparator(),
+                createFilmInformationButton(),
+                new VerticalSeparator(),
+                btnPlay,
+                btnRecord,
+                new VerticalSeparator(),
+                new BlacklistButton(daten),
+                createEditBlacklistButton(),
+                new VerticalSeparator(),
+                btnManageAbos,
+                spacer,
+                btnShowFilter,
+                jfxSearchField,
+                btnSearchThroughDescription);
+
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                setupRightButtons(true);
+                Platform.runLater(() -> toolBar.setDisable(true));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                setupRightButtons(false);
+                Platform.runLater(() -> toolBar.setDisable(false));
             }
         });
-
-        javafx.scene.control.ToolBar toolBar = new javafx.scene.control.ToolBar();
-        createLeft(toolBar);
-
-        toolBar.getItems().addAll(spacer,
-                btnShowFilter,
-                jfxSearchField,
-                btnSearchThroughDescription);
 
         return new Scene(toolBar);
     }
