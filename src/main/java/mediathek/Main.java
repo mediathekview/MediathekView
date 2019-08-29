@@ -128,10 +128,16 @@ public class Main {
         }
     }
 
+    private static void setupEnvironmentProperties() {
+        System.setProperty("file.encoding", "UTF-8");
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        setupEnvironmentProperties();
+
         if (GraphicsEnvironment.isHeadless()) {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
             System.exit(1);
