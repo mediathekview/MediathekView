@@ -185,6 +185,7 @@ public class Main {
         startGuiMode();
     }
 
+    @SuppressWarnings("unused")
     private static void initializeJavaFX() {
         //JavaFX stuff
         Platform.setImplicitExit(false);
