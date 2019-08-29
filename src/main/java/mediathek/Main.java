@@ -167,6 +167,8 @@ public class Main {
 
         setSystemLookAndFeel();
 
+        installSingleInstanceHandler();
+
         initializeJavaFX();
 
         loadConfigurationData();
@@ -179,8 +181,6 @@ public class Main {
             setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
-
-        installSingleInstanceHandler();
 
         startGuiMode();
     }
