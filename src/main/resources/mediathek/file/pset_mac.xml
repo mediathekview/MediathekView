@@ -15,14 +15,6 @@
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>flvstreamer</Programmname>
-        <Zieldateiname>%t-%T-%Z.flv</Zieldateiname>
-        <Programmpfad>/Applications/MediathekView.app/Contents/Resources/flvstreamer_macosx_intel_32bit_latest</Programmpfad>
-	<Programmschalter>%F --resume -o **</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>true</Restart>
-    </Programm>
-    <Programm>
         <Programmname>ffmpeg</Programmname>
         <Zieldateiname>%t-%T-%Z.mp4</Zieldateiname>
         <Programmpfad>/Applications/MediathekView.app/Contents/Resources/ffmpeg</Programmpfad>
