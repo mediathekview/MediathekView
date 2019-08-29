@@ -57,10 +57,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
         logger.info("Filme in Downloads eintragen");
+        var listeFilme = daten.getListeFilme();
         this.stream().filter(d -> d.film == null)
                 .forEach(d ->
                 {
-                    d.film = daten.getListeFilme().getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
+                    d.film = listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
                     d.setSizeFromUrl();
                 });
     }
