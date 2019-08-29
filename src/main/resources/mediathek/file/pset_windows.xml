@@ -16,14 +16,6 @@
         <Beschreibung>Standardset zum Speichern der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
-        <Zieldateiname>%t-%T-%Z.flv</Zieldateiname>
-        <Programmpfad>bin\flvstreamer_win32_latest.exe</Programmpfad>
-        <Programmschalter>%F --resume -o "**"</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>true</Restart>
-    </Programm>
-    <Programm>
         <Programmname>ffmpeg</Programmname>
         <Zieldateiname>%t-%T-%Z.mp4</Zieldateiname>
         <Programmpfad>bin\ffmpeg.exe</Programmpfad>
