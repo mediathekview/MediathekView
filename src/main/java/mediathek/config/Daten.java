@@ -14,7 +14,10 @@ import mediathek.gui.messages.TimerEvent;
 import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.mainwindow.SeenHistoryCallable;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
@@ -309,8 +312,6 @@ public class Daten {
     }
 
     public boolean allesLaden() {
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_CONFIG);
-
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
