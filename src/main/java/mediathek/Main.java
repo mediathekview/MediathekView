@@ -167,10 +167,7 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        //JavaFX stuff
-        Platform.setImplicitExit(false);
-
-        var dummy = new JFXPanel();
+        initializeJavaFX();
 
         loadConfigurationData();
 
@@ -186,6 +183,13 @@ public class Main {
         installSingleInstanceHandler();
 
         startGuiMode();
+    }
+
+    private static void initializeJavaFX() {
+        //JavaFX stuff
+        Platform.setImplicitExit(false);
+        //necessary to init JavaFX before loading config data
+        var dummy = new JFXPanel();
     }
 
     private static void loadConfigurationData() {
