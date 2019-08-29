@@ -5,7 +5,6 @@ public enum UIProgressState {
     FILE_CLEANUP("Dateien bereinigen..."),
     START_UI("Anwendungsklassen laden..."),
     LOAD_MAINWINDOW("Hauptfenster initialisieren..."),
-    LOAD_APP_DATA("Anwendungsdaten laden..."),
     WAIT_FOR_HISTORY_DATA("Warte auf Abschluss des Ladens der History..."),
     CREATE_STATUS_BAR("Statusbar initialisieren..."),
     SETUP_FILM_LISTENERS("Listener initialisieren..."),
@@ -18,8 +17,6 @@ public enum UIProgressState {
     LOAD_MEDIADB_DIALOG("Mediendatenbank-Dialog initialisieren..."),
     LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
     LOAD_BANDWIDTH_MONITOR("Bandbreitendialog initialisieren..."),
-    INIT_UI("Benutzeroberfläche initialisieren..."),
-    LOAD_CONFIG("Einstellungsdateien laden..."),
     FINISHED("Fertig.");
 
     private final String title;

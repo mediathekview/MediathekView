@@ -30,7 +30,6 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -155,9 +154,6 @@ public class MediathekGui extends JFrame {
         createMenuBar();
 
         remapF10Key();
-
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_APP_DATA);
-        loadDaten();
 
         try {
             splashScreenManager.updateSplashScreenText(UIProgressState.WAIT_FOR_HISTORY_DATA);
@@ -371,21 +367,6 @@ public class MediathekGui extends JFrame {
     private void initializeMediaDbDialog() {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))) {
             getMediaDatabaseDialog().setVis();
-        }
-    }
-
-    private void loadDaten() {
-        if (daten.allesLaden()) {
-            // alles geladen
-            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_UI);
-        } else {
-            // erster Start
-            ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
-            var dialog = new DialogStarteinstellungen(this, daten);
-            dialog.setVisible(true);
-            MVConfig.loadSystemParameter();
-
-            pack(); //TODO is this really necessary or does it screw up the initial window size?
         }
     }
 

@@ -7,9 +7,11 @@ import javafx.application.Platform;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.SplashScreenManager;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -162,6 +164,8 @@ public class Main {
 
         checkMemoryRequirements();
 
+        loadConfigurationData();
+
         Daten.getInstance().launchHistoryDataLoading();
 
         deleteDatabase();
@@ -176,6 +180,18 @@ public class Main {
         setSystemLookAndFeel();
 
         startGuiMode();
+    }
+
+    private static void loadConfigurationData() {
+        var daten = Daten.getInstance();
+
+        if (!daten.allesLaden()) {
+            // erster Start
+            ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            var dialog = new DialogStarteinstellungen(null, daten);
+            dialog.setVisible(true);
+            MVConfig.loadSystemParameter();
+        }
     }
 
     private static void printDirectoryPaths() {
