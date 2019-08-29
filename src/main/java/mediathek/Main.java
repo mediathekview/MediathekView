@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -164,6 +165,13 @@ public class Main {
 
         checkMemoryRequirements();
 
+        setSystemLookAndFeel();
+
+        //JavaFX stuff
+        Platform.setImplicitExit(false);
+
+        var dummy = new JFXPanel();
+
         loadConfigurationData();
 
         Daten.getInstance().launchHistoryDataLoading();
@@ -176,8 +184,6 @@ public class Main {
         }
 
         installSingleInstanceHandler();
-
-        setSystemLookAndFeel();
 
         startGuiMode();
     }
@@ -255,9 +261,6 @@ public class Main {
         {
             final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
             splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
-
-            //JavaFX stuff
-            Platform.setImplicitExit(false);
 
             splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
             if (SystemUtils.IS_OS_MAC_OSX) {
