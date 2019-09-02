@@ -13,12 +13,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
@@ -343,6 +346,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(GuiFunktionenProgramme.class);
+
     /**
      * Test if a path is a directory and writeable.
      * Path directories will be created before trying write test.
@@ -360,13 +365,14 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         try {
             Files.createDirectories(path);
 
-            if (Files.isDirectory(path) && writableWorkAround(path)) {
+            if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS) && writableWorkAround(path)) {
                 var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
                 Files.delete(tmpPath);
 
                 result = true;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            logger.error("checkPathWritable()", e);
             result = false;
         }
 
