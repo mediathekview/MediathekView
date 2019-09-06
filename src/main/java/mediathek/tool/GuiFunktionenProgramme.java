@@ -21,9 +21,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -348,6 +346,32 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     private static final Logger logger = LogManager.getLogger(GuiFunktionenProgramme.class);
 
+    public static boolean checkPathWritable2(@NotNull String path) {
+        boolean ret = false;
+
+        if (path.isEmpty())
+            return false;
+
+        File testFile = new File(path);
+        try {
+            if (!testFile.exists()) {
+                testFile.mkdirs();
+            }
+
+            if (testFile.isDirectory()) {
+                if (testFile.canWrite()) {
+                    File tmpFile = File.createTempFile("mediathek", "tmp", testFile);
+                    ret = tmpFile.delete();
+//                    ret = true;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("checkPathWritable2()", e);
+        }
+
+        return ret;
+    }
+
     /**
      * Test if a path is a directory and writeable.
      * Path directories will be created before trying write test.
@@ -356,7 +380,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
      * @return true if we can write a file there, false if not.
      */
     public static boolean checkPathWriteable(@NotNull String pfad) {
-        boolean result = false;
+        /*boolean result = false;
 
         if (pfad.isEmpty())
             return false;
@@ -376,7 +400,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             result = false;
         }
 
-        return result;
+        return result;*/
+        return checkPathWritable2(pfad);
     }
 
     public static boolean programmePruefen(JFrame jFrame) {
