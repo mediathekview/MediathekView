@@ -12,7 +12,6 @@ import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.DosFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -330,23 +326,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    /**
-     * Workaround for windows SMB share bug.
-     * Read the file/directory attributes and check them instead of calling NIO API.
-     */
-    private static boolean writableWorkAround(Path path) throws IOException {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            var dosAttrs = Files.readAttributes(path, DosFileAttributes.class);
-            return !dosAttrs.isReadOnly();
-        }
-        else {
-            return Files.isWritable(path);
-        }
-    }
-
     private static final Logger logger = LogManager.getLogger(GuiFunktionenProgramme.class);
 
-    public static boolean checkPathWritable2(@NotNull String path) {
+    /**
+     * Test if a path is a directory and writeable.
+     * Path directories will be created before trying write test.
+     *
+     * @param path path to the directory
+     * @return true if we can write a file there, false if not.
+     */
+    public static boolean checkPathWriteable(@NotNull String path) {
         boolean ret = false;
 
         if (path.isEmpty())
@@ -366,43 +355,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
             }
         } catch (Exception e) {
-            logger.error("checkPathWritable2()", e);
+            logger.error("checkPathWriteable()", e);
         }
 
         return ret;
     }
 
-    /**
-     * Test if a path is a directory and writeable.
-     * Path directories will be created before trying write test.
-     *
-     * @param pfad path to the directory
-     * @return true if we can write a file there, false if not.
-     */
-    public static boolean checkPathWriteable(@NotNull String pfad) {
-        /*boolean result = false;
-
-        if (pfad.isEmpty())
-            return false;
-
-        Path path = Paths.get(pfad);
-        try {
-            Files.createDirectories(path);
-
-            if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS) && writableWorkAround(path)) {
-                var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
-                Files.delete(tmpPath);
-
-                result = true;
-            }
-        } catch (Exception e) {
-            logger.error("checkPathWritable()", e);
-            result = false;
-        }
-
-        return result;*/
-        return checkPathWritable2(pfad);
-    }
 
     public static boolean programmePruefen(JFrame jFrame) {
         // prüfen ob die eingestellten Programmsets passen
