@@ -37,7 +37,7 @@ stages:
   - name: Build and Deploy Snapshots
     if: branch = develop AND type = cron
   - name: Build and Deploy Linux
-#    if: tag IS present
+    if: tag IS present
   - name: Build and Deploy Windows
     if: tag IS present
 #- name: Build and Deploy Mac
