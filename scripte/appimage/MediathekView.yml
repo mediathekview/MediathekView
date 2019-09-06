@@ -1,0 +1,21 @@
+ingredients:
+  dist: bionic
+  addons:
+    apt:
+      packages:
+        - ffmpeg
+  debs:
+    - /debs/*
+script:
+  - ls -l ../
+  - cat > mediathekview.desktop <<EOF
+  - #!/usr/bin/env xdg-open
+  - [Desktop Entry]
+  - Type=Application
+  - Name=MediathekView
+  - Categories=AudioVideo
+  - Exec=/bin/sh \"/opt/MediathekView/MediathekView\" %U
+  - StartupWMClass=install4j-mediathek-Main_MediathekView
+  - Icon=MediathekView
+  - EOF
+  - cp opt/MediathekView/.install4j/MediathekView.png .
