@@ -2,10 +2,10 @@
 
 BATCHDATEI="target/uploadbatch"
 LOCAL="target"
-LOCAL_INSTALL4J="target/media"
 REMOTE="upload"
 
 STATUSDATEI="target/upload.status"
+PLATTFORMDATEI="target/plattform.txt"
 COMMITDATEI="target/gitcommithash.txt"
 
 PORT="22"
@@ -19,26 +19,24 @@ chmod 600 $KEYFILE
 
 if [ "$1" = "nightly" ]; then
 
-  echo "Deploye nightly Build mit commit '$2'"
+  echo "Deploye nightly Build mit commit '$3' für Platform '$2'"
 
   echo 2 > $STATUSDATEI
 
-  echo $2 > $COMMITDATEI
+  echo $3 > $COMMITDATEI
 
 else
+  echo "Deploye Release für Platform '$2'"
+
   echo 1 > $STATUSDATEI
 fi
+
+echo $2 > $PLATTFORMDATEI
 
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' \)); do
-  # einzelne fertige Dateien hochladen
-  echo "put $file" >> $BATCHDATEI
-done
-
-# Upload install4j results
-for file in $(find $LOCAL_INSTALL4J/ -type f \( -name '*.deb' -o -name '*.rpm' -o -name '*.sh' -o -name '*.gz' -o -name '*.exe'  -o -name '*.zip' \)); do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done
@@ -48,6 +46,8 @@ echo "cd ../" >> $BATCHDATEI
 if [ "$1" = "nightly" ]; then
   echo "put $COMMITDATEI" >> $BATCHDATEI
 fi
+
+echo "put $PLATTFORMDATEI" >> $BATCHDATEI
 
 # Upload fertig bestätigen
 echo "put $STATUSDATEI" >> $BATCHDATEI 
