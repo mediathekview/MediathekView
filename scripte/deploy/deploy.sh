@@ -32,7 +32,7 @@ fi
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' \)); do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done
