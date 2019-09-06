@@ -69,15 +69,16 @@ jobs:
     - stage: Build and Deploy Linux
       script:
         - ./mvnw clean install -Plinux -Pinstall4j-linux
-        - echo "Building AppImage from deb file"
-        - cp target/media/*.deb scripte/appimage/
-        - cd scripte/appimage/
-        - wget https://raw.githubusercontent.com/AppImage/pkg2appimage/master/pkg2appimage
-        - chmod +x pkg2appimage
-        - wget https://raw.githubusercontent.com/AppImage/pkg2appimage/master/pkg2appimage-with-docker
-        - chmod +x pkg2appimage-with-docker
-        - ./pkg2appimage-with-docker MediathekView.yml
-        - cp out/MediathekView*.AppImage ../../target/MediathekView.AppImage
+#        - echo "Building AppImage from deb file"
+#        - cp target/media/*.deb scripte/appimage/
+#        - cd scripte/appimage/
+#        - wget https://raw.githubusercontent.com/AppImage/pkg2appimage/master/pkg2appimage
+#        - chmod +x pkg2appimage
+#        - wget https://raw.githubusercontent.com/AppImage/pkg2appimage/master/pkg2appimage-with-docker
+#        - chmod +x pkg2appimage-with-docker
+#        - ./pkg2appimage-with-docker MediathekView.yml
+        - echo "Baue AppImage"
+        - scripte/appimage.sh
       after_success:
         - sonar-scanner
       before_deploy:
