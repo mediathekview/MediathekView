@@ -521,18 +521,16 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
         public static void createIndices() {
-            if (MemoryUtils.isLowMemoryEnvironment()) {
-                logger.trace("Creating SQL indices");
-                SqlClosure.sqlExecute(connection -> {
-                    Statement statement = connection.createStatement();
-                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
-                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
-                    statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
+            logger.trace("Creating SQL indices");
+            SqlClosure.sqlExecute(connection -> {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
 
-                    return null;
-                });
-                logger.trace("Finished creating SQL indices");
-            }
+                return null;
+            });
+            logger.trace("Finished creating SQL indices");
         }
 
         public static void initializeDatabase() {

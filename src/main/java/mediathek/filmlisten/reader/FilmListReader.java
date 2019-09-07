@@ -340,7 +340,8 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
-        DatenFilm.Database.createIndices();
+        if (MemoryUtils.isLowMemoryEnvironment())
+            DatenFilm.Database.createIndices();
 
         notifyFertig(source, listeFilme);
     }
