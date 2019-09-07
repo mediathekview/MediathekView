@@ -8,6 +8,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 class WindowLocationConfigSaverListener extends ComponentAdapter {
+    private static final int DEFAULT_WIDTH = 640;
+    private static final int DEFAULT_HEIGHT = 480;
+
     @Override
     public void componentResized(ComponentEvent e) {
         JFrame mainWindow = (JFrame)e.getComponent(); //we know it´s our main window
@@ -16,10 +19,9 @@ class WindowLocationConfigSaverListener extends ComponentAdapter {
         var dims = mainWindow.getSize();
 
         //safety check if the window gets too small..on some systems it is really hard to get it bigger again. (Linux)
-        if (dims.width < 320)
-            dims.width = 320;
-        if (dims.height < 240)
-            dims.height = 240;
+        if (dims.width < DEFAULT_WIDTH && dims.height < DEFAULT_HEIGHT) {
+            mainWindow.setSize(DEFAULT_WIDTH,DEFAULT_HEIGHT);
+        }
 
         try {
             config.lock(LockMode.WRITE);
