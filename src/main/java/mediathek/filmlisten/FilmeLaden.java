@@ -207,16 +207,19 @@ public class FilmeLaden {
                 // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
                 listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
             }
+
             daten.getListeFilmeNachBlackList().clear();
+
+            final int days = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE));
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (Netzwerk)");
-                importFilmliste.importFromUrl(listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                importFilmliste.importFromUrl(listeFilme, diffListe, days);
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 logger.info("Filmliste laden von: {}", dateiUrl);
                 listeFilme.clear();
-                importFilmliste.importFromFile(dateiUrl, listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                importFilmliste.importFromFile(dateiUrl, listeFilme, days);
             }
         }
         return true;
