@@ -94,24 +94,9 @@
 			<artifactId>tilesfx</artifactId>
 			<version>11.2</version>
 			<exclusions>
-				<exclusion><groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-				</exclusion>
 				<exclusion>
 					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
+					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -199,7 +184,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>27.1-jre</version>
+			<version>28.1-jre</version>
 		</dependency>
 
 		<dependency>
@@ -214,31 +199,10 @@
 			<artifactId>controlsfx</artifactId>
 			<version>11.0.0</version>
 			<exclusions>
-			<exclusion>
-				<groupId>org.openjfx</groupId>
-				<artifactId>javafx-base</artifactId>
-			</exclusion>
 				<exclusion>
 					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
+					<artifactId>*</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-				</exclusion>
-
 			</exclusions>
 		</dependency>
 		<dependency>
