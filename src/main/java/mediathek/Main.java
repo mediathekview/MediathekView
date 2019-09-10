@@ -29,6 +29,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.Security;
 
 public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
@@ -130,6 +131,9 @@ public class Main {
 
     private static void setupEnvironmentProperties() {
         System.setProperty("file.encoding", "UTF-8");
+
+        //enable full strength crypto if not already done
+        Security.setProperty("crypto.policy", "unlimited");
     }
 
     /**
