@@ -114,10 +114,6 @@ public class MediathekGui extends JFrame {
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
     /**
-     * Used for implementing shutting down the system.
-     */
-    protected ShutdownComputerCommand shutdownCommand;
-    /**
      * Bandwidth monitoring for downloads.
      */
     private BandwidthMonitorController bandwidthMonitor;
@@ -198,8 +194,6 @@ public class MediathekGui extends JFrame {
                 setupTaskbarMenu();
         });
 
-        setupShutdownCommand();
-
         setupSystemTray();
 
         SwingUtilities.invokeLater(this::setApplicationWindowSize);
@@ -270,13 +264,6 @@ public class MediathekGui extends JFrame {
         //Hier wird F10 default Funktion unterbunden:
         InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
-    }
-
-    /**
-     * setup the system wide shutdown handler
-     */
-    protected void setupShutdownCommand() {
-        shutdownCommand = new GenericShutdownComputerCommand();
     }
 
     private void createMenuBar() {
@@ -931,7 +918,8 @@ public class MediathekGui extends JFrame {
     /**
      * Shutdown the computer depending on Operating System.
      */
-    private void shutdownComputer() {
+    protected void shutdownComputer() {
+        var shutdownCommand = new GenericShutdownComputerCommand();
         shutdownCommand.execute();
     }
 

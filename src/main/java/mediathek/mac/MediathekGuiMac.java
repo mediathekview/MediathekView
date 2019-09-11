@@ -75,8 +75,9 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void setupShutdownCommand() {
-        shutdownCommand = new OsxShutdownComputerCommand();
+    protected void shutdownComputer() {
+        var shutdownCommand = new OsxShutdownComputerCommand();
+        shutdownCommand.execute();
     }
 
     @Override
