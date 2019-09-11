@@ -90,7 +90,7 @@ public class MediathekGuiMac extends MediathekGui {
                 logger.debug("Shutdown Helper location: {}", appLocation.toString());
                 logger.info("Executing shutdown helper");
                 final ProcessBuilder builder = new ProcessBuilder(appLocation.toString() + SHUTDOWN_HELPER_APP_BINARY_PATH);
-                builder.command().add("-sleep");
+                builder.command().add("-shutdown");
                 builder.start();
                 logger.debug("shutdown helper app was launched");
             }
