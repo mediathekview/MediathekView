@@ -16,18 +16,23 @@ import mediathek.tool.Log;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
     private final OsxPowerManager powerManager = new OsxPowerManager();
+    private final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     protected Stage controlsFxWorkaroundStage;
 
     public MediathekGuiMac() {
@@ -76,8 +81,22 @@ public class MediathekGuiMac extends MediathekGui {
 
     @Override
     protected void shutdownComputer() {
-        var shutdownCommand = new OsxShutdownComputerCommand();
-        shutdownCommand.execute();
+        try {
+            var result = Spotlight.find("kMDItemCFBundleIdentifier == org.mediathekview.MediathekView-Shutdown-Helper");
+            if (result.isEmpty())
+                logger.error("could not locate mediathekview shutdown helper app");
+            else {
+                File appLocation = result.get(0);
+                logger.debug("Shutdown Helper location: {}", appLocation.toString());
+                logger.debug("Executing shutdown helper");
+                final ProcessBuilder builder = new ProcessBuilder(appLocation.toString() + SHUTDOWN_HELPER_APP_BINARY_PATH);
+                builder.command().add("-sleep");
+                builder.start();
+                logger.debug("shutdown helper app was launched");
+            }
+        } catch (Exception e) {
+            logger.error("unexpected error occured", e);
+        }
     }
 
     @Override
