@@ -919,8 +919,7 @@ public class MediathekGui extends JFrame {
      * Shutdown the computer depending on Operating System.
      */
     protected void shutdownComputer() {
-        var shutdownCommand = new GenericShutdownComputerCommand();
-        shutdownCommand.execute();
+        //default is none
     }
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
