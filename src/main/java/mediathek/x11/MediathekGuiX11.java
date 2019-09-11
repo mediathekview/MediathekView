@@ -1,11 +1,14 @@
 package mediathek.x11;
 
 import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class MediathekGuiX11 extends MediathekGui {
@@ -47,6 +50,30 @@ public class MediathekGuiX11 extends MediathekGui {
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Could not set awtAppClassName");
+        }
+    }
+
+    @Override
+    protected void shutdownComputer() {
+        String strShutdownCommand;
+
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
+            strShutdownCommand = MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN); //strShutdownCommand = "shutdown -h now";
+            if (strShutdownCommand.isEmpty()) {
+                strShutdownCommand = Konstanten.SHUTDOWN_LINUX;
+                MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
+            }
+        } else {
+            // unknown operating system
+            logger.error("shutdown command is unknown for this operating system");
+            return;
+        }
+
+        try {
+            logger.info("Shutdown: {}", strShutdownCommand);
+            Runtime.getRuntime().exec(strShutdownCommand);
+        } catch (IOException ex) {
+            logger.error(ex);
         }
     }
 }
