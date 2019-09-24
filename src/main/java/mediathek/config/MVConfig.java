@@ -210,7 +210,6 @@ public class MVConfig {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
         SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
-        SYSTEM_ICON_KLEIN("system-icon-klein"),
         SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
