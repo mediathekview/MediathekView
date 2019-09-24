@@ -48,7 +48,8 @@ public class FileSize {
      * @return size in bytes or -1.
      */
     private static long getFileSizeFromUrl(@NotNull String url) {
-        if (!url.toLowerCase().startsWith("http")) {
+        final var lUrl = url.toLowerCase();
+        if (!lUrl.startsWith("http") || lUrl.endsWith(".m3u8")) {
             return -1;
         }
 
