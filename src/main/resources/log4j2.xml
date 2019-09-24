@@ -7,9 +7,9 @@
     </Appenders>
 
     <Loggers>
-        <Root level="trace">
-            <AppenderRef ref="console" level="trace"/>
-        </Root>
         <Logger name="hsqldb.db" level="warn"/>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+        </Root>
     </Loggers>
 </Configuration>

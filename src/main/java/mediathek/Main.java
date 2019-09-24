@@ -21,12 +21,14 @@ import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import picocli.CommandLine;
 
@@ -91,6 +93,7 @@ public class Main {
                 .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fa.getName(), null, null)})
                 .setConfiguration(config)
                 .setIncludeLocation(true)
+                .setBlocking(false)
                 .build();
 
         asyncAppender.start();
@@ -98,6 +101,14 @@ public class Main {
 
         final var rootLogger = loggerContext.getRootLogger();
         rootLogger.addAppender(asyncAppender);
+
+        final Level level;
+        if (Config.isDebugModeEnabled() || Config.isEnhancedLoggingEnabled())
+            level = Level.TRACE;
+        else
+            level = Level.INFO;
+
+        Configurator.setAllLevels(rootLogger.getName(), level);
 
         loggerContext.updateLoggers();
     }
