@@ -375,7 +375,7 @@ public class Daten {
 
     private void clearKonfig() {
         listePset.clear();
-        ReplaceList.list.clear();
+        ReplaceList.clear();
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
