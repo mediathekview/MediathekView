@@ -1,29 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO">
-    <Properties>
-        <Property name="mvLogOutputPath">${sys:user.home}/.mediathek3/mediathekview.log</Property>
-    </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5level] [%t] %c - %msg%n"></PatternLayout>
+            <PatternLayout pattern="[%-5level] [%t] %c - %msg%n"/>
         </Console>
-
-        <File name="LogFile" filename="${sys:mvLogOutputPath}" append="false">
-            <PatternLayout>
-                <Pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n</Pattern>
-            </PatternLayout>
-        </File>
-
-        <Async name="Async">
-            <AppenderRef ref="LogFile"></AppenderRef>
-        </Async>
     </Appenders>
 
     <Loggers>
         <Root level="trace">
-            <AppenderRef ref="console" level="trace"></AppenderRef>
-            <AppenderRef ref="Async"></AppenderRef>
+            <AppenderRef ref="console" level="trace"/>
         </Root>
-        <Logger name="hsqldb.db" level="warn"></Logger>
+        <Logger name="hsqldb.db" level="warn"/>
     </Loggers>
 </Configuration>
