@@ -27,6 +27,12 @@ public class Config {
     @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
 
+    /**
+     * For development use parameter to enable TRACE output to log env.
+     */
+    @CommandLine.Option(names = {"-e", "--enhanced-logging"}, hidden = true, description = "Erweiterten Log-Modus aktivieren (FÜR ENTWICKLER)")
+    private static boolean enhancedLogging;
+
     private static boolean portableMode;
 
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
@@ -44,6 +50,10 @@ public class Config {
 
     public static void setPortableMode(boolean portableMode) {
         Config.portableMode = portableMode;
+    }
+
+    public static boolean isEnhancedLoggingEnabled() {
+        return enhancedLogging;
     }
 
     public static boolean isDebugModeEnabled() {
