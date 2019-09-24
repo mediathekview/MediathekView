@@ -125,16 +125,9 @@ public class Main {
         config.addAppender(asyncAppender);
 
         final var rootLogger = loggerContext.getRootLogger();
+        rootLogger.setLevel(Level.TRACE);
         rootLogger.addAppender(consoleAppender);
         rootLogger.addAppender(asyncAppender);
-
-        /*final Level level;
-        if (Config.isDebugModeEnabled() || Config.isEnhancedLoggingEnabled())
-            level = Level.TRACE;
-        else
-            level = Level.INFO;
-
-        Configurator.setAllLevels(rootLogger.getName(), level);*/
 
         loggerContext.updateLoggers();
     }
