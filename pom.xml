@@ -531,6 +531,9 @@
 										<transformer
 											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 											<mainClass>${mainclass}</mainClass>
+											<manifestEntries>
+												<Multi-Release>true</Multi-Release>
+											</manifestEntries>
 										</transformer>
 									</transformers>
 									<excludes>
