@@ -567,7 +567,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void configureTabIcons() {
-        final boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON));
+        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false);
 
         //no icons...
         if (!icon) {
