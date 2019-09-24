@@ -1,7 +1,7 @@
 package mediathek.controller;
 
 import mediathek.daten.DatenDownload;
-import org.apache.commons.io.FileUtils;
+import mediathek.tool.ByteUnitUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
     public String toString() {
         final long bytesRead = calculationTask.getTotalBytesRead();
         final long b = getSumBandwidth();
-        String s = FileUtils.byteCountToDisplaySize(bytesRead);
+        String s = ByteUnitUtil.byteCountToDisplaySize(bytesRead);
         return "Download: Bytes gelesen: " + s + "  Bandbreite: " + DatenDownload.getTextBandbreite(b);
     }
 
@@ -86,7 +86,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
      * This TimerTask calculates the bandwidth (bytes per seconds) and records the overall bytes read
      * until termination.
      */
-    private class BandwidthCalculationTask extends TimerTask {
+    private static class BandwidthCalculationTask extends TimerTask {
 
         private final AtomicLong _oldTotalBytes = new AtomicLong(0);
         private final AtomicLong _totalBytesRead = new AtomicLong(0);
