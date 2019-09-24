@@ -86,9 +86,11 @@ public class PanelEinstellungen extends JPanel {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
             Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
-        jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON)));
+
+        var config = ApplicationConfiguration.getConfiguration();
+        jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
         jCheckBoxTabIcon.addActionListener(ae -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, jCheckBoxTabIcon.isSelected());
             Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
     }

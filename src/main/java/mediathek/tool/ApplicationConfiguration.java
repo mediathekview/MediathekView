@@ -31,6 +31,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_MAINWINDOW_HEIGHT = "application.ui.mainwindow.height";
     public static final String APPLICATION_UI_MAINWINDOW_LOCATION_X = "application.ui.mainwindow.location.x";
     public static final String APPLICATION_UI_MAINWINDOW_LOCATION_Y = "application.ui.mainwindow.location.y";
+    public static final String APPLICATION_UI_MAINWINDOW_TAB_ICONS = "application.ui.mainwindow.tab_icons";
 
     public static final String APPLICATION_UI_FILTER_DIALOG_WIDTH = "application.ui.filter_dialog.width";
     public static final String APPLICATION_UI_FILTER_DIALOG_HEIGHT = "application.ui.filter_dialog.height";
