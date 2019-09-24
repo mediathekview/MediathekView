@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO">
-    <Appenders>
-        <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5level] [%t] %c - %msg%n"/>
-        </Console>
-    </Appenders>
-
     <Loggers>
         <Logger name="hsqldb.db" level="warn"/>
-        <Root level="info">
-            <AppenderRef ref="console"/>
+        <Root level="trace">
         </Root>
     </Loggers>
 </Configuration>

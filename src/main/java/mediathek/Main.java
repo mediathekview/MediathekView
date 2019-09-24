@@ -24,11 +24,13 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import picocli.CommandLine;
 
@@ -76,21 +78,44 @@ public class Main {
         else
             path = Config.baseFilePath + "/mediathekview.log"; //TODO maybe resolve is better in this case
 
-        FileAppender fa = FileAppender.newBuilder()
+
+        final PatternLayout consolePattern;
+        if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
+            consolePattern = PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build();
+        }
+        else {
+            consolePattern = PatternLayout.newBuilder().withPattern(". %msg%n").build();
+        }
+
+        var consoleAppender = ConsoleAppender.createDefaultAppenderForLayout(consolePattern);
+        //for normal users only show INFO and higher messages
+        if (!Config.isEnhancedLoggingEnabled() && !Config.isDebugModeEnabled()) {
+            final var thresholdFilter = ThresholdFilter.createFilter(Level.INFO, Filter.Result.ACCEPT, Filter.Result.DENY);
+            consoleAppender.addFilter(thresholdFilter);
+        }
+        consoleAppender.start();
+
+        var fileAppenderBuilder = FileAppender.newBuilder()
                 .setName("LogFile")
                 .withAppend(false)
                 .withFileName(path)
                 .setLayout(PatternLayout.newBuilder().withPattern("%-5p %d  [%t] %C{2} (%F:%L) - %m%n").build())
                 //.setLayout(PatternLayout.newBuilder().withPattern("[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n").build())
-                .setConfiguration(config)
-                .build();
+                .setConfiguration(config);
 
-        fa.start();
-        config.addAppender(fa);
+        //regular users may have DEBUG output in log file but not TRACE
+        if (!Config.isEnhancedLoggingEnabled() && !Config.isDebugModeEnabled()) {
+            final var thresholdFilter = ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY);
+            fileAppenderBuilder.setFilter(thresholdFilter);
+        }
+
+        FileAppender fileAppender = fileAppenderBuilder.build();
+        fileAppender.start();
+        config.addAppender(fileAppender);
 
         AsyncAppender asyncAppender = AsyncAppender.newBuilder()
                 .setName("Async")
-                .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fa.getName(), null, null)})
+                .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
                 .setConfiguration(config)
                 .setIncludeLocation(true)
                 .setBlocking(false)
@@ -100,15 +125,16 @@ public class Main {
         config.addAppender(asyncAppender);
 
         final var rootLogger = loggerContext.getRootLogger();
+        rootLogger.addAppender(consoleAppender);
         rootLogger.addAppender(asyncAppender);
 
-        final Level level;
+        /*final Level level;
         if (Config.isDebugModeEnabled() || Config.isEnhancedLoggingEnabled())
             level = Level.TRACE;
         else
             level = Level.INFO;
 
-        Configurator.setAllLevels(rootLogger.getName(), level);
+        Configurator.setAllLevels(rootLogger.getName(), level);*/
 
         loggerContext.updateLoggers();
     }
@@ -194,20 +220,20 @@ public class Main {
     private static void printVersionInformation() {
         final var formatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
 
-        logger.info("=== Java Information ===");
+        logger.debug("=== Java Information ===");
         logger.info("Programmstart: {}", formatter.format(Log.startZeit));
         //Version
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         final long maxMem = Runtime.getRuntime().maxMemory();
-        logger.info("maxMemory: {} MB", maxMem / FileUtils.ONE_MB);
+        logger.debug("maxMemory: {} MB", maxMem / FileUtils.ONE_MB);
 
-        logger.info("Java:");
+        logger.debug("Java:");
         final String[] java = Functions.getJavaVersion();
         for (String ja : java) {
-            logger.info(ja);
+            logger.debug(ja);
         }
-        logger.info("===");
+        logger.debug("===");
     }
 
     /**
