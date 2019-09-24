@@ -45,7 +45,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS = "application.notifications.native";
     public static final String APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING = "application.spotlight.disabled_warning.show";
-    public static final String APPLICATION_DEBUG_HTTP_TRAFFIC = "application.debug.http_traffic";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
     /**
      * can be BASIC, HEADERS, BODY
