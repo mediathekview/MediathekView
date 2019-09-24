@@ -33,6 +33,8 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_MAINWINDOW_LOCATION_Y = "application.ui.mainwindow.location.y";
     public static final String APPLICATION_UI_MAINWINDOW_TAB_ICONS = "application.ui.mainwindow.tab_icons";
 
+    public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION = "application.ui.download.tab.divider.location";
+
     public static final String APPLICATION_UI_FILTER_DIALOG_WIDTH = "application.ui.filter_dialog.width";
     public static final String APPLICATION_UI_FILTER_DIALOG_HEIGHT = "application.ui.filter_dialog.height";
     public static final String APPLICATION_UI_FILTER_DIALOG_LOCATION_X = "application.ui.filter_dialog.location.x";
@@ -81,11 +83,11 @@ public class ApplicationConfiguration {
     public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
+    public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
 
     public static final String SEARCH_USE_FILM_DESCRIPTIONS = "searchfield.film.search_through_description";
 
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
-    public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 

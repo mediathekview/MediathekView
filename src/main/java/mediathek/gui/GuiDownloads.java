@@ -271,13 +271,16 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setupFilterPanel() {
-        boolean visible = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS);
+        final boolean visible = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS);
         updateFilterVisibility(visible);
 
-        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER));
+        var config = ApplicationConfiguration.getConfiguration();
+
+        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+        jSplitPane1.setDividerLocation(location);
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jPanelFilterExtern.isVisible()) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
+                config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION,jSplitPane1.getDividerLocation());
             }
         });
     }
@@ -612,7 +615,8 @@ public class GuiDownloads extends AGuiTabPanel {
             daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
-        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER));
+        final int location = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+        jSplitPane1.setDividerLocation(location);
 
         setupInfoPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
