@@ -20,8 +20,14 @@ import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -56,6 +62,44 @@ public class Main {
         for (String argument : aArguments) {
             logger.info("Startparameter: {}", argument);
         }
+    }
+
+    private static void setupLogging() {
+        final var loggerContext = (LoggerContext) LogManager.getContext(false);
+        final var config = loggerContext.getConfiguration();
+        final String path;
+
+        if (!Config.isPortableMode())
+            path = Daten.getSettingsDirectory_String() + "/mediathekview.log";
+        else
+            path = Config.baseFilePath + "/mediathekview.log"; //TODO maybe resolve is better in this case
+
+        FileAppender fa = FileAppender.newBuilder()
+                .setName("LogFile")
+                .withAppend(false)
+                .withFileName(path)
+                .setLayout(PatternLayout.newBuilder().withPattern("%-5p %d  [%t] %C{2} (%F:%L) - %m%n").build())
+                //.setLayout(PatternLayout.newBuilder().withPattern("[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n").build())
+                .setConfiguration(config)
+                .build();
+
+        fa.start();
+        config.addAppender(fa);
+
+        AsyncAppender asyncAppender = AsyncAppender.newBuilder()
+                .setName("Async")
+                .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fa.getName(), null, null)})
+                .setConfiguration(config)
+                .setIncludeLocation(true)
+                .build();
+
+        asyncAppender.start();
+        config.addAppender(asyncAppender);
+
+        final var rootLogger = loggerContext.getRootLogger();
+        rootLogger.addAppender(asyncAppender);
+
+        loggerContext.updateLoggers();
     }
 
     private static void setupPortableMode() {
@@ -136,6 +180,25 @@ public class Main {
         Security.setProperty("crypto.policy", "unlimited");
     }
 
+    private static void printVersionInformation() {
+        final var formatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+
+        logger.info("=== Java Information ===");
+        logger.info("Programmstart: {}", formatter.format(Log.startZeit));
+        //Version
+        logger.info("Version: {}", Konstanten.MVVERSION);
+
+        final long maxMem = Runtime.getRuntime().maxMemory();
+        logger.info("maxMemory: {} MB", maxMem / FileUtils.ONE_MB);
+
+        logger.info("Java:");
+        final String[] java = Functions.getJavaVersion();
+        for (String ja : java) {
+            logger.info(ja);
+        }
+        logger.info("===");
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -155,11 +218,12 @@ public class Main {
                 System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
             }
 
-            Log.printVersionInformation();
-            printArguments(args);
-
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
+            setupLogging();
             setupPortableMode();
+
+            printVersionInformation();
+            printArguments(args);
         } catch (CommandLine.ParameterException ex) {
             cmd.getErr().println(ex.getMessage());
             if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, cmd.getErr())) {
@@ -167,7 +231,7 @@ public class Main {
             }
             System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
         } catch (Exception ex) {
-            logger.error("Command line parse error: {}", cmd.getErr());
+            logger.error("Command line parse error:", ex);
             System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
         }
 
