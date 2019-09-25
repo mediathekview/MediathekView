@@ -1,33 +1,37 @@
 package mediathek.controller;
 
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ByteUnitUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MVBandwidthCountingInputStream extends InputStream {
 
     private final InputStream iStream;
-    private final BandwidthCalculationTask calculationTask;
+    private final BandwidthCalculationTask calculationTask = new BandwidthCalculationTask();
+    private final ScheduledFuture calculationTaskFuture;
 
-    public MVBandwidthCountingInputStream(InputStream in, java.util.Timer calculationTimer) {
+    public MVBandwidthCountingInputStream(InputStream in) {
         iStream = in;
 
         //start bandwidth calculation
-        calculationTask = new BandwidthCalculationTask();
-        calculationTimer.scheduleAtFixedRate(calculationTask, 0, 1000);
+        calculationTaskFuture = Daten.getInstance().getTimerPool().scheduleAtFixedRate(calculationTask,0,1, TimeUnit.SECONDS);
     }
 
     @Override
     public void close() throws IOException {
         iStream.close();
         super.close();
+
         //stop bandwidth calculation
-        calculationTask.cancel();
+        if (calculationTaskFuture != null)
+            calculationTaskFuture.cancel(true);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
      * This TimerTask calculates the bandwidth (bytes per seconds) and records the overall bytes read
      * until termination.
      */
-    private static class BandwidthCalculationTask extends TimerTask {
+    private static class BandwidthCalculationTask implements Runnable {
 
         private final AtomicLong _oldTotalBytes = new AtomicLong(0);
         private final AtomicLong _totalBytesRead = new AtomicLong(0);

@@ -38,7 +38,6 @@ public class DirectHttpDownload extends Thread {
     private final Daten daten;
     private final DatenDownload datenDownload;
     private final Start start;
-    private final java.util.Timer bandwidthCalculationTimer;
     /**
      * Instance which will limit the download speed
      */
@@ -57,7 +56,7 @@ public class DirectHttpDownload extends Thread {
     private CompletableFuture<Void> infoFuture;
     private CompletableFuture<Void> subtitleFuture;
 
-    public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
+    public DirectHttpDownload(Daten daten, DatenDownload d) {
         super();
 
         httpClient = MVHttpClient.getInstance().getHttpClient();
@@ -66,7 +65,6 @@ public class DirectHttpDownload extends Thread {
         messageBus.subscribe(this);
 
         this.daten = daten;
-        this.bandwidthCalculationTimer = bandwidthCalculationTimer;
         datenDownload = d;
         start = datenDownload.start;
         setName("DIRECT DL THREAD_" + d.arr[DatenDownload.DOWNLOAD_TITEL]);
@@ -179,7 +177,7 @@ public class DirectHttpDownload extends Thread {
         try (FileOutputStream fos = new FileOutputStream(file, (alreadyDownloaded != 0));
              BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
              ThrottlingInputStream tis = new ThrottlingInputStream(inputStream, rateLimiter);
-             MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
+             MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis)) {
             start.mVBandwidthCountingInputStream = mvis;
             datenDownload.mVFilmSize.addAktSize(alreadyDownloaded);
             final byte[] buffer = new byte[1024];
