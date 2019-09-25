@@ -421,6 +421,9 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/res</outputDirectory>
+							<nonFilteredFileExtensions>
+                                                            <nonFilteredFileExtension>exe</nonFilteredFileExtension>
+                                                        </nonFilteredFileExtensions>
 							<resources>
 								<resource>
 									<directory>res</directory>
