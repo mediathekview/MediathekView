@@ -303,17 +303,10 @@ public class StarterClass {
     // ********************************************
     private class Starten extends Thread {
 
-        /**
-         * The only {@link java.util.Timer} used for all bandwidth calculations.
-         * calculation tasks.
-         */
-        private final java.util.Timer bandwidthCalculationTimer;
-
         public Starten() {
             super();
             setName("StarterClass.Starten Thread");
             setDaemon(true);
-            bandwidthCalculationTimer = new java.util.Timer("BandwidthCalculationTimer");
         }
 
         @Override
@@ -372,7 +365,7 @@ public class StarterClass {
                     downloadThread.start();
                     break;
                 case DatenDownload.ART_DOWNLOAD:
-                    downloadThread = new DirectHttpDownload(daten, datenDownload, bandwidthCalculationTimer);
+                    downloadThread = new DirectHttpDownload(daten, datenDownload);
                     downloadThread.start();
                     break;
                 default:
