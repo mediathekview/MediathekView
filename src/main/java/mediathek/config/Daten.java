@@ -44,9 +44,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Daten {
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
@@ -59,6 +59,7 @@ public class Daten {
      * Maximum number of backup files to be stored.
      */
     private final static int MAX_COPY = 5;
+    private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
     public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
     private static Daten instance;
@@ -305,10 +306,12 @@ public class Daten {
         return erledigteAbos;
     }
 
+    public ScheduledThreadPoolExecutor getTimerPool() {
+        return timerPool;
+    }
+
     private void setupRepeatingTimer() {
-        Timer timer = new Timer(1000, e -> messageBus.publishAsync(new TimerEvent()));
-        timer.setInitialDelay(4000); // damit auch alles geladen ist
-        timer.start();
+        timerPool.scheduleWithFixedDelay(() -> messageBus.publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
 
     public boolean allesLaden() {
@@ -559,6 +562,35 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
+    }
+
+    /**
+     * Thread factory to give timer pool threads a recognizable name.
+     * Follows the {@link java.util.concurrent.Executors.DefaultThreadFactory} implementation for
+     * setting up the threads.
+     */
+    private static class TimerPoolThreadFactory implements ThreadFactory {
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        TimerPoolThreadFactory() {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+            namePrefix = "timerPool-thread-";
+        }
+
+        public Thread newThread(@NotNull Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
     }
 
 }

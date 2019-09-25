@@ -11,11 +11,13 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.NoSuchElementException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The global application configuration class.
@@ -89,9 +91,11 @@ public class ApplicationConfiguration {
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
-
+    /**
+     * logger for {@link TimerTaskListener} inner class.
+     */
+    private static final Logger logger = LogManager.getLogger(TimerTaskListener.class);
     private XMLConfiguration config;
-
     private FileHandler handler;
 
     private ApplicationConfiguration() {
@@ -184,31 +188,27 @@ public class ApplicationConfiguration {
      * to ensure that config is written only once.
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
-        private Timer timer;
-
-        public TimerTaskListener() {
-            timer = new Timer();
-        }
+        /**
+         * stores the previous writer task in order to cancel it if necessary.
+         * We don´t want to write several times in a row.
+         */
+        private ScheduledFuture future = null;
 
         @Override
         public void onEvent(ConfigurationEvent configurationEvent) {
-            timer.cancel();
-            timer = new Timer();
-            timer.schedule(new WriteConfigurationTask(), 5_000);
-        }
+            if (future != null) {
+                if (!future.isDone())
+                    future.cancel(false);
+            }
 
-        /**
-         * Task which saves the current configuration to disk.
-         */
-        private final class WriteConfigurationTask extends TimerTask {
-            @Override
-            public void run() {
+            future = Daten.getInstance().getTimerPool().schedule(() -> {
                 try {
+                    logger.trace("Writing app configuration file");
                     handler.save();
                 } catch (ConfigurationException e) {
-                    e.printStackTrace();
+                    logger.error("writing app config file:", e);
                 }
-            }
+            }, 5, TimeUnit.SECONDS);
         }
     }
 }

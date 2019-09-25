@@ -836,7 +836,8 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
-        dialog.setStatusText(1, "Warte auf commonPool()");
+        dialog.setStatusText(1, "Beende Threadpools");
+        shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         // Tabelleneinstellungen merken
@@ -889,6 +890,21 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return false;
+    }
+
+    private void shutdownTimerPool() {
+        var timerPool = daten.getTimerPool();
+        timerPool.shutdown();
+        try {
+            timerPool.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.warn("timerPool shutdown exception", e);
+        }
+        var taskList = timerPool.shutdownNow();
+        if (!taskList.isEmpty()) {
+            logger.trace("timerPool taskList was not empty");
+            logger.trace(taskList.toString());
+        }
     }
 
     private void stopDownloads() {
