@@ -129,7 +129,7 @@ public class Daten {
         downloadInfos = new DownloadInfos(messageBus);
         starterClass = new StarterClass(this);
 
-        setupRepeatingTimer();
+        setupTimerPool();
     }
 
     public static boolean isReset() {
@@ -310,7 +310,10 @@ public class Daten {
         return timerPool;
     }
 
-    private void setupRepeatingTimer() {
+    private void setupTimerPool() {
+        //get rid of cancelled tasks immediately...
+        timerPool.setRemoveOnCancelPolicy(true);
+
         timerPool.scheduleWithFixedDelay(() -> messageBus.publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
 
