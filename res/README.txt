@@ -48,7 +48,7 @@ Installation:
 ---------------------------------------------------------
 *Windows:
 MediathekView kann installiert oder das Zip entpackt werden.
-Deer Installer (Exe) führt durch die Installation und hinterlegt MediathekView im Menü.
+Der Installer (Exe) führt durch die Installation und hinterlegt MediathekView im Menü.
 
 Zip:
 - die heruntergeladene ZIP-Datei in einen Ordner entpacken
@@ -76,7 +76,7 @@ https://mediathekview.de/anleitung/#installation-1
 ---------------------------------------------------------------------------
 Starten:
 ---------------------------------------------------------------------------
-Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
+Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
 Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
@@ -92,23 +92,24 @@ Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
 
 
-jre/bin/java -Xmx1G -DmvLogOutputPath=[Pfad zum_Konfigurationsordner]/mediathekview.log -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -Xmx1G -DmvLogOutputPath=c:\temp\mediathekview.log -jar MediathekView.jar c:\temp
-jre/bin/java -Xmx1G -DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -Xmx1G -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -Xmx1G -jar MediathekView.jar c:\temp
+jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
-Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
 "-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 1GB ist nicht möglich.)
 
 
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
-https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-portable
+Windows: MediathekView_Portable.exe
+Linux: MediathekView_Portable
+Java: jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
 
 
 ###########################################################################
