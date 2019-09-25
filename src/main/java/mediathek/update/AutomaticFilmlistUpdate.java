@@ -1,10 +1,11 @@
 package mediathek.update;
 
+import mediathek.config.Daten;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,18 +14,11 @@ import java.util.concurrent.TimeUnit;
 public class AutomaticFilmlistUpdate implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(AutomaticFilmlistUpdate.class);
     private final IUpdateAction action;
-    /**
-     * 24 hour timer for repeating update checks
-     */
-    private final Timer updateCheckTimer;
+    private ScheduledFuture actionFuture;
 
     public AutomaticFilmlistUpdate(IUpdateAction action) {
         this.action = action;
-        final int load_delay = (int) TimeUnit.MILLISECONDS.convert(12, TimeUnit.HOURS);
 
-        updateCheckTimer = new Timer(load_delay, e -> ForkJoinPool.commonPool().execute(this::reloadFilmList));
-        updateCheckTimer.setRepeats(true);
-        updateCheckTimer.setDelay(load_delay);
     }
 
     private void reloadFilmList() {
@@ -37,13 +31,14 @@ public class AutomaticFilmlistUpdate implements AutoCloseable {
 
     public void start() {
         logger.debug("AutomaticFilmlistUpdate Started.");
-        updateCheckTimer.start();
+        actionFuture = Daten.getInstance().getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::reloadFilmList), 12L, 12L, TimeUnit.HOURS);
     }
 
     @Override
     public void close() {
-        if (updateCheckTimer != null) {
-            updateCheckTimer.stop();
+        if (actionFuture != null) {
+            if (!actionFuture.isDone())
+                actionFuture.cancel(false);
         }
         logger.debug("AutomaticFilmlistUpdate closed.");
     }
