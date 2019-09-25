@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>eu.hansolo</groupId>
 			<artifactId>tilesfx</artifactId>
-			<version>11.2</version>
+			<version>11.13</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.openjfx</groupId>
