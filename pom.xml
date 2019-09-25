@@ -437,6 +437,9 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${basedir}/target/res</outputDirectory>
+							<nonFilteredFileExtensions>
+                                                            <nonFilteredFileExtension>exe</nonFilteredFileExtension>
+                                                        </nonFilteredFileExtensions>
 							<resources>
 								<resource>
 									<directory>res</directory>
