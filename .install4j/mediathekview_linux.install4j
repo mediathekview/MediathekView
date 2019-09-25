@@ -55,7 +55,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G" arguments="-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx1G" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
