@@ -14,53 +14,44 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
 
-public class OrfSetupInformationThread extends Thread {
+public class OrfSetupInformationThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(OrfSetupInformationThread.class);
 
-    public OrfSetupInformationThread() {
-        setName(OrfSetupInformationThread.class.getName());
-    }
     @Override
     public void run() {
         logger.trace("ORF setup tutorial display check started");
-        try {
-            TimeUnit.SECONDS.sleep(5);
-            var config = ApplicationConfiguration.getConfiguration();
-            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP,true)) {
-                //we haven´t shown the config help dialog before
-                var location = config.getString(ApplicationConfiguration.GEO_LOCATION,"");
-                if (location.equals(GeoblockingField.GEO_AT)) {
-                    // show help dialog
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle(Konstanten.PROGRAMMNAME);
-                        alert.setHeaderText("Wichtige Information für ORF");
-                        FlowPane fp = new FlowPane();
-                        Label lbl = new Label("Um den ORF erfolgreich zu nutzen sind zusätzlich Einstellungen erforderlich.\n" +
-                                "Bitte lesen Sie sich hierzu folgenden Link durch: ");
-                        Hyperlink link = new Hyperlink("Link zum Tutorial");
-                        fp.getChildren().addAll( lbl, link);
+        var config = ApplicationConfiguration.getConfiguration();
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true)) {
+            //we haven´t shown the config help dialog before
+            var location = config.getString(ApplicationConfiguration.GEO_LOCATION, "");
+            if (location.equals(GeoblockingField.GEO_AT)) {
+                // show help dialog
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Wichtige Information für ORF");
+                    FlowPane fp = new FlowPane();
+                    Label lbl = new Label("Um den ORF erfolgreich zu nutzen sind zusätzlich Einstellungen erforderlich.\n" +
+                            "Bitte lesen Sie sich hierzu folgenden Link durch: ");
+                    Hyperlink link = new Hyperlink("Link zum Tutorial");
+                    fp.getChildren().addAll(lbl, link);
 
-                        link.setOnAction( (evt) -> {
-                            //disable display of dialog when user has clicked on the hyperlink
-                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP,false);
-                            try {
-                                UrlHyperlinkAction.openURL(MediathekGui.ui(),"https://forum.mediathekview.de/topic/2546/anleitung-einstellungen-für-orf-download");
-                            } catch (URISyntaxException ignored) {
-                            }
-                            alert.close();
-                        } );
-
-                        alert.getDialogPane().contentProperty().set( fp );
-
-
-                        alert.show();
+                    link.setOnAction((evt) -> {
+                        //disable display of dialog when user has clicked on the hyperlink
+                        config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, false);
+                        try {
+                            UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://forum.mediathekview.de/topic/2546/anleitung-einstellungen-für-orf-download");
+                        } catch (URISyntaxException ignored) {
+                        }
+                        alert.close();
                     });
-                } }
 
-        } catch (InterruptedException ignored) {
+                    alert.getDialogPane().contentProperty().set(fp);
+
+                    alert.show();
+                });
+            }
         }
         logger.trace("ORF setup tutorial display check finished");
     }

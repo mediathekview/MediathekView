@@ -235,7 +235,7 @@ public class MediathekGui extends JFrame {
 
     private void showVlcHintForAustrianUsers() {
         var thread = new OrfSetupInformationThread();
-        thread.start();
+        daten.getTimerPool().schedule(thread, 10L, TimeUnit.SECONDS);
     }
 
     private void setupTaskbarMenu() {
