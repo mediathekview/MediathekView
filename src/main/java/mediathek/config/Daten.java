@@ -8,7 +8,6 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.mainwindow.AboHistoryCallable;
@@ -67,7 +66,6 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private static SplashScreenManager splashScreenManager = new SplashScreenManager();
     /**
      * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
      */
@@ -241,17 +239,6 @@ public class Daten {
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
-    }
-
-    public static SplashScreenManager getSplashScreenManager() {
-        return splashScreenManager;
-    }
-
-    /**
-     * Do not keep splash screen object in memory
-     */
-    public static void closeSplashScreen() {
-        splashScreenManager = null;
     }
 
     public void setupNotifications() {

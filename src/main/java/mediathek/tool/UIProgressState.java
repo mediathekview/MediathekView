@@ -17,7 +17,7 @@ public enum UIProgressState {
     LOAD_MEDIADB_DIALOG("Mediendatenbank-Dialog initialisieren..."),
     LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
     LOAD_BANDWIDTH_MONITOR("Bandbreitendialog initialisieren..."),
-    FINISHED("Fertig.");
+    FINISHED("Anwendungsfenster wird geöffnet...");
 
     private final String title;
 

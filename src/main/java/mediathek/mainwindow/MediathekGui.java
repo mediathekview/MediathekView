@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import mediathek.Main;
 import mediathek.config.*;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -21,7 +22,10 @@ import mediathek.daten.ListeMediaDB;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.*;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.MVTray;
+import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
@@ -83,7 +87,6 @@ public class MediathekGui extends JFrame {
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
     private final Daten daten = Daten.getInstance();
-    private final SplashScreenManager splashScreenManager;
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -138,8 +141,7 @@ public class MediathekGui extends JFrame {
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
 
-        splashScreenManager = Daten.getSplashScreenManager();
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MAINWINDOW);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MAINWINDOW));
 
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
@@ -151,41 +153,40 @@ public class MediathekGui extends JFrame {
 
         remapF10Key();
 
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.WAIT_FOR_HISTORY_DATA));
         try {
-            splashScreenManager.updateSplashScreenText(UIProgressState.WAIT_FOR_HISTORY_DATA);
             daten.waitForHistoryDataLoadingToComplete();
         } catch (ExecutionException | InterruptedException e) {
             logger.error("waitForHistoryDataLoadingToComplete()", e);
         }
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.CREATE_STATUS_BAR);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CREATE_STATUS_BAR));
         createStatusBar();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.SETUP_FILM_LISTENERS);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.SETUP_FILM_LISTENERS));
         setupFilmListListener();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_TABS);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_TABS));
         initTabs();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.INIT_MENUS);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_MENUS));
         initMenus();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEDIADB_DIALOG);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEDIADB_DIALOG));
         initializeMediaDbDialog();
 
         //register message bus handler
         daten.getMessageBus().subscribe(this);
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_MEMORY_MONITOR);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_BANDWIDTH_MONITOR);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))) {
             getBandwidthMonitorController().setVisibility();
         }
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.FINISHED);
-        Daten.closeSplashScreen();
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundControlsFxNotificationBug();
 
@@ -531,17 +532,18 @@ public class MediathekGui extends JFrame {
         Container contentPane = getContentPane();
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_DOWNLOAD_TAB);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_DOWNLOAD_TAB));
         tabDownloads = new GuiDownloads(daten, this);
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_FILM_TAB);
+
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_FILM_TAB));
         tabFilme = new GuiFilme(daten, this);
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.ADD_TABS_TO_UI);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
         tabbedPane.setSelectedIndex(0);
 
-        splashScreenManager.updateSplashScreenText(UIProgressState.CONFIGURE_TABS);
+        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
         configureTabIcons();
     }

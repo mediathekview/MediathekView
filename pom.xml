@@ -395,7 +395,6 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<SplashScreen-Image>splash.png</SplashScreen-Image>
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>

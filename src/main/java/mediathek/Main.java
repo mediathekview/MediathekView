@@ -5,14 +5,16 @@ import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
-import mediathek.gui.SplashScreenManager;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -40,10 +42,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Security;
+import java.util.Optional;
 
 public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
-    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
@@ -267,13 +269,16 @@ public class Main {
 
         printDirectoryPaths();
 
-        checkMemoryRequirements();
+        initializeJavaFX();
 
-        setSystemLookAndFeel();
+        checkMemoryRequirements();
 
         installSingleInstanceHandler();
 
-        initializeJavaFX();
+        setSystemLookAndFeel();
+
+        splashScreen = Optional.of(new SplashScreen());
+        splashScreen.ifPresent(SplashScreen::show);
 
         loadConfigurationData();
 
@@ -300,14 +305,70 @@ public class Main {
     private static void loadConfigurationData() {
         var daten = Daten.getInstance();
 
+        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            var btn1 = new CommandLinksDialog.CommandLinksButtonType(
+                    "Add a network that is NOT in range",
+                    "That will show you a list of networks that are currently NOT available and lets you connect to one.",
+                    false);
+
+            List<CommandLinksDialog.CommandLinksButtonType> links = Arrays.asList(
+                    new CommandLinksDialog.CommandLinksButtonType(
+                            "Add a network that is in range",
+                            "this shows you a list of networks that are currently available and lets you connect to one.",
+                            false),
+                    new CommandLinksDialog.CommandLinksButtonType(
+                            "Manually create a network profile",
+                            "This creates a new network profile or locates an existing one and saves it on your computer.",
+                            true),
+                    btn1
+                    );
+
+            CommandLinksDialog dlg = new CommandLinksDialog(links);
+            dlg.setTitle("Manually connect to wireless network");
+            String optionalMasthead = "Manually connect to wireless network";
+            dlg.getDialogPane().setContentText(optionalMasthead);
+            dlg.showAndWait().ifPresent(result -> System.out.println("Result is " + dlg.getResult()));
+            System.exit(2);
+        });*/
+
+        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            var page1 = new WizardPane() {
+                @Override public void onEnteringPage(Wizard wizard) {
+                    String first = (String) wizard.getSettings().get("first");
+                    setContentText("Hello " + first);
+                }
+            };
+
+            var page2 = new WizardPane();
+            page2.setContentText("Please locate apps");
+
+            var page3 = new WizardPane();
+            page3.setContentText("Please set geographic location");
+            page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
+
+            var wizard = new Wizard();
+            wizard.getSettings().put("first","MyName");
+            wizard.setTitle("Our new wizard from hell");
+            wizard.setFlow(new Wizard.LinearFlow(page1,page2,page3));
+            wizard.showAndWait().ifPresent(r -> {
+                if (r == ButtonType.FINISH) {
+                    System.out.println("Wizard finished, settings: " + wizard.getSettings());
+                }
+            });
+        });
+        System.exit(2);*/
+
         if (!daten.allesLaden()) {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            //TODO replace with JavaFX dialog!!
             var dialog = new DialogStarteinstellungen(null, daten);
             dialog.setVisible(true);
             MVConfig.loadSystemParameter();
         }
     }
+
+    public static Optional<SplashScreen> splashScreen = Optional.empty();
 
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
@@ -335,7 +396,15 @@ public class Main {
         //prevent startup of multiple instances...
         var singleInstanceWatcher = new SingleInstance();
         if (singleInstanceWatcher.isAppAlreadyActive()) {
-            JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+            JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("MediathekView wird bereits ausgeführt");
+                alert.setContentText("Es dürfen nicht mehrere Programme gleichzeitig laufen.\n" +
+                        "Bitte beenden Sie die andere Instanz.");
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.showAndWait();
+            });
             System.exit(1);
         }
     }
@@ -351,14 +420,18 @@ public class Main {
         final var maxMem = Runtime.getRuntime().maxMemory();
         // more than 450MB avail...
         if (maxMem < 450 * FileUtils.ONE_MB) {
-            if (GraphicsEnvironment.isHeadless()) {
+            if (SystemUtils.isJavaAwtHeadless()) {
                 System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen bekommen.");
                 System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
             } else {
-                JOptionPane.showMessageDialog(null,
-                        "MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.",
-                        "Speicherwarnung",
-                        JOptionPane.ERROR_MESSAGE);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Speicherwarnung");
+                    alert.setContentText("MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.\n" +
+                            "Es werden mindestens 512MB RAM benötigt.");
+                    alert.showAndWait();
+                });
             }
 
             System.exit(3);
@@ -368,10 +441,9 @@ public class Main {
     private static void startGuiMode() {
         SwingUtilities.invokeLater(() ->
         {
-            final SplashScreenManager splashScreenManager = Daten.getSplashScreenManager();
-            splashScreenManager.updateSplashScreenText(UIProgressState.INIT_FX);
+            splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_FX));
 
-            splashScreenManager.updateSplashScreenText(UIProgressState.FILE_CLEANUP);
+            splashScreen.ifPresent(s -> s.update(UIProgressState.FILE_CLEANUP));
             if (SystemUtils.IS_OS_MAC_OSX) {
                 checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
@@ -384,8 +456,18 @@ public class Main {
                 logger.info("Swing Thread checking repaint manager installed.");
             }
 
-            splashScreenManager.updateSplashScreenText(UIProgressState.START_UI);
-            getPlatformWindow().setVisible(true);
+            splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));
+            var window = getPlatformWindow();
+            splashScreen.ifPresent(SplashScreen::close);
+            window.setVisible(true);
+            /*
+                on windows there is a strange behaviour that the main window gets sent behind
+                other open windows after the splash screen is closed.
+             */
+            if (SystemUtils.IS_OS_WINDOWS) {
+                window.toFront();
+                window.requestFocus();
+            }
         });
     }
 
