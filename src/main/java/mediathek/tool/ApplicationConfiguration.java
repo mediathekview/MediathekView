@@ -110,9 +110,7 @@ public class ApplicationConfiguration {
         return ourInstance;
     }
 
-    public static Configuration getConfiguration() 
-    {
-    	if (ourInstance == null) System.out.println("ohoh!");
+    public static Configuration getConfiguration() {
         return getInstance().config;
     }
 
