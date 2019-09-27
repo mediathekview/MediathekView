@@ -3,10 +3,10 @@ package mediathek.tool.notification;
 import mediathek.tool.ApplicationConfiguration;
 
 public class NotificationFactory {
-    private final static boolean bNativeNotifications;
+    private static final boolean nativeNotifications;
 
     static {
-        bNativeNotifications = false;//SystemUtils.IS_OS_MAC_OSX;
+        nativeNotifications = false;//SystemUtils.IS_OS_MAC_OSX;
     }
 
     /**
@@ -15,7 +15,7 @@ public class NotificationFactory {
      * @return true when native notifications are supported, false otherwise
      */
     public static boolean hasNativeNotifications() {
-        return bNativeNotifications;
+        return nativeNotifications;
     }
 
     public static INotificationCenter createNotificationCenter() {
