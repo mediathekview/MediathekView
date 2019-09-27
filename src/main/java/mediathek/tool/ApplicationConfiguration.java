@@ -90,7 +90,7 @@ public class ApplicationConfiguration {
 
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
 
-    private static ApplicationConfiguration ourInstance;
+    private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
@@ -105,17 +105,26 @@ public class ApplicationConfiguration {
         loadOrCreateConfiguration();
     }
 
-    public static ApplicationConfiguration getInstance() {
-        if (ourInstance == null)
-            ourInstance = new ApplicationConfiguration();
-
+    public static ApplicationConfiguration getInstance() 
+    {
         return ourInstance;
     }
 
-    public static Configuration getConfiguration() {
+    public static Configuration getConfiguration() 
+    {
+    	if (ourInstance == null) System.out.println("ohoh!");
         return getInstance().config;
     }
 
+    public static boolean getBoolean(final String key, final boolean defaultValue)
+    {
+    	if (getInstance() == null)
+    	{
+    		return defaultValue;
+    	}
+    	return getConfiguration().getBoolean(key, defaultValue);
+    }
+    
     private void setupXmlConfiguration() {
         config = new XMLConfiguration();
         config.setSynchronizer(new ReadWriteSynchronizer());
