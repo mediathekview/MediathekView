@@ -90,7 +90,7 @@ public class ApplicationConfiguration {
 
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
 
-    private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
+    private static ApplicationConfiguration ourInstance;
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
@@ -106,11 +106,14 @@ public class ApplicationConfiguration {
     }
 
     public static ApplicationConfiguration getInstance() {
+        if (ourInstance == null)
+            ourInstance = new ApplicationConfiguration();
+
         return ourInstance;
     }
 
     public static Configuration getConfiguration() {
-        return ourInstance.config;
+        return getInstance().config;
     }
 
     private void setupXmlConfiguration() {
