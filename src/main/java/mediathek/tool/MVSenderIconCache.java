@@ -42,6 +42,10 @@ public class MVSenderIconCache {
         setupCleanupScheduler();
 
         d.getMessageBus().subscribe(this);
+        // early access to ApplicationConfiguration.
+        // at this point of time, ApplicationConfiguration.getConfiguration may be null 
+        // (e.g. for the very first start of MV on this user profile, file settings.xml not yet available!)
+        // to work around this, use null-safe getter to retrieve boolean config value
         useLocalIcons.set(ApplicationConfiguration.getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false));
     }
 

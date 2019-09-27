@@ -21,6 +21,10 @@ public class NotificationFactory {
     public static INotificationCenter createNotificationCenter() {
         INotificationCenter notificationCenter;
 
+        // early access to ApplicationConfiguration.
+        // at this point of time, ApplicationConfiguration.getConfiguration may be null 
+        // (e.g. for the very first start of MV on this user profile, file settings.xml not yet available!)
+        // to work around this, use null-safe getter to retrieve boolean config value
         if (ApplicationConfiguration.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false)
         && hasNativeNotifications())
             notificationCenter = new NativeNotificationCenter();
