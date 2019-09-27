@@ -42,7 +42,7 @@ public class MVSenderIconCache {
         setupCleanupScheduler();
 
         d.getMessageBus().subscribe(this);
-        useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false));
+        useLocalIcons.set(ApplicationConfiguration.getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false));
     }
 
     @Handler

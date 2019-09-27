@@ -21,7 +21,7 @@ public class NotificationFactory {
     public static INotificationCenter createNotificationCenter() {
         INotificationCenter notificationCenter;
 
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false)
+        if (ApplicationConfiguration.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false)
         && hasNativeNotifications())
             notificationCenter = new NativeNotificationCenter();
         else
