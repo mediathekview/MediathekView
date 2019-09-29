@@ -420,7 +420,10 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/res</outputDirectory>
+							<outputDirectory>${basedir}/target/res</outputDirectory>
+							<nonFilteredFileExtensions>
+	                            <nonFilteredFileExtension>exe</nonFilteredFileExtension>
+                            </nonFilteredFileExtensions>
 							<resources>
 								<resource>
 									<directory>res</directory>
