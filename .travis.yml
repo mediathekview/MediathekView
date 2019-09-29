@@ -3,6 +3,7 @@ jdk:
   - openjdk12
 sudo: required
 before_install:
+  - git lfs install
   - git lfs pull
 install:
   - sudo apt-get update
@@ -35,7 +36,8 @@ addons:
 stages:
   - Test
   - name: Build and Deploy Snapshots
-    if: branch = develop AND type = cron
+    if: branch = develop
+# AND type = cron
   - name: Build and Deploy Linux
     if: tag IS present
   - name: Build and Deploy Windows
