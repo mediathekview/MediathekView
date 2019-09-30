@@ -1,30 +1,30 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 @SuppressWarnings("serial")
 public class DialogEinstellungen extends JFrame {
-    private final Daten ddaten;
+    private final Daten daten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
     private PanelMediaDB panelMediaDB;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
-    private PanelImport panelImport;
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
     private PanelBlacklist panelBlacklist;
@@ -41,7 +41,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
     private static final String NAME_allgemeineEinstellungenGeo = "Geo";
-    private static final String NAME_allgemeineEinstellungenImport = "Import";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
     private static final String NAME_filmListe = "Filmliste";
     private static final String NAME_filmListeLaden = "Filmliste laden";
@@ -51,13 +50,12 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_programmset = "Set bearbeiten";
     private static final String NAME_programmsetImportieren = "Set importieren";
 
-    // ######## Einstellulngen ############
+    // ######## Einstellungen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
     private final DefaultMutableTreeNode treeNodeNotifications = new DefaultMutableTreeNode(NAME_notifications);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
-    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
     // ######## Filme ###############
     private final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
@@ -72,55 +70,88 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
 
-    public DialogEinstellungen(Daten d) {
+    public DialogEinstellungen() {
         initComponents();
         setTitle("Einstellungen");
-        ddaten = d;
-        init();
+        daten = Daten.getInstance();
+
+        initPanels();
         initTree();
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
-        this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
+
+        restoreSizeFromConfig();
+
+        setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
 
         EscapeKeyHandler.installHandler(this, this::beenden);
     }
 
-    private void init() {
-        panelEinstellungen = new PanelEinstellungen(ddaten, this);
-        panelDownload = new PanelDownload(ddaten, this);
-        panelMediaDB = new PanelMediaDB(ddaten, this);
-        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, this);
-        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, this);
-        panelImport = new PanelImport(ddaten, this);
-        panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten);
-        panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
-        panelDateinamen = new PanelDateinamen(ddaten, this);
-        panelPset = new PanelPset(ddaten, this);
-        panelPsetVorlagen = new PanelPsetImport(ddaten, this);
+    private void restoreSizeFromConfig() {
+        int breite = 0,
+                hoehe = 0,
+                posX = 0,
+                posY = 0;
+
+        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN).split(":");
+        try {
+            if (arr.length == 4) {
+                breite = Integer.parseInt(arr[0]);
+                hoehe = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+
+        if (breite > 0 && hoehe > 0) {
+            setSize(breite, hoehe);
+        }
+
+        if (posX > 0 && posY > 0) {
+            setLocation(posX, posY);
+        } else {
+            final var parentFrame = MediathekGui.ui();
+            if (parentFrame != null)
+                setLocationRelativeTo(parentFrame);
+        }
+    }
+
+    private void initPanels() {
+        panelEinstellungen = new PanelEinstellungen(daten, this);
+        panelDownload = new PanelDownload(daten, this);
+        panelMediaDB = new PanelMediaDB(daten, this);
+        panelEinstellungenErweitert = new PanelEinstellungenErweitert(daten, this);
+        panelEinstellungenGeo = new PanelEinstellungenGeo(this);
+        panelEinstellungenColor = new PanelEinstellungenColor(this);
+        panelImportFilme = new PanelFilmlisteLaden(daten);
+        panelBlacklist = new PanelBlacklist(daten, this, PanelBlacklist.class.getName());
+        panelDateinamen = new PanelDateinamen(daten, this);
+        panelPset = new PanelPset(daten, this);
+        panelPsetVorlagen = new PanelPsetImport(daten, this);
 
         panelNotifications = new PanelNotifications();
     }
 
     private void initTree() {
-        //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
-        // ===============================================================================
         // ######## Einstellulngen ############
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
         treeNodeEinstellungen.add(treeNodeNotifications);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
-        treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
         treeNodeEinstellungen.add(treeNodeMediaDB);
         treeNodeStart.add(treeNodeEinstellungen);
-        // ===============================================================================
+
         // ######## Filme ###############
         treeNodeFilme.add(treeNodeFilmliste);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
-        // ===============================================================================
+
         // ########### Programme ##############
         treeNodeDownload.add(treeNodeDateinamen);
         treeNodeDownload.add(treeNodeBandwidth);
@@ -129,7 +160,7 @@ public class DialogEinstellungen extends JFrame {
         treeNodeStart.add(treeNodeDownload);
 
         // Aufbauen
-        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
+        jTree1.setModel(new DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree1.setRootVisible(false);
         jTree1.addTreeSelectionListener(e -> {
@@ -171,10 +202,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_allgemeineEinstellungenGeo:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenGeo);
-                        break;
-                    case NAME_allgemeineEinstellungenImport:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImport);
                         break;
                     case NAME_allgemeineEinstellungenColor:
                         jPanelExtra.removeAll();
@@ -228,8 +255,11 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void beenden() {
-        ddaten.allesSpeichern();
-        this.dispose();
+        //save the dialog size when we are closing...
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this);
+
+        daten.allesSpeichern();
+        dispose();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

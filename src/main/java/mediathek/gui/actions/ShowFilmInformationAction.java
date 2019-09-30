@@ -1,6 +1,6 @@
 package mediathek.gui.actions;
 
-import mediathek.MediathekGui;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -9,9 +9,10 @@ import java.awt.event.KeyEvent;
 
 public class ShowFilmInformationAction extends AbstractAction {
 
-    public ShowFilmInformationAction() {
+    public ShowFilmInformationAction(boolean showAccelerator) {
         putValue(NAME,"Filminformationen anzeigen");
-        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, GuiFunktionen.getPlatformControlKey()));
+        if (showAccelerator)
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_I, GuiFunktionen.getPlatformControlKey()));
     }
     @Override
     public void actionPerformed(ActionEvent e) {

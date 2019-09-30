@@ -8,7 +8,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.MediathekGui;
+import mediathek.mainwindow.MediathekGui;
 import org.tbee.javafx.scene.layout.MigPane;
 
 /**
@@ -20,6 +20,7 @@ public class ShutdownDialog {
     private ProgressBar progress;
     private final double maxTasks;
     private final MediathekGui gui;
+    private boolean hidden = false;
 
     public ShutdownDialog(MediathekGui gui, int maxTasks) {
         this.maxTasks = maxTasks;
@@ -27,6 +28,7 @@ public class ShutdownDialog {
 
         Platform.runLater(() -> {
             stage = new Stage();
+            stage.setOnHidden(e -> hidden = true);
             stage.setAlwaysOnTop(true);
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
@@ -34,6 +36,7 @@ public class ShutdownDialog {
             stage.setTitle("Programm beenden");
             stage.setScene(createScene());
         });
+
     }
 
     public void show() {
@@ -45,7 +48,10 @@ public class ShutdownDialog {
     }
 
     public void hide() {
-        Platform.runLater(() -> stage.hide());
+        Platform.runLater(() -> {
+            if (!hidden)
+                stage.hide();
+        });
         gui.setEnabled(true);
     }
 

@@ -100,7 +100,7 @@ public class DialogEditAbo extends JDialog {
 
         if (comboboxPSet.getModel().getSize() == 0) {
             // dann gibts kein Set zum Aufzeichnen
-            new DialogAboNoSet(parent, d).setVisible(true);
+            new DialogAboNoSet(parent).setVisible(true);
         } else {
             setExtra();
             this.pack();

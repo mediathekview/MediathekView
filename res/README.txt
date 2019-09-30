@@ -29,7 +29,7 @@ MediathekView startet nicht:
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* MediathekView benötigt mindestens Java 11 auf dem Rechner installiert.
+* MediathekView benötigt mindestens Java 11 welches mit geliefert wird.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -47,8 +47,10 @@ https://mediathekview.de/faq/#mediathekview-startet-nicht
 Installation:
 ---------------------------------------------------------
 *Windows:
-MediathekView wird nicht installiert; das Entpacken der heruntergeladenen 
-ZIP-Datei ist quasi die Installation:
+MediathekView kann installiert oder das Zip entpackt werden.
+Der Installer (Exe) führt durch die Installation und hinterlegt MediathekView im Menü.
+
+Zip:
 - die heruntergeladene ZIP-Datei in einen Ordner entpacken
 - den entpackten Ordner ins Benutzerverzeichnis verschieben
 - den eben verschobenen MediathekView-Ordner öffnen, 
@@ -63,8 +65,8 @@ Für OS X 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app
 https://mediathekview.de/anleitung/#mac
 
 *Linux:
-MediathekView wird nicht installiert; das Entpacken der heruntergeladenen 
-ZIP-Datei ist quasi die Installation.
+MediathekView kann installiert oder das tar.gz entpackt werden.
+Den Installer gibt es als rpm, deb und sh.
 https://mediathekview.de/anleitung/#installation-1
 
 
@@ -74,13 +76,15 @@ https://mediathekview.de/anleitung/#installation-1
 ---------------------------------------------------------------------------
 Starten:
 ---------------------------------------------------------------------------
-Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
+Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
 Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-java -Xmx1G -jar MediathekView.jar
+jre/bin/java -Xmx1G -jar MediathekView.jar
+
+Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
 
 ===========================================================    
@@ -88,23 +92,24 @@ Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
 
 
-java -Xmx1G -DmvLogOutputPath=[Pfad zum_Konfigurationsordner]/mediathekview.log -jar MediathekView.jar [Pfad] [Parameter]
-java -Xmx1G -DmvLogOutputPath=c:\temp\mediathekview.log -jar MediathekView.jar c:\temp
-java -Xmx1G -DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -Xmx1G -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -Xmx1G -jar MediathekView.jar c:\temp
+jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
-Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
 "-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 1GB ist nicht möglich.)
 
 
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
-https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-portable
+Windows: MediathekView_Portable.exe
+Linux: MediathekView_Portable
+Java: jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
 
 
 ###########################################################################

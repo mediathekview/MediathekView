@@ -27,7 +27,7 @@ public class MVConfig {
             }
         }
 
-        if (Config.isDebuggingEnabled()) {
+        if (Config.isDebugModeEnabled()) {
             logger.debug("Setting FilmList import mode to MANUAL");
             GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
         }
@@ -185,7 +185,6 @@ public class MVConfig {
 
     public enum Configs {
         //Programm-Configs, änderbar über Gui
-        SYSTEM_TABS_ICON("Tabs-Icon", SystemUtils.IS_OS_MAC_OSX ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
@@ -196,12 +195,9 @@ public class MVConfig {
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         // Fenstereinstellungen
-        SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
-        SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
@@ -212,7 +208,6 @@ public class MVConfig {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
         SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
-        SYSTEM_ICON_KLEIN("system-icon-klein"),
         SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
@@ -224,7 +219,6 @@ public class MVConfig {
         SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
         SYSTEM_TAB_ABO_LINEBREAK("system-tab-abo-linebreak", Boolean.FALSE.toString()),
         // Extrafenster
-        SYSTEM_GROESSE_FILTER_DIALOG_NEW("filter-dialog-new"),
         SYSTEM_GROESSE_MANAGE_ABO("manage-abo-dialog-size"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell

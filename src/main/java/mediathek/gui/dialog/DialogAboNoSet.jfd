@@ -1,0 +1,57 @@
+JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+			"$columnConstraints": "[fill][grow,fill]"
+			"$rowConstraints": "[grow,fill][fill]"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"modal": true
+			"resizable": false
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextArea1"
+					"editable": false
+					"columns": 20
+					"lineWrap": true
+					"rows": 4
+					"wrapStyleWord": true
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,grow"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelIcon"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/programm/achtung.png" )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,aligny top,growy 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"alignment": 2
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonImport"
+					"text": "Standardsets importieren"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonOk"
+					"text": "Schließen"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 405, 270 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

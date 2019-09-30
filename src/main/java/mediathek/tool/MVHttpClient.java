@@ -1,5 +1,6 @@
 package mediathek.tool;
 
+import mediathek.config.Config;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -65,13 +66,12 @@ public class MVHttpClient {
      */
     private OkHttpClient.Builder getDefaultClientBuilder() {
         var builder = new OkHttpClient.Builder();
-        var config = ApplicationConfiguration.getConfiguration();
 
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC,false)) {
+        if (Config.isHttpTrafficDebuggingEnabled()) {
             var interceptor = new HttpLoggingInterceptor(logger::trace);
             HttpLoggingInterceptor.Level level = HttpLoggingInterceptor.Level.BASIC;
             try {
-                var levelName = config.getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL);
+                var levelName = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL);
                 level = HttpLoggingInterceptor.Level.valueOf(levelName);
             }
             catch (Exception ignored) {
@@ -79,6 +79,7 @@ public class MVHttpClient {
             }
             interceptor.level(level);
             builder.addInterceptor(interceptor);
+            logger.debug("HTTP Logging interceptor installed");
         }
         builder.connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

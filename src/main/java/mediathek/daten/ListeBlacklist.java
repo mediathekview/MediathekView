@@ -1,10 +1,10 @@
 package mediathek.daten;
 
 import com.google.common.base.Stopwatch;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.Listener;
@@ -231,7 +231,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             days = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            filmlaengeSoll = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }

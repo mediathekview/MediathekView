@@ -18,7 +18,7 @@ public class MSLong implements Comparable<MSLong> {
 
         try {
             if (!film.getSize().isEmpty()) {
-                l = Long.valueOf(film.getSize());
+                l = Long.parseLong(film.getSize());
             }
         } catch (NumberFormatException ex) {
             Log.errorLog(649891025, ex, "String: " + film.getSize());

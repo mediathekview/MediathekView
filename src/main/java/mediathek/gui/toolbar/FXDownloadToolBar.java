@@ -7,15 +7,14 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.GuiDownloads;
+import mediathek.gui.messages.DownloadFilterVisibilityChangedEvent;
 import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.javafx.tool.FilterButton;
-import mediathek.tool.Listener;
+import mediathek.mainwindow.MediathekGui;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -61,11 +60,7 @@ public class FXDownloadToolBar extends ToolBar {
         btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::cleanupDownloads));
 
         Button btnFilter = new FilterButton();
-        btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
-            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(b));
-            Listener.notify(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, FXDownloadToolBar.class.getName());
-        }));
+        btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
 
         getItems().addAll(btnFilmInfo,
                 btnUpdateDownloads,

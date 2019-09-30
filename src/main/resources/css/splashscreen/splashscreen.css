@@ -1,0 +1,20 @@
+#progressText {
+    -fx-font-size: 0.833333em;
+    -fx-text-fill: white;
+}
+
+#progressBar .bar {
+    -fx-padding: 2px;
+    -fx-background-insets: 0;
+    -fx-text-box-border: black;
+}
+
+#appName {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.25em;
+}
+
+#vbox {
+    -fx-background-color: black;
+}

@@ -1,6 +1,6 @@
 package mediathek.config;
 
-import mediathek.MediathekGui;
+import com.google.common.util.concurrent.*;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
@@ -8,10 +8,15 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.SplashScreenManager;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.tool.*;
+import mediathek.mainwindow.AboHistoryCallable;
+import mediathek.mainwindow.MediathekGui;
+import mediathek.mainwindow.SeenHistoryCallable;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
@@ -21,6 +26,8 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.File;
@@ -36,7 +43,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Daten {
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
@@ -49,15 +58,14 @@ public class Daten {
      * Maximum number of backup files to be stored.
      */
     private final static int MAX_COPY = 5;
+    private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
     public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
     private static Daten instance;
     // flags
-    private static boolean startMaximized; // Fenster maximieren
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private static SplashScreenManager splashScreenManager = new SplashScreenManager();
     /**
      * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
      */
@@ -91,6 +99,8 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
+    private ListenableFuture<SeenHistoryController> historyFuture;
+    private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
         setupNotifications();
@@ -117,15 +127,7 @@ public class Daten {
         downloadInfos = new DownloadInfos(messageBus);
         starterClass = new StarterClass(this);
 
-        setupRepeatingTimer();
-    }
-
-    public static boolean isStartMaximized() {
-        return startMaximized;
-    }
-
-    public static void setStartMaximized(final boolean aIsStartMaximized) {
-        startMaximized = aIsStartMaximized;
+        setupTimerPool();
     }
 
     public static boolean isReset() {
@@ -136,7 +138,7 @@ public class Daten {
         reset = aIsReset;
     }
 
-    public static Daten getInstance(String aBasisverzeichnis) {
+    public static Daten getInstance(@NotNull String aBasisverzeichnis) {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance();
     }
@@ -239,17 +241,6 @@ public class Daten {
         return cal.getTimeInMillis();
     }
 
-    public static SplashScreenManager getSplashScreenManager() {
-        return splashScreenManager;
-    }
-
-    /**
-     * Do not keep splash screen object in memory
-     */
-    public static void closeSplashScreen() {
-        splashScreenManager = null;
-    }
-
     public void setupNotifications() {
         notificationCenter = NotificationFactory.createNotificationCenter();
     }
@@ -302,15 +293,18 @@ public class Daten {
         return erledigteAbos;
     }
 
-    private void setupRepeatingTimer() {
-        Timer timer = new Timer(1000, e -> messageBus.publishAsync(new TimerEvent()));
-        timer.setInitialDelay(4000); // damit auch alles geladen ist
-        timer.start();
+    public ScheduledThreadPoolExecutor getTimerPool() {
+        return timerPool;
+    }
+
+    private void setupTimerPool() {
+        //get rid of cancelled tasks immediately...
+        timerPool.setRemoveOnCancelPolicy(true);
+
+        timerPool.scheduleWithFixedDelay(() -> messageBus.publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
 
     public boolean allesLaden() {
-        splashScreenManager.updateSplashScreenText(UIProgressState.LOAD_CONFIG);
-
         if (!load()) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
@@ -323,9 +317,58 @@ public class Daten {
         return true;
     }
 
+    public void launchHistoryDataLoading() {
+        logger.trace("launching async history data loading");
+        var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+        historyFuture = launchSeenHistoryController(decoratedPool);
+        aboHistoryFuture = launchAboHistoryController(decoratedPool);
+
+    }
+
+    private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
+        var historyFuture = pool.submit(new SeenHistoryCallable());
+        Futures.addCallback(historyFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
+                setSeenHistoryController(seenHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchHistoryController", throwable);
+            }
+        }, pool);
+
+        return historyFuture;
+    }
+
+    private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
+        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
+                setAboHistoryList(aboHistoryController);
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable throwable) {
+                logger.error("launchAboHistoryController", throwable);
+            }
+        }, decoratedPool);
+
+        return aboHistoryFuture;
+    }
+
+    public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
+        historyFuture.get();
+        aboHistoryFuture.get();
+        historyFuture = null;
+        aboHistoryFuture = null;
+    }
+
     private void clearKonfig() {
         listePset.clear();
-        ReplaceList.list.clear();
+        ReplaceList.clear();
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
@@ -509,6 +552,35 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
+    }
+
+    /**
+     * Thread factory to give timer pool threads a recognizable name.
+     * Follows the {@link java.util.concurrent.Executors.DefaultThreadFactory} implementation for
+     * setting up the threads.
+     */
+    private static class TimerPoolThreadFactory implements ThreadFactory {
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        TimerPoolThreadFactory() {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+            namePrefix = "timerPool-thread-";
+        }
+
+        public Thread newThread(@NotNull Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
     }
 
 }

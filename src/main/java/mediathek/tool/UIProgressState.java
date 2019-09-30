@@ -5,22 +5,19 @@ public enum UIProgressState {
     FILE_CLEANUP("Dateien bereinigen..."),
     START_UI("Anwendungsklassen laden..."),
     LOAD_MAINWINDOW("Hauptfenster initialisieren..."),
-    LOAD_APP_DATA("Anwendungsdaten laden..."),
-    LOAD_HISTORY_DATA("Liste der angesehenen Filme laden..."),
-    LOAD_ABO_HISTORY_DATA("Liste der erledigten Abos laden..."),
-    LOAD_FILMINFO_DIALOG("Filminfo-Dialog initialisieren..."),
+    WAIT_FOR_HISTORY_DATA("Warte auf Abschluss des Ladens der History..."),
+    CREATE_STATUS_BAR("Statusbar initialisieren..."),
+    SETUP_FILM_LISTENERS("Listener initialisieren..."),
     LOAD_TABS("Tabs laden..."),
     LOAD_FILM_TAB("Filme-Tab laden"),
     LOAD_DOWNLOAD_TAB("Download-Tab laden"),
     ADD_TABS_TO_UI("Tabs zum UI hinzufügen"),
     CONFIGURE_TABS("Tabs konfigurieren"),
     INIT_MENUS("Menüs initialisieren..."),
-    LOAD_SETTINGS_DIALOG("Einstellungsdialog initialisieren..."),
+    LOAD_MEDIADB_DIALOG("Mediendatenbank-Dialog initialisieren..."),
     LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
     LOAD_BANDWIDTH_MONITOR("Bandbreitendialog initialisieren..."),
-    INIT_UI("Benutzeroberfläche initialisieren..."),
-    LOAD_CONFIG("Einstellungsdateien laden..."),
-    FINISHED("Fertig.");
+    FINISHED("Anwendungsfenster wird geöffnet...");
 
     private final String title;
 

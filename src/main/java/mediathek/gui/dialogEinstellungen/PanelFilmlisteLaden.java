@@ -1,16 +1,21 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -168,199 +173,169 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jPanelAuto = new JPanel();
+        jTextAreaAuto = new JTextArea();
+        jButtonLoad = new JButton();
+        var jPanelManuel = new JPanel();
+        var jLabel1 = new JLabel();
+        jTextFieldUrl = new JTextField();
+        jButtonDateiAuswaehlen = new JButton();
+        jButtonFilmeLaden = new JButton();
+        jTextAreaManuell = new JTextArea();
+        jCheckBoxUpdate = new JCheckBox();
+        jRadioButtonAuto = new JRadioButton();
+        jRadioButtonManuell = new JRadioButton();
+        var jPanel1 = new JPanel();
+        cbSign = new JCheckBox();
+        cbTrailer = new JCheckBox();
+        cbAudio = new JCheckBox();
 
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.JPanel jPanelAuto = new javax.swing.JPanel();
-        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-        jTextAreaAuto = new javax.swing.JTextArea();
-        jButtonLoad = new javax.swing.JButton();
-        javax.swing.JPanel jPanelManuel = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jTextFieldUrl = new javax.swing.JTextField();
-        jButtonDateiAuswaehlen = new javax.swing.JButton();
-        jButtonFilmeLaden = new javax.swing.JButton();
-        javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
-        jTextAreaManuell = new javax.swing.JTextArea();
-        jCheckBoxUpdate = new javax.swing.JCheckBox();
-        jRadioButtonAuto = new javax.swing.JRadioButton();
-        jRadioButtonManuell = new javax.swing.JRadioButton();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        cbSign = new javax.swing.JCheckBox();
-        cbTrailer = new javax.swing.JCheckBox();
-        cbAudio = new javax.swing.JCheckBox();
+        //======== this ========
+        setMinimumSize(new Dimension(746, 400));
+        setPreferredSize(new Dimension(746, 400));
+        setLayout(new MigLayout(
+            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+            // columns
+            new AC()
+                .fill().gap()
+                .grow().fill(),
+            // rows
+            new AC()
+                .fill().gap()
+                .fill().gap()
+                .fill()));
 
-        jPanelAuto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Die Filmliste automatisch laden"));
+        //======== jPanelAuto ========
+        {
+            jPanelAuto.setBorder(new TitledBorder("Die Filmliste automatisch laden")); //NON-NLS
+            jPanelAuto.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .grow().fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill()));
 
-        jTextAreaAuto.setEditable(false);
-        jTextAreaAuto.setColumns(20);
-        jTextAreaAuto.setRows(4);
-        jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie\nälter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\"\naktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten\nnur die neuen Filme).");
-        jTextAreaAuto.setMargin(new java.awt.Insets(4, 4, 4, 4));
-        jScrollPane2.setViewportView(jTextAreaAuto);
+            //---- jTextAreaAuto ----
+            jTextAreaAuto.setEditable(false);
+            jTextAreaAuto.setColumns(20);
+            jTextAreaAuto.setRows(3);
+            jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."); //NON-NLS
+            jTextAreaAuto.setMargin(new Insets(4, 4, 4, 4));
+            jTextAreaAuto.setWrapStyleWord(true);
+            jTextAreaAuto.setLineWrap(true);
+            jTextAreaAuto.setFont(jTextAreaAuto.getFont().deriveFont(jTextAreaAuto.getFont().getSize() - 1f));
+            jPanelAuto.add(jTextAreaAuto, new CC().cell(0, 0, 2, 1));
 
-        jButtonLoad.setText("Filme jetzt laden");
+            //---- jButtonLoad ----
+            jButtonLoad.setText("Filme jetzt laden"); //NON-NLS
+            jPanelAuto.add(jButtonLoad, new CC().cell(1, 1).alignX("trailing").growX(0)); //NON-NLS
+        }
+        add(jPanelAuto, new CC().cell(1, 0));
 
-        javax.swing.GroupLayout jPanelAutoLayout = new javax.swing.GroupLayout(jPanelAuto);
-        jPanelAuto.setLayout(jPanelAutoLayout);
-        jPanelAutoLayout.setHorizontalGroup(
-            jPanelAutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelAutoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelAutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelAutoLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonLoad)))
-                .addContainerGap())
-        );
-        jPanelAutoLayout.setVerticalGroup(
-            jPanelAutoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelAutoLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonLoad)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        //======== jPanelManuel ========
+        {
+            jPanelManuel.setBorder(new TitledBorder("Filmliste nur manuell laden")); //NON-NLS
+            jPanelManuel.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .grow().fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
 
-        jPanelManuel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste nur manuell laden"));
+            //---- jLabel1 ----
+            jLabel1.setText("URL/Datei:"); //NON-NLS
+            jPanelManuel.add(jLabel1, new CC().cell(0, 1));
+            jPanelManuel.add(jTextFieldUrl, new CC().cell(1, 1, 2, 1));
 
-        jLabel1.setText("URL/Datei:");
+            //---- jButtonDateiAuswaehlen ----
+            jButtonDateiAuswaehlen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste ausw\u00e4hlen"); //NON-NLS
+            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1).alignX("left").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
 
-        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste auswählen");
+            //---- jButtonFilmeLaden ----
+            jButtonFilmeLaden.setText("Filme jetzt laden"); //NON-NLS
+            jPanelManuel.add(jButtonFilmeLaden, new CC().cell(2, 2, 2, 1));
 
-        jButtonFilmeLaden.setText("Filme jetzt laden");
+            //---- jTextAreaManuell ----
+            jTextAreaManuell.setEditable(false);
+            jTextAreaManuell.setColumns(20);
+            jTextAreaManuell.setRows(2);
+            jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
+            jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
+            jTextAreaManuell.setWrapStyleWord(true);
+            jTextAreaManuell.setLineWrap(true);
+            jTextAreaManuell.setFont(jTextAreaManuell.getFont().deriveFont(jTextAreaManuell.getFont().getSize() - 1f));
+            jPanelManuel.add(jTextAreaManuell, new CC().cell(0, 0, 4, 1));
 
-        jTextAreaManuell.setEditable(false);
-        jTextAreaManuell.setColumns(20);
-        jTextAreaManuell.setRows(4);
-        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden angegeben werden.");
-        jTextAreaManuell.setMargin(new java.awt.Insets(4, 4, 4, 4));
-        jScrollPane3.setViewportView(jTextAreaManuell);
+            //---- jCheckBoxUpdate ----
+            jCheckBoxUpdate.setText("alte Filmliste nicht l\u00f6schen, nur erweitern"); //NON-NLS
+            jPanelManuel.add(jCheckBoxUpdate, new CC().cell(0, 2, 2, 1));
+        }
+        add(jPanelManuel, new CC().cell(1, 1));
+        add(jRadioButtonAuto, new CC().cell(0, 0).alignY("top").growY(0)); //NON-NLS
+        add(jRadioButtonManuell, new CC().cell(0, 1).alignY("top").growY(0)); //NON-NLS
 
-        jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
+        //======== jPanel1 ========
+        {
+            jPanel1.setBorder(new TitledBorder("Zus\u00e4tzliche Filmdaten laden")); //NON-NLS
+            jPanel1.setToolTipText("<html>Alle nicht angew\u00e4hlten Eintr\u00e4ge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Eintr\u00e4ge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugef\u00fcgt wenn die Einstellungen entsprechend angepasst wurden.</html>"); //NON-NLS
+            jPanel1.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill()));
 
-        javax.swing.GroupLayout jPanelManuelLayout = new javax.swing.GroupLayout(jPanelManuel);
-        jPanelManuel.setLayout(jPanelManuelLayout);
-        jPanelManuelLayout.setHorizontalGroup(
-            jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelManuelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldUrl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonDateiAuswaehlen))
-                    .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
-                        .addComponent(jCheckBoxUpdate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
-                        .addComponent(jButtonFilmeLaden)))
-                .addContainerGap())
-        );
-        jPanelManuelLayout.setVerticalGroup(
-            jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelManuelLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jButtonDateiAuswaehlen))
-                .addGap(18, 18, 18)
-                .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonFilmeLaden)
-                    .addComponent(jCheckBoxUpdate))
-                .addContainerGap())
-        );
+            //---- cbSign ----
+            cbSign.setText("Geb\u00e4rdensprache"); //NON-NLS
+            jPanel1.add(cbSign, new CC().cell(2, 0));
 
-        jPanelManuelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDateiAuswaehlen, jLabel1, jTextFieldUrl});
+            //---- cbTrailer ----
+            cbTrailer.setText("Trailer/Teaser/Vorschau"); //NON-NLS
+            jPanel1.add(cbTrailer, new CC().cell(0, 0));
 
+            //---- cbAudio ----
+            cbAudio.setText("H\u00f6rfassungen"); //NON-NLS
+            jPanel1.add(cbAudio, new CC().cell(1, 0));
+        }
+        add(jPanel1, new CC().cell(1, 2));
+
+        //---- buttonGroup1 ----
+        var buttonGroup1 = new ButtonGroup();
         buttonGroup1.add(jRadioButtonAuto);
-
         buttonGroup1.add(jRadioButtonManuell);
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Zusätzliche Filmdaten laden"));
-        jPanel1.setToolTipText("<html>Alle nicht angewählten Einträge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Einträge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugefügt wenn die Einstellungen entsprechend angepasst wurden.</html>");
-
-        cbSign.setText("Gebärdensprache");
-
-        cbTrailer.setText("Trailer/Teaser/Vorschau");
-
-        cbAudio.setText("Hörfassungen");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbTrailer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbAudio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbSign)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbSign)
-                    .addComponent(cbAudio)
-                    .addComponent(cbTrailer))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonAuto)
-                    .addComponent(jRadioButtonManuell))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelManuel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonAuto)
-                    .addComponent(jPanelAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonManuell)
-                    .addComponent(jPanelManuel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox cbAudio;
-    private javax.swing.JCheckBox cbSign;
-    private javax.swing.JCheckBox cbTrailer;
-    private javax.swing.JButton jButtonDateiAuswaehlen;
-    private javax.swing.JButton jButtonFilmeLaden;
-    private javax.swing.JButton jButtonLoad;
-    private javax.swing.JCheckBox jCheckBoxUpdate;
-    private javax.swing.JRadioButton jRadioButtonAuto;
-    private javax.swing.JRadioButton jRadioButtonManuell;
-    private javax.swing.JTextArea jTextAreaAuto;
-    private javax.swing.JTextArea jTextAreaManuell;
-    private javax.swing.JTextField jTextFieldUrl;
+    // Generated using JFormDesigner non-commercial license
+    private JTextArea jTextAreaAuto;
+    private JButton jButtonLoad;
+    private JTextField jTextFieldUrl;
+    private JButton jButtonDateiAuswaehlen;
+    private JButton jButtonFilmeLaden;
+    private JTextArea jTextAreaManuell;
+    private JCheckBox jCheckBoxUpdate;
+    private JRadioButton jRadioButtonAuto;
+    private JRadioButton jRadioButtonManuell;
+    private JCheckBox cbSign;
+    private JCheckBox cbTrailer;
+    private JCheckBox cbAudio;
     // End of variables declaration//GEN-END:variables
 }

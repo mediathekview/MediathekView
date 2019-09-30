@@ -1,0 +1,197 @@
+JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel7::t:::x, comp jPanel8::l:::x, comp jPanel3:::::x, seq {par l {par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p}, space :0:1:x}, comp jPanel5::t:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space ::7:x}}"
+		} ) {
+			name: "this"
+			"maximumSize": new java.awt.Dimension( 10, 10 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p, space ::20:x}}"
+				"$verticalGroup": "par l {seq {space :5:5:p, par l {comp jCheckBoxTabsTop:::p::p, comp jCheckBoxTabIcon:::p::p, comp cbAutomaticMenuTabSwitching:::p::p}}}"
+			} ) {
+				name: "jPanel5"
+				"border": new javax.swing.border.TitledBorder( "Tab-Verhalten" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxTabsTop"
+					"text": "Tabs oben anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxTabIcon"
+					"text": "Icons anzeigen"
+					"toolTipText": "Im Tab keine Icons anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbAutomaticMenuTabSwitching"
+					"text": "Tabs schalten automatisch bei Menünutzung um"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel3:::p::p, space :5:5:p, comp jtfUserAgent:::p::p, space ::15:x}}"
+				"$verticalGroup": "par l {seq {space :10:10:p, comp jLabel3:::p::p}, seq {space :5:5:p, comp jtfUserAgent:::p::p}}"
+			} ) {
+				name: "jPanel3"
+				"border": new javax.swing.border.TitledBorder( "Download" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel3"
+					"text": "User-Agent:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jtfUserAgent"
+					"minimumSize": new java.awt.Dimension( 200, 26 )
+					"preferredSize": new java.awt.Dimension( 520, 26 )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq l {comp jLabel4:::p::p, space :::p, comp jtfProxyHost:::p:250:p}, seq l {comp jLabel7:::p::p, space :::p, comp jtfProxyUser:::::x}}, space u:::p, par t {comp jLabel8:::p::p, comp jLabel5:::p::p}, space :::p, par l {seq {comp jtfProxyPort:::p:72:p, space :0:0:x}, comp jpfProxyPassword:::::x}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel4::b:p::p, comp jtfProxyHost::b:p::p, comp jLabel5::b:p::p, comp jtfProxyPort::b:p::p}, space :::p, par b {comp jLabel7::b:p::p, comp jtfProxyUser::b:p::p, comp jLabel8::b:p::p, comp jpfProxyPassword::b:p::p}, space :::x}}"
+			} ) {
+				name: "jPanel4"
+				"border": new javax.swing.border.TitledBorder( "HTTP-Proxy (Neustart erforderlich!)" )
+				"toolTipText": ""
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel4"
+					"text": "Host:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jtfProxyHost"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel5"
+					"text": "Port:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jtfProxyPort"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel7"
+					"text": "User:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jtfProxyUser"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel8"
+					"text": "Passwort:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JPasswordField" ) {
+					name: "jpfProxyPassword"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::x}}"
+				"$verticalGroup": "par t {seq {space :p:5:p, comp jPanel6:::p::p}}"
+			} ) {
+				name: "jPanel2"
+				"border": new javax.swing.border.TitledBorder( "" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel6:::p::p, space :5:5:p, comp jSpinnerDays:::p::p, space :::p, comp jButtonLoad:::p::p, space u:::p, comp jButtonHelpDays:::p::p, space :::x}}"
+					"$verticalGroup": "par l {seq {par l {seq {space :11:11:p, comp jLabel6:::p::p}, seq l {space :6:6:p, par l {comp jButtonHelpDays:::p::p, par b {comp jSpinnerDays::b:p::p, comp jButtonLoad::b:p::p}}}}, space :p:2:p}}"
+				} ) {
+					name: "jPanel6"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel6"
+						"text": "Nur die Filme der letzten Tage laden:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "jSpinnerDays"
+						"model": new javax.swing.SpinnerListModel {
+							list: new java.util.ArrayList {
+								add( "Alles" )
+								add( "1" )
+								add( "2" )
+								add( "10" )
+								add( "15" )
+							}
+						}
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonLoad"
+						"text": "Filmliste jetzt neu laden"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonHelpDays"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+						"toolTipText": "Hilfe anzeigen"
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space ::408:x}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space :::x}}"
+			} ) {
+				name: "jPanel7"
+				"border": new javax.swing.border.TitledBorder( "Datenbank (Neustart erforderlich!)" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbUseDatabaseCleaner"
+					"text": "Bereinigung während Laufzeit"
+					"toolTipText": "<html>Wenn aktiviert werden ungültige Datenbankeinträge sofort aus der Datenbank gelöscht um Speicher zu sparen.<br/>Dies wird für Rechner mit wenig Arbeitsspeicher empfohlen, verringert jedoch die Performance von MediathekView deutlich beim Laden einer neuen Filmliste.</html>"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space ::335:x}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space :::x}}"
+			} ) {
+				name: "jPanel8"
+				"border": new javax.swing.border.TitledBorder( "Speicherung der Filmliste" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbSaveHumanReadableFilmlist"
+					"text": "in les- und editierbarem Format speichern"
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "jCheckBoxTray"
+				"text": "Programm ins Tray minimieren"
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "cbUseWikipediaSenderLogos"
+				"text": "Senderlogos von Wikipedia verwenden"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 645, 450 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

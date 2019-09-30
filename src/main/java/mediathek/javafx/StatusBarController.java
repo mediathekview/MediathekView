@@ -38,7 +38,7 @@ public class StatusBarController {
             public void start(ListenerFilmeLadenEvent event) {
                 addProgressItems();
 
-                if (Config.isDebuggingEnabled())
+                if (Config.isDebugModeEnabled())
                     Platform.runLater(() -> statusBar.setText(event.senderUrl));
             }
 
@@ -51,7 +51,7 @@ public class StatusBarController {
             public void fertig(ListenerFilmeLadenEvent event) {
                 Platform.runLater(() -> progressBar.setProgress(0d));
                 removeProgressItems();
-                if (Config.isDebuggingEnabled())
+                if (Config.isDebugModeEnabled())
                     Platform.runLater(() -> statusBar.setText(""));
             }
         });
@@ -111,7 +111,7 @@ public class StatusBarController {
     private void setupLeftPane() {
         ObservableList<Node> leftItems = statusBar.getLeftItems();
 
-        if (Config.isDebuggingEnabled()) {
+        if (Config.isDebugModeEnabled()) {
             leftItems.add(btnGc);
             leftItems.add(new VerticalSeparator());
         }

@@ -1,12 +1,12 @@
 package mediathek.gui;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
@@ -90,7 +90,7 @@ public final class MVTray {
             itemRemoveTray.addActionListener(e -> {
                 MediathekGui.ui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
-                MediathekGui.ui().setTray();
+                MediathekGui.ui().initializeSystemTray();
                 daten.getMessageBus().publishAsync(new TrayIconEvent());
             });
             popup.add(itemRemoveTray);
