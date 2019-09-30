@@ -1,31 +1,56 @@
 package mediathek.javafx.filmlist;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import mediathek.config.Daten;
-import mediathek.daten.ListeFilme;
 import mediathek.javafx.tool.ComputedLabel;
+import mediathek.mainwindow.MediathekGui;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import java.time.Duration;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 
 /**
  * Label which will compute the age of the filmlist when updated.
+ * Update cycle one second.
  */
 class FilmListAgeLabel extends ComputedLabel {
-    private final Daten daten;
+    private Timeline timeline;
 
-    FilmListAgeLabel(Daten daten) {
-        super();
-        this.daten = daten;
+    FilmListAgeLabel() {
+        setupTimer();
+        installWindowListener();
     }
 
-    public void setAgeToLabel() {
-      final ListeFilme listeFilme = daten.getListeFilme();
+    private void installWindowListener() {
+        MediathekGui.ui().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                timeline.play();
+            }
 
-      setComputedText(computeAge(listeFilme.getAge()));
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                timeline.pause();
+            }
+        });
     }
 
-    public String computeAge(long seconds) {
-      Duration duration = Duration.ofSeconds(seconds);
+    private void setupTimer() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(1000d), ae -> setAgeToLabel()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    private void setAgeToLabel() {
+      setComputedText(computeAge(Daten.getInstance().getListeFilme().getAge()));
+    }
+
+    private String computeAge(long seconds) {
+      var duration = java.time.Duration.ofSeconds(seconds);
       return String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
     }
 }

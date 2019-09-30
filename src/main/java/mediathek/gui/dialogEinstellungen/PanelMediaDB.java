@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -11,6 +10,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelMediaDB;

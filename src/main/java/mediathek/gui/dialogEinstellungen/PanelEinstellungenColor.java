@@ -1,14 +1,17 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.gui.PanelVorlage;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CellRendererColor;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVC;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelColor;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,11 +21,13 @@ import java.awt.event.MouseEvent;
 import static mediathek.config.MVColor.*;
 
 @SuppressWarnings("serial")
-public class PanelEinstellungenColor extends PanelVorlage {
-    public PanelEinstellungenColor(Daten d, JFrame pparentComponent) {
-        super(d, pparentComponent);
+public class PanelEinstellungenColor extends JPanel {
+    private final JFrame parentComponent;
+
+    public PanelEinstellungenColor(JFrame pparentComponent) {
+        parentComponent = pparentComponent;
+
         initComponents();
-        daten = d;
         init();
     }
 
@@ -63,58 +68,6 @@ public class PanelEinstellungenColor extends PanelVorlage {
         return tModel;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButtonReset = new javax.swing.JButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
-                }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jButtonReset.setText("Farben zurücksetzen");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButtonReset)))
-                                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonReset)
-                                .addContainerGap())
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonReset;
-    private javax.swing.JTable jTable1;
-    // End of variables declaration//GEN-END:variables
-
     public class BeobMausTabelle extends MouseAdapter {
 
         @Override
@@ -135,4 +88,44 @@ public class PanelEinstellungenColor extends PanelVorlage {
         }
 
     }
+
+
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
+    private void initComponents() {
+        var jScrollPane1 = new JScrollPane();
+        jTable1 = new JTable();
+        var hSpacer1 = new JPanel(null);
+        jButtonReset = new JButton();
+
+        //======== this ========
+        setLayout(new MigLayout(
+            new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+            // columns
+            new AC()
+                .fill().gap()
+                .grow().fill().gap()
+                .fill(),
+            // rows
+            new AC()
+                .fill().gap()
+                .fill()));
+
+        //======== jScrollPane1 ========
+        {
+            jScrollPane1.setViewportView(jTable1);
+        }
+        add(jScrollPane1, new CC().cell(1, 0, 2, 1));
+        add(hSpacer1, new CC().cell(1, 1));
+
+        //---- jButtonReset ----
+        jButtonReset.setText("Farben zur\u00fccksetzen"); //NON-NLS
+        add(jButtonReset, new CC().cell(2, 1));
+    }// </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JTable jTable1;
+    private JButton jButtonReset;
+    // End of variables declaration//GEN-END:variables
 }

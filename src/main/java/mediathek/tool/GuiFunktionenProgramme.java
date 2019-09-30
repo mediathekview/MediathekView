@@ -12,14 +12,13 @@ import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -327,34 +326,41 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
+    private static final Logger logger = LogManager.getLogger(GuiFunktionenProgramme.class);
+
     /**
      * Test if a path is a directory and writeable.
      * Path directories will be created before trying write test.
      *
-     * @param pfad path to the directory
+     * @param path path to the directory
      * @return true if we can write a file there, false if not.
      */
-    public static boolean checkPathWriteable(@NotNull String pfad) {
-        boolean result = false;
+    public static boolean checkPathWriteable(@NotNull String path) {
+        boolean ret = false;
 
-        if (pfad.isEmpty())
+        if (path.isEmpty())
             return false;
 
-        Path path = Paths.get(pfad);
+        File testFile = new File(path);
         try {
-            Files.createDirectories(path);
-            if (Files.isDirectory(path) && Files.isWritable(path)) {
-                var tmpPath = Files.createTempFile(path, "mediathek", "tmp");
-                Files.delete(tmpPath);
-
-                result = true;
+            if (!testFile.exists()) {
+                testFile.mkdirs();
             }
-        } catch (Exception ignored) {
-            result = false;
+
+            if (testFile.isDirectory()) {
+                if (testFile.canWrite()) {
+                    File tmpFile = File.createTempFile("mediathek", "tmp", testFile);
+                    ret = tmpFile.delete();
+//                    ret = true;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("checkPathWriteable()", e);
         }
 
-        return result;
+        return ret;
     }
+
 
     public static boolean programmePruefen(JFrame jFrame) {
         // prüfen ob die eingestellten Programmsets passen

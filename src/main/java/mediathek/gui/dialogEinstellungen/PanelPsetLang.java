@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.daten.DatenProg;
@@ -10,6 +9,7 @@ import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.models.TModel;
 import mediathek.tool.table.MVProgTable;

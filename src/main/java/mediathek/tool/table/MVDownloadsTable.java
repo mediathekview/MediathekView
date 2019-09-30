@@ -15,7 +15,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 
-public class MVDownloadsTable extends MVTable {
+public class MVDownloadsTable extends ASelectableMVTable {
     private static final long serialVersionUID = 6933494912098350123L;
     private final Daten daten = Daten.getInstance();
 
@@ -116,57 +116,6 @@ public class MVDownloadsTable extends MVTable {
                     break;
             }
         }
-    }
-
-    @Override
-    public void getSelected() {
-        super.getSelected();
-
-        int selIndex = -1;
-        if (selRow >= 0) {
-            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), indexSpalte);
-        }
-
-        if (selIndex >= 0) {
-            selIndexes = new int[selRows.length];
-            int k = 0;
-            for (int i : selRows) {
-                selIndexes[k++] = (int) getModel().getValueAt(convertRowIndexToModel(i), indexSpalte);
-            }
-        } else {
-            selIndexes = null;
-        }
-    }
-
-    @Override
-    protected void setSelected() {
-        boolean found = false;
-
-        if (selIndexes != null) {
-            int r;
-            selectionModel.setValueIsAdjusting(true);
-            TModel tModel = (TModel) getModel();
-            for (int i : selIndexes) {
-                r = tModel.getIdxRow(i);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = convertRowIndexToView(r);
-                    addRowSelectionInterval(r, r);
-                    found = true;
-                }
-            }
-            if (!found && selRow >= 0 && this.getRowCount() > selRow) {
-                // große Frage was da besser ist???
-                for (int i = selRow; i >= 0; --i) {
-                    setRowSelectionInterval(i, i);
-                    break;
-                }
-            } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
-                setRowSelectionInterval(tModel.getRowCount() - 1, tModel.getRowCount() - 1);
-            }
-            selectionModel.setValueIsAdjusting(false);
-        }
-        selIndexes = null;
     }
 
     private class TableRowTransferHandlerDownload extends TransferHandler {

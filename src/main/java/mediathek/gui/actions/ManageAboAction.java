@@ -2,10 +2,10 @@ package mediathek.gui.actions;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.abo.ManageAboDialog;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;

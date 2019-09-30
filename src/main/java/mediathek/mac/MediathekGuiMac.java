@@ -2,59 +2,64 @@ package mediathek.mac;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.MediathekGui;
+import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Log;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
+    private final OsxPowerManager powerManager = new OsxPowerManager();
+    private final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
+    protected Stage controlsFxWorkaroundStage;
+
     public MediathekGuiMac() {
         super();
 
         setupDockIcon();
 
-            var versionCheckThread = new CheckMacOSVersion();
-            versionCheckThread.start();
+        var versionCheckThread = new CheckMacOSVersion();
+        versionCheckThread.start();
     }
 
-    class CheckMacOSVersion extends Thread {
-        @Override
-        public void run() {
-            try {
-                TimeUnit.SECONDS.sleep(5);
-                SwingUtilities.invokeLater(() -> {
-                    var version = SystemUtils.OS_VERSION;
-                    if (version.contains("10.14") || version.contains("10.15")) {
-                        var config = ApplicationConfiguration.getConfiguration();
-                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
-                        if (showWarning) {
-                            JOptionPane.showMessageDialog(MediathekGui.ui(), "<html>Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von Spotlight-Kommentaren deaktiviert.<br>" +
-                                    "Wir arbeiten an einer Lösung.<br><br>Dieser Dialog wird nicht mehr angezeigt werden.</html>", "Spotlight-Kommentare deaktiviert", JOptionPane.INFORMATION_MESSAGE);
-                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
-                        }
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public void initializeSystemTray() {
+        //we don´t use it on macOS
+    }
+
+    @Override
+    protected void initWindowListenerForTray() {
+        //don´t install listeners on macOS for tray
+    }
+
+    @Override
+    protected void closeControlsFxWorkaroundStage() {
+        Platform.runLater(() -> {
+            if (controlsFxWorkaroundStage != null)
+                controlsFxWorkaroundStage.close();
+        });
     }
 
     @Override
@@ -75,8 +80,23 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void setupShutdownCommand() {
-        shutdownCommand = new OsxShutdownComputerCommand();
+    protected void shutdownComputer() {
+        try {
+            var result = Spotlight.find("kMDItemCFBundleIdentifier == org.mediathekview.MediathekView-Shutdown-Helper");
+            if (result.isEmpty())
+                logger.error("could not locate mediathekview shutdown helper app");
+            else {
+                File appLocation = result.get(0);
+                logger.debug("Shutdown Helper location: {}", appLocation.toString());
+                logger.info("Executing shutdown helper");
+                final ProcessBuilder builder = new ProcessBuilder(appLocation.toString() + SHUTDOWN_HELPER_APP_BINARY_PATH);
+                builder.command().add("-shutdown");
+                builder.start();
+                logger.debug("shutdown helper app was launched");
+            }
+        } catch (Exception e) {
+            logger.error("unexpected error occured", e);
+        }
     }
 
     @Override
@@ -121,8 +141,6 @@ public class MediathekGuiMac extends MediathekGui {
         setDownloadsBadge(numDownloads);
     }
 
-    private final OsxPowerManager powerManager = new OsxPowerManager();
-
     /**
      * Set the OS X dock icon badge to the number of running downloads.
      *
@@ -161,6 +179,38 @@ public class MediathekGuiMac extends MediathekGui {
             Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
             Log.errorLog(165623698, "OS X Application image could not be loaded");
+        }
+    }
+
+    static class CheckMacOSVersion extends Thread {
+        @Override
+        public void run() {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                SwingUtilities.invokeLater(() -> {
+                    var version = SystemUtils.OS_VERSION;
+                    if (version.contains("10.14") || version.contains("10.15")) {
+                        var config = ApplicationConfiguration.getConfiguration();
+                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
+                        if (showWarning) {
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle(Konstanten.PROGRAMMNAME);
+                                alert.setHeaderText("Spotlight-Kommentare schreiben");
+                                alert.setContentText("Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von " +
+                                        "Spotlight-Kommentaren deaktiviert.\n" +
+                                        "Wir arbeiten an einer zukünftigen Lösung.\n\n" +
+                                        "Dieser Dialog wird nicht mehr angezeigt werden.");
+                                alert.showAndWait();
+                            });
+
+                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
+                        }
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -5,10 +5,8 @@ import javafx.scene.layout.HBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
-import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 
@@ -18,13 +16,10 @@ import javax.swing.*;
  */
 public class FilmListInfoPane extends HBox {
     private final FilmListCreationDateLabel filmListCreationDateLabel;
-    private final FilmListAgeLabel filmListAgeLabel;
 
     public FilmListInfoPane(Daten daten) {
         super();
         setSpacing(4d);
-
-        daten.getMessageBus().subscribe(this);
 
         SwingUtilities.invokeLater(() -> daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -44,14 +39,9 @@ public class FilmListInfoPane extends HBox {
         }));
 
         filmListCreationDateLabel = new FilmListCreationDateLabel(daten);
-        filmListAgeLabel = new FilmListAgeLabel(daten);
+        FilmListAgeLabel filmListAgeLabel = new FilmListAgeLabel();
         getChildren().addAll(new CenteredBorderPane(filmListCreationDateLabel),
                 new VerticalSeparator(),
                 new CenteredBorderPane(filmListAgeLabel));
-    }
-
-    @Handler
-    public void handleTimerEvent(TimerEvent e) {
-        Platform.runLater(filmListAgeLabel::setAgeToLabel);
     }
 }

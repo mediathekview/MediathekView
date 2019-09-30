@@ -5,6 +5,9 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
 import org.tbee.javafx.scene.layout.MigPane;
 
 /**
@@ -31,23 +34,17 @@ public class AppTerminationIndefiniteProgress extends JFXPanel {
     }
 
     private Scene createScene() {
-        MigPane migPane = new MigPane(
-                "hidemode 3",
-                "[fill]" +
-                        "[fill]",
-                "[]" +
-                        "[]" +
-                        "[]");
-
-        migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
+        var migPane = new MigPane(new LC().hideMode(3),
+                new AC().fill().fill(),new AC());
+        migPane.add(new ProgressIndicator(),new CC().cell(0,0).span(1,3));
         lblMessage = new Label("Warte auf Abschluss der Downloads...");
-        migPane.add(lblMessage, "cell 1 0");
+        migPane.add(lblMessage, new CC().cell(1,0));
         if (willBeShutDown) {
             Label lblShutdown = new Label("Der Rechner wird danach heruntergefahren.");
-            migPane.add(lblShutdown, "cell 1 1");
+            migPane.add(lblShutdown, new CC().cell(1,1));
         }
-        migPane.add(new Label("Sie können den Vorgang mit Escape abbrechen."), "cell 1 2");
+        migPane.add(new Label("Sie können den Vorgang mit Escape abbrechen."), new CC().cell(1,2));
 
-        return new Scene(migPane/*, Color.TRANSPARENT*/);
+        return new Scene(migPane);
     }
 }

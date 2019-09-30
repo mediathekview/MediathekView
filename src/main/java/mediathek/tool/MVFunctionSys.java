@@ -1,25 +1,13 @@
 package mediathek.tool;
 
 import mediathek.Main;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.security.CodeSource;
 
 public class MVFunctionSys {
-
-    public static synchronized void startMeldungen() {
-        Log.versionMsg(MVFunctionSys.getProgName());
-        logger.info("Programmpfad: " + MVFunctionSys.getPathJar());
-        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-    }
-
-    private static final Logger logger = LogManager.getLogger(MVFunctionSys.class);
-
     /**
      * Retrieve the path to the program jar file.
      *
@@ -46,10 +34,6 @@ public class MVFunctionSys {
     }
 
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
-    }
-
-    public static String getProgName() {
         return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
     }
 }

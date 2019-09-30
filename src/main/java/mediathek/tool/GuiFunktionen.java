@@ -1,11 +1,11 @@
 package mediathek.tool;
 
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.Functions.OperatingSystemType;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -82,36 +82,6 @@ public class GuiFunktionen extends MVFunctionSys {
                     + jDialog.getSize().height + ':'
                     + jDialog.getLocation().x + ':'
                     + jDialog.getLocation().y);
-        }
-    }
-
-    public static void setSize(Configs nr, JFrame jFrame, JFrame relativFrame) {
-        int breite, hoehe, posX, posY;
-        breite = 0;
-        hoehe = 0;
-        posX = 0;
-        posY = 0;
-        String[] arr = MVConfig.get(nr).split(":");
-        try {
-            if (arr.length == 4) {
-                breite = Integer.parseInt(arr[0]);
-                hoehe = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
-        }
-        if (breite > 0 && hoehe > 0) {
-            jFrame.setSize(new Dimension(breite, hoehe));
-        }
-        if (posX > 0 && posY > 0) {
-            jFrame.setLocation(posX, posY);
-        } else if (relativFrame != null) {
-            jFrame.setLocationRelativeTo(relativFrame);
         }
     }
 
@@ -329,18 +299,10 @@ public class GuiFunktionen extends MVFunctionSys {
             ret = UPDATE_FILME_AUTO;
         }
 
-        switch (ret) {
-            case UPDATE_FILME_AUTO:
-                result = FilmListUpdateType.AUTOMATIC;
-                break;
-
-            case UPDATE_FILME_AUS:
-                result = FilmListUpdateType.MANUAL;
-                break;
-
-            default:
-                result = FilmListUpdateType.AUTOMATIC;
-                break;
+        if (ret == UPDATE_FILME_AUS) {
+            result = FilmListUpdateType.MANUAL;
+        } else {
+            result = FilmListUpdateType.AUTOMATIC;
         }
 
         return result;
@@ -348,18 +310,10 @@ public class GuiFunktionen extends MVFunctionSys {
 
     public static void setImportArtFilme(FilmListUpdateType type) {
         final int value;
-        switch (type) {
-            case AUTOMATIC:
-                value = UPDATE_FILME_AUTO;
-                break;
-
-            case MANUAL:
-                value = UPDATE_FILME_AUS;
-                break;
-
-            default:
-                value = UPDATE_FILME_AUTO;
-                break;
+        if (type == FilmListUpdateType.MANUAL) {
+            value = UPDATE_FILME_AUS;
+        } else {
+            value = UPDATE_FILME_AUTO;
         }
 
         MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(value));

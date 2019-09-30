@@ -24,6 +24,10 @@ public final class ReplaceList {
         list.add(new String[]{" ", "_"});
     }
 
+    public static void clear() {
+        list.clear();
+    }
+
     public static String replace(String strCheck, boolean pfad) {
         final var it = list.iterator();
         while (it.hasNext()) {

@@ -22,9 +22,14 @@ package mediathek.config;
 import mediathek.tool.Version;
 import org.apache.commons.io.FileUtils;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
+    public static final Version MVVERSION = new Version(13, 5, 0);
+
+    public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
+
     public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekviewweb.de/";
 
     public static final String FORMAT_ZIP = ".zip";
@@ -33,7 +38,6 @@ public class Konstanten {
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
     public static final String TIME_MAX_AGE_FOR_DIFF = "09"; // Uhrzeit ab der die Diffliste alle Änderungen abdeckt, die Filmliste darf also nicht vor xx erstellt worden sein
 
-    public static final Version MVVERSION = new Version(13, 3, 0);
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
@@ -66,7 +70,7 @@ public class Konstanten {
     public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
-    public static final String GUIDOWNLOAD_DIVIDER_LOCATION = "200";
+    public static final int GUIDOWNLOAD_DIVIDER_LOCATION = 200;
 
     public static final int LAENGE_DATEINAME = 25; // Standardwert für die Länge des Zieldateinamens
     public static final int LAENGE_FELD = 10; // Standardwert für die Länge des Feldes des Zieldateinamens zB. %T

@@ -1,6 +1,5 @@
 package mediathek.gui.history;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.history.MVUsedUrlModelHelper;
@@ -10,8 +9,13 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.models.TModel;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -214,64 +218,69 @@ public abstract class PanelErledigteUrls extends JPanel {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jScrollPane1 = new JScrollPane();
+        jTable1 = new JTable();
+        panel1 = new JPanel();
+        jButtonLoeschen = new JButton();
+        jToggleButtonLaden = new JToggleButton();
+        jButtonExport = new JButton();
+        jLabelSum = new JLabel();
 
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButtonLoeschen = new javax.swing.JButton();
-        jToggleButtonLaden = new javax.swing.JToggleButton();
-        jButtonExport = new javax.swing.JButton();
-        jLabelSum = new javax.swing.JLabel();
+        //======== this ========
+        setLayout(new MigLayout(
+            new LC().insets("5").hideMode(3).gridGap("0", "0"), //NON-NLS
+            // columns
+            new AC()
+                .grow().fill(),
+            // rows
+            new AC()
+                .grow().fill().gap()
+                .fill()));
 
-        jTable1.setModel(new TModel());
-        jScrollPane1.setViewportView(jTable1);
+        //======== jScrollPane1 ========
+        {
+            jScrollPane1.setViewportView(jTable1);
+        }
+        add(jScrollPane1, new CC().cell(0, 0));
 
-        jButtonLoeschen.setText("Liste löschen");
+        //======== panel1 ========
+        {
+            panel1.setLayout(new MigLayout(
+                new LC().insets("5 5 0 5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .grow().fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill()));
 
-        jToggleButtonLaden.setText("Laden");
+            //---- jButtonLoeschen ----
+            jButtonLoeschen.setText("Liste l\u00f6schen"); //NON-NLS
+            panel1.add(jButtonLoeschen, new CC().cell(3, 0));
 
-        jButtonExport.setText("Liste exportieren");
+            //---- jToggleButtonLaden ----
+            jToggleButtonLaden.setText("Laden"); //NON-NLS
+            panel1.add(jToggleButtonLaden, new CC().cell(0, 0));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jToggleButtonLaden)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelSum)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonExport)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonLoeschen)))
-                .addContainerGap())
-        );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonLoeschen, jToggleButtonLaden});
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jToggleButtonLaden)
-                    .addComponent(jLabelSum)
-                    .addComponent(jButtonExport)
-                    .addComponent(jButtonLoeschen))
-                .addContainerGap())
-        );
+            //---- jButtonExport ----
+            jButtonExport.setText("Liste exportieren"); //NON-NLS
+            panel1.add(jButtonExport, new CC().cell(2, 0));
+            panel1.add(jLabelSum, new CC().cell(1, 0));
+        }
+        add(panel1, new CC().cell(0, 1));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonExport;
-    protected javax.swing.JButton jButtonLoeschen;
-    private javax.swing.JLabel jLabelSum;
-    protected javax.swing.JTable jTable1;
-    protected javax.swing.JToggleButton jToggleButtonLaden;
+    // Generated using JFormDesigner non-commercial license
+    protected JTable jTable1;
+    private JPanel panel1;
+    protected JButton jButtonLoeschen;
+    protected JToggleButton jToggleButtonLaden;
+    private JButton jButtonExport;
+    private JLabel jLabelSum;
     // End of variables declaration//GEN-END:variables
 }

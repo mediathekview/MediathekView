@@ -1,11 +1,11 @@
 package mediathek.gui.dialog.reset;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Listener;
 

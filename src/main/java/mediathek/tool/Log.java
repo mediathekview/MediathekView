@@ -3,12 +3,12 @@ package mediathek.tool;
 import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -40,29 +40,8 @@ public class Log {
 
     private static final Stopwatch programRuntime = Stopwatch.createStarted();
 
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
-    private static final long TO_MEGABYTE = 1000L * 1000L;
-
+    private static final FastDateFormat dateFormatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
     private static final Logger logger = LogManager.getLogger(Log.class);
-
-    public static void versionMsg(String progName) {
-        logger.info("Programmstart: {}", dateFormatter.format(Log.startZeit));
-
-        final Runtime runtime = Runtime.getRuntime();
-        logger.debug("totalMemory: {} MB", runtime.totalMemory() / TO_MEGABYTE);
-        final long maxMem = runtime.maxMemory();
-        logger.info("maxMemory: {} MB", maxMem / TO_MEGABYTE);
-
-        //Version
-        logger.info("Version: {}", progName);
-
-        logger.info("Java:");
-        final String[] java = Functions.getJavaVersion();
-        for (String ja : java) {
-            logger.info(ja);
-        }
-    }
 
     public static void endMsg() {
         logger.info(LINE);
@@ -143,7 +122,7 @@ public class Log {
             kl = klasse;
         }
         addFehlerNummer(fehlerNummer, kl, ex != null);
-        if (ex != null || Config.isDebuggingEnabled()) {
+        if (ex != null || Config.isDebugModeEnabled()) {
             // Exceptions immer ausgeben
             resetProgress();
             String x, z;

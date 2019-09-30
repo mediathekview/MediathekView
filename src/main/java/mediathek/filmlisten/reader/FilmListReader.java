@@ -13,7 +13,6 @@ import mediathek.tool.*;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -22,14 +21,16 @@ import org.jetbrains.annotations.NotNull;
 import org.tukaani.xz.XZInputStream;
 
 import javax.swing.event.EventListenerList;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.*;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
 public class FilmListReader implements AutoCloseable {
@@ -113,7 +114,7 @@ public class FilmListReader implements AutoCloseable {
         if (parsedSender.isEmpty())
             datenFilm.setSender(sender);
         else {
-            datenFilm.setSender(parsedSender.intern());
+            datenFilm.setSender(parsedSender);
             //store for future reads
             sender = parsedSender;
         }
@@ -177,7 +178,7 @@ public class FilmListReader implements AutoCloseable {
 
     private void parseGroesse(JsonParser jp, DatenFilm datenFilm) throws IOException {
         String value = checkedString(jp);
-        datenFilm.arr[DatenFilm.FILM_GROESSE] = value.intern();
+        datenFilm.arr[DatenFilm.FILM_GROESSE] = value;
     }
 
     /**
@@ -339,7 +340,8 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
-        DatenFilm.Database.createIndices();
+        if (MemoryUtils.isLowMemoryEnvironment())
+            DatenFilm.Database.createIndices();
 
         notifyFertig(source, listeFilme);
     }
@@ -351,6 +353,7 @@ public class FilmListReader implements AutoCloseable {
      * @param listeFilme the list to read to
      */
     private void processFromFile(String source, ListeFilme listeFilme) {
+        FileChannel fc = null;
         try {
             final Path filePath = Paths.get(source);
             final long fileSize = Files.size(filePath);
@@ -358,9 +361,12 @@ public class FilmListReader implements AutoCloseable {
                 Files.deleteIfExists(filePath);
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
-            try (FileInputStream fis = new FileInputStream(source);
-                 BufferedInputStream bis = new BufferedInputStream(fis, (int) (8 * FileUtils.ONE_MB));
-                 InputStream input = new ProgressMonitorInputStream(bis, fileSize, monitor);
+
+            fc = (FileChannel)Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
+            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY,0,fc.size());
+
+            try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
+                 InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
                  JsonParser jp = new JsonFactory().createParser(in)) {
                 readData(jp, listeFilme);
@@ -371,6 +377,14 @@ public class FilmListReader implements AutoCloseable {
         } catch (Exception ex) {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
+        }
+        finally {
+            if (fc != null) {
+                try {
+                    fc.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
     }
 

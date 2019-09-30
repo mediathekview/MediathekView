@@ -1,12 +1,12 @@
 package mediathek.update;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +17,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,19 +25,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProgramUpdateCheck implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(ProgramUpdateCheck.class);
-    /**
-     * 24 hour timer for repeating update checks
-     */
-    private final Timer updateCheckTimer;
-
     private final Daten daten;
+    private ScheduledFuture actionFuture = null;
 
     public ProgramUpdateCheck(Daten daten) {
         this.daten = daten;
-
-        updateCheckTimer = new Timer(60_000, e -> ForkJoinPool.commonPool().execute(this::performUpdateCheck));
-        updateCheckTimer.setRepeats(true);
-        updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
     }
 
     private void searchForProgramUpdate() {
@@ -146,13 +138,13 @@ public class ProgramUpdateCheck implements AutoCloseable {
 
     public void start() {
         logger.debug("ProgramUpdateCheck Started.");
-        updateCheckTimer.start();
+        actionFuture = daten.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::performUpdateCheck), 60L, TimeUnit.SECONDS.convert(24L, TimeUnit.HOURS), TimeUnit.SECONDS);
     }
 
     @Override
     public void close() {
-        if (updateCheckTimer != null) {
-            updateCheckTimer.stop();
+        if (actionFuture != null) {
+            actionFuture.cancel(true);
         }
         logger.debug("ProgramUpdateCheck closed.");
     }

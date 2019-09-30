@@ -55,7 +55,7 @@ public class DialogStarteinstellungen extends JDialog {
     }
 
     private void createLayout() {
-        PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(daten, parentComponent);
+        PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(parentComponent);
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(panelEinstellungenGeo, BorderLayout.CENTER);
     }

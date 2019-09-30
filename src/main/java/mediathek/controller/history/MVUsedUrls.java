@@ -161,7 +161,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
                 String url = MVUsedUrl.getUrlAusZeile(zeile).getUrl();
 
                 for (DatenFilm film : filme) {
-                    if (url.equals(film.getUrlHistory())) {
+                    if (url.equals(film.getUrl())) {
                         gefunden = true; //nur dann muss das Logfile auch geschrieben werden
                         gef = true; // und die Zeile wird verworfen
                         break;
@@ -226,9 +226,9 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
 
             for (DatenFilm film : arrayFilms) {
-                listeUrls.add(film.getUrlHistory());
+                listeUrls.add(film.getUrl());
 
-                final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
+                final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrl());
                 listeUrlsSortDate.add(usedUrl);
 
                 bufferedWriter.write(usedUrl.getUsedUrl());

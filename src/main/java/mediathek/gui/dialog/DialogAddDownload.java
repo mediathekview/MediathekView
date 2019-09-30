@@ -1,15 +1,14 @@
 package mediathek.gui.dialog;
 
-import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
 import mediathek.gui.messages.DownloadListChangedEvent;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -166,11 +165,14 @@ public class DialogAddDownload extends JDialog {
             private void tus() {
                 if (!stopBeob) {
                     nameGeaendert = true;
-                    String s = cbPathTextComponent.getText();
-                    if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
-                        jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                    } else {
-                        jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                    //perform checks only when OS is not windows
+                    if (!SystemUtils.IS_OS_WINDOWS) {
+                        String s = cbPathTextComponent.getText();
+                        if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
+                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                        } else {
+                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                        }
                     }
                     calculateAndCheckDiskSpace();
                 }
@@ -271,7 +273,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + ByteUnitUtil.byteCountToDisplaySize(usableSpace) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
@@ -530,8 +532,6 @@ public class DialogAddDownload extends JDialog {
         jCheckBoxStarten.setSelected(true);
         jCheckBoxStarten.setText("Download sofort starten");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Film speichern"));
-
         jButtonZiel.setText("File");
         jButtonZiel.setToolTipText("Zielpfad auswählen");
 
@@ -582,7 +582,7 @@ public class DialogAddDownload extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxInfodatei)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxPfadSpeichern))
                             .addComponent(jTextFieldName))))
                 .addContainerGap())
