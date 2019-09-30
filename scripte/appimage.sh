@@ -22,7 +22,9 @@ cd Appimage
 #tar -xzf MediathekView*tar.gz
 cp ../target/media/MediathekView*.tar.gz ./
 tar -xzf MediathekView*.tar.gz
-VERSION=$(ls |grep MediathekView_|grep "tar" | cut -d "_" -f 3-5|cut -d'-' -f1|sed 's/_/./g')
+VERSION=$(ls |grep MediathekView_|grep "tar" | cut -d "_" -f 3-5|cut -d'-' -f1|cut -d'.' -f1|sed 's/_/./g')
+
+rm ./MediathekView*.tar.gz
 
 # Aktuelle JRE URL ermitteln
 #URL_JRE=$(curl -s https://java.com/de/download/linux_manual.jsp |grep -m1 "<a title=\"Download der Java-Software für Linux x64\""|cut -d'"' -f4)
