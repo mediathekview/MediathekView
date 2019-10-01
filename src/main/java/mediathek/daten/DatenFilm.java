@@ -18,8 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * TODO: 8 Step plan
- * - Introduce Setters and Getters for each Field
- * - Each Filed gets an "get<FieldName>Title" to get the German Title of the Field
+ * - DONE: Introduce Setters and Getters for each Field
+ * 
+ * - Each field gets an "get<FieldName>Title" to get the German Title of the Field
  * - Change all usages to arr to a getter or setter
  * - Make a Real Entity. Remove the Array
  * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
@@ -33,22 +34,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public static final int FILM_SENDER = 1;  // getter. setter
     public static final int FILM_THEMA = 2;   // getter. setter
     public static final int FILM_TITEL = 3;   // getter. setter
-    public static final int FILM_ABSPIELEN = 4;
-    public static final int FILM_AUFZEICHNEN = 5;
-    public static final int FILM_DATUM = 6;  // getter. 
+    public static final int FILM_ABSPIELEN = 4; // no getter/setter access
+    public static final int FILM_AUFZEICHNEN = 5; // no getter/setter access
+    public static final int FILM_DATUM = 6;  // getter. setter.
     public static final int FILM_ZEIT = 7;   // getter. setter.
     public static final int FILM_DAUER = 8;  // getter. setter.
     public static final int FILM_GROESSE = 9;  // getter. setter.
-    public static final int FILM_HD = 10;
-    public static final int FILM_UT = 11;
+    public static final int FILM_HD = 10; // no getter/setter access
+    public static final int FILM_UT = 11; // no getter/setter access
     public static final int FILM_GEO = 12; // getter. setter // Geoblocking
     public static final int FILM_URL = 13; // getter. setter
     public static final int FILM_ABO_NAME = 14; // getter. setter. // wird vor dem Speichern gelöscht!
     public static final int FILM_DATUM_LONG = 15; // getter. // Datum als Long ABER Sekunden!!
-    public static final int FILM_URL_HISTORY = 16;
-    public static final int FILM_REF = 17;// Referenz auf this
-    public static final int FILM_URL_HD = 18;
-    public static final int FILM_URL_SUBTITLE = 19; // getter. 
+    public static final int FILM_URL_HISTORY = 16; // set null only
+    public static final int FILM_REF = 17; // no getter/setter access // Referenz auf this
+    public static final int FILM_URL_HD = 18; // getter. setter
+    public static final int FILM_URL_SUBTITLE = 19; // getter. setter
     public static final int FILM_URL_KLEIN = 20; // getter. setter.
     public static final int MAX_ELEM = 21;
     //Indices without storage context !!!
@@ -226,8 +227,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private void setupArr() {
         Arrays.fill(arr, "");
 
-        arr[FILM_URL_HISTORY] = null;
+        clearUrlHistory();
     }
+
+	private String clearUrlHistory() {
+		return arr[FILM_URL_HISTORY] = null;
+	}
 
     @Override
     public void close() {
