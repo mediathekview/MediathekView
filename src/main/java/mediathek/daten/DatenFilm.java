@@ -134,7 +134,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_URL_HD];
     }
 
-    public String getAboName() {
+    public void setUrlHd(String urlHd) {
+		arr[FILM_URL_HD] = urlHd;
+	}
+
+	public String getAboName() {
         return arr[FILM_ABO_NAME];
     }
 
@@ -146,6 +150,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_DATUM_LONG];
     }
 
+	public void setDatumLong(String datumLong) {
+        arr[FILM_DATUM_LONG] = datumLong;
+    }
+	
     private void writeFilmNumberToDatabase() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
             SqlClosure.sqlExecute(connection -> {
@@ -455,12 +463,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[DatenFilm.FILM_URL];
     }
 
-    @Deprecated
-    public String []getArr()
-    {
-    	return arr;
-    }
-    
     public String getNr() {
     	return arr[FILM_NR];
     }
@@ -495,6 +497,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     public String getSendeDatum() {
         return arr[FILM_DATUM];
+    }
+
+    public void setSendeDatum(String sendeDatum) {
+        arr[FILM_DATUM] = sendeDatum;
     }
 
     public String getSendeZeit() {
@@ -533,6 +539,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_URL_SUBTITLE];
     }
 
+    public void setUrlSubtitle(String urlSubtitle) {
+        arr[FILM_URL_SUBTITLE] = urlSubtitle;
+    }
+    
     public String getGeo() {
         return arr[FILM_GEO];
     }
