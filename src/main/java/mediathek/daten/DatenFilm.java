@@ -18,39 +18,39 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * TODO: 8 Step plan
- * - DONE: Introduce Setters and Getters for each Field
+ * + DONE: Introduce Setters and Getters for each Field
+ * + DONE: Each field gets an "get<FieldName>Title" to get the German title of the field (see DatenFilmCaptions)
+ * + DONE: replace all access to arr to a getter or a setter respectively
  * 
- * - Each field gets an "get<FieldName>Title" to get the German Title of the Field
- * - Change all usages to arr to a getter or setter
  * - Make a Real Entity. Remove the Array
  * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
  * - Finalize a Real Entity
- * - Write Testcases for each Method
- * - Write JavaDoc for each of the new Methods splitted from this moloch
+ * - Write test cases for each Method
+ * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
-    public static final int FILM_NR = 0;      // getter. setter     // wird vor dem Speichern gelöscht!
-    public static final int FILM_SENDER = 1;  // getter. setter
-    public static final int FILM_THEMA = 2;   // getter. setter
-    public static final int FILM_TITEL = 3;   // getter. setter
+    public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
+    public static final int FILM_SENDER = 1;  
+    public static final int FILM_THEMA = 2;   
+    public static final int FILM_TITEL = 3;   
     public static final int FILM_ABSPIELEN = 4; // no getter/setter access
     public static final int FILM_AUFZEICHNEN = 5; // no getter/setter access
-    public static final int FILM_DATUM = 6;  // getter. setter.
-    public static final int FILM_ZEIT = 7;   // getter. setter.
-    public static final int FILM_DAUER = 8;  // getter. setter.
-    public static final int FILM_GROESSE = 9;  // getter. setter.
+    public static final int FILM_DATUM = 6;  
+    public static final int FILM_ZEIT = 7;   
+    public static final int FILM_DAUER = 8;  
+    public static final int FILM_GROESSE = 9;  
     public static final int FILM_HD = 10; // no getter/setter access
     public static final int FILM_UT = 11; // no getter/setter access
-    public static final int FILM_GEO = 12; // getter. setter // Geoblocking
-    public static final int FILM_URL = 13; // getter. setter
-    public static final int FILM_ABO_NAME = 14; // getter. setter. // wird vor dem Speichern gelöscht!
-    public static final int FILM_DATUM_LONG = 15; // getter. // Datum als Long ABER Sekunden!!
+    public static final int FILM_GEO = 12; // Geoblocking
+    public static final int FILM_URL = 13; 
+    public static final int FILM_ABO_NAME = 14; // wird vor dem Speichern gelöscht!
+    public static final int FILM_DATUM_LONG = 15; // Datum als Long ABER Sekunden!!
     public static final int FILM_URL_HISTORY = 16; // set null only
     public static final int FILM_REF = 17; // no getter/setter access // Referenz auf this
-    public static final int FILM_URL_HD = 18; // getter. setter
-    public static final int FILM_URL_SUBTITLE = 19; // getter. setter
-    public static final int FILM_URL_KLEIN = 20; // getter. setter.
+    public static final int FILM_URL_HD = 18; 
+    public static final int FILM_URL_SUBTITLE = 19; 
+    public static final int FILM_URL_KLEIN = 20;
     public static final int MAX_ELEM = 21;
     //Indices without storage context !!!
     public static final int FILM_NEU = 21;
