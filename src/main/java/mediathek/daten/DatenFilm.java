@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * TODO: 8 Step plan
- * - Introduce Setters and Getters vor each Field
+ * - Introduce Setters and Getters for each Field
  * - Each Filed gets an "get<FieldName>Title" to get the German Title of the Field
  * - Change all usages to arr to a getter or setter
  * - Make a Real Entity. Remove the Array
@@ -64,8 +64,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Here all the film information with some minor exceptions.
      * Beware it is a dangerous string collection...
      */
-    public final String[] arr = new String[MAX_ELEM];
+    private final String[] arr = new String[MAX_ELEM];
 
+    @Deprecated
+    public String []getArr()
+    {
+    	return arr;
+    }
+    
     public DatenAbo getAbo() {
         return abo;
     }

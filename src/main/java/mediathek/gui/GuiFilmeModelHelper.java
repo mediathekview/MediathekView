@@ -156,7 +156,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (keineAbos) {
-                if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
+                if (!film.getArr()[DatenFilm.FILM_ABO_NAME].isEmpty()) {
                     continue;
                 }
             }

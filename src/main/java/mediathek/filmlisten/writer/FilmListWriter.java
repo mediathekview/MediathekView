@@ -127,18 +127,18 @@ public class FilmListWriter {
         writeTitel(jg, datenFilm);
         jg.writeString(datenFilm.getSendeDatum());
         writeZeit(jg, datenFilm);
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_DAUER]);
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_GROESSE]);
+        jg.writeString(datenFilm.getArr()[DatenFilm.FILM_DAUER]);
+        jg.writeString(datenFilm.getArr()[DatenFilm.FILM_GROESSE]);
         jg.writeString(datenFilm.getDescription());
         jg.writeString(datenFilm.getUrl());
         jg.writeString(datenFilm.getWebsiteLink());
         jg.writeString(datenFilm.getUrlSubtitle());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_KLEIN]);
+        jg.writeString(datenFilm.getArr()[DatenFilm.FILM_URL_KLEIN]);
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_HD]);
+        jg.writeString(datenFilm.getArr()[DatenFilm.FILM_URL_HD]);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
-        jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM_LONG]);
+        jg.writeString(datenFilm.getArr()[DatenFilm.FILM_DATUM_LONG]);
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
         jg.writeString(datenFilm.getGeo());
         jg.writeString(Boolean.toString(datenFilm.isNew()));
@@ -175,7 +175,7 @@ public class FilmListWriter {
     }
 
     private void writeZeit(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
-        String strZeit = datenFilm.arr[DatenFilm.FILM_ZEIT];
+        String strZeit = datenFilm.getArr()[DatenFilm.FILM_ZEIT];
         final int len = strZeit.length();
 
         if (strZeit.isEmpty() || len < 8)
