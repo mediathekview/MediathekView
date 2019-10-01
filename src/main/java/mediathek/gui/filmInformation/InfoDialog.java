@@ -204,7 +204,7 @@ public class InfoDialog extends JDialog {
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
 
             lblGeo.setText(currentFilm.getGeo());
-            lblAbo.setText(currentFilm.getArr()[DatenFilm.FILM_ABO_NAME]);
+            lblAbo.setText(currentFilm.getAboName());
 
             Platform.runLater(() -> {
                 hyperlink.setTooltip(new Tooltip(currentFilm.getWebsiteLink()));

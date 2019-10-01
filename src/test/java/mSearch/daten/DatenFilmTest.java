@@ -43,7 +43,7 @@ class DatenFilmTest {
   @MethodSource("filmLengthEdgeCases")
   void testFilmLengthCalculation(String input, long expected) {
 
-    testEntity.getArr()[DatenFilm.FILM_DAUER] = input;
+    testEntity.setDauer(input);
     testEntity.init();
 
     assertThat(expected).isEqualTo(testEntity.getFilmLength());

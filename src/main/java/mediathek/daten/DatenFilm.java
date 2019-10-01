@@ -29,27 +29,27 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
-    public static final int FILM_NR = 0; // wird vor dem Speichern gelöscht!
-    public static final int FILM_SENDER = 1;
-    public static final int FILM_THEMA = 2;
-    public static final int FILM_TITEL = 3;
+    public static final int FILM_NR = 0;      // getter. setter     // wird vor dem Speichern gelöscht!
+    public static final int FILM_SENDER = 1;  // getter. setter
+    public static final int FILM_THEMA = 2;   // getter. setter
+    public static final int FILM_TITEL = 3;   // getter. setter
     public static final int FILM_ABSPIELEN = 4;
     public static final int FILM_AUFZEICHNEN = 5;
-    public static final int FILM_DATUM = 6;
-    public static final int FILM_ZEIT = 7;
-    public static final int FILM_DAUER = 8;
-    public static final int FILM_GROESSE = 9;
+    public static final int FILM_DATUM = 6;  // getter. 
+    public static final int FILM_ZEIT = 7;   // getter. setter.
+    public static final int FILM_DAUER = 8;  // getter. setter.
+    public static final int FILM_GROESSE = 9;  // getter. setter.
     public static final int FILM_HD = 10;
     public static final int FILM_UT = 11;
-    public static final int FILM_GEO = 12;// Geoblocking
-    public static final int FILM_URL = 13;
-    public static final int FILM_ABO_NAME = 14;// wird vor dem Speichern gelöscht!
-    public static final int FILM_DATUM_LONG = 15;// Datum als Long ABER Sekunden!!
+    public static final int FILM_GEO = 12; // getter. setter // Geoblocking
+    public static final int FILM_URL = 13; // getter. setter
+    public static final int FILM_ABO_NAME = 14; // getter. setter. // wird vor dem Speichern gelöscht!
+    public static final int FILM_DATUM_LONG = 15; // getter. // Datum als Long ABER Sekunden!!
     public static final int FILM_URL_HISTORY = 16;
     public static final int FILM_REF = 17;// Referenz auf this
     public static final int FILM_URL_HD = 18;
-    public static final int FILM_URL_SUBTITLE = 19;
-    public static final int FILM_URL_KLEIN = 20;
+    public static final int FILM_URL_SUBTITLE = 19; // getter. 
+    public static final int FILM_URL_KLEIN = 20; // getter. setter.
     public static final int MAX_ELEM = 21;
     //Indices without storage context !!!
     public static final int FILM_NEU = 21;
@@ -66,12 +66,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private final String[] arr = new String[MAX_ELEM];
 
-    @Deprecated
-    public String []getArr()
-    {
-    	return arr;
-    }
-    
     public DatenAbo getAbo() {
         return abo;
     }
@@ -132,7 +126,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_URL_KLEIN];
     }
 
-    public String getUrlHd() {
+    public void setUrlKlein(String urlKlein) {
+		arr[FILM_URL_KLEIN] = urlKlein;
+	}
+
+	public String getUrlHd() {
         return arr[FILM_URL_HD];
     }
 
@@ -140,7 +138,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_ABO_NAME];
     }
 
-    public String getDatumLong() {
+    public void setAboName(String aboName) {
+		arr[FILM_ABO_NAME] = aboName;
+	}
+
+	public String getDatumLong() {
         return arr[FILM_DATUM_LONG];
     }
 
@@ -453,12 +455,26 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[DatenFilm.FILM_URL];
     }
 
+    @Deprecated
+    public String []getArr()
+    {
+    	return arr;
+    }
+    
+    public String getNr() {
+    	return arr[FILM_NR];
+    }
+
+    public void setNr(final String nr) {
+    	arr[FILM_NR] = nr;
+    }
+    
     public String getSender() {
-        return arr[FILM_SENDER];
+    	return arr[FILM_SENDER];
     }
 
     public void setSender(String sender) {
-        arr[DatenFilm.FILM_SENDER] = sender;
+        arr[FILM_SENDER] = sender;
     }
 
     public String getThema() {
@@ -485,11 +501,19 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_ZEIT];
     }
 
-    public String getDauer() {
+    public void setSendeZeit(String sendeZeit) {
+		arr[FILM_ZEIT] = sendeZeit;
+	}
+
+	public String getDauer() {
         return arr[FILM_DAUER];
     }
 
-    public String getSize() {
+    public void setDauer(String dauer) {
+		arr[FILM_DAUER] = dauer;
+	}
+
+	public String getSize() {
         return arr[FILM_GROESSE];
     }
 

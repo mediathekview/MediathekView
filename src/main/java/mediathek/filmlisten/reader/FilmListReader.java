@@ -178,7 +178,7 @@ public class FilmListReader implements AutoCloseable {
 
     private void parseGroesse(JsonParser jp, DatenFilm datenFilm) throws IOException {
         String value = checkedString(jp);
-        datenFilm.getArr()[DatenFilm.FILM_GROESSE] = value;
+        datenFilm.setSize(value);
     }
 
     /**
@@ -194,7 +194,7 @@ public class FilmListReader implements AutoCloseable {
         if (!zeit.isEmpty() && zeit.length() < 8) {
             zeit += ":00"; // add seconds
         }
-        datenFilm.getArr()[DatenFilm.FILM_ZEIT] = zeit;
+        datenFilm.setSendeZeit(zeit);
     }
 
     /**

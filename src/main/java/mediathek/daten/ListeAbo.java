@@ -221,7 +221,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     private void deleteAboInFilm(DatenFilm film) {
         // für jeden Film Abo löschen
-        film.getArr()[DatenFilm.FILM_ABO_NAME] = "";
+        film.setAboName("");
         film.setAbo(null);
     }
 
@@ -268,9 +268,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
         if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
             // dann ist der Film zu kurz
-            film.getArr()[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
+            film.setAboName(foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]"));
         } else {
-            film.getArr()[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
+            film.setAboName(foundAbo.arr[DatenAbo.ABO_NAME]);
         }
         film.setAbo(foundAbo);
     }

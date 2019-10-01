@@ -120,9 +120,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_TITEL] = film.getTitle();
         arr[DOWNLOAD_FILM_URL] = film.getUrl();
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
-        arr[DOWNLOAD_DATUM] = film.getArr()[DatenFilm.FILM_DATUM];
-        arr[DOWNLOAD_ZEIT] = film.getArr()[DatenFilm.FILM_ZEIT];
-        arr[DOWNLOAD_DAUER] = film.getArr()[DatenFilm.FILM_DAUER];
+        arr[DOWNLOAD_DATUM] = film.getSendeDatum();
+        arr[DOWNLOAD_ZEIT] = film.getSendeZeit();
+        arr[DOWNLOAD_DAUER] = film.getDauer();
         arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
@@ -146,7 +146,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public void setGroesseFromFilm() {
         if (film != null) {
             if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
-                mVFilmSize.setSize(film.getArr()[DatenFilm.FILM_GROESSE]);
+                mVFilmSize.setSize(film.getSize());
             } else {
                 mVFilmSize.setSize(0);
             }
@@ -616,17 +616,17 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        replStr = StringUtils.replace(replStr, "%D", film.getArr()[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.getArr()[DatenFilm.FILM_DATUM])));
-        replStr = StringUtils.replace(replStr, "%d", film.getArr()[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.getArr()[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%D", film.getSendeDatum().isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.getSendeDatum())));
+        replStr = StringUtils.replace(replStr, "%d", film.getSendeZeit().isEmpty() ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.getSendeZeit()));
         replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
         replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
-        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.getArr()[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.getArr()[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.getArr()[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.getArr()[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.getArr()[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.getArr()[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.getArr()[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.getArr()[DatenFilm.FILM_ZEIT]));
-        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.getArr()[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.getArr()[DatenFilm.FILM_ZEIT]));
-        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.getArr()[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.getArr()[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
 
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
