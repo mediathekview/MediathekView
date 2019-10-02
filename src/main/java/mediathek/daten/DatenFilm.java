@@ -343,7 +343,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                 break;
 
             default://AUFLOESUNG_NORMAL
-                ret = arr[DatenFilm.FILM_URL];
+                ret = getUrl();
                 break;
         }
 
@@ -351,8 +351,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public String getDateigroesse(String url) {
-        if (url.equals(arr[DatenFilm.FILM_URL])) {
-            return arr[DatenFilm.FILM_GROESSE];
+        if (url.equals(getUrl())) {
+            return getSize();
         } else {
             return FileSize.laengeString(url);
         }
@@ -361,12 +361,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public String getIndex() {
         // liefert einen eindeutigen Index für die Filmliste
         // URL beim KiKa und ORF ändern sich laufend!
-        return (getSender() + arr[FILM_THEMA]).toLowerCase() + getUrl();
+        return (getSender() + getThema()).toLowerCase() + getUrl();
     }
 
     public boolean isHD() {
         //Film gibts in HD
-        return !arr[DatenFilm.FILM_URL_HD].isEmpty();
+        return !getUrlHd().isEmpty();
     }
 
     public DatenFilm getCopy() {
@@ -384,7 +384,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public int compareTo(@NotNull DatenFilm other) {
         int ret;
         if ((ret = sorter.compare(getSender(), other.getSender())) == 0) {
-            return sorter.compare(arr[FILM_THEMA], other.arr[FILM_THEMA]);
+            return sorter.compare(getThema(), other.getThema());
         }
         return ret;
     }
@@ -405,7 +405,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private long parseTimeToSeconds() {
         long seconds = 0;
-        final String[] split = StringUtils.split(arr[FILM_DAUER], ':');
+        final String[] split = StringUtils.split(getDauer(), ':');
 
         try {
             seconds += Long.parseLong(split[0]) * 3600; //hour
@@ -430,13 +430,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             try {
-                final long l = Long.parseLong(arr[DatenFilm.FILM_DATUM_LONG]);
+                final long l = Long.parseLong(getDatumLong());
                 datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
+                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
                 datumFilm = new DatumFilm(0);
-                arr[DatenFilm.FILM_DATUM] = "";
-                arr[DatenFilm.FILM_ZEIT] = "";
+                setSendeDatum("");
+                setSendeZeit("");
             }
         }
     }
@@ -449,23 +449,25 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         setDatum();
     }
 
-    private String getUrlNormalOrRequested(int indexUrl) {
+    // TODO: how to deal with this in order to replace arr[indexUrl] with a getter?
+    private String getUrlNormalOrRequested(final int indexUrl) {
         // liefert die kleine normale URL
-        if (!arr[indexUrl].isEmpty()) {
+        final String requestedUrl = arr[indexUrl];
+		if (!requestedUrl.isEmpty()) {
             try {
                 // Prüfen, ob Pipe auch in URL enthalten ist. Beim ZDF ist das nicht der Fall.
-                final int indexPipe = arr[indexUrl].indexOf('|');
+                final int indexPipe = requestedUrl.indexOf('|');
                 if (indexPipe < 0) {
-                    return arr[indexUrl];
+                    return requestedUrl;
                 }
 
-                final int i = Integer.parseInt(arr[indexUrl].substring(0, indexPipe));
-                return arr[DatenFilm.FILM_URL].substring(0, i) + arr[indexUrl].substring(arr[indexUrl].indexOf('|') + 1);
+                final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
+                return getUrl().substring(0, i) + requestedUrl.substring(requestedUrl.indexOf('|') + 1);
             } catch (Exception e) {
-                Log.errorLog(915236703, e, arr[indexUrl]);
+                Log.errorLog(915236703, e, requestedUrl);
             }
         }
-        return arr[DatenFilm.FILM_URL];
+        return getUrl();
     }
 
     public String getNr() {
