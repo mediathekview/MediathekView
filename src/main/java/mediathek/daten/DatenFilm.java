@@ -230,8 +230,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         clearUrlHistory();
     }
 
-	private String clearUrlHistory() {
-		return arr[FILM_URL_HISTORY] = null;
+	private void clearUrlHistory() {
+		arr[FILM_URL_HISTORY] = null;
 	}
 
     @Override
