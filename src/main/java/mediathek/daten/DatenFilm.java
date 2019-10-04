@@ -328,18 +328,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public boolean hasSubtitle() {
-        return !arr[FILM_URL_SUBTITLE].isEmpty();
+        return !getUrlSubtitle().isEmpty();
     }
 
     public String getUrlFuerAufloesung(String aufloesung) {
         final String ret;
         switch (aufloesung) {
             case FilmResolution.AUFLOESUNG_KLEIN:
-                ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_KLEIN);
+                ret = getUrlNormalOrRequested(aufloesung);
                 break;
 
             case FilmResolution.AUFLOESUNG_HD:
-                ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_HD);
+                ret = getUrlNormalOrRequested(aufloesung);
                 break;
 
             default://AUFLOESUNG_NORMAL
@@ -369,6 +369,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return !getUrlHd().isEmpty();
     }
 
+    // TODO rename to clone()?
     public DatenFilm getCopy() {
         DatenFilm ret = new DatenFilm();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
@@ -449,10 +450,16 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         setDatum();
     }
 
-    // TODO: how to deal with this in order to replace arr[indexUrl] with a getter?
-    private String getUrlNormalOrRequested(final int indexUrl) {
-        // liefert die kleine normale URL
-        final String requestedUrl = arr[indexUrl];
+    // there is only one caller: DatenFilm.getUrlFuerAufloesung(String aufloesung)
+    // 
+    /* @param aufloesung: one of 
+	/*     FilmResolution.AUFLOESUNG_HD
+	 *     FilmResolution.AUFLOESUNG_KLEIN
+	 *     FilmResolution.AUFLOESUNG_NORMAL
+	 */
+    private String getUrlNormalOrRequested(final String aufloesung) {
+        // liefert die kleine normale URL oder die HD URL
+        final String requestedUrl = getUrlByAufloesung(aufloesung);
 		if (!requestedUrl.isEmpty()) {
             try {
                 // Prüfen, ob Pipe auch in URL enthalten ist. Beim ZDF ist das nicht der Fall.
@@ -469,6 +476,27 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
         return getUrl();
     }
+
+    // there is only one caller: DatenFilm.getUrlNormalOrRequested(String aufloesung)
+    // 
+    /* @param aufloesung: one of 
+	/*     FilmResolution.AUFLOESUNG_HD
+	 *     FilmResolution.AUFLOESUNG_KLEIN
+	 *     FilmResolution.AUFLOESUNG_NORMAL
+	 */
+	private String getUrlByAufloesung(final String aufloesung) {
+		// nobody will call this function with a null value.
+		// the only caller, getUrlFuerAufloesung, doesn't check for null
+		// and hence, any NPE would occur there.
+		switch (aufloesung)
+		{
+		case FilmResolution.AUFLOESUNG_HD: return getUrlHd();
+		case FilmResolution.AUFLOESUNG_KLEIN: return getUrlKlein();
+		
+		case FilmResolution.AUFLOESUNG_NORMAL: // return getUrl(); // TODO preferably use intentional fall-through or duplication here?   
+		default: return getUrl();
+		}
+	}
 
     public String getNr() {
     	return arr[FILM_NR];
