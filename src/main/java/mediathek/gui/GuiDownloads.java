@@ -1525,7 +1525,7 @@ public class GuiDownloads extends AGuiTabPanel {
                                 DatenFilm filmDownload = dl.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
                                 filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                filmDownload.arr[DatenFilm.FILM_URL_KLEIN] = "";
+                                filmDownload.setUrlKlein("");
                                 // und starten
                                 daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
                             }
