@@ -335,9 +335,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         final String ret;
         switch (aufloesung) {
             case FilmResolution.AUFLOESUNG_KLEIN:
-                ret = getUrlNormalOrRequested(aufloesung);
-                break;
-
             case FilmResolution.AUFLOESUNG_HD:
                 ret = getUrlNormalOrRequested(aufloesung);
                 break;
