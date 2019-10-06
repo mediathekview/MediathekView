@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
-public final class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneable {
+public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneable {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
     public static final int FILM_SENDER = 1;  
     public static final int FILM_THEMA = 2;   
