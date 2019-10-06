@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
-public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
+public final class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneable {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
     public static final int FILM_SENDER = 1;  
     public static final int FILM_THEMA = 2;   
@@ -366,15 +366,16 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return !getUrlHd().isEmpty();
     }
 
-    // TODO rename to clone()?
-    public DatenFilm getCopy() {
-        DatenFilm ret = new DatenFilm();
+    @Override public Object clone() throws CloneNotSupportedException
+    {
+        DatenFilm ret = (DatenFilm) super.clone();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.datumFilm = this.datumFilm;
         ret.databaseFilmNumber = this.databaseFilmNumber;
         ret.filmSize = this.filmSize;
         ret.filmLength = this.filmLength;
         ret.abo = this.abo;
+
         return ret;
     }
 
