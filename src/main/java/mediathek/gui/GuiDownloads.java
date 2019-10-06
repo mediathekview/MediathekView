@@ -1517,17 +1517,22 @@ public class GuiDownloads extends AGuiTabPanel {
             itemPlayer.addActionListener(e -> {
                 final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
-                    Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
+                    final Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
                     optPSetPlay.ifPresentOrElse(gruppe -> {
                         Optional<DatenDownload> optDL = Optional.ofNullable((DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF));
                         optDL.ifPresent(dl -> {
                             if (dl.film != null) {
-                                DatenFilm filmDownload = dl.film.getCopy();
-                                // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                filmDownload.setUrlKlein("");
-                                // und starten
-                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                try {
+                                    DatenFilm filmDownload = (DatenFilm) dl.film.clone();
+                                    // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                    filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                    filmDownload.setUrlKlein("");
+                                    // und starten
+                                    daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                }
+                                catch (CloneNotSupportedException ex) {
+                                    logger.error("Cloning is not supported", ex);
+                                }
                             }
                         });
                     }, () -> {
