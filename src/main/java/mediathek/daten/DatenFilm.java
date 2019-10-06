@@ -18,37 +18,38 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * TODO: 8 Step plan
- * - Introduce Setters and Getters vor each Field
- * - Each Filed gets an "get<FieldName>Title" to get the German Title of the Field
- * - Change all usages to arr to a getter or setter
+ * + DONE: Introduce Setters and Getters for each Field
+ * + DONE: Each field gets an "get<FieldName>Title" to get the German title of the field (see DatenFilmCaptions)
+ * + DONE: replace all access to arr to a getter or a setter respectively
+ * 
  * - Make a Real Entity. Remove the Array
  * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
  * - Finalize a Real Entity
- * - Write Testcases for each Method
- * - Write JavaDoc for each of the new Methods splitted from this moloch
+ * - Write test cases for each Method
+ * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
-    public static final int FILM_NR = 0; // wird vor dem Speichern gelöscht!
-    public static final int FILM_SENDER = 1;
-    public static final int FILM_THEMA = 2;
-    public static final int FILM_TITEL = 3;
-    public static final int FILM_ABSPIELEN = 4;
-    public static final int FILM_AUFZEICHNEN = 5;
-    public static final int FILM_DATUM = 6;
-    public static final int FILM_ZEIT = 7;
-    public static final int FILM_DAUER = 8;
-    public static final int FILM_GROESSE = 9;
-    public static final int FILM_HD = 10;
-    public static final int FILM_UT = 11;
-    public static final int FILM_GEO = 12;// Geoblocking
-    public static final int FILM_URL = 13;
-    public static final int FILM_ABO_NAME = 14;// wird vor dem Speichern gelöscht!
-    public static final int FILM_DATUM_LONG = 15;// Datum als Long ABER Sekunden!!
-    public static final int FILM_URL_HISTORY = 16;
-    public static final int FILM_REF = 17;// Referenz auf this
-    public static final int FILM_URL_HD = 18;
-    public static final int FILM_URL_SUBTITLE = 19;
+    public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
+    public static final int FILM_SENDER = 1;  
+    public static final int FILM_THEMA = 2;   
+    public static final int FILM_TITEL = 3;   
+    public static final int FILM_ABSPIELEN = 4; // no getter/setter access
+    public static final int FILM_AUFZEICHNEN = 5; // no getter/setter access
+    public static final int FILM_DATUM = 6;  
+    public static final int FILM_ZEIT = 7;   
+    public static final int FILM_DAUER = 8;  
+    public static final int FILM_GROESSE = 9;  
+    public static final int FILM_HD = 10; // no getter/setter access
+    public static final int FILM_UT = 11; // no getter/setter access
+    public static final int FILM_GEO = 12; // Geoblocking
+    public static final int FILM_URL = 13; 
+    public static final int FILM_ABO_NAME = 14; // wird vor dem Speichern gelöscht!
+    public static final int FILM_DATUM_LONG = 15; // Datum als Long ABER Sekunden!!
+    public static final int FILM_URL_HISTORY = 16; // set null only
+    public static final int FILM_REF = 17; // no getter/setter access // Referenz auf this
+    public static final int FILM_URL_HD = 18; 
+    public static final int FILM_URL_SUBTITLE = 19; 
     public static final int FILM_URL_KLEIN = 20;
     public static final int MAX_ELEM = 21;
     //Indices without storage context !!!
@@ -64,7 +65,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Here all the film information with some minor exceptions.
      * Beware it is a dangerous string collection...
      */
-    public final String[] arr = new String[MAX_ELEM];
+    private final String[] arr = new String[MAX_ELEM];
 
     public DatenAbo getAbo() {
         return abo;
@@ -126,18 +127,34 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_URL_KLEIN];
     }
 
-    public String getUrlHd() {
+    public void setUrlKlein(String urlKlein) {
+		arr[FILM_URL_KLEIN] = urlKlein;
+	}
+
+	public String getUrlHd() {
         return arr[FILM_URL_HD];
     }
 
-    public String getAboName() {
+    public void setUrlHd(String urlHd) {
+		arr[FILM_URL_HD] = urlHd;
+	}
+
+	public String getAboName() {
         return arr[FILM_ABO_NAME];
     }
 
-    public String getDatumLong() {
+    public void setAboName(String aboName) {
+		arr[FILM_ABO_NAME] = aboName;
+	}
+
+	public String getDatumLong() {
         return arr[FILM_DATUM_LONG];
     }
 
+	public void setDatumLong(String datumLong) {
+        arr[FILM_DATUM_LONG] = datumLong;
+    }
+	
     private void writeFilmNumberToDatabase() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
             SqlClosure.sqlExecute(connection -> {
@@ -210,8 +227,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     private void setupArr() {
         Arrays.fill(arr, "");
 
-        arr[FILM_URL_HISTORY] = null;
+        clearUrlHistory();
     }
+
+	private void clearUrlHistory() {
+		arr[FILM_URL_HISTORY] = null;
+	}
 
     @Override
     public void close() {
@@ -307,22 +328,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public boolean hasSubtitle() {
-        return !arr[FILM_URL_SUBTITLE].isEmpty();
+        return !getUrlSubtitle().isEmpty();
     }
 
     public String getUrlFuerAufloesung(String aufloesung) {
         final String ret;
         switch (aufloesung) {
             case FilmResolution.AUFLOESUNG_KLEIN:
-                ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_KLEIN);
+                ret = getUrlNormalOrRequested(aufloesung);
                 break;
 
             case FilmResolution.AUFLOESUNG_HD:
-                ret = getUrlNormalOrRequested(DatenFilm.FILM_URL_HD);
+                ret = getUrlNormalOrRequested(aufloesung);
                 break;
 
             default://AUFLOESUNG_NORMAL
-                ret = arr[DatenFilm.FILM_URL];
+                ret = getUrl();
                 break;
         }
 
@@ -330,8 +351,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     public String getDateigroesse(String url) {
-        if (url.equals(arr[DatenFilm.FILM_URL])) {
-            return arr[DatenFilm.FILM_GROESSE];
+        if (url.equals(getUrl())) {
+            return getSize();
         } else {
             return FileSize.laengeString(url);
         }
@@ -340,14 +361,15 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public String getIndex() {
         // liefert einen eindeutigen Index für die Filmliste
         // URL beim KiKa und ORF ändern sich laufend!
-        return (getSender() + arr[FILM_THEMA]).toLowerCase() + getUrl();
+        return (getSender() + getThema()).toLowerCase() + getUrl();
     }
 
     public boolean isHD() {
         //Film gibts in HD
-        return !arr[DatenFilm.FILM_URL_HD].isEmpty();
+        return !getUrlHd().isEmpty();
     }
 
+    // TODO rename to clone()?
     public DatenFilm getCopy() {
         DatenFilm ret = new DatenFilm();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
@@ -363,7 +385,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public int compareTo(@NotNull DatenFilm other) {
         int ret;
         if ((ret = sorter.compare(getSender(), other.getSender())) == 0) {
-            return sorter.compare(arr[FILM_THEMA], other.arr[FILM_THEMA]);
+            return sorter.compare(getThema(), other.getThema());
         }
         return ret;
     }
@@ -384,7 +406,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private long parseTimeToSeconds() {
         long seconds = 0;
-        final String[] split = StringUtils.split(arr[FILM_DAUER], ':');
+        final String[] split = StringUtils.split(getDauer(), ':');
 
         try {
             seconds += Long.parseLong(split[0]) * 3600; //hour
@@ -409,13 +431,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             try {
-                final long l = Long.parseLong(arr[DatenFilm.FILM_DATUM_LONG]);
+                final long l = Long.parseLong(getDatumLong());
                 datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), arr[DatenFilm.FILM_ZEIT], arr[DatenFilm.FILM_DATUM_LONG], ex);
+                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
                 datumFilm = new DatumFilm(0);
-                arr[DatenFilm.FILM_DATUM] = "";
-                arr[DatenFilm.FILM_ZEIT] = "";
+                setSendeDatum("");
+                setSendeZeit("");
             }
         }
     }
@@ -428,31 +450,68 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         setDatum();
     }
 
-    private String getUrlNormalOrRequested(int indexUrl) {
-        // liefert die kleine normale URL
-        if (!arr[indexUrl].isEmpty()) {
+    // there is only one caller: DatenFilm.getUrlFuerAufloesung(String aufloesung)
+    // 
+    /* @param aufloesung: one of 
+	/*     FilmResolution.AUFLOESUNG_HD
+	 *     FilmResolution.AUFLOESUNG_KLEIN
+	 *     FilmResolution.AUFLOESUNG_NORMAL
+	 */
+    private String getUrlNormalOrRequested(final String aufloesung) {
+        // liefert die kleine normale URL oder die HD URL
+        final String requestedUrl = getUrlByAufloesung(aufloesung);
+		if (!requestedUrl.isEmpty()) {
             try {
                 // Prüfen, ob Pipe auch in URL enthalten ist. Beim ZDF ist das nicht der Fall.
-                final int indexPipe = arr[indexUrl].indexOf('|');
+                final int indexPipe = requestedUrl.indexOf('|');
                 if (indexPipe < 0) {
-                    return arr[indexUrl];
+                    return requestedUrl;
                 }
 
-                final int i = Integer.parseInt(arr[indexUrl].substring(0, indexPipe));
-                return arr[DatenFilm.FILM_URL].substring(0, i) + arr[indexUrl].substring(arr[indexUrl].indexOf('|') + 1);
+                final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
+                return getUrl().substring(0, i) + requestedUrl.substring(requestedUrl.indexOf('|') + 1);
             } catch (Exception e) {
-                Log.errorLog(915236703, e, arr[indexUrl]);
+                Log.errorLog(915236703, e, requestedUrl);
             }
         }
-        return arr[DatenFilm.FILM_URL];
+        return getUrl();
     }
 
+    // there is only one caller: DatenFilm.getUrlNormalOrRequested(String aufloesung)
+    // 
+    /* @param aufloesung: one of 
+	/*     FilmResolution.AUFLOESUNG_HD
+	 *     FilmResolution.AUFLOESUNG_KLEIN
+	 *     FilmResolution.AUFLOESUNG_NORMAL
+	 */
+	private String getUrlByAufloesung(final String aufloesung) {
+		// nobody will call this function with a null value.
+		// the only caller, getUrlFuerAufloesung, doesn't check for null
+		// and hence, any NPE would occur there.
+		switch (aufloesung)
+		{
+		case FilmResolution.AUFLOESUNG_HD: return getUrlHd();
+		case FilmResolution.AUFLOESUNG_KLEIN: return getUrlKlein();
+		
+		case FilmResolution.AUFLOESUNG_NORMAL: // return getUrl(); // TODO preferably use intentional fall-through or duplication here?   
+		default: return getUrl();
+		}
+	}
+
+    public String getNr() {
+    	return arr[FILM_NR];
+    }
+
+    public void setNr(final String nr) {
+    	arr[FILM_NR] = nr;
+    }
+    
     public String getSender() {
-        return arr[FILM_SENDER];
+    	return arr[FILM_SENDER];
     }
 
     public void setSender(String sender) {
-        arr[DatenFilm.FILM_SENDER] = sender;
+        arr[FILM_SENDER] = sender;
     }
 
     public String getThema() {
@@ -475,15 +534,27 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_DATUM];
     }
 
+    public void setSendeDatum(String sendeDatum) {
+        arr[FILM_DATUM] = sendeDatum;
+    }
+
     public String getSendeZeit() {
         return arr[FILM_ZEIT];
     }
 
-    public String getDauer() {
+    public void setSendeZeit(String sendeZeit) {
+		arr[FILM_ZEIT] = sendeZeit;
+	}
+
+	public String getDauer() {
         return arr[FILM_DAUER];
     }
 
-    public String getSize() {
+    public void setDauer(String dauer) {
+		arr[FILM_DAUER] = dauer;
+	}
+
+	public String getSize() {
         return arr[FILM_GROESSE];
     }
 
@@ -503,6 +574,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return arr[FILM_URL_SUBTITLE];
     }
 
+    public void setUrlSubtitle(String urlSubtitle) {
+        arr[FILM_URL_SUBTITLE] = urlSubtitle;
+    }
+    
     public String getGeo() {
         return arr[FILM_GEO];
     }

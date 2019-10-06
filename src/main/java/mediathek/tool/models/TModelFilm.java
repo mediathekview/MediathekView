@@ -1,6 +1,7 @@
 package mediathek.tool.models;
 
 import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenFilmCaptions;
 import mediathek.tool.Datum;
 import mediathek.tool.MVFilmSize;
 
@@ -62,72 +63,15 @@ public class TModelFilm extends TModel {
     }
 
     @Override
-    public String getColumnName(int column) {
-        String result;
-
-        switch (column) {
-            case DatenFilm.FILM_NR:
-                result = "Nr";
-                break;
-
-            case DatenFilm.FILM_SENDER:
-                result = "Sender";
-                break;
-
-            case DatenFilm.FILM_THEMA:
-                result = "Thema";
-                break;
-
-            case DatenFilm.FILM_TITEL:
-                result = "Titel";
-                break;
-
-            case DatenFilm.FILM_ABSPIELEN:
-            case DatenFilm.FILM_AUFZEICHNEN:
-                result = "";
-                break;
-
-            case DatenFilm.FILM_DATUM:
-                result = "Datum";
-                break;
-
-            case DatenFilm.FILM_ZEIT:
-                result = "Zeit";
-                break;
-
-            case DatenFilm.FILM_DAUER:
-                result = "Dauer";
-                break;
-
-            case DatenFilm.FILM_GROESSE:
-                result = "Größe [MB]";
-                break;
-
-            case DatenFilm.FILM_HD:
-                result = "HQ";
-                break;
-
-            case DatenFilm.FILM_UT:
-                result = "UT";
-                break;
-
-            case DatenFilm.FILM_GEO:
-                result = "Geo";
-                break;
-
-            case DatenFilm.FILM_URL:
-                result = "URL";
-                break;
-
-            case DatenFilm.FILM_ABO_NAME:
-                result = "Abo";
-                break;
-
-            default:
-                throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
+    public String getColumnName(int column) 
+    {
+    	// TODO: clear caption titles in DatenFilmCaptions?
+        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN)
+        {
+        	return "";
         }
 
-        return result;
+        return DatenFilmCaptions.getTitleByFieldIndex(column);
     }
 
     @Override
