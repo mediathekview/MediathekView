@@ -264,7 +264,7 @@ public class FilmeLaden {
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
             final ListeFilme listeFilme = daten.getListeFilme();
-            listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
+            listeFilme.updateFromFilmList(diffListe);
             listeFilme.setMetaData(diffListe.metaData());
             Collections.sort(listeFilme);
             diffListe.clear();

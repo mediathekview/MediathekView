@@ -3,7 +3,6 @@ package mediathek.gui.dialog;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenProg;
 import mediathek.daten.FilmResolution;
 import mediathek.file.GetFile;
@@ -296,7 +295,7 @@ public class DialogEditDownload extends JDialog {
                     gridbag.setConstraints(jLabelFilmHD, c);
                     jPanelExtra.add(jLabelFilmHD);
                     if (datenDownload.film != null) {
-                        jLabelFilmHD.setVisible(datenDownload.film.isHD());
+                        jLabelFilmHD.setVisible(datenDownload.film.isHighQuality());
                     } else {
                         jLabelFilmHD.setVisible(false);
                     }

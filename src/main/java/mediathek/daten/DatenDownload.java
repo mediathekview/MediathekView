@@ -123,7 +123,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_DATUM] = film.getSendeDatum();
         arr[DOWNLOAD_ZEIT] = film.getSendeZeit();
         arr[DOWNLOAD_DAUER] = film.getDauer();
-        arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
+        arr[DOWNLOAD_HD] = film.isHighQuality() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
         arr[DOWNLOAD_HISTORY_URL] = film.getUrl();

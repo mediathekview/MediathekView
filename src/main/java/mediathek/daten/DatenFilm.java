@@ -108,6 +108,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private String groesse = "";
     private String url = "";
     private String url_subtitle = "";
+    /**
+     * flag whether a HQ url was set.
+     * Set via setUrlHd()
+     */
+    private boolean hq_available = false;
 
     public DatenFilm() {
         filmSize = new MSLong(0); // Dateigröße in MByte
@@ -143,6 +148,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public void setUrlHd(String urlHd) {
         this.urlHd = urlHd;
+        hq_available = !urlHd.isEmpty();
     }
 
     public String getAboName() {
@@ -351,16 +357,23 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
     }
 
-    @Deprecated
+    /**
+     * Liefert einen eindeutigen Index für die Filmliste, da sich die URLs bei KiKa uns ORF ständig ändern.
+     *
+     * @return Index-String aus Sender, Thema und URL.
+     */
     public String getIndex() {
-        // liefert einen eindeutigen Index für die Filmliste
-        // URL beim KiKa und ORF ändern sich laufend!
+        //TODO analysieren ob das immer noch der Fall ist.
         return (getSender() + getThema()).toLowerCase() + getUrl();
     }
 
-    public boolean isHD() {
-        //Film gibts in HD
-        return !getUrlHd().isEmpty();
+    /**
+     * film entry contains non-empty HQ url.
+     *
+     * @return true if HQ url is not empty.
+     */
+    public boolean isHighQuality() {
+        return hq_available;
     }
 
     @Override
