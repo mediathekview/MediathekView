@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
-    public static final Version MVVERSION = new Version(13, 6, 0);
+    public static final Version MVVERSION = new Version(13, 5, 1);
 
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
