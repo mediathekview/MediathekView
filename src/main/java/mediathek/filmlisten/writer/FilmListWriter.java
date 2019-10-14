@@ -140,7 +140,7 @@ public class FilmListWriter {
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
-        jg.writeString(datenFilm.getGeo());
+        jg.writeString(datenFilm.getGeo().orElse(""));
         jg.writeString(Boolean.toString(datenFilm.isNew()));
 
         jg.writeEndArray();

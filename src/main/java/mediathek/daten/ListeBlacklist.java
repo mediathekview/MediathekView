@@ -291,10 +291,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if it is NOT blocked, false if it IS blocked
      */
     private boolean checkGeoBlockedFilm(DatenFilm film) {
-        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
-        final String geo = film.getGeo();
+        var geoOpt = film.getGeo();
+        if (geoOpt.isEmpty())
+            return true;
 
-        return geo.isEmpty() || geo.contains(geoLocation);
+        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        return geoOpt.orElse("").contains(geoLocation);
     }
 
     private String[] mySplit(final String inputString) {

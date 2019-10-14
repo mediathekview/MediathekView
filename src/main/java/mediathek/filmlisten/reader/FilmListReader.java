@@ -31,6 +31,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class FilmListReader implements AutoCloseable {
@@ -106,7 +107,15 @@ public class FilmListReader implements AutoCloseable {
     }
 
     protected void parseGeo(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setGeo(checkedString(jp));
+        var geoStr = checkedString(jp);
+
+        Optional<String> geo;
+        if (geoStr.isEmpty())
+            geo = Optional.empty();
+        else
+            geo = Optional.of(geoStr);
+
+        datenFilm.setGeo(geo);
     }
 
     private void parseSender(JsonParser jp, DatenFilm datenFilm) throws IOException {

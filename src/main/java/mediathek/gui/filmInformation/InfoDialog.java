@@ -203,7 +203,7 @@ public class InfoDialog extends JDialog {
             cbHD.setSelected(currentFilm.isHD());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
 
-            lblGeo.setText(currentFilm.getGeo());
+            lblGeo.setText(currentFilm.getGeo().orElse(""));
             lblAbo.setText(currentFilm.getAboName());
 
             Platform.runLater(() -> {
