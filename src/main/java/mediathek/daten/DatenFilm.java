@@ -113,6 +113,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * Set via setUrlHd()
      */
     private boolean hq_available = false;
+    /**
+     * flag whether a subtitle url was set.
+     * Set via setUrlSubtitle()
+     */
+    private boolean subtitle_available = false;
 
     public DatenFilm() {
         filmSize = new MSLong(0); // Dateigröße in MByte
@@ -330,7 +335,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public boolean hasSubtitle() {
-        return !getUrlSubtitle().isEmpty();
+        return subtitle_available;
     }
 
     public String getUrlFuerAufloesung(String aufloesung) {
@@ -600,6 +605,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public void setUrlSubtitle(String urlSubtitle) {
         this.url_subtitle = urlSubtitle;
+        subtitle_available = !urlSubtitle.isEmpty();
     }
 
     public Optional<String> getGeo() {
