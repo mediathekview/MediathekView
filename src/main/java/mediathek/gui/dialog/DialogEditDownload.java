@@ -92,7 +92,7 @@ public class DialogEditDownload extends JDialog {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
             }
 
-            if (!datenDownload.film.getUrlHd().isEmpty()) {
+            if (!datenDownload.film.getHighQualityUrl().isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
                 jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD));
