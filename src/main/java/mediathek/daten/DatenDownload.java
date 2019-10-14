@@ -135,7 +135,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
-        arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo();
+        arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
+
         // und jetzt noch die Dateigröße für die entsp. URL
         setSizeFromUrl();
 

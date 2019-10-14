@@ -125,7 +125,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_GEO:
-                result = film.getGeo();
+                result = film.getGeo().orElse("");
                 break;
 
             case DatenFilm.FILM_URL:
