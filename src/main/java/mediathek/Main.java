@@ -111,25 +111,29 @@ public class Main {
             fileAppenderBuilder.setFilter(thresholdFilter);
         }
 
-        FileAppender fileAppender = fileAppenderBuilder.build();
-        fileAppender.start();
-        config.addAppender(fileAppender);
+        AsyncAppender asyncAppender = null;
+        if (!Config.isFileLoggingDisabled()) {
+            FileAppender fileAppender = fileAppenderBuilder.build();
+            fileAppender.start();
+            config.addAppender(fileAppender);
 
-        AsyncAppender asyncAppender = AsyncAppender.newBuilder()
-                .setName("Async")
-                .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
-                .setConfiguration(config)
-                .setIncludeLocation(true)
-                .setBlocking(false)
-                .build();
+            asyncAppender = AsyncAppender.newBuilder()
+                    .setName("Async")
+                    .setAppenderRefs(new AppenderRef[]{AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
+                    .setConfiguration(config)
+                    .setIncludeLocation(true)
+                    .setBlocking(false)
+                    .build();
 
-        asyncAppender.start();
-        config.addAppender(asyncAppender);
+            asyncAppender.start();
+            config.addAppender(asyncAppender);
+        }
 
         final var rootLogger = loggerContext.getRootLogger();
         rootLogger.setLevel(Level.TRACE);
         rootLogger.addAppender(consoleAppender);
-        rootLogger.addAppender(asyncAppender);
+        if (!Config.isFileLoggingDisabled())
+            rootLogger.addAppender(asyncAppender);
 
         loggerContext.updateLoggers();
     }
