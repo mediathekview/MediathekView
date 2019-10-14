@@ -146,7 +146,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyHd) {
-                if (!film.isHD()) {
+                if (!film.isHighQuality()) {
                     continue;
                 }
             }

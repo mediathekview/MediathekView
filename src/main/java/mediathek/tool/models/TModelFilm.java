@@ -117,7 +117,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_HD:
-                result = film.isHD();
+                result = film.isHighQuality();
                 break;
 
             case DatenFilm.FILM_UT:
