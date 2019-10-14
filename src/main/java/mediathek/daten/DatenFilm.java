@@ -93,21 +93,21 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private String websiteLink = null;
     private String description = null;
     private boolean livestream = false;
-    private String urlKlein;
-    private String urlHd;
-    private String aboName;
-    private String datumLong;
-    private String film_nr;
-    private String sender;
-    private String thema;
-    private String titel;
+    private String urlKlein = "";
+    private String urlHd = "";
+    private String aboName = "";
+    private String datumLong = "";
+    private String film_nr = "";
+    private String sender = "";
+    private String thema = "";
+    private String titel = "";
     private Optional<String> availableInCountries = Optional.empty();
-    private String datum;
-    private String sendeZeit;
-    private String dauer;
-    private String groesse;
-    private String url;
-    private String url_subtitle;
+    private String datum = "";
+    private String sendeZeit = "";
+    private String dauer = "";
+    private String groesse = "";
+    private String url = "";
+    private String url_subtitle = "";
 
     public DatenFilm() {
         filmSize = new MSLong(0); // Dateigröße in MByte
