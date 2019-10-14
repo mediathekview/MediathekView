@@ -94,30 +94,30 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private String description = null;
     private boolean livestream = false;
     private String urlKlein = "";
-    private String urlHd = "";
+    /**
+     * High Quality (formerly known as HD) URL if available.
+     */
+    private Optional<String> highQuality_url = Optional.empty();
     private String aboName = "";
     private String datumLong = "";
     private String film_nr = "";
     private String sender = "";
     private String thema = "";
     private String titel = "";
+    /**
+     * String of countries where this entry can be viewed, if available.
+     * Empty means viewable without restrictions.
+     */
     private Optional<String> availableInCountries = Optional.empty();
+    /**
+     * URL to the subtitle file, if available.
+     */
+    private Optional<String> subtitle_url = Optional.empty();
     private String datum = "";
     private String sendeZeit = "";
     private String dauer = "";
     private String groesse = "";
     private String url = "";
-    private String url_subtitle = "";
-    /**
-     * flag whether a HQ url was set.
-     * Set via setUrlHd()
-     */
-    private boolean hq_available = false;
-    /**
-     * flag whether a subtitle url was set.
-     * Set via setUrlSubtitle()
-     */
-    private boolean subtitle_available = false;
 
     public DatenFilm() {
         filmSize = new MSLong(0); // Dateigröße in MByte
@@ -147,13 +147,15 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         this.urlKlein = urlKlein;
     }
 
-    public String getUrlHd() {
-        return urlHd;
+    public String getHighQualityUrl() {
+        return highQuality_url.orElse("");
     }
 
-    public void setUrlHd(String urlHd) {
-        this.urlHd = urlHd;
-        hq_available = !urlHd.isEmpty();
+    public void setHighQualityUrl(String urlHd) {
+        if (!urlHd.isEmpty())
+            highQuality_url = Optional.of(urlHd);
+        else
+            highQuality_url = Optional.empty();
     }
 
     public String getAboName() {
@@ -335,7 +337,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public boolean hasSubtitle() {
-        return subtitle_available;
+        return subtitle_url.isPresent();
     }
 
     public String getUrlFuerAufloesung(String aufloesung) {
@@ -378,7 +380,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return hq_available;
+        return highQuality_url.isPresent();
     }
 
     @Override
@@ -389,7 +391,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         ret.filmSize = this.filmSize;
         ret.filmLength = this.filmLength;
         ret.abo = this.abo;
-        ret.urlHd = this.urlHd;
+        ret.highQuality_url = this.highQuality_url;
         ret.urlKlein = this.urlKlein;
         ret.aboName = this.aboName;
         ret.datumLong = this.datumLong;
@@ -403,7 +405,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         ret.dauer = this.dauer;
         ret.groesse = this.groesse;
         ret.url = this.url;
-        ret.url_subtitle = this.url_subtitle;
+        ret.subtitle_url = this.subtitle_url;
 
         return ret;
     }
@@ -517,7 +519,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         // and hence, any NPE would occur there.
         switch (aufloesung) {
             case FilmResolution.AUFLOESUNG_HD:
-                return getUrlHd();
+                return getHighQualityUrl();
             case FilmResolution.AUFLOESUNG_KLEIN:
                 return getUrlKlein();
 
@@ -600,12 +602,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public String getUrlSubtitle() {
-        return url_subtitle;
+        return subtitle_url.orElse("");
     }
 
     public void setUrlSubtitle(String urlSubtitle) {
-        this.url_subtitle = urlSubtitle;
-        subtitle_available = !urlSubtitle.isEmpty();
+        if (!urlSubtitle.isEmpty())
+            subtitle_url = Optional.of(urlSubtitle);
+        else
+            subtitle_url = Optional.empty();
     }
 
     public Optional<String> getGeo() {

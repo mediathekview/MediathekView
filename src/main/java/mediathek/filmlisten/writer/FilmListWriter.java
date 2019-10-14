@@ -136,7 +136,7 @@ public class FilmListWriter {
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
         jg.writeString(datenFilm.getUrlKlein());
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        jg.writeString(datenFilm.getUrlHd());
+        jg.writeString(datenFilm.getHighQualityUrl());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
