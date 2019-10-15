@@ -12,9 +12,20 @@
 #appName {
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 1.25em;
+    -fx-font-size: 5em;
+}
+
+#appVersion {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 2.5em;
 }
 
 #vbox {
-    -fx-background-color: black;
+    -fx-background-color: linear-gradient(to bottom, #323333, #17171a);
+    -fx-padding: 10;
+}
+
+#image {
+    -fx-alignment: right;
 }
