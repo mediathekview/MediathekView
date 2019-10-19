@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity"
+      prefWidth="600.0" stylesheets="css/splashscreen/splashscreen.css"
+      xmlns="http://javafx.com/javafx/11.0.1">
+    <children>
+        <Label fx:id="appName" id="appName"/>
+        <Label fx:id="appVersion" id="appVersion"/>
+        <Pane nodeOrientation="RIGHT_TO_LEFT">
+            <children>
+                <ImageView id="image" fitHeight="200.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="/splash.png"/>
+                    </image>
+                </ImageView>
+            </children>
+        </Pane>
+        <Label fx:id="progressText" id="progressText"/>
+        <ProgressBar fx:id="progressBar" id="progressBar"/>
+    </children>
+</VBox>
