@@ -58,7 +58,7 @@ public class SplashScreen {
                 window.setScene(scene);
 
                 appName.setText(Konstanten.PROGRAMMNAME);
-                appVersion.setText(Konstanten.MVVERSION.toString() + " " + SystemUtils.OS_NAME);
+                appVersion.setText("Version: " + Konstanten.MVVERSION.toString() + " (" + SystemUtils.OS_NAME + ")");
                 progressBar.prefWidthProperty().bind(scene.widthProperty());
 
                 window.setScene(scene);
