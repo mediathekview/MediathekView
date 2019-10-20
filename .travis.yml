@@ -42,8 +42,6 @@ jobs:
         directories:
           - .autoconf
           - $HOME/.m2
-      after_success:
-        - sonar-scanner
     - stage: Build and Deploy Snapshots
       script:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
@@ -64,8 +62,6 @@ jobs:
         - ./mvnw clean install -Plinux -Pinstall4j-linux
         - echo "Baue AppImage"
         - scripte/appimage.sh
-      after_success:
-        - sonar-scanner
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
