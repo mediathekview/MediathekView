@@ -22,16 +22,9 @@ addons:
   ssh_known_hosts:
     - mediathekview.de
   sonarcloud:
-    organization: mediathekview
+    organization: "mediathekview"
     token:
-      secure: woV09cAHTwbI9/oyQs1WtA3oU9dhftuFrJ4pNGOec0sszwkQLzU+G5JGmnoOSt26ZB9tE8Cd5RuWFXlq6QA89ml1uuvxmSk0rX7srNbLaDUQu1Oe0467emeAeZLu87Z2DP6ylu32Gz6daOpG4St4z8MbJbT7cXBQ8PnNUv7T120NM9NPzBqGORqPYKrVsIwtAtrVFm5l5uUCCdS7E53jhv2GgmKGwSE4EWggCZF6c8AMfJV5bRNRG5sfClekrWkNSjqxoihNTlh8VBtkPOCiCB4+OtubeYuLXLi5WcoU6XYRzHu9BiunC5lJhKtAjjSYnkEswpOiYRZFBNEnUPR72gWujZELVl2jv8q8flQp9xBAH7eTIXvaR56WI/Bj9UvjUJiPDgJRl1TfBDlinEIOWbThI6GE2fuQoZqBihMCf0VNHg261UMf6bb7KFJwjtodM9yu12rekTmvI02vpSFE8877m+xXeDcGJCuBnrgXp95BPUsg72vCoe6x9obOLNe+VxEpan2KDqCcozM4X5LtRKBdnzTmHJuVB7LWb8+UpuhI+sf58DZOBPGYF79o5SK9dG0mo3qgl9dMFPaduxh25/DEZP/QgA+1s8b6n/1P5enY7zt/r14qSEIifTXuw4Jk1AkcyfUMso9Y87X7Bv5U7xoeVn9H6ZiP4QRLlDQS6jo=
-    github_token:
-      secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-    branches:
-      - master
-      - develop
-      - feature/.*
-      - hotfix/.*
+      secure: "AA9abdLWgR42O5sjO7C4lniwfc9+oGt04zGqQ/4/KBUbo43DrQP35AHPrv2iIGCPooRaaGQ2SwN+ezXuPqx7cfJ2E4ogG09ARwSTMkUx91PKBICNPStKtewABGIb5YWiFrXN3cHBFUgWZXc0yrIl7J2+QXB/MJlmEo+WIlkzaDDbctSTmRfggfIuLz89XOsLJBNaVX2gDHnsSg2Ri6EiZW19Zik4aK7SHYGfAfZUJcmOtjJK6sAirhfu4jJSWORnUf/x24Xl/CyXzIJr4/mb/gxaZQZcNhbiqf+gA9qHpA1YFX7mkH4qUm1j+xlqZTwj6oLOcfeBxmeKbNnm/I4XGPUrq24mwqK+U8XsSd4mW9x2mtKPZh27ZIKlgN+Lq1M+Zdvk45x2dWcvmWJmybgMWboEbBh7/iULd5YRQsF5gTjsB5U65uZw0j4cvSr5hv8rzx4sEUO4QcNa6QpxDS4sxRo0I+XyRuWkOq2vcnAOEHURdB3iAuRNJoo+hW8dLS+5SY0B++bhWzhUSD9Z3R8hXnMxjCLqrUs94A1jTNTMq2XgdNt8vBNYXxOR+uklSugopZpkQxSXfdy1xLgNHrj3Tyyx1YeayLv02BUx2JhHgZXPf5x/A91RLuT0AQa/TPUpIIPR6uxnTqwTRRhm3y3yU2+/sjQgn/9vznuCovmnY9k="
 stages:
   - Test
   - name: Build and Deploy Snapshots
@@ -40,13 +33,11 @@ stages:
     if: tag IS present
   - name: Build and Deploy Windows
     if: tag IS present
-#- name: Build and Deploy Mac
-#  if: tag IS present
 jobs:
   include:
     - stage: Test
       script:
-        - ./mvnw clean verify
+        - ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView
       cache:
         directories:
           - .autoconf
@@ -81,16 +72,16 @@ jobs:
         - provider: script
           script: scripte/deploy/deploy.sh release linux
           skip_cleanup: true
-          on:
-            tags: true
-#        - provider: releases
-#          api_key:
-#            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-#          on:
-#            tags: true
-#          file_glob: true
-#          file:
-#            - target/*
+        - provider: releases
+          api_key:
+            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+          file_glob: true
+          file:
+            - target/media/*.deb
+            - target/media/*.rpm
+            - target/media/*.sh
+            - target/media/*.tar.gz
+            - target/*.AppImage
     - stage: Build and Deploy Windows
       script:
         - ./mvnw clean install -Pwindows,!linux,install4j-win
@@ -100,32 +91,11 @@ jobs:
         - provider: script
           script: scripte/deploy/deploy.sh release win
           skip_cleanup: true
-          on:
-            tags: true
-#        - provider: releases
-#          api_key:
-#            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-#          on:
-#            tags: true
-#          file_glob: true
-#          file:
-#            - target/*
-#          skip_cleanup: true
-#  - stage: Build and Deploy Mac
-#    script:
-#    - ./mvnw clean install -Pmac,!linux
-#    before_deploy:
-#    - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-#    deploy:
-#    - provider: script
-#      script: scripte/deploy/deploy.sh mac
-#      skip_cleanup: true
-#      true:
-#        tags: true
-#    - provider: releases
-#      api_key:
-#        secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-#      file_glob: true
-#      file:
-#      - target/*
-#      skip_cleanup: true
+        - provider: releases
+          api_key:
+            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+          file_glob: true
+          file:
+            - target/media/*.exe
+            - target/media/*.zip
+          skip_cleanup: true
