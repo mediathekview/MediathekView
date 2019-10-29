@@ -1,7 +1,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=mediathekview%3AMediathekView&metric=alert_status)](https://sonarcloud.io/dashboard/index/mediathekview%3AMediathekView)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mediathekview_MediathekView&metric=alert_status)](https://sonarcloud.io/dashboard?id=mediathekview_MediathekView)
 
 # MediathekView
 Das Programm **MediathekView** durchsucht die Mediatheken verschiedener überwiegend deutschsprachiger öffentlich-rechtlicher Sender, lädt Beiträge daraus herunter oder spielt diese ab (mit [VLC Media Player](https://videolan.org/vlc/) oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
