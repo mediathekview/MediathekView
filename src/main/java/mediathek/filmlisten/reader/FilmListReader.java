@@ -228,7 +228,8 @@ public class FilmListReader implements AutoCloseable {
      */
     private void parseAudioVersion(String title, DatenFilm film) {
         if (title.contains("Hörfassung") || title.contains("Audiodeskription")
-                || title.contains("AD |") || title.endsWith("(AD)"))
+                || title.contains("AD |") || title.endsWith("(AD)")
+        || title.contains("Hörspiel") || title.contains("Hörfilm"))
             film.setAudioVersion(true);
     }
 
