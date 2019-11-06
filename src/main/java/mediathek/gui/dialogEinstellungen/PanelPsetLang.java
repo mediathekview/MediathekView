@@ -1490,7 +1490,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
 
-        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar für Spotlight speichern (nur OS X)");
+        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar für Spotlight speichern (nur macOS)");
 
         jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
 

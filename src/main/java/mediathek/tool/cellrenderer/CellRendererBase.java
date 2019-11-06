@@ -36,7 +36,7 @@ public class CellRendererBase extends DefaultTableCellRenderer {
 
     /**
      * Set the font for highlighting a selection based on operating system.
-     * Disabled for OS X as it violates HIG...
+     * Disabled for macOS as it violates HIG...
      *
      * @param c          component where font needs to be changed.
      * @param isSelected is the component selected

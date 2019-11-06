@@ -101,13 +101,13 @@ public class MediathekGuiMac extends MediathekGui {
 
     @Override
     protected void installMenuTabSwitchListener() {
-        //do not use on OS X as it violates HIG...
+        //do not use on macOS as it violates HIG...
     }
 
     @Override
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
-        //do not use on OS X as it violates HIG...
+        //do not use on macOS as it violates HIG...
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     /**
-     * Set the OS X dock icon badge to the number of running downloads.
+     * Set the macOS dock icon badge to the number of running downloads.
      *
      * @param numDownloads The number of active downloads.
      */
@@ -155,7 +155,7 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     /**
-     * Setup the UI for OS X
+     * Setup the UI for macOS
      */
     private void setupUserInterfaceForOsx() {
         Desktop desktop = Desktop.getDesktop();
@@ -178,7 +178,7 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
-            Log.errorLog(165623698, "OS X Application image could not be loaded");
+            Log.errorLog(165623698, "macOS Application image could not be loaded");
         }
     }
 

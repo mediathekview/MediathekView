@@ -167,7 +167,7 @@ public class PanelEinstellungen extends JPanel {
 
     private void setupTabSwitchListener() {
         if (SystemUtils.IS_OS_MAC_OSX) {
-            //deactivated on OS X
+            //deactivated on macOS
             cbAutomaticMenuTabSwitching.setEnabled(false);
             config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
         } else {

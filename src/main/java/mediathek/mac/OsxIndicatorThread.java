@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This thread will update the percentage drawn on the dock icon on OS X.
+ * This thread will update the percentage drawn on the dock icon on macOS.
  */
 class OsxIndicatorThread extends IndicatorThread {
 

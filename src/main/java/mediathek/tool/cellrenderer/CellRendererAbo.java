@@ -110,7 +110,7 @@ public class CellRendererAbo extends CellRendererBase {
 
     private void setFontItalic() {
         if (!SystemUtils.IS_OS_MAC_OSX) {
-            // On OS X do not change fonts as it violates HIG...
+            // On macOS do not change fonts as it violates HIG...
             setFont(getFont().deriveFont(Font.ITALIC));
         }
     }

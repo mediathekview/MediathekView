@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Writes spotlight comments to the downloaded file on OS X.
+ * Writes spotlight comments to the downloaded file on macOS.
  */
 public class SpotlightCommentWriter {
     /**
@@ -22,7 +22,7 @@ public class SpotlightCommentWriter {
     }
 
     /**
-     * This will write the content of the film description into the OS X Finder Info Comment Field.
+     * This will write the content of the film description into the macOS Finder Info Comment Field.
      * This enables Spotlight to search for these tags.
      *
      * @param datenDownload The download information object

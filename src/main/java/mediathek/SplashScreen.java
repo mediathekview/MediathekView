@@ -61,7 +61,7 @@ public class SplashScreen {
             progress.setProgress(0d);
             progress.setPrefWidth(image.getWidth());
 
-            Label appName = new Label(Konstanten.PROGRAMMNAME + " für " + SystemUtils.OS_NAME);
+            Label appName = new Label(Konstanten.PROGRAMMNAME + " für " + SystemUtils.OS_NAME.replace("Mac OS X","macOS"));
             appName.setId("appName");
 
             vb.getChildren().addAll(

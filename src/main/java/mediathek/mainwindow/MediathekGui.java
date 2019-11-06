@@ -126,7 +126,7 @@ public class MediathekGui extends JFrame {
     private InfoDialog filmInfo; // Infos zum Film
     private ProgramUpdateCheck programUpdateChecker;
     /**
-     * Progress indicator thread for OS X and windows.
+     * Progress indicator thread for macOS and windows.
      */
     private IndicatorThread progressIndicatorThread;
     private DialogMediaDB dialogMediaDB;

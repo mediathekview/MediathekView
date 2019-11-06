@@ -60,8 +60,8 @@ Zip:
 - die ZIP-Datei kann nach dem Entpacken gelöscht werden
 https://mediathekview.de/anleitung/#windows
 
-*OS X:
-Für OS X 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app"
+*macOS:
+Für macOS 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app"
 https://mediathekview.de/anleitung/#mac
 
 *Linux:
@@ -79,7 +79,7 @@ Starten:
 Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
-Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
+Für macOS 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
 jre/bin/java -Xmx1G -jar MediathekView.jar

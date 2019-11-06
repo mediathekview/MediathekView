@@ -944,7 +944,7 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxSpotlight">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Filmbeschreibung als Finder-Kommentar f&#xfc;r Spotlight speichern (nur OS X)"/>
+                        <Property name="text" type="java.lang.String" value="Filmbeschreibung als Finder-Kommentar f&#xfc;r Spotlight speichern (nur macOS)"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxSubtitle">

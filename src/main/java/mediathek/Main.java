@@ -360,7 +360,7 @@ public class Main {
 
         if (!daten.allesLaden()) {
             // erster Start
-            ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            ReplaceList.init(); // einmal ein Muster anlegen, für Linux/macOS ist es bereits aktiv!
             Main.splashScreen.ifPresent(SplashScreen::close);
             //TODO replace with JavaFX dialog!!
             var dialog = new DialogStarteinstellungen(null, daten);

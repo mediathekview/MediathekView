@@ -99,13 +99,13 @@ public class FilenameUtils {
     }
 
     /**
-     * Remove dots from string when we are on Linux/OS X
+     * Remove dots from string when we are on Linux/macOS
      *
      * @param fileName A filename string that might start with dots.
      * @return Cleanup string with no dots anymore.
      */
     private static String removeStartingDots(String fileName) {
-        // machte unter OS X/Linux Probleme, zB. bei dem Titel: "....Paula"
+        // machte unter macOS/Linux Probleme, zB. bei dem Titel: "....Paula"
         while (!fileName.isEmpty() && (fileName.startsWith("."))) {
             fileName = fileName.substring(1);
         }
