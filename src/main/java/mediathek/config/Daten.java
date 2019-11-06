@@ -160,7 +160,7 @@ public class Daten {
             strFile = getSettingsDirectory_String() + filePart;
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
-                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+                //place filmlist into macOS user cache directory in order not to backup it all the time in TimeMachine...
                 strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + filePart;
             } else {
                 strFile = getSettingsDirectory_String() + filePart;
