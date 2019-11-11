@@ -42,6 +42,21 @@ public class SplashScreen {
     private double curSteps = 0d;
     private Stage window;
 
+    /**
+     * Return "modern" macOS string for mac instead of legacy "Mac OS X".
+     * According to apple dev docs even "old" 10.6 is now named macOS.
+     * @return "macOS" for mac otherwise the java OS name
+     */
+    private String getOsName() {
+        final String osName;
+        if (SystemUtils.IS_OS_MAC_OSX)
+            osName = "macOS";
+        else
+            osName = SystemUtils.OS_NAME;
+
+        return osName;
+    }
+
     public void show() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             window = new Stage(StageStyle.UNDECORATED);
@@ -58,7 +73,7 @@ public class SplashScreen {
                 window.setScene(scene);
 
                 appName.setText(Konstanten.PROGRAMMNAME);
-                appVersion.setText("Version: " + Konstanten.MVVERSION.toString() + " (" + SystemUtils.OS_NAME + ")");
+                appVersion.setText("Version: " + Konstanten.MVVERSION.toString() + " (" + getOsName() + ")");
                 progressBar.prefWidthProperty().bind(scene.widthProperty());
 
                 window.setScene(scene);
