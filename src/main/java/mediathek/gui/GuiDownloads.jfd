@@ -131,16 +131,25 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "North"
 					} )
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "spDownload"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "panel4"
+						"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
-						add( new FormComponent( "javax.swing.JEditorPane" ) {
-							name: "txtDownload"
-							"editable": false
-							"opaque": false
-							"preferredSize": new java.awt.Dimension( 10, 21 )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "spDownload"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JEditorPane" ) {
+								name: "txtDownload"
+								"editable": false
+								"opaque": false
+								"preferredSize": new java.awt.Dimension( 10, 21 )
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "Center"
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
