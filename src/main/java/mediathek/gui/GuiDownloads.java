@@ -46,6 +46,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -1695,6 +1696,7 @@ public class GuiDownloads extends AGuiTabPanel {
         var lblBandwidth = new JLabel();
         var jLabel1 = new JLabel();
         jSpinner1 = new JSpinner();
+        var panel4 = new JPanel();
         var spDownload = new JScrollPane();
         txtDownload = new JEditorPane();
 
@@ -1790,16 +1792,23 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
                 jPanelFilterExtern.add(panel1, BorderLayout.NORTH);
 
-                //======== spDownload ========
+                //======== panel4 ========
                 {
+                    panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
+                    panel4.setLayout(new BorderLayout());
 
-                    //---- txtDownload ----
-                    txtDownload.setEditable(false);
-                    txtDownload.setOpaque(false);
-                    txtDownload.setPreferredSize(new Dimension(10, 21));
-                    spDownload.setViewportView(txtDownload);
+                    //======== spDownload ========
+                    {
+
+                        //---- txtDownload ----
+                        txtDownload.setEditable(false);
+                        txtDownload.setOpaque(false);
+                        txtDownload.setPreferredSize(new Dimension(10, 21));
+                        spDownload.setViewportView(txtDownload);
+                    }
+                    panel4.add(spDownload, BorderLayout.CENTER);
                 }
-                jPanelFilterExtern.add(spDownload, BorderLayout.CENTER);
+                jPanelFilterExtern.add(panel4, BorderLayout.CENTER);
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
         }
