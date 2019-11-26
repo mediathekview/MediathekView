@@ -46,6 +46,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -60,15 +61,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @SuppressWarnings("serial")
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
-    private static final String COMBO_DISPLAY_ALL = "alles";
+    private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-    private static final String COMBO_VIEW_ALL = "alles ";
+
+    private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
     private static final String COMBO_VIEW_STARTED = "gestartet";
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
+
     private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
@@ -93,6 +96,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
+
     private boolean onlyWaiting = false;
     private boolean onlyNotStarted = false;
     private boolean onlyStarted = false;
@@ -245,7 +249,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void setupCheckboxView() {
         cbView.setModel(getViewModel());
-        cbView.addActionListener(new DisplayCategoryListener());
+        cbView.addActionListener(new ViewCategoryListener());
     }
 
     private void initTable() {
@@ -1232,7 +1236,11 @@ public class GuiDownloads extends AGuiTabPanel {
         return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
     }
 
-    private DefaultComboBoxModel<String> getViewModel() {
+    /**
+     * Return the model used for the view categories {@link javax.swing.JComboBox}.
+     *
+     * @return The selection model.
+     */private DefaultComboBoxModel<String> getViewModel() {
         return new DefaultComboBoxModel<>(new String[]{COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED, COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY});
     }
 
@@ -1570,29 +1578,15 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * This class filters the shown table items based on the made selection.
      */
-    private class DisplayCategoryListener implements ActionListener {
-
+    private class ViewCategoryListener implements ActionListener {
         @Override
         @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
-            JComboBox<String> box = (JComboBox<String>) e.getSource();
-            final String action = (String) box.getSelectedItem();
+            final JComboBox<String> source = (JComboBox<String>) e.getSource();
+            final String action = (String) source.getSelectedItem();
 
             assert action != null;
             switch (action) {
-                case COMBO_DISPLAY_ALL:
-                    onlyAbos = false;
-                    onlyDownloads = false;
-                    break;
-                case COMBO_DISPLAY_DOWNLOADS_ONLY:
-                    onlyAbos = false;
-                    onlyDownloads = true;
-                    break;
-                case COMBO_DISPLAY_ABOS_ONLY:
-                    onlyAbos = true;
-                    onlyDownloads = false;
-                    break;
-
                 case COMBO_VIEW_ALL:
                     onlyNotStarted = false;
                     onlyStarted = false;
@@ -1600,6 +1594,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyFinished = false;
                     onlyRun = false;
                     break;
+
                 case COMBO_VIEW_NOT_STARTED:
                     onlyNotStarted = true;
                     onlyStarted = false;
@@ -1607,6 +1602,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyFinished = false;
                     onlyRun = false;
                     break;
+
                 case COMBO_VIEW_STARTED:
                     onlyNotStarted = false;
                     onlyStarted = true;
@@ -1614,6 +1610,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyFinished = false;
                     onlyRun = false;
                     break;
+
                 case COMBO_VIEW_WAITING:
                     onlyNotStarted = false;
                     onlyStarted = false;
@@ -1621,6 +1618,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyFinished = false;
                     onlyRun = false;
                     break;
+
                 case COMBO_VIEW_FINISHED_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
@@ -1628,12 +1626,44 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyFinished = true;
                     onlyRun = false;
                     break;
+
                 case COMBO_VIEW_RUN_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = true;
+                    break;
+            }
+
+            reloadTable();
+        }
+    }
+
+    /**
+     * This class filters the shown table items based on the made selection.
+     */
+    private class DisplayCategoryListener implements ActionListener {
+        @Override
+        @SuppressWarnings("unchecked")
+        public void actionPerformed(ActionEvent e) {
+            final JComboBox<String> source = (JComboBox<String>) e.getSource();
+            final String action = (String) source.getSelectedItem();
+
+            assert action != null;
+            switch (action) {
+                case COMBO_DISPLAY_ALL:
+                    onlyAbos = false;
+                    onlyDownloads = false;
+                    break;
+
+                case COMBO_DISPLAY_DOWNLOADS_ONLY:
+                    onlyAbos = false;
+                    onlyDownloads = true;
+                    break;
+                case COMBO_DISPLAY_ABOS_ONLY:
+                    onlyAbos = true;
+                    onlyDownloads = false;
                     break;
             }
 
@@ -1653,8 +1683,10 @@ public class GuiDownloads extends AGuiTabPanel {
         jSplitPane1 = new JSplitPane();
         jPanelFilterExtern = new JPanel();
         var panel1 = new JPanel();
-        var lblAnzeigen = new JLabel();
+        var panel3 = new JPanel();
+        var label1 = new JLabel();
         cbDisplayCategories = new JComboBox<>();
+        var label2 = new JLabel();
         cbView = new JComboBox<>();
         btnClear = new JButton();
         var jSeparator1 = new JSeparator();
@@ -1672,7 +1704,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         //======== jSplitPane1 ========
         {
-            jSplitPane1.setDividerLocation(390);
+            jSplitPane1.setDividerLocation(330);
 
             //======== jPanelFilterExtern ========
             {
@@ -1685,33 +1717,51 @@ public class GuiDownloads extends AGuiTabPanel {
                         new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
                         // columns
                         new AC()
-                            .fill().gap()
-                            .fill(),
+                            .grow().fill(),
                         // rows
                         new AC()
                             .fill().gap()
                             .fill().gap()
-                            .fill().gap()
-                            .fill().gap()
-                            .fill().gap()
                             .fill()));
 
-                    //---- lblAnzeigen ----
-                    lblAnzeigen.setText("Anzeigen:"); //NON-NLS
-                    panel1.add(lblAnzeigen, new CC().cell(0, 0));
-                    panel1.add(cbDisplayCategories, new CC().cell(0, 1, 2, 1));
-                    panel1.add(cbView, new CC().cell(0, 2, 2, 1));
+                    //======== panel3 ========
+                    {
+                        panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
+                        panel3.setLayout(new MigLayout(
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            // columns
+                            new AC()
+                                .fill().gap()
+                                .grow().fill(),
+                            // rows
+                            new AC()
+                                .fill().gap()
+                                .fill().gap()
+                                .fill()));
 
-                    //---- btnClear ----
-                    btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
-                    btnClear.setToolTipText("Alles l\u00f6schen"); //NON-NLS
-                    panel1.add(btnClear, new CC().cell(1, 3).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
-                    panel1.add(jSeparator1, new CC().cell(0, 4, 2, 1));
+                        //---- label1 ----
+                        label1.setText("Typ:"); //NON-NLS
+                        panel3.add(label1, new CC().cell(0, 0));
+                        panel3.add(cbDisplayCategories, new CC().cell(1, 0));
+
+                        //---- label2 ----
+                        label2.setText("Status:"); //NON-NLS
+                        panel3.add(label2, new CC().cell(0, 1));
+                        panel3.add(cbView, new CC().cell(1, 1));
+
+                        //---- btnClear ----
+                        btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
+                        btnClear.setToolTipText("Alles l\u00f6schen"); //NON-NLS
+                        panel3.add(btnClear, new CC().cell(1, 2).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
+                    }
+                    panel1.add(panel3, new CC().cell(0, 0));
+                    panel1.add(jSeparator1, new CC().cell(0, 1));
 
                     //======== panel2 ========
                     {
+                        panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
                         panel2.setLayout(new MigLayout(
-                            new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
                             // columns
                             new AC()
                                 .fill().gap()
@@ -1722,12 +1772,12 @@ public class GuiDownloads extends AGuiTabPanel {
                                 .fill()));
 
                         //---- jLabel3 ----
-                        jLabel3.setText("gleichzeitige Downloads:"); //NON-NLS
+                        jLabel3.setText("gleichzeitig:"); //NON-NLS
                         panel2.add(jLabel3, new CC().cell(0, 0));
                         panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
 
                         //---- lblBandwidth ----
-                        lblBandwidth.setText("max. Bandbreite je Download:"); //NON-NLS
+                        lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
                         panel2.add(lblBandwidth, new CC().cell(0, 1));
 
                         //---- jLabel1 ----
@@ -1739,9 +1789,9 @@ public class GuiDownloads extends AGuiTabPanel {
                         jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
                         panel2.add(jSpinner1, new CC().cell(1, 1));
                     }
-                    panel1.add(panel2, new CC().cell(0, 5, 2, 1));
+                    panel1.add(panel2, new CC().cell(0, 2));
                 }
-                jPanelFilterExtern.add(panel1, BorderLayout.PAGE_START);
+                jPanelFilterExtern.add(panel1, BorderLayout.NORTH);
 
                 //======== spDownload ========
                 {
