@@ -1689,7 +1689,6 @@ public class GuiDownloads extends AGuiTabPanel {
         var label2 = new JLabel();
         cbView = new JComboBox<>();
         btnClear = new JButton();
-        var jSeparator1 = new JSeparator();
         var panel2 = new JPanel();
         var jLabel3 = new JLabel();
         jSpinnerAnzahlDownloads = new JSpinner();
@@ -1720,7 +1719,6 @@ public class GuiDownloads extends AGuiTabPanel {
                             .grow().fill(),
                         // rows
                         new AC()
-                            .fill().gap()
                             .fill().gap()
                             .fill()));
 
@@ -1755,7 +1753,6 @@ public class GuiDownloads extends AGuiTabPanel {
                         panel3.add(btnClear, new CC().cell(1, 2).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
                     }
                     panel1.add(panel3, new CC().cell(0, 0));
-                    panel1.add(jSeparator1, new CC().cell(0, 1));
 
                     //======== panel2 ========
                     {
@@ -1789,7 +1786,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
                         panel2.add(jSpinner1, new CC().cell(1, 1));
                     }
-                    panel1.add(panel2, new CC().cell(0, 2));
+                    panel1.add(panel2, new CC().cell(0, 1));
                 }
                 jPanelFilterExtern.add(panel1, BorderLayout.NORTH);
 
