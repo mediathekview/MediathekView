@@ -16,7 +16,7 @@ new FormModel {
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 						"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
 						"$columnConstraints": "[grow,fill]"
-						"$rowConstraints": "[fill][fill][fill]"
+						"$rowConstraints": "[fill][fill]"
 					} ) {
 						name: "panel1"
 						auxiliary() {
@@ -76,14 +76,6 @@ new FormModel {
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 0 0"
 						} )
-						add( new FormComponent( "javax.swing.JSeparator" ) {
-							name: "jSeparator1"
-							auxiliary() {
-								"JavaCodeGenerator.variableLocal": true
-							}
-						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-							"value": "cell 0 1"
-						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 							"$columnConstraints": "[fill][fill]"
 							"$rowConstraints": "[][fill]"
@@ -134,7 +126,7 @@ new FormModel {
 								"value": "cell 1 1"
 							} )
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-							"value": "cell 0 2"
+							"value": "cell 0 1"
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "North"
