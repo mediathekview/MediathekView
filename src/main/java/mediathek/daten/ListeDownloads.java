@@ -230,7 +230,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            boolean istAbo = download.istAbo();
+            final boolean istAbo = download.istAbo();
             if (onlyAbos && !istAbo) {
                 continue;
             }
@@ -238,19 +238,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            if (onlyNotStarted && !download.notStarted()) {
+            final boolean notStarted = download.notStarted();
+            if (onlyNotStarted && !notStarted) {
                 continue;
             }
-            if (onlyStarted && download.notStarted()) {
+            if (onlyStarted && notStarted) {
                 continue;
             }
 
             if (onlyWaiting && !download.isWaiting()) {
                 continue;
             }
+
             if (onlyRun && !download.running()) {
                 continue;
             }
+
             if (onlyFinished && !download.isFinished()) {
                 continue;
             }
