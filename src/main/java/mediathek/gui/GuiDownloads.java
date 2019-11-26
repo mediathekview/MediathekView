@@ -65,6 +65,9 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
+    private static final int INDEX_COMBO_DISPLAY_ALL = 0;
+    private static final int INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY = 1;
+    private static final int INDEX_COMBO_DISPLAY_ABOS_ONLY = 2;
 
     private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
@@ -1646,23 +1649,21 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private class DisplayCategoryListener implements ActionListener {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
-            final JComboBox<String> source = (JComboBox<String>) e.getSource();
-            final String action = (String) source.getSelectedItem();
+            JComboBox source = (JComboBox) e.getSource();
 
-            assert action != null;
-            switch (action) {
-                case COMBO_DISPLAY_ALL:
+            switch (source.getSelectedIndex()) {
+                case INDEX_COMBO_DISPLAY_ALL:
                     onlyAbos = false;
                     onlyDownloads = false;
                     break;
 
-                case COMBO_DISPLAY_DOWNLOADS_ONLY:
+                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY:
                     onlyAbos = false;
                     onlyDownloads = true;
                     break;
-                case COMBO_DISPLAY_ABOS_ONLY:
+
+                case INDEX_COMBO_DISPLAY_ABOS_ONLY:
                     onlyAbos = true;
                     onlyDownloads = false;
                     break;
