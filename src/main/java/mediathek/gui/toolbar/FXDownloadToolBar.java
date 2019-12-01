@@ -12,7 +12,6 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.messages.DownloadFilterVisibilityChangedEvent;
-import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.javafx.tool.FilterButton;
 import mediathek.mainwindow.MediathekGui;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -30,10 +29,12 @@ public class FXDownloadToolBar extends ToolBar {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button btnFilmInfo = new FilmInformationButton();
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+
+        Button btnFilmInfo = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE).size(16d));
+        btnFilmInfo.setTooltip(new Tooltip("Filminformation anzeigen"));
         btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
 
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
         btnUpdateDownloads = new Button("",fontAwesome.create(FontAwesome.Glyph.REFRESH).size(16d));
         btnUpdateDownloads.setTooltip(new Tooltip("Downloadliste aktualisieren"));

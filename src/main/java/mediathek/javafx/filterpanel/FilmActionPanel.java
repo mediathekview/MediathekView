@@ -24,7 +24,6 @@ import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
-import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
@@ -161,10 +160,11 @@ public class FilmActionPanel {
     }
 
     private Button createFilmInformationButton() {
-        Button btnFilmInformation = new FilmInformationButton();
-        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
+        Button btnFilmInfo = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE).size(16d));
+        btnFilmInfo.setTooltip(new Tooltip("Filminformation anzeigen"));
+        btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
-        return btnFilmInformation;
+        return btnFilmInfo;
     }
 
     private void checkPatternValidity() {
