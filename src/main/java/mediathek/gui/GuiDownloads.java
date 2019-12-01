@@ -75,6 +75,13 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
+    private static final int INDEX_COMBO_VIEW_ALL = 0;
+    private static final int INDEX_COMBO_VIEW_NOT_STARTED = 1;
+    private static final int INDEX_COMBO_VIEW_STARTED = 2;
+    private static final int INDEX_COMBO_VIEW_WAITING = 3;
+    private static final int INDEX_COMBO_VIEW_RUN_ONLY = 4;
+    private static final int INDEX_COMBO_VIEW_FINISHED_ONLY = 5;
+
 
     private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
@@ -1582,16 +1589,13 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * This class filters the shown table items based on the made selection.
      */
-    private class ViewCategoryListener implements ActionListener {
+    private final class ViewCategoryListener implements ActionListener {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
-            final JComboBox<String> source = (JComboBox<String>) e.getSource();
-            final String action = (String) source.getSelectedItem();
+            JComboBox source = (JComboBox) e.getSource();
 
-            assert action != null;
-            switch (action) {
-                case COMBO_VIEW_ALL:
+            switch (source.getSelectedIndex()) {
+                case INDEX_COMBO_VIEW_ALL:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1599,7 +1603,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyRun = false;
                     break;
 
-                case COMBO_VIEW_NOT_STARTED:
+                case INDEX_COMBO_VIEW_NOT_STARTED:
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1607,7 +1611,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyRun = false;
                     break;
 
-                case COMBO_VIEW_STARTED:
+                case INDEX_COMBO_VIEW_STARTED:
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
@@ -1615,7 +1619,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyRun = false;
                     break;
 
-                case COMBO_VIEW_WAITING:
+                case INDEX_COMBO_VIEW_WAITING:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
@@ -1623,7 +1627,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyRun = false;
                     break;
 
-                case COMBO_VIEW_FINISHED_ONLY:
+                case INDEX_COMBO_VIEW_FINISHED_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1631,7 +1635,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     onlyRun = false;
                     break;
 
-                case COMBO_VIEW_RUN_ONLY:
+                case INDEX_COMBO_VIEW_RUN_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1647,7 +1651,7 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * This class filters the shown table items based on the made selection.
      */
-    private class DisplayCategoryListener implements ActionListener {
+    private final class DisplayCategoryListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox source = (JComboBox) e.getSource();
