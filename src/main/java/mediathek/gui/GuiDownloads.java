@@ -30,6 +30,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -153,7 +154,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupCheckboxView();
 
-        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
+        setupToolBar();
 
         setupDownloadRateLimitSpinner();
 
@@ -163,6 +164,35 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
+
+    private void setupToolBar() {
+        //TODO convert to FXML
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            var toolBar = new FXDownloadToolBar();
+            toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
+            toolBar.btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(this::updateDownloads));
+            toolBar.btnStartAllDownloads.setOnAction(e -> SwingUtilities.invokeLater(() -> starten(true)));
+            toolBar.btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(this::filmAbspielen));
+            toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
+            toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
+            toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
+            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
+
+            Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+                @Override
+                public void start(ListenerFilmeLadenEvent event) {
+                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(true));
+                }
+
+                @Override
+                public void fertig(ListenerFilmeLadenEvent event) {
+                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(false));
+                }
+            });
+
+            toolBarPanel.setScene(new Scene(toolBar));
+        });
     }
 
     private void setupF4Key(MediathekGui mediathekGui) {
