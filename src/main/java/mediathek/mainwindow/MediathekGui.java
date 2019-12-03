@@ -42,6 +42,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -368,10 +369,25 @@ public class MediathekGui extends JFrame {
     private void createStatusBar() {
         statusBarController = new StatusBarController(daten);
 
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
             installSelectedItemsLabel();
         });
+
+        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT,false);
+        if (enablePowerManagement) {
+                addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowActivated(WindowEvent e) {
+                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
+                    }
+
+                    @Override
+                    public void windowDeactivated(WindowEvent e) {
+                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
+                    }
+                });
+        }
     }
 
     private void installSelectedItemsLabel() {
