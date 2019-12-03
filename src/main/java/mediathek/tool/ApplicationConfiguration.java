@@ -106,6 +106,8 @@ public class ApplicationConfiguration {
           "searchfield.film.search_through_description";
 
   public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
+
+  public static final String UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT = "ui.filmlist_label.enable_powermanagement";
   /**
    * logger for {@link TimerTaskListener} inner class.
    */
