@@ -49,7 +49,7 @@
     <Separator/>
     <FlowPane hgap="4.0">
         <Label text="Zeitraum:"/>
-        <ZeitraumSpinner fx:id="_zeitraumSpinner"/>
+        <ZeitraumSpinner fx:id="zeitraumSpinner"/>
         <Label text="Tage"/>
     </FlowPane>
 
