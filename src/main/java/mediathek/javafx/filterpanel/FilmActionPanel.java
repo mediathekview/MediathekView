@@ -7,12 +7,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -237,6 +235,7 @@ public class FilmActionPanel {
         @FXML private CheckBox cbDontShowGebaerdensprache;
         @FXML private CheckBox cbDontShowTrailers;
         @FXML private CheckBox cbDontShowAudioVersions;
+        @FXML private SenderBoxNode senderBoxNode;
 
         public CommonViewSettingsPane() {
             super();
@@ -284,20 +283,18 @@ public class FilmActionPanel {
             dontShowTrailers = cbDontShowTrailers.selectedProperty();
             dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
 
+            senderList = senderBoxNode.senderBox;
+            senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
+
         }
     }
 
     private VBox createCommonViewSettingsPane() {
         VBox vBox = new CommonViewSettingsPane();
 
-        Node senderBox = new SenderBoxNode();
-        VBox.setVgrow(senderBox, Priority.ALWAYS);
-
         setupZeitraumControl();
 
         vBox.getChildren().addAll(
-                senderBox,
-                new Separator(),
                 new ThemaBoxNode(),
                 new Separator(),
                 new FilmLenghtSliderNode(),
@@ -394,22 +391,6 @@ public class FilmActionPanel {
         });
 
         return new Scene(toolBar);
-    }
-
-    class SenderBoxNode extends VBox {
-        private final PauseTransition trans = new PauseTransition(Duration.millis(500d));
-
-        public SenderBoxNode() {
-            senderList = new SenderListBox();
-            VBox.setVgrow(senderList, Priority.ALWAYS);
-            getChildren().addAll(
-                    new Label("Sender:"),
-                    senderList);
-
-            trans.setOnFinished(e -> updateThemaBox());
-            senderList.getCheckModel().getCheckedItems().
-                    addListener((ListChangeListener<String>) c -> trans.playFromStart());
-        }
     }
 
     class ThemaBoxNode extends HBox {
