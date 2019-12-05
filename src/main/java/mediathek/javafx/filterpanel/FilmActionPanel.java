@@ -67,7 +67,6 @@ public class FilmActionPanel {
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
     private final ManageAboButton btnManageAbos = new ManageAboButton();
-    private final Button btnDownload = new DownloadButton();
     private final Button btnShowFilter = new FilterButton();
     private final Button btnRecord = new RecordButton();
     private final Button btnPlay = new PlayButton();
@@ -155,14 +154,16 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
+    private ItemsToolBar2 toolBar2 = new ItemsToolBar2();
+
     @Handler
     private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
-        Platform.runLater(() -> btnDownload.setDisable(true));
+        Platform.runLater(() -> toolBar2.btnDownloadFilmList.setDisable(true));
     }
 
     @Handler
     private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
-        Platform.runLater(() -> btnDownload.setDisable(false));
+        Platform.runLater(() -> toolBar2.btnDownloadFilmList.setDisable(false));
     }
 
     private Button createFilmInformationButton() {
@@ -358,7 +359,7 @@ public class FilmActionPanel {
         setupSearchThroughDescriptionButton();
 
         ToolBar toolBar = new ItemsToolBar();
-        var toolBar2 = new ItemsToolBar2();
+        toolBar2 = new ItemsToolBar2();
 
         VBox vb = new VBox();
         vb.getChildren().addAll(toolBar, toolBar2);
@@ -437,8 +438,6 @@ public class FilmActionPanel {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             getItems().addAll(
-                    btnDownload,
-                    new VerticalSeparator(),
                     createFilmInformationButton(),
                     new VerticalSeparator(),
                     btnPlay,
@@ -590,14 +589,6 @@ public class FilmActionPanel {
                     }
                 }
             }));
-        }
-    }
-
-    private class DownloadButton extends Button {
-        public DownloadButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD).size(16d));
-            setTooltip(new Tooltip("Neue Filmliste laden"));
-            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
         }
     }
 
