@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
       minWidth="-Infinity"
-      prefWidth="600.0" stylesheets="css/splashscreen/splashscreen.css"
+      prefWidth="600.0" stylesheets="mediathek/res/css/splashscreen.css"
       xmlns="http://javafx.com/javafx/11.0.1">
     <children>
         <Label fx:id="appName" id="appName"/>
