@@ -735,10 +735,23 @@ public class MediathekGui extends JFrame {
             getMediaDatabaseDialog().setVis();
         });
 
+        JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
+        showFilmFilterDialog.addActionListener(l -> {
+            var dlg = tabFilme.fap.filterDialog;
+            if (dlg != null) {
+                if (!dlg.isVisible()) {
+                    dlg.setVisible(true);
+                }
+            }
+
+        });
+
         jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showFilmFilterDialog);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();
