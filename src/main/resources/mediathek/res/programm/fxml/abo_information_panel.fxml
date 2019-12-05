@@ -10,8 +10,8 @@
          <Tooltip text="Anzahl aller vorhandenen Abos"/>
       </tooltip>
    </Label>
-
    <VerticalSeparator/>
-
-   <Label fx:id="activitySummary"/>
+   <Label fx:id="activeAbos"/>
+   <VerticalSeparator/>
+   <Label fx:id="inactiveAbos"/>
 </HBox>

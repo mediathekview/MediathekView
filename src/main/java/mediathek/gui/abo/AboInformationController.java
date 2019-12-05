@@ -12,7 +12,11 @@ public class AboInformationController {
     private Label totalAbos;
 
     @FXML
-    private Label activitySummary;
+    private Label activeAbos;
+
+    @FXML
+    private Label inactiveAbos;
+
     private int oldSize = -1;
     private long oldActive = -1;
     private long oldInactive = -1;
@@ -25,16 +29,16 @@ public class AboInformationController {
 
     private void updateTotalDisplay(final int gesamt) {
         if (gesamt == 1) {
-            totalAbos.setText("1 Abo");
+            totalAbos.setText("Gesamt: 1 Abo");
         } else {
-            totalAbos.setText(String.format("%d Abos", gesamt));
+            totalAbos.setText(String.format("Gesamt: %d Abos", gesamt));
         }
     }
 
     private void updateDisplayText() {
         final var listeAbo = daten.getListeAbo();
-        final long activeAbos = listeAbo.activeAbos();
-        final long inactiveAbos = listeAbo.inactiveAbos();
+        final long _activeAbos = listeAbo.activeAbos();
+        final long _inactiveAbos = listeAbo.inactiveAbos();
         final int gesamt = listeAbo.size();
 
         if (gesamt != oldSize) {
@@ -43,11 +47,14 @@ public class AboInformationController {
             oldSize = gesamt;
         }
 
-        if ((activeAbos != oldActive) || (inactiveAbos != oldInactive)) {
-            activitySummary.setText(String.format("%d eingeschaltet, %d ausgeschaltet", activeAbos, inactiveAbos));
+        if (_activeAbos != oldActive) {
+            activeAbos.setText(String.format("%d eingeschaltet", _activeAbos));
+            oldActive = _activeAbos;
+        }
 
-            oldActive = activeAbos;
-            oldInactive = inactiveAbos;
+        if (_inactiveAbos != oldInactive) {
+            inactiveAbos.setText(String.format("%d ausgeschaltet", _inactiveAbos));
+            oldInactive = _inactiveAbos;
         }
     }
 
