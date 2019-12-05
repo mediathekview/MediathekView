@@ -36,7 +36,7 @@ public class FXAboToolBar extends ToolBar implements Initializable {
         super();
 
         try {
-            URL url = getClass().getResource("/mediathek/res/programm/fxml/abo_toolbar.fxml");
+            URL url = getClass().getResource("/mediathek/res/programm/fxml/abo/abo_toolbar.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(url);
             fxmlLoader.setRoot(this);
             fxmlLoader.setController(this);

@@ -67,7 +67,7 @@ public class ManageAboPanel extends JPanel {
     private void setupInfoPanel() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             try {
-                URL url = getClass().getResource("/mediathek/res/programm/fxml/abo_information_panel.fxml");
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/abo/abo_information_panel.fxml");
 
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(url);
