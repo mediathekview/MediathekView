@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
-import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -83,7 +82,6 @@ public class FilmActionPanel {
     public JDialog filterDialog;
     public ManageAboAction manageAboAction;
     private Spinner<String> zeitraumSpinner;
-    private CustomTextField jfxSearchField;
     /**
      * Stores the list of thema strings used for autocompletion.
      */
@@ -162,28 +160,27 @@ public class FilmActionPanel {
     }
 
     private void checkPatternValidity() {
-        jfxSearchField.setStyle("-fx-text-fill: red");
+        toolBar2.jfxSearchField.setStyle("-fx-text-fill: red");
 
         // Schriftfarbe ändern wenn eine RegEx
-        final String text = jfxSearchField.getText();
+        final String text = toolBar2.jfxSearchField.getText();
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
                 //soll Pattern sein, ist aber falsch
-                jfxSearchField.setStyle("-fx-text-fill: red");
+                toolBar2.jfxSearchField.setStyle("-fx-text-fill: red");
             } else {
-                jfxSearchField.setStyle("-fx-text-fill: blue");
+                toolBar2.jfxSearchField.setStyle("-fx-text-fill: blue");
             }
         } else {
-            jfxSearchField.setStyle("-fx-text-fill: black");
+            toolBar2.jfxSearchField.setStyle("-fx-text-fill: black");
         }
     }
 
     private void setupSearchField() {
-        jfxSearchField = new JFXSearchPanel();
-        jfxSearchField.setTooltip(themaTitelTooltip);
-        jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        toolBar2.jfxSearchField.setTooltip(themaTitelTooltip);
+        toolBar2.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
-        final StringProperty textProperty = jfxSearchField.textProperty();
+        final StringProperty textProperty = toolBar2.jfxSearchField.textProperty();
 
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
@@ -218,15 +215,15 @@ public class FilmActionPanel {
     }
 
     private void setupForRegularSearch() {
-        jfxSearchField.setTooltip(themaTitelTooltip);
-        jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        toolBar2.jfxSearchField.setTooltip(themaTitelTooltip);
+        toolBar2.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
         toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
     }
 
     private void setupForIrgendwoSearch() {
-        jfxSearchField.setTooltip(irgendwoTooltip);
-        jfxSearchField.setPromptText(PROMPT_IRGENDWO);
+        toolBar2.jfxSearchField.setTooltip(irgendwoTooltip);
+        toolBar2.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
 
         toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
@@ -352,24 +349,19 @@ public class FilmActionPanel {
 
         setupSearchThroughDescriptionButton();
 
-        ToolBar toolBar = new ItemsToolBar();
-
-        VBox vb = new VBox();
-        vb.getChildren().addAll(toolBar, toolBar2);
-
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(true));
+                Platform.runLater(() -> toolBar2.setDisable(true));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(false));
+                Platform.runLater(() -> toolBar2.setDisable(false));
             }
         });
 
-        return new Scene(vb);
+        return new Scene(toolBar2);
     }
 
     class ItemsToolBar2 extends ToolBar implements Initializable {
@@ -422,17 +414,6 @@ public class FilmActionPanel {
                     }
                 }
             }));
-        }
-    }
-
-    class ItemsToolBar extends ToolBar {
-        public ItemsToolBar() {
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-
-            getItems().addAll(
-                    spacer,
-                    jfxSearchField);
         }
     }
 
