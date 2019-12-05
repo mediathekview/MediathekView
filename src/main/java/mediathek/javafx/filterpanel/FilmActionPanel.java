@@ -166,14 +166,6 @@ public class FilmActionPanel {
         Platform.runLater(() -> toolBar2.btnDownloadFilmList.setDisable(false));
     }
 
-    private Button createFilmInformationButton() {
-        Button btnFilmInfo = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE).size(16d));
-        btnFilmInfo.setTooltip(new Tooltip("Filminformation anzeigen"));
-        btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-
-        return btnFilmInfo;
-    }
-
     private void checkPatternValidity() {
         jfxSearchField.setStyle("-fx-text-fill: red");
 
@@ -438,8 +430,6 @@ public class FilmActionPanel {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             getItems().addAll(
-                    createFilmInformationButton(),
-                    new VerticalSeparator(),
                     btnPlay,
                     btnRecord,
                     new VerticalSeparator(),
