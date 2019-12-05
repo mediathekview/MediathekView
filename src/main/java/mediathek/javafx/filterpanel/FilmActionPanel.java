@@ -24,7 +24,6 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
-import mediathek.javafx.CenteredBorderPane;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
@@ -236,6 +235,7 @@ public class FilmActionPanel {
         @FXML private CheckBox cbDontShowTrailers;
         @FXML private CheckBox cbDontShowAudioVersions;
         @FXML private SenderBoxNode senderBoxNode;
+        @FXML private ThemaComboBox _themaComboBox;
 
         public CommonViewSettingsPane() {
             super();
@@ -286,6 +286,10 @@ public class FilmActionPanel {
             senderList = senderBoxNode.senderBox;
             senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
 
+            themaBox = _themaComboBox;
+            themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
+            TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
+
         }
     }
 
@@ -295,8 +299,6 @@ public class FilmActionPanel {
         setupZeitraumControl();
 
         vBox.getChildren().addAll(
-                new ThemaBoxNode(),
-                new Separator(),
                 new FilmLenghtSliderNode(),
                 new Separator(),
                 zeitraumControl);
@@ -391,18 +393,6 @@ public class FilmActionPanel {
         });
 
         return new Scene(toolBar);
-    }
-
-    class ThemaBoxNode extends HBox {
-        public ThemaBoxNode() {
-            setSpacing(4d);
-
-            themaBox = new ThemaComboBox();
-            themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
-            TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
-
-            getChildren().addAll(new CenteredBorderPane(new Label("Thema:")), themaBox);
-        }
     }
 
     class FilmLenghtSliderNode extends VBox {
