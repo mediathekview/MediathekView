@@ -20,5 +20,10 @@
     <CheckBox mnemonicParsing="false" text="Nur Live Streams anzeigen" fx:id="cbShowOnlyLivestreams"/>
     <Separator/>
     <CheckBox mnemonicParsing="false" text="Gesehene Filme nicht anzeigen" fx:id="cbShowUnseenOnly"/>
+    <CheckBox mnemonicParsing="false" text="Abos nicht anzeigen" fx:id="cbDontShowAbos"/>
+    <CheckBox mnemonicParsing="false" text="Gebärdensprache nicht anzeigen" fx:id="cbDontShowGebaerdensprache"/>
+    <CheckBox mnemonicParsing="false" text="Trailer/Teaser/Vorschau nicht anzeigen" fx:id="cbDontShowTrailers"/>
+    <CheckBox mnemonicParsing="false" text="Hörfassungen ausblenden" fx:id="cbDontShowAudioVersions"/>
+    <Separator/>
 
 </fx:root>
