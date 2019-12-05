@@ -68,8 +68,6 @@ public class FilmActionPanel {
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
     private final ManageAboButton btnManageAbos = new ManageAboButton();
     private final Button btnShowFilter = new FilterButton();
-    private final Button btnRecord = new RecordButton();
-    private final Button btnPlay = new PlayButton();
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -430,9 +428,6 @@ public class FilmActionPanel {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             getItems().addAll(
-                    btnPlay,
-                    btnRecord,
-                    new VerticalSeparator(),
                     new BlacklistButton(),
                     new EditBlacklistButton(),
                     new VerticalSeparator(),
@@ -523,22 +518,6 @@ public class FilmActionPanel {
             super(daten.getListeFilmeNachBlackList().getSenders());
             setPrefHeight(150d);
             setMinHeight(100d);
-        }
-    }
-
-    private class PlayButton extends Button {
-        public PlayButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.PLAY).size(16d));
-            setTooltip(new Tooltip("Film abspielen"));
-            setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-        }
-    }
-
-    private class RecordButton extends Button {
-        public RecordButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD).size(16d));
-            setTooltip(new Tooltip("Film aufzeichnen"));
-            setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
         }
     }
 
