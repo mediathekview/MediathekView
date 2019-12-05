@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import org.controlsfx.glyphfont.*?>
+<fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+    <Button mnemonicParsing="false" fx:id="btnFilmInfo">
+        <tooltip>
+            <Tooltip text="Filminformation anzeigen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnUpdateDownloads">
+        <tooltip>
+            <Tooltip text="Downloadliste aktualisieren"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="REFRESH" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnStartAllDownloads">
+        <tooltip>
+            <Tooltip text="Alle Downloads starten"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="ANGLE_DOUBLE_DOWN" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnPlayFilm">
+        <tooltip>
+            <Tooltip text="Film abspielen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="PLAY" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnZurueckstellen">
+        <tooltip>
+            <Tooltip text="Downloads zurückstellen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="CLOCK_ALT" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnRemoveDownload">
+        <tooltip>
+            <Tooltip text="Downloads entfernen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnCleanup">
+        <tooltip>
+            <Tooltip text="Liste säubern"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="ERASER" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <Button mnemonicParsing="false" fx:id="btnFilter">
+        <tooltip>
+            <Tooltip text="Filter anzeigen/ausblenden"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="FILTER" fontSize="16"/>
+        </graphic>
+    </Button>
+</fx:root>
