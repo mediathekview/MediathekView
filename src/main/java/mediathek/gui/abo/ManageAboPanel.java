@@ -1,8 +1,6 @@
 package mediathek.gui.abo;
 
-import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -14,10 +12,10 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.Datum;
 import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.SenderList;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
@@ -31,32 +29,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
-public class GuiAbo extends JPanel {
+public class ManageAboPanel extends JPanel {
+    private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
+    private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
     private final MVTable tabelle;
     private final Daten daten;
+    private final FXAboToolBar toolBar;
 
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
-    }
+    private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+    private final ComboBox<String> senderCb;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JScrollPane jScrollPane1;
 
-    public GuiAbo(Daten d) {
+    public ManageAboPanel(Daten d) {
         super();
         daten = d;
         toolBar = new FXAboToolBar(this);
         senderCb = toolBar.getSenderComboBox();
-        Platform.runLater(this::setupSenderCb);
 
         initComponents();
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
 
-        SwingUtilities.invokeLater(() -> {
-            JFXPanel toolBarPanel = new JFXPanel();
-            add(toolBarPanel,BorderLayout.NORTH);
-            Platform.runLater(() -> toolBarPanel.setScene(new Scene(toolBar)));
-        });
+        JFXPanel toolBarPanel = new JFXPanel();
+        add(toolBarPanel, BorderLayout.NORTH);
+        JavaFxUtils.invokeInFxThreadAndWait(() -> toolBarPanel.setScene(new Scene(toolBar)));
+        JavaFxUtils.invokeInFxThreadAndWait(this::setupSenderCb);
 
         daten.getMessageBus().subscribe(this);
 
@@ -69,9 +68,11 @@ public class GuiAbo extends JPanel {
         }
     }
 
-    private final FXAboToolBar toolBar;
-
-    private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
+    }
 
     public void einAus(boolean ein) {
         aboEinAus(ein);
@@ -92,9 +93,6 @@ public class GuiAbo extends JPanel {
     private void handleAboListChanged(AboListChangedEvent e) {
         SwingUtilities.invokeLater(this::tabelleLaden);
     }
-
-    private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
-    private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
 
     private void setupKeyMap() {
         final InputMap im = tabelle.getInputMap();
@@ -164,13 +162,7 @@ public class GuiAbo extends JPanel {
         setupKeyMap();
     }
 
-    private final ComboBox<String> senderCb;
-
     private void setupSenderCb() {
-        var senderList = new SenderList(daten.getListeFilme().getBaseSenderList());
-        ObservableList<String> senderModel = new EventObservableList<>(senderList);
-        senderCb.setItems(senderModel);
-        senderCb.getSelectionModel().select(0);
         senderCb.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
     }
 
@@ -315,9 +307,5 @@ public class GuiAbo extends JPanel {
         }
         add(jScrollPane1, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
