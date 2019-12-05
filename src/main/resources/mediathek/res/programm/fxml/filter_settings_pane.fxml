@@ -7,6 +7,7 @@
 <?import mediathek.javafx.filterpanel.FilmLenghtSliderNode?>
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
+<?import mediathek.javafx.filterpanel.ZeitraumSpinner?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
@@ -46,5 +47,10 @@
     <Separator/>
     <FilmLenghtSliderNode fx:id="filmLengthSliderNode"/>
     <Separator/>
+    <FlowPane hgap="4.0">
+        <Label text="Zeitraum:"/>
+        <ZeitraumSpinner fx:id="_zeitraumSpinner"/>
+        <Label text="Tage"/>
+    </FlowPane>
 
 </fx:root>
