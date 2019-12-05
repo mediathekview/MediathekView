@@ -233,6 +233,10 @@ public class FilmActionPanel {
         @FXML private CheckBox cbShowNewOnly;
         @FXML private CheckBox cbShowOnlyLivestreams;
         @FXML private CheckBox cbShowUnseenOnly;
+        @FXML private CheckBox cbDontShowAbos;
+        @FXML private CheckBox cbDontShowGebaerdensprache;
+        @FXML private CheckBox cbDontShowTrailers;
+        @FXML private CheckBox cbDontShowAudioVersions;
 
         public CommonViewSettingsPane() {
             super();
@@ -275,23 +279,15 @@ public class FilmActionPanel {
             showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
 
             showUnseenOnly = cbShowUnseenOnly.selectedProperty();
+            dontShowAbos = cbDontShowAbos.selectedProperty();
+            dontShowSignLanguage = cbDontShowGebaerdensprache.selectedProperty();
+            dontShowTrailers = cbDontShowTrailers.selectedProperty();
+            dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
 
         }
     }
 
     private VBox createCommonViewSettingsPane() {
-        CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
-        dontShowAbos = cbDontShowAbos.selectedProperty();
-
-        CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
-        dontShowSignLanguage = cbDontShowGebaerdensprache.selectedProperty();
-
-        CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
-        dontShowTrailers = cbDontShowTrailers.selectedProperty();
-
-        CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
-        dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
-
         VBox vBox = new CommonViewSettingsPane();
 
         Node senderBox = new SenderBoxNode();
@@ -300,11 +296,6 @@ public class FilmActionPanel {
         setupZeitraumControl();
 
         vBox.getChildren().addAll(
-                cbDontShowAbos,
-                cbDontShowGebaerdensprache,
-                cbDontShowTrailers,
-                cbDontShowAudioVersions,
-                new Separator(),
                 senderBox,
                 new Separator(),
                 new ThemaBoxNode(),
