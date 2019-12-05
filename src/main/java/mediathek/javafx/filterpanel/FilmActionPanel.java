@@ -7,18 +7,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -32,18 +26,13 @@ import mediathek.tool.Filter;
 import mediathek.tool.GermanStringSorter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -83,12 +72,14 @@ public class FilmActionPanel {
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private FXFilmToolBar toolBar = new FXFilmToolBar();
-    private final CommonViewSettingsPane viewSettingsPane;
+    private CommonViewSettingsPane viewSettingsPane;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
-        viewSettingsPane = new CommonViewSettingsPane();
+        setupViewSettingsPane();
+        setupDeleteFilterButton();
+
         SwingUtilities.invokeLater(() -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), viewSettingsPane));
 
         restoreConfigSettings();
@@ -96,6 +87,54 @@ public class FilmActionPanel {
         setupConfigListeners();
 
         daten.getMessageBus().subscribe(this);
+    }
+
+    private void setupDeleteFilterButton() {
+        viewSettingsPane.btnDeleteFilterSettings.setOnAction(e -> {
+            showOnlyHd.setValue(false);
+            showSubtitlesOnly.setValue(false);
+            showNewOnly.setValue(false);
+            showLivestreamsOnly.setValue(false);
+            showUnseenOnly.setValue(false);
+            dontShowAbos.setValue(false);
+            dontShowSignLanguage.setValue(false);
+            dontShowTrailers.setValue(false);
+            dontShowAudioVersions.setValue(false);
+
+            senderList.getCheckModel().clearChecks();
+            themaBox.getSelectionModel().select("");
+
+            filmLengthSlider.lowValueProperty().setValue(0);
+            filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+            viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+        });
+    }
+
+    private void setupViewSettingsPane() {
+        viewSettingsPane = new CommonViewSettingsPane();
+
+        showOnlyHd = viewSettingsPane.cbShowOnlyHd.selectedProperty();
+        showSubtitlesOnly = viewSettingsPane.cbShowSubtitlesOnly.selectedProperty();
+        showNewOnly = viewSettingsPane.cbShowNewOnly.selectedProperty();
+        showLivestreamsOnly = viewSettingsPane.cbShowOnlyLivestreams.selectedProperty();
+
+        showUnseenOnly = viewSettingsPane.cbShowUnseenOnly.selectedProperty();
+        dontShowAbos = viewSettingsPane.cbDontShowAbos.selectedProperty();
+        dontShowSignLanguage = viewSettingsPane.cbDontShowGebaerdensprache.selectedProperty();
+        dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
+        dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
+
+        senderList = viewSettingsPane.senderBoxNode.senderBox;
+        viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
+
+        themaBox = viewSettingsPane._themaComboBox;
+        themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
+        TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
+
+        filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
+
+        zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
     }
 
     private void restoreConfigSettings() {
@@ -217,83 +256,6 @@ public class FilmActionPanel {
         toolBar.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
 
         toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
-    }
-
-    class CommonViewSettingsPane extends VBox implements Initializable {
-        private final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
-        @FXML private Button btnDeleteFilterSettings;
-        @FXML private CheckBox cbShowOnlyHd;
-        @FXML private CheckBox cbShowSubtitlesOnly;
-        @FXML private CheckBox cbShowNewOnly;
-        @FXML private CheckBox cbShowOnlyLivestreams;
-        @FXML private CheckBox cbShowUnseenOnly;
-        @FXML private CheckBox cbDontShowAbos;
-        @FXML private CheckBox cbDontShowGebaerdensprache;
-        @FXML private CheckBox cbDontShowTrailers;
-        @FXML private CheckBox cbDontShowAudioVersions;
-        @FXML private SenderBoxNode senderBoxNode;
-        @FXML private ThemaComboBox _themaComboBox;
-        @FXML private FilmLenghtSliderNode filmLengthSliderNode;
-        @FXML private ZeitraumSpinner zeitraumSpinner;
-
-        public CommonViewSettingsPane() {
-            super();
-
-            try {
-                URL url = getClass().getResource("/mediathek/res/programm/fxml/filter_settings_pane.fxml");
-                FXMLLoader fxmlLoader = new FXMLLoader(url);
-                fxmlLoader.setRoot(this);
-                fxmlLoader.setController(this);
-                fxmlLoader.load();
-            } catch (IOException e) {
-                logger.error("Failed to load FXML!", e);
-            }}
-
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
-            btnDeleteFilterSettings.setOnAction(e -> {
-                showOnlyHd.setValue(false);
-                showSubtitlesOnly.setValue(false);
-                showNewOnly.setValue(false);
-                showLivestreamsOnly.setValue(false);
-                showUnseenOnly.setValue(false);
-                dontShowAbos.setValue(false);
-                dontShowSignLanguage.setValue(false);
-                dontShowTrailers.setValue(false);
-                dontShowAudioVersions.setValue(false);
-
-                senderList.getCheckModel().clearChecks();
-                themaBox.getSelectionModel().select("");
-
-                filmLengthSlider.lowValueProperty().setValue(0);
-                filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
-
-                viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
-            });
-
-            showOnlyHd = cbShowOnlyHd.selectedProperty();
-            showSubtitlesOnly = cbShowSubtitlesOnly.selectedProperty();
-            showNewOnly = cbShowNewOnly.selectedProperty();
-            showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
-
-            showUnseenOnly = cbShowUnseenOnly.selectedProperty();
-            dontShowAbos = cbDontShowAbos.selectedProperty();
-            dontShowSignLanguage = cbDontShowGebaerdensprache.selectedProperty();
-            dontShowTrailers = cbDontShowTrailers.selectedProperty();
-            dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
-
-            senderList = senderBoxNode.senderBox;
-            senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
-
-            themaBox = _themaComboBox;
-            themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
-            TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
-
-            filmLengthSlider = filmLengthSliderNode._filmLengthSlider;
-
-            zeitraumProperty = zeitraumSpinner.valueProperty();
-
-        }
     }
 
     public void updateThemaBox() {
