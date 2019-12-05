@@ -10,7 +10,6 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -97,7 +96,7 @@ public class FilmActionPanel {
     }
 
     private void createFilterDialog() {
-        VBox vb = getFilterDialogContent();
+        VBox vb = createCommonViewSettingsPane();
         SwingUtilities.invokeLater(() -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), vb));
     }
 
@@ -340,15 +339,6 @@ public class FilmActionPanel {
         themaSuggestionProvider.clearSuggestions();
         themaSuggestionProvider.addPossibleSuggestions(items);
         themaBox.getSelectionModel().select(0);
-    }
-
-    private VBox getFilterDialogContent() {
-        VBox vb = new VBox();
-        vb.setSpacing(4.0);
-        vb.setPadding(new Insets(5, 5, 5, 5));
-        vb.getChildren().add(createCommonViewSettingsPane());
-
-        return vb;
     }
 
     private void setupToolBar() {
