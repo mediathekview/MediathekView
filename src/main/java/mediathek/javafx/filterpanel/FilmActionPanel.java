@@ -218,9 +218,35 @@ public class FilmActionPanel {
         toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private VBox createCommonViewSettingsPane() {
-        Button btnDeleteFilterSettings = new DeleteFilterSettingsButton();
+    private Button createDeleteFilterSettingsButton() {
+        Button btnDeleteFilterSettings = new Button();
+        btnDeleteFilterSettings.setGraphic(fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
+        btnDeleteFilterSettings.setTooltip(new Tooltip("Filter zurücksetzen"));
 
+        btnDeleteFilterSettings.setOnAction(e -> {
+            showOnlyHd.setValue(false);
+            showSubtitlesOnly.setValue(false);
+            showNewOnly.setValue(false);
+            showLivestreamsOnly.setValue(false);
+            showUnseenOnly.setValue(false);
+            dontShowAbos.setValue(false);
+            dontShowSignLanguage.setValue(false);
+            dontShowTrailers.setValue(false);
+            dontShowAudioVersions.setValue(false);
+
+            senderList.getCheckModel().clearChecks();
+            themaBox.getSelectionModel().select("");
+
+            filmLengthSlider.lowValueProperty().setValue(0);
+            filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+            zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+        });
+
+        return btnDeleteFilterSettings;
+    }
+
+    private VBox createCommonViewSettingsPane() {
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
 
@@ -255,7 +281,7 @@ public class FilmActionPanel {
         VBox.setVgrow(senderBox, Priority.ALWAYS);
 
         vBox.getChildren().addAll(
-                btnDeleteFilterSettings,
+                createDeleteFilterSettingsButton(),
                 new Separator(),
                 cbShowOnlyHd,
                 cbShowSubtitlesOnly,
@@ -430,41 +456,13 @@ public class FilmActionPanel {
 
     class ZeitraumPane extends FlowPane {
         public ZeitraumPane() {
-            Label zeitraum = new Label("Zeitraum:");
-
             zeitraumSpinner = new ZeitraumSpinner();
             zeitraumProperty = zeitraumSpinner.valueProperty();
 
-            Label days = new Label("Tage");
-
             setHgap(4);
-            getChildren().addAll(zeitraum, zeitraumSpinner, days);
-        }
-    }
-
-    private class DeleteFilterSettingsButton extends Button {
-        public DeleteFilterSettingsButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
-            setTooltip(new Tooltip("Filter zurücksetzen"));
-            setOnAction(e -> {
-                showOnlyHd.setValue(false);
-                showSubtitlesOnly.setValue(false);
-                showNewOnly.setValue(false);
-                showLivestreamsOnly.setValue(false);
-                showUnseenOnly.setValue(false);
-                dontShowAbos.setValue(false);
-                dontShowSignLanguage.setValue(false);
-                dontShowTrailers.setValue(false);
-                dontShowAudioVersions.setValue(false);
-
-                senderList.getCheckModel().clearChecks();
-                themaBox.getSelectionModel().select("");
-
-                filmLengthSlider.lowValueProperty().setValue(0);
-                filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
-
-                zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
-            });
+            getChildren().addAll(new Label("Zeitraum:"),
+                    zeitraumSpinner,
+                    new Label("Tage"));
         }
     }
 }
