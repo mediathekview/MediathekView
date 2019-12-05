@@ -3,6 +3,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
@@ -24,6 +25,8 @@
     <CheckBox mnemonicParsing="false" text="Gebärdensprache nicht anzeigen" fx:id="cbDontShowGebaerdensprache"/>
     <CheckBox mnemonicParsing="false" text="Trailer/Teaser/Vorschau nicht anzeigen" fx:id="cbDontShowTrailers"/>
     <CheckBox mnemonicParsing="false" text="Hörfassungen ausblenden" fx:id="cbDontShowAudioVersions"/>
+    <Separator/>
+    <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderBoxNode"/>
     <Separator/>
 
 </fx:root>
