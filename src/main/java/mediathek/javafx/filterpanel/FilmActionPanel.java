@@ -10,9 +10,6 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -309,9 +306,6 @@ public class FilmActionPanel {
     }
 
     public Scene getFilmActionPanelScene() {
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
         setupToolBar();
 
         setupSearchField();
