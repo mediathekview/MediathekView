@@ -12,7 +12,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -73,12 +76,12 @@ public class FilmActionPanel {
     public CheckListView<String> senderList;
     public JDialog filterDialog;
     public ManageAboAction manageAboAction;
-    private Spinner<String> zeitraumSpinner;
     /**
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private FXFilmToolBar toolBar = new FXFilmToolBar();
+    private ZeitraumControl zeitraumControl;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -116,7 +119,7 @@ public class FilmActionPanel {
         }
 
         try {
-            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, ZeitraumSpinner.UNLIMITED_VALUE));
+            zeitraumControl.spinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, ZeitraumSpinner.UNLIMITED_VALUE));
         } catch (Exception ignored) {
         }
     }
@@ -136,7 +139,7 @@ public class FilmActionPanel {
         filmLengthSlider.lowValueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MIN, newValue)));
         filmLengthSlider.highValueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MAX, newValue)));
 
-        zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
+        zeitraumControl.spinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
     @Handler
@@ -240,7 +243,7 @@ public class FilmActionPanel {
             filmLengthSlider.lowValueProperty().setValue(0);
             filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
 
-            zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+            zeitraumControl.spinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
         });
 
         return btnDeleteFilterSettings;
@@ -280,6 +283,8 @@ public class FilmActionPanel {
         Node senderBox = new SenderBoxNode();
         VBox.setVgrow(senderBox, Priority.ALWAYS);
 
+        setupZeitraumControl();
+
         vBox.getChildren().addAll(
                 createDeleteFilterSettingsButton(),
                 new Separator(),
@@ -300,11 +305,16 @@ public class FilmActionPanel {
                 new Separator(),
                 new FilmLenghtSliderNode(),
                 new Separator(),
-                new ZeitraumPane());
+                zeitraumControl);
 
         setupSenderListeners();
 
         return vBox;
+    }
+
+    private void setupZeitraumControl() {
+        zeitraumControl = new ZeitraumControl();
+        zeitraumProperty = zeitraumControl.spinner.valueProperty();
     }
 
     private void setupSenderListeners() {
@@ -451,18 +461,6 @@ public class FilmActionPanel {
                     .buildAll();
 
             getChildren().add(result);
-        }
-    }
-
-    class ZeitraumPane extends FlowPane {
-        public ZeitraumPane() {
-            zeitraumSpinner = new ZeitraumSpinner();
-            zeitraumProperty = zeitraumSpinner.valueProperty();
-
-            setHgap(4);
-            getChildren().addAll(new Label("Zeitraum:"),
-                    zeitraumSpinner,
-                    new Label("Tage"));
         }
     }
 }
