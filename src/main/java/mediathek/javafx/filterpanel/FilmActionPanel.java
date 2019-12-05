@@ -88,7 +88,7 @@ public class FilmActionPanel {
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
-    private ToggleButton btnSearchThroughDescription;
+    //private ToggleButton btnSearchThroughDescription;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -195,35 +195,40 @@ public class FilmActionPanel {
     }
 
     private void setupSearchThroughDescriptionButton() {
-        btnSearchThroughDescription = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.BOOK));
         final boolean enabled = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        btnSearchThroughDescription.setSelected(enabled);
+        toolBar2.btnSearchThroughDescription.setSelected(enabled);
 
         if (enabled)
             setupForIrgendwoSearch();
         else
             setupForRegularSearch();
 
-        btnSearchThroughDescription.setOnAction(e -> {
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, btnSearchThroughDescription.isSelected());
-            if (btnSearchThroughDescription.isSelected())
+        toolBar2.btnSearchThroughDescription.setOnAction(e -> {
+            final boolean bSearchThroughDescription = toolBar2.btnSearchThroughDescription.isSelected();
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS,
+                    bSearchThroughDescription);
+
+            if (bSearchThroughDescription)
                 setupForIrgendwoSearch();
             else
                 setupForRegularSearch();
         });
-        searchThroughDescription = btnSearchThroughDescription.selectedProperty();
+
+        searchThroughDescription = toolBar2.btnSearchThroughDescription.selectedProperty();
     }
 
     private void setupForRegularSearch() {
         jfxSearchField.setTooltip(themaTitelTooltip);
         jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
-        btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
+
+        toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
     }
 
     private void setupForIrgendwoSearch() {
         jfxSearchField.setTooltip(irgendwoTooltip);
         jfxSearchField.setPromptText(PROMPT_IRGENDWO);
-        btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
+
+        toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
     private VBox createCommonViewSettingsPane() {
@@ -341,12 +346,13 @@ public class FilmActionPanel {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        toolBar2 = new ItemsToolBar2();
+
         setupSearchField();
 
         setupSearchThroughDescriptionButton();
 
         ToolBar toolBar = new ItemsToolBar();
-        toolBar2 = new ItemsToolBar2();
 
         VBox vb = new VBox();
         vb.getChildren().addAll(toolBar, toolBar2);
@@ -426,8 +432,7 @@ public class FilmActionPanel {
 
             getItems().addAll(
                     spacer,
-                    jfxSearchField,
-                    btnSearchThroughDescription);
+                    jfxSearchField);
         }
     }
 
