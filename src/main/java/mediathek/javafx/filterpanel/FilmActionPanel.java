@@ -387,12 +387,7 @@ public class FilmActionPanel {
         public ThemaBoxNode() {
             setSpacing(4d);
 
-            themaBox = new ComboBox<>();
-            themaBox.getItems().addAll("");
-            themaBox.getSelectionModel().select(0);
-            themaBox.setPrefWidth(350d);
-
-            themaBox.setEditable(true);
+            themaBox = new ThemaComboBox();
             themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
             TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
