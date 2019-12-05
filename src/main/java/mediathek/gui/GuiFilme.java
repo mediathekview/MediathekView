@@ -34,6 +34,7 @@ import mediathek.gui.tab_film.SwingButtonPanelController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -260,11 +261,11 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void setupFilmActionPanel() {
         fap = new FilmActionPanel(daten);
-        Platform.runLater(() -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
+        JavaFxUtils.invokeInFxThreadAndWait(() -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
     }
 
     private void setupDescriptionPanel() {
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
