@@ -8,9 +8,6 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -30,8 +27,6 @@ import mediathek.tool.Filter;
 import mediathek.tool.GermanStringSorter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
@@ -41,11 +36,8 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -86,7 +78,7 @@ public class FilmActionPanel {
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
-    //private ToggleButton btnSearchThroughDescription;
+    private FXFilmToolBar toolBar = new FXFilmToolBar();
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -147,40 +139,38 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
-    private ItemsToolBar2 toolBar2 = new ItemsToolBar2();
-
     @Handler
     private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
-        Platform.runLater(() -> toolBar2.btnDownloadFilmList.setDisable(true));
+        Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(true));
     }
 
     @Handler
     private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
-        Platform.runLater(() -> toolBar2.btnDownloadFilmList.setDisable(false));
+        Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(false));
     }
 
     private void checkPatternValidity() {
-        toolBar2.jfxSearchField.setStyle("-fx-text-fill: red");
+        toolBar.jfxSearchField.setStyle("-fx-text-fill: red");
 
         // Schriftfarbe ändern wenn eine RegEx
-        final String text = toolBar2.jfxSearchField.getText();
+        final String text = toolBar.jfxSearchField.getText();
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
                 //soll Pattern sein, ist aber falsch
-                toolBar2.jfxSearchField.setStyle("-fx-text-fill: red");
+                toolBar.jfxSearchField.setStyle("-fx-text-fill: red");
             } else {
-                toolBar2.jfxSearchField.setStyle("-fx-text-fill: blue");
+                toolBar.jfxSearchField.setStyle("-fx-text-fill: blue");
             }
         } else {
-            toolBar2.jfxSearchField.setStyle("-fx-text-fill: black");
+            toolBar.jfxSearchField.setStyle("-fx-text-fill: black");
         }
     }
 
     private void setupSearchField() {
-        toolBar2.jfxSearchField.setTooltip(themaTitelTooltip);
-        toolBar2.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
+        toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
-        final StringProperty textProperty = toolBar2.jfxSearchField.textProperty();
+        final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
 
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
@@ -193,15 +183,15 @@ public class FilmActionPanel {
 
     private void setupSearchThroughDescriptionButton() {
         final boolean enabled = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        toolBar2.btnSearchThroughDescription.setSelected(enabled);
+        toolBar.btnSearchThroughDescription.setSelected(enabled);
 
         if (enabled)
             setupForIrgendwoSearch();
         else
             setupForRegularSearch();
 
-        toolBar2.btnSearchThroughDescription.setOnAction(e -> {
-            final boolean bSearchThroughDescription = toolBar2.btnSearchThroughDescription.isSelected();
+        toolBar.btnSearchThroughDescription.setOnAction(e -> {
+            final boolean bSearchThroughDescription = toolBar.btnSearchThroughDescription.isSelected();
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS,
                     bSearchThroughDescription);
 
@@ -211,21 +201,21 @@ public class FilmActionPanel {
                 setupForRegularSearch();
         });
 
-        searchThroughDescription = toolBar2.btnSearchThroughDescription.selectedProperty();
+        searchThroughDescription = toolBar.btnSearchThroughDescription.selectedProperty();
     }
 
     private void setupForRegularSearch() {
-        toolBar2.jfxSearchField.setTooltip(themaTitelTooltip);
-        toolBar2.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
+        toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
-        toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
+        toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
     }
 
     private void setupForIrgendwoSearch() {
-        toolBar2.jfxSearchField.setTooltip(irgendwoTooltip);
-        toolBar2.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
+        toolBar.jfxSearchField.setTooltip(irgendwoTooltip);
+        toolBar.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
 
-        toolBar2.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
+        toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
     private VBox createCommonViewSettingsPane() {
@@ -339,11 +329,30 @@ public class FilmActionPanel {
         return vb;
     }
 
+    private void setupToolBar() {
+        toolBar = new FXFilmToolBar();
+        toolBar.btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
+        toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
+        toolBar.btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
+        toolBar.btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
+        toolBar.btnManageAbos.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+            if (manageAboAction.isEnabled())
+                manageAboAction.actionPerformed(null);
+        }));
+        toolBar.btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+            if (filterDialog != null) {
+                if (!filterDialog.isVisible()) {
+                    filterDialog.setVisible(true);
+                }
+            }
+        }));
+    }
+
     public Scene getFilmActionPanelScene() {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        toolBar2 = new ItemsToolBar2();
+        setupToolBar();
 
         setupSearchField();
 
@@ -352,69 +361,16 @@ public class FilmActionPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar2.setDisable(true));
+                Platform.runLater(() -> toolBar.setDisable(true));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar2.setDisable(false));
+                Platform.runLater(() -> toolBar.setDisable(false));
             }
         });
 
-        return new Scene(toolBar2);
-    }
-
-    class ItemsToolBar2 extends ToolBar implements Initializable {
-        @FXML
-        public Button btnDownloadFilmList;
-
-        @FXML
-        public Button btnFilmInfo;
-
-        @FXML Button btnPlay;
-
-        @FXML Button btnRecord;
-
-        @FXML Button btnManageAbos;
-
-        @FXML Button btnShowFilter;
-
-        @FXML JFXSearchPanel jfxSearchField;
-
-        @FXML ToggleButton btnSearchThroughDescription;
-
-        public ItemsToolBar2() {
-            super();
-            try {
-                URL url = getClass().getResource("/mediathek/res/programm/fxml/film_toolbar.fxml");
-                FXMLLoader fxmlLoader = new FXMLLoader(url);
-                fxmlLoader.setRoot(this);
-                fxmlLoader.setController(this);
-                fxmlLoader.load();
-            } catch (IOException e) {
-                Logger logger = LogManager.getLogger(ItemsToolBar2.class);
-                logger.error("Failed to load FXML!");
-            }
-        }
-
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
-            btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
-            btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-            btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-            btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-            btnManageAbos.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                if (manageAboAction.isEnabled())
-                    manageAboAction.actionPerformed(null);
-            }));
-            btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                if (filterDialog != null) {
-                    if (!filterDialog.isVisible()) {
-                        filterDialog.setVisible(true);
-                    }
-                }
-            }));
-        }
+        return new Scene(toolBar);
     }
 
     class SenderBoxNode extends VBox {
