@@ -72,7 +72,7 @@
             <Tooltip text="Filter anzeigen"/>
         </tooltip>
         <graphic>
-            <Glyph fontFamily="FontAwesome" icon="FILTER" fontSize="16"/>
+            <Glyph fontFamily="FontAwesome" icon="FILTER"/>
         </graphic>
     </Button>
 
@@ -80,7 +80,7 @@
 
     <ToggleButton mnemonicParsing="false" fx:id="btnSearchThroughDescription">
         <graphic>
-            <Glyph fontFamily="FontAwesome" icon="BOOK" fontSize="16"/>
+            <Glyph fontFamily="FontAwesome" icon="BOOK"/>
         </graphic>
     </ToggleButton>
 </fx:root>

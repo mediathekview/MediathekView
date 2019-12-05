@@ -65,8 +65,6 @@ public class FilmActionPanel {
     private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
-    private final ManageAboButton btnManageAbos = new ManageAboButton();
-    private final Button btnShowFilter = new FilterButton();
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -427,9 +425,7 @@ public class FilmActionPanel {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             getItems().addAll(
-                    btnManageAbos,
                     spacer,
-                    btnShowFilter,
                     jfxSearchField,
                     btnSearchThroughDescription);
         }
@@ -540,31 +536,6 @@ public class FilmActionPanel {
 
                 zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
             });
-        }
-    }
-
-    private class FilterButton extends Button {
-        public FilterButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.FILTER));
-            setTooltip(new Tooltip("Filter anzeigen"));
-            setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                if (filterDialog != null) {
-                    if (!filterDialog.isVisible()) {
-                        filterDialog.setVisible(true);
-                    }
-                }
-            }));
-        }
-    }
-
-    private class ManageAboButton extends Button {
-        public ManageAboButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.DATABASE).size(16d));
-            setTooltip(new Tooltip("Abos verwalten"));
-            setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                if (manageAboAction.isEnabled())
-                    manageAboAction.actionPerformed(null);
-            }));
         }
     }
 }
