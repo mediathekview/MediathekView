@@ -442,14 +442,6 @@ public class FilmActionPanel {
         }
     }
 
-    private class SenderListBox extends CheckListView<String> {
-        public SenderListBox() {
-            super(daten.getListeFilmeNachBlackList().getSenders());
-            setPrefHeight(150d);
-            setMinHeight(100d);
-        }
-    }
-
     private class DeleteFilterSettingsButton extends Button {
         public DeleteFilterSettingsButton() {
             super("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
