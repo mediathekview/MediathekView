@@ -11,7 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -34,7 +37,6 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
-import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -235,6 +237,7 @@ public class FilmActionPanel {
         @FXML private CheckBox cbDontShowAudioVersions;
         @FXML private SenderBoxNode senderBoxNode;
         @FXML private ThemaComboBox _themaComboBox;
+        @FXML private FilmLenghtSliderNode filmLengthSliderNode;
 
         public CommonViewSettingsPane() {
             super();
@@ -289,6 +292,7 @@ public class FilmActionPanel {
             themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
             TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
+            filmLengthSlider = filmLengthSliderNode._filmLengthSlider;
         }
     }
 
@@ -296,11 +300,7 @@ public class FilmActionPanel {
         VBox vBox = new CommonViewSettingsPane();
 
         setupZeitraumControl();
-
-        vBox.getChildren().addAll(
-                new FilmLenghtSliderNode(),
-                new Separator(),
-                zeitraumControl);
+        vBox.getChildren().add(zeitraumControl);
 
         return vBox;
     }
@@ -385,36 +385,4 @@ public class FilmActionPanel {
         return new Scene(toolBar);
     }
 
-    class FilmLenghtSliderNode extends VBox {
-        public FilmLenghtSliderNode() {
-            HBox hb = new HBox();
-            hb.getChildren().add(new Label("Mindestlänge:"));
-            Label lblMin = new Label("min");
-            hb.getChildren().add(lblMin);
-
-            HBox hb2 = new HBox();
-            hb2.getChildren().add(new Label("Maximallänge:"));
-            Label lblMax = new Label("max");
-            hb2.getChildren().add(lblMax);
-            VBox vb2 = new VBox();
-            vb2.getChildren().add(hb);
-            vb2.getChildren().add(hb2);
-
-            filmLengthSlider = new FilmLengthSlider();
-
-            lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
-            lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
-            filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
-            filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue)));
-            vb2.getChildren().add(filmLengthSlider);
-
-            var result = Borders.wrap(vb2)
-                    .lineBorder()
-                    .innerPadding(4)
-                    .outerPadding(4)
-                    .buildAll();
-
-            getChildren().add(result);
-        }
-    }
 }

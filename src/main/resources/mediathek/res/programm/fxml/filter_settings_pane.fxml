@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import mediathek.javafx.filterpanel.FilmLenghtSliderNode?>
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import org.controlsfx.glyphfont.Glyph?>
@@ -42,6 +43,8 @@
         </BorderPane>
         <ThemaComboBox fx:id="_themaComboBox"/>
     </HBox>
+    <Separator/>
+    <FilmLenghtSliderNode fx:id="filmLengthSliderNode"/>
     <Separator/>
 
 </fx:root>
