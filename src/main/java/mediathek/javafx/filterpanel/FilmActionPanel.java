@@ -8,6 +8,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,8 +21,6 @@ import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.ManageAboAction;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.CenteredBorderPane;
@@ -30,6 +31,8 @@ import mediathek.tool.Filter;
 import mediathek.tool.GermanStringSorter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -40,8 +43,11 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -352,6 +358,11 @@ public class FilmActionPanel {
         setupSearchThroughDescriptionButton();
 
         ToolBar toolBar = new ItemsToolBar();
+        var toolBar2 = new ItemsToolBar2();
+
+        VBox vb = new VBox();
+        vb.getChildren().addAll(toolBar, toolBar2);
+
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -364,7 +375,60 @@ public class FilmActionPanel {
             }
         });
 
-        return new Scene(toolBar);
+        return new Scene(vb);
+    }
+
+    class ItemsToolBar2 extends ToolBar implements Initializable {
+        @FXML
+        public Button btnDownloadFilmList;
+
+        @FXML
+        public Button btnFilmInfo;
+
+        @FXML Button btnPlay;
+
+        @FXML Button btnRecord;
+
+        @FXML Button btnManageAbos;
+
+        @FXML Button btnShowFilter;
+
+        @FXML JFXSearchPanel jfxSearchField;
+
+        @FXML ToggleButton btnSearchThroughDescription;
+
+        public ItemsToolBar2() {
+            super();
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/film_toolbar.fxml");
+                FXMLLoader fxmlLoader = new FXMLLoader(url);
+                fxmlLoader.setRoot(this);
+                fxmlLoader.setController(this);
+                fxmlLoader.load();
+            } catch (IOException e) {
+                Logger logger = LogManager.getLogger(ItemsToolBar2.class);
+                logger.error("Failed to load FXML!");
+            }
+        }
+
+        @Override
+        public void initialize(URL url, ResourceBundle resourceBundle) {
+            btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
+            btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
+            btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
+            btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
+            btnManageAbos.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (manageAboAction.isEnabled())
+                    manageAboAction.actionPerformed(null);
+            }));
+            btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+                if (filterDialog != null) {
+                    if (!filterDialog.isVisible()) {
+                        filterDialog.setVisible(true);
+                    }
+                }
+            }));
+        }
     }
 
     class ItemsToolBar extends ToolBar {
@@ -372,14 +436,15 @@ public class FilmActionPanel {
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            getItems().addAll(btnDownload,
+            getItems().addAll(
+                    btnDownload,
                     new VerticalSeparator(),
                     createFilmInformationButton(),
                     new VerticalSeparator(),
                     btnPlay,
                     btnRecord,
                     new VerticalSeparator(),
-                    new BlacklistButton(daten),
+                    new BlacklistButton(),
                     new EditBlacklistButton(),
                     new VerticalSeparator(),
                     btnManageAbos,
@@ -387,18 +452,6 @@ public class FilmActionPanel {
                     btnShowFilter,
                     jfxSearchField,
                     btnSearchThroughDescription);
-        }
-    }
-
-    class EditBlacklistButton extends Button {
-        public EditBlacklistButton() {
-            super("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
-            setTooltip(new Tooltip("Blacklist bearbeiten"));
-            setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                DialogLeer dialog = new DialogLeer(null, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, null, PanelBlacklist.class.getName() + "_3"));
-                dialog.setVisible(true);
-            }));
         }
     }
 
