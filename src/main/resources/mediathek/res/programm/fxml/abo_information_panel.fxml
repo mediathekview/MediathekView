@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
-<HBox spacing="4.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mediathek.gui.abo.AboInformationController">
-   <children>
-      <Label fx:id="totalAbos">
-         <tooltip>
-            <Tooltip text="Anzahl aller vorhandenen Abos" />
-         </tooltip></Label>
-      <Separator orientation="VERTICAL" />
-      <Label fx:id="activitySummary"/>
-   </children>
+<?import mediathek.javafx.VerticalSeparator?>
+<HBox spacing="5.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mediathek.gui.abo.AboInformationController">
+   <Label fx:id="totalAbos">
+      <tooltip>
+         <Tooltip text="Anzahl aller vorhandenen Abos"/>
+      </tooltip>
+   </Label>
+
+   <VerticalSeparator/>
+
+   <Label fx:id="activitySummary"/>
 </HBox>

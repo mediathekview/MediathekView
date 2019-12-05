@@ -1,10 +1,10 @@
 package mediathek.gui.abo;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import mediathek.config.Daten;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import net.engio.mbassy.listener.Handler;
 
 public class AboInformationController {
@@ -18,7 +18,7 @@ public class AboInformationController {
     private long oldInactive = -1;
     private Daten daten;
 
-    public void initialize() {
+    public void startListener() {
         this.daten = Daten.getInstance();
         daten.getMessageBus().subscribe(this);
     }
@@ -53,6 +53,6 @@ public class AboInformationController {
 
     @Handler
     private void handleTimerEvent(TimerEvent e) {
-        Platform.runLater(this::updateDisplayText);
+        JavaFxUtils.invokeInFxThreadAndWait(this::updateDisplayText);
     }
 }

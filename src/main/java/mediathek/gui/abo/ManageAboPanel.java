@@ -1,7 +1,9 @@
 package mediathek.gui.abo;
 
 import javafx.embed.swing.JFXPanel;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
@@ -25,6 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 @SuppressWarnings("serial")
 public class ManageAboPanel extends JPanel {
@@ -33,26 +36,54 @@ public class ManageAboPanel extends JPanel {
     private final MVTable tabelle = new MVAbosTable();
     private final Daten daten;
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+    private final JFXPanel toolBarPanel = new JFXPanel();
+    private final JFXPanel infoPanel = new JFXPanel();
     private FXAboToolBar toolBar;
     private JScrollPane jScrollPane1;
+    /*
+     * controller must be kept in variable for strong ref, otherwise GC will erase controller and therefore
+     * update of abos in dialog will stop working...
+     */
+    private AboInformationController infoController;
 
-    public ManageAboPanel(Daten d) {
+
+    public ManageAboPanel() {
         super();
-        daten = d;
+        daten = Daten.getInstance();
 
         initComponents();
         jScrollPane1.setViewportView(tabelle);
 
         setupToolBar();
+        setupInfoPanel();
 
         daten.getMessageBus().subscribe(this);
 
         initListeners();
 
-        setupTable();
+        initializeTable();
     }
 
-    private void setupTable() {
+    private void setupInfoPanel() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/abo_information_panel.fxml");
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(url);
+
+                HBox infoPane = loader.load();
+                infoPanel.setScene(new Scene(infoPane));
+
+                infoController = loader.getController();
+                infoController.startListener();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void initializeTable() {
         tabelleLaden();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
@@ -61,9 +92,6 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setupToolBar() {
-        JFXPanel toolBarPanel = new JFXPanel();
-        add(toolBarPanel, BorderLayout.NORTH);
-
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             toolBar = new FXAboToolBar();
             toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(true)));
@@ -291,6 +319,9 @@ public class ManageAboPanel extends JPanel {
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
+
+        add(toolBarPanel, BorderLayout.NORTH);
         add(jScrollPane1, BorderLayout.CENTER);
+        add(infoPanel, BorderLayout.SOUTH);
     }
 }
