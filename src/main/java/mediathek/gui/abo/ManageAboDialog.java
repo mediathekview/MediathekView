@@ -15,7 +15,7 @@ import java.awt.*;
 import java.net.URL;
 
 public class ManageAboDialog extends JDialog {
-    private final GuiAbo aboPanel;
+    private final ManageAboPanel aboPanel;
     private final JFXPanel infoPanel = new JFXPanel();
     private Parent infoPane;
     private AboInformationController infoController;
@@ -26,7 +26,7 @@ public class ManageAboDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(true);
 
-        aboPanel = new GuiAbo(daten);
+        aboPanel = new ManageAboPanel(daten);
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.add(aboPanel, BorderLayout.CENTER);
@@ -64,7 +64,7 @@ public class ManageAboDialog extends JDialog {
         });
     }
 
-    public GuiAbo getAboPanel() {
+    public ManageAboPanel getAboPanel() {
         return aboPanel;
     }
 }
