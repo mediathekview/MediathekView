@@ -24,7 +24,6 @@ import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.CenteredBorderPane;
-import mediathek.javafx.VerticalSeparator;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
@@ -428,9 +427,6 @@ public class FilmActionPanel {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             getItems().addAll(
-                    new BlacklistButton(),
-                    new EditBlacklistButton(),
-                    new VerticalSeparator(),
                     btnManageAbos,
                     spacer,
                     btnShowFilter,
