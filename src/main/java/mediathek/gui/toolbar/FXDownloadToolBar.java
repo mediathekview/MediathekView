@@ -39,7 +39,7 @@ public class FXDownloadToolBar extends ToolBar {
             fxmlLoader.setController(this);
             fxmlLoader.load();
         } catch (IOException e) {
-            logger.error("Failed to load FXML!");
+            logger.error("Failed to load FXML!", e);
         }
     }
 }
