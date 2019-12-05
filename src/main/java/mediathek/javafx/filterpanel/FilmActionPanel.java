@@ -8,6 +8,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -30,17 +33,19 @@ import mediathek.tool.Filter;
 import mediathek.tool.GermanStringSorter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.GlyphFont;
-import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +59,6 @@ public class FilmActionPanel {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
     private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
-    private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
     private final Tooltip themaTitelTooltip = new Tooltip("Thema/Titel durchsuchen");
     private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
@@ -221,50 +225,61 @@ public class FilmActionPanel {
         toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private Button createDeleteFilterSettingsButton() {
-        Button btnDeleteFilterSettings = new Button();
-        btnDeleteFilterSettings.setGraphic(fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
-        btnDeleteFilterSettings.setTooltip(new Tooltip("Filter zurücksetzen"));
+    public class CommonViewSettingsPane extends VBox implements Initializable {
+        private final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
+        @FXML private Button btnDeleteFilterSettings;
+        @FXML private CheckBox cbShowOnlyHd;
+        @FXML private CheckBox cbShowSubtitlesOnly;
+        @FXML private CheckBox cbShowNewOnly;
+        @FXML private CheckBox cbShowOnlyLivestreams;
+        @FXML private CheckBox cbShowUnseenOnly;
 
-        btnDeleteFilterSettings.setOnAction(e -> {
-            showOnlyHd.setValue(false);
-            showSubtitlesOnly.setValue(false);
-            showNewOnly.setValue(false);
-            showLivestreamsOnly.setValue(false);
-            showUnseenOnly.setValue(false);
-            dontShowAbos.setValue(false);
-            dontShowSignLanguage.setValue(false);
-            dontShowTrailers.setValue(false);
-            dontShowAudioVersions.setValue(false);
+        public CommonViewSettingsPane() {
+            super();
 
-            senderList.getCheckModel().clearChecks();
-            themaBox.getSelectionModel().select("");
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/filter_settings_pane.fxml");
+                FXMLLoader fxmlLoader = new FXMLLoader(url);
+                fxmlLoader.setRoot(this);
+                fxmlLoader.setController(this);
+                fxmlLoader.load();
+            } catch (IOException e) {
+                logger.error("Failed to load FXML!", e);
+            }}
 
-            filmLengthSlider.lowValueProperty().setValue(0);
-            filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+        @Override
+        public void initialize(URL url, ResourceBundle resourceBundle) {
+            btnDeleteFilterSettings.setOnAction(e -> {
+                showOnlyHd.setValue(false);
+                showSubtitlesOnly.setValue(false);
+                showNewOnly.setValue(false);
+                showLivestreamsOnly.setValue(false);
+                showUnseenOnly.setValue(false);
+                dontShowAbos.setValue(false);
+                dontShowSignLanguage.setValue(false);
+                dontShowTrailers.setValue(false);
+                dontShowAudioVersions.setValue(false);
 
-            zeitraumControl.spinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
-        });
+                senderList.getCheckModel().clearChecks();
+                themaBox.getSelectionModel().select("");
 
-        return btnDeleteFilterSettings;
+                filmLengthSlider.lowValueProperty().setValue(0);
+                filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+
+                zeitraumControl.spinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
+            });
+
+            showOnlyHd = cbShowOnlyHd.selectedProperty();
+            showSubtitlesOnly = cbShowSubtitlesOnly.selectedProperty();
+            showNewOnly = cbShowNewOnly.selectedProperty();
+            showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
+
+            showUnseenOnly = cbShowUnseenOnly.selectedProperty();
+
+        }
     }
 
     private VBox createCommonViewSettingsPane() {
-        CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
-        showOnlyHd = cbShowOnlyHd.selectedProperty();
-
-        CheckBox cbShowSubtitlesOnly = new CheckBox("Nur Filme mit Untertitel anzeigen");
-        showSubtitlesOnly = cbShowSubtitlesOnly.selectedProperty();
-
-        CheckBox cbShowNewOnly = new CheckBox("Nur neue Filme anzeigen");
-        showNewOnly = cbShowNewOnly.selectedProperty();
-
-        CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Live Streams anzeigen");
-        showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
-
-        CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme nicht anzeigen");
-        showUnseenOnly = cbShowUnseenOnly.selectedProperty();
-
         CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
         dontShowAbos = cbDontShowAbos.selectedProperty();
 
@@ -277,8 +292,7 @@ public class FilmActionPanel {
         CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
         dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
 
-        VBox vBox = new VBox();
-        vBox.setSpacing(4d);
+        VBox vBox = new CommonViewSettingsPane();
 
         Node senderBox = new SenderBoxNode();
         VBox.setVgrow(senderBox, Priority.ALWAYS);
@@ -286,14 +300,6 @@ public class FilmActionPanel {
         setupZeitraumControl();
 
         vBox.getChildren().addAll(
-                createDeleteFilterSettingsButton(),
-                new Separator(),
-                cbShowOnlyHd,
-                cbShowSubtitlesOnly,
-                cbShowNewOnly,
-                cbShowOnlyLivestreams,
-                new Separator(),
-                cbShowUnseenOnly,
                 cbDontShowAbos,
                 cbDontShowGebaerdensprache,
                 cbDontShowTrailers,
@@ -307,22 +313,12 @@ public class FilmActionPanel {
                 new Separator(),
                 zeitraumControl);
 
-        setupSenderListeners();
-
         return vBox;
     }
 
     private void setupZeitraumControl() {
         zeitraumControl = new ZeitraumControl();
         zeitraumProperty = zeitraumControl.spinner.valueProperty();
-    }
-
-    private void setupSenderListeners() {
-        PauseTransition trans = new PauseTransition(Duration.millis(500d));
-        trans.setOnFinished(e -> updateThemaBox());
-        senderList.getCheckModel()
-                .getCheckedItems().
-                addListener((ListChangeListener<String>) c -> trans.playFromStart());
     }
 
     public void updateThemaBox() {
@@ -410,12 +406,18 @@ public class FilmActionPanel {
     }
 
     class SenderBoxNode extends VBox {
+        private final PauseTransition trans = new PauseTransition(Duration.millis(500d));
+
         public SenderBoxNode() {
             senderList = new SenderListBox();
             VBox.setVgrow(senderList, Priority.ALWAYS);
             getChildren().addAll(
                     new Label("Sender:"),
                     senderList);
+
+            trans.setOnFinished(e -> updateThemaBox());
+            senderList.getCheckModel().getCheckedItems().
+                    addListener((ListChangeListener<String>) c -> trans.playFromStart());
         }
     }
 

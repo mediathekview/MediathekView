@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.glyphfont.Glyph?>
+<fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
+        <tooltip>
+            <Tooltip text="Filter zurücksetzen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
+        </graphic>
+    </Button>
+    <Separator/>
+    <CheckBox mnemonicParsing="false" text="Nur HD-Filme anzeigen" fx:id="cbShowOnlyHd"/>
+    <CheckBox mnemonicParsing="false" text="Nur Filme mit Untertitel anzeigen" fx:id="cbShowSubtitlesOnly"/>
+    <CheckBox mnemonicParsing="false" text="Nur neue Filme anzeigen" fx:id="cbShowNewOnly"/>
+    <CheckBox mnemonicParsing="false" text="Nur Live Streams anzeigen" fx:id="cbShowOnlyLivestreams"/>
+    <Separator/>
+    <CheckBox mnemonicParsing="false" text="Gesehene Filme nicht anzeigen" fx:id="cbShowUnseenOnly"/>
+
+</fx:root>
