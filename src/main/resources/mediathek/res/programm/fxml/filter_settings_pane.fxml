@@ -2,8 +2,9 @@
 
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
+<?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
@@ -27,6 +28,15 @@
     <CheckBox mnemonicParsing="false" text="Hörfassungen ausblenden" fx:id="cbDontShowAudioVersions"/>
     <Separator/>
     <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderBoxNode"/>
+    <Separator/>
+    <HBox spacing="4.0">
+        <BorderPane>
+            <center>
+                <Label text="Thema:"/>
+            </center>
+        </BorderPane>
+        <ThemaComboBox fx:id="_themaComboBox"/>
+    </HBox>
     <Separator/>
 
 </fx:root>
