@@ -22,8 +22,7 @@ public class BlacklistButton extends Button {
     private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
     private final Tooltip tooltipOff = new Tooltip("Blacklist einschalten");
 
-
-    public BlacklistButton(Daten daten) {
+    public BlacklistButton() {
         super();
 
         final boolean isOn = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
@@ -44,7 +43,7 @@ public class BlacklistButton extends Button {
         activeProperty.setValue(isOn);
         activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
-            daten.getListeBlacklist().filterListe();
+            Daten.getInstance().getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, BlacklistButton.class.getSimpleName());
         }));
 
