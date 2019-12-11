@@ -127,6 +127,10 @@ public class FilmListReader implements AutoCloseable {
             //store for future reads
             sender = parsedSender;
         }
+
+        if (datenFilm.getSender().equalsIgnoreCase("rbtv")) {
+            datenFilm.setSender("Radio Bremen TV");
+        }
     }
 
     private void parseThema(JsonParser jp, DatenFilm datenFilm) throws IOException {
