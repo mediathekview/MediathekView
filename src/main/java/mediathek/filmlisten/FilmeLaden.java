@@ -256,28 +256,28 @@ public class FilmeLaden {
         // beim Ändern von Abos gemacht wird
 
         logger.debug("undEnde()");
+        final var listeFilme = daten.getListeFilme();
+        final var readDate = new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date());
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            logger.info("Liste Diff gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            logger.info("Liste Diff gelesen am: {}", readDate);
             logger.info("  Liste Diff erstellt am: {}", diffListe.genDate());
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
-            final ListeFilme listeFilme = daten.getListeFilme();
             listeFilme.updateFromFilmList(diffListe);
             listeFilme.setMetaData(diffListe.metaData());
             Collections.sort(listeFilme);
             diffListe.clear();
         } else {
-            logger.info("Liste Kompl. gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            logger.info("  Liste Kompl erstellt am: {}", daten.getListeFilme().genDate());
-            logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
+            logger.info("Liste Kompl. gelesen am: {}", readDate);
+            logger.info("  Liste Kompl erstellt am: {}", listeFilme.genDate());
+            logger.info("  Anzahl Filme: {}", listeFilme.size());
         }
 
         findAndMarkNewFilms(daten.getListeFilme());
 
         final boolean writeFilmList;
-        final var listeFilme = daten.getListeFilme();
         final var ui = MediathekGui.ui();
 
         istAmLaufen = false;
@@ -313,6 +313,7 @@ public class FilmeLaden {
 
         Platform.runLater(() -> {
             FXProgressPane hb = new FXProgressPane();
+            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
 
             FilmListFilterTask task = new FilmListFilterTask(true);
             task.setOnRunning(e -> {
@@ -320,6 +321,7 @@ public class FilmeLaden {
                 hb.lb.textProperty().bind(task.messageProperty());
                 hb.prog.progressProperty().bind(task.progressProperty());
             });
+            task.setOnFailed(workerStateEventEventHandler);
 
             FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
             writerTask.setOnRunning(e -> {
@@ -327,7 +329,6 @@ public class FilmeLaden {
                 hb.prog.progressProperty().bind(writerTask.progressProperty());
             });
             
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
             writerTask.setOnSucceeded(workerStateEventEventHandler);
             writerTask.setOnFailed(workerStateEventEventHandler);
 
