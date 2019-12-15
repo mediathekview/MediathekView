@@ -75,7 +75,7 @@
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
 		<javafx.version>14-ea+4</javafx.version>
-		<picocli.version>4.0.2</picocli.version>
+		<picocli.version>4.1.2</picocli.version>
 
 		<mainclass>mediathek.Main</mainclass>
 		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
