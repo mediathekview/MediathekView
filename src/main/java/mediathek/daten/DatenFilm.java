@@ -489,14 +489,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         setDatum();
     }
 
-    // there is only one caller: DatenFilm.getUrlFuerAufloesung(String aufloesung)
-    //
-    /* @param aufloesung: one of
-	/*     FilmResolution.AUFLOESUNG_HD
-	 *     FilmResolution.AUFLOESUNG_KLEIN
-	 *     FilmResolution.AUFLOESUNG_NORMAL
-	 */
-    private String getUrlNormalOrRequested(final String aufloesung) {
+    /**
+     * Return unpacked url as string.
+     * High quality URLs may be "compressed" in the filmlist and need to be unpacked before use.
+     * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
+     * @return A unpacked version of the film url as string.
+     */
+    private String getUrlNormalOrRequested(@NotNull String aufloesung) {
         // liefert die kleine normale URL oder die HD URL
         final String requestedUrl = getUrlByAufloesung(aufloesung);
         if (!requestedUrl.isEmpty()) {
@@ -510,30 +509,24 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
                 final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
                 return getUrl().substring(0, i) + requestedUrl.substring(requestedUrl.indexOf('|') + 1);
             } catch (Exception e) {
-                Log.errorLog(915236703, e, requestedUrl);
+                logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", aufloesung, requestedUrl, e);
             }
         }
         return getUrl();
     }
 
-    // there is only one caller: DatenFilm.getUrlNormalOrRequested(String aufloesung)
-    //
-    /* @param aufloesung: one of
-	/*     FilmResolution.AUFLOESUNG_HD
-	 *     FilmResolution.AUFLOESUNG_KLEIN
-	 *     FilmResolution.AUFLOESUNG_NORMAL
-	 */
-    private String getUrlByAufloesung(final String aufloesung) {
-        // nobody will call this function with a null value.
-        // the only caller, getUrlFuerAufloesung, doesn't check for null
-        // and hence, any NPE would occur there.
+    /**
+     * Return url based on requested resolution
+     * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
+     * @return url as String.
+     */
+    private String getUrlByAufloesung(@NotNull final String aufloesung) {
         switch (aufloesung) {
             case FilmResolution.AUFLOESUNG_HD:
                 return getHighQualityUrl();
             case FilmResolution.AUFLOESUNG_KLEIN:
                 return getUrlKlein();
 
-            case FilmResolution.AUFLOESUNG_NORMAL: // return getUrl(); // TODO preferably use intentional fall-through or duplication here?
             default:
                 return getUrl();
         }
