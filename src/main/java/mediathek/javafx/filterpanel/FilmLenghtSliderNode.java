@@ -9,22 +9,24 @@ import javafx.scene.layout.VBox;
 import org.controlsfx.tools.Borders;
 
 public class FilmLenghtSliderNode extends VBox {
-    public final FilmLengthSlider _filmLengthSlider;
+    public final FilmLengthSlider _filmLengthSlider = new FilmLengthSlider();
+    private final Label lblMin = new Label("min");
+    private final Label lblMax = new Label("max");
 
     public FilmLenghtSliderNode() {
-        Label lblMin = new Label("min");
-        Label lblMax = new Label("max");
-
         var spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox hb = new HBox();
-        hb.setPadding(new Insets(0,5,0,5));
-        hb.getChildren().addAll(new Label("Mindestlänge: "), lblMin,
+        hb.setPadding(new Insets(0, 5, 0, 5));
+        Label lblMaximalLaenge = new Label("Maximallänge: ");
+        Label lblMindestlaenge = new Label("Mindestlänge: ");
+        hb.getChildren().addAll(lblMindestlaenge,
+                lblMin,
                 spacer,
-                new Label("Maximallänge: "), lblMax);
+                lblMaximalLaenge,
+                lblMax);
 
-        _filmLengthSlider = new FilmLengthSlider();
         _filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
         _filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(_filmLengthSlider.getLabelFormatter().toString(newValue)));
 
