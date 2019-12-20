@@ -13,6 +13,7 @@ import java.lang.ref.Cleaner;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,15 +51,15 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public static final int FILM_URL_HD = 18;
     public static final int FILM_URL_SUBTITLE = 19;
     public static final int FILM_URL_KLEIN = 20;
-    public static final int MAX_ELEM = 21;
-    //Indices without storage context !!!
     public static final int FILM_NEU = 21;
+    public static final int MAX_ELEM = 21;
     /**
      * The database instance for all descriptions.
      */
     private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
+    private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     private DatenAbo abo = null;
     /**
      * film date stored IN SECONDS!!!
@@ -69,10 +70,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     private MSLong filmSize;
     /**
-     * Is this film an audio version? (aka Hörfassung)
-     */
-    private boolean isAudioVersion = false;
-    /**
      * film length in seconds.
      */
     private long filmLength = 0;
@@ -80,19 +77,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * Internal film number, used for storage in database
      */
     private int databaseFilmNumber;
-    private boolean neuerFilm = false;
     private Cleaner.Cleanable cleaner = null;
-    /**
-     * Flag that this entry is in sign language (aka Gebärdensprache).
-     */
-    private boolean isSignLanguage = false;
-    /**
-     * Flag indicating a trailer, teaser or german Vorschau.
-     */
-    private boolean isTrailerTeaser = false;
     private String websiteLink = null;
     private String description = null;
-    private boolean livestream = false;
     private String urlKlein = "";
     /**
      * High Quality (formerly known as HD) URL if available.
@@ -187,27 +174,39 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public boolean isTrailerTeaser() {
-        return isTrailerTeaser;
+        return flags.contains(DatenFilmFlags.TRAILER_TEASER);
     }
 
     public void setTrailerTeaser(boolean val) {
-        isTrailerTeaser = val;
+        if (val) {
+            flags.add(DatenFilmFlags.TRAILER_TEASER);
+        } else {
+            flags.remove(DatenFilmFlags.TRAILER_TEASER);
+        }
     }
 
     public boolean isAudioVersion() {
-        return isAudioVersion;
+        return flags.contains(DatenFilmFlags.AUDIO_VERSION);
     }
 
     public void setAudioVersion(boolean val) {
-        isAudioVersion = val;
+        if (val) {
+            flags.add(DatenFilmFlags.AUDIO_VERSION);
+        } else {
+            flags.remove(DatenFilmFlags.AUDIO_VERSION);
+        }
     }
 
     public boolean isSignLanguage() {
-        return isSignLanguage;
+        return flags.contains(DatenFilmFlags.SIGN_LANGUAGE);
     }
 
     public void setSignLanguage(boolean val) {
-        isSignLanguage = val;
+        if (val) {
+            flags.add(DatenFilmFlags.SIGN_LANGUAGE);
+        } else {
+            flags.remove(DatenFilmFlags.SIGN_LANGUAGE);
+        }
     }
 
     /**
@@ -245,7 +244,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     @Override
     public void close() {
-
         if (cleaner != null)
             cleaner.clean();
     }
@@ -320,20 +318,32 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
     }
 
+    /**
+     * Indicate whether this entry has been in the filmlist before.
+     * @return true if it is a new entry, false otherwise.
+     */
     public boolean isNew() {
-        return neuerFilm;
+        return flags.contains(DatenFilmFlags.NEW_ENTRY);
     }
 
     public void setNew(final boolean newFilm) {
-        neuerFilm = newFilm;
+        if (newFilm) {
+            flags.add(DatenFilmFlags.NEW_ENTRY);
+        } else {
+            flags.remove(DatenFilmFlags.NEW_ENTRY);
+        }
     }
 
     public boolean isLivestream() {
-        return livestream;
+        return flags.contains(DatenFilmFlags.LIVESTREAM);
     }
 
     public void setLivestream(boolean val) {
-        livestream = val;
+        if (val) {
+            flags.add(DatenFilmFlags.LIVESTREAM);
+        } else {
+            flags.remove(DatenFilmFlags.LIVESTREAM);
+        }
     }
 
     public boolean hasSubtitle() {
