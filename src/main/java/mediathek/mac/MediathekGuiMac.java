@@ -10,6 +10,7 @@ import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Log;
@@ -57,20 +58,41 @@ public class MediathekGuiMac extends MediathekGui {
         });
     }
 
+    static class WorkaroundStage extends Stage {
+        public WorkaroundStage() {
+            initStyle(StageStyle.UTILITY);
+            var root = new StackPane();
+            root.setStyle("-fx-background-color: TRANSPARENT");
+
+            var  scene = new Scene(root, 1, 1);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            setScene(scene);
+            setWidth(1d);
+            setHeight(1d);
+            setOpacity(0d);
+        }
+    }
+
     @Override
     protected void workaroundControlsFxNotificationBug() {
-        Platform.runLater(() -> {
-            controlsFxWorkaroundStage = new Stage(StageStyle.UTILITY);
-            StackPane root = new StackPane();
-            root.setStyle("-fx-background-color: TRANSPARENT");
-            Scene scene = new Scene(root, 1, 1);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            controlsFxWorkaroundStage.setScene(scene);
-            controlsFxWorkaroundStage.setWidth(1);
-            controlsFxWorkaroundStage.setHeight(1);
-            controlsFxWorkaroundStage.toBack();
-            controlsFxWorkaroundStage.setOpacity(0d);
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            controlsFxWorkaroundStage = new WorkaroundStage();
             controlsFxWorkaroundStage.show();
+            controlsFxWorkaroundStage.toBack();
+
+            /*
+            For some unknown reason JavaFX seems to get confused on macOS when no stage was at least once
+            really visible. This will cause swing/javafx mixed windows to have focus trouble and/or use 100%
+            cpu when started in background.
+            Workaround for now is to open a native javafx stage, display it for the shortest time possible and
+            then close it as we don´t need it. On my machine this fixes the focus and cpu problems.
+             */
+            var window = new Stage();
+            window.setWidth(10d);
+            window.setHeight(10d);
+            window.show();
+            window.hide();
         });
     }
 
