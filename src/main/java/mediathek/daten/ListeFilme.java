@@ -80,6 +80,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
         final HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
 
+        //TODO check if f.getUrl might be better solution
         listeEinsortieren.forEach((DatenFilm f) -> hash.add(f.getIndex())); //alternativ f.getUrl()
         this.removeIf(f -> hash.contains(f.getIndex())); //alternativ f.getUrl()
 

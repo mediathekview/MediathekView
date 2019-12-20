@@ -375,7 +375,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     /**
-     * Liefert einen eindeutigen Index für die Filmliste, da sich die URLs bei KiKa uns ORF ständig ändern.
+     * Liefert einen eindeutigen Index für die Filmliste, da sich die URLs bei KiKa und ORF ständig ändern.
      *
      * @return Index-String aus Sender, Thema und URL.
      */
