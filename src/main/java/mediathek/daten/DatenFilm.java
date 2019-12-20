@@ -350,6 +350,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         return subtitle_url.isPresent();
     }
 
+    //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
     public String getUrlFuerAufloesung(String aufloesung) {
         final String ret;
         switch (aufloesung) {
@@ -496,23 +497,32 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * @return A unpacked version of the film url as string.
      */
     private String getUrlNormalOrRequested(@NotNull String aufloesung) {
+        String ret;
         // liefert die kleine normale URL oder die HD URL
         final String requestedUrl = getUrlByAufloesung(aufloesung);
-        if (!requestedUrl.isEmpty()) {
+        if (requestedUrl.isEmpty())
+            ret = getUrl();
+        else {
             try {
-                // Prüfen, ob Pipe auch in URL enthalten ist. Beim ZDF ist das nicht der Fall.
+                // check if url contains pipe symbol...
                 final int indexPipe = requestedUrl.indexOf('|');
-                if (indexPipe < 0) {
-                    return requestedUrl;
+                if (indexPipe == -1) { //No
+                    ret = requestedUrl;
+                } else { //Yes
+                    ret = decompressUrl(requestedUrl,indexPipe);
                 }
-
-                final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
-                return getUrl().substring(0, i) + requestedUrl.substring(requestedUrl.indexOf('|') + 1);
             } catch (Exception e) {
+                ret = "";
                 logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", aufloesung, requestedUrl, e);
             }
         }
-        return getUrl();
+
+        return ret;
+    }
+
+    private String decompressUrl(@NotNull final String requestedUrl, final int indexPipe) {
+        final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
+        return getUrl().substring(0, i) + requestedUrl.substring(indexPipe + 1);
     }
 
     /**
