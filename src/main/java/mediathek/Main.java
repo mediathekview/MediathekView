@@ -39,6 +39,8 @@ import picocli.CommandLine;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Security;
@@ -62,6 +64,16 @@ public class Main {
             } catch (IOException ignored) {
             }
         }
+    }
+
+    private static void printJvmParameters() {
+        logger.info("=== JavaVM Parameter ===");
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        var jvmArgs = runtimeMXBean.getInputArguments();
+        for (var arg : jvmArgs) {
+            System.out.println(arg);
+        }
+        logger.info("========================");
     }
 
     private static void printArguments(final String... aArguments) {
@@ -259,6 +271,7 @@ public class Main {
             setupPortableMode();
 
             printVersionInformation();
+            printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
             cmd.getErr().println(ex.getMessage());
