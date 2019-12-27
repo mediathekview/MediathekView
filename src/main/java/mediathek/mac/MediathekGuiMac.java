@@ -80,19 +80,6 @@ public class MediathekGuiMac extends MediathekGui {
             controlsFxWorkaroundStage = new WorkaroundStage();
             controlsFxWorkaroundStage.show();
             controlsFxWorkaroundStage.toBack();
-
-            /*
-            For some unknown reason JavaFX seems to get confused on macOS when no stage was at least once
-            really visible. This will cause swing/javafx mixed windows to have focus trouble and/or use 100%
-            cpu when started in background.
-            Workaround for now is to open a native javafx stage, display it for the shortest time possible and
-            then close it as we don´t need it. On my machine this fixes the focus and cpu problems.
-             */
-            var window = new Stage();
-            window.setWidth(10d);
-            window.setHeight(10d);
-            window.show();
-            window.hide();
         });
     }
 
