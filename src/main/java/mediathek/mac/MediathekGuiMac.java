@@ -2,32 +2,26 @@ package mediathek.mac;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Log;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
@@ -40,9 +34,6 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
-
-        var versionCheckThread = new CheckMacOSVersion();
-        versionCheckThread.start();
     }
 
     @Override
@@ -183,38 +174,6 @@ public class MediathekGuiMac extends MediathekGui {
             Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
             Log.errorLog(165623698, "OS X Application image could not be loaded");
-        }
-    }
-
-    static class CheckMacOSVersion extends Thread {
-        @Override
-        public void run() {
-            try {
-                TimeUnit.SECONDS.sleep(5);
-                SwingUtilities.invokeLater(() -> {
-                    var version = SystemUtils.OS_VERSION;
-                    if (version.contains("10.14") || version.contains("10.15")) {
-                        var config = ApplicationConfiguration.getConfiguration();
-                        boolean showWarning = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, true);
-                        if (showWarning) {
-                            Platform.runLater(() -> {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle(Konstanten.PROGRAMMNAME);
-                                alert.setHeaderText("Spotlight-Kommentare schreiben");
-                                alert.setContentText("Aufgrund neuer Sicherheitsfunktionen in macOS ist das Schreiben von " +
-                                        "Spotlight-Kommentaren deaktiviert.\n" +
-                                        "Wir arbeiten an einer zukünftigen Lösung.\n\n" +
-                                        "Dieser Dialog wird nicht mehr angezeigt werden.");
-                                alert.showAndWait();
-                            });
-
-                            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_SPOTLIGHT_DISABLED_WARNING, false);
-                        }
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
