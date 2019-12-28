@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Writes spotlight comments to the downloaded file on OS X.
@@ -53,9 +54,11 @@ public class SpotlightCommentWriter {
                         + "set comment of my_file to \"" + strComment + "\"\n"
                         + "end tell\n";
                 try {
+                    logger.trace("Writing spotlight comment");
                     final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
                     builder.command().add(script);
-                    builder.start();
+                    builder.start().waitFor(5, TimeUnit.SECONDS);
+                    logger.trace("Spotlight writing finished");
                 } catch (Exception ex) {
                     FXErrorDialog.showErrorDialog("Fehler",
                             "Fehler beim Schreiben des Spotlight-Kommentars",
