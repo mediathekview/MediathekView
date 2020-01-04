@@ -19,9 +19,10 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 import mediathek.gui.messages.ReplaceListChangedEvent;
-import mediathek.tool.Log;
 import mediathek.tool.ReplaceList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -37,7 +38,7 @@ import java.nio.file.Path;
 
 
 public class IoXmlLesen {
-
+    private static final Logger logger = LogManager.getLogger(IoXmlLesen.class);
     private final XMLInputFactory inFactory;
     private final Daten daten;
 
@@ -49,7 +50,7 @@ public class IoXmlLesen {
     }
 
     public ImmutableTriple<Integer, Integer, Integer> importAboBlacklist(String datei, boolean abo, boolean black,
-                                                                         boolean replace)  throws IOException, XMLStreamException {
+                                                                         boolean replace) throws IOException, XMLStreamException {
         int foundAbos = 0;
         int foundBlacklistEntries = 0;
         int foundReplaceListEntries = 0;
@@ -87,8 +88,7 @@ public class IoXmlLesen {
                     }
                 }
             }
-        }
-        finally {
+        } finally {
             if (parser != null) {
                 try {
                     parser.close();
@@ -138,7 +138,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.errorLog(739530149, ex);
+            logger.error("get", ex);
         }
         return ret;
     }
@@ -159,7 +159,7 @@ public class IoXmlLesen {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(945120369, ex);
+            logger.error("readSystemConfiguration", ex);
         }
     }
 
@@ -261,7 +261,7 @@ public class IoXmlLesen {
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
-                Log.errorLog(392840096, ex);
+                logger.error("datenLesen", ex);
             } finally {
                 if (parser != null) {
                     try {
