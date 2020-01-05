@@ -11,6 +11,8 @@ import mediathek.tool.*;
 import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,11 +37,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final byte ART_PROGRAMM = 2; // Download über ein Programm
     public static final String ART_DOWNLOAD_TXT = "direkter Download";
     public static final String ART_PROGRAMM_TXT = "Programm";
-
-    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
-    private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
-    private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
-
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
     public static final int DOWNLOAD_ABO = 2; // wenn das Feld gefüllt ist, ist der Download ein Abo
@@ -55,10 +52,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_DATUM = 12;
     public static final int DOWNLOAD_ZEIT = 13;
     public static final int DOWNLOAD_DAUER = 14;
-
     public static final int DOWNLOAD_HD = 15;
     public static final int DOWNLOAD_UT = 16;
-
     public static final int DOWNLOAD_UNTERBROCHEN = 17;
     public static final int DOWNLOAD_GEO = 18;
     public static final int DOWNLOAD_FILM_URL = 19;
@@ -82,19 +77,21 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_SUBTITLE = 37;// Untertitel anlegen ja/nein
     public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = 38;
     public static final int DOWNLOAD_REF = 39;
-    //
     public static final String TAG = "Downlad";
     public static final int MAX_ELEM = 40;
     public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
-        "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
-        "Datum", "Zeit", "Dauer", "HD", "UT",
-        "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
-        "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
-        "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
-        "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
+            "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
+            "Datum", "Zeit", "Dauer", "HD", "UT",
+            "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
+            "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
+            "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
+            "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
+    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
+    private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
+    private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
+    private static final Logger logger = LogManager.getLogger(DatenDownload.class);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
-
     public Datum datumFilm = new Datum(0);
     public DatenFilm film = null;
     public MVFilmSize mVFilmSize = new MVFilmSize();
@@ -144,6 +141,128 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         init();
     }
 
+    public static boolean anzeigen(int i) {
+        if (spaltenAnzeigen == null) {
+            return true;
+        } else {
+            return spaltenAnzeigen[i];
+        }
+    }
+
+    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
+        // Start erstellen und zur Liste hinzufügen
+        final String zeit = sdf_datum.format(new Date());
+        LinkedList<MVUsedUrl> urlList = new LinkedList<>();
+        for (DatenDownload d : downloads) {
+            d.start = new Start();
+            urlList.add(new MVUsedUrl(zeit,
+                    d.arr[DatenDownload.DOWNLOAD_THEMA],
+                    d.arr[DatenDownload.DOWNLOAD_TITEL],
+                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
+        }
+        if (!urlList.isEmpty()) {
+            ddaten.getSeenHistoryController().createLineWriterThread(urlList);
+        }
+        ddaten.getMessageBus().publishAsync(new StartEvent());
+    }
+
+    public static String getTextBandbreite(long b) {
+        if (b > 1000 * 1000) {
+            String s = String.valueOf(b / 1000);
+            if (s.length() >= 4) {
+                s = s.substring(0, s.length() - 3) + ',' + s.substring(s.length() - 3);
+            }
+            return s + " MB/s";
+        } else if (b > 1000) {
+            return (b / 1000) + " kB/s";
+        } else if (b > 1) {
+            return b + " B/s";
+        } else {
+            return "";
+        }
+    }
+
+    private static String getDMY(String s, String datum) {
+        // liefert das Datum: Jahr - Monat - Tag aus dd.MM.yyyy
+        // %1 - Tag
+        // %2 - Monat
+        // %3 - Jahr
+        String ret = "";
+        if (!datum.isEmpty()) {
+            try {
+                if (datum.length() == 10) {
+                    switch (s) {
+                        case "%1":
+                            ret = datum.substring(0, 2); // Tag
+                            break;
+                        case "%2":
+                            ret = datum.substring(3, 5); // Monat
+                            break;
+                        case "%3":
+                            ret = datum.substring(6); // Jahr
+                            break;
+
+                    }
+                }
+            } catch (Exception ex) {
+                logger.error("Datum: {}", datum, ex);
+            }
+        }
+        return ret;
+    }
+
+    private static String getHMS(String s, String zeit) {
+        // liefert die Zeit: Stunde, Minute, Sekunde aus "HH:mm:ss"
+        // %4 - Stunde
+        // %5 - Minute
+        // %6 - Sekunde
+        String ret = "";
+        if (!zeit.isEmpty()) {
+            try {
+                if (zeit.length() == 8) {
+                    switch (s) {
+                        case "%4":
+                            ret = zeit.substring(0, 2); // Stunde
+                            break;
+                        case "%5":
+                            ret = zeit.substring(3, 5); // Minute
+                            break;
+                        case "%6":
+                            ret = zeit.substring(6); // Sekunde
+                            break;
+
+                    }
+                }
+            } catch (Exception ex) {
+                logger.error("Zeit: {}", zeit, ex);
+            }
+        }
+        return ret;
+    }
+
+    private static String datumDrehen(String datum) {
+        String ret = "";
+        if (!datum.isEmpty()) {
+            try {
+                if (datum.length() == 10) {
+                    String tmp = datum.substring(6); // Jahr
+                    tmp += '.' + datum.substring(3, 5); // Monat
+                    tmp += '.' + datum.substring(0, 2); // Tag
+                    ret = tmp;
+                }
+            } catch (Exception ex) {
+                logger.error("Datum: {}", datum, ex);
+            }
+        }
+        return ret;
+    }
+
+    private static String datumDatumZeitReinigen(String datum) {
+        String ret = StringUtils.replace(datum, ":", "");
+        ret = StringUtils.replace(ret, ".", "");
+        return ret;
+    }
+
     public void setGroesseFromFilm() {
         if (film != null) {
             if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
@@ -168,26 +287,18 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public static boolean anzeigen(int i) {
-        if (spaltenAnzeigen == null) {
-            return true;
-        } else {
-            return spaltenAnzeigen[i];
-        }
-    }
-
     public final void init() {
         datumFilm = getDatumForObject();
         try {
             art = Byte.parseByte(arr[DOWNLOAD_ART]);
             quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE]);
         } catch (Exception ex) {
-            Log.errorLog(649632580, ex, "Art: " + arr[DOWNLOAD_ART] + " Quelle: " + arr[DOWNLOAD_QUELLE]);
+            logger.error("Art: {}, Quelle: {}", arr[DOWNLOAD_ART], arr[DOWNLOAD_QUELLE], ex);
             art = ART_PROGRAMM;
             quelle = QUELLE_BUTTON;
         }
         if (film == null) {
-            //damit die Sortierunt bei gespeicherten Downloads bei denen der 
+            //damit die Sortierunt bei gespeicherten Downloads bei denen der
             //Film nicht mehr ermittelt werden kann stimmt
             arr[DOWNLOAD_HD] = "0";
             arr[DOWNLOAD_UT] = "0";
@@ -252,23 +363,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         this.start = new Start();
         aDaten.getSeenHistoryController().zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         aDaten.getMessageBus().publishAsync(new StartEvent());
-    }
-
-    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
-        // Start erstellen und zur Liste hinzufügen
-        final String zeit = sdf_datum.format(new Date());
-        LinkedList<MVUsedUrl> urlList = new LinkedList<>();
-        for (DatenDownload d : downloads) {
-            d.start = new Start();
-            urlList.add(new MVUsedUrl(zeit,
-                    d.arr[DatenDownload.DOWNLOAD_THEMA],
-                    d.arr[DatenDownload.DOWNLOAD_TITEL],
-                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
-        }
-        if (!urlList.isEmpty()) {
-            ddaten.getSeenHistoryController().createLineWriterThread(urlList);
-        }
-        ddaten.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
@@ -376,22 +470,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return "";
     }
 
-    public static String getTextBandbreite(long b) {
-        if (b > 1000 * 1000) {
-            String s = String.valueOf(b / 1000);
-            if (s.length() >= 4) {
-                s = s.substring(0, s.length() - 3) + ',' + s.substring(s.length() - 3);
-            }
-            return s + " MB/s";
-        } else if (b > 1000) {
-            return (b / 1000) + " kB/s";
-        } else if (b > 1) {
-            return b + " B/s";
-        } else {
-            return "";
-        }
-    }
-
     public boolean checkAufrufBauen() {
         return (pSet != null && film != null);
     }
@@ -435,7 +513,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.errorLog(825600145, ex);
+            logger.error("aufrufBauen", ex);
         }
     }
 
@@ -548,7 +626,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
                 }
             } else //Downloads
-             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
+                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und den Namen des Themas an den Zielpfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
                             Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -580,7 +658,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String replaceString(String replStr, DatenFilm film) {
-        //hier wird nur ersetzt! 
+        //hier wird nur ersetzt!
         //Felder mit variabler Länge, evtl. vorher kürzen
 
         int laenge = -1;
@@ -612,8 +690,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             }
 
             replStr = StringUtils.replace(replStr, "%N", field);
-        }
-        else
+        } else
             replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
@@ -691,90 +768,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return sdf_datum.format(new Date());
     }
 
-    private static String getDMY(String s, String datum) {
-        // liefert das Datum: Jahr - Monat - Tag aus dd.MM.yyyy
-        // %1 - Tag
-        // %2 - Monat
-        // %3 - Jahr
-        String ret = "";
-        if (!datum.isEmpty()) {
-            try {
-                if (datum.length() == 10) {
-                    switch (s) {
-                        case "%1":
-                            ret = datum.substring(0, 2); // Tag
-                            break;
-                        case "%2":
-                            ret = datum.substring(3, 5); // Monat
-                            break;
-                        case "%3":
-                            ret = datum.substring(6); // Jahr
-                            break;
-
-                    }
-                }
-            } catch (Exception ex) {
-                Log.errorLog(775421006, ex, datum);
-            }
-        }
-        return ret;
-    }
-
-    private static String getHMS(String s, String zeit) {
-        // liefert die Zeit: Stunde, Minute, Sekunde aus "HH:mm:ss"
-        // %4 - Stunde
-        // %5 - Minute
-        // %6 - Sekunde
-        String ret = "";
-        if (!zeit.isEmpty()) {
-            try {
-                if (zeit.length() == 8) {
-                    switch (s) {
-                        case "%4":
-                            ret = zeit.substring(0, 2); // Stunde
-                            break;
-                        case "%5":
-                            ret = zeit.substring(3, 5); // Minute
-                            break;
-                        case "%6":
-                            ret = zeit.substring(6); // Sekunde
-                            break;
-
-                    }
-                }
-            } catch (Exception ex) {
-                Log.errorLog(775421006, ex, zeit);
-            }
-        }
-        return ret;
-    }
-
-    private static String datumDrehen(String datum) {
-        String ret = "";
-        if (!datum.isEmpty()) {
-            try {
-                if (datum.length() == 10) {
-                    String tmp = datum.substring(6); // Jahr
-                    tmp += '.' + datum.substring(3, 5); // Monat
-                    tmp += '.' + datum.substring(0, 2); // Tag
-                    ret = tmp;
-                }
-            } catch (Exception ex) {
-                Log.errorLog(775421006, ex, datum);
-            }
-        }
-        return ret;
-    }
-
-    private static String datumDatumZeitReinigen(String datum) {
-        String ret = StringUtils.replace(datum, ":", "");
-        ret = StringUtils.replace(ret, ".", "");
-        return ret;
-    }
-
     private void initialize() {
         arr = new String[MAX_ELEM];
-        Arrays.fill(arr,"");
+        Arrays.fill(arr, "");
 
         arr[DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString();
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
@@ -790,8 +786,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM]).getTime());
                 }
             } catch (Exception ex) {
-                Log.errorLog(649897321, ex,
-                        new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT]});
+                logger.error("Datum: {}, Zeit: {}", arr[DatenDownload.DOWNLOAD_DATUM], arr[DatenDownload.DOWNLOAD_ZEIT], ex);
             }
         }
         return tmp;
