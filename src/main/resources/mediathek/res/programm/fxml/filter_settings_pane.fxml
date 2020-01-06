@@ -39,11 +39,7 @@
     <HBox spacing="4.0" maxWidth="Infinity">
         <BorderPane>
             <center>
-                <Label text="Thema:" prefWidth="42">
-                    <minWidth>
-                        <Control fx:constant="USE_PREF_SIZE"/>
-                    </minWidth>
-                </Label>
+                <Label fx:id="_themaLabel" text="Thema:"/>
             </center>
         </BorderPane>
         <ThemaComboBox fx:id="_themaComboBox" HBox.hgrow="ALWAYS">

@@ -2,16 +2,20 @@ package mediathek.javafx.filterpanel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
-public class CommonViewSettingsPane extends VBox {
+public class CommonViewSettingsPane extends VBox implements Initializable {
     private static final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
     @FXML
     public Button btnDeleteFilterSettings;
@@ -41,6 +45,8 @@ public class CommonViewSettingsPane extends VBox {
     public FilmLenghtSliderNode filmLengthSliderNode;
     @FXML
     public ZeitraumSpinner zeitraumSpinner;
+    @FXML
+    private Label _themaLabel;
 
     public CommonViewSettingsPane() {
         super();
@@ -54,5 +60,15 @@ public class CommonViewSettingsPane extends VBox {
         } catch (IOException e) {
             logger.error("Failed to load FXML!", e);
         }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        _themaLabel.setMinWidth(USE_PREF_SIZE);
+        //font size is greater on tested ubuntu linux :(
+        if (SystemUtils.IS_OS_LINUX)
+            _themaLabel.setPrefWidth(50d);
+        else
+            _themaLabel.setPrefWidth(45d);
     }
 }
