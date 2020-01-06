@@ -11,7 +11,7 @@
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
-        <Insets bottom="5.0" left="5.0" right ="5.0" top="5.0"/>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
 
     <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
@@ -36,13 +36,19 @@
     <Separator/>
     <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderBoxNode"/>
     <Separator/>
-    <HBox spacing="4.0">
+    <HBox spacing="4.0" maxWidth="Infinity">
         <BorderPane>
             <center>
-                <Label text="Thema:"/>
+                <Label text="Thema:" prefWidth="42">
+                    <minWidth>
+                        <Control fx:constant="USE_PREF_SIZE"/>
+                    </minWidth>
+                </Label>
             </center>
         </BorderPane>
-        <ThemaComboBox fx:id="_themaComboBox"/>
+        <ThemaComboBox fx:id="_themaComboBox" HBox.hgrow="ALWAYS">
+            <promptText>Themaauswahl</promptText>
+        </ThemaComboBox>
     </HBox>
     <Separator/>
     <FilmLenghtSliderNode fx:id="filmLengthSliderNode"/>
