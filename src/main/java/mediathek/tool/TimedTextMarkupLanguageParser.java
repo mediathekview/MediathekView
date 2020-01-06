@@ -18,6 +18,8 @@
  */
 package mediathek.tool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -40,10 +42,10 @@ import java.util.*;
  */
 public class TimedTextMarkupLanguageParser implements AutoCloseable {
 
+    private static final Logger logger = LogManager.getLogger(TimedTextMarkupLanguageParser.class);
     private final SimpleDateFormat ttmlFormat = new SimpleDateFormat("HH:mm:ss.SS");
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SS");
     private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
-
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
@@ -208,8 +210,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             buildFilmList();
             ret = true;
         } catch (Exception ex) {
-            //Log.errorLog(912036478, ex, new String[]{ex.getLocalizedMessage(), "File: " + ttmlFilePath});
-            Log.errorLog(912036478, new String[]{ex.getLocalizedMessage(), "File: " + ttmlFilePath});
+            logger.error("File: " + ttmlFilePath, ex);
             ret = false;
         }
         return ret;
@@ -219,7 +220,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
      * Parse the XML Subtitle File for Flash Player into internal representation.
      *
      * @param ttmlFilePath the TTML file to parse
-     * @return
+     * @return true if successful
      */
     public boolean parseXmlFlash(Path ttmlFilePath) {
         boolean ret;
@@ -278,8 +279,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             buildFilmListFlash();
             ret = true;
         } catch (Exception ex) {
-            //Log.errorLog(46231470, ex, "File: " + ttmlFilePath);
-            Log.errorLog(46231470, new String[]{ex.getLocalizedMessage(), "File: " + ttmlFilePath});
+            logger.error("File: " + ttmlFilePath,ex);
             ret = false;
         }
         return ret;
@@ -310,7 +310,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 counter++;
             }
         } catch (Exception ex) {
-            Log.errorLog(201036470, ex, "File: " + srtFile);
+            logger.error("File: " + srtFile, ex);
         }
     }
 
@@ -321,6 +321,9 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     }
 
     private class StyledString {
+
+        private String text = "";
+        private String color = "";
 
         public String getText() {
             return text;
@@ -337,9 +340,6 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         public void setColor(String color) {
             this.color = color;
         }
-
-        private String text = "";
-        private String color = "";
     }
 
     private class Subtitle {
