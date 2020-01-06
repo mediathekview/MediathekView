@@ -7,7 +7,6 @@ public class ThemaComboBox extends ComboBox<String> {
         super();
         getItems().add("");
         getSelectionModel().select(0);
-        setPrefWidth(350d);
         setEditable(true);
     }
 }
