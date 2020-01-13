@@ -1,6 +1,10 @@
 package mediathek.gui;
 
 import com.google.common.collect.Lists;
+import com.thizzer.jtouchbar.JTouchBar;
+import com.thizzer.jtouchbar.common.ImageName;
+import com.thizzer.jtouchbar.item.TouchBarItem;
+import com.thizzer.jtouchbar.item.view.TouchBarButton;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -35,6 +39,7 @@ import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -80,11 +85,15 @@ public class GuiFilme extends AGuiTabPanel {
     private final JPanel descriptionPanel = new JPanel();
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
+    private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     /**
      * The JavaFx Film action popup panel.
      */
     public FilmActionPanel fap;
-    private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
+    /**
+     * macOS touch bar support
+     */
+    public JTouchBar touchBar = null;
     /**
      * The swing helper panel FilmAction bar.
      */
@@ -119,6 +128,55 @@ public class GuiFilme extends AGuiTabPanel {
         start_addListener();
 
         setupActionListeners();
+
+        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
+            setupTouchBar();
+        }
+    }
+
+    private void setupTouchBar() {
+        touchBar = new JTouchBar();
+        touchBar.setCustomizationIdentifier("tabFilme");
+
+        TouchBarButton btnLoadFilmlist = new TouchBarButton();
+        Icon cloudDownloadIcon = IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
+        var cloudDownloadImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(cloudDownloadIcon)));
+        btnLoadFilmlist.setImage(cloudDownloadImage);
+        btnLoadFilmlist.setAction(touchBarView -> SwingUtilities.invokeLater(() ->
+                mediathekGui.performFilmListLoadOperation(GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL)));
+
+        Icon infoIcon = IconFontSwing.buildIcon(FontAwesome.INFO_CIRCLE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
+        var infoImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(infoIcon)));
+        TouchBarButton btnFilmInformation = new TouchBarButton();
+        btnFilmInformation.setAction(view -> System.out.println("TOUCHBAR film information."));
+        btnFilmInformation.setImage(infoImage);
+
+        var playImage = new com.thizzer.jtouchbar.common.Image(ImageName.NSImageNameTouchBarPlayTemplate, false);
+        TouchBarButton btnPlay = new TouchBarButton();
+        btnPlay.setImage(playImage);
+        btnPlay.setAction(f -> System.out.println("TOUCHBAR PLAY PRESSED"));
+
+        var downloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
+        var downloadImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(downloadIcon)));
+        TouchBarButton btnDownload = new TouchBarButton();
+        btnDownload.setImage(downloadImage);
+        btnDownload.setAction(f -> System.out.println("TOUCHBAR DOWNLOAD ACTION"));
+
+        var manageAboIcon = IconFontSwing.buildIcon(FontAwesome.DATABASE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
+        var manageAboImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(manageAboIcon)));
+        TouchBarButton btnManageAbo = new TouchBarButton();
+        btnManageAbo.setImage(manageAboImage);
+        btnManageAbo.setAction(f -> System.out.println("TOUCHBAR MANAGE ABO"));
+
+        touchBar.addItem(new TouchBarItem("btnLoadFilmList", btnLoadFilmlist, false));
+        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
+        touchBar.addItem(new TouchBarItem("btnFilmInformation", btnFilmInformation, true));
+        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
+        touchBar.addItem(new TouchBarItem("btnPlay", btnPlay, false));
+        touchBar.addItem(new TouchBarItem("btnDownload", btnDownload, false));
+        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
+        touchBar.addItem(new TouchBarItem("btnManageAbo", btnManageAbo, false));
+        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
     }
 
     private void setupFilmListTable() {

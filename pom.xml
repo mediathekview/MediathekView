@@ -90,6 +90,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.thizzer.jtouchbar</groupId>
+			<artifactId>jtouchbar-javafx</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.hansolo</groupId>
 			<artifactId>tilesfx</artifactId>
 			<version>11.28</version>
