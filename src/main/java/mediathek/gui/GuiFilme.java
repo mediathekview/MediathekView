@@ -148,25 +148,28 @@ public class GuiFilme extends AGuiTabPanel {
         Icon infoIcon = IconFontSwing.buildIcon(FontAwesome.INFO_CIRCLE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
         var infoImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(infoIcon)));
         TouchBarButton btnFilmInformation = new TouchBarButton();
-        btnFilmInformation.setAction(view -> System.out.println("TOUCHBAR film information."));
+        btnFilmInformation.setAction(view -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
         btnFilmInformation.setImage(infoImage);
 
         var playImage = new com.thizzer.jtouchbar.common.Image(ImageName.NSImageNameTouchBarPlayTemplate, false);
         TouchBarButton btnPlay = new TouchBarButton();
         btnPlay.setImage(playImage);
-        btnPlay.setAction(f -> System.out.println("TOUCHBAR PLAY PRESSED"));
+        btnPlay.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
 
         var downloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
         var downloadImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(downloadIcon)));
         TouchBarButton btnDownload = new TouchBarButton();
         btnDownload.setImage(downloadImage);
-        btnDownload.setAction(f -> System.out.println("TOUCHBAR DOWNLOAD ACTION"));
+        btnDownload.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
 
         var manageAboIcon = IconFontSwing.buildIcon(FontAwesome.DATABASE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
         var manageAboImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(manageAboIcon)));
         TouchBarButton btnManageAbo = new TouchBarButton();
         btnManageAbo.setImage(manageAboImage);
-        btnManageAbo.setAction(f -> System.out.println("TOUCHBAR MANAGE ABO"));
+        btnManageAbo.setAction(f -> SwingUtilities.invokeLater(() -> {
+            if (fap.manageAboAction.isEnabled())
+                fap.manageAboAction.actionPerformed(null);
+        }));
 
         touchBar.addItem(new TouchBarItem("btnLoadFilmList", btnLoadFilmlist, false));
         touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
