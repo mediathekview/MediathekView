@@ -1,5 +1,8 @@
 package mediathek.mac.touchbar;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
+import org.jetbrains.annotations.NotNull;
 import oshi.SystemInfo;
 
 import javax.imageio.ImageIO;
@@ -10,9 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class TouchBarUtils {
-    public static final float TOUCHBAR_BUTTON_SIZE = 64.0f;
+    private static final float TOUCHBAR_BUTTON_SIZE = 64.0f;
 
-    public static byte[] getImgBytes(BufferedImage image) {
+    public static byte[] getImgBytes(@NotNull BufferedImage image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, "PNG", baos);
@@ -22,7 +25,19 @@ public class TouchBarUtils {
         return baos.toByteArray();
     }
 
-    public static BufferedImage iconToImage(Icon icon) {
+    public static Icon iconFromFontAwesome(FontAwesome glyph) {
+        return IconFontSwing.buildIcon(glyph, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
+    }
+
+    public static com.thizzer.jtouchbar.common.Image touchBarImageFromIcon(@NotNull Icon icon) {
+        return new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(icon)));
+    }
+
+    public static com.thizzer.jtouchbar.common.Image touchBarImageFromFontAwesome(@NotNull FontAwesome glyph) {
+        return touchBarImageFromIcon(iconFromFontAwesome(glyph));
+    }
+
+    public static BufferedImage iconToImage(@NotNull Icon icon) {
         BufferedImage image = new BufferedImage(
                 icon.getIconWidth(),
                 icon.getIconHeight(),
