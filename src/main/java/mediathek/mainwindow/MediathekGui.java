@@ -79,7 +79,7 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
-    private static final Logger logger = LogManager.getLogger(MediathekGui.class);
+    protected static Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
      */
@@ -580,11 +580,19 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-        tabbedPane.setSelectedIndex(0);
+        tabbedPane.setSelectedComponent(tabFilme);
+
+        installTouchBarSupport();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
         configureTabIcons();
+    }
+
+    /**
+     * Install touch bar support on macOS
+     */
+    protected void installTouchBarSupport() {
     }
 
     /**

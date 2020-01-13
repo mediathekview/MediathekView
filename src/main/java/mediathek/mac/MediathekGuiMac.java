@@ -9,10 +9,11 @@ import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Log;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +28,7 @@ import java.net.URL;
 public class MediathekGuiMac extends MediathekGui {
     private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
     private final OsxPowerManager powerManager = new OsxPowerManager();
-    private final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
+    protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     protected Stage controlsFxWorkaroundStage;
 
     public MediathekGuiMac() {
@@ -49,20 +50,25 @@ public class MediathekGuiMac extends MediathekGui {
         });
     }
 
-    static class WorkaroundStage extends Stage {
-        public WorkaroundStage() {
-            initStyle(StageStyle.UTILITY);
-            var root = new StackPane();
-            root.setStyle("-fx-background-color: TRANSPARENT");
-
-            var  scene = new Scene(root, 1, 1);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-
-            setScene(scene);
-            setWidth(1d);
-            setHeight(1d);
-            setOpacity(0d);
+    @Override
+    protected void installTouchBarSupport() {
+        logger.trace("install touch bar support");
+        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
+            //make filme tab touchbar visible by default, otherwise it will not appear...
+            tabFilme.touchBar.show(MediathekGuiMac.this);
+            final var tabbedPane = getTabbedPane();
+            tabbedPane.addChangeListener(e -> {
+                var comp = tabbedPane.getSelectedComponent();
+                if (comp.equals(tabFilme)) {
+                    tabDownloads.touchBar.hide(MediathekGuiMac.this);
+                    tabFilme.touchBar.show(MediathekGuiMac.this);
+                } else if (comp.equals(tabDownloads)) {
+                    tabFilme.touchBar.hide(MediathekGuiMac.this);
+                    tabDownloads.touchBar.show(MediathekGuiMac.this);
+                }
+            });
         }
+
     }
 
     @Override
@@ -173,7 +179,23 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
-            Log.errorLog(165623698, "OS X Application image could not be loaded");
+            logger.error("OS X Application image could not be loaded", ex);
+        }
+    }
+
+    static class WorkaroundStage extends Stage {
+        public WorkaroundStage() {
+            initStyle(StageStyle.UTILITY);
+            var root = new StackPane();
+            root.setStyle("-fx-background-color: TRANSPARENT");
+
+            var scene = new Scene(root, 1, 1);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            setScene(scene);
+            setWidth(1d);
+            setHeight(1d);
+            setOpacity(0d);
         }
     }
 }

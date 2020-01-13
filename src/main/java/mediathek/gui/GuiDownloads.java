@@ -1,5 +1,8 @@
 package mediathek.gui;
 
+import com.thizzer.jtouchbar.JTouchBar;
+import com.thizzer.jtouchbar.item.TouchBarItem;
+import com.thizzer.jtouchbar.item.view.TouchBarTextField;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +34,7 @@ import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -122,6 +126,10 @@ public class GuiDownloads extends AGuiTabPanel {
     private DownloadTabInformationLabel filmInfoLabel;
     private JFXPanel toolBarPanel;
     private JFXPanel fxDescriptionPanel;
+    /**
+     * macOS touch bar support.
+     */
+    public JTouchBar touchBar = null;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -164,6 +172,20 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+
+        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
+            setupTouchBar();
+        }
+    }
+
+    private void setupTouchBar() {
+        touchBar = new JTouchBar();
+        touchBar.setCustomizationIdentifier("tabDownloads");
+
+        TouchBarTextField touchBarTextField = new TouchBarTextField();
+        touchBarTextField.setStringValue("TextField 1");
+
+        touchBar.addItem(new TouchBarItem("id1",touchBarTextField,false));
     }
 
     private void setupToolBar() {
