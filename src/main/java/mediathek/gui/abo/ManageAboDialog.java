@@ -2,7 +2,6 @@ package mediathek.gui.abo;
 
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -25,8 +24,6 @@ public class ManageAboDialog extends JDialog {
         pack();
         //restore saved size
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_MANAGE_ABO, this, owner);
-
-        EscapeKeyHandler.installHandler(this, this::dispose);
     }
 
     public ManageAboPanel getAboPanel() {
