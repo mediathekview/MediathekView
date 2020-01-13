@@ -179,7 +179,6 @@ public class GuiFilme extends AGuiTabPanel {
         touchBar.addItem(new TouchBarItem("btnDownload", btnDownload, false));
         touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
         touchBar.addItem(new TouchBarItem("btnManageAbo", btnManageAbo, false));
-        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
     }
 
     private void setupFilmListTable() {
