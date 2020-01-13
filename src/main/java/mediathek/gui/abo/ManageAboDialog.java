@@ -1,6 +1,5 @@
 package mediathek.gui.abo;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.GuiFunktionen;
 
@@ -10,7 +9,7 @@ import java.awt.*;
 public class ManageAboDialog extends JDialog {
     private final ManageAboPanel aboPanel;
 
-    public ManageAboDialog(Frame owner, Daten daten) {
+    public ManageAboDialog(Frame owner) {
         super(owner);
         setTitle("Abos verwalten");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -32,7 +32,7 @@ public class ManageAboAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        dialog = new ManageAboDialog(MediathekGui.ui(), daten);
+        dialog = new ManageAboDialog(MediathekGui.ui());
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
