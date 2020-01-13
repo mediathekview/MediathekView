@@ -2,7 +2,6 @@ package mediathek.gui.actions;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.abo.ManageAboDialog;
 import mediathek.mainwindow.MediathekGui;
@@ -14,11 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class ManageAboAction extends AbstractAction {
-    private final Daten daten;
     private ManageAboDialog dialog;
 
-    public ManageAboAction(Daten daten) {
-        this.daten = daten;
+    public ManageAboAction() {
         putValue(Action.NAME, "Abos verwalten...");
         putValue(Action.SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.DATABASE, 16));
     }
