@@ -13,7 +13,6 @@ import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,7 +52,7 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void installTouchBarSupport() {
         logger.trace("install touch bar support");
-        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
+        if (TouchBarUtils.isTouchBarSupported()) {
             //make filme tab touchbar visible by default, otherwise it will not appear...
             tabFilme.touchBar.show(MediathekGuiMac.this);
             final var tabbedPane = getTabbedPane();
