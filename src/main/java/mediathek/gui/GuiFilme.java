@@ -139,33 +139,25 @@ public class GuiFilme extends AGuiTabPanel {
         touchBar.setCustomizationIdentifier("tabFilme");
 
         TouchBarButton btnLoadFilmlist = new TouchBarButton();
-        Icon cloudDownloadIcon = IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
-        var cloudDownloadImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(cloudDownloadIcon)));
-        btnLoadFilmlist.setImage(cloudDownloadImage);
+        btnLoadFilmlist.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.CLOUD_DOWNLOAD));
         btnLoadFilmlist.setAction(touchBarView -> SwingUtilities.invokeLater(() ->
                 mediathekGui.performFilmListLoadOperation(GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL)));
 
-        Icon infoIcon = IconFontSwing.buildIcon(FontAwesome.INFO_CIRCLE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
-        var infoImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(infoIcon)));
         TouchBarButton btnFilmInformation = new TouchBarButton();
         btnFilmInformation.setAction(view -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-        btnFilmInformation.setImage(infoImage);
+        btnFilmInformation.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.INFO_CIRCLE));
 
         var playImage = new com.thizzer.jtouchbar.common.Image(ImageName.NSImageNameTouchBarPlayTemplate, false);
         TouchBarButton btnPlay = new TouchBarButton();
         btnPlay.setImage(playImage);
         btnPlay.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
 
-        var downloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
-        var downloadImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(downloadIcon)));
         TouchBarButton btnDownload = new TouchBarButton();
-        btnDownload.setImage(downloadImage);
+        btnDownload.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.DOWNLOAD));
         btnDownload.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
 
-        var manageAboIcon = IconFontSwing.buildIcon(FontAwesome.DATABASE, TouchBarUtils.TOUCHBAR_BUTTON_SIZE, Color.WHITE);
-        var manageAboImage = new com.thizzer.jtouchbar.common.Image(TouchBarUtils.getImgBytes(TouchBarUtils.iconToImage(manageAboIcon)));
         TouchBarButton btnManageAbo = new TouchBarButton();
-        btnManageAbo.setImage(manageAboImage);
+        btnManageAbo.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.DATABASE));
         btnManageAbo.setAction(f -> SwingUtilities.invokeLater(() -> {
             if (fap.manageAboAction.isEnabled())
                 fap.manageAboAction.actionPerformed(null);
