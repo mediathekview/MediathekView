@@ -1,9 +1,6 @@
-package mediathek.gui;
+package mediathek.gui.tabs.tab_downloads;
 
 import com.thizzer.jtouchbar.JTouchBar;
-import com.thizzer.jtouchbar.common.ImageName;
-import com.thizzer.jtouchbar.item.TouchBarItem;
-import com.thizzer.jtouchbar.item.view.TouchBarButton;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +21,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -31,11 +29,11 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.StandardCloseDialog;
 import mediathek.gui.history.DownloadHistoryPanel;
 import mediathek.gui.messages.*;
+import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
 import mediathek.javafx.tool.JavaFxUtils;
-import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -174,50 +172,7 @@ public class GuiDownloads extends AGuiTabPanel {
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
 
-        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
-            setupTouchBar();
-        }
-    }
-
-    private void setupTouchBar() {
-        touchBar = new JTouchBar();
-        touchBar.setCustomizationIdentifier("tabDownloads");
-
-        TouchBarButton btnFilmInformation = new TouchBarButton();
-        btnFilmInformation.setAction(view -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-        btnFilmInformation.setImage(TouchBarUtils.touchBarImageFromIcon(TouchBarUtils.iconFromFontAwesome(FontAwesome.INFO_CIRCLE)));
-        touchBar.addItem(new TouchBarItem("btnFilmInformation", btnFilmInformation,false));
-
-        TouchBarButton btnUpdateDownloads = new TouchBarButton();
-        btnUpdateDownloads.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.REFRESH));
-        btnUpdateDownloads.setAction(f -> SwingUtilities.invokeLater(this::updateDownloads));
-        touchBar.addItem(new TouchBarItem("btnUpdateDownloads", btnUpdateDownloads, false));
-
-        TouchBarButton btnStartAllDownloads = new TouchBarButton();
-        btnStartAllDownloads.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.ANGLE_DOUBLE_DOWN));
-        btnStartAllDownloads.setAction(f -> SwingUtilities.invokeLater(() -> starten(true)));
-        touchBar.addItem(new TouchBarItem("btnStartAllDownloads", btnStartAllDownloads,false));
-
-        TouchBarButton btnPlayFilm = new TouchBarButton();
-        var playImage = new com.thizzer.jtouchbar.common.Image(ImageName.NSImageNameTouchBarPlayTemplate, false);
-        btnPlayFilm.setImage(playImage);
-        btnPlayFilm.setAction(f -> SwingUtilities.invokeLater(this::filmAbspielen));
-        touchBar.addItem(new TouchBarItem("btnPlayFilm", btnPlayFilm,false));
-
-        TouchBarButton btnZurueckstellen = new TouchBarButton();
-        btnZurueckstellen.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.CLOCK_O));
-        btnZurueckstellen.setAction(f -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
-        touchBar.addItem(new TouchBarItem("btnZurueckstellen", btnZurueckstellen, false));
-
-        TouchBarButton btnRemoveDownload = new TouchBarButton();
-        btnRemoveDownload.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.TRASH_O));
-        btnRemoveDownload.setAction(f -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
-        touchBar.addItem(new TouchBarItem("btnRemoveDownload", btnRemoveDownload,false));
-
-        TouchBarButton btnCleanup = new TouchBarButton();
-        btnCleanup.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.ERASER));
-        btnCleanup.setAction(f -> SwingUtilities.invokeLater(this::cleanupDownloads));
-        touchBar.addItem(new TouchBarItem("btnCleanup", btnCleanup,false));
+        initializeTouchBar();
     }
 
     private void setupToolBar() {

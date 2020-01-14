@@ -23,7 +23,6 @@ import mediathek.daten.ListeMediaDB;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.GuiDownloads;
 import mediathek.gui.MVTray;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
@@ -40,7 +39,8 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
-import mediathek.gui.tab_film.GuiFilme;
+import mediathek.gui.tabs.tab_downloads.GuiDownloads;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -56,6 +56,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -567,15 +568,23 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    protected JPanel createTabFilme(@NotNull Daten daten) {
+        return new GuiFilme(daten, this);
+    }
+
+    protected JPanel createTabDownloads(@NotNull Daten daten) {
+        return new GuiDownloads(daten, this);
+    }
+
     private void initTabs() {
         Container contentPane = getContentPane();
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_DOWNLOAD_TAB));
-        tabDownloads = new GuiDownloads(daten, this);
+        tabDownloads = (GuiDownloads)createTabDownloads(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_FILM_TAB));
-        tabFilme = new GuiFilme(daten, this);
+        tabFilme = (GuiFilme)createTabFilme(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);

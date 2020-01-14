@@ -8,7 +8,7 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.gui.tab_film.GuiFilme;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
 import net.engio.mbassy.listener.Handler;

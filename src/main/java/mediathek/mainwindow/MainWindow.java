@@ -10,8 +10,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mediathek.config.Daten;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.tab_film.GuiFilme;
+import mediathek.gui.tabs.tab_downloads.GuiDownloads;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.StatusBarController;
 
 import javax.swing.*;

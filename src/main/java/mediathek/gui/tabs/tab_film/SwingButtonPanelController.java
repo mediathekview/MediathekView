@@ -1,4 +1,4 @@
-package mediathek.gui.tab_film;
+package mediathek.gui.tabs.tab_film;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
