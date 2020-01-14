@@ -1,10 +1,7 @@
-package mediathek.gui.tab_film;
+package mediathek.gui.tabs.tab_film;
 
 import com.google.common.collect.Lists;
 import com.thizzer.jtouchbar.JTouchBar;
-import com.thizzer.jtouchbar.common.ImageName;
-import com.thizzer.jtouchbar.item.TouchBarItem;
-import com.thizzer.jtouchbar.item.view.TouchBarButton;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -24,8 +21,6 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.AGuiTabPanel;
-import mediathek.gui.GuiFilmeModelHelper;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowFilmInformationAction;
@@ -35,11 +30,11 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
+import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.tool.JavaFxUtils;
-import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -129,48 +124,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupActionListeners();
 
-        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
-            setupTouchBar();
-        }
-    }
-
-    private void setupTouchBar() {
-        touchBar = new JTouchBar();
-        touchBar.setCustomizationIdentifier("tabFilme");
-
-        TouchBarButton btnLoadFilmlist = new TouchBarButton();
-        btnLoadFilmlist.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.CLOUD_DOWNLOAD));
-        btnLoadFilmlist.setAction(touchBarView -> SwingUtilities.invokeLater(() ->
-                mediathekGui.performFilmListLoadOperation(GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL)));
-
-        TouchBarButton btnFilmInformation = new TouchBarButton();
-        btnFilmInformation.setAction(view -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-        btnFilmInformation.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.INFO_CIRCLE));
-
-        var playImage = new com.thizzer.jtouchbar.common.Image(ImageName.NSImageNameTouchBarPlayTemplate, false);
-        TouchBarButton btnPlay = new TouchBarButton();
-        btnPlay.setImage(playImage);
-        btnPlay.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-
-        TouchBarButton btnDownload = new TouchBarButton();
-        btnDownload.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.DOWNLOAD));
-        btnDownload.setAction(f -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-
-        TouchBarButton btnManageAbo = new TouchBarButton();
-        btnManageAbo.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.DATABASE));
-        btnManageAbo.setAction(f -> SwingUtilities.invokeLater(() -> {
-            if (fap.manageAboAction.isEnabled())
-                fap.manageAboAction.actionPerformed(null);
-        }));
-
-        touchBar.addItem(new TouchBarItem("btnLoadFilmList", btnLoadFilmlist, false));
-        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
-        touchBar.addItem(new TouchBarItem("btnFilmInformation", btnFilmInformation, true));
-        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
-        touchBar.addItem(new TouchBarItem("btnPlay", btnPlay, false));
-        touchBar.addItem(new TouchBarItem("btnDownload", btnDownload, false));
-        touchBar.addItem(new TouchBarItem(TouchBarItem.NSTouchBarItemIdentifierFixedSpaceSmall));
-        touchBar.addItem(new TouchBarItem("btnManageAbo", btnManageAbo, false));
+        initializeTouchBar();
     }
 
     private void setupFilmListTable() {

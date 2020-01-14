@@ -5,18 +5,23 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mac.tabs.TabDownloadsMac;
+import mediathek.mac.tabs.TabFilmeMac;
 import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -77,6 +82,16 @@ public class MediathekGuiMac extends MediathekGui {
             controlsFxWorkaroundStage.show();
             controlsFxWorkaroundStage.toBack();
         });
+    }
+
+    @Override
+    protected JPanel createTabFilme(@NotNull Daten daten) {
+        return new TabFilmeMac(daten, this);
+    }
+
+    @Override
+    protected JPanel createTabDownloads(@NotNull Daten daten) {
+        return new TabDownloadsMac(daten, this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.tabs.tab_film;
 
 import javafx.collections.ObservableList;
 import mediathek.config.Daten;
