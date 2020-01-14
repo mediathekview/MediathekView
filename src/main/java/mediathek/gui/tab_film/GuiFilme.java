@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.tab_film;
 
 import com.google.common.collect.Lists;
 import com.thizzer.jtouchbar.JTouchBar;
@@ -24,6 +24,9 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.AGuiTabPanel;
+import mediathek.gui.GuiFilmeModelHelper;
+import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogAboNoSet;
@@ -32,9 +35,6 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
-import mediathek.gui.tab_film.BeobOpenPlayer;
-import mediathek.gui.tab_film.IButtonPanelController;
-import mediathek.gui.tab_film.SwingButtonPanelController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;

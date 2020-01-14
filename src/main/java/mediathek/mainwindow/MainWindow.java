@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mediathek.config.Daten;
 import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
+import mediathek.gui.tab_film.GuiFilme;
 import mediathek.javafx.StatusBarController;
 
 import javax.swing.*;

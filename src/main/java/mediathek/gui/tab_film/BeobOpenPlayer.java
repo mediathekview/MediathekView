@@ -1,7 +1,6 @@
 package mediathek.gui.tab_film;
 
 import mediathek.daten.DatenPset;
-import mediathek.gui.GuiFilme;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
