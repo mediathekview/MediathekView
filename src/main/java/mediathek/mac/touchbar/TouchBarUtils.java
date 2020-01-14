@@ -60,10 +60,6 @@ public class TouchBarUtils {
             case "High Sierra":
                 supported = true;
                 break;
-
-            default:
-                supported = false;
-                break;
         }
 
         return supported;
