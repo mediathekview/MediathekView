@@ -6,7 +6,6 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.gui.GuiFilme;
 import mediathek.gui.messages.PsetNumberOfButtonsChangedEvent;
 import mediathek.tool.Listener;
 import net.miginfocom.layout.AC;
