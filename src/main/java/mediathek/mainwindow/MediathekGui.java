@@ -398,19 +398,19 @@ public class MediathekGui extends JFrame {
             installSelectedItemsLabel();
         });
 
-        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT,false);
+        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT, false);
         if (enablePowerManagement) {
-                addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowActivated(WindowEvent e) {
-                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
-                    }
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowActivated(WindowEvent e) {
+                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
+                }
 
-                    @Override
-                    public void windowDeactivated(WindowEvent e) {
-                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
-                    }
-                });
+                @Override
+                public void windowDeactivated(WindowEvent e) {
+                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
+                }
+            });
         }
     }
 
@@ -581,10 +581,10 @@ public class MediathekGui extends JFrame {
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_DOWNLOAD_TAB));
-        tabDownloads = (GuiDownloads)createTabDownloads(daten);
+        tabDownloads = (GuiDownloads) createTabDownloads(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_FILM_TAB));
-        tabFilme = (GuiFilme)createTabFilme(daten);
+        tabFilme = (GuiFilme) createTabFilme(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
@@ -625,7 +625,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void configureTabIcons() {
-        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false);
+        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, false);
 
         //no icons...
         if (!icon) {
