@@ -4,12 +4,15 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
 public class OpenPlayerAction {
+    private static final Logger logger = LogManager.getLogger(OpenPlayerAction.class);
 
     public static void filmAbspielen(Frame parent, String datei) {
         boolean gut = false;
@@ -54,7 +57,7 @@ public class OpenPlayerAction {
                 Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 gut = true;
             } catch (Exception eex) {
-                Log.errorLog(959632369, ex, "Ordner öffnen: " + datei);
+                logger.error("Ordner öffnen: {}", datei, ex);
             }
         } finally {
             if (!gut) {
