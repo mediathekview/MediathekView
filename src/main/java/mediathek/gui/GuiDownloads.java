@@ -30,6 +30,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -46,6 +47,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -60,15 +63,27 @@ import java.util.concurrent.atomic.AtomicLong;
 @SuppressWarnings("serial")
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
-    private static final String COMBO_DISPLAY_ALL = "alles";
+    private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-    private static final String COMBO_VIEW_ALL = "alles ";
+    private static final int INDEX_COMBO_DISPLAY_ALL = 0;
+    private static final int INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY = 1;
+    private static final int INDEX_COMBO_DISPLAY_ABOS_ONLY = 2;
+
+    private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
     private static final String COMBO_VIEW_STARTED = "gestartet";
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
+    private static final int INDEX_COMBO_VIEW_ALL = 0;
+    private static final int INDEX_COMBO_VIEW_NOT_STARTED = 1;
+    private static final int INDEX_COMBO_VIEW_STARTED = 2;
+    private static final int INDEX_COMBO_VIEW_WAITING = 3;
+    private static final int INDEX_COMBO_VIEW_RUN_ONLY = 4;
+    private static final int INDEX_COMBO_VIEW_FINISHED_ONLY = 5;
+
+
     private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
@@ -93,6 +108,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
+
     private boolean onlyWaiting = false;
     private boolean onlyNotStarted = false;
     private boolean onlyStarted = false;
@@ -138,7 +154,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupCheckboxView();
 
-        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
+        setupToolBar();
 
         setupDownloadRateLimitSpinner();
 
@@ -148,6 +164,35 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
+
+    private void setupToolBar() {
+        //TODO convert to FXML
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            var toolBar = new FXDownloadToolBar();
+            toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
+            toolBar.btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(this::updateDownloads));
+            toolBar.btnStartAllDownloads.setOnAction(e -> SwingUtilities.invokeLater(() -> starten(true)));
+            toolBar.btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(this::filmAbspielen));
+            toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
+            toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
+            toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
+            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
+
+            Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+                @Override
+                public void start(ListenerFilmeLadenEvent event) {
+                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(true));
+                }
+
+                @Override
+                public void fertig(ListenerFilmeLadenEvent event) {
+                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(false));
+                }
+            });
+
+            toolBarPanel.setScene(new Scene(toolBar));
+        });
     }
 
     private void setupF4Key(MediathekGui mediathekGui) {
@@ -245,7 +290,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void setupCheckboxView() {
         cbView.setModel(getViewModel());
-        cbView.addActionListener(new DisplayCategoryListener());
+        cbView.addActionListener(new ViewCategoryListener());
     }
 
     private void initTable() {
@@ -1232,7 +1277,11 @@ public class GuiDownloads extends AGuiTabPanel {
         return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
     }
 
-    private DefaultComboBoxModel<String> getViewModel() {
+    /**
+     * Return the model used for the view categories {@link javax.swing.JComboBox}.
+     *
+     * @return The selection model.
+     */private DefaultComboBoxModel<String> getViewModel() {
         return new DefaultComboBoxModel<>(new String[]{COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED, COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY});
     }
 
@@ -1517,17 +1566,22 @@ public class GuiDownloads extends AGuiTabPanel {
             itemPlayer.addActionListener(e -> {
                 final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
-                    Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
+                    final Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
                     optPSetPlay.ifPresentOrElse(gruppe -> {
                         Optional<DatenDownload> optDL = Optional.ofNullable((DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF));
                         optDL.ifPresent(dl -> {
                             if (dl.film != null) {
-                                DatenFilm filmDownload = dl.film.getCopy();
-                                // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                filmDownload.arr[DatenFilm.FILM_URL_KLEIN] = "";
-                                // und starten
-                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                try {
+                                    DatenFilm filmDownload = (DatenFilm) dl.film.clone();
+                                    // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                    filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                    filmDownload.setUrlKlein("");
+                                    // und starten
+                                    daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                }
+                                catch (CloneNotSupportedException ex) {
+                                    logger.error("Cloning is not supported", ex);
+                                }
                             }
                         });
                     }, () -> {
@@ -1565,70 +1619,87 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * This class filters the shown table items based on the made selection.
      */
-    private class DisplayCategoryListener implements ActionListener {
-
+    private final class ViewCategoryListener implements ActionListener {
         @Override
-        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
-            JComboBox<String> box = (JComboBox<String>) e.getSource();
-            final String action = (String) box.getSelectedItem();
+            JComboBox source = (JComboBox) e.getSource();
 
-            assert action != null;
-            switch (action) {
-                case COMBO_DISPLAY_ALL:
-                    onlyAbos = false;
-                    onlyDownloads = false;
-                    break;
-                case COMBO_DISPLAY_DOWNLOADS_ONLY:
-                    onlyAbos = false;
-                    onlyDownloads = true;
-                    break;
-                case COMBO_DISPLAY_ABOS_ONLY:
-                    onlyAbos = true;
-                    onlyDownloads = false;
-                    break;
-
-                case COMBO_VIEW_ALL:
+            switch (source.getSelectedIndex()) {
+                case INDEX_COMBO_VIEW_ALL:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                     break;
-                case COMBO_VIEW_NOT_STARTED:
+
+                case INDEX_COMBO_VIEW_NOT_STARTED:
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                     break;
-                case COMBO_VIEW_STARTED:
+
+                case INDEX_COMBO_VIEW_STARTED:
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                     break;
-                case COMBO_VIEW_WAITING:
+
+                case INDEX_COMBO_VIEW_WAITING:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
                     break;
-                case COMBO_VIEW_FINISHED_ONLY:
+
+                case INDEX_COMBO_VIEW_FINISHED_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
                     break;
-                case COMBO_VIEW_RUN_ONLY:
+
+                case INDEX_COMBO_VIEW_RUN_ONLY:
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = true;
+                    break;
+            }
+
+            reloadTable();
+        }
+    }
+
+    /**
+     * This class filters the shown table items based on the made selection.
+     */
+    private final class DisplayCategoryListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JComboBox source = (JComboBox) e.getSource();
+
+            switch (source.getSelectedIndex()) {
+                case INDEX_COMBO_DISPLAY_ALL:
+                    onlyAbos = false;
+                    onlyDownloads = false;
+                    break;
+
+                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY:
+                    onlyAbos = false;
+                    onlyDownloads = true;
+                    break;
+
+                case INDEX_COMBO_DISPLAY_ABOS_ONLY:
+                    onlyAbos = true;
+                    onlyDownloads = false;
                     break;
             }
 
@@ -1648,17 +1719,19 @@ public class GuiDownloads extends AGuiTabPanel {
         jSplitPane1 = new JSplitPane();
         jPanelFilterExtern = new JPanel();
         var panel1 = new JPanel();
-        var lblAnzeigen = new JLabel();
+        var panel3 = new JPanel();
+        var label1 = new JLabel();
         cbDisplayCategories = new JComboBox<>();
+        var label2 = new JLabel();
         cbView = new JComboBox<>();
         btnClear = new JButton();
-        var jSeparator1 = new JSeparator();
         var panel2 = new JPanel();
         var jLabel3 = new JLabel();
         jSpinnerAnzahlDownloads = new JSpinner();
         var lblBandwidth = new JLabel();
         var jLabel1 = new JLabel();
         jSpinner1 = new JSpinner();
+        var panel4 = new JPanel();
         var spDownload = new JScrollPane();
         txtDownload = new JEditorPane();
 
@@ -1667,7 +1740,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         //======== jSplitPane1 ========
         {
-            jSplitPane1.setDividerLocation(390);
+            jSplitPane1.setDividerLocation(330);
 
             //======== jPanelFilterExtern ========
             {
@@ -1680,33 +1753,49 @@ public class GuiDownloads extends AGuiTabPanel {
                         new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
                         // columns
                         new AC()
-                            .fill().gap()
-                            .fill(),
+                            .grow().fill(),
                         // rows
                         new AC()
                             .fill().gap()
-                            .fill().gap()
-                            .fill().gap()
-                            .fill().gap()
-                            .fill().gap()
                             .fill()));
 
-                    //---- lblAnzeigen ----
-                    lblAnzeigen.setText("Anzeigen:"); //NON-NLS
-                    panel1.add(lblAnzeigen, new CC().cell(0, 0));
-                    panel1.add(cbDisplayCategories, new CC().cell(0, 1, 2, 1));
-                    panel1.add(cbView, new CC().cell(0, 2, 2, 1));
+                    //======== panel3 ========
+                    {
+                        panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
+                        panel3.setLayout(new MigLayout(
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            // columns
+                            new AC()
+                                .fill().gap()
+                                .grow().fill(),
+                            // rows
+                            new AC()
+                                .fill().gap()
+                                .fill().gap()
+                                .fill()));
 
-                    //---- btnClear ----
-                    btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
-                    btnClear.setToolTipText("Alles l\u00f6schen"); //NON-NLS
-                    panel1.add(btnClear, new CC().cell(1, 3).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
-                    panel1.add(jSeparator1, new CC().cell(0, 4, 2, 1));
+                        //---- label1 ----
+                        label1.setText("Typ:"); //NON-NLS
+                        panel3.add(label1, new CC().cell(0, 0));
+                        panel3.add(cbDisplayCategories, new CC().cell(1, 0));
+
+                        //---- label2 ----
+                        label2.setText("Status:"); //NON-NLS
+                        panel3.add(label2, new CC().cell(0, 1));
+                        panel3.add(cbView, new CC().cell(1, 1));
+
+                        //---- btnClear ----
+                        btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
+                        btnClear.setToolTipText("Alles l\u00f6schen"); //NON-NLS
+                        panel3.add(btnClear, new CC().cell(1, 2).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
+                    }
+                    panel1.add(panel3, new CC().cell(0, 0));
 
                     //======== panel2 ========
                     {
+                        panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
                         panel2.setLayout(new MigLayout(
-                            new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
                             // columns
                             new AC()
                                 .fill().gap()
@@ -1717,12 +1806,12 @@ public class GuiDownloads extends AGuiTabPanel {
                                 .fill()));
 
                         //---- jLabel3 ----
-                        jLabel3.setText("gleichzeitige Downloads:"); //NON-NLS
+                        jLabel3.setText("gleichzeitig:"); //NON-NLS
                         panel2.add(jLabel3, new CC().cell(0, 0));
                         panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
 
                         //---- lblBandwidth ----
-                        lblBandwidth.setText("max. Bandbreite je Download:"); //NON-NLS
+                        lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
                         panel2.add(lblBandwidth, new CC().cell(0, 1));
 
                         //---- jLabel1 ----
@@ -1734,20 +1823,27 @@ public class GuiDownloads extends AGuiTabPanel {
                         jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
                         panel2.add(jSpinner1, new CC().cell(1, 1));
                     }
-                    panel1.add(panel2, new CC().cell(0, 5, 2, 1));
+                    panel1.add(panel2, new CC().cell(0, 1));
                 }
-                jPanelFilterExtern.add(panel1, BorderLayout.PAGE_START);
+                jPanelFilterExtern.add(panel1, BorderLayout.NORTH);
 
-                //======== spDownload ========
+                //======== panel4 ========
                 {
+                    panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
+                    panel4.setLayout(new BorderLayout());
 
-                    //---- txtDownload ----
-                    txtDownload.setEditable(false);
-                    txtDownload.setOpaque(false);
-                    txtDownload.setPreferredSize(new Dimension(10, 21));
-                    spDownload.setViewportView(txtDownload);
+                    //======== spDownload ========
+                    {
+
+                        //---- txtDownload ----
+                        txtDownload.setEditable(false);
+                        txtDownload.setOpaque(false);
+                        txtDownload.setPreferredSize(new Dimension(10, 21));
+                        spDownload.setViewportView(txtDownload);
+                    }
+                    panel4.add(spDownload, BorderLayout.CENTER);
                 }
-                jPanelFilterExtern.add(spDownload, BorderLayout.CENTER);
+                jPanelFilterExtern.add(panel4, BorderLayout.CENTER);
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
         }

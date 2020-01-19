@@ -1,11 +1,9 @@
 package mediathek.gui.abo;
 
-import ca.odell.glazedlists.javafx.EventObservableList;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
+import javafx.scene.layout.HBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
@@ -14,10 +12,10 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.Datum;
 import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.SenderList;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
@@ -29,39 +27,63 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
 @SuppressWarnings("serial")
-public class GuiAbo extends JPanel {
-    private final MVTable tabelle;
+public class ManageAboPanel extends JPanel {
+    private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
+    private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
+    private final MVTable tabelle = new MVAbosTable();
     private final Daten daten;
+    private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+    private final JFXPanel toolBarPanel = new JFXPanel();
+    private final JFXPanel infoPanel = new JFXPanel();
+    private FXAboToolBar toolBar;
+    private JScrollPane jScrollPane1;
+    /*
+     * controller must be kept in variable for strong ref, otherwise GC will erase controller and therefore
+     * update of abos in dialog will stop working...
+     */
+    private AboInformationController infoController;
 
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
-    }
 
-    public GuiAbo(Daten d) {
+    public ManageAboPanel() {
         super();
-        daten = d;
-        toolBar = new FXAboToolBar(this);
-        senderCb = toolBar.getSenderComboBox();
-        Platform.runLater(this::setupSenderCb);
+        daten = Daten.getInstance();
 
         initComponents();
-        tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
 
-        SwingUtilities.invokeLater(() -> {
-            JFXPanel toolBarPanel = new JFXPanel();
-            add(toolBarPanel,BorderLayout.NORTH);
-            Platform.runLater(() -> toolBarPanel.setScene(new Scene(toolBar)));
-        });
+        setupToolBar();
+        setupInfoPanel();
 
         daten.getMessageBus().subscribe(this);
 
         initListeners();
 
+        initializeTable();
+    }
+
+    private void setupInfoPanel() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/abo/abo_information_panel.fxml");
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(url);
+
+                HBox infoPane = loader.load();
+                infoPanel.setScene(new Scene(infoPane));
+
+                infoController = loader.getController();
+                infoController.startListener();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void initializeTable() {
         tabelleLaden();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
@@ -69,16 +91,27 @@ public class GuiAbo extends JPanel {
         }
     }
 
-    private final FXAboToolBar toolBar;
+    private void setupToolBar() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            toolBar = new FXAboToolBar();
+            toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(true)));
+            toolBar.btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(false)));
+            toolBar.btnDelete.setOnAction(e -> SwingUtilities.invokeLater(this::aboLoeschen));
+            toolBar.btnEdit.setOnAction(e -> SwingUtilities.invokeLater(this::editAbo));
 
-    private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+            CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
+            toolBar.btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
 
-    public void einAus(boolean ein) {
-        aboEinAus(ein);
+            toolBar.cbSender.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
+
+            toolBarPanel.setScene(new Scene(toolBar));
+        });
     }
 
-    public void loeschen() {
-        aboLoeschen();
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
     }
 
     private void setCellRenderer() {
@@ -92,9 +125,6 @@ public class GuiAbo extends JPanel {
     private void handleAboListChanged(AboListChangedEvent e) {
         SwingUtilities.invokeLater(this::tabelleLaden);
     }
-
-    private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
-    private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
 
     private void setupKeyMap() {
         final InputMap im = tabelle.getInputMap();
@@ -164,21 +194,11 @@ public class GuiAbo extends JPanel {
         setupKeyMap();
     }
 
-    private final ComboBox<String> senderCb;
-
-    private void setupSenderCb() {
-        var senderList = new SenderList(daten.getListeFilme().getBaseSenderList());
-        ObservableList<String> senderModel = new EventObservableList<>(senderList);
-        senderCb.setItems(senderModel);
-        senderCb.getSelectionModel().select(0);
-        senderCb.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
-    }
-
     private void tabelleLaden() {
         tabelle.getSpalten();
 
-        Platform.runLater(() -> {
-            final String selectedItem = senderCb.getValue();
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            final String selectedItem = toolBar.cbSender.getValue();
             if (selectedItem != null) {
                 SwingUtilities.invokeLater(() -> {
                     daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
@@ -290,34 +310,18 @@ public class GuiAbo extends JPanel {
         }
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         jScrollPane1 = new JScrollPane();
         var jTable1 = new JTable();
 
-        //======== this ========
         setLayout(new BorderLayout());
 
-        //======== jScrollPane1 ========
-        {
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jScrollPane1.setViewportView(jTable1);
 
-            //---- jTable1 ----
-            jTable1.setAutoCreateRowSorter(true);
-            jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            jScrollPane1.setViewportView(jTable1);
-        }
+        add(toolBarPanel, BorderLayout.NORTH);
         add(jScrollPane1, BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JScrollPane jScrollPane1;
-    // End of variables declaration//GEN-END:variables
+        add(infoPanel, BorderLayout.SOUTH);
+    }
 }

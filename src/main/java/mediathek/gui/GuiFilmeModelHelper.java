@@ -146,7 +146,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyHd) {
-                if (!film.isHD()) {
+                if (!film.isHighQuality()) {
                     continue;
                 }
             }
@@ -156,7 +156,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (keineAbos) {
-                if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
+                if (!film.getAboName().isEmpty()) {
                     continue;
                 }
             }

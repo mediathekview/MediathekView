@@ -1,7 +1,8 @@
 package mediathek.daten;
 
 import mediathek.tool.GermanStringSorter;
-import mediathek.tool.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -30,6 +31,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
+    private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public int mindestdauerMinuten;
@@ -93,7 +95,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         try {
             mindestdauerMinuten = Integer.parseInt(this.arr[DatenAbo.ABO_MINDESTDAUER]);
         } catch (Exception ex) {
-            Log.errorLog(462558700, ex);
+            logger.error("setMindestDauerMinuten()", ex);
             mindestdauerMinuten = 0;
             arr[ABO_MINDESTDAUER] = "0";
         }
@@ -113,7 +115,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     private void initialize() {
         arr = new String[MAX_ELEM];
-        Arrays.fill(arr,"");
+        Arrays.fill(arr, "");
         // neue Abos sind immer ein
         aboEin();
     }

@@ -226,7 +226,7 @@ public class TModelDownload extends TModel {
 
         switch (column) {
             case DatenDownload.DOWNLOAD_HD:
-                result = (download.film != null) && download.film.isHD();
+                result = (download.film != null) && download.film.isHighQuality();
                 break;
 
             case DatenDownload.DOWNLOAD_UT:

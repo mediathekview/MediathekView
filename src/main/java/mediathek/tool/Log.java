@@ -53,23 +53,28 @@ public class Log {
     }
 
     // Fehlermeldung mit Exceptions
+    @Deprecated
     public static synchronized void errorLog(int fehlerNummer, Exception ex) {
         fehlermeldung_(fehlerNummer, ex, new String[]{});
     }
 
+    @Deprecated
     public static synchronized void errorLog(int fehlerNummer, Exception ex, String text) {
         fehlermeldung_(fehlerNummer, ex, new String[]{text});
     }
 
+    @Deprecated
     public static synchronized void errorLog(int fehlerNummer, Exception ex, String[] text) {
         fehlermeldung_(fehlerNummer, ex, text);
     }
 
     // Fehlermeldungen
+    @Deprecated
     public static synchronized void errorLog(int fehlerNummer, String text) {
         fehlermeldung_(fehlerNummer, null, new String[]{text});
     }
 
+    @Deprecated
     public static synchronized void errorLog(int fehlerNummer, String[] text) {
         fehlermeldung_(fehlerNummer, null, text);
     }

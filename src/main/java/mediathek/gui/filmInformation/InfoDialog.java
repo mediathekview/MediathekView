@@ -200,11 +200,11 @@ public class InfoDialog extends JDialog {
             lblUhrzeit.setText(currentFilm.getSendeZeit());
             lblDauer.setText(currentFilm.getDauer());
 
-            cbHD.setSelected(currentFilm.isHD());
+            cbHD.setSelected(currentFilm.isHighQuality());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
 
-            lblGeo.setText(currentFilm.getGeo());
-            lblAbo.setText(currentFilm.arr[DatenFilm.FILM_ABO_NAME]);
+            lblGeo.setText(currentFilm.getGeo().orElse(""));
+            lblAbo.setText(currentFilm.getAboName());
 
             Platform.runLater(() -> {
                 hyperlink.setTooltip(new Tooltip(currentFilm.getWebsiteLink()));

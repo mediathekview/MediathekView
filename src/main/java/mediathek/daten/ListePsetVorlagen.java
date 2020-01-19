@@ -4,12 +4,13 @@ package mediathek.daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.MVHttpClient;
 import mediathek.tool.models.TModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
@@ -49,6 +50,8 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final int PGR_INFO_NR = 5;
     public static final int PGR_MAX_ELEM = 6;
     public static final String[] PGR_COLUMN_NAMES = {PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO};
+    private static final Logger logger = LogManager.getLogger(ListePsetVorlagen.class);
+
 
     public TModel getTModel(String bs) {
         String[][] object;
@@ -155,7 +158,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         } catch (UnknownHostException | ConnectException ignored) {
             return false;
         } catch (Exception ex) {
-            Log.errorLog(398001963, ex);
+            logger.error("loadListOfSets()", ex);
             return false;
         }
 
@@ -187,7 +190,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             return result;
         } catch (Exception ex) {
             if (log) {
-                Log.errorLog(630048926, ex);
+                logger.error("importPsetFile(..)", ex);
             }
             return null;
         }
@@ -241,7 +244,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.errorLog(467810360, ex);
+                logger.error("importPset", ex);
             }
             return null;
         } finally {
@@ -284,7 +287,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.errorLog(467256394, ex);
+            logger.error("get", ex);
         }
         return ret;
     }

@@ -1,13 +1,12 @@
 package mediathek;
 
 import javafx.application.Platform;
-import javafx.geometry.Insets;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import mediathek.config.Daten;
@@ -15,39 +14,47 @@ import mediathek.config.Konstanten;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.UIProgressState;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class SplashScreen {
-    private final ProgressBar progress;
-    private final Label progressText;
-    private final Label versionText;
-    private final double MAXIMUM_STEPS = EnumSet.allOf(UIProgressState.class).size() - 1;
-    private final Image image = new Image("/splash.png");
-    private Stage window;
+    private static final Logger LOG = LogManager.getLogger(SplashScreen.class);
+    private static final double MAXIMUM_STEPS = EnumSet.allOf(UIProgressState.class).size() - 1d;
+
+    @FXML
+    private Label appName;
+
+    @FXML
+    private Label appVersion;
+
+    @FXML
+    private Label progressText;
+
+    @FXML
+    private ProgressBar progressBar;
+
     private double curSteps = 0d;
+    private Stage window;
 
-    public SplashScreen() {
-        progress = new ProgressBar();
-        progress.setId("progressBar");
+    /**
+     * Return "modern" macOS string for mac instead of legacy "Mac OS X".
+     * According to apple dev docs even "old" 10.6 is now named macOS.
+     * @return "macOS" for mac otherwise the java OS name
+     */
+    private String getOsName() {
+        final String osName;
+        if (SystemUtils.IS_OS_MAC_OSX)
+            osName = "macOS";
+        else
+            osName = SystemUtils.OS_NAME;
 
-        progressText = new Label();
-        progressText.setId("progressText");
-
-        versionText = new Label(Konstanten.MVVERSION.toString());
-        versionText.setId("progressText");
-    }
-
-    private ImageView createImageView() {
-        ImageView imageView = new ImageView();
-        imageView.setSmooth(true);
-        imageView.setPreserveRatio(true);
-        imageView.setImage(image);
-        imageView.setFitHeight(image.getHeight() / 2d);
-
-        return imageView;
+        return osName;
     }
 
     public void show() {
@@ -55,34 +62,27 @@ public class SplashScreen {
             window = new Stage(StageStyle.UNDECORATED);
             window.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
 
-            VBox vb = new VBox();
-            vb.setPadding(new Insets(5,5,5,5));
+            URL url = getClass().getResource("/mediathek/res/programm/fxml/splashscreen.fxml");
 
-            progress.setProgress(0d);
-            progress.setPrefWidth(image.getWidth());
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(url);
+            fxmlLoader.setController(this);
 
-            Label appName = new Label(Konstanten.PROGRAMMNAME + " für " + SystemUtils.OS_NAME);
-            appName.setId("appName");
+            try {
+                Scene scene = new Scene(fxmlLoader.load());
+                window.setScene(scene);
 
-            vb.getChildren().addAll(
-                    createImageView(),
-                    new Label(),
-                    appName,
-                    versionText,
-                    new Label(),
-                    progressText,
-                    progress
-            );
-            vb.setId("vbox");
+                appName.setText(Konstanten.PROGRAMMNAME);
+                appVersion.setText("Version: " + Konstanten.MVVERSION.toString() + " (" + getOsName() + ")");
+                progressBar.prefWidthProperty().bind(scene.widthProperty());
 
-            Scene scene = new Scene(vb);
-            scene.setFill(null);
-            scene.getStylesheets().add("css/splashscreen/splashscreen.css");
-
-            window.setScene(scene);
-            window.setAlwaysOnTop(true);
-            window.show();
-            window.centerOnScreen();
+                window.setScene(scene);
+                window.setAlwaysOnTop(true);
+                window.show();
+                window.centerOnScreen();
+            } catch (IOException ioException) {
+                LOG.error("Can't find/load the splash screen FXML description!", ioException);
+            }
         });
     }
 
@@ -97,7 +97,7 @@ public class SplashScreen {
         Platform.runLater(() -> {
             curSteps++;
             final double p = (curSteps / MAXIMUM_STEPS);
-            progress.setProgress(p);
+            progressBar.setProgress(p);
             progressText.setText(state.toString());
         });
     }
