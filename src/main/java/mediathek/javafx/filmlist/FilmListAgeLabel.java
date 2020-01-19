@@ -6,37 +6,26 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.javafx.tool.ComputedLabel;
-import mediathek.mainwindow.MediathekGui;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 
 /**
  * Label which will compute the age of the filmlist when updated.
  * Update cycle one second.
  */
-class FilmListAgeLabel extends ComputedLabel {
+public class FilmListAgeLabel extends ComputedLabel {
     private Timeline timeline;
 
     FilmListAgeLabel() {
         setupTimer();
-        installWindowListener();
     }
 
-    private void installWindowListener() {
-        MediathekGui.ui().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowActivated(WindowEvent e) {
-                timeline.play();
-            }
+    public void enableTimer() {
+        timeline.play();
+    }
 
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                timeline.pause();
-            }
-        });
+    public void disableTimer() {
+        timeline.pause();
     }
 
     private void setupTimer() {

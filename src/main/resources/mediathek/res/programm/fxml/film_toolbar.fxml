@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import mediathek.javafx.filterpanel.BlacklistButton?>
+<?import mediathek.javafx.filterpanel.EditBlacklistButton?>
+<?import mediathek.javafx.filterpanel.JFXSearchPanel?>
+<?import mediathek.javafx.VerticalSeparator?>
+<?import org.controlsfx.glyphfont.*?>
+<fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+    <Button mnemonicParsing="false" fx:id="btnDownloadFilmList">
+        <tooltip>
+            <Tooltip text="Neue Filmliste laden"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="CLOUD_DOWNLOAD" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <VerticalSeparator/>
+
+    <Button mnemonicParsing="false" fx:id="btnFilmInfo">
+        <tooltip>
+            <Tooltip text="Filminformation anzeigen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <VerticalSeparator/>
+
+    <Button mnemonicParsing="false" fx:id="btnPlay">
+        <tooltip>
+            <Tooltip text="Film abspielen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="PLAY" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <Button mnemonicParsing="false" fx:id="btnRecord">
+        <tooltip>
+            <Tooltip text="Film aufzeichnen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="DOWNLOAD" fontSize="16"/>
+        </graphic>
+    </Button>
+
+    <VerticalSeparator/>
+
+    <BlacklistButton mnemonicParsing="false"/>
+    <EditBlacklistButton mnemonicParsing="false" />
+
+    <VerticalSeparator/>
+
+    <Button mnemonicParsing="false" fx:id="btnManageAbos">
+        <tooltip>
+            <Tooltip text="Abos verwalten"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="DATABASE" fontSize="16"/>
+        </graphic>
+    </Button>
+    
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <Button mnemonicParsing="false" fx:id="btnShowFilter">
+        <tooltip>
+            <Tooltip text="Filter anzeigen"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="FILTER"/>
+        </graphic>
+    </Button>
+
+    <JFXSearchPanel fx:id="jfxSearchField"/>
+
+    <ToggleButton mnemonicParsing="false" fx:id="btnSearchThroughDescription">
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="BOOK"/>
+        </graphic>
+    </ToggleButton>
+</fx:root>

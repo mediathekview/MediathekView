@@ -39,6 +39,8 @@ import picocli.CommandLine;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Security;
@@ -62,6 +64,16 @@ public class Main {
             } catch (IOException ignored) {
             }
         }
+    }
+
+    private static void printJvmParameters() {
+        logger.info("=== JavaVM Parameter ===");
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        var jvmArgs = runtimeMXBean.getInputArguments();
+        for (var arg : jvmArgs) {
+            System.out.println(arg);
+        }
+        logger.info("========================");
     }
 
     private static void printArguments(final String... aArguments) {
@@ -111,25 +123,29 @@ public class Main {
             fileAppenderBuilder.setFilter(thresholdFilter);
         }
 
-        FileAppender fileAppender = fileAppenderBuilder.build();
-        fileAppender.start();
-        config.addAppender(fileAppender);
+        AsyncAppender asyncAppender = null;
+        if (!Config.isFileLoggingDisabled()) {
+            FileAppender fileAppender = fileAppenderBuilder.build();
+            fileAppender.start();
+            config.addAppender(fileAppender);
 
-        AsyncAppender asyncAppender = AsyncAppender.newBuilder()
-                .setName("Async")
-                .setAppenderRefs(new AppenderRef[] {AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
-                .setConfiguration(config)
-                .setIncludeLocation(true)
-                .setBlocking(false)
-                .build();
+            asyncAppender = AsyncAppender.newBuilder()
+                    .setName("Async")
+                    .setAppenderRefs(new AppenderRef[]{AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
+                    .setConfiguration(config)
+                    .setIncludeLocation(true)
+                    .setBlocking(false)
+                    .build();
 
-        asyncAppender.start();
-        config.addAppender(asyncAppender);
+            asyncAppender.start();
+            config.addAppender(asyncAppender);
+        }
 
         final var rootLogger = loggerContext.getRootLogger();
         rootLogger.setLevel(Level.TRACE);
         rootLogger.addAppender(consoleAppender);
-        rootLogger.addAppender(asyncAppender);
+        if (!Config.isFileLoggingDisabled())
+            rootLogger.addAppender(asyncAppender);
 
         loggerContext.updateLoggers();
     }
@@ -255,6 +271,7 @@ public class Main {
             setupPortableMode();
 
             printVersionInformation();
+            printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
             cmd.getErr().println(ex.getMessage());

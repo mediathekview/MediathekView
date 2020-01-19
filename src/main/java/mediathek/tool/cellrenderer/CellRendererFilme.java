@@ -134,8 +134,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     c.setForeground(MVColor.FILM_NEU.color);
             }
 
-            if (geoMelden)
-                setupGeoblockingBackground(c, datenFilm.getGeo(), isSelected);
+            if (geoMelden) {
+                setupGeoblockingBackground(c,datenFilm.getGeo().orElse(""),isSelected);
+            }
         }
     }
 

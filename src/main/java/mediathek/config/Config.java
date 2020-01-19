@@ -46,6 +46,9 @@ public class Config {
     @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
 
+    @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
+    private static boolean fileLoggingDisabled;
+
     public static boolean isPortableMode() {
         return portableMode;
     }
@@ -61,6 +64,8 @@ public class Config {
     public static boolean isDebugModeEnabled() {
         return debug;
     }
+
+    public static boolean isFileLoggingDisabled() { return fileLoggingDisabled;}
 
     public static boolean isStartMaximized() {
         return startMaximized;

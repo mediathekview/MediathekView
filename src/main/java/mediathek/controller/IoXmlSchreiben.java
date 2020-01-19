@@ -23,7 +23,6 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
-import mediathek.tool.Log;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -174,7 +173,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writeNewLine(writer);
         } catch (Exception ex) {
-            Log.errorLog(198325017, ex);
+            logger.error("xmlSchreibenDaten", ex);
         }
     }
 
@@ -257,7 +256,7 @@ public class IoXmlSchreiben {
 
             logger.info("Config Schreiben beendet");
         } catch (Exception ex) {
-            Log.errorLog(656328109, ex);
+            logger.error("xmlDatenSchreiben", ex);
         }
     }
 }

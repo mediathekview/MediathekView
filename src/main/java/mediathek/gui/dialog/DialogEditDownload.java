@@ -3,7 +3,6 @@ package mediathek.gui.dialog;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenProg;
 import mediathek.daten.FilmResolution;
 import mediathek.file.GetFile;
@@ -93,7 +92,7 @@ public class DialogEditDownload extends JDialog {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
             }
 
-            if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD].isEmpty()) {
+            if (!datenDownload.film.getHighQualityUrl().isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
                 jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD));
@@ -102,7 +101,7 @@ public class DialogEditDownload extends JDialog {
                 }
             }
 
-            if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN].isEmpty()) {
+            if (!datenDownload.film.getUrlKlein().isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
                 jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN));
@@ -296,7 +295,7 @@ public class DialogEditDownload extends JDialog {
                     gridbag.setConstraints(jLabelFilmHD, c);
                     jPanelExtra.add(jLabelFilmHD);
                     if (datenDownload.film != null) {
-                        jLabelFilmHD.setVisible(datenDownload.film.isHD());
+                        jLabelFilmHD.setVisible(datenDownload.film.isHighQuality());
                     } else {
                         jLabelFilmHD.setVisible(false);
                     }

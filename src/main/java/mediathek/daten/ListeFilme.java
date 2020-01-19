@@ -75,50 +75,16 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 .collect(Collectors.toList());
     }
 
-    private void addHash(DatenFilm f, HashSet<String> hash, boolean index) {
-        if (index) {
-            hash.add(f.getIndex());
-        } else {
-            hash.add(f.getUrl());
-        }
-    }
-
-    public synchronized void updateListe(ListeFilme listeEinsortieren, boolean index /* Vergleich über Index, sonst nur URL */, boolean ersetzen) {
+    public synchronized void updateFromFilmList(ListeFilme listeEinsortieren) {
         // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
-        // "ersetzen": true: dann werden gleiche (index/URL) in der Liste durch neue ersetzt
         final HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
 
-        if (ersetzen) {
-            listeEinsortieren.forEach((DatenFilm f) -> addHash(f, hash, index));
+        //TODO check if f.getUrl might be better solution
+        listeEinsortieren.forEach((DatenFilm f) -> hash.add(f.getIndex())); //alternativ f.getUrl()
+        this.removeIf(f -> hash.contains(f.getIndex())); //alternativ f.getUrl()
 
-            Iterator<DatenFilm> it = this.iterator();
-            while (it.hasNext()) {
-                DatenFilm f = it.next();
-                if (index) {
-                    if (hash.contains(f.getIndex())) {
-                        it.remove();
-                    }
-                } else if (hash.contains(f.getUrl())) {
-                    it.remove();
-                }
-            }
-
-            listeEinsortieren.forEach(this::addInit);
-        } else {
-            // ==============================================
-            this.forEach(f -> addHash(f, hash, index));
-
-            for (DatenFilm f : listeEinsortieren) {
-                if (index) {
-                    if (!hash.contains(f.getIndex())) {
-                        addInit(f);
-                    }
-                } else if (!hash.contains(f.getUrl())) {
-                    addInit(f);
-                }
-            }
-        }
+        listeEinsortieren.forEach(this::addInit);
         hash.clear();
     }
 

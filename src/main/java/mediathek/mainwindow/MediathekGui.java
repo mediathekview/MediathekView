@@ -11,6 +11,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.Main;
@@ -42,6 +43,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -189,6 +191,7 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundControlsFxNotificationBug();
+        workaroundJavaFxInitializationBug();
 
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
@@ -303,6 +306,27 @@ public class MediathekGui extends JFrame {
         //does not work on windows and linux
     }
 
+    /**
+     * JavaFX seems to need at least one window shown in order to function without further problems.
+     * This is imminent on macOS, but seems to affect windows as well.
+     */
+    protected void workaroundJavaFxInitializationBug() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            /*
+            For some unknown reason JavaFX seems to get confused on macOS when no stage was at least once
+            really visible. This will cause swing/javafx mixed windows to have focus trouble and/or use 100%
+            cpu when started in background.
+            Workaround for now is to open a native javafx stage, display it for the shortest time possible and
+            then close it as we don´t need it. On my machine this fixes the focus and cpu problems.
+             */
+            var window = new Stage();
+            window.setWidth(10d);
+            window.setHeight(10d);
+            window.show();
+            window.hide();
+        });
+    }
+
     private void createMemoryMonitor() {
         if (Config.isDebugModeEnabled())
             showMemoryMonitorAction.showMemoryMonitor();
@@ -368,10 +392,25 @@ public class MediathekGui extends JFrame {
     private void createStatusBar() {
         statusBarController = new StatusBarController(daten);
 
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
             installSelectedItemsLabel();
         });
+
+        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT,false);
+        if (enablePowerManagement) {
+                addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowActivated(WindowEvent e) {
+                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
+                    }
+
+                    @Override
+                    public void windowDeactivated(WindowEvent e) {
+                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
+                    }
+                });
+        }
     }
 
     private void installSelectedItemsLabel() {
@@ -719,10 +758,23 @@ public class MediathekGui extends JFrame {
             getMediaDatabaseDialog().setVis();
         });
 
+        JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
+        showFilmFilterDialog.addActionListener(l -> {
+            var dlg = tabFilme.fap.filterDialog;
+            if (dlg != null) {
+                if (!dlg.isVisible()) {
+                    dlg.setVisible(true);
+                }
+            }
+
+        });
+
         jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showFilmFilterDialog);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();

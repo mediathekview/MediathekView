@@ -1,24 +1,28 @@
 package mediathek.mac;
 
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Log;
 import mediathek.tool.javafx.FXErrorDialog;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Writes spotlight comments to the downloaded file on OS X.
  */
 public class SpotlightCommentWriter {
+    private static final Logger logger = LogManager.getLogger(SpotlightCommentWriter.class);
+
     /**
      * Log that MV wasn´t used via the official mac app.
      * This is relevant to know for bug reports.
      */
     private void logUnofficialMacAppUse() {
-        Log.errorLog(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
+        logger.error("MediathekView macOS: OFFICIAL DMG APP IS NOT USED!");
     }
 
     /**
@@ -50,16 +54,18 @@ public class SpotlightCommentWriter {
                         + "set comment of my_file to \"" + strComment + "\"\n"
                         + "end tell\n";
                 try {
+                    logger.trace("Writing spotlight comment");
                     final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
                     builder.command().add(script);
-                    builder.start();
+                    builder.start().waitFor(5, TimeUnit.SECONDS);
+                    logger.trace("Spotlight writing finished");
                 } catch (Exception ex) {
                     FXErrorDialog.showErrorDialog("Fehler",
                             "Fehler beim Schreiben des Spotlight-Kommentars",
                             "Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.\n" +
                                     "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
                             ex);
-                    Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
+                    logger.error("Fehler beim Spotlight schreiben: {}", filmPath.toString(), ex);
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
                     try {
