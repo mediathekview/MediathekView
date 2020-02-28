@@ -326,8 +326,8 @@ public class Daten {
     }
 
     private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
-        var historyFuture = pool.submit(new SeenHistoryCallable());
-        Futures.addCallback(historyFuture, new FutureCallback<>() {
+        var lhistoryFuture = pool.submit(new SeenHistoryCallable());
+        Futures.addCallback(lhistoryFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
                 setSeenHistoryController(seenHistoryController);
@@ -339,12 +339,12 @@ public class Daten {
             }
         }, pool);
 
-        return historyFuture;
+        return lhistoryFuture;
     }
 
     private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
-        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
-        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
+        var laboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        Futures.addCallback(laboHistoryFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
                 setAboHistoryList(aboHistoryController);
@@ -356,7 +356,7 @@ public class Daten {
             }
         }, decoratedPool);
 
-        return aboHistoryFuture;
+        return laboHistoryFuture;
     }
 
     public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
