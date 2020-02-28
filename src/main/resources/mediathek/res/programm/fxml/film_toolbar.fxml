@@ -18,7 +18,7 @@
         </graphic>
     </Button>
 
-    <VerticalSeparator/>
+    <Separator orientation="VERTICAL" />
 
     <Button mnemonicParsing="false" fx:id="btnFilmInfo">
         <tooltip>
@@ -29,7 +29,7 @@
         </graphic>
     </Button>
 
-    <VerticalSeparator/>
+    <Separator orientation="VERTICAL" />
 
     <Button mnemonicParsing="false" fx:id="btnPlay">
         <tooltip>
@@ -54,7 +54,7 @@
     <BlacklistButton mnemonicParsing="false"/>
     <EditBlacklistButton mnemonicParsing="false" />
 
-    <VerticalSeparator/>
+    <Separator orientation="VERTICAL" />
 
     <Button mnemonicParsing="false" fx:id="btnManageAbos">
         <tooltip>
