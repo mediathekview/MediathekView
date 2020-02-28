@@ -72,7 +72,7 @@ public class PanelEinstellungen extends JPanel {
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
 
         SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                "12", "14", "16", "18", "20", "25", "30"});
+                "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
         jSpinnerDays.setModel(lm);
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
