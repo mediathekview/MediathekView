@@ -70,6 +70,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
@@ -205,7 +206,7 @@ public class MediathekGui extends JFrame {
 
         loadFilmlist();
 
-        setupUpdateCheck();
+        setupUpdateCheck(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true)); 
 
         showVlcHintForAustrianUsers();
     }
@@ -550,14 +551,34 @@ public class MediathekGui extends JFrame {
         mediaDb.createMediaDB("");
     }
 
+    
+    @Handler
+    private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
+      SwingUtilities.invokeLater(() -> {
+        setupUpdateCheck(e.isActive());
+      });
+    }
+    
     /**
-     * This will setup a repeating update check every 24 hours.
+     * This creates a repeating update check every 24 hours.
      */
-    private void setupUpdateCheck() {
+    private void setupUpdateCheck(boolean newState) {
+      if (newState) {
         programUpdateChecker = new ProgramUpdateCheck(daten);
         programUpdateChecker.start();
+      }
+      else {
+        endProgramUpdateChecker();
+      }     
     }
-
+    
+    private void endProgramUpdateChecker() {
+      if (programUpdateChecker != null) {
+        programUpdateChecker.close();
+        programUpdateChecker = null;
+      }
+    }
+    
     public void initializeSystemTray() {
         final var useTray = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY));
         if (tray == null && useTray) {
@@ -900,7 +921,7 @@ public class MediathekGui extends JFrame {
 
         closeControlsFxWorkaroundStage();
 
-        programUpdateChecker.close();
+        endProgramUpdateChecker();
 
         ShutdownDialog dialog = new ShutdownDialog(this, 9);
         dialog.show();

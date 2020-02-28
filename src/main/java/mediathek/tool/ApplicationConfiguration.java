@@ -106,6 +106,9 @@ public class ApplicationConfiguration {
   public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
 
   public static final String UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT = "ui.filmlist_label.enable_powermanagement";
+  
+  public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
+  
   /**
    * logger for {@link TimerTaskListener} inner class.
    */
