@@ -784,7 +784,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class BeobMausTabelle extends MouseAdapter {
-        //rechhte Maustaste in der Tabelle
+        //rechte Maustaste in der Tabelle
 
         private final BeobPrint beobPrint = new BeobPrint();
         private final BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
