@@ -16,7 +16,7 @@ public class JFXSearchPanel extends CustomTextField {
 
         setPrefWidth(350d);
         setMinWidth(350d);
-        setMaxWidth(350d);
+        setMaxWidth(500d);
     }
 
     private void init() {
