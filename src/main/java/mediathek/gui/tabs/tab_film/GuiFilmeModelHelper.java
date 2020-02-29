@@ -40,7 +40,6 @@ public class GuiFilmeModelHelper {
 
         filmModel = new TModelFilm();
         listeFilme = daten.getListeFilmeNachBlackList();
-
     }
 
     private String getFilterThema() {
@@ -187,76 +186,36 @@ public class GuiFilmeModelHelper {
             }
 
             //minor speedup in case we don´t have search field entries...
-            if (searchFieldEmpty)
+            if (searchFieldEmpty || finalStageFiltering(film)) {
                 addFilmToTableModel(film);
-            else {
-                if (finalStageFiltering(film)) {
-                    addFilmToTableModel(film);
-                }
             }
         }
     }
 
     /**
      * Perform the last stage of filtering.
-     * Rework!!!
      */
     private boolean finalStageFiltering(final DatenFilm film) {
-        boolean result;
-
-        if (searchThroughDescriptions && !film.getDescription().isEmpty())
-            result = searchEntriesWithDescription(film);
-        else
-            result = searchEntries(film);
-
-        return result;
-    }
-
-    private boolean searchEntries(DatenFilm film) {
-        boolean result = false;
-        if (Filter.pruefen(arrIrgendwo, film.getThema())
-                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-            result = true;
+        boolean result = Filter.pruefen(arrIrgendwo, film.getThema()) || Filter.pruefen(arrIrgendwo, film.getTitle());
+        if (!result && searchThroughDescriptions && !film.getDescription().isEmpty()) {
+          result = Filter.pruefen(arrIrgendwo, film.getDescription());
         }
         return result;
-    }
-
-    private boolean searchEntriesWithDescription(DatenFilm film) {
-        boolean result = false;
-
-        if (Filter.pruefen(arrIrgendwo, film.getDescription())
-                || searchEntries(film)) {
-            result = true;
-        }
-
-        return result;
-    }
-
-    private void fillTableModel() {
-        // dann ein neues Model anlegen
-        if (noFiltersAreSet()) {
-            // dann ganze Liste laden
-            addAllFilmsToTableModel();
-        } else {
-            performTableFiltering();
-        }
-        tabelle.setModel(filmModel);
     }
 
     public void prepareTableModel() {
-        if (!listeFilme.isEmpty())
-            fillTableModel();
-
-        //use empty model
-        tabelle.setModel(filmModel);
-    }
-
-    private void addAllFilmsToTableModel() {
-        if (!listeFilme.isEmpty()) {
-            for (DatenFilm film : listeFilme) {
-                addFilmToTableModel(film);
-            }
+      if (!listeFilme.isEmpty()) {
+        if (noFiltersAreSet()) {
+          // dann ganze Liste laden
+          for (DatenFilm film : listeFilme) {
+            addFilmToTableModel(film);
+          }
+        } 
+        else {
+          performTableFiltering();
         }
+      }
+      tabelle.setModel(filmModel);
     }
 
     private void addFilmToTableModel(DatenFilm film) {
