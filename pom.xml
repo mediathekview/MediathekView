@@ -74,7 +74,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 
 		<junit.jupiter.version>5.3.1</junit.jupiter.version>
-		<javafx.version>14-ea+7</javafx.version>
+		<javafx.version>14-ea+8</javafx.version>
 		<picocli.version>4.1.2</picocli.version>
 
 		<mainclass>mediathek.Main</mainclass>
@@ -278,7 +278,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>4.2.2</version>
+			<version>4.4.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jetbrains</groupId>
@@ -289,7 +289,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>logging-interceptor</artifactId>
-			<version>4.2.2</version>
+			<version>4.4.1</version>
 		</dependency>
 
 		<dependency>
