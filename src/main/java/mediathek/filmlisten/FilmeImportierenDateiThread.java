@@ -1,5 +1,9 @@
 package mediathek.filmlisten;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import mediathek.daten.ListeFilme;
 
 class FilmeImportierenDateiThread extends Thread {
@@ -12,7 +16,12 @@ class FilmeImportierenDateiThread extends Thread {
 
     public FilmeImportierenDateiThread(String pfad, ListeFilme listeFilme, int days, IDownloadAction downloadAction,
                                        IAction onFinished) {
-        this.pfad = pfad;
+        // is directory-path of 'pfad' really a directory (relative/fix) ? (-> convert 'pfad' to directory if it is a file...)
+        File file_pfad_dir = new File(getDirnameFromPathname(pfad));
+        if(file_pfad_dir.isDirectory())
+            this.pfad = pfad;
+        else
+            this.pfad = System.getProperty("user.dir") + File.separator + file_pfad_dir;
         this.listeFilme = listeFilme;
         this.days = days;
         onFinishedAction = onFinished;
@@ -25,5 +34,12 @@ class FilmeImportierenDateiThread extends Thread {
     public void run() {
         final boolean result = downloadAction.performDownload(pfad, listeFilme, days);
         onFinishedAction.onFinished(result);
+    }
+    
+    public static String getDirnameFromPathname(String pathname)
+    {
+        Path path = Paths.get(pathname);
+        String dirname = path.getRoot().toString()+path.subpath(0, path.getNameCount()-1).toString();
+        return(dirname);
     }
 }
