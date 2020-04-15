@@ -55,6 +55,11 @@ public class PanelEinstellungen extends JPanel {
         ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
         daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
     }
+    
+    private void cbAutomaticUpdateChecksActionPerformed(java.awt.event.ActionEvent evt) {
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
+        daten.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
+    }
 
     private void setupDays() {
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
@@ -72,7 +77,7 @@ public class PanelEinstellungen extends JPanel {
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
 
         SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                "12", "14", "16", "18", "20", "25", "30"});
+                "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
         jSpinnerDays.setModel(lm);
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
@@ -158,6 +163,9 @@ public class PanelEinstellungen extends JPanel {
         cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
         final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
+        
+        cbAutomaticUpdateChecks.addActionListener(this::cbAutomaticUpdateChecksActionPerformed);
+        cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK,true));
     }
 
     @Handler
@@ -248,6 +256,7 @@ public class PanelEinstellungen extends JPanel {
         cbSaveHumanReadableFilmlist = new JCheckBox();
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
+        cbAutomaticUpdateChecks = new JCheckBox();
 
         //======== this ========
         setMaximumSize(new Dimension(10, 10));
@@ -513,6 +522,9 @@ public class PanelEinstellungen extends JPanel {
         //---- cbUseWikipediaSenderLogos ----
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
 
+        //---- cbAutomaticUpdateChecks ----
+        cbAutomaticUpdateChecks.setText("Automatischen Programmupdate Check alle 24h durchführen"); //NON-NLS
+        
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -529,7 +541,8 @@ public class PanelEinstellungen extends JPanel {
                                     .addComponent(jPanel2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jCheckBoxTray)
-                                .addComponent(cbUseWikipediaSenderLogos))
+                                .addComponent(cbUseWikipediaSenderLogos)
+                                .addComponent(cbAutomaticUpdateChecks))
                             .addGap(0, 1, Short.MAX_VALUE))
                         .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addContainerGap())
@@ -553,6 +566,7 @@ public class PanelEinstellungen extends JPanel {
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
+                    .addComponent(cbAutomaticUpdateChecks)
                     .addContainerGap(7, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -573,5 +587,6 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox cbSaveHumanReadableFilmlist;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
+    private JCheckBox cbAutomaticUpdateChecks;
     // End of variables declaration//GEN-END:variables
 }
