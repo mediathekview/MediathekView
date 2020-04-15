@@ -1,16 +1,16 @@
-JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel7::t:::x, comp jPanel8::l:::x, comp jPanel3:::::x, seq {par l {par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp cbAutomaticUpdateChecks::l:p::p}, space :0:1:x}, comp jPanel5::t:::x}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, comp cbAutomaticUpdateChecks:::p::p, space ::7:x}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel7::t:::x, comp jPanel8::l:::x, comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {par t:l::p {comp jPanel2::l:::x, comp jPanel4::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp cbAutomaticUpdateChecks::l:p::p}, space :0:0:x}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jPanel7:::p::p, space :::p, comp jPanel8:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space :::p, comp cbAutomaticUpdateChecks:::p::p, space :::x}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p, space ::20:x}}"
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p, space :::x}}"
 				"$verticalGroup": "par l {seq {space :5:5:p, par l {comp jCheckBoxTabsTop:::p::p, comp jCheckBoxTabIcon:::p::p, comp cbAutomaticMenuTabSwitching:::p::p}}}"
 			} ) {
 				name: "jPanel5"
@@ -33,7 +33,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel3:::p::p, space :5:5:p, comp jtfUserAgent:::p::p, space ::15:x}}"
+				"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel3:::p::p, space :5:5:p, comp jtfUserAgent:::p::p, space :::x}}"
 				"$verticalGroup": "par l {seq {space :10:10:p, comp jLabel3:::p::p}, seq {space :5:5:p, comp jtfUserAgent:::p::p}}"
 			} ) {
 				name: "jPanel3"
@@ -140,6 +140,9 @@ new FormModel {
 								add( "15" )
 							}
 						}
+						auxiliary() {
+							"model.noCode": true
+						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonLoad"
@@ -153,7 +156,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space ::408:x}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space :::x}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp cbUseDatabaseCleaner:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel7"
@@ -168,7 +171,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space ::335:x}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space :::x}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp cbSaveHumanReadableFilmlist:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel8"
@@ -191,10 +194,10 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "cbAutomaticUpdateChecks"
-				"text": "Automatischen Programmupdate Check alle 24h durchführen"
+				"text": "Programmupdates täglich suchen"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 645, 450 )
+			"size": new java.awt.Dimension( 645, 485 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

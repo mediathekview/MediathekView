@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
@@ -25,6 +26,9 @@ public class PanelEinstellungen extends JPanel {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final JFrame parent;
     private final Daten daten;
+    private final SpinnerListModel daySpinnerModel = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+            "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
+
 
     private void setupProxySettings() {
 
@@ -51,12 +55,12 @@ public class PanelEinstellungen extends JPanel {
         jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
-    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
         daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
     }
     
-    private void cbAutomaticUpdateChecksActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
         daten.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
     }
@@ -76,9 +80,7 @@ public class PanelEinstellungen extends JPanel {
                 + "Auswirkung hat das erst nach dem\n"
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
 
-        SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
-        jSpinnerDays.setModel(lm);
+        jSpinnerDays.setModel(daySpinnerModel);
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
@@ -286,7 +288,7 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jCheckBoxTabIcon)
                         .addGap(5, 5, 5)
                         .addComponent(cbAutomaticMenuTabSwitching)
-                        .addContainerGap(20, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel5Layout.setVerticalGroup(
                 jPanel5Layout.createParallelGroup()
@@ -319,7 +321,7 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jLabel3)
                         .addGap(5, 5, 5)
                         .addComponent(jtfUserAgent, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(15, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup()
@@ -405,9 +407,6 @@ public class PanelEinstellungen extends JPanel {
                 //---- jLabel6 ----
                 jLabel6.setText("Nur die Filme der letzten Tage laden:"); //NON-NLS
 
-                //---- jSpinnerDays ----
-                jSpinnerDays.setModel(new SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"})); //NON-NLS
-
                 //---- jButtonLoad ----
                 jButtonLoad.setText("Filmliste jetzt neu laden"); //NON-NLS
 
@@ -480,7 +479,7 @@ public class PanelEinstellungen extends JPanel {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(cbUseDatabaseCleaner)
-                        .addContainerGap(408, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel7Layout.setVerticalGroup(
                 jPanel7Layout.createParallelGroup()
@@ -505,7 +504,7 @@ public class PanelEinstellungen extends JPanel {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(335, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel8Layout.setVerticalGroup(
                 jPanel8Layout.createParallelGroup()
@@ -523,8 +522,8 @@ public class PanelEinstellungen extends JPanel {
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
 
         //---- cbAutomaticUpdateChecks ----
-        cbAutomaticUpdateChecks.setText("Automatischen Programmupdate Check alle 24h durchführen"); //NON-NLS
-        
+        cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
+
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -535,6 +534,7 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup()
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
@@ -543,8 +543,7 @@ public class PanelEinstellungen extends JPanel {
                                 .addComponent(jCheckBoxTray)
                                 .addComponent(cbUseWikipediaSenderLogos)
                                 .addComponent(cbAutomaticUpdateChecks))
-                            .addGap(0, 1, Short.MAX_VALUE))
-                        .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -566,8 +565,9 @@ public class PanelEinstellungen extends JPanel {
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbAutomaticUpdateChecks)
-                    .addContainerGap(7, Short.MAX_VALUE))
+                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
