@@ -70,6 +70,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
 @SuppressWarnings("serial")
@@ -85,7 +86,7 @@ public class MediathekGui extends JFrame {
     /**
      * "Pointer" to UI
      */
-    private static MediathekGui ui = null;
+    private static MediathekGui ui;
     /**
      * Number of active downloads
      */
@@ -135,6 +136,7 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private DialogMediaDB dialogMediaDB;
     private ManageAboAction manageAboAction;
+    private AutomaticFilmlistUpdate automaticFilmlistUpdate;
 
     public MediathekGui() {
         ui = this;
@@ -186,7 +188,7 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))) {
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false)) {
             getBandwidthMonitorController().setVisibility();
         }
 
@@ -206,7 +208,7 @@ public class MediathekGui extends JFrame {
 
         loadFilmlist();
 
-        setupUpdateCheck(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true)); 
+        setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
 
         showVlcHintForAustrianUsers();
     }
@@ -451,7 +453,8 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
-        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))));
+        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(vis));
     }
 
     private void setWindowTitle() {
@@ -528,7 +531,7 @@ public class MediathekGui extends JFrame {
             }
         };
 
-        AutomaticFilmlistUpdate automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
+        automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
         automaticFilmlistUpdate.start();
     }
 
@@ -536,7 +539,7 @@ public class MediathekGui extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                if (tray != null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
+                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false)) {
                     setVisible(false);
                 } else {
                     beenden(false, false);
@@ -554,9 +557,7 @@ public class MediathekGui extends JFrame {
     
     @Handler
     private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
-      SwingUtilities.invokeLater(() -> {
-        setupUpdateCheck(e.isActive());
-      });
+      SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
     }
     
     /**
@@ -580,7 +581,7 @@ public class MediathekGui extends JFrame {
     }
     
     public void initializeSystemTray() {
-        final var useTray = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY));
+        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
         if (tray == null && useTray) {
             tray = new MVTray().systemTray();
         } else if (tray != null && !useTray) {
@@ -784,9 +785,9 @@ public class MediathekGui extends JFrame {
             }
         });
 
-        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
+        cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false));
         cbBandwidthDisplay.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,cbBandwidthDisplay.isSelected());
             getBandwidthMonitorController().setVisibility();
         });
 
@@ -916,6 +917,8 @@ public class MediathekGui extends JFrame {
             }
             shutDown = dialogBeenden.isShutdownRequested();
         }
+
+        automaticFilmlistUpdate.close();
 
         showMemoryMonitorAction.closeMemoryMonitor();
 

@@ -80,7 +80,12 @@ public class FilmListWriter {
 
 
             Path filePath = Paths.get(datei);
-            Files.deleteIfExists(filePath);
+            try {
+                Files.deleteIfExists(filePath);
+            }
+            catch (Exception e) {
+                logger.error("writeFilmList", e);
+            }
             long start = System.nanoTime();
 
             try (OutputStream fos = Files.newOutputStream(filePath);

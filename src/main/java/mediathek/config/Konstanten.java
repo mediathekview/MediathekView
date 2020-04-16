@@ -27,10 +27,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final Version MVVERSION = new Version(13, 6, 0);
-
+    public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
+    public static final String USER_AGENT_DATABASE = "user_agents.mv.db";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
-    public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekviewweb.de/";
+    public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekview.de/";
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";

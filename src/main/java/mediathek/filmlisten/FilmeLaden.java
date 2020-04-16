@@ -7,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -17,6 +16,7 @@ import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVHttpClient;
@@ -53,8 +53,8 @@ public class FilmeLaden {
     private final Daten daten;
     private final ImportFilmliste importFilmliste;
     private final EventListenerList listeners = new EventListenerList();
-    private boolean istAmLaufen = false;
-    private boolean onlyOne = false;
+    private boolean istAmLaufen;
+    private boolean onlyOne;
 
     public FilmeLaden(Daten aDaten) {
         daten = aDaten;
@@ -210,7 +210,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
 
-            final int days = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE));
+            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (Netzwerk)");
@@ -243,7 +243,8 @@ public class FilmeLaden {
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
-            importFilmliste.importFromFile(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
         }
     }
 
@@ -296,7 +297,8 @@ public class FilmeLaden {
             listeFilme.clear();
 
             try (FilmListReader reader = new FilmListReader()) {
-                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
             }
             logger.info("");
 

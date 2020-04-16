@@ -18,6 +18,7 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
@@ -38,10 +39,12 @@ import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
 import java.util.Optional;
@@ -248,6 +251,57 @@ public class Main {
     }
 
     /**
+     * Copy user agent database to cache directory.
+     * Unfortunately we cannot work from within jar :(
+     */
+    private static void copyUserAgentDatabase() {
+        String strDatabase;
+        //FIXME create function for this redundant code!
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
+        } else {
+            strDatabase = Daten.getSettingsDirectory_String() + File.separator;
+        }
+
+        Path p = Paths.get(strDatabase + Konstanten.USER_AGENT_DATABASE);
+        logger.trace("deleting user agent database");
+        try {
+            Files.deleteIfExists(p);
+            logger.trace("copy user agent database to cache directory");
+            FileUtils.copyToFile(Main.class.getResourceAsStream("/database/" + Konstanten.USER_AGENT_DATABASE), p.toFile());
+        } catch (IOException e) {
+            logger.error("copyUserAgentDatabase failed:", e);
+        }
+    }
+
+    /**
+     * Migrate old settings stored in mediathek.xml to new app config
+     */
+    private static void migrateOldConfigSettings() {
+        var settingsDir = Daten.getSettingsDirectory_String();
+        if (settingsDir != null && !settingsDir.isEmpty()) {
+            Path pSettingsDir = Paths.get(settingsDir);
+            if (Files.exists(pSettingsDir)) {
+                //convert existing settings
+                Path settingsFile = pSettingsDir.resolve(Konstanten.CONFIG_FILE);
+                if (Files.exists(settingsFile)) {
+                    logger.trace("{} exists", Konstanten.CONFIG_FILE);
+                    logger.trace("migrating old config settings");
+                    try {
+                        SettingsMigrator migrator = new SettingsMigrator(settingsFile);
+                        migrator.migrate();
+                    }
+                    catch (Exception e) {
+                        logger.error("settings migration error", e);
+                    }
+                }
+            }
+            else
+                logger.trace("nothing to migrate");
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
@@ -274,11 +328,13 @@ public class Main {
             printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
-            cmd.getErr().println(ex.getMessage());
-            if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, cmd.getErr())) {
-                ex.getCommandLine().usage(cmd.getErr());
+            try (var err = cmd.getErr()) {
+                err.println(ex.getMessage());
+                if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
+                    ex.getCommandLine().usage(err);
+                }
+                System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
             }
-            System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
         } catch (Exception ex) {
             logger.error("Command line parse error:", ex);
             System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
@@ -297,6 +353,8 @@ public class Main {
         splashScreen = Optional.of(new SplashScreen());
         splashScreen.ifPresent(SplashScreen::show);
 
+        migrateOldConfigSettings();
+
         loadConfigurationData();
 
         Daten.getInstance().launchHistoryDataLoading();
@@ -307,6 +365,8 @@ public class Main {
             setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
+
+        copyUserAgentDatabase();
 
         startGuiMode();
     }
