@@ -45,6 +45,7 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -109,15 +110,17 @@ public class GuiDownloads extends AGuiTabPanel {
     private final JPanel downloadListArea = new JPanel();
     private final AtomicBoolean tabVisible = new AtomicBoolean(false);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
-    private boolean onlyAbos = false;
-    private boolean onlyDownloads = false;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
-    private boolean onlyWaiting = false;
-    private boolean onlyNotStarted = false;
-    private boolean onlyStarted = false;
-    private boolean onlyFinished = false;
-    private boolean onlyRun = false;
-    private boolean loadFilmlist = false;
+    private boolean onlyAbos;
+    private boolean onlyDownloads;
+
+    private boolean onlyWaiting;
+    private boolean onlyNotStarted;
+    private boolean onlyStarted;
+    private boolean onlyFinished;
+    private boolean onlyRun;
+    private boolean loadFilmlist;
     /**
      * The internally used model.
      */
@@ -128,7 +131,7 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * macOS touch bar support.
      */
-    public JTouchBar touchBar = null;
+    public JTouchBar touchBar;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -662,14 +665,14 @@ public class GuiDownloads extends AGuiTabPanel {
         });
 
         jSpinnerAnzahlDownloads.setModel(new SpinnerNumberModel(1, 1, 9, 1));
-        jSpinnerAnzahlDownloads.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
+        jSpinnerAnzahlDownloads.setValue(config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1));
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-                    String.valueOf(((Number) jSpinnerAnzahlDownloads.getModel().getValue()).intValue()));
+            final int maxNumDownloads = ((Number)jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
+            config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
             daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
-        final int location = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
         jSplitPane1.setDividerLocation(location);
 
         setupInfoPanel();
@@ -1351,7 +1354,7 @@ public class GuiDownloads extends AGuiTabPanel {
     public class BeobMausTabelle extends MouseAdapter {
 
         private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
-        DatenDownload datenDownload = null;
+        DatenDownload datenDownload;
         private Point p;
 
         @Override

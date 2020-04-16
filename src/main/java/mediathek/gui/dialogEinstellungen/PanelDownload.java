@@ -19,7 +19,10 @@ public class PanelDownload extends PanelVorlage {
 
     @Handler
     private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
-        SwingUtilities.invokeLater(() -> jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD))));
+        SwingUtilities.invokeLater(() -> {
+            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+            jSpinnerAnzahlDownload.setValue(maxNumDownloads);
+        });
     }
 
     public PanelDownload(Daten d, JFrame parent) {
@@ -29,9 +32,11 @@ public class PanelDownload extends PanelVorlage {
 
         daten.getMessageBus().subscribe(this);
 
-        jSpinnerAnzahlDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
-        jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
+        jSpinnerAnzahlDownload.setModel(new SpinnerNumberModel(1, 1, 9, 1));
+        final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+        jSpinnerAnzahlDownload.setValue(maxNumDownloads);
         jSpinnerAnzahlDownload.addChangeListener(new BeobSpinnerDownload());
+
         jButtonHilfeAnzahl.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeAnzahl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Hier kann angegeben werden, wie viele\n"
@@ -59,8 +64,8 @@ public class PanelDownload extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-                    String.valueOf(((Number) jSpinnerAnzahlDownload.getModel().getValue()).intValue()));
+            final int maxDownloads = ((Number)jSpinnerAnzahlDownload.getModel().getValue()).intValue();
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxDownloads);
 
             daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         }
