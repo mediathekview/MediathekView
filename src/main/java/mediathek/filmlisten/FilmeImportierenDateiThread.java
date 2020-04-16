@@ -17,11 +17,12 @@ class FilmeImportierenDateiThread extends Thread {
     public FilmeImportierenDateiThread(String pfad, ListeFilme listeFilme, int days, IDownloadAction downloadAction,
                                        IAction onFinished) {
         // is directory-path of 'pfad' really a directory (relative/fix) ? (-> convert 'pfad' to directory if it is a file...)
-        File file_pfad_dir = new File(getDirnameFromPathname(pfad));
-        if(file_pfad_dir.isDirectory())
+        //File file_pfad_dir = new File(getDirnameFromPathname(pfad));
+        if(new File(pfad).exists()) {
             this.pfad = pfad;
-        else
-            this.pfad = System.getProperty("user.dir") + File.separator + file_pfad_dir;
+        } else {
+            this.pfad = System.getProperty("user.dir") + File.separator + pfad;
+        }
         this.listeFilme = listeFilme;
         this.days = days;
         onFinishedAction = onFinished;
