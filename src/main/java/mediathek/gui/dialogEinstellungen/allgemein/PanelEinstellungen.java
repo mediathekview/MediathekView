@@ -2,7 +2,6 @@ package mediathek.gui.dialogEinstellungen.allgemein;
 
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
@@ -104,7 +103,7 @@ public class PanelEinstellungen extends JPanel {
 
     @Handler
     private void handleTrayIconEvent(TrayIconEvent e) {
-        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))));
+        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false)));
     }
 
     private void setupTray() {
@@ -114,9 +113,9 @@ public class PanelEinstellungen extends JPanel {
         } else {
             daten.getMessageBus().subscribe(this);
 
-            jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
+            jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false));
             jCheckBoxTray.addActionListener(ae -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
+                config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,jCheckBoxTray.isSelected());
                 MediathekGui.ui().initializeSystemTray();
             });
         }
@@ -205,13 +204,13 @@ public class PanelEinstellungen extends JPanel {
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
-        }
-        String s = MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE);
-        if (s.equals("0")) {
+        String s;
+        final int num_days = config.getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+        if (num_days == 0)
             s = ALLE;
-        }
+        else
+            s = Integer.toString(num_days);
+
         jSpinnerDays.setValue(s);
     }
 
@@ -223,7 +222,15 @@ public class PanelEinstellungen extends JPanel {
             if (s.equals(ALLE)) {
                 s = "0";
             }
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, s);
+
+            int num_days;
+            try {
+                num_days = Integer.parseInt(s);
+            }
+            catch (NumberFormatException e) {
+                num_days = 0;
+            }
+            config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, num_days);
         }
     }
 

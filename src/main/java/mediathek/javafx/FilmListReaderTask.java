@@ -2,9 +2,9 @@ package mediathek.javafx;
 
 import javafx.concurrent.Task;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.messages.FilmListReadStartEvent;
+import mediathek.tool.ApplicationConfiguration;
 
 public class FilmListReaderTask extends Task<Void> {
     private final Daten daten;
@@ -21,7 +21,8 @@ public class FilmListReaderTask extends Task<Void> {
         updateProgress(-1, 4);
         updateMessage("Lese lokale Filmliste");
         try (FilmListReader reader = new FilmListReader()) {
-            reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), num_days);
         }
 
         return null;
