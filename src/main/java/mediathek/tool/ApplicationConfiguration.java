@@ -102,6 +102,7 @@ public class ApplicationConfiguration {
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
+    public static final String DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number";
 
     public static final String SEARCH_USE_FILM_DESCRIPTIONS =
             "searchfield.film.search_through_description";

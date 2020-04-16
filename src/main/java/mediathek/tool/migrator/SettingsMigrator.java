@@ -56,8 +56,27 @@ public class SettingsMigrator {
                     case "system-anz-tage-filmilste": // kein Fehler!!!
                         migrateFilmListAnzTage(element);
                         break;
+
+                    case "maxDownload":
+                        migrateMaxNumDownloads(element);
+                        break;
                 }
             }
+        }
+    }
+
+    private void migrateMaxNumDownloads(Element element) {
+        var node = element.getFirstChild();
+        int maxDownloads;
+        if (node != null) {
+            try {
+                maxDownloads = Integer.parseInt(node.getNodeValue());
+            }
+            catch (NumberFormatException ex) {
+                maxDownloads = 1;
+            }
+            config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxDownloads);
+            logger.debug("migrateMaxNumDownloads");
         }
     }
 

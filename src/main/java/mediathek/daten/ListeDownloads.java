@@ -28,6 +28,7 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -486,8 +487,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         final DatenDownload[] ret = new DatenDownload[1];
 
-        if (this.size() > 0 &&
-                getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
+        final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+        if (this.size() > 0 && getDown(maxNumDownloads)) {
             naechsterStart().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
                     if (datenDownload.start.status == Start.STATUS_INIT)
@@ -525,9 +526,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    // ################################################################
-    // private
-    // ################################################################
     private boolean getDown(int max) {
         int count = 0;
         for (DatenDownload datenDownload : this) {
