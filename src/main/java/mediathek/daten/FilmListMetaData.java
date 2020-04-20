@@ -2,9 +2,11 @@ package mediathek.daten;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class FilmListMetaData {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
@@ -53,10 +55,17 @@ public class FilmListMetaData {
      * @return creation date and time in local date/time format.
      */
     public String getGenerationDateTimeAsString() {
-        return FORMATTER.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
+        String res;
+        try {
+            res = FORMATTER.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
+        }
+        catch (Exception ex) {
+            res = "0";
+        }
+        return res;
     }
 
-    private Duration getAge() {
+    private @Nullable Duration getAge() {
         return Duration.between(creationDateTime, Instant.now().atZone(ZoneId.systemDefault()));
     }
 
@@ -68,7 +77,7 @@ public class FilmListMetaData {
     public long getAgeInSeconds() {
         long newAge;
         try {
-            newAge = getAge().toSeconds();
+            newAge = Objects.requireNonNull(getAge()).toSeconds();
         } catch (Exception ex) {
             newAge = 0;
         }

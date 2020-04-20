@@ -918,7 +918,8 @@ public class MediathekGui extends JFrame {
             shutDown = dialogBeenden.isShutdownRequested();
         }
 
-        automaticFilmlistUpdate.close();
+        if (automaticFilmlistUpdate != null)
+            automaticFilmlistUpdate.close();
 
         showMemoryMonitorAction.closeMemoryMonitor();
 
