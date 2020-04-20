@@ -7,10 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SimpleTimeZone;
@@ -79,22 +76,24 @@ public class FilmListMetaData {
         return filmDate;
     }
 
+    private Duration getAge() {
+        return Duration.between(creationDateTime, Instant.now().atZone(ZoneId.systemDefault()));
+    }
+
     /**
      * Get the age of the film list.
      *
      * @return Age in seconds.
      */
-    public long getAge() {
-        long ret = 0;
-
-        Date filmDate = getAgeAsDate();
-        if (filmDate != null) {
-            ret = (System.currentTimeMillis() - filmDate.getTime()) / 1000;
-            if (ret < 0) {
-                ret = 0;
-            }
+    public long getAgeInSeconds() {
+        long newAge;
+        try {
+            newAge = getAge().toSeconds();
         }
-        return ret;
+        catch (Exception ex) {
+            newAge = 0;
+        }
+        return newAge;
     }
 
     private static final Logger logger = LogManager.getLogger();
@@ -105,7 +104,7 @@ public class FilmListMetaData {
      * @return true if older.
      */
     public boolean isOlderThan(long sekunden) {
-        final long ret = getAge();
+        final long ret = getAgeInSeconds();
         if (ret != 0) {
             logger.info("Die Filmliste ist {} Minuten alt", ret / 60);
         }
