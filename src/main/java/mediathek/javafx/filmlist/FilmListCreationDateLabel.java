@@ -18,7 +18,7 @@ class FilmListCreationDateLabel extends ComputedLabel {
      * Computes and displays the age of the list.
      */
     public void computeCreationDate() {
-        final String genDate = daten.getListeFilme().genDate();
+        final String genDate = daten.getListeFilme().metaData().getGenerationDateTime();
         //update text
         String strText = "Filmliste erstellt: ";
         strText += genDate;

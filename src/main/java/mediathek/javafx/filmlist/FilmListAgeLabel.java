@@ -35,7 +35,7 @@ public class FilmListAgeLabel extends ComputedLabel {
     }
 
     private void setAgeToLabel() {
-      setComputedText(computeAge(Daten.getInstance().getListeFilme().getAge()));
+      setComputedText(computeAge(Daten.getInstance().getListeFilme().metaData().getAge()));
     }
 
     private String computeAge(long seconds) {

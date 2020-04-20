@@ -92,7 +92,7 @@ public class FilmeLaden {
         boolean result = false;
         logger.debug("hasNewRemoteFilmList()");
 
-        final String id = Daten.getInstance().getListeFilme().getId();
+        final String id = Daten.getInstance().getListeFilme().metaData().getId();
 
         boolean showDialogs = true;
 
@@ -193,7 +193,7 @@ public class FilmeLaden {
 
         logger.debug("loadFilmlist(String,boolean)");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("Alte Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTime());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
@@ -230,7 +230,7 @@ public class FilmeLaden {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().genDate());
+        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().metaData().getGenerationDateTime());
         logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
         logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
         if (!istAmLaufen) {
@@ -263,7 +263,7 @@ public class FilmeLaden {
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
             logger.info("Liste Diff gelesen am: {}", readDate);
-            logger.info("  Liste Diff erstellt am: {}", diffListe.genDate());
+            logger.info("  Liste Diff erstellt am: {}", diffListe.metaData().getGenerationDateTime());
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
             listeFilme.updateFromFilmList(diffListe);
@@ -272,7 +272,7 @@ public class FilmeLaden {
             diffListe.clear();
         } else {
             logger.info("Liste Kompl. gelesen am: {}", readDate);
-            logger.info("  Liste Kompl erstellt am: {}", listeFilme.genDate());
+            logger.info("  Liste Kompl erstellt am: {}", listeFilme.metaData().getGenerationDateTime());
             logger.info("  Anzahl Filme: {}", listeFilme.size());
         }
 
@@ -308,7 +308,7 @@ public class FilmeLaden {
         }
 
         logger.info("");
-        logger.info("Jetzige Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("Jetzige Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTime());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms());
         logger.info("");
