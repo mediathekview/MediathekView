@@ -47,6 +47,8 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,6 +73,7 @@ public class GuiFilme extends AGuiTabPanel {
             DatenFilm.FILM_ABSPIELEN,
             DatenFilm.FILM_AUFZEICHNEN
     };
+    private static final Logger logger = LogManager.getLogger(GuiFilme.class);
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
@@ -88,12 +91,12 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * macOS touch bar support
      */
-    public JTouchBar touchBar = null;
+    public JTouchBar touchBar;
     /**
      * The swing helper panel FilmAction bar.
      */
     private JFXPanel fxFilmActionPanel;
-    private boolean stopBeob = false;
+    private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
     private JFXPanel fxDescriptionPanel;
     private IButtonPanelController buttonPanelController;
@@ -638,7 +641,11 @@ public class GuiFilme extends AGuiTabPanel {
 
             setupZeitraumListener();
 
-            fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.themaBox.setOnAction(evt -> {
+                if (!fap.themaBox.getItems().isEmpty()) {
+                    SwingUtilities.invokeLater(this::reloadTable);
+                }
+            });
         });
 
         setupShowFilmDescriptionMenuItem();
@@ -702,7 +709,7 @@ public class GuiFilme extends AGuiTabPanel {
             updateFilmData();
             stopBeob = false;
         } catch (Exception ex) {
-            Log.errorLog(558965421, ex);
+            logger.error("loadTable", ex);
         }
 
         tabelle.scrollToSelection();
@@ -1081,7 +1088,7 @@ public class GuiFilme extends AGuiTabPanel {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.errorLog(688542239, ex);
+                    logger.error(ex);
                 }
             }
         }
