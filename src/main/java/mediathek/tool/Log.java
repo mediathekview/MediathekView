@@ -16,7 +16,6 @@ public class Log {
     public final static String LINE = "################################################################################";
     public static final Instant startZeit = Instant.now();
     private final static String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
-    private static final ArrayList<Error> fehlerListe = new ArrayList<>();
     private static final ArrayList<String> logList = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger(Log.class);
     private static boolean progress;
@@ -81,17 +80,6 @@ public class Log {
         }
     }
 
-    private static void addFehlerNummer(int nr, String classs, boolean exception) {
-        for (Error e : fehlerListe) {
-            if (e.nr == nr) {
-                ++e.count;
-                return;
-            }
-        }
-        // dann gibts die Nummer noch nicht
-        fehlerListe.add(new Error(nr, classs, exception));
-    }
-
     private static void fehlermeldung_(int fehlerNummer, Exception ex, String[] texte) {
         final Throwable t = new Throwable();
         final StackTraceElement methodCaller = t.getStackTrace()[2];
@@ -109,7 +97,7 @@ public class Log {
         } catch (Exception ignored) {
             kl = klasse;
         }
-        addFehlerNummer(fehlerNummer, kl, ex != null);
+
         if (ex != null || Config.isDebugModeEnabled()) {
             // Exceptions immer ausgeben
             resetProgress();
@@ -170,21 +158,5 @@ public class Log {
     private static void printLog() {
         logList.forEach(System.out::println);
         logList.clear();
-    }
-
-    // private
-    private static class Error {
-
-        String cl;
-        int nr;
-        int count;
-        boolean ex;
-
-        public Error(int nr, String cl, boolean ex) {
-            this.nr = nr;
-            this.cl = cl;
-            this.ex = ex;
-            this.count = 1;
-        }
     }
 }
