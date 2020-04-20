@@ -17,7 +17,7 @@ public class Log {
     public static final Instant startZeit = Instant.now();
     private final static String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
     private static final ArrayList<String> logList = new ArrayList<>();
-    private static final Logger logger = LogManager.getLogger(Log.class);
+    private static final Logger logger = LogManager.getLogger();
     private static boolean progress;
 
     public static void endMsg() {
