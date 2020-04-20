@@ -142,40 +142,30 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         if (datenDownload != null) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
-                    setToolTipText("Film stoppen");
-                    final Icon icon;
-                    if (isSelected)
-                        icon = selectedStopIcon;
-                    else
-                        icon = normalStopIcon;
-
-                    setIcon(icon);
+                    setIconAndToolTip(isSelected, normalStopIcon, selectedStopIcon, "Film stoppen");
                 }
             }
         }
 
         if (getIcon() == null) {
-            setToolTipText("Film abspielen");
-            final Icon icon;
-            if (isSelected)
-                icon = selectedPlayIcon;
-            else
-                icon = normalPlayIcon;
-
-            setIcon(icon);
+            setIconAndToolTip(isSelected,normalPlayIcon,selectedPlayIcon,"Film abspielen");
         }
+    }
+
+    private void setIconAndToolTip(boolean isSelected, Icon normal, Icon selected, String text) {
+        setToolTipText(text);
+        Icon icon;
+        if (isSelected)
+            icon = selected;
+        else
+            icon = normal;
+
+        setIcon(icon);
     }
 
     private void handleButtonDownloadColumn(final boolean isSelected) {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
-        setToolTipText("Film aufzeichnen");
-        final Icon icon;
-        if (isSelected)
-            icon = selectedDownloadIcon;
-        else
-            icon = normalDownloadIcon;
-
-        setIcon(icon);
+        setIconAndToolTip(isSelected,normalDownloadIcon,selectedDownloadIcon,"Film aufzeichnen");
     }
 }
