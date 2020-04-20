@@ -1,18 +1,13 @@
 package mediathek.daten;
 
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.SimpleTimeZone;
 
 public class FilmListMetaData {
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-    private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
     private String datum = "";
     private String id = "";
     /**
@@ -55,23 +50,6 @@ public class FilmListMetaData {
      */
     public String getGenerationDateTimeAsString() {
         return ndtf.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
-    }
-
-    /**
-     * Get the age of the film list.
-     *
-     * @return Age as a {@link java.util.Date} object.
-     */
-    public Date getAgeAsDate() {
-        String date = datum;
-
-        Date filmDate = null;
-        try {
-            filmDate = sdf_.parse(date);
-        } catch (ParseException ignored) {
-        }
-
-        return filmDate;
     }
 
     private Duration getAge() {
