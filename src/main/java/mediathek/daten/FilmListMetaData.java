@@ -1,12 +1,10 @@
 package mediathek.daten;
 
-import mediathek.config.Konstanten;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -97,6 +95,7 @@ public class FilmListMetaData {
     }
 
     private static final Logger logger = LogManager.getLogger();
+
     /**
      * Check if list is older than specified parameter.
      *
@@ -112,21 +111,18 @@ public class FilmListMetaData {
     }
 
     /**
-     * Check if Filmlist is too old for using a diff list.
+     * Check if Filmlist was created before today´s date 07:00Z so we can try to use diff lists.
      *
-     * @return true if empty or too old.
+     * @return true if too old
      */
     public boolean isTooOldForDiff() {
-        try {
-            final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Konstanten.TIME_MAX_AGE_FOR_DIFF + ":00:00";
-            final Date dateMaxDiff = new SimpleDateFormat("yyyy.MM.dd__HH:mm:ss").parse(dateMaxDiff_str);
-            final Date dateFilmliste = getAgeAsDate();
-            if (dateFilmliste != null) {
-                return dateFilmliste.getTime() < dateMaxDiff.getTime();
-            }
-        } catch (Exception ignored) {
-        }
-        return true;
+        // cannot use diff as we don´t have a reference
+        if (creationDateTime == null)
+            return true;
+
+        //earliest possible diff usage is current day 07:00Z
+        ZonedDateTime firstPossibleDiffTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7,0), ZoneOffset.UTC);
+        return creationDateTime.isBefore(firstPossibleDiffTime);
     }
 
 }
