@@ -7,28 +7,31 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class FilmListMetaData {
-    private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-    private String datum = "";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private static final Logger logger = LogManager.getLogger();
     private String id = "";
+
     /**
      * Creation date/time of the filmlist stored in UTC.
      */
     private ZonedDateTime creationDateTime;
-    private static final DateTimeFormatter ndtf = DateTimeFormatter.ofPattern(DATUM_ZEIT_FORMAT);
 
+    /**
+     * Get the filmlist create date/time in UTC
+     * @return date/time in UTC as String.
+     */
     public String getDatum() {
-        return datum;
+        return FORMATTER.format(creationDateTime);
     }
 
     /**
      * Store creation date of the filmlist.
      * This will always be UTC.
+     *
      * @param datum the UTC creation date and time
      */
     public void setDatum(String datum) {
-        this.datum = datum;
-
-        creationDateTime = LocalDateTime.parse(datum, ndtf).atZone(ZoneOffset.UTC);
+        creationDateTime = LocalDateTime.parse(datum, FORMATTER).atZone(ZoneOffset.UTC);
     }
 
     public String getId() {
@@ -46,10 +49,11 @@ public class FilmListMetaData {
     /**
      * Return the filmlist creation date and time as string.
      * Filmlist date is in UTC.
+     *
      * @return creation date and time in local date/time format.
      */
     public String getGenerationDateTimeAsString() {
-        return ndtf.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
+        return FORMATTER.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
     }
 
     private Duration getAge() {
@@ -65,14 +69,11 @@ public class FilmListMetaData {
         long newAge;
         try {
             newAge = getAge().toSeconds();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             newAge = 0;
         }
         return newAge;
     }
-
-    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Check if list is older than specified parameter.
@@ -99,7 +100,7 @@ public class FilmListMetaData {
             return false;
 
         //earliest possible diff usage is current day 07:00Z
-        ZonedDateTime firstPossibleDiffTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7,0), ZoneOffset.UTC);
+        ZonedDateTime firstPossibleDiffTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7, 0), ZoneOffset.UTC);
         return creationDateTime.isAfter(firstPossibleDiffTime);
     }
 
