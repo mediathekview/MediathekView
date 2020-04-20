@@ -23,7 +23,6 @@ import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,6 +46,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class Main {
@@ -232,11 +234,10 @@ public class Main {
     }
 
     private static void printVersionInformation() {
-        final var formatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         logger.debug("=== Java Information ===");
-        logger.info("Programmstart: {}", formatter.format(Log.startZeit));
-        //Version
+        logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         final long maxMem = Runtime.getRuntime().maxMemory();
