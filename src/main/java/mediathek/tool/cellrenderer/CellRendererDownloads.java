@@ -82,12 +82,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
         try {
-            setBackground(null);
-            setForeground(null);
-            setIcon(null);
-            setToolTipText(null);
-            setHorizontalAlignment(SwingConstants.LEADING);
-
+            resetComponent();
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
