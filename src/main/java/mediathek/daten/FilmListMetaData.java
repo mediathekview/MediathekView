@@ -7,6 +7,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
@@ -15,13 +20,25 @@ public class FilmListMetaData {
     private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
     private String datum = "";
     private String id = "";
+    /**
+     * Creation date/time of the filmlist stored in UTC.
+     */
+    private ZonedDateTime creationDateTime;
+    private static final DateTimeFormatter ndtf = DateTimeFormatter.ofPattern(DATUM_ZEIT_FORMAT);
 
     public String getDatum() {
         return datum;
     }
 
+    /**
+     * Store creation date of the filmlist.
+     * This will always be UTC.
+     * @param datum the UTC creation date and time
+     */
     public void setDatum(String datum) {
         this.datum = datum;
+
+        creationDateTime = LocalDateTime.parse(datum, ndtf).atZone(ZoneOffset.UTC);
     }
 
     public String getId() {
@@ -39,21 +56,10 @@ public class FilmListMetaData {
     /**
      * Return the filmlist creation date and time as string.
      * Filmlist date is in UTC.
-     * @return creation date and time in local format.
+     * @return creation date and time in local date/time format.
      */
-    public String getGenerationDateTime() {
-        final String date = datum;
-
-        String ret;
-        try {
-            final Date filmDate = sdf_.parse(datum);
-            final FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
-            ret = formatter.format(filmDate);
-        } catch (ParseException ignored) {
-            ret = date;
-        }
-
-        return ret;
+    public String getGenerationDateTimeAsString() {
+        return ndtf.format(creationDateTime.withZoneSameInstant(ZoneId.systemDefault()));
     }
 
     /**
