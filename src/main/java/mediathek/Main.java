@@ -303,7 +303,11 @@ public class Main {
     }
 
     private static boolean isDebuggerAttached() {
-        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+        boolean isDebug = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+        if (isDebug)
+            logger.warn("Debugger detected -> Splash screen disabled...");
+
+        return isDebug;
     }
 
     /**
