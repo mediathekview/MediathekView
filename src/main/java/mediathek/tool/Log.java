@@ -1,54 +1,37 @@
 package mediathek.tool;
 
-import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Log {
 
-    private final static String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
     public final static String LINE = "################################################################################";
-
-    // private
-    private static class Error {
-
-        String cl;
-        int nr;
-        int count;
-        boolean ex;
-
-        public Error(int nr, String cl, boolean ex) {
-            this.nr = nr;
-            this.cl = cl;
-            this.ex = ex;
-            this.count = 1;
-        }
-    }
-
+    public static final Instant startZeit = Instant.now();
+    private final static String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
     private static final ArrayList<Error> fehlerListe = new ArrayList<>();
-    private static boolean progress = false;
-    public static final Date startZeit = new Date(System.currentTimeMillis());
     private static final ArrayList<String> logList = new ArrayList<>();
-
-    private static final Stopwatch programRuntime = Stopwatch.createStarted();
-
-    private static final FastDateFormat dateFormatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
     private static final Logger logger = LogManager.getLogger(Log.class);
+    private static boolean progress;
 
     public static void endMsg() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        var systemZone = ZoneId.systemDefault();
+        var endZeit = Instant.now();
+        long runtimeDuration = Duration.between(startZeit,endZeit).toSeconds();
+        var str = LocalTime.MIN.plusSeconds(runtimeDuration);
+
         logger.info(LINE);
-        logger.info("   --> Beginn: {}", dateFormatter.format(Log.startZeit));
-        logger.info("   --> Fertig: {}", dateFormatter.format(new Date(System.currentTimeMillis())));
-        programRuntime.stop();
-        logger.info("   --> Dauer: {}", programRuntime);
+        logger.info("   --> Beginn: {}", formatter.format(LocalDateTime.ofInstant(startZeit, systemZone)));
+        logger.info("   --> Fertig: {}", formatter.format(LocalDateTime.ofInstant(endZeit, systemZone)));
+        logger.info("   --> Dauer: {}h {}m {}s", str.getHour(),str.getMinute(),str.getSecond());
         logger.info(LINE);
     }
 
@@ -187,5 +170,21 @@ public class Log {
     private static void printLog() {
         logList.forEach(System.out::println);
         logList.clear();
+    }
+
+    // private
+    private static class Error {
+
+        String cl;
+        int nr;
+        int count;
+        boolean ex;
+
+        public Error(int nr, String cl, boolean ex) {
+            this.nr = nr;
+            this.cl = cl;
+            this.ex = ex;
+            this.count = 1;
+        }
     }
 }
