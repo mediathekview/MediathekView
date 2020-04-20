@@ -49,11 +49,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             int row,
             int column) {
         try {
-            setBackground(null);
-            setForeground(null);
-            setIcon(null);
-            setToolTipText(null);
-            setHorizontalAlignment(SwingConstants.LEADING);
+            resetComponent();
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
