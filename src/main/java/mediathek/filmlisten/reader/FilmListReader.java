@@ -486,7 +486,7 @@ public class FilmListReader implements AutoCloseable {
 
     private void notifyFertig(String url, ListeFilme liste) {
         logger.info("Liste Filme gelesen am: {}", FastDateFormat.getInstance("dd.MM.yyyy, HH:mm").format(new Date()));
-        logger.info("  erstellt am: {}", liste.genDate());
+        logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTime());
         logger.info("  Anzahl Filme: {}", liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             progressEvent.senderUrl = url;

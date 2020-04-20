@@ -7,22 +7,20 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
-    private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-    private static final FastDateFormat sdf_ = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT,new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-    private static final FastDateFormat formatter = FastDateFormat.getInstance(DATUM_ZEIT_FORMAT);
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
     private final FilmListMetaData metaData = new FilmListMetaData();
     /**
@@ -33,7 +31,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * javafx proxy class to the sender list.
      */
     private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
-    public boolean neueFilme = false;
+    public boolean neueFilme;
 
     /**
      * Get the basic sender channel list, useful e.g. for swing models
@@ -134,62 +132,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return ret;
     }
 
-    public synchronized String genDate() {
-        // Tag, Zeit in lokaler Zeit wann die Filmliste erstellt wurde
-        // in der Form "dd.MM.yyyy, HH:mm"
-        final String date = metaData.getDatum();
-
-        String ret;
-        try {
-            final Date filmDate = sdf_.parse(date);
-            ret = formatter.format(filmDate);
-        } catch (ParseException ignored) {
-            ret = date;
-        }
-
-        return ret;
-    }
-
-    public synchronized String getId() {
-        // liefert die ID einer Filmliste
-        return metaData.getId();
-    }
-
-    /**
-     * Get the age of the film list.
-     *
-     * @return Age in seconds.
-     */
-    public long getAge() {
-        long ret = 0;
-
-        Date filmDate = getAgeAsDate();
-        if (filmDate != null) {
-            ret = (System.currentTimeMillis() - filmDate.getTime()) / 1000;
-            if (ret < 0) {
-                ret = 0;
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * Get the age of the film list.
-     *
-     * @return Age as a {@link java.util.Date} object.
-     */
-    private Date getAgeAsDate() {
-        String date = metaData.getDatum();
-
-        Date filmDate = null;
-        try {
-            filmDate = sdf_.parse(date);
-        } catch (ParseException ignored) {
-        }
-
-        return filmDate;
-    }
-
     /**
      * Check if available Filmlist is older than a specified value.
      *
@@ -211,7 +153,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         try {
             final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Konstanten.TIME_MAX_AGE_FOR_DIFF + ":00:00";
             final Date dateMaxDiff = new SimpleDateFormat("yyyy.MM.dd__HH:mm:ss").parse(dateMaxDiff_str);
-            final Date dateFilmliste = getAgeAsDate();
+            final Date dateFilmliste = metaData().getAgeAsDate();
             if (dateFilmliste != null) {
                 return dateFilmliste.getTime() < dateMaxDiff.getTime();
             }
@@ -227,7 +169,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return true if older.
      */
     public boolean isOlderThan(long sekunden) {
-        final long ret = getAge();
+        final long ret = metaData().getAge();
         if (ret != 0) {
             logger.info("Die Filmliste ist {} Minuten alt", ret / 60);
         }
