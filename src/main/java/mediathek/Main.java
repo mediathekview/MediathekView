@@ -302,6 +302,10 @@ public class Main {
         }
     }
 
+    private static boolean isDebuggerAttached() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -351,8 +355,10 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        splashScreen = Optional.of(new SplashScreen());
-        splashScreen.ifPresent(SplashScreen::show);
+        if (!isDebuggerAttached()) {
+            splashScreen = Optional.of(new SplashScreen());
+            splashScreen.ifPresent(SplashScreen::show);
+        }
 
         migrateOldConfigSettings();
 
