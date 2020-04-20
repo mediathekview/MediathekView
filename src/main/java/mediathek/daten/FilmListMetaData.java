@@ -1,8 +1,12 @@
 package mediathek.daten;
 
+import mediathek.config.Konstanten;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
@@ -86,4 +90,38 @@ public class FilmListMetaData {
         }
         return ret;
     }
+
+    private static final Logger logger = LogManager.getLogger();
+    /**
+     * Check if list is older than specified parameter.
+     *
+     * @param sekunden The age in seconds.
+     * @return true if older.
+     */
+    public boolean isOlderThan(long sekunden) {
+        final long ret = getAge();
+        if (ret != 0) {
+            logger.info("Die Filmliste ist {} Minuten alt", ret / 60);
+        }
+        return ret > sekunden;
+    }
+
+    /**
+     * Check if Filmlist is too old for using a diff list.
+     *
+     * @return true if empty or too old.
+     */
+    public boolean isTooOldForDiff() {
+        try {
+            final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Konstanten.TIME_MAX_AGE_FOR_DIFF + ":00:00";
+            final Date dateMaxDiff = new SimpleDateFormat("yyyy.MM.dd__HH:mm:ss").parse(dateMaxDiff_str);
+            final Date dateFilmliste = getAgeAsDate();
+            if (dateFilmliste != null) {
+                return dateFilmliste.getTime() < dateMaxDiff.getTime();
+            }
+        } catch (Exception ignored) {
+        }
+        return true;
+    }
+
 }

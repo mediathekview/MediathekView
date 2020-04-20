@@ -27,7 +27,7 @@ class FilmeImportierenAutoThread extends Thread {
     @Override
     public void run() {
         boolean ret;
-        if (listeFilme.isTooOldForDiff()) {
+        if (listeFilme.isEmpty() || listeFilme.metaData().isTooOldForDiff()) {
             // dann eine komplette Liste laden
             listeFilme.clear();
             ret = searchFullList(listeFilme, FilmListDownloadType.FULL);

@@ -342,7 +342,7 @@ public class MediathekGui extends JFrame {
     private void loadFilmlist() {
         Platform.runLater(() -> {
             //don´t write filmlist when we are reading only...
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
+            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
                 Daten.dontWriteFilmlistOnStartup.set(false);
             } else
                 Daten.dontWriteFilmlistOnStartup.set(true);

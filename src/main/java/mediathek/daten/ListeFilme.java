@@ -10,9 +10,7 @@ import mediathek.tool.GermanStringSorter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,47 +131,11 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     /**
-     * Check if available Filmlist is older than a specified value.
-     *
-     * @return true if too old or if the list is empty.
+     * List needs update when it is either empty or too old.
+     * @return true if we need an update.
      */
-    public synchronized boolean isTooOld() {
-        return (isEmpty()) || (isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
-    }
-
-    /**
-     * Check if Filmlist is too old for using a diff list.
-     *
-     * @return true if empty or too old.
-     */
-    public synchronized boolean isTooOldForDiff() {
-        if (isEmpty()) {
-            return true;
-        }
-        try {
-            final String dateMaxDiff_str = new SimpleDateFormat("yyyy.MM.dd__").format(new Date()) + Konstanten.TIME_MAX_AGE_FOR_DIFF + ":00:00";
-            final Date dateMaxDiff = new SimpleDateFormat("yyyy.MM.dd__HH:mm:ss").parse(dateMaxDiff_str);
-            final Date dateFilmliste = metaData().getAgeAsDate();
-            if (dateFilmliste != null) {
-                return dateFilmliste.getTime() < dateMaxDiff.getTime();
-            }
-        } catch (Exception ignored) {
-        }
-        return true;
-    }
-
-    /**
-     * Check if list is older than specified parameter.
-     *
-     * @param sekunden The age in seconds.
-     * @return true if older.
-     */
-    public boolean isOlderThan(long sekunden) {
-        final long ret = metaData().getAge();
-        if (ret != 0) {
-            logger.info("Die Filmliste ist {} Minuten alt", ret / 60);
-        }
-        return ret > sekunden;
+    public boolean needsUpdate() {
+        return (isEmpty()) || (metaData().isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
     }
 
     public synchronized long countNewFilms() {
