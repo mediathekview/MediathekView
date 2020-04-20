@@ -28,9 +28,9 @@ public class Log {
         var str = LocalTime.MIN.plusSeconds(runtimeDuration);
 
         logger.info(LINE);
-        logger.info("   --> Beginn: {}", formatter.format(LocalDateTime.ofInstant(startZeit, systemZone)));
-        logger.info("   --> Fertig: {}", formatter.format(LocalDateTime.ofInstant(endZeit, systemZone)));
-        logger.info("   --> Dauer: {}h {}m {}s", str.getHour(),str.getMinute(),str.getSecond());
+        logger.info("   --> Start: {}", formatter.format(LocalDateTime.ofInstant(startZeit, systemZone)));
+        logger.info("   --> Ende: {}", formatter.format(LocalDateTime.ofInstant(endZeit, systemZone)));
+        logger.info("   --> Laufzeit: {}h {}m {}s", str.getHour(),str.getMinute(),str.getSecond());
         logger.info(LINE);
     }
 
