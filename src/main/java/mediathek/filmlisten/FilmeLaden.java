@@ -169,7 +169,7 @@ public class FilmeLaden {
             //or somebody put a web adress into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
                 //perform check only if we dont want to use DIFF list...
-                if (listeFilme.metaData().isTooOldForDiff()) {
+                if (!listeFilme.metaData().canUseDiffList()) {
                     if (!hasNewRemoteFilmlist())
                         result = false;
                 }

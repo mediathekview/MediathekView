@@ -111,18 +111,18 @@ public class FilmListMetaData {
     }
 
     /**
-     * Check if Filmlist was created before today´s date 07:00Z so we can try to use diff lists.
+     * Check if Filmlist was created after today´s date 07:00Z so we can try to use diff lists.
      *
      * @return true if too old
      */
-    public boolean isTooOldForDiff() {
+    public boolean canUseDiffList() {
         // cannot use diff as we don´t have a reference
         if (creationDateTime == null)
-            return true;
+            return false;
 
         //earliest possible diff usage is current day 07:00Z
         ZonedDateTime firstPossibleDiffTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7,0), ZoneOffset.UTC);
-        return creationDateTime.isBefore(firstPossibleDiffTime);
+        return creationDateTime.isAfter(firstPossibleDiffTime);
     }
 
 }
