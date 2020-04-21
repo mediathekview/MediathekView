@@ -6,7 +6,6 @@
 <?import mediathek.javafx.filterpanel.BlacklistButton?>
 <?import mediathek.javafx.filterpanel.EditBlacklistButton?>
 <?import mediathek.javafx.filterpanel.JFXSearchPanel?>
-<?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
     <Button mnemonicParsing="false" fx:id="btnDownloadFilmList">
@@ -49,7 +48,7 @@
         </graphic>
     </Button>
 
-    <VerticalSeparator/>
+    <Separator orientation="VERTICAL" />
 
     <BlacklistButton mnemonicParsing="false"/>
     <EditBlacklistButton mnemonicParsing="false" />
