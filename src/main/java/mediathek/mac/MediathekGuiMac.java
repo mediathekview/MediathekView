@@ -162,10 +162,15 @@ public class MediathekGuiMac extends MediathekGui {
      * @param numDownloads The number of active downloads.
      */
     private void setDownloadsBadge(int numDownloads) {
-        if (numDownloads > 0)
-            Taskbar.getTaskbar().setIconBadge(Integer.toString(numDownloads));
-        else {
-            Taskbar.getTaskbar().setIconBadge("");
+        if (Taskbar.isTaskbarSupported()) {
+            var taskbar = Taskbar.getTaskbar();
+            if (taskbar.isSupported(Taskbar.Feature.ICON_BADGE_NUMBER)) {
+                if (numDownloads > 0)
+                    taskbar.setIconBadge(Integer.toString(numDownloads));
+                else {
+                    taskbar.setIconBadge("");
+                }
+            }
         }
     }
 
@@ -186,12 +191,19 @@ public class MediathekGuiMac extends MediathekGui {
         desktop.setPreferencesHandler(e -> showSettingsDialog());
     }
 
+    /**
+     * Install MediathekView app icon in dock
+     */
     private void setupDockIcon() {
-        //setup the MediathekView Dock Icon
         try {
-            final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
-            final BufferedImage appImage = ImageIO.read(url);
-            Taskbar.getTaskbar().setIconImage(appImage);
+            if (Taskbar.isTaskbarSupported()) {
+                var taskbar = Taskbar.getTaskbar();
+                if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                    final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
+                    final BufferedImage appImage = ImageIO.read(url);
+                    Taskbar.getTaskbar().setIconImage(appImage);
+                }
+            }
         } catch (IOException ex) {
             logger.error("OS X Application image could not be loaded", ex);
         }
