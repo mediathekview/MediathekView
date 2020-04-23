@@ -721,10 +721,10 @@ public class GuiDownloads extends AGuiTabPanel {
             info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
             if (byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(byteAktDownloads) + " von "
-                        + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getFilmSize(byteAktDownloads) + " von "
+                        + MVFilmSize.getFilmSize(byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getFilmSize(byteAlleDownloads) + " MByte" + "</span>";
             }
         }
         // Restzeit

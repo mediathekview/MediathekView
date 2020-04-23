@@ -3,7 +3,7 @@ package mediathek.tool.models;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenFilmCaptions;
 import mediathek.tool.Datum;
-import mediathek.tool.MVFilmSize;
+import mediathek.tool.FilmSize;
 
 import java.util.Vector;
 
@@ -38,6 +38,7 @@ public class TModelFilm extends TModel {
         Class<?> result;
         switch (columnIndex) {
             case DatenFilm.FILM_NR:
+            case DatenFilm.FILM_DAUER:
                 result = Integer.class;
                 break;
 
@@ -46,7 +47,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_GROESSE:
-                result = MVFilmSize.class;
+                result = FilmSize.class;
                 break;
 
             case DatenFilm.FILM_HD:
@@ -63,12 +64,9 @@ public class TModelFilm extends TModel {
     }
 
     @Override
-    public String getColumnName(int column) 
-    {
-    	// TODO: clear caption titles in DatenFilmCaptions?
-        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN)
-        {
-        	return "";
+    public String getColumnName(int column) {
+        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN) {
+            return "";
         }
 
         return DatenFilmCaptions.getTitleByFieldIndex(column);
@@ -109,7 +107,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_DAUER:
-                result = film.getDauer();
+                result = film.getDuration();
                 break;
 
             case DatenFilm.FILM_GROESSE:

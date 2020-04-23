@@ -81,9 +81,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_NR:
                 case DatenFilm.FILM_DATUM:
                 case DatenFilm.FILM_ZEIT:
-                case DatenFilm.FILM_DAUER:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
+
+                case DatenFilm.FILM_DAUER:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    setText(datenFilm.getDauer());
+                    break;
+
                 case DatenFilm.FILM_GROESSE:
                     setHorizontalAlignment(SwingConstants.RIGHT);
                     break;
@@ -131,7 +136,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             }
 
             if (geoMelden) {
-                setupGeoblockingBackground(c,datenFilm.getGeo().orElse(""),isSelected);
+                setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
             }
         }
     }
@@ -148,7 +153,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
 
         if (getIcon() == null) {
-            setIconAndToolTip(isSelected,normalPlayIcon,selectedPlayIcon,"Film abspielen");
+            setIconAndToolTip(isSelected, normalPlayIcon, selectedPlayIcon, "Film abspielen");
         }
     }
 
@@ -166,6 +171,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private void handleButtonDownloadColumn(final boolean isSelected) {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
-        setIconAndToolTip(isSelected,normalDownloadIcon,selectedDownloadIcon,"Film aufzeichnen");
+        setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
 }

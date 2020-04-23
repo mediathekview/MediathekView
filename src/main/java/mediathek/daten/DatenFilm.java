@@ -68,7 +68,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     /**
      * File size in MByte
      */
-    private MSLong filmSize;
+    private FilmSize filmSize;
     /**
      * film length in seconds.
      */
@@ -105,13 +105,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private String dauer = "";
     private String groesse = "";
     private String url = "";
+    /**
+     * film duration in seconds.
+     * getDauer() stores the same info as a String
+     */
+    private int duration;
 
     public DatenFilm() {
-        filmSize = new MSLong(0); // Dateigröße in MByte
+        filmSize = new FilmSize(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
         writeFilmNumberToDatabase();
 
         setupDatabaseCleanup();
+    }
+
+    public int getDuration() {
+        return duration;
     }
 
     public DatenAbo getAbo() {
@@ -238,7 +247,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      *
      * @return The size in MByte
      */
-    public MSLong getFilmSize() {
+    public FilmSize getFilmSize() {
         return filmSize;
     }
 
@@ -320,6 +329,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     /**
      * Indicate whether this entry has been in the filmlist before.
+     *
      * @return true if it is a new entry, false otherwise.
      */
     public boolean isNew() {
@@ -483,7 +493,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public void init() {
-        filmSize = new MSLong(this);
+        filmSize = new FilmSize(this);
 
         calculateFilmLength();
 
@@ -493,6 +503,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     /**
      * Return unpacked url as string.
      * High quality URLs may be "compressed" in the filmlist and need to be unpacked before use.
+     *
      * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
      * @return A unpacked version of the film url as string.
      */
@@ -509,7 +520,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
                 if (indexPipe == -1) { //No
                     ret = requestedUrl;
                 } else { //Yes
-                    ret = decompressUrl(requestedUrl,indexPipe);
+                    ret = decompressUrl(requestedUrl, indexPipe);
                 }
             } catch (Exception e) {
                 ret = "";
@@ -527,6 +538,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     /**
      * Return url based on requested resolution
+     *
      * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
      * @return url as String.
      */
@@ -596,6 +608,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public void setDauer(String dauer) {
         this.dauer = dauer;
+
+        //FIXME gefällt mir nicht
+        final String[] split = StringUtils.split(getDauer(), ':');
+
+        try {
+            duration += Integer.parseInt(split[0]) * 3600; //hour
+            duration += Integer.parseInt(split[1]) * 60; //minute
+            duration += Integer.parseInt(split[2]); //second
+        } catch (Exception e) {
+            duration = 0;
+        }
     }
 
     public String getSize() {

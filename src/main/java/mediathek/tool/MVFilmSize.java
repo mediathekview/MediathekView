@@ -4,20 +4,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Store sizes in bytes but return strings in MegaBytes.
+ */
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
     private long aktSizeL = -1L;
     private Long sizeL = 0L;
-    private static final Logger logger = LogManager.getLogger(MVFilmSize.class);
+    private static final Logger logger = LogManager.getLogger();
+    private static final int TO_MBYTES = 1_000_000;
 
     public MVFilmSize() {
     }
 
-    public static String getGroesse(long l) {
+    /**
+     * Convert size from bytes to MBytes
+     * @param l size in bytes
+     *
+     * @return size in MBytes as String.
+     */
+    public static String getFilmSize(long l) {
         String ret = "";
-        if (l > 1_000_000) {
+        if (l > TO_MBYTES) {
             // größer als 1MB sonst kann ich mirs sparen
-            ret = String.valueOf(l / 1_000_000);
+            ret = String.valueOf(l / TO_MBYTES);
         } else if (l > 0) {
             ret = "1";
         }
@@ -42,6 +52,12 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         return sizeL;
     }
 
+    /**
+     * Store filmsize in bytes.
+     * Converts the MEGABYTES to byte.
+     *
+     * @param size String of filmsize in MEGABYTE
+     */
     public void setSize(String size) {
         // im Film ist die Größe in "MB" !!
         if (size.isEmpty()) {
@@ -49,7 +65,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
             sizeL = 0L;
         } else {
             try {
-                sizeL = Long.parseLong(size) * 1_000_000;
+                sizeL = Long.parseLong(size) * TO_MBYTES;
             } catch (Exception ex) {
                 logger.error("string: {}, ex: {}", size, ex);
                 sizeL = 0L;
@@ -78,14 +94,14 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
 
         if (aktSizeL <= 0) {
             if (sizeL > 0) {
-                sizeStr = getGroesse(sizeL);
+                sizeStr = getFilmSize(sizeL);
             } else {
                 sizeStr = "";
             }
         } else if (sizeL > 0) {
-            sizeStr = getGroesse(aktSizeL) + " von " + getGroesse(sizeL);
+            sizeStr = getFilmSize(aktSizeL) + " von " + getFilmSize(sizeL);
         } else {
-            sizeStr = getGroesse(aktSizeL);
+            sizeStr = getFilmSize(aktSizeL);
         }
 
         return sizeStr;

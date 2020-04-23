@@ -8,14 +8,14 @@ import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
-import mediathek.tool.table.MVTable;
 
+import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
     private final Daten daten;
-    private final MVTable tabelle;
+    private final JTable tabelle;
     private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
     private boolean searchThroughDescriptions;
@@ -33,7 +33,7 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, MVTable tabelle) {
+    public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, JTable tabelle) {
         this.fap = fap;
         this.daten = daten;
         this.tabelle = tabelle;
