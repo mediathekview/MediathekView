@@ -341,12 +341,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.forEach((download) -> listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]));
 
         boolean gefunden = false;
-        DatenAbo abo;
+
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
+        final var sdf = new SimpleDateFormat("dd.MM.yyyy");
+        final var todayDateStr = sdf.format(new Date());
+
         for (DatenFilm film : daten.getListeFilme()) {
-            abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
+            DatenAbo abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true);
             if (abo == null) {
                 // dann gibts dafür kein Abo
                 continue;
@@ -364,36 +367,32 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // ist schon mal geladen worden
                 continue;
             }
-            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
-            //DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
-            if (pSet != null) {
 
+            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
                 if (listeUrls.contains(urlDownload)) {
                     continue;
                 }
                 listeUrls.add(urlDownload);
-                //                if (checkUrlExists(urlDownload)) {
-                //                    // haben wir schon in der Downloadliste
-                //                    continue;
-                //                }
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                abo.arr[DatenAbo.ABO_DOWN_DATUM] = todayDateStr;
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
                 }
+
                 //dann in die Liste schreiben
                 add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
-            } else if (parent != null) {
-                // sonst sind wir evtl. nur in einer Konsole ohne X
+            } else {
                 new DialogAboNoSet(parent).setVisible(true);
                 break;
             }
         }
+
         if (gefunden) {
             listeNummerieren();
         }

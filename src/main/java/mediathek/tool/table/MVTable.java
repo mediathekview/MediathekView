@@ -1,8 +1,9 @@
 package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
-import mediathek.tool.Log;
 import mediathek.tool.models.TModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -23,19 +24,19 @@ public abstract class MVTable extends JTable {
      * This is the UI provided default font used for calculating the size area
      */
     private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
-    public boolean useSmallSenderIcons = false;
+    public boolean useSmallSenderIcons;
     protected int maxSpalten;
-    protected int indexSpalte = 0;
+    protected int indexSpalte;
     protected int[] selRows;
-    protected int[] selIndexes = null;
+    protected int[] selIndexes;
     protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
-    protected MVConfig.Configs nrDatenSystem = null;
-    protected MVConfig.Configs iconAnzeigenStr = null;
-    protected MVConfig.Configs iconKleinStr = null;
-    private boolean showSenderIcon = false;
+    protected MVConfig.Configs nrDatenSystem;
+    protected MVConfig.Configs iconAnzeigenStr;
+    protected MVConfig.Configs iconKleinStr;
+    private boolean showSenderIcon;
     private boolean lineBreak = true;
-    private List<? extends RowSorter.SortKey> listeSortKeys = null;
+    protected List<? extends RowSorter.SortKey> listeSortKeys;
 
     public MVTable() {
         setAutoCreateRowSorter(true);
@@ -62,21 +63,31 @@ public abstract class MVTable extends JTable {
         setHeight();
     }
 
-    private static SortKey sortKeyLesen(String s, String upDown) {
+    private SortKey sortKeyLesen(String s, String strSortOrder) {
         SortKey sk;
 
         try {
-            final int sp = Integer.parseInt(s);
-            if (upDown.equals(SORT_DESCENDING)) {
-                sk = new SortKey(sp, SortOrder.DESCENDING);
-            } else {
-                sk = new SortKey(sp, SortOrder.ASCENDING);
+            final int column = Integer.parseInt(s);
+            SortOrder order;
+            switch (strSortOrder) {
+                case SORT_ASCENDING:
+                    order = SortOrder.ASCENDING;
+                    break;
+                case SORT_DESCENDING:
+                    order = SortOrder.DESCENDING;
+                    break;
+                default:
+                    throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
+                    //break;
             }
+            sk = new SortKey(column,order);
         } catch (Exception ex) {
             return null;
         }
         return sk;
     }
+
+    private static final Logger logger = LogManager.getLogger();
 
     public boolean showSenderIcons() {
         return showSenderIcon;
@@ -178,6 +189,7 @@ public abstract class MVTable extends JTable {
                 if (!arrLesen(r, reihe)) {
                     ok = false;
                 }
+
                 SortKey sk = sortKeyLesen(s, upDown);
                 if (sk != null) {
                     final ArrayList<SortKey> listSortKeys_ = new ArrayList<>();
@@ -192,8 +204,7 @@ public abstract class MVTable extends JTable {
             } else {
                 resetTabelle();
             }
-        } catch (Exception ex) {
-            //vorsichtshalber
+        } catch (Exception ignored) {
         }
     }
 
@@ -201,7 +212,7 @@ public abstract class MVTable extends JTable {
         return spaltenAnzeigen[i];
     }
 
-    private void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
+    protected void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
@@ -281,7 +292,7 @@ public abstract class MVTable extends JTable {
         }
     }
 
-    private void changeColumnWidth2() {
+    protected void changeColumnWidth2() {
         final TableColumnModel model = getColumnModel();
         for (int i = 0; i < breite.length && i < getColumnCount(); ++i) {
             final int colIndex = convertColumnIndexToView(i);
@@ -297,7 +308,7 @@ public abstract class MVTable extends JTable {
         }
     }
 
-    private void changeColumnWidth() {
+    protected void changeColumnWidth() {
         for (int i = 0; i < breite.length && i < getColumnCount(); ++i) {
             if (!anzeigen(i, spaltenAnzeigen)) {
                 // geänderte Ansicht der Spalten abfragen
@@ -335,7 +346,7 @@ public abstract class MVTable extends JTable {
     }
 
     public void setSpalten() {
-        // gemerkte Einstellungen der Tabelle wieder setzten
+        // gemerkte Einstellungen der Tabelle wieder setzen
         try {
             changeColumnWidth();
 
@@ -356,7 +367,7 @@ public abstract class MVTable extends JTable {
 
             validate();
         } catch (Exception ex) {
-            Log.errorLog(965001463, ex);
+            logger.error("setSpalten", ex);
         }
     }
 
@@ -366,7 +377,7 @@ public abstract class MVTable extends JTable {
     public void resetTabelle() {
         listeSortKeys = null;
 
-        getRowSorter().setSortKeys(null);
+        getRowSorter().setSortKeys(null); // empty sort keys
         setRowSorter(null);
         setAutoCreateRowSorter(true);
         spaltenAusschalten();
