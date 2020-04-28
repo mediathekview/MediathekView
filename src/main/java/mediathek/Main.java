@@ -53,8 +53,13 @@ import java.util.Optional;
 
 public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
-
     private static final Logger logger = LogManager.getLogger(Main.class);
+    public static Optional<SplashScreen> splashScreen = Optional.empty();
+
+    static {
+        // set up log4j callback registry
+        System.setProperty("log4j.shutdownCallbackRegistry", Log4jShutdownCallbackRegistry.class.getName());
+    }
 
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
@@ -456,8 +461,6 @@ public class Main {
             MVConfig.loadSystemParameter();
         }
     }
-
-    public static Optional<SplashScreen> splashScreen = Optional.empty();
 
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
