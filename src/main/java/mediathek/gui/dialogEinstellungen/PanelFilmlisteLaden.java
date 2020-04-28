@@ -6,13 +6,18 @@ import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.FilmListUpdateType;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -26,6 +31,8 @@ import java.io.File;
 @SuppressWarnings("serial")
 public class PanelFilmlisteLaden extends JPanel {
     private final Daten daten;
+    private static final Logger logger = LogManager.getLogger();
+
 
     public PanelFilmlisteLaden(Daten d) {
         super();
@@ -66,7 +73,7 @@ public class PanelFilmlisteLaden extends JPanel {
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        TextCopyPasteHandler handler = new TextCopyPasteHandler<>(jTextFieldUrl);
+        TextCopyPasteHandler<JTextField> handler = new TextCopyPasteHandler<>(jTextFieldUrl);
         jTextFieldUrl.setComponentPopupMenu(handler.getPopupMenu());
     }
 
@@ -127,7 +134,7 @@ public class PanelFilmlisteLaden extends JPanel {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(102036579, ex);
+                        logger.error("set file destination failed", ex);
                     }
                 }
             } else {
@@ -143,7 +150,7 @@ public class PanelFilmlisteLaden extends JPanel {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(733025319, ex);
+                        logger.error("set file destination failed", ex);
                     }
                 }
             }
