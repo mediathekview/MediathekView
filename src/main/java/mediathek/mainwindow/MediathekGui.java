@@ -188,7 +188,7 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false)) {
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
             getBandwidthMonitorController().setVisibility();
         }
 
@@ -211,6 +211,8 @@ public class MediathekGui extends JFrame {
         setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
 
         showVlcHintForAustrianUsers();
+
+        setupShutdownHook();
     }
 
     /**
@@ -220,6 +222,13 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    /**
+     * This shutdown hook will try to save both log messages and write config changes to disk before app terminates.
+     */
+    private void setupShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread());
     }
 
     private void setupSystemTray() {
@@ -453,7 +462,7 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
-        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);
         SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(vis));
     }
 
@@ -539,7 +548,7 @@ public class MediathekGui extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false)) {
+                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
                     setVisible(false);
                 } else {
                     beenden(false, false);
@@ -554,34 +563,32 @@ public class MediathekGui extends JFrame {
         mediaDb.createMediaDB("");
     }
 
-    
     @Handler
     private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
-      SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
+        SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
     }
-    
+
     /**
      * This creates a repeating update check every 24 hours.
      */
     private void setupUpdateCheck(boolean newState) {
-      if (newState) {
-        programUpdateChecker = new ProgramUpdateCheck(daten);
-        programUpdateChecker.start();
-      }
-      else {
-        endProgramUpdateChecker();
-      }     
+        if (newState) {
+            programUpdateChecker = new ProgramUpdateCheck(daten);
+            programUpdateChecker.start();
+        } else {
+            endProgramUpdateChecker();
+        }
     }
-    
+
     private void endProgramUpdateChecker() {
-      if (programUpdateChecker != null) {
-        programUpdateChecker.close();
-        programUpdateChecker = null;
-      }
+        if (programUpdateChecker != null) {
+            programUpdateChecker.close();
+            programUpdateChecker = null;
+        }
     }
-    
+
     public void initializeSystemTray() {
-        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
+        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
         if (tray == null && useTray) {
             tray = new MVTray().systemTray();
         } else if (tray != null && !useTray) {
@@ -785,9 +792,9 @@ public class MediathekGui extends JFrame {
             }
         });
 
-        cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false));
+        cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false));
         cbBandwidthDisplay.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,cbBandwidthDisplay.isSelected());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, cbBandwidthDisplay.isSelected());
             getBandwidthMonitorController().setVisibility();
         });
 
@@ -969,7 +976,7 @@ public class MediathekGui extends JFrame {
         if (bandwidthMonitor != null)
             bandwidthMonitor.close();
 
-        Log.endMsg();
+        Log.printRuntimeStatistics();
 
         if (shutDown) {
             shutdownComputer();
@@ -1036,5 +1043,20 @@ public class MediathekGui extends JFrame {
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
+    }
+
+    /**
+     * Gracefully shutdown config and log.
+     * This may be necessary in case the app is not properly quit.
+     */
+    static class ShutdownHookThread extends Thread {
+        @Override
+        public void run() {
+            //write all settings if not done already...just to be sure
+            ApplicationConfiguration.getInstance().writeConfiguration();
+
+            //shut down log4j
+            Log4jShutdownCallbackRegistry.execute();
+        }
     }
 }

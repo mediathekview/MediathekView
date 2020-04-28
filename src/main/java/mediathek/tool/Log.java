@@ -20,7 +20,10 @@ public class Log {
     private static final Logger logger = LogManager.getLogger();
     private static boolean progress;
 
-    public static void endMsg() {
+    /**
+     * Output runtime statistics to console and log file
+     */
+    public static void printRuntimeStatistics() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         var systemZone = ZoneId.systemDefault();
         var endZeit = Instant.now();
