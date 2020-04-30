@@ -63,11 +63,6 @@ public class ShutdownDialog {
                     + text;
             lblStatusText.setText(message);
         });
-        //give the user some time to read the messages
-        try {
-            Thread.sleep(125);
-        } catch (InterruptedException ignored) {
-        }
     }
 
     private Scene createScene() {
