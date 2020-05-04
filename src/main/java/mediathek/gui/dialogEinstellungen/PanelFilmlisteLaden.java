@@ -58,7 +58,7 @@ public class PanelFilmlisteLaden extends JPanel {
         initRadio();
 
         final var filmeLaden = daten.getFilmeLaden();
-        jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist(""));
+        jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist("", false));
 
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
@@ -67,7 +67,7 @@ public class PanelFilmlisteLaden extends JPanel {
             if (jCheckBoxUpdate.isSelected())
                 filmeLaden.updateFilmlist(jTextFieldUrl.getText());
             else
-                filmeLaden.loadFilmlist(jTextFieldUrl.getText());
+                filmeLaden.loadFilmlist(jTextFieldUrl.getText(), false);
         });
 
         jRadioButtonManuell.addActionListener(new BeobOption());

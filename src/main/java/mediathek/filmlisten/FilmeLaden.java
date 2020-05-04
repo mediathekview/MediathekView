@@ -81,10 +81,6 @@ public class FilmeLaden {
         });
     }
 
-    public void loadFilmlist(String dateiUrl) {
-        loadFilmlist(dateiUrl, false);
-    }
-
     /**
      * Check if a newer filmlist id is available on the remote server in order to prevent unnecessary filmlist downloads...
      *

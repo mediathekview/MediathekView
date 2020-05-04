@@ -150,7 +150,7 @@ public class PanelEinstellungen extends JPanel {
 
         jButtonLoad.addActionListener(ae -> {
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("");
+            daten.getFilmeLaden().loadFilmlist("", false);
         });
 
         setupDays();
