@@ -46,6 +46,8 @@ import mediathek.javafx.tool.FXProgressPane;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
+import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
@@ -91,7 +93,7 @@ public class MediathekGui extends JFrame {
      * Number of active downloads
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
-    private final Daten daten = Daten.getInstance();
+    protected final Daten daten = Daten.getInstance();
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -192,6 +194,8 @@ public class MediathekGui extends JFrame {
             getBandwidthMonitorController().setVisibility();
         }
 
+        setupNotificationCenter();
+
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundControlsFxNotificationBug();
@@ -213,6 +217,27 @@ public class MediathekGui extends JFrame {
         showVlcHintForAustrianUsers();
 
         setupShutdownHook();
+    }
+
+    /**
+     * Create either a native or a javafx notification center depending on platform
+     */
+    protected void setupNotificationCenter() {
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
+
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
+        config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false);
+
+        if (!showNotifications) {
+            daten.setNotificationCenter(new NullNotificationCenter());
+        } else {
+            daten.setNotificationCenter(new GenericNotificationCenter());
+        }
+    }
+
+    @Handler
+    protected void handleNotificationCenterChangeEvent(NotificationCenterChangeEvent e) {
+        setupNotificationCenter();
     }
 
     /**

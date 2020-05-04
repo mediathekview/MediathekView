@@ -59,7 +59,8 @@ public class ApplicationConfiguration {
             "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
-            "application.notifications.native";
+            "application.notifications.show_native";
+    public static final String APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT = "application.notifications.native_support";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
     /**
      * can be BASIC, HEADERS, BODY

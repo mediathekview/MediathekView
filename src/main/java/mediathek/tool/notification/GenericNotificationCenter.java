@@ -1,7 +1,6 @@
 package mediathek.tool.notification;
 
 import javafx.application.Platform;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import org.controlsfx.control.Notifications;
 
@@ -11,9 +10,6 @@ import org.controlsfx.control.Notifications;
 public class GenericNotificationCenter implements INotificationCenter {
     @Override
     public void displayNotification(NotificationMessage notificationMessage) {
-        if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true))
-            return;
-
         Platform.runLater(() -> {
             try {
                 final Notifications msg = Notifications.create();

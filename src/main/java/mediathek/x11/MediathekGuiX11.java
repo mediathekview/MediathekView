@@ -3,6 +3,9 @@ package mediathek.x11;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.notification.LinuxNotificationCenter;
+import mediathek.tool.notification.NullNotificationCenter;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +53,25 @@ public class MediathekGuiX11 extends MediathekGui {
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Could not set awtAppClassName");
+        }
+    }
+
+    @Override
+    protected void setupNotificationCenter() {
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        // we need to figure if we have native support available
+        var notificationCenter = new LinuxNotificationCenter();
+        final boolean hasNativeSupport = notificationCenter.hasNativeSupport();
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, hasNativeSupport);
+
+        //reset if we don´t have native support
+        if (!hasNativeSupport)
+            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS,false);
+
+        if (!showNotifications) {
+            daten.setNotificationCenter(new NullNotificationCenter());
+        } else {
+            daten.setNotificationCenter(notificationCenter);
         }
     }
 

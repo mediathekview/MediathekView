@@ -18,7 +18,6 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
-import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -103,7 +102,6 @@ public class Daten {
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
-        setupNotifications();
         setupMessageBus();
 
         listeFilme = new ListeFilme();
@@ -239,10 +237,6 @@ public class Daten {
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
-    }
-
-    public void setupNotifications() {
-        notificationCenter = NotificationFactory.createNotificationCenter();
     }
 
     public INotificationCenter notificationCenter() {
