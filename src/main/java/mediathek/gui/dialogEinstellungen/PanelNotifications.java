@@ -5,8 +5,8 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
+import mediathek.gui.messages.NotificationCenterChangeEvent;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.notification.NotificationFactory;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -21,14 +21,17 @@ public class PanelNotifications extends JPanel {
         final var config = ApplicationConfiguration.getConfiguration();
         final boolean showNotification = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
         cbShowNotifications.setSelected(showNotification);
-        cbShowNotifications.addActionListener(e -> config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,cbShowNotifications.isSelected()));
+        cbShowNotifications.addActionListener(e -> {
+            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,cbShowNotifications.isSelected());
+            Daten.getInstance().getMessageBus().publishAsync(new NotificationCenterChangeEvent());
+        });
 
-        cbNativeNotifications.setEnabled(NotificationFactory.hasNativeNotifications());
+        cbNativeNotifications.setEnabled(config.getBoolean(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT,false));
         final boolean showNativeNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false);
         cbNativeNotifications.setSelected(showNativeNotifications);
         cbNativeNotifications.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, cbNativeNotifications.isSelected());
-            Daten.getInstance().setNotificationCenter(NotificationFactory.createNotificationCenter());
+            Daten.getInstance().getMessageBus().publishAsync(new NotificationCenterChangeEvent());
         });
     }
 

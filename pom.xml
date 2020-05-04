@@ -66,6 +66,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<properties>
@@ -83,6 +88,12 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.derreisende77</groupId>
+			<artifactId>jlibnotify</artifactId>
+			<version>master</version>
+		</dependency>
+
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
