@@ -69,9 +69,11 @@ public class ImportFilmliste {
      * Filmeliste importieren, mit fester URL/Pfad
      */
     public void importFromFile(String pfad, ListeFilme listeFilme, int days) {
-        Thread importThread = new FilmeImportierenDateiThread(pfad, listeFilme, days,
-                this::urlLaden, this::fertigMelden);
-        importThread.start();
+        Thread t = new Thread(() -> {
+            final boolean result = urlLaden(pfad, listeFilme, days);
+            fertigMelden(result);
+        });
+        t.start();
     }
 
     public void addAdListener(ListenerFilmeLaden listener) {
