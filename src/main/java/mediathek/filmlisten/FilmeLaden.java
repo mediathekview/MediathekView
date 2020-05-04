@@ -21,6 +21,7 @@ import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVHttpClient;
 import mediathek.tool.javafx.FXErrorDialog;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -35,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -99,9 +101,8 @@ public class FilmeLaden {
         if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
-        final Request request = new Request.Builder()
-                .url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get()
-                .build();
+        HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");
+        final Request request = new Request.Builder().url(Objects.requireNonNull(filmListUrl)).build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (body != null && response.isSuccessful()) {

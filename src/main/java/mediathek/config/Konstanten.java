@@ -20,6 +20,7 @@
 package mediathek.config;
 
 import mediathek.tool.Version;
+import okhttp3.HttpUrl;
 import org.apache.commons.io.FileUtils;
 
 import java.net.URL;
@@ -32,6 +33,7 @@ public class Konstanten {
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
     public static final String ROUTER_BASE_ADDRESS = "https://liste.mediathekview.de/";
+    public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
