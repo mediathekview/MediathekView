@@ -535,7 +535,7 @@ public class MediathekGui extends JFrame {
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
                     FilmeLaden filmeLaden = new FilmeLaden(daten);
-                    filmeLaden.loadFilmlist("");
+                    filmeLaden.loadFilmlist("", false);
                 }
             }
         };
@@ -880,7 +880,7 @@ public class MediathekGui extends JFrame {
         } else {
             // Filme werden automatisch geladen
             FilmeLaden filmeLaden = new FilmeLaden(daten);
-            filmeLaden.loadFilmlist("");
+            filmeLaden.loadFilmlist("", false);
         }
     }
 
