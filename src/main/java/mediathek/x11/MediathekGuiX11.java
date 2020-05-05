@@ -59,10 +59,13 @@ public class MediathekGuiX11 extends MediathekGui {
 
     @Override
     protected void setupNotificationCenter() {
-        var center = daten.notificationCenter();
-        if (center != null) {
-            if (center instanceof LinuxNotificationCenter)
-                ((LinuxNotificationCenter) center).close();
+        try {
+            var notificationCenter = daten.notificationCenter();
+            if (notificationCenter != null) {
+                notificationCenter.close();
+            }
+        } catch (IOException e) {
+            logger.error("error closing notification center", e);
         }
 
         final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);

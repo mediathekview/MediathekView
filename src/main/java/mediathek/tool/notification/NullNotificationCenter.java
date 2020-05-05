@@ -9,4 +9,8 @@ public class NullNotificationCenter implements INotificationCenter {
     @Override
     public void displayNotification(NotificationMessage msg) {
     }
+
+    @Override
+    public void close() {
+    }
 }

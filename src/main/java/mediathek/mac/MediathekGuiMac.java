@@ -93,11 +93,9 @@ public class MediathekGuiMac extends MediathekGui {
         try {
             var notificationCenter = daten.notificationCenter();
             if (notificationCenter != null) {
-                if (notificationCenter instanceof MacNotificationCenter)
-                    ((MacNotificationCenter) notificationCenter).close();
+                notificationCenter.close();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("error closing notification center", e);
         }
 
