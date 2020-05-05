@@ -31,4 +31,8 @@ public class GenericNotificationCenter implements INotificationCenter {
             }
         });
     }
+
+    @Override
+    public void close() {
+    }
 }

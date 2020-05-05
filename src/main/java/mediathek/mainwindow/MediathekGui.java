@@ -240,6 +240,15 @@ public class MediathekGui extends JFrame {
         setupNotificationCenter();
     }
 
+    protected void closeNotificationCenter() {
+        try {
+            var center = daten.notificationCenter();
+            center.close();
+        }
+        catch (Exception ignored) {
+        }
+    }
+
     /**
      * Return the user interface instance
      *
@@ -952,6 +961,8 @@ public class MediathekGui extends JFrame {
 
         if (automaticFilmlistUpdate != null)
             automaticFilmlistUpdate.close();
+
+        closeNotificationCenter();
 
         showMemoryMonitorAction.closeMemoryMonitor();
 
