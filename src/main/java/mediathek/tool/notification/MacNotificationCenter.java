@@ -1,7 +1,7 @@
 package mediathek.tool.notification;
 
+import javafx.application.Platform;
 import mediathek.config.Konstanten;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import mediathek.tool.notification.thrift.ThriftNotificationCenter;
@@ -64,7 +64,7 @@ public class MacNotificationCenter implements INotificationCenter, ServiceListen
     }
 
     private void showErrorDialog(Exception ex) {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Native Benachrichtigungen können nicht angezeigt werden",
+        Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Native Benachrichtigungen können nicht angezeigt werden",
                 "Bitte stellen Sie sicher das das Hilfsprogramm gestartet ist.", ex));
     }
 
