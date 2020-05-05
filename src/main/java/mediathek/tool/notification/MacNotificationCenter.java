@@ -20,7 +20,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class NativeNotificationCenter implements INotificationCenter, ServiceListener, Closeable {
+public class MacNotificationCenter implements INotificationCenter, ServiceListener, Closeable {
     private static final Logger logger = LogManager.getLogger();
     private static final String NOTIFICATION_SERVICE_NAME = "NotificationService";
     private static final int PORT_UNDEFINED = -1;
@@ -28,7 +28,7 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
     private InetAddress serverAddress;
     private JmDNS jmdns;
 
-    public NativeNotificationCenter() {
+    public MacNotificationCenter() {
         setupJmdnsListener();
     }
 

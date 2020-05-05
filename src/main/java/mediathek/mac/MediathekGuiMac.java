@@ -16,7 +16,7 @@ import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.GenericNotificationCenter;
-import mediathek.tool.notification.NativeNotificationCenter;
+import mediathek.tool.notification.MacNotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
@@ -93,8 +93,8 @@ public class MediathekGuiMac extends MediathekGui {
         try {
             var notificationCenter = daten.notificationCenter();
             if (notificationCenter != null) {
-                if (notificationCenter instanceof NativeNotificationCenter)
-                    ((NativeNotificationCenter) notificationCenter).close();
+                if (notificationCenter instanceof MacNotificationCenter)
+                    ((MacNotificationCenter) notificationCenter).close();
             }
         }
         catch (IOException e) {
@@ -109,7 +109,7 @@ public class MediathekGuiMac extends MediathekGui {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
             if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
-                daten.setNotificationCenter(new NativeNotificationCenter());
+                daten.setNotificationCenter(new MacNotificationCenter());
             else
                 daten.setNotificationCenter(new GenericNotificationCenter());
         }
