@@ -1,7 +1,6 @@
 package mediathek.tool.notification;
 
 import mediathek.config.Konstanten;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import mediathek.tool.notification.thrift.ThriftNotificationCenter;
@@ -17,14 +16,17 @@ import org.apache.thrift.transport.TTransport;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
+import java.io.Closeable;
+import java.io.IOException;
 import java.net.InetAddress;
 
-public class NativeNotificationCenter implements INotificationCenter, ServiceListener {
-    private static final Logger logger = LogManager.getLogger(NativeNotificationCenter.class);
+public class NativeNotificationCenter implements INotificationCenter, ServiceListener, Closeable {
+    private static final Logger logger = LogManager.getLogger();
     private static final String NOTIFICATION_SERVICE_NAME = "NotificationService";
     private static final int PORT_UNDEFINED = -1;
     private int serverPort;
     private InetAddress serverAddress;
+    private JmDNS jmdns;
 
     public NativeNotificationCenter() {
         setupJmdnsListener();
@@ -32,7 +34,7 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
 
     private void setupJmdnsListener() {
         try {
-            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+            jmdns = JmDNS.create(InetAddress.getLocalHost());
             jmdns.addServiceListener("_mv-notification._tcp.local.", this);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -41,15 +43,12 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
 
     @Override
     public void displayNotification(NotificationMessage msg) {
-        if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true))
-            return;
-
         if (serverPort == PORT_UNDEFINED || serverAddress == null) {
             showErrorDialog(new IllegalArgumentException("server port or server address not set"));
             return;
         }
 
-        logger.trace("Sending native notification to {} on serverPort {}", serverAddress, serverPort);
+        logger.debug("Sending native notification to {} on serverPort {}", serverAddress, serverPort);
         try (TTransport transport = new TSocket(serverAddress.getHostAddress(), serverPort)) {
             transport.open();
 
@@ -96,5 +95,11 @@ public class NativeNotificationCenter implements INotificationCenter, ServiceLis
     @Override
     public void serviceResolved(ServiceEvent serviceEvent) {
         setServiceInfo(serviceEvent);
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (jmdns != null)
+            jmdns.close();
     }
 }

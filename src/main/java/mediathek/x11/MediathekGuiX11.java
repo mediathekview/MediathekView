@@ -4,6 +4,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.LinuxNotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import org.apache.commons.lang3.SystemUtils;
@@ -58,6 +59,12 @@ public class MediathekGuiX11 extends MediathekGui {
 
     @Override
     protected void setupNotificationCenter() {
+        var center = daten.notificationCenter();
+        if (center != null) {
+            if (center instanceof LinuxNotificationCenter)
+                ((LinuxNotificationCenter) center).close();
+        }
+
         final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
         // we need to figure if we have native support available
         var notificationCenter = new LinuxNotificationCenter();
@@ -71,7 +78,10 @@ public class MediathekGuiX11 extends MediathekGui {
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
-            daten.setNotificationCenter(notificationCenter);
+            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
+                daten.setNotificationCenter(notificationCenter);
+            else
+                daten.setNotificationCenter(new GenericNotificationCenter());
         }
     }
 
