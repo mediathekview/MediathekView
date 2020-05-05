@@ -962,49 +962,50 @@ public class MediathekGui extends JFrame {
         if (automaticFilmlistUpdate != null)
             automaticFilmlistUpdate.close();
 
-        closeNotificationCenter();
-
         showMemoryMonitorAction.closeMemoryMonitor();
 
         closeControlsFxWorkaroundStage();
 
         endProgramUpdateChecker();
 
-        ShutdownDialog dialog = new ShutdownDialog(this, 9);
+        ShutdownDialog dialog = new ShutdownDialog(this);
         dialog.show();
+
+        dialog.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        closeNotificationCenter();
 
         manageAboAction.closeDialog();
 
-        dialog.setStatusText(1, "Beende Threadpools");
+        dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         // Tabelleneinstellungen merken
-        dialog.setStatusText(2, "Film-Daten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_FILM_DATA);
         tabFilme.tabelleSpeichern();
 
-        dialog.setStatusText(3, "Download-Daten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(4, "MediaDB sichern");
+        dialog.setStatusText(ShutdownState.SAVE_MEDIA_DB);
         if (dialogMediaDB != null)
             getMediaDatabaseDialog().tabelleSpeichern();
 
-        dialog.setStatusText(5, "Downloads anhalten");
+        dialog.setStatusText(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
 
-        dialog.setStatusText(6, "Programmkonfiguration schreiben");
+        dialog.setStatusText(ShutdownState.SAVE_CONFIG);
         writeOldConfiguration();
 
+        dialog.setStatusText(ShutdownState.CLOSE_DB);
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            dialog.setStatusText(7, "Datenbank schließen");
             DatenFilm.Database.closeDatabase();
         }
 
-        dialog.setStatusText(8, "Programmdaten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
 
-        dialog.setStatusText(9, "Fertig.");
+        dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
