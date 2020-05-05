@@ -1,6 +1,7 @@
 package mediathek.tool.notification;
 
 import mediathek.config.Konstanten;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import mediathek.tool.notification.thrift.ThriftNotificationCenter;
@@ -48,7 +49,7 @@ public class MacNotificationCenter implements INotificationCenter, ServiceListen
             return;
         }
 
-        logger.debug("Sending native notification to {} on serverPort {}", serverAddress, serverPort);
+        logger.trace("Sending native notification to {} on serverPort {}", serverAddress, serverPort);
         try (TTransport transport = new TSocket(serverAddress.getHostAddress(), serverPort)) {
             transport.open();
 
@@ -63,8 +64,8 @@ public class MacNotificationCenter implements INotificationCenter, ServiceListen
     }
 
     private void showErrorDialog(Exception ex) {
-        FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Native Benachrichtigungen können nicht angezeigt werden",
-                "Bitte stellen Sie sicher das das Hilfsprogramm gestartet ist.", ex);
+        JavaFxUtils.invokeInFxThreadAndWait(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Native Benachrichtigungen können nicht angezeigt werden",
+                "Bitte stellen Sie sicher das das Hilfsprogramm gestartet ist.", ex));
     }
 
     @Override
