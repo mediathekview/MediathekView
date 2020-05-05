@@ -83,6 +83,7 @@
 		<picocli.version>4.2.0</picocli.version>
 		<miglayout.version>5.3-SNAPSHOT</miglayout.version>
 		<log4j2.version>2.13.2</log4j2.version>
+		<mockito.version>3.3.3</mockito.version>
 
 		<mainclass>mediathek.Main</mainclass>
 		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
@@ -351,22 +352,24 @@
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.11.1</version>
+			<version>3.15.0</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.23.0</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>2.23.0</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
