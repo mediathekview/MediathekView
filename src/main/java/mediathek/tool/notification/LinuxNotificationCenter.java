@@ -6,7 +6,9 @@ import mediathek.tool.notification.thrift.NotificationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LinuxNotificationCenter implements INotificationCenter {
+import java.io.Closeable;
+
+public class LinuxNotificationCenter implements INotificationCenter, Closeable {
     private static final Logger logger = LogManager.getLogger();
     private LibNotify libNotify;
     private boolean nativeSupport;
@@ -41,5 +43,10 @@ public class LinuxNotificationCenter implements INotificationCenter {
 
     public boolean hasNativeSupport() {
         return nativeSupport;
+    }
+
+    @Override
+    public void close() {
+        libNotify.unInit();
     }
 }

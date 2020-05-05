@@ -14,6 +14,10 @@ import mediathek.mac.tabs.TabDownloadsMac;
 import mediathek.mac.tabs.TabFilmeMac;
 import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.NativeNotificationCenter;
+import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
@@ -82,6 +86,33 @@ public class MediathekGuiMac extends MediathekGui {
             controlsFxWorkaroundStage.show();
             controlsFxWorkaroundStage.toBack();
         });
+    }
+
+    @Override
+    protected void setupNotificationCenter() {
+        try {
+            var notificationCenter = daten.notificationCenter();
+            if (notificationCenter != null) {
+                if (notificationCenter instanceof NativeNotificationCenter)
+                    ((NativeNotificationCenter) notificationCenter).close();
+            }
+        }
+        catch (IOException e) {
+            logger.error("error closing notification center", e);
+        }
+
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        // we need to figure if we have native support available
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, true);
+
+        if (!showNotifications) {
+            daten.setNotificationCenter(new NullNotificationCenter());
+        } else {
+            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
+                daten.setNotificationCenter(new NativeNotificationCenter());
+            else
+                daten.setNotificationCenter(new GenericNotificationCenter());
+        }
     }
 
     @Override
