@@ -65,17 +65,8 @@ public class SwingFilterDialog extends JDialog {
             config.lock(LockMode.READ);
             final int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_WIDTH);
             final int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT);
-            int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X);
+            final int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X);
             final int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y);
-
-            //make sure filter dialog will be within visible area
-            var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            final var maxX = screenSize.width - width;
-
-            if (x + width >= maxX) {
-                //reset x to visible area
-                x = maxX - 50; // add some spacing from screen border
-            }
 
             setBounds(x, y, width, height);
         } catch (NoSuchElementException ignored) {
