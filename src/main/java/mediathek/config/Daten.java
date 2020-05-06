@@ -1,6 +1,8 @@
 package mediathek.config;
 
 import com.google.common.util.concurrent.*;
+import mediathek.Main;
+import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
@@ -401,6 +403,7 @@ public class Daten {
             return false;
         }
 
+        Main.splashScreen.ifPresent(SplashScreen::close);
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
