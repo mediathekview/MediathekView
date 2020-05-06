@@ -49,8 +49,9 @@ public class Konstanten {
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 120;
 
     // MediathekView URLs
-    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen13/programmgruppen.xml";
+    public static final HttpUrl URL_MEDIATHEKVIEW_RESOURCES = HttpUrl.get("https://res.mediathekview.de");
+    public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
+    public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";
     public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
     public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/faq/";

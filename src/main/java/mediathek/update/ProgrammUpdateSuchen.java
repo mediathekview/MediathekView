@@ -5,7 +5,6 @@ import javafx.scene.control.Alert;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Log;
 import mediathek.tool.MVHttpClient;
 import mediathek.tool.Version;
 import mediathek.tool.javafx.FXErrorDialog;
@@ -96,7 +95,7 @@ public class ProgrammUpdateSuchen {
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
             }
         } catch (Exception ex) {
-            Log.errorLog(693298731, ex);
+            logger.error("displayInfoMessages failed", ex);
         }
     }
 
@@ -140,7 +139,9 @@ public class ProgrammUpdateSuchen {
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-        final Request request = new Request.Builder().url(Konstanten.ADRESSE_PROGRAMM_VERSION).get().build();
+        var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PROGRAM_VERSION_PATH);
+        assert url != null;
+        final Request request = new Request.Builder().url(url).get().build();
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
