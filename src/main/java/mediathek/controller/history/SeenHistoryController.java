@@ -50,5 +50,7 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
             zeileSchreiben(neueFilme);
             neueFilme.clear();
         }
+        // Update bookmarks with seen information 
+        Daten.getInstance().getListeBookmarkList().updateSeen(gesehen, arrayFilms);
     }
 }

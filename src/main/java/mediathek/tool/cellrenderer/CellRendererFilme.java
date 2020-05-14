@@ -25,6 +25,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;
     private final Icon normalPlayIcon;
+    private final Icon selectedBookmarkIcon;
+    private final Icon normalBookmarkIcon;
 
     public CellRendererFilme(Daten d) {
         super(d.getSenderIconCache());
@@ -38,6 +40,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         history = d.getSeenHistoryController();
         selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
+
+        selectedBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.BLUE);
+        normalBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16);
     }
 
     @Override
@@ -56,6 +61,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+            final boolean isBookMarked =  datenFilm.isBookmarked();
 
             if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
@@ -70,7 +76,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                         textArea.setForeground(getForeground());
                         textArea.setBackground(getBackground());
                         setSelectionFont(textArea, isSelected);
-                        setColor(textArea, datenFilm, datenDownload, isSelected);
+                        setColor(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
                         return textArea;
                 }
             }
@@ -99,6 +105,11 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_AUFZEICHNEN:
                     handleButtonDownloadColumn(isSelected);
                     break;
+                    
+                case DatenFilm.FILM_MERKEN:
+                    handleButtonBookmarkColumn(isBookMarked);
+                    break;
+                    
                 case DatenFilm.FILM_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
                         setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
@@ -106,14 +117,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
             }
 
-            setColor(this, datenFilm, datenDownload, isSelected);
+            setColor(this, datenFilm, datenDownload, isSelected, isBookMarked);
         } catch (Exception ex) {
             logger.error("Fehler", ex);
         }
         return this;
     }
 
-    private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
+    private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected, boolean isBookMarked) {
         // gestarteter Film
         final boolean start = (datenDownload != null) && (datenDownload.start != null);
 
@@ -133,6 +144,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 // fix #259
                 if (!isSelected)
                     c.setForeground(MVColor.FILM_NEU.color);
+            } else if (isBookMarked && !isSelected) {
+                c.setBackground(MVColor.FILM_BOOKMARKED.color);
             }
 
             if (geoMelden) {
@@ -172,5 +185,12 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
+    }
+    
+    private void handleButtonBookmarkColumn(final boolean isSelected) {
+        // Button Merken
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setToolTipText(isSelected ? "Film aus Merkliste entfernen": "Film merken");
+        setIcon(isSelected ? selectedBookmarkIcon: normalBookmarkIcon);
     }
 }

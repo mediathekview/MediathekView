@@ -976,6 +976,8 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
+        tabFilme.saveSettings();  // needs thread pools active!
+
         dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
@@ -1004,6 +1006,9 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
+
+        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
 
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();

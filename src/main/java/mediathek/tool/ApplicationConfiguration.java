@@ -54,6 +54,7 @@ public class ApplicationConfiguration {
             "application.ui.filter_dialog.location.y";
     public static final String APPLICATION_UI_FILTER_DIALOG_VISIBLE =
             "application.ui.filter_dialog.visible";
+    public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
 
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE =
             "application.http_download.file_buffer_size";
@@ -75,6 +76,7 @@ public class ApplicationConfiguration {
 
     public static final String FILTER_PANEL_SHOW_HD_ONLY = "filter.show.hd_only";
     public static final String FILTER_PANEL_SHOW_SUBTITLES_ONLY = "filter.show.subtitles_only";
+    public static final String FILTER_PANEL_SHOW_BOOKMARKED_ONLY = "filter.show.bookmarked_only";
     public static final String FILTER_PANEL_SHOW_NEW_ONLY = "filter.show.new_only";
     public static final String FILTER_PANEL_SHOW_UNSEEN_ONLY = "filter.show.unseen_only";
     public static final String FILTER_PANEL_SHOW_LIVESTREAMS_ONLY = "filter.show.livestreams_only";

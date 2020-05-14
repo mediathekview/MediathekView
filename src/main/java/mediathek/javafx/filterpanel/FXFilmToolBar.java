@@ -25,7 +25,16 @@ public class FXFilmToolBar extends ToolBar {
     Button btnRecord;
 
     @FXML
+    Button btnBookmark;
+    
+    @FXML
     Button btnManageAbos;
+    
+    @FXML
+    ToggleButton btnShowBookmarkedMovies;
+    
+    @FXML
+    Button btnManageBookMarks;
 
     @FXML
     Button btnShowFilter;

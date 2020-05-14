@@ -375,6 +375,8 @@ public class Main {
         loadConfigurationData();
 
         Daten.getInstance().launchHistoryDataLoading();
+        
+        Daten.getInstance().loadBookMarkData();
 
         deleteDatabase();
 
