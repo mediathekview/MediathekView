@@ -54,16 +54,20 @@ public class MediathekGuiX11 extends MediathekGui {
         config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, hasNativeSupport);
 
         //reset if we don´t have native support
-        if (!hasNativeSupport)
-            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS,false);
-
+        if (!hasNativeSupport) {
+           config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS,false);
+        }
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
-        } else {
-            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
-                daten.setNotificationCenter(notificationCenter);
-            else
-                daten.setNotificationCenter(new GenericNotificationCenter());
+        }
+        else {
+          if (config.containsKey(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS)
+            && config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS)) {
+            daten.setNotificationCenter(notificationCenter);
+          }
+          else {
+            daten.setNotificationCenter(new GenericNotificationCenter());
+          }
         }
     }
 

@@ -122,7 +122,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         Stopwatch stopwatch = Stopwatch.createStarted();
         listeRet.clear();
 
-        if (listeFilme != null) {
+        if (listeFilme != null && listeFilme.size() > 0) { // Check if there are any movies
             listeRet.setMetaData(listeFilme.metaData());
 
             this.parallelStream().forEach(entry -> {
