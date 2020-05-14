@@ -24,7 +24,6 @@ public class FilmListFilterTask extends Task<Void> {
 
         if (submitEvent)
             daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
-        //SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false)));
 
         updateMessage("Themen suchen");
         updateProgress(-1, 4);
@@ -41,6 +40,7 @@ public class FilmListFilterTask extends Task<Void> {
         SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false)));
 
         logger.trace("FilmListFilterTask finished");
+
         return null;
     }
 }
