@@ -135,8 +135,6 @@ public class GuiFilme extends AGuiTabPanel {
         setupActionListeners();
 
         initializeTouchBar();
-
-        bookmarkManageListAction.setParent(this); // Needed for refresh
     }
 
     private void setupFilmListTable() {
@@ -540,6 +538,18 @@ public class GuiFilme extends AGuiTabPanel {
       tabelle.clearSelection();
     }
 
+    /**
+     * If necessary instantiate and show the bookmark window
+     */
+    public void showBookmarkWindow() {
+      if (bookmarkWindowController.isEmpty())
+      {
+        bookmarkWindowController = Optional.of(new BookmarkWindowController());
+        bookmarkWindowController.get().setPartner(this);
+      }
+      bookmarkWindowController.get().show();
+    }
+    
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
@@ -793,17 +803,9 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class BookmarkManageListAction extends AbstractAction {
-      private GuiFilme parent;
-      public void setParent(GuiFilme parent) { this.parent = parent;}
-
       @Override
       public void actionPerformed(ActionEvent ae) {
-        if (bookmarkWindowController.isEmpty())
-        {
-          bookmarkWindowController = Optional.of(new BookmarkWindowController());
-          bookmarkWindowController.get().setPartner(parent);
-        }
-        bookmarkWindowController.get().show();
+        showBookmarkWindow();
       }
     }
 
