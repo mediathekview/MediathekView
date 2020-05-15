@@ -404,7 +404,7 @@ public class BookmarkWindowController implements Initializable {
     });
 
     tbBookmarks.getSortOrder().addListener((ListChangeListener.Change<? extends TableColumn<BookmarkData,?>> pc) -> {
-      tbBookmarks.getSelectionModel().clearSelection();
+      tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
 
     FilterState = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".filter", -1);
@@ -668,7 +668,6 @@ public class BookmarkWindowController implements Initializable {
 
   private void refresh() {
     if (stage.isShowing()) {
-      tbBookmarks.getSelectionModel().clearSelection();
       tbBookmarks.refresh();
       updateDisplay();
     }
@@ -704,7 +703,8 @@ public class BookmarkWindowController implements Initializable {
 
   private void playAction(BookmarkData data) {
     Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
-    refresh();
+    tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
+    tbBookmarks.getSelectionModel().select(data);
   }
 
   /**

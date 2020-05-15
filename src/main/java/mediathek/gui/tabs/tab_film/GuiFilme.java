@@ -534,8 +534,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private synchronized void bookmarkFilm() {
       daten.getListeBookmarkList().checkAndBookmarkMovies(getSelFilme());
-      // Reset selection
-      tabelle.clearSelection();
+      repaint();
     }
 
     /**
