@@ -110,6 +110,5 @@
                 <Insets left="10.0" />
             </padding>
         </HBox>
-        <Button fx:id="btnClose" mnemonicParsing="false" onAction="#btnCloseWindow" text="Schließen" textAlignment="CENTER" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="15.0" />
     </children>
 </AnchorPane>

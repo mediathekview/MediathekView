@@ -239,11 +239,6 @@ public class BookmarkWindowController implements Initializable {
   };
 
   @FXML
-  private void btnCloseWindow(Event e) {
-    stage.close();
-  }
-
-  @FXML
   private void hyperLinkSelected(Event e) {
     String url = tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl();
     try {
