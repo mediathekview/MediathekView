@@ -143,7 +143,6 @@ public class FilmActionPanel {
         showOnlyHd.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_HD_ONLY, false));
         showSubtitlesOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_SUBTITLES_ONLY, false));
         showNewOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_NEW_ONLY, false));
-        showBookMarkedOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_BOOKMARKED_ONLY, false));
         showUnseenOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_UNSEEN_ONLY, false));
         showLivestreamsOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, false));
 
@@ -168,7 +167,6 @@ public class FilmActionPanel {
         showOnlyHd.addListener((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_HD_ONLY, newValue));
         showSubtitlesOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_SUBTITLES_ONLY, newValue)));
         showNewOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_NEW_ONLY, newValue)));
-        showBookMarkedOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_BOOKMARKED_ONLY,newValue)));
         showUnseenOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_UNSEEN_ONLY, newValue)));
         showLivestreamsOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, newValue)));
 
@@ -263,19 +261,19 @@ public class FilmActionPanel {
     }
            
     private void setupShowBookmarkedMoviesButton() {
-      final boolean enabled = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_BOOKMARKED_ONLY, false);
-      toolBar.btnShowBookmarkedMovies.setSelected(enabled);
-      toolBar.btnShowBookmarkedMovies.setTooltip(enabled ? BOOKMARKLIST_SELECTED : BOOKMARKLIST_DESELECTED);
-      showBookMarkedOnly = toolBar.btnShowBookmarkedMovies.selectedProperty();
-      toolBar.btnShowBookmarkedMovies.setOnAction(e -> {
-            final boolean benabled = toolBar.btnShowBookmarkedMovies.isSelected();
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_BOOKMARKED_ONLY,benabled);
-            toolBar.btnShowBookmarkedMovies.setTooltip(benabled ? BOOKMARKLIST_SELECTED : BOOKMARKLIST_DESELECTED);
-            if (benabled)
-            {
-              toolBar.jfxSearchField.clear();
-            }
-        });
+      toolBar.btnShowBookmarkedMovies.setSelected(false);
+      toolBar.btnShowBookmarkedMovies.setTooltip(BOOKMARKLIST_DESELECTED);
+      toolBar.btnShowBookmarkedMovies.setOnAction((event) -> {
+        viewSettingsPane.cbShowBookMarkedOnly.selectedProperty().set(toolBar.btnShowBookmarkedMovies.isSelected());
+      });
+      showBookMarkedOnly.addListener((observable, oldValue, newValue) -> {
+        boolean benabled = (boolean) newValue;
+        toolBar.btnShowBookmarkedMovies.setTooltip(benabled ? BOOKMARKLIST_SELECTED : BOOKMARKLIST_DESELECTED);
+        toolBar.btnShowBookmarkedMovies.setSelected(benabled);
+        if (benabled) {
+          toolBar.jfxSearchField.clear();
+        }
+      });
     }
 
     public void updateThemaBox() {

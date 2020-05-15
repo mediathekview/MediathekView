@@ -178,24 +178,30 @@ public class BookmarkWindowController implements Initializable {
       boolean hasUnSeen = isUnSeenSelected(); // true if unseen in selection
       List<BookmarkData> bookmarks = new ArrayList<>(selections); // copy list 
       List<DatenFilm> filmlist = new ArrayList<>();
-      for (BookmarkData data : bookmarks) {
+      bookmarks.forEach((data) -> {
         data.setSeen(hasUnSeen);
         DatenFilm film = data.getDatenFilm();
         if (film != null) {
-          filmlist.add(data.getDatenFilm());
+          filmlist.add(film);
         }
-      }
+      });
       if (hasUnSeen) {
         history.markAsSeen(filmlist);
       }
       else {
         history.markAsUnseen(filmlist);
       }
-      updateDisplay();
+      setSeenButtonState(hasUnSeen, selections.size() > 1);
+       // reselect to trigger updates:
       tbBookmarks.getSelectionModel().clearSelection();
+      bookmarks.forEach((data) -> {
+        tbBookmarks.getSelectionModel().select(data);
+      });
     }
   }
 
+  
+  
   @FXML
   private void btnSaveBookMarkList(Event e) {
     cancelBookmarkSave();
@@ -393,11 +399,7 @@ public class BookmarkWindowController implements Initializable {
        headerContextMenu.hide();
        // Update buttons: Check if not seen in selection and adapt button text
        boolean setViewed = isUnSeenSelected();
-       btnMarkViewed.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));
-       String text = String.format("Film%s als %sgesehen markieren", (multipleSelected ? "e" : ""), (setViewed ? "" : "un"));
-       btnMarkViewed.setTooltip(new Tooltip(text));
-       viewitem.setText(text);
-       viewitem.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));
+       setSeenButtonState(setViewed, multipleSelected);
        deleteitem.setText(String.format("Film%s aus der Merkliste entfernen",(multipleSelected ? "e" : "")));
        // change description
        updateDescriptionArea();
@@ -407,7 +409,7 @@ public class BookmarkWindowController implements Initializable {
       tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
 
-    FilterState = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".filter", -1);
+    FilterState = -1; 
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
@@ -427,6 +429,14 @@ public class BookmarkWindowController implements Initializable {
       }
     }
     hyperLink.setVisible(showurl);
+  }
+  
+  private void setSeenButtonState(boolean setViewed, boolean multipleSelected) {
+    btnMarkViewed.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));  
+    String text = String.format("Film%s als %sgesehen markieren", (multipleSelected ? "e" : ""), (setViewed ? "" : "un"));
+    btnMarkViewed.setTooltip(new Tooltip(text));
+    viewitem.setText(text);
+    viewitem.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));
   }
 
  /**
@@ -776,7 +786,6 @@ public class BookmarkWindowController implements Initializable {
       }
       // - Button States:
       config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", btnShowDetails.isSelected());
-      config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".filter", FilterState - 1);
       config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", btnShowDetails.isSelected()
         ? spSplitPane.getDividerPositions()[0] : divposition);
     }

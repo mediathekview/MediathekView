@@ -1006,6 +1006,8 @@ public class GuiFilme extends AGuiTabPanel {
                     itemAbo.addActionListener(beobAbo);
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
                 }
+                // update Bookmark state
+                miBookmark.setText(film.isBookmarked() ? "Film aus Merkliste entfernen" : "Film merken");
             });
 
             submenueAbo.add(itemAboLoeschen);
