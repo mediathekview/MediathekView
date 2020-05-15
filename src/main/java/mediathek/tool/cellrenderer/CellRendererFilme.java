@@ -27,6 +27,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final Icon normalPlayIcon;
     private final Icon selectedBookmarkIcon;
     private final Icon normalBookmarkIcon;
+    private final Icon selectedBookmarkIconHighlighted;
 
     public CellRendererFilme(Daten d) {
         super(d.getSenderIconCache());
@@ -42,6 +43,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
 
         selectedBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.BLUE);
+        selectedBookmarkIconHighlighted = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.yellow);
         normalBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16);
     }
 
@@ -107,7 +109,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
                     
                 case DatenFilm.FILM_MERKEN:
-                    handleButtonBookmarkColumn(isBookMarked);
+                    handleButtonBookmarkColumn(isBookMarked, isSelected);
                     break;
                     
                 case DatenFilm.FILM_SENDER:
@@ -187,10 +189,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
     
-    private void handleButtonBookmarkColumn(final boolean isSelected) {
+    private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected) {
         // Button Merken
         setHorizontalAlignment(SwingConstants.CENTER);
-        setToolTipText(isSelected ? "Film aus Merkliste entfernen": "Film merken");
-        setIcon(isSelected ? selectedBookmarkIcon: normalBookmarkIcon);
+        setToolTipText(isBookMarked ? "Film aus Merkliste entfernen": "Film merken");
+        setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
     }
 }
