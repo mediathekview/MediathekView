@@ -2,8 +2,6 @@ package mediathek.filmlisten;
 
 import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -15,6 +13,7 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmListUpdateType;
@@ -310,9 +309,8 @@ public class FilmeLaden {
         logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms());
         logger.info("");
 
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             FXProgressPane hb = new FXProgressPane();
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
 
             FilmListFilterTask task = new FilmListFilterTask(true);
             task.setOnRunning(e -> {
@@ -320,25 +318,20 @@ public class FilmeLaden {
                 hb.lb.textProperty().bind(task.messageProperty());
                 hb.prog.progressProperty().bind(task.progressProperty());
             });
-            task.setOnFailed(workerStateEventEventHandler);
 
-            FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
-            writerTask.setOnRunning(e -> {
-                hb.lb.textProperty().bind(writerTask.messageProperty());
-                hb.prog.progressProperty().bind(writerTask.progressProperty());
-            });
-            
-            writerTask.setOnSucceeded(workerStateEventEventHandler);
-            writerTask.setOnFailed(workerStateEventEventHandler);
-
-            CompletableFuture<Void> filterTask = CompletableFuture.runAsync(task);
-            if (writeFilmList)
-                filterTask.thenRun(writerTask);
-            else {
-                //TODO this is not beautiful
-                //manual cleanup as ui cleanup is not
-                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            CompletableFuture<Void> workerTask = CompletableFuture.runAsync(task);
+            if (writeFilmList) {
+                FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
+                writerTask.setOnRunning(e -> {
+                    hb.lb.textProperty().bind(writerTask.messageProperty());
+                    hb.prog.progressProperty().bind(writerTask.progressProperty());
+                });
+                workerTask = workerTask.thenRun(writerTask);
             }
+
+            workerTask.thenRun(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            }));
         });
     }
 

@@ -60,7 +60,6 @@ public class MacNotificationCenter implements INotificationCenter, Closeable {
 
 
                 public void handleException(Object id, Exception e) {
-                    logger.error("mDNS exception occured", e);
                 }
 
 
