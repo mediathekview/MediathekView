@@ -10,6 +10,7 @@ public enum ShutdownState {
     SAVE_CONFIG("Programmkonfiguration schreiben"),
     CLOSE_DB("Datenbank schließen"),
     SAVE_APP_DATA("Programmdaten sichern"),
+    SAVE_BOOKMARKS("Merkliste sichern"),
     COMPLETE("Fertig.");
     private final String title;
 

@@ -54,6 +54,7 @@ public class ApplicationConfiguration {
             "application.ui.filter_dialog.location.y";
     public static final String APPLICATION_UI_FILTER_DIALOG_VISIBLE =
             "application.ui.filter_dialog.visible";
+    public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
 
     public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE =
             "application.http_download.file_buffer_size";

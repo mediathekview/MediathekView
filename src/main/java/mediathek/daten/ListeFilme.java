@@ -109,6 +109,16 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public synchronized DatenFilm getFilmByUrl(final String url) {
         return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny().orElse(null);
     }
+    
+    /**
+     * Find movie with given url and sendername
+     * @param url    String wiht URL
+     * @param sender String with sender name
+     * @return DatenFilm object if found or null
+     */
+    public synchronized DatenFilm getFilmByUrlAndSender(final String url, final String sender) {
+      return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url) && f.getSender().equalsIgnoreCase(sender)).findAny().orElse(null);
+    }
 
     public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {
         // Problem wegen gleicher URLs

@@ -47,10 +47,13 @@ public class FilmActionPanel {
     private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
     private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
     private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
+    private final Tooltip BOOKMARKLIST_SELECTED = new Tooltip("Alle Filme anzeigen");
+    private final Tooltip BOOKMARKLIST_DESELECTED = new Tooltip("Gemerkte Filme anzeigen");
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
     public BooleanProperty showNewOnly;
+    public BooleanProperty showBookMarkedOnly;
     public BooleanProperty showUnseenOnly;
     public BooleanProperty showLivestreamsOnly;
     public BooleanProperty dontShowAbos;
@@ -91,6 +94,7 @@ public class FilmActionPanel {
             showOnlyHd.setValue(false);
             showSubtitlesOnly.setValue(false);
             showNewOnly.setValue(false);
+            showBookMarkedOnly.setValue(false);
             showLivestreamsOnly.setValue(false);
             showUnseenOnly.setValue(false);
             dontShowAbos.setValue(false);
@@ -114,6 +118,7 @@ public class FilmActionPanel {
         showOnlyHd = viewSettingsPane.cbShowOnlyHd.selectedProperty();
         showSubtitlesOnly = viewSettingsPane.cbShowSubtitlesOnly.selectedProperty();
         showNewOnly = viewSettingsPane.cbShowNewOnly.selectedProperty();
+        showBookMarkedOnly = viewSettingsPane.cbShowBookMarkedOnly.selectedProperty();
         showLivestreamsOnly = viewSettingsPane.cbShowOnlyLivestreams.selectedProperty();
 
         showUnseenOnly = viewSettingsPane.cbShowUnseenOnly.selectedProperty();
@@ -254,6 +259,22 @@ public class FilmActionPanel {
 
         toolBar.btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
+           
+    private void setupShowBookmarkedMoviesButton() {
+      toolBar.btnShowBookmarkedMovies.setSelected(false);
+      toolBar.btnShowBookmarkedMovies.setTooltip(BOOKMARKLIST_DESELECTED);
+      toolBar.btnShowBookmarkedMovies.setOnAction((event) -> {
+        viewSettingsPane.cbShowBookMarkedOnly.selectedProperty().set(toolBar.btnShowBookmarkedMovies.isSelected());
+      });
+      showBookMarkedOnly.addListener((observable, oldValue, newValue) -> {
+        boolean benabled = (boolean) newValue;
+        toolBar.btnShowBookmarkedMovies.setTooltip(benabled ? BOOKMARKLIST_SELECTED : BOOKMARKLIST_DESELECTED);
+        toolBar.btnShowBookmarkedMovies.setSelected(benabled);
+        if (benabled) {
+          toolBar.jfxSearchField.clear();
+        }
+      });
+    }
 
     public void updateThemaBox() {
         final var items = themaBox.getItems();
@@ -292,15 +313,15 @@ public class FilmActionPanel {
         toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
         toolBar.btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
         toolBar.btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
+        toolBar.btnBookmark.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.bookmarkFilmAction.actionPerformed(null)));
+        toolBar.btnManageBookMarks.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.bookmarkManageListAction.actionPerformed(null)));
         toolBar.btnManageAbos.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             if (manageAboAction.isEnabled())
                 manageAboAction.actionPerformed(null);
         }));
         toolBar.btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             if (filterDialog != null) {
-                if (!filterDialog.isVisible()) {
-                    filterDialog.setVisible(true);
-                }
+                filterDialog.setVisible(!filterDialog.isVisible());  // Toggle Dialog display on button press
             }
         }));
     }
@@ -312,6 +333,8 @@ public class FilmActionPanel {
 
         setupSearchThroughDescriptionButton();
 
+        setupShowBookmarkedMoviesButton();
+                
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {

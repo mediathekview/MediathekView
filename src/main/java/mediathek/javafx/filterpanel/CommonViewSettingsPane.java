@@ -26,6 +26,8 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     @FXML
     public CheckBox cbShowNewOnly;
     @FXML
+    public CheckBox cbShowBookMarkedOnly;
+    @FXML
     public CheckBox cbShowOnlyLivestreams;
     @FXML
     public CheckBox cbShowUnseenOnly;

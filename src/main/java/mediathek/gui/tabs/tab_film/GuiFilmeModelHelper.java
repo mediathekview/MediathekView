@@ -20,6 +20,7 @@ public class GuiFilmeModelHelper {
     private final ListeFilme listeFilme;
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
+    private boolean onlyBookMarked;
     private boolean nurUt;
     private boolean showOnlyHd;
     private boolean kGesehen;
@@ -82,6 +83,7 @@ public class GuiFilmeModelHelper {
                 && !fap.showSubtitlesOnly.getValue()
                 && !fap.showLivestreamsOnly.getValue()
                 && !fap.showNewOnly.getValue()
+                && !fap.showBookMarkedOnly.getValue()
                 && !fap.dontShowTrailers.getValue()
                 && !fap.dontShowSignLanguage.getValue()
                 && !fap.dontShowAudioVersions.getValue())
@@ -92,6 +94,7 @@ public class GuiFilmeModelHelper {
 
     private void updateFilterVars() {
         nurNeue = fap.showNewOnly.getValue();
+        onlyBookMarked = fap.showBookMarkedOnly.getValue();
         nurUt = fap.showSubtitlesOnly.getValue();
         showOnlyHd = fap.showOnlyHd.getValue();
         kGesehen = fap.showUnseenOnly.getValue();
@@ -139,6 +142,12 @@ public class GuiFilmeModelHelper {
                 if (!film.isNew()) {
                     continue;
                 }
+            }
+            
+            if (onlyBookMarked) {
+              if (!film.isBookmarked()) {
+                continue;
+              }
             }
             if (showOnlyLivestreams) {
                 if (!film.isLivestream()) {
