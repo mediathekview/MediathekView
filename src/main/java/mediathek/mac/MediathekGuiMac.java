@@ -106,7 +106,7 @@ public class MediathekGuiMac extends MediathekGui {
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
-            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
+            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false))
                 daten.setNotificationCenter(new MacNotificationCenter());
             else
                 daten.setNotificationCenter(new GenericNotificationCenter());
