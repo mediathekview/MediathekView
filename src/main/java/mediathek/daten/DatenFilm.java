@@ -1,5 +1,6 @@
 package mediathek.daten;
 
+import mediathek.javafx.bookmark.BookmarkData;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.sansorm.SqlClosure;
 import mediathek.config.Daten;
@@ -36,23 +37,24 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public static final int FILM_TITEL = 3;
     public static final int FILM_ABSPIELEN = 4; // no getter/setter access
     public static final int FILM_AUFZEICHNEN = 5; // no getter/setter access
-    public static final int FILM_DATUM = 6;
-    public static final int FILM_ZEIT = 7;
-    public static final int FILM_DAUER = 8;
-    public static final int FILM_GROESSE = 9;
-    public static final int FILM_HD = 10; // no getter/setter access
-    public static final int FILM_UT = 11; // no getter/setter access
-    public static final int FILM_GEO = 12; // Geoblocking
-    public static final int FILM_URL = 13;
-    public static final int FILM_ABO_NAME = 14; // wird vor dem Speichern gelöscht!
-    public static final int FILM_DATUM_LONG = 15; // Datum als Long ABER Sekunden!!
-    public static final int FILM_URL_HISTORY = 16; // set null only
-    public static final int FILM_REF = 17; // no getter/setter access // Referenz auf this
-    public static final int FILM_URL_HD = 18;
-    public static final int FILM_URL_SUBTITLE = 19;
-    public static final int FILM_URL_KLEIN = 20;
-    public static final int FILM_NEU = 21;
-    public static final int MAX_ELEM = 21;
+    public static final int FILM_MERKEN = 6; // no getter/setter access
+    public static final int FILM_DATUM = 7;
+    public static final int FILM_ZEIT = 8;
+    public static final int FILM_DAUER = 9;
+    public static final int FILM_GROESSE = 10;
+    public static final int FILM_HD = 11; // no getter/setter access
+    public static final int FILM_UT = 12; // no getter/setter access
+    public static final int FILM_GEO = 13; // Geoblocking
+    public static final int FILM_URL = 14;
+    public static final int FILM_ABO_NAME = 15; // wird vor dem Speichern gelöscht!
+    public static final int FILM_DATUM_LONG = 16; // Datum als Long ABER Sekunden!!
+    public static final int FILM_URL_HISTORY = 17; // set null only
+    public static final int FILM_REF = 18; // no getter/setter access // Referenz auf this
+    public static final int FILM_URL_HD = 19;
+    public static final int FILM_URL_SUBTITLE = 20;
+    public static final int FILM_URL_KLEIN = 21;
+    public static final int FILM_NEU = 22;
+    public static final int MAX_ELEM = 22;
     /**
      * The database instance for all descriptions.
      */
@@ -61,6 +63,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     private DatenAbo abo = null;
+    private BookmarkData bookmark = null;
     /**
      * film date stored IN SECONDS!!!
      */
@@ -655,7 +658,33 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setGeo(Optional<String> availableInCountries) {
         this.availableInCountries = availableInCountries;
     }
-
+    
+    /**
+     * Link with bookmark entry
+     * @param bookmark Bookmark entry
+     */
+    public void setBookmark(BookmarkData bookmark) {
+      this.bookmark = bookmark;
+    }
+    
+    /**
+     * Get bookmark entry
+     * @return BookmarkData entry
+     */
+    public BookmarkData getBookmark() {
+      return this.bookmark;
+    }
+    
+    /**
+     * check if movie is bookmarked
+     * @return boolean true
+     */
+    public boolean isBookmarked() {
+      return this.bookmark != null;
+    }
+    
+    
+    
     public static class Database {
         private Database() {
         }

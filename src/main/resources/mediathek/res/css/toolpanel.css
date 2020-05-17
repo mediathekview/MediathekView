@@ -1,0 +1,17 @@
+
+.togglebutton {
+    -fx-background-color: #006900;
+}
+
+.togglebutton.selected {
+    -fx-background-color: #4169e1;
+    -fx-border-color: #ff0000;
+}
+
+.togglebutton.hover {
+    -fx-background-color: #87cefa;
+}
+
+.button:hover {
+    -fx-background-color: #87cefa;
+}

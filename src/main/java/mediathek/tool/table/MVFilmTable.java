@@ -73,6 +73,9 @@ public class MVFilmTable extends ASelectableMVTable {
                 break;
             case DatenFilm.FILM_ABSPIELEN:
             case DatenFilm.FILM_AUFZEICHNEN:
+            case DatenFilm.FILM_MERKEN:
+                breite[i] = 20;
+                break;
             case DatenFilm.FILM_HD:
             case DatenFilm.FILM_UT:
                 breite[i] = 50;

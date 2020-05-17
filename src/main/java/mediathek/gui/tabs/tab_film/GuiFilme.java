@@ -56,6 +56,7 @@ import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Optional;
+import mediathek.javafx.bookmark.BookmarkWindowController;
 
 @SuppressWarnings("serial")
 public class GuiFilme extends AGuiTabPanel {
@@ -63,6 +64,7 @@ public class GuiFilme extends AGuiTabPanel {
     public static final String NAME = "Filme";
     private static final String ACTION_MAP_KEY_PLAY_FILM = "film_abspielen";
     private static final String ACTION_MAP_KEY_SAVE_FILM = "download_film";
+    private static final String ACTION_MAP_KEY_BOOKMARK_FILM = "bookmark_film";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url";
     private static final String ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd";
     private static final String ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein";
@@ -71,12 +73,15 @@ public class GuiFilme extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
     private static final int[] HIDDEN_COLUMNS = new int[]{
             DatenFilm.FILM_ABSPIELEN,
-            DatenFilm.FILM_AUFZEICHNEN
+            DatenFilm.FILM_AUFZEICHNEN,
+            DatenFilm.FILM_MERKEN
     };
     private static final Logger logger = LogManager.getLogger(GuiFilme.class);
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
+    public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
+    public final BookmarkManageListAction bookmarkManageListAction = new BookmarkManageListAction();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
@@ -84,6 +89,8 @@ public class GuiFilme extends AGuiTabPanel {
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
+    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
+
     /**
      * The JavaFx Film action popup panel.
      */
@@ -232,6 +239,16 @@ public class GuiFilme extends AGuiTabPanel {
         miRecordFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
         miRecordFilm.addActionListener(saveFilmAction);
 
+        JMenuItem miBookmarkFilm = new JMenuItem("Film merken");
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            miBookmarkFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_DOWN_MASK));
+        }
+        else {
+            miBookmarkFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
+        }
+        miBookmarkFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
+        miBookmarkFilm.addActionListener(bookmarkFilmAction);
+
         JMenuItem miOpenBlacklist = new JMenuItem("Blacklist öffnen");
         if (SystemUtils.IS_OS_MAC_OSX)
             miOpenBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_DOWN_MASK));
@@ -258,6 +275,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         menu.add(miPlayFilm);
         menu.add(miRecordFilm);
+        menu.add(miBookmarkFilm);
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.addSeparator();
@@ -325,6 +343,7 @@ public class GuiFilme extends AGuiTabPanel {
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM);
+        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0), ACTION_MAP_KEY_BOOKMARK_FILM);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL);
@@ -335,6 +354,7 @@ public class GuiFilme extends AGuiTabPanel {
         final ActionMap actionMap = tabelle.getActionMap();
         actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
+        actionMap.put(ACTION_MAP_KEY_BOOKMARK_FILM, bookmarkFilmAction);
         actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_NORMAL));
         actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_HD));
         actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(FilmResolution.AUFLOESUNG_KLEIN));
@@ -393,7 +413,7 @@ public class GuiFilme extends AGuiTabPanel {
         final var headerListener = new BeobTableHeader(tabelle,
                 Daten.spaltenAnzeigenFilme,
                 HIDDEN_COLUMNS,
-                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
+                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN},
                 true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
         tabelle.getTableHeader().addMouseListener(headerListener);
     }
@@ -512,6 +532,23 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
+    private synchronized void bookmarkFilm() {
+      daten.getListeBookmarkList().checkAndBookmarkMovies(getSelFilme());
+      repaint();
+    }
+
+    /**
+     * If necessary instantiate and show the bookmark window
+     */
+    public void showBookmarkWindow() {
+      if (bookmarkWindowController.isEmpty())
+      {
+        bookmarkWindowController = Optional.of(new BookmarkWindowController());
+        bookmarkWindowController.get().setPartner(this);
+      }
+      bookmarkWindowController.get().show();
+    }
+    
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
@@ -531,6 +568,15 @@ public class GuiFilme extends AGuiTabPanel {
             Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
             filmSelection.ifPresent(film -> daten.starterClass.urlMitProgrammStarten(pSet, film, aufloesung));
         }
+    }
+
+    /**
+     * Cleanup during shutdown
+     */
+    public void saveSettings() {
+      if (bookmarkWindowController.isPresent()) {
+        bookmarkWindowController.get().saveSettings();
+      }
     }
 
     /**
@@ -618,6 +664,7 @@ public class GuiFilme extends AGuiTabPanel {
             fap.showOnlyHd.addListener(reloadTableListener);
             fap.showSubtitlesOnly.addListener(reloadTableListener);
             fap.showNewOnly.addListener(reloadTableListener);
+            fap.showBookMarkedOnly.addListener(reloadTableListener);
             fap.showUnseenOnly.addListener(reloadTableListener);
             fap.dontShowAbos.addListener(reloadTableListener);
             fap.dontShowTrailers.addListener(reloadTableListener);
@@ -746,6 +793,21 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
+    public class BookmarkFilmAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bookmarkFilm();
+        }
+    }
+
+    public class BookmarkManageListAction extends AbstractAction {
+      @Override
+      public void actionPerformed(ActionEvent ae) {
+        showBookmarkWindow();
+      }
+    }
+
     private class CopyUrlToClipboardAction extends AbstractAction {
         private final String resolution;
 
@@ -801,6 +863,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
         private final JMenuItem miPlay = createPlayItem();
         private final JMenuItem miSave = createSaveFilmItem();
+        private final JMenuItem miBookmark = createBookmarkFilmItem();
         private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
@@ -844,26 +907,37 @@ public class GuiFilme extends AGuiTabPanel {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_ABSPIELEN) {
-                    Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-                    filmSelection.ifPresent(datenFilm -> {
-                        boolean stop = false;
-                        final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
-                        if (datenDownload != null) {
-                            if (datenDownload.start != null) {
-                                if (datenDownload.start.status == Start.STATUS_RUN) {
-                                    stop = true;
-                                    daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
-                                }
-                            }
+              switch (tabelle.convertColumnIndexToModel(column)) {
+                case DatenFilm.FILM_ABSPIELEN:
+                  Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
+                  filmSelection.ifPresent(datenFilm -> {
+                    boolean stop = false;
+                    final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+                    if (datenDownload != null) {
+                      if (datenDownload.start != null) {
+                        if (datenDownload.start.status == Start.STATUS_RUN) {
+                          stop = true;
+                          daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
                         }
-                        if (!stop) {
-                            playAction.actionPerformed(null);
-                        }
-                    });
-                } else if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_AUFZEICHNEN) {
-                    saveFilm(null);
-                }
+                      }
+                    }
+                    if (!stop) {
+                      playAction.actionPerformed(null);
+                    }
+                  });
+                  break;
+
+                case DatenFilm.FILM_AUFZEICHNEN:
+                  saveFilm(null);
+                  break;
+
+                case DatenFilm.FILM_MERKEN:
+                  bookmarkFilm();
+                  break;
+
+                default:
+                  break;
+              }
             }
         }
 
@@ -881,6 +955,13 @@ public class GuiFilme extends AGuiTabPanel {
             return item;
         }
 
+        private JMenuItem createBookmarkFilmItem() {
+            JMenuItem item = new JMenuItem("Film merken");
+            item.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
+            item.addActionListener(bookmarkFilmAction);
+            return item;
+        }
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -894,6 +975,8 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(miPlay);
             //Url
             jPopupMenu.add(miSave);
+            // Film merken
+            jPopupMenu.add(miBookmark);
 
             //##Trenner##
             jPopupMenu.addSeparator();
@@ -923,6 +1006,8 @@ public class GuiFilme extends AGuiTabPanel {
                     itemAbo.addActionListener(beobAbo);
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
                 }
+                // update Bookmark state
+                miBookmark.setText(film.isBookmarked() ? "Film aus Merkliste entfernen" : "Film merken");
             });
 
             submenueAbo.add(itemAboLoeschen);

@@ -1,5 +1,6 @@
 package mediathek.config;
 
+import mediathek.javafx.bookmark.BookmarkDataList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -83,6 +84,7 @@ public class Daten {
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
+    private final BookmarkDataList listeBookmarkList;
     private final ListeMediaDB listeMediaDB;
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
@@ -113,6 +115,7 @@ public class Daten {
 
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
+        listeBookmarkList = BookmarkDataList.getInstance(this);
 
         listePset = new ListePset();
 
@@ -226,6 +229,23 @@ public class Daten {
         }
     }
 
+    /**
+     * Return the path to "bookmarks.json"
+     *
+     * @return Path object of bookmark file
+     */
+    public static Path getBookmarkFilePath() {
+        return Daten.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
+    }
+    
+    /**
+     * Load the stored bookmarkdata form JSON file
+     * into memory
+     */
+    public void loadBookMarkData() {
+      listeBookmarkList.loadFromFile(getBookmarkFilePath());
+    }
+    
     /**
      * Return the number of milliseconds from today´s midnight.
      *
@@ -368,6 +388,7 @@ public class Daten {
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
+        listeBookmarkList.clear();
     }
 
     private boolean load() {
@@ -533,6 +554,10 @@ public class Daten {
 
     public ListeBlacklist getListeBlacklist() {
         return listeBlacklist;
+    }
+    
+    public BookmarkDataList getListeBookmarkList() {
+        return listeBookmarkList;
     }
 
     public ListeMediaDB getListeMediaDB() {

@@ -62,6 +62,7 @@ public class Konstanten {
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";
+    public static final String BOOKMARK_FILE = "bookmarks.json";
     public final static String SHUTDOWN_LINUX = "shutdown -h now";
 
     /**

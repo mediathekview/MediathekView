@@ -848,6 +848,13 @@ public class MediathekGui extends JFrame {
             }
 
         });
+        
+        JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
+        showBookmarkList.addActionListener(l -> {
+          JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            tabFilme.showBookmarkWindow();
+          });
+        });
 
         jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
@@ -857,6 +864,8 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(showFilmFilterDialog);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showBookmarkList);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(cbSearchMediaDb);
     }
@@ -976,6 +985,8 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
+        tabFilme.saveSettings();  // needs thread pools active!
+
         dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
@@ -1004,6 +1015,9 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
+
+        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
 
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();

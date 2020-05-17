@@ -1,0 +1,51 @@
+/* 
+  CSS settings for bookmark window
+  Author     :  K. Wich
+*/
+
+.table-column {
+  -fx-text-fill: black;
+}
+
+.column-header .label {
+  -fx-alignment: center-left;
+}
+
+#pnLabel,
+.text-area,
+.text-area .content {
+  -fx-background-color: whitesmoke;
+  -fx-padding: 3 5 3 4;
+}
+
+.hyperlink {
+  -fx-background-color: whitesmoke;
+  -fx-padding: 5 5 3 8;
+}
+
+#colDuration,
+#colRunDate,
+#colExpiry {
+  -fx-alignment: center-right;
+}
+
+
+#colSender {
+  -fx-text-fill: darkblue;
+}
+
+#colBtnDownload, 
+#colBtnPlay {
+  -fx-alignment: center;
+}
+
+#colUrl {
+  -fx-text-fill: darkgrey;
+}
+
+.Expiry {
+  -fx-text-fill: red;
+  -fx-font-weight: bold;
+  -fx-background-color: lightyellow;
+}
+

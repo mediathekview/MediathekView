@@ -505,13 +505,14 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             if (art == ART_DOWNLOAD) {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM] = ART_DOWNLOAD_TXT;
             } else {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm.arr[DatenProg.PROGRAMM_NAME];
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm != null ? programm.arr[DatenProg.PROGRAMM_NAME] : "Unknown";
             }
-
-            arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());
-            arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER] = String.valueOf(programm.isDownloadManager());
-            dateinamePfadBauen(pSet, film, abo, nname, ppfad);
-            programmaufrufBauen(programm);
+            if (programm != null) { 
+              arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());
+              arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER] = String.valueOf(programm.isDownloadManager());
+              dateinamePfadBauen(pSet, film, abo, nname, ppfad);
+              programmaufrufBauen(programm);
+            }
         } catch (Exception ex) {
             logger.error("aufrufBauen", ex);
         }

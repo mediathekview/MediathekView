@@ -26,6 +26,7 @@ public class DatenFilmCaptions
             case DatenFilm.FILM_URL_HD: return getUrlHdTitle();
             case DatenFilm.FILM_URL_SUBTITLE: return getUrlSubtitleTitle();
             case DatenFilm.FILM_URL_KLEIN: return getUrlKleinTitle();
+            case DatenFilm.FILM_MERKEN: return getBookmarkTitle();
 
             default:
                 throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + fieldindex);
@@ -62,6 +63,11 @@ public class DatenFilmCaptions
 	public static String getRecordTitle()
 	{
 		return "?Aufnehmen?";
+	}
+
+	public static String getBookmarkTitle()
+	{
+		return "?Merken?";
 	}
 
 	public static String getSendeDatumTitle()

@@ -65,7 +65,7 @@ public class TModelFilm extends TModel {
 
     @Override
     public String getColumnName(int column) {
-        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN) {
+        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN || column == DatenFilm.FILM_MERKEN) {
             return "";
         }
 
@@ -95,6 +95,7 @@ public class TModelFilm extends TModel {
 
             case DatenFilm.FILM_ABSPIELEN:
             case DatenFilm.FILM_AUFZEICHNEN:
+            case DatenFilm.FILM_MERKEN:
                 result = "";
                 break;
 
