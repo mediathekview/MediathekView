@@ -60,7 +60,7 @@ public class MediathekGuiX11 extends MediathekGui {
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
-            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS))
+            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false))
                 daten.setNotificationCenter(notificationCenter);
             else
                 daten.setNotificationCenter(new GenericNotificationCenter());
