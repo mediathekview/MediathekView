@@ -14,12 +14,12 @@
                 <Tooltip text="Aus der Merkliste löschen"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="MINUS"/>
+                <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
             </graphic>
         </Button>
         <Button fx:id="btnMarkViewed" disable="true" mnemonicParsing="false" onAction="#btnMarkEntryAsViewed">
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="EYE"/>
+                <Glyph fontFamily="FontAwesome" icon="EYE" fontSize="16"/>
             </graphic>
         </Button>
         <Button fx:id="btnEditNote" disable="true" mnemonicParsing="false" onAction="#btnEditNote">
@@ -27,7 +27,7 @@
                 <Tooltip text="Anmerkungen bearbeiten"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="PENCIL"/>
+                <Glyph fontFamily="FontAwesome" icon="PENCIL" fontSize="16"/>
             </graphic>
         </Button>
         <Region HBox.hgrow="ALWAYS"/>
@@ -36,7 +36,7 @@
                 <Tooltip text="Geänderte Merkliste abspeichern"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="SAVE"/>
+                <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
             </graphic>
         </Button>
         <Separator orientation="VERTICAL"/>
@@ -45,12 +45,12 @@
                 <Tooltip text="Erweiterte Film Informationen anzeigen"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE"/>
+                <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
             </graphic>
         </ToggleButton>
         <Button fx:id="btnFilter" mnemonicParsing="false" onAction="#btnFilterAction">
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="FILTER"/>
+                <Glyph fontFamily="FontAwesome" icon="FILTER" fontSize="16"/>
             </graphic>
         </Button>
     </ToolBar>
