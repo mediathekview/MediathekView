@@ -1,5 +1,14 @@
 package mediathek.javafx.bookmark;
 
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import mediathek.gui.actions.UrlHyperlinkAction;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,18 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.Event;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
-import mediathek.gui.actions.UrlHyperlinkAction;
 
 
 /**
@@ -64,15 +61,9 @@ public class BookmarkNoteDialog implements Initializable
   @Override
   public void initialize(URL arg0, ResourceBundle arg1) {  
     dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    fxDate.setOnKeyTyped((var e) -> {
-      handleChange();
-    });
-    fxDate.setOnMouseClicked((var e) -> {
-      handleChange();
-    });
-    fxDate.getEditor().setOnKeyTyped((var e) -> {
-      handleChange();
-    });
+    fxDate.setOnKeyTyped((var e) -> handleChange());
+    fxDate.setOnMouseClicked((var e) -> handleChange());
+    fxDate.getEditor().setOnKeyTyped((var e) -> handleChange());
   }
   
   @FXML
@@ -120,7 +111,7 @@ public class BookmarkNoteDialog implements Initializable
     fxProgress.setVisible(true);
     fxStatus.setVisible(true);
     btnWebDate.setDisable(true);
-    Task<String> task = new Task<String>() {
+    Task<String> task = new Task<>() {
       @Override
       protected String call() {
         return searchExpiryDate();
@@ -153,7 +144,7 @@ public class BookmarkNoteDialog implements Initializable
         UrlHyperlinkAction.openURL(null,data.getWebUrl());
       }
     }
-    catch (URISyntaxException IGNORE) {}
+    catch (URISyntaxException ignored) {}
   }
   
   
@@ -173,7 +164,7 @@ public class BookmarkNoteDialog implements Initializable
         try {
           fxDate.setValue(LocalDate.parse(data.getExpiry(),dateformatter));
         }
-        catch (Exception IGNORE) {}
+        catch (Exception ignored) {}
       }
       btnWebDate.setDisable(!hasWebURL); 
       btnWebLink.setDisable(!hasWebURL);
@@ -221,6 +212,7 @@ public class BookmarkNoteDialog implements Initializable
     String result = null;   
     if (hasWebURL) {   
       try {
+        //FIXME use okhttp here instead of plain Java networking
         URL uri= new URL(data.getWebUrl());
         BufferedReader in = new BufferedReader(new InputStreamReader(uri.openConnection().getInputStream(), "UTF-8"));
         StringBuilder a = new StringBuilder();
@@ -261,7 +253,7 @@ public class BookmarkNoteDialog implements Initializable
           }
         }
       }
-      catch (IOException IGNORE) {}
+      catch (IOException ignored) {}
     }
     return result;
   }  
