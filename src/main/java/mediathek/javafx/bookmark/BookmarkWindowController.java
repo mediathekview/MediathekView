@@ -158,7 +158,7 @@ public class BookmarkWindowController implements Initializable {
     ObservableList<BookmarkData> selections = tbBookmarks.getSelectionModel().getSelectedItems();
     if (!selections.isEmpty()) {
       boolean hasUnSeen = isUnSeenSelected(); // true if unseen in selection
-      List<BookmarkData> bookmarks = new ArrayList<>(selections); // copy list 
+      List<BookmarkData> bookmarks = new ArrayList<>(selections); // copy list
       List<DatenFilm> filmlist = new ArrayList<>();
       bookmarks.forEach((data) -> {
         data.setSeen(hasUnSeen);
@@ -180,8 +180,8 @@ public class BookmarkWindowController implements Initializable {
     }
   }
 
-  
-  
+
+
   @FXML
   private void btnSaveBookMarkList(Event e) {
     cancelBookmarkSave();
@@ -287,7 +287,7 @@ public class BookmarkWindowController implements Initializable {
         }
       }
     });
-    
+
     colExpiry.setCellFactory((final var UNUSED) -> new TableCell<>() {
       @Override
       public void updateItem(String item, boolean empty) {
@@ -370,7 +370,7 @@ public class BookmarkWindowController implements Initializable {
       tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
 
-    FilterState = -1; 
+    FilterState = -1;
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
@@ -394,9 +394,9 @@ public class BookmarkWindowController implements Initializable {
     }
     hyperLink.setVisible(showurl);
   }
-  
+
   private void setSeenButtonState(boolean setViewed, boolean multipleSelected) {
-    btnMarkViewed.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));  
+    btnMarkViewed.setGraphic(new IconNode(setViewed ? FontAwesome.EYE: FontAwesome.EYE_SLASH));
     String text = String.format("Film%s als %sgesehen markieren", (multipleSelected ? "e" : ""), (setViewed ? "" : "un"));
     btnMarkViewed.setTooltip(new Tooltip(text));
     viewitem.setText(text);
@@ -626,7 +626,6 @@ public class BookmarkWindowController implements Initializable {
     tbBookmarks.getSelectionModel().select(data);
   }
 
-  //private static final Logger logger = LogManager.getLogger();
   /**
    * Trigger Download of movie   (mirror fucntionality of FilmGUI)
    * @param data movie object to be used for download
