@@ -14,7 +14,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,10 @@ import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.*;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -46,8 +48,8 @@ public class FilmListReader implements AutoCloseable {
      * Memory limit for the xz decompressor. No limit by default.
      */
     protected int DECOMPRESSOR_MEMORY_LIMIT = -1;
-    private int progress = 0;
-    private long milliseconds = 0;
+    private int progress;
+    private long milliseconds;
     private String sender = "";
     private String thema = "";
 
@@ -188,16 +190,19 @@ public class FilmListReader implements AutoCloseable {
     private void parseUrlSubtitle(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setUrlSubtitle(checkedString(jp));
     }
+
     private void parseUrlKlein(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setUrlKlein(checkedString(jp));
     }
+
     private void parseUrlHd(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setHighQualityUrl(checkedString(jp));
     }
+
     private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setDatumLong(checkedString(jp));
     }
-    
+
     private void parseSendedatum(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setSendeDatum(checkedString(jp));
     }
@@ -233,7 +238,7 @@ public class FilmListReader implements AutoCloseable {
     private void parseAudioVersion(String title, DatenFilm film) {
         if (title.contains("Hörfassung") || title.contains("Audiodeskription")
                 || title.contains("AD |") || title.endsWith("(AD)")
-        || title.contains("Hörspiel") || title.contains("Hörfilm"))
+                || title.contains("Hörspiel") || title.contains("Hörfilm"))
             film.setAudioVersion(true);
     }
 
@@ -393,8 +398,8 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
 
-            fc = (FileChannel)Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
-            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY,0,fc.size());
+            fc = (FileChannel) Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
+            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 
             try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
                  InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
@@ -408,8 +413,7 @@ public class FilmListReader implements AutoCloseable {
         } catch (Exception ex) {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
-        }
-        finally {
+        } finally {
             if (fc != null) {
                 try {
                     fc.close();
@@ -438,7 +442,8 @@ public class FilmListReader implements AutoCloseable {
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 final var endRequest = response.request();
-                logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
+                if (Functions.isDebuggerAttached())
+                    logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
                 ProgressMonitor monitor = new ProgressMonitor(source.toString());
                 try (InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);
@@ -455,7 +460,6 @@ public class FilmListReader implements AutoCloseable {
     }
 
     /**
-     *
      * @param film film to be checked.
      * @return true if film should be displayed
      */
@@ -485,7 +489,8 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void notifyFertig(String url, ListeFilme liste) {
-        logger.info("Liste Filme gelesen am: {}", FastDateFormat.getInstance("dd.MM.yyyy, HH:mm").format(new Date()));
+        logger.info("Liste Filme gelesen am: {}",DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
+                .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
         logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
@@ -504,7 +509,7 @@ public class FilmListReader implements AutoCloseable {
 
     class ProgressMonitor implements InputStreamProgressMonitor {
         private final String sourceString;
-        private int oldProgress = 0;
+        private int oldProgress;
 
         public ProgressMonitor(String source) {
             sourceString = source;
