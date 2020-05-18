@@ -1,4 +1,4 @@
-package mediathek.javafx.bookmark;
+package mediathek.javafx.tool;
 
 import javafx.event.Event;
 import javafx.geometry.Side;
@@ -6,8 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.control.skin.TableViewSkin;
-import jiconfont.icons.FontAwesome;
-import jiconfont.javafx.IconNode;
 
 public class TableViewColumnContextMenuHelper {
 
@@ -145,28 +143,9 @@ public class TableViewColumnContextMenuHelper {
         tableView.getColumns().forEach(column -> contextMenu.getItems().add(createColumnCustomMenuItem(contextMenu, column)));
     }
 
-    private CustomMenuItem createColumnCustomMenuItem(
+    protected CustomMenuItem createColumnCustomMenuItem(
             final ContextMenu contextMenu, final TableColumn<?, ?> column) {
-        final CheckBox checkBox;
-        if (!column.getText().isEmpty())
-            checkBox = new CheckBox(column.getText());
-        else {
-            checkBox = new CheckBox(" ");
-            Node icon;
-            switch (column.getId()) {
-                case "colBtnPlay":
-                    icon = new IconNode(FontAwesome.PLAY);
-                    break;
-
-                case "colBtnDownload":
-                    icon = new IconNode(FontAwesome.DOWNLOAD);
-                    break;
-
-                default:
-                    throw new IllegalStateException("unknown id");
-            }
-            checkBox.setGraphic(icon);
-        }
+        final CheckBox checkBox = new CheckBox(column.getText());
         // adds listener to the check box to change the size so the user
         // can click anywhere in the menu items area and not just on the
         // text to activate its onAction
@@ -185,5 +164,4 @@ public class TableViewColumnContextMenuHelper {
         customMenuItem.setHideOnClick(false);
         return customMenuItem;
     }
-
 }
