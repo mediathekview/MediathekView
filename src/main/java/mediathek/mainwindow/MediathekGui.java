@@ -84,6 +84,8 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
+    private static final int MIN_WINDOW_WIDTH = 800;
+    private static final int MIN_WINDOW_HEIGHT = 600;
     protected static Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
@@ -220,6 +222,15 @@ public class MediathekGui extends JFrame {
     }
 
     /**
+     * Return the user interface instance
+     *
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
+    }
+
+    /**
      * Create either a native or a javafx notification center depending on platform
      */
     protected void setupNotificationCenter() {
@@ -244,18 +255,8 @@ public class MediathekGui extends JFrame {
         try {
             var center = daten.notificationCenter();
             center.close();
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     /**
@@ -515,10 +516,15 @@ public class MediathekGui extends JFrame {
         var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
-            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH);
-            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT);
+            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, MIN_WINDOW_WIDTH);
+            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT, MIN_WINDOW_HEIGHT);
             int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_X);
             int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_Y);
+
+            if (width < MIN_WINDOW_WIDTH)
+                width = MIN_WINDOW_WIDTH;
+            if (height < MIN_WINDOW_HEIGHT)
+                height = MIN_WINDOW_HEIGHT;
 
             setBounds(x, y, width, height);
         } catch (NoSuchElementException e) {
@@ -848,7 +854,7 @@ public class MediathekGui extends JFrame {
             }
 
         });
-        
+
         JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
         showBookmarkList.addActionListener(l -> JavaFxUtils.invokeInFxThreadAndWait(() -> tabFilme.showBookmarkWindow()));
 
