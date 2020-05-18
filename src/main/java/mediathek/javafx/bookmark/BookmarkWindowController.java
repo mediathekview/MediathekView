@@ -1,16 +1,5 @@
 package mediathek.javafx.bookmark;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,31 +12,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
-import static javafx.scene.input.MouseButton.PRIMARY;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -58,25 +31,36 @@ import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
-import static mediathek.config.MVColor.DOWNLOAD_FEHLER;
-import static mediathek.config.MVColor.FILM_HISTORY;
-import static mediathek.config.MVColor.FILM_LIVESTREAM;
-import static mediathek.config.MVColor.FILM_NEU;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
-import mediathek.daten.DatenFilm;
-import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.javafx.tool.JavaFxUtils;
-import org.apache.logging.log4j.LogManager;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.logging.log4j.LogManager;
+
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import static javafx.scene.input.MouseButton.PRIMARY;
+import static mediathek.config.MVColor.*;
 
 
 /**
@@ -174,7 +158,7 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private void btnMarkEntryAsViewed(Event e) {
     ObservableList<BookmarkData> selections = tbBookmarks.getSelectionModel().getSelectedItems();
-    if (selections.size() > 0) {
+    if (!selections.isEmpty()) {
       boolean hasUnSeen = isUnSeenSelected(); // true if unseen in selection
       List<BookmarkData> bookmarks = new ArrayList<>(selections); // copy list 
       List<DatenFilm> filmlist = new ArrayList<>();
@@ -194,9 +178,7 @@ public class BookmarkWindowController implements Initializable {
       setSeenButtonState(hasUnSeen, selections.size() > 1);
        // reselect to trigger updates:
       tbBookmarks.getSelectionModel().clearSelection();
-      bookmarks.forEach((data) -> {
-        tbBookmarks.getSelectionModel().select(data);
-      });
+      bookmarks.forEach((data) -> tbBookmarks.getSelectionModel().select(data));
     }
   }
 
@@ -211,7 +193,7 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private void btnDeleteEntry(Event e) {
     ArrayList<BookmarkData> selections = new ArrayList<>(tbBookmarks.getSelectionModel().getSelectedItems());
-    if (selections.size() > 0) {
+    if (!selections.isEmpty()) {
       listeBookmarkList.deleteEntries(tbBookmarks.getSelectionModel().getSelectedItems());
       updateDisplay();
       tbBookmarks.getSelectionModel().clearSelection();
@@ -242,7 +224,7 @@ public class BookmarkWindowController implements Initializable {
       LogManager.getLogger(BookmarkWindowController.class).error("{} Can't find/load the FXML description! Exception - {}",
                                                                   getClass(), ex.toString());
     }
-  };
+  }
 
   @FXML
   private void hyperLinkSelected(Event e) {
@@ -341,17 +323,16 @@ public class BookmarkWindowController implements Initializable {
     });
 
     // add row renderer to set colors
-    tbBookmarks.setRowFactory((var UNUSED) -> new TableRow<BookmarkData>() {
+    tbBookmarks.setRowFactory((var UNUSED) -> new TableRow<>() {
       @Override
-      protected void updateItem(BookmarkData data, boolean empty){
+      protected void updateItem(BookmarkData data, boolean empty) {
         super.updateItem(data, empty);
         if (empty || data == null) {
           setBackground(Background.EMPTY);
-        }
-        else {
+        } else {
           setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
           // set foreground color:
-          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null; 
+          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null;
           if (fillcolor != null) {
             this.getChildren().forEach((n) -> {
               ((Labeled) n).setTextFill(fillcolor);
@@ -569,9 +550,8 @@ public class BookmarkWindowController implements Initializable {
         });
         break;
       case 2:
-        filteredBookmarkList.setPredicate(film -> { // show only seen
-          return film.getSeen();
-        });
+        // show only seen
+        filteredBookmarkList.setPredicate(BookmarkData::getSeen);
         break;
     }
     btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
@@ -822,9 +802,7 @@ public class BookmarkWindowController implements Initializable {
    * Set label message from any thread
    */
   private void setFxMessage(String s) {
-    JavaFxUtils.invokeInFxThreadAndWait(() -> {
-      lblMessage.setText(s);
-    });
+    JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText(s));
   }
 
   /**
