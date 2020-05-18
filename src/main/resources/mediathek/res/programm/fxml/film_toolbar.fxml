@@ -90,7 +90,7 @@
             <Tooltip text="Merkliste verwalten"/>
         </tooltip>
         <graphic>
-            <Glyph fontFamily="FontAwesome" icon="FILE_TEXT"/>
+            <Glyph fontFamily="FontAwesome" icon="FILE_TEXT" fontSize="16"/>
         </graphic>
     </Button>
     
