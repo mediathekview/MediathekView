@@ -3,9 +3,18 @@ package mediathek.tool;
 import org.apache.commons.lang3.ArchUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 
 public class Functions {
+    /**
+     * Checks if the application has an debugger attached to it.
+     * @return true if debugger was detected, false othewise.
+     */
+    public static boolean isDebuggerAttached() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+    }
+
     /**
      * Disable java unsafe console warning.
      */
