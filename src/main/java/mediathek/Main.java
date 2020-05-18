@@ -307,14 +307,6 @@ public class Main {
         }
     }
 
-    private static boolean isDebuggerAttached() {
-        boolean isDebug = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
-        if (isDebug)
-            logger.warn("Debugger detected -> Splash screen disabled...");
-
-        return isDebug;
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -365,9 +357,12 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        if (!isDebuggerAttached()) {
+        if (!Functions.isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
             splashScreen.ifPresent(SplashScreen::show);
+        }
+        else {
+            logger.warn("Debugger detected -> Splash screen disabled...");
         }
 
         migrateOldConfigSettings();

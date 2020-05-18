@@ -69,6 +69,8 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL =
             "application.debug.http_traffic_trace_level";
 
+    public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
+
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
     public static final String HTTP_PROXY_USERNAME = "http.proxy.user";
