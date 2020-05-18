@@ -74,8 +74,6 @@ public class BookmarkWindowController implements Initializable {
   private Stage stage;
   private final BookmarkDataList listeBookmarkList;
   private FilteredList<BookmarkData> filteredBookmarkList;
-  private Color ColorSeen;
-  private Color ColorNew;
   private Color ColorExpired;
   private Color ColorLive;
   private Background BackgroundSeen;
@@ -263,63 +261,49 @@ public class BookmarkWindowController implements Initializable {
     colExpiry.setComparator(new BookmarkDateComparator());
 
     // add button to play URL:
-    colBtnPlay.setCellFactory((final var UNUSED) -> {
-      return new TableCell<BookmarkData, String>() {
-        @Override
-        public void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          if (empty || getTableView().getItems().get(getIndex()).isNotInFilmList()) {
-            setGraphic(null);
-          }
-          else {
-            setGraphic(new IconNode(FontAwesome.PLAY));
-            this.setOnMouseClicked(UNUSED -> {
-              playAction(getTableView().getItems().get(getIndex()));
-            });
-          }
+    colBtnPlay.setCellFactory((final var UNUSED) -> new TableCell<>() {
+      @Override
+      public void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        if (empty || getTableView().getItems().get(getIndex()).isNotInFilmList()) {
+          setGraphic(null);
+        } else {
+          setGraphic(new IconNode(FontAwesome.PLAY));
+          this.setOnMouseClicked(UNUSED -> playAction(getTableView().getItems().get(getIndex())));
         }
-      };
+      }
     });
 
     // add button to download URL:
-    colBtnDownload.setCellFactory((final var UNUSED) -> {
-      return new TableCell<BookmarkData, String>() {
-        @Override
-        public void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          if (empty || !getTableView().getItems().get(getIndex()).hasURL()) {
-            setGraphic(null);
-          }
-          else {
-            setGraphic(new IconNode(FontAwesome.DOWNLOAD));
-            this.setOnMouseClicked(UNUSED -> {
-              loadAction(getTableView().getItems().get(getIndex()));
-            });
-          }
+    colBtnDownload.setCellFactory((final var UNUSED) -> new TableCell<>() {
+      @Override
+      public void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        if (empty || !getTableView().getItems().get(getIndex()).hasURL()) {
+          setGraphic(null);
+        } else {
+          setGraphic(new IconNode(FontAwesome.DOWNLOAD));
+          this.setOnMouseClicked(UNUSED -> loadAction(getTableView().getItems().get(getIndex())));
         }
-      };
+      }
     });
     
-    colExpiry.setCellFactory((final var UNUSED) -> {
-      return new TableCell<BookmarkData, String>() {
-        @Override
-        public void updateItem(String item, boolean empty) {
-          super.updateItem(item, empty);
-          if (!empty) {
-            BookmarkData data = getTableView().getItems().get(getIndex());
-            this.setText(data.getExpiry());
-            if (data.willExpire()) {
-              this.getStyleClass().add("Expiry");
-            }
-            else {
-              this.getStyleClass().removeAll("Expiry");
-            }
+    colExpiry.setCellFactory((final var UNUSED) -> new TableCell<>() {
+      @Override
+      public void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        if (!empty) {
+          BookmarkData data = getTableView().getItems().get(getIndex());
+          this.setText(data.getExpiry());
+          if (data.willExpire()) {
+            this.getStyleClass().add("Expiry");
+          } else {
+            this.getStyleClass().removeAll("Expiry");
           }
-          else {
-            this.setText(null);
-          }
+        } else {
+          this.setText(null);
         }
-      };
+      }
     });
 
     // add row renderer to set colors
@@ -334,9 +318,7 @@ public class BookmarkWindowController implements Initializable {
           // set foreground color:
           Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null;
           if (fillcolor != null) {
-            this.getChildren().forEach((n) -> {
-              ((Labeled) n).setTextFill(fillcolor);
-            });
+            this.getChildren().forEach((n) -> ((Labeled) n).setTextFill(fillcolor));
           }
         }
       }
@@ -355,9 +337,7 @@ public class BookmarkWindowController implements Initializable {
         }
       }
       tbBookmarks.refresh();
-      JavaFxUtils.invokeInFxThreadAndWait(() -> {
-        updateDisplay();
-      });
+      JavaFxUtils.invokeInFxThreadAndWait(this::updateDisplay);
     });
 
     tbBookmarks.setItems(slisteBookmarkList);
@@ -428,15 +408,11 @@ public class BookmarkWindowController implements Initializable {
     cellContextMenu = new ContextMenu();
     // - create items
     playitem = new MenuItem("Film abspielen");
-    playitem.setOnAction((ActionEvent UNUSED) -> {
-      playAction(tbBookmarks.getSelectionModel().getSelectedItem());
-    });
+    playitem.setOnAction((ActionEvent UNUSED) -> playAction(tbBookmarks.getSelectionModel().getSelectedItem()));
     playitem.setGraphic(new IconNode(FontAwesome.PLAY));
 
     loaditem = new MenuItem("Film aufzeichnen");
-    loaditem.setOnAction((ActionEvent UNUSED) -> {
-      loadAction(tbBookmarks.getSelectionModel().getSelectedItem());
-    });
+    loaditem.setOnAction((ActionEvent UNUSED) -> loadAction(tbBookmarks.getSelectionModel().getSelectedItem()));
     loaditem.setGraphic(new IconNode(FontAwesome.DOWNLOAD));
 
     viewitem = new MenuItem();
@@ -645,7 +621,6 @@ public class BookmarkWindowController implements Initializable {
 
   /**
    * Store reference used to inform about changes
-   * @param partner
    */
   public void setPartner(GuiFilme partner) { this.infotab = partner;}
 
@@ -707,9 +682,9 @@ public class BookmarkWindowController implements Initializable {
   private void loadAction(BookmarkData data) {
     Optional<DatenFilm> datenFilm = Optional.of(data.getDatenFilm());
     refresh();
-    if (datenFilm.isPresent()) {
+    datenFilm.ifPresent(film -> {
       stage.hide();
-      DatenDownload odatenDownload = Daten.getInstance().getListeDownloads().getDownloadUrlFilm(datenFilm.get().getUrl());
+      DatenDownload odatenDownload = Daten.getInstance().getListeDownloads().getDownloadUrlFilm(film.getUrl());
       Optional<ButtonType> result = Optional.empty();
       if (odatenDownload != null) {
         Alert alert = new Alert(AlertType.CONFIRMATION, "Ein Download für den Film existiert bereits.\nNochmal anlegen?");
@@ -724,21 +699,21 @@ public class BookmarkWindowController implements Initializable {
         boolean info = damd.info;
         boolean subtitle = damd.subtitle;
         if (!damd.cancel) {
-          DatenDownload datenDownload = new DatenDownload(pSet, datenFilm.get(), DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, ""/*Auflösung*/);
+          DatenDownload datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, ""/*Auflösung*/);
           datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
           datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
 
           Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
           Daten.getInstance().getMessageBus().publishAsync(new DownloadListChangedEvent());
           if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-              datenDownload.startDownload(Daten.getInstance());  // und evtl. auch gleich starten
+            datenDownload.startDownload(Daten.getInstance());  // und evtl. auch gleich starten
           }
         }
       }
       stage.show();
       stage.toFront();
       stage.requestFocus();
-    }
+    });
   }
 
   /**
@@ -842,12 +817,12 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void initSettings() {
-    ColorSeen = convertMVCAWTColor(FILM_HISTORY);
-    ColorNew = convertMVCAWTColor(FILM_NEU);
+    Color colorSeen = convertMVCAWTColor(FILM_HISTORY);
+    Color colorNew = convertMVCAWTColor(FILM_NEU);
     ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
     ColorLive = convertMVCAWTColor(FILM_LIVESTREAM);
-    BackgroundSeen = new Background(new BackgroundFill(ColorSeen, CornerRadii.EMPTY, Insets.EMPTY));
-    BackgroundSelected = new Background(new BackgroundFill(ColorNew, CornerRadii.EMPTY, Insets.EMPTY));
+    BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
+    BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));
   }
 
   /**
