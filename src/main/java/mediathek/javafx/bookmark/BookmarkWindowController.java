@@ -1,6 +1,5 @@
 package mediathek.javafx.bookmark;
 
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -441,8 +440,7 @@ public class BookmarkWindowController implements Initializable {
     String colbase = ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.";
     int entries = config.getInt(colbase + "no", 0);
     if (entries > 0) {
-      List<TableColumn<BookmarkData, ?>> collist = new ArrayList<>();
-      collist.addAll(tbBookmarks.getColumns());
+      List<TableColumn<BookmarkData, ?>> collist = new ArrayList<>(tbBookmarks.getColumns());
       tbBookmarks.getColumns().clear();
       for (int i = 1; i <= entries; i++) {
         String colref = colbase + "col" + i;
@@ -624,13 +622,6 @@ public class BookmarkWindowController implements Initializable {
    */
   public void setPartner(GuiFilme partner) { this.infotab = partner;}
 
-  /**
-   * Refresh Bookmark list window from any thread
-   */
-  public void refreshWindow() {
-    Platform.runLater(this::refresh);
-  }
-
   private void refresh() {
     if (stage.isShowing()) {
       tbBookmarks.refresh();
@@ -661,7 +652,7 @@ public class BookmarkWindowController implements Initializable {
     if (listUpdated) {
       listeBookmarkList.saveToFile(Daten.getBookmarkFilePath());
       btnSaveList.setDisable(true);
-      setFxMessage("Merkliste ist gesichert");
+      JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText("Merkliste ist gesichert"));
     }
     listUpdated = false;
   }
@@ -771,13 +762,6 @@ public class BookmarkWindowController implements Initializable {
         listUpdated = false;
       }
     });
-  }
-
-  /**
-   * Set label message from any thread
-   */
-  private void setFxMessage(String s) {
-    JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText(s));
   }
 
   /**
