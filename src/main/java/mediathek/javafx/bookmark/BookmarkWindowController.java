@@ -1,5 +1,6 @@
 package mediathek.javafx.bookmark;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,12 +12,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
@@ -40,12 +40,14 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -616,12 +618,15 @@ public class BookmarkWindowController implements Initializable {
     listUpdated = false;
   }
 
+  private static final String ALERT_TITLE = "Merkliste";
+
   private void playAction(BookmarkData data) {
     Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
     tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
     tbBookmarks.getSelectionModel().select(data);
   }
 
+  //private static final Logger logger = LogManager.getLogger();
   /**
    * Trigger Download of movie   (mirror fucntionality of FilmGUI)
    * @param data movie object to be used for download
@@ -631,35 +636,62 @@ public class BookmarkWindowController implements Initializable {
    */
   private void loadAction(BookmarkData data) {
     Optional<DatenFilm> datenFilm = Optional.of(data.getDatenFilm());
+    final var daten = Daten.getInstance();
+
     refresh();
     datenFilm.ifPresent(film -> {
-      stage.hide();
-      DatenDownload odatenDownload = Daten.getInstance().getListeDownloads().getDownloadUrlFilm(film.getUrl());
-      Optional<ButtonType> result = Optional.empty();
-      if (odatenDownload != null) {
-        Alert alert = new Alert(AlertType.CONFIRMATION, "Ein Download für den Film existiert bereits.\nNochmal anlegen?");
-        result = alert.showAndWait();
+      DatenDownload previouslyCreatedDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrl());
+      if (previouslyCreatedDownload == null) {
+        createDownload(film);
       }
-      if (result.isEmpty() || (result.isPresent() && result.get() == ButtonType.OK)) {
-        DatenPset pSet = Daten.listePset.getListeSpeichern().getFirst();
-        DialogAddMoreDownload damd = new DialogAddMoreDownload(null, pSet);
-        damd.setLocationRelativeTo(null);
-        damd.setVisible(true);
-        String pfad = damd.getPath();
-        boolean info = damd.info;
-        boolean subtitle = damd.subtitle;
-        if (!damd.cancel) {
-          DatenDownload datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, ""/*Auflösung*/);
-          datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
-          datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
+      else
+      {
+        ButtonType yes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
+        ButtonType no = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(Alert.AlertType.WARNING,
+                "Ein Download für den Film existiert bereits.\nNochmal anlegen?",
+                yes, no);
+        alert.initOwner(stage);
+        alert.setTitle(ALERT_TITLE);
+        alert.showAndWait().filter(response -> response == ButtonType.OK)
+                .ifPresent(response -> createDownload(film));
+      }
+    });
+  }
 
-          Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
-          Daten.getInstance().getMessageBus().publishAsync(new DownloadListChangedEvent());
-          if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-            datenDownload.startDownload(Daten.getInstance());  // und evtl. auch gleich starten
-          }
+  private void createDownload(DatenFilm film) {
+    final var daten = Daten.getInstance();
+
+    stage.hide();
+
+    SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
+      DatenPset pSet = Daten.listePset.getListeSpeichern().getFirst();
+      final var ui = MediathekGui.ui();
+      DialogAddMoreDownload damd = new DialogAddMoreDownload(ui, pSet);
+      damd.setLocationRelativeTo(ui);
+      damd.setVisible(true);
+
+      String pfad = damd.getPath();
+      boolean info = damd.info;
+      boolean subtitle = damd.subtitle;
+      if (!damd.cancel) {
+        DatenDownload datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, "");
+        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
+        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
+
+        daten.getListeDownloads().addMitNummer(datenDownload);
+        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
+          datenDownload.startDownload(daten);  // und evtl. auch gleich starten
         }
       }
+      showStage();
+    });
+  }
+
+  private void showStage() {
+    //this may be called from swing EDT!
+    Platform.runLater(() -> {
       stage.show();
       stage.toFront();
       stage.requestFocus();
