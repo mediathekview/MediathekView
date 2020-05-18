@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -40,6 +41,7 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
@@ -378,7 +380,49 @@ public class BookmarkWindowController implements Initializable {
     updateDescriptionArea();
 
     tbBookmarks.setTableMenuButtonVisible(true);
-    new TableViewColumnContextMenuHelper(tbBookmarks);
+    //new TableViewColumnContextMenuHelper(tbBookmarks);
+    new TableViewColumnContextMenuHelper(tbBookmarks) {
+      @Override protected CustomMenuItem createColumnCustomMenuItem(
+              final ContextMenu contextMenu, final TableColumn<?, ?> column) {
+        final CheckBox checkBox;
+        if (!column.getText().isEmpty())
+          checkBox = new CheckBox(column.getText());
+        else {
+          checkBox = new CheckBox(" ");
+          Node icon;
+          switch (column.getId()) {
+            case "colBtnPlay":
+              icon = new IconNode(FontAwesome.PLAY);
+              break;
+
+            case "colBtnDownload":
+              icon = new IconNode(FontAwesome.DOWNLOAD);
+              break;
+
+            default:
+              throw new IllegalStateException("unknown id");
+          }
+          checkBox.setGraphic(icon);
+        }
+        // adds listener to the check box to change the size so the user
+        // can click anywhere in the menu items area and not just on the
+        // text to activate its onAction
+        contextMenu.focusedProperty().addListener(
+                event -> checkBox.setPrefWidth(contextMenu.getWidth() * 0.75));
+        // the context menu item's state controls its bound column's visibility
+        checkBox.selectedProperty().bindBidirectional(column.visibleProperty());
+
+        final CustomMenuItem customMenuItem = new CustomMenuItem(checkBox);
+        customMenuItem.getStyleClass().set(1, "check-menu-item");
+        customMenuItem.setOnAction(event -> {
+          checkBox.setSelected(!checkBox.isSelected());
+          event.consume();
+        });
+        // set to false so the context menu stays visible after click
+        customMenuItem.setHideOnClick(false);
+        return customMenuItem;
+      }
+    };
   }
 
   private void updateDescriptionArea() {
