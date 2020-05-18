@@ -86,7 +86,6 @@ public class BookmarkWindowController implements Initializable {
   private MenuItem ccopyitem;
   private MenuItem edititem;
   private ContextMenu cellContextMenu;
-  private ContextMenu headerContextMenu;
   private GuiFilme infotab;  // used for update information
   private double divposition;
   private boolean listUpdated; // indicates new updates to bookmarklist
@@ -356,7 +355,7 @@ public class BookmarkWindowController implements Initializable {
        viewitem.setDisable(onlyLifeStreamSelected());
        webitem.setDisable(disable || tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl() == null);
        ccopyitem.setDisable(disable);
-       headerContextMenu.hide();
+
        // Update buttons: Check if not seen in selection and adapt button text
        boolean setViewed = isUnSeenSelected();
        setSeenButtonState(setViewed, multipleSelected);
@@ -375,6 +374,9 @@ public class BookmarkWindowController implements Initializable {
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
     btnShowDetailsAction(null);
     updateDescriptionArea();
+
+    tbBookmarks.setTableMenuButtonVisible(true);
+    new TableViewColumnContextMenuHelper(tbBookmarks);
   }
 
   private void updateDescriptionArea() {
@@ -457,34 +459,6 @@ public class BookmarkWindowController implements Initializable {
         }
       }
     }
-
-    // Create table header context menu for column selection
-    headerContextMenu = new ContextMenu();
-    for (var column: tbBookmarks.getColumns()) {
-      String name;
-      switch (column.getId()) {
-        case "colBtnPlay" : name = "Play Button"; break;
-        case "colBtnDownload" : name = "Download Button"; break;
-        default: name = column.getText();
-      }
-      CheckMenuItem cmitem = new CheckMenuItem (name);
-      cmitem.setSelected(column.isVisible());
-      cmitem.setId(column.getId());
-      cmitem.setOnAction(this::menuClickEvent);
-      column.setVisible(cmitem.isSelected());
-      headerContextMenu.getItems().add(cmitem);
-    }
-  }
-
-  private void menuClickEvent(Event e) {
-    CheckMenuItem cmi = (CheckMenuItem)e.getSource();
-    for (var col: tbBookmarks.getColumns()) {
-      if (col.getId().equals(cmi.getId())) {
-        col.setVisible(cmi.isSelected());
-        break;
-      }
-    }
-    tbBookmarks.refresh();
   }
 
   @FXML
@@ -537,42 +511,27 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   @SuppressWarnings("unchecked")
   private void tbviewOnContextRequested(ContextMenuEvent event) {
-    ContextMenu cm = null;
-    if (event.getY() < 25) {
-      cm = headerContextMenu;
-      if (cellContextMenu.isShowing()) {
-        cellContextMenu.hide();
+    if (!tbBookmarks.getSelectionModel().getSelectedItems().isEmpty()) { // Do not show row context menu if nothing is selected
+      if (!ccopyitem.isDisable()) { // adapt copy content to column
+        TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
+        BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
+        String sdata = pos.getTableColumn() != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
+        ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
+        ccopyitem.setText((pos.getTableColumn() != null ? pos.getTableColumn().getText(): "Text" ) +  " kopieren");
       }
-    }
-    else {
-      if (headerContextMenu.isShowing()) {
-        headerContextMenu.hide();
-      }
-      if (!tbBookmarks.getSelectionModel().getSelectedItems().isEmpty()) { // Do not show row context menu if nothing is selected
-        cm = cellContextMenu;
-        if (!ccopyitem.isDisable()) { // adapt copy content to column
-          TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
-          BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
-          String sdata;
-          sdata = pos.getTableColumn() != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
-          ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
-          ccopyitem.setText((pos.getTableColumn() != null ? pos.getTableColumn().getText(): "Text" ) +  " kopieren");
-        }
-      }
-    }
-
-    if (cm != null) {
-      cm.show(tbBookmarks, event.getScreenX(), event.getScreenY());
+      cellContextMenu.show(tbBookmarks, event.getScreenX(), event.getScreenY());
     }
   }
 
   @FXML
   private void tbviewMouseClick(MouseEvent e) {
-    if (e.getButton() == PRIMARY && cellContextMenu.isShowing()) { // left click closes active context menu
-      cellContextMenu.hide();
-    }
-    if (e.getButton() == PRIMARY && e.getClickCount() > 1 && tbBookmarks.getSelectionModel().getSelectedItems().size() == 1) {
-      btnEditNote(null);
+    if (e.getButton() == PRIMARY) {
+      if (cellContextMenu.isShowing())
+        cellContextMenu.hide();
+
+      if (e.getClickCount() > 1 && tbBookmarks.getSelectionModel().getSelectedItems().size() == 1) {
+        btnEditNote(null);
+      }
     }
   }
 
