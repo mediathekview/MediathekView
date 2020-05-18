@@ -10,7 +10,7 @@ class TrailerTeaserChecker {
     }
 
     private fun containsTrailer(titel: String): Boolean {
-        return titel.contains("trailer");
+        return titel.contains("trailer")
     }
 
     private fun containsTeaser(titel: String): Boolean {
