@@ -1,22 +1,23 @@
-package mediathek.tool;
+package mediathek.tool
 
 /**
  * This class check if titel contains specific keywords.
  */
-public class TrailerTeaserChecker {
-    public boolean check(String titel) {
-        return containsTrailer(titel) || containsTeaser(titel) || containsVorschau(titel);
+class TrailerTeaserChecker {
+    fun check(titel: String): Boolean {
+        val lTitel = titel.toLowerCase()
+        return containsTrailer(lTitel) || containsTeaser(lTitel) || containsVorschau(lTitel)
     }
 
-    private boolean containsTrailer(String titel) {
-        return titel.contains("Trailer") || titel.contains("trailer");
+    private fun containsTrailer(titel: String): Boolean {
+        return titel.contains("trailer");
     }
 
-    private boolean containsTeaser(String titel) {
-        return titel.contains("Teaser") || titel.contains("teaser");
+    private fun containsTeaser(titel: String): Boolean {
+        return titel.contains("teaser")
     }
 
-    private boolean containsVorschau(String titel) {
-        return titel.contains("Vorschau") || titel.contains("vorschau");
+    private fun containsVorschau(titel: String): Boolean {
+        return titel.contains("vorschau")
     }
 }
