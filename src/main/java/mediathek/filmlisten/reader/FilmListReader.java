@@ -442,8 +442,9 @@ public class FilmListReader implements AutoCloseable {
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 final var endRequest = response.request();
-                if (Functions.isDebuggerAttached())
+                if (Functions.isDebuggerAttached()) {
                     logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
+                }
                 ProgressMonitor monitor = new ProgressMonitor(source.toString());
                 try (InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);
