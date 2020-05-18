@@ -71,7 +71,7 @@ public class FilmActionPanel {
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
-    private FXFilmToolBar toolBar = new FXFilmToolBar();
+    private FXFilmToolBar toolBar;
     private CommonViewSettingsPane viewSettingsPane;
 
     public FilmActionPanel(Daten daten) {
