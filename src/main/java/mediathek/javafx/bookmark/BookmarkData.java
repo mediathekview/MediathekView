@@ -19,7 +19,7 @@ public class BookmarkData {
   private String sender;
   private String titel;
   private String senddate;
-  private BooleanProperty seen;
+  private final BooleanProperty seen;
   private DatenFilm filmdata;
   private String highQualityUrl;
   private String urlKlein;
@@ -86,7 +86,7 @@ public class BookmarkData {
   
   // property access:
   @JsonIgnore
-  public BooleanProperty getSeenProperty() { return seen; };
+  public BooleanProperty getSeenProperty() { return seen; }
   
   // other methods:
   @JsonIgnore

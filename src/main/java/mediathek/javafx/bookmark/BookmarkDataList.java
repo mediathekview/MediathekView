@@ -5,11 +5,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +15,12 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import org.apache.logging.log4j.LogManager;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Stores a full list of bookmarked movies. 
@@ -41,9 +42,7 @@ public class BookmarkDataList
       daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
         @Override
         public void fertig(ListenerFilmeLadenEvent event) {
-          Runnable r = () -> {
-            updateBookMarksFromFilmList();
-          };
+          Runnable r = () -> updateBookMarksFromFilmList();
           new Thread(r).start();
         }
       });
@@ -186,16 +185,13 @@ public class BookmarkDataList
    * @param filePath: File to save to
    */
   public void saveToFile(Path filePath) {
-    try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8))
+    try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8).useDefaultPrettyPrinter())
     {
-      jGenerator.useDefaultPrettyPrinter();  // Make it a setting
-      jGenerator.writeStartObject();     
+      jGenerator.writeStartObject();
       jGenerator.writeFieldName("bookmarks"); 
       jGenerator.writeStartArray();
-      Iterator<BookmarkData> iterator = olist.iterator();
-      while (iterator.hasNext()) 
-      {
-        jGenerator.writeObject(iterator.next());
+      for (BookmarkData bookmarkData : olist) {
+        jGenerator.writeObject(bookmarkData);
       } 
       jGenerator.writeEndArray();
       jGenerator.writeEndObject(); 
@@ -212,7 +208,7 @@ public class BookmarkDataList
    * @param list: List of movies
    */
   public void updateSeen(boolean seen, List<DatenFilm> list) {
-    list.stream().filter((movie) -> (movie.isBookmarked())).forEachOrdered((movie) -> {
+    list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> {
       movie.getBookmark().setSeen(seen);
     });
   }
