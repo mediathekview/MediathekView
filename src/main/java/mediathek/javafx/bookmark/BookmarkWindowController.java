@@ -441,25 +441,31 @@ public class BookmarkWindowController implements Initializable {
 
     // Restore column width, state and sequence
     Configuration config = ApplicationConfiguration.getConfiguration();
-    String colbase = ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.";
-    int entries = config.getInt(colbase + "no", 0);
-    if (entries > 0) {
-      List<TableColumn<BookmarkData, ?>> collist = new ArrayList<>(tbBookmarks.getColumns());
-      tbBookmarks.getColumns().clear();
-      for (int i = 1; i <= entries; i++) {
-        String colref = colbase + "col" + i;
-        String colid = config.getString(colref + ".id");
-        int colsize = config.getInt(colref + ".size", 20);
-        boolean colvisible = config.getBoolean(colref + ".visible", true);
-        for (var column: collist) {
-          if (column.getId().equals(colid)) {
-            column.setPrefWidth(colsize);
-            column.setVisible(colvisible);
-            tbBookmarks.getColumns().add(column);
-            break;
+    try {
+      config.lock(LockMode.READ);
+      String colbase = ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.";
+      int entries = config.getInt(colbase + "no", 0);
+      if (entries > 0) {
+        List<TableColumn<BookmarkData, ?>> collist = new ArrayList<>(tbBookmarks.getColumns());
+        tbBookmarks.getColumns().clear();
+        for (int i = 1; i <= entries; i++) {
+          String colref = colbase + "col" + i;
+          String colid = config.getString(colref + ".id");
+          int colsize = config.getInt(colref + ".size", 20);
+          boolean colvisible = config.getBoolean(colref + ".visible", true);
+          for (var column : collist) {
+            if (column.getId().equals(colid)) {
+              column.setPrefWidth(colsize);
+              column.setVisible(colvisible);
+              tbBookmarks.getColumns().add(column);
+              break;
+            }
           }
         }
       }
+    }
+    finally {
+      config.unlock(LockMode.READ);
     }
   }
 
@@ -735,10 +741,16 @@ public class BookmarkWindowController implements Initializable {
 
   private static void setStageSize(Stage window) {
     Configuration config = ApplicationConfiguration.getConfiguration();
-    window.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
-    window.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
-    window.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
-    window.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
+    try {
+      config.lock(LockMode.READ);
+      window.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
+      window.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
+      window.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
+      window.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
+    }
+    finally {
+      config.unlock(LockMode.READ);
+    }
   }
 
   private void setStageEvents() {
