@@ -850,11 +850,7 @@ public class MediathekGui extends JFrame {
         });
         
         JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
-        showBookmarkList.addActionListener(l -> {
-          JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            tabFilme.showBookmarkWindow();
-          });
-        });
+        showBookmarkList.addActionListener(l -> JavaFxUtils.invokeInFxThreadAndWait(() -> tabFilme.showBookmarkWindow()));
 
         jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
@@ -1107,7 +1103,7 @@ public class MediathekGui extends JFrame {
             ApplicationConfiguration.getInstance().writeConfiguration();
 
             //shut down log4j
-            Log4jShutdownCallbackRegistry.execute();
+            Log4jShutdownCallbackRegistry.Companion.execute();
         }
     }
 }
