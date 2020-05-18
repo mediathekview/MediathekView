@@ -380,7 +380,7 @@ public class BookmarkWindowController implements Initializable {
     updateDescriptionArea();
 
     tbBookmarks.setTableMenuButtonVisible(true);
-    //new TableViewColumnContextMenuHelper(tbBookmarks);
+    // setup column context menu
     new TableViewColumnContextMenuHelper(tbBookmarks) {
       @Override protected CustomMenuItem createColumnCustomMenuItem(
               final ContextMenu contextMenu, final TableColumn<?, ?> column) {
