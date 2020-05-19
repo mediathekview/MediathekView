@@ -48,6 +48,7 @@ import mediathek.tool.MVC;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -687,8 +688,8 @@ public class BookmarkWindowController implements Initializable {
    * Note: Due to mixture of JavaFX and Swing the windows do not arrange properly,
    *       workaround is to hide bookmark window during processing
    */
-  private void loadAction(BookmarkData data) {
-    Optional<DatenFilm> datenFilm = Optional.of(data.getDatenFilm());
+  private void loadAction(@NotNull BookmarkData data) {
+    Optional<DatenFilm> datenFilm = Optional.ofNullable(data.getDatenFilm());
     final var daten = Daten.getInstance();
 
     refresh();
