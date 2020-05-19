@@ -15,6 +15,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -178,8 +179,14 @@ public class BookmarkDataList
     {
       LogManager.getLogger(Daten.class).warn("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.getMessage());
     }
+
+    //sanity check if someone added way too many bookmarks
+    if (olist.size() > 1000)
+      logger.warn("Bookmark entries exceed threshold: {}", olist.size());
   }
-  
+
+  private static final Logger logger = LogManager.getLogger();
+
   /**
    * Save Bookmarklist to backup medium
    * @param filePath: File to save to
@@ -208,9 +215,7 @@ public class BookmarkDataList
    * @param list: List of movies
    */
   public void updateSeen(boolean seen, List<DatenFilm> list) {
-    list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> {
-      movie.getBookmark().setSeen(seen);
-    });
+    list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> movie.getBookmark().setSeen(seen));
   }
   
   /**
