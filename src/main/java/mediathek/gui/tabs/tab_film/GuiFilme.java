@@ -9,6 +9,9 @@ import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TabPane;
 import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
@@ -31,6 +34,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
+import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
@@ -56,7 +60,6 @@ import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Optional;
-import mediathek.javafx.bookmark.BookmarkWindowController;
 
 @SuppressWarnings("serial")
 public class GuiFilme extends AGuiTabPanel {
@@ -89,8 +92,6 @@ public class GuiFilme extends AGuiTabPanel {
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
-    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
-
     /**
      * The JavaFx Film action popup panel.
      */
@@ -99,6 +100,7 @@ public class GuiFilme extends AGuiTabPanel {
      * macOS touch bar support
      */
     public JTouchBar touchBar;
+    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     /**
      * The swing helper panel FilmAction bar.
      */
@@ -242,8 +244,7 @@ public class GuiFilme extends AGuiTabPanel {
         JMenuItem miBookmarkFilm = new JMenuItem("Film merken");
         if (SystemUtils.IS_OS_MAC_OSX) {
             miBookmarkFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_DOWN_MASK));
-        }
-        else {
+        } else {
             miBookmarkFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
         }
         miBookmarkFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
@@ -533,22 +534,41 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private synchronized void bookmarkFilm() {
-      daten.getListeBookmarkList().checkAndBookmarkMovies(getSelFilme());
-      repaint();
+        var movies = getSelFilme();
+        final long size = movies.size();
+        if (size > 250) {
+            JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                ButtonType yes = new ButtonType("Ja", ButtonBar.ButtonData.YES);
+                ButtonType no = new ButtonType("Nein", ButtonBar.ButtonData.NO);
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        String.format("Möchten Sie wirklich %d Einträge bearbeiten?\nDas Programm könnte während der Operation nicht reagieren.", size),
+                        yes, no);
+                alert.setTitle("Merkliste");
+                alert.showAndWait()
+                        .filter(r -> r == yes)
+                        .ifPresent(response -> SwingUtilities.invokeLater(() -> {
+                            daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
+                            repaint();
+                        }));
+            });
+        }
+        else {
+            daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
+            repaint();
+        }
     }
 
     /**
      * If necessary instantiate and show the bookmark window
      */
     public void showBookmarkWindow() {
-      if (bookmarkWindowController.isEmpty())
-      {
-        bookmarkWindowController = Optional.of(new BookmarkWindowController());
-        bookmarkWindowController.get().setPartner(this);
-      }
-      bookmarkWindowController.get().show();
+        if (bookmarkWindowController.isEmpty()) {
+            bookmarkWindowController = Optional.of(new BookmarkWindowController());
+            bookmarkWindowController.get().setPartner(this);
+        }
+        bookmarkWindowController.get().show();
     }
-    
+
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
@@ -574,9 +594,7 @@ public class GuiFilme extends AGuiTabPanel {
      * Cleanup during shutdown
      */
     public void saveSettings() {
-      if (bookmarkWindowController.isPresent()) {
-        bookmarkWindowController.get().saveSettings();
-      }
+        bookmarkWindowController.ifPresent(BookmarkWindowController::saveSettings);
     }
 
     /**
@@ -802,10 +820,10 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class BookmarkManageListAction extends AbstractAction {
-      @Override
-      public void actionPerformed(ActionEvent ae) {
-        showBookmarkWindow();
-      }
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            showBookmarkWindow();
+        }
     }
 
     private class CopyUrlToClipboardAction extends AbstractAction {
@@ -907,37 +925,37 @@ public class GuiFilme extends AGuiTabPanel {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-              switch (tabelle.convertColumnIndexToModel(column)) {
-                case DatenFilm.FILM_ABSPIELEN:
-                  Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-                  filmSelection.ifPresent(datenFilm -> {
-                    boolean stop = false;
-                    final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
-                    if (datenDownload != null) {
-                      if (datenDownload.start != null) {
-                        if (datenDownload.start.status == Start.STATUS_RUN) {
-                          stop = true;
-                          daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
-                        }
-                      }
-                    }
-                    if (!stop) {
-                      playAction.actionPerformed(null);
-                    }
-                  });
-                  break;
+                switch (tabelle.convertColumnIndexToModel(column)) {
+                    case DatenFilm.FILM_ABSPIELEN:
+                        Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
+                        filmSelection.ifPresent(datenFilm -> {
+                            boolean stop = false;
+                            final DatenDownload datenDownload = daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+                            if (datenDownload != null) {
+                                if (datenDownload.start != null) {
+                                    if (datenDownload.start.status == Start.STATUS_RUN) {
+                                        stop = true;
+                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
+                                    }
+                                }
+                            }
+                            if (!stop) {
+                                playAction.actionPerformed(null);
+                            }
+                        });
+                        break;
 
-                case DatenFilm.FILM_AUFZEICHNEN:
-                  saveFilm(null);
-                  break;
+                    case DatenFilm.FILM_AUFZEICHNEN:
+                        saveFilm(null);
+                        break;
 
-                case DatenFilm.FILM_MERKEN:
-                  bookmarkFilm();
-                  break;
+                    case DatenFilm.FILM_MERKEN:
+                        bookmarkFilm();
+                        break;
 
-                default:
-                  break;
-              }
+                    default:
+                        break;
+                }
             }
         }
 
