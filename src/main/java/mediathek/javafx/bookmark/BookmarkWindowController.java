@@ -62,6 +62,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
 import static mediathek.config.MVColor.*;
@@ -96,6 +100,8 @@ public class BookmarkWindowController implements Initializable {
   private boolean listUpdated; // indicates new updates to bookmarklist
   private ScheduledFuture<?> SaveBookmarkTask; // Future task to save
   private int FilterState;
+  
+  private static final KeyCombination K_CTRL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_ANY);
 
   @FXML
   private Button btnSaveList;
@@ -346,29 +352,16 @@ public class BookmarkWindowController implements Initializable {
     tbBookmarks.setItems(slisteBookmarkList);
     tbBookmarks.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    // Add listener to set button and context item state depending on selection
-    tbBookmarks.getSelectionModel().selectedIndexProperty().addListener((obs, oldSelection, newSelection) -> {
-       boolean disable = newSelection == null || newSelection.intValue() == -1;
-       btnDeleteEntry.setDisable(disable);
-       btnMarkViewed.setDisable(disable || onlyLifeStreamSelected());
-       boolean multipleSelected = tbBookmarks.getSelectionModel().getSelectedItems().size() > 1;
-       disable = disable || multipleSelected; // allow only for single selection
-       btnEditNote.setDisable(disable);
-       playitem.setDisable(disable);
-       edititem.setDisable(disable);
-       loaditem.setDisable(disable);
-       viewitem.setDisable(onlyLifeStreamSelected());
-       webitem.setDisable(disable || tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl() == null);
-       ccopyitem.setDisable(disable);
-
-       // Update buttons: Check if not seen in selection and adapt button text
-       boolean setViewed = isUnSeenSelected();
-       setSeenButtonState(setViewed, multipleSelected);
-       deleteitem.setText(String.format("Film%s aus der Merkliste entfernen",(multipleSelected ? "e" : "")));
-       // change description
-       updateDescriptionArea();
+    // Add listeners to set button and context item state depending on selection
+    tbBookmarks.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+      setButtonAndMenuState();
     });
-
+    tbBookmarks.setOnKeyReleased((KeyEvent ke) -> { // handle Strg-A
+      if (K_CTRL_A.match(ke)) {
+        setButtonAndMenuState();
+      }
+    });
+     
     tbBookmarks.getSortOrder().addListener((ListChangeListener.Change<? extends TableColumn<BookmarkData,?>> pc) -> {
       tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
@@ -383,6 +376,31 @@ public class BookmarkWindowController implements Initializable {
     setupColumnContextMenu();
   }
 
+  /**
+   * Enable/Disable buttons and menues depending on selction state
+   */
+  private void setButtonAndMenuState() {
+    boolean disable = tbBookmarks.getSelectionModel().getSelectedItems().isEmpty();
+    btnDeleteEntry.setDisable(disable);
+    btnMarkViewed.setDisable(disable || onlyLifeStreamSelected());
+    boolean multipleSelected = tbBookmarks.getSelectionModel().getSelectedItems().size() > 1;
+    disable = disable || multipleSelected; // allow only for single selection
+    btnEditNote.setDisable(disable);
+    playitem.setDisable(disable);
+    edititem.setDisable(disable);
+    loaditem.setDisable(disable);
+    viewitem.setDisable(onlyLifeStreamSelected());
+    webitem.setDisable(disable || tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl() == null);
+    ccopyitem.setDisable(disable);
+
+    // Update buttons: Check if not seen in selection and adapt button text
+    boolean setViewed = isUnSeenSelected();
+    setSeenButtonState(setViewed, multipleSelected);
+    deleteitem.setText(String.format("Film%s aus der Merkliste entfernen",(multipleSelected ? "e" : "")));
+    // change description
+    updateDescriptionArea();
+  }
+  
   private void setupColumnContextMenu() {
     tbBookmarks.setTableMenuButtonVisible(true);
     // setup column context menu
