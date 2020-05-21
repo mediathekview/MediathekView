@@ -1214,7 +1214,7 @@ public class GuiFilme extends AGuiTabPanel {
                                 DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
-                                    daten.getListeAbo().aenderungMelden();
+                                    daten.getListeAbo().aenderungMelden(datenAbo.aboIstEingeschaltet());
                                 }
                             }
                         });

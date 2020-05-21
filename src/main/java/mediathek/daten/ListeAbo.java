@@ -78,7 +78,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             if (!aboExistiertBereits(datenAbo)) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER]); // als Vorgabe merken
                 addAbo(datenAbo);
-                aenderungMelden();
+                aenderungMelden(true);
                 sort();
             } else {
                 MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
@@ -107,7 +107,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     public void aboLoeschen(@NotNull DatenAbo abo) {
             remove(abo);
-            aenderungMelden();
+            aenderungMelden(false);
     }
 
     /**
@@ -126,10 +126,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return stream().filter(abo -> !abo.aboIstEingeschaltet()).count();
     }
 
-    public void aenderungMelden() {
+    /**
+     * Updates the Abos in film list and triggers the AboChangeList Event 
+     * @param einnew : true if abo was activated or created, forwarded in event
+     */
+    public void aenderungMelden(boolean einnew) {
         // Filmliste anpassen
         setAboFuerFilm(daten.getListeFilme(), true);
-        daten.getMessageBus().publishAsync(new AboListChangedEvent());
+        daten.getMessageBus().publishAsync(new AboListChangedEvent(einnew));
     }
 
     public DatenAbo getAboNr(int i) {

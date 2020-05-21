@@ -787,10 +787,12 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Handler
     private void handleAboListChanged(AboListChangedEvent e) {
+      if (e.isStateEin()) {  // only update downloads if abo was created or activated not on delete or deactivate
         SwingUtilities.invokeLater(() -> {
             if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)))
                 updateDownloads();
         });
+      }
     }
 
     @Handler
@@ -1557,7 +1559,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
-                            daten.getListeAbo().aenderungMelden();
+                            daten.getListeAbo().aenderungMelden(datenAbo.aboIstEingeschaltet());
                         }
                     });
                 }
