@@ -580,6 +580,14 @@ public class BookmarkWindowController implements Initializable {
     btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
     lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
     lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
+    if (FilterState > 0) {
+      btnFilter.getGraphic().getStyleClass().add("filterActive");
+      btnFilter.getStyleClass().add("filterActive");
+    }
+    else {
+      btnFilter.getGraphic().getStyleClass().removeAll("filterActive");
+      btnFilter.getStyleClass().removeAll("filterActive");
+    }
     refresh();
   }
 

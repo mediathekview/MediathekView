@@ -49,3 +49,7 @@
   -fx-background-color: lightyellow;
 }
 
+.filterActive {
+  -fx-background-color: lightgreen;
+}
+
