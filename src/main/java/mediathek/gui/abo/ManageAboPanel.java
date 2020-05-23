@@ -295,7 +295,7 @@ public class ManageAboPanel extends JPanel {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
                 DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-                akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
+                akt.setNewAboState(ein);
             }
             tabelleLaden();
             tabelle.clearSelection();

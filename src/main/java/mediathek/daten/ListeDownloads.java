@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -347,7 +348,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
         final var sdf = new SimpleDateFormat("dd.MM.yyyy");
         final var todayDateStr = sdf.format(new Date());
-
+        final ArrayList<DatenFilm> bookmarklist = new ArrayList<>();
+        
+        daten.getListeAbo().forEach((DatenAbo da) -> {
+          // prepare abo date for comparision (used for pset bookmark target)
+          try {
+            da.setLastCheckdate(sdf.parse(da.arr[DatenAbo.ABO_DOWN_DATUM]));
+          }
+          catch (ParseException e) {
+            da.setLastCheckdate(new Date(0));
+          }
+        });
         for (DatenFilm film : daten.getListeFilme()) {
             DatenAbo abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true);
             if (abo == null) {
@@ -363,6 +374,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
+            if (abo.isAboTargetBookmark()) { 
+              if (film.isNew() || film.getDatumFilm().after(abo.getLastCheckDate())) { 
+                bookmarklist.add(film);
+              }
+              continue; // Target is bookmark: skip other steps specific to download operation
+            }
+            
             if (daten.getAboHistoryController().urlPruefen(film.getUrl())) {
                 // ist schon mal geladen worden
                 continue;
@@ -397,6 +415,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             listeNummerieren();
         }
         listeUrls.clear();
+        
+        if (!bookmarklist.isEmpty()) {
+          logger.info("Abo: {}  Filme in Merkliste eintragen", bookmarklist.size());
+          Daten.getInstance().getListeBookmarkList().bookmarkMoviesInBackground(bookmarklist);
+        }
+        // update Check date für Merkabos with date filmliste:
+        String filmlistdate = daten.getListeFilme().metaData().getDatum().substring(0, 10);
+        daten.getListeAbo().forEach((DatenAbo da) -> {
+          if (da.isAboTargetBookmark() && da.aboIstEingeschaltet()){
+            da.arr[DatenAbo.ABO_DOWN_DATUM] = filmlistdate;
+          }
+        });
     }
 
     public synchronized void listeNummerieren() {

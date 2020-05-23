@@ -32,12 +32,15 @@ public class BookmarkDataList
   private final ObservableList<BookmarkData> olist;
   private static SeenHistoryController history;
   private static BookmarkDataList instance;
+  private static boolean linked;  // Indicates if list is linked with movie list 
+  private List <DatenFilm> pendingAddList;
   
   private BookmarkDataList(Daten daten) {
     olist = FXCollections.observableArrayList((BookmarkData data) -> new Observable[]{
       data.getSeenProperty()
     });
     history = null;
+    linked = false;
     if (daten != null) {
       // Wait until film liste is ready and update references
       daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -141,6 +144,33 @@ public class BookmarkDataList
     }
   }
   
+  
+  /**
+   * Add movies into bookmarks as backgrund task
+   * @param movies: list of movies to be added
+   */
+  public void bookmarkMoviesInBackground(List <DatenFilm> movies) {
+    if (linked) {
+      new Thread(() -> {
+        if (history == null) {
+          history = Daten.getInstance().getSeenHistoryController();  
+        }
+        for (DatenFilm movie: movies) {
+          if (!movie.isBookmarked()) {
+            BookmarkData bdata = new BookmarkData(movie);
+            movie.setBookmark(bdata); // Link backwards
+            // Set seen marker if in history and not livestream
+            bdata.setSeen(!bdata.isLiveStream() && history.urlPruefen(movie.getUrl()));
+            olist.add(bdata);
+          }
+        }
+      }).start();
+    }
+    else {
+      pendingAddList = movies;
+    }
+  }
+  
   /**
    * Delete given bookmarks from list and remove reference in film list)
    * @param bookmarks 
@@ -237,7 +267,7 @@ public class BookmarkDataList
    * and links the entries
    * Executed in background
    */
-  public void updateBookMarksFromFilmList() {
+  private void updateBookMarksFromFilmList() {
     Iterator<BookmarkData> iterator = olist.iterator();
     ListeFilme listefilme = Daten.getInstance().getListeFilme();
     DatenFilm filmdata;
@@ -249,10 +279,15 @@ public class BookmarkDataList
         filmdata.setBookmark(data);   // Link backwards
       }
       else {
-        //data.setExpired();
         data.setDatenFilm(null);
       }
-    }      
+    }
+    linked = true;
+    
+    if (pendingAddList != null) {
+      bookmarkMoviesInBackground(pendingAddList);
+      pendingAddList = null;
+    }
   }
 
 }

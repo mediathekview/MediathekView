@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.LinkedList;
+import mediathek.daten.DatenAbo;
 
 @SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
@@ -476,17 +477,13 @@ public class PanelPsetLang extends PanelVorlage {
         //doppelte Gruppennamen suchen
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
-            int foundgruppe = 0;
+            int foundgruppe = (jTextFieldSetName.getText().equals(DatenAbo.ABO_TARGET_BOOKMARK) ? 1: 0);
             for (DatenPset gruppe : listePset) {
                 if (jTextFieldSetName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME])) {
                     ++foundgruppe;
                 }
             }
-            if (foundgruppe > 1) {
-                jTextFieldSetName.setBackground(Color.ORANGE);
-            } else {
-                jTextFieldSetName.setBackground(Color.WHITE);
-            }
+            jTextFieldSetName.setBackground(foundgruppe > 1 ? Color.ORANGE: Color.WHITE);
         }
     }
 
@@ -516,9 +513,9 @@ public class PanelPsetLang extends PanelVorlage {
             String text;
             if (rows.length == 1) {
                 pSet = listePset.get(tabellePset.convertRowIndexToModel(rows[0]));
-                text = pSet.arr[DatenPset.PROGRAMMSET_NAME];
+                text = "Set >" + pSet.arr[DatenPset.PROGRAMMSET_NAME] + "< löschen?";
             } else {
-                text = rows.length + " Set löschen?";
+                text = rows.length + " Sets löschen?";
             }
             int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {

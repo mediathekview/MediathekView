@@ -53,6 +53,7 @@ public class DialogEditAbo extends JDialog {
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxPSet.addItem(DatenAbo.ABO_TARGET_BOOKMARK);
         comboboxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(Daten.getInstance().getListeFilme()));
 
         // Zeilpfad ========================
@@ -315,7 +316,7 @@ public class DialogEditAbo extends JDialog {
                     abo.arr[DatenAbo.ABO_SENDER] = comboboxSender.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_EINGESCHALTET):
-                    abo.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(checkBoxEingeschaltet.isSelected());
+                    abo.setNewAboState(checkBoxEingeschaltet.isSelected());
                     break;
                 case (DatenAbo.ABO_MIN):
                     abo.arr[DatenAbo.ABO_MIN] = Boolean.toString(rbMin.isSelected());
@@ -338,78 +339,78 @@ public class DialogEditAbo extends JDialog {
         this.dispose();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+  // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+  private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanelExtra = new javax.swing.JPanel();
-        jButtonAbbrechen = new javax.swing.JButton();
-        jButtonBeenden = new javax.swing.JButton();
-        jButtonHelp = new javax.swing.JButton();
+    jScrollPane1 = new javax.swing.JScrollPane();
+    jPanelExtra = new javax.swing.JPanel();
+    jButtonAbbrechen = new javax.swing.JButton();
+    jButtonBeenden = new javax.swing.JButton();
+    jButtonHelp = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+    javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
+    jPanelExtra.setLayout(jPanelExtraLayout);
+    jPanelExtraLayout.setHorizontalGroup(
+      jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 0, Short.MAX_VALUE)
+    );
+    jPanelExtraLayout.setVerticalGroup(
+      jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 0, Short.MAX_VALUE)
+    );
+
+    jScrollPane1.setViewportView(jPanelExtra);
+
+    jButtonAbbrechen.setText("Abbrechen");
+
+    jButtonBeenden.setText("Ok");
+
+    jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+    jButtonHelp.setToolTipText("Hilfe anzeigen");
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addComponent(jScrollPane1)
+          .addGroup(layout.createSequentialGroup()
             .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+            .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButtonAbbrechen)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButtonHelp)))
+        .addContainerGap())
+    );
 
-        jScrollPane1.setViewportView(jPanelExtra);
+    layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
 
-        jButtonAbbrechen.setText("Abbrechen");
-
-        jButtonBeenden.setText("Ok");
-
-        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHelp.setToolTipText("Hilfe anzeigen");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAbbrechen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonHelp)))
-                .addContainerGap())
-        );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+    layout.setVerticalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap()
                 .addComponent(jScrollPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonBeenden)
-                    .addComponent(jButtonAbbrechen)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jButtonBeenden)
+          .addComponent(jButtonAbbrechen)
                     .addComponent(jButtonHelp))
                 .addContainerGap())
-        );
+    );
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonBeenden;
-    private javax.swing.JButton jButtonHelp;
-    private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JScrollPane jScrollPane1;
-    // End of variables declaration//GEN-END:variables
+    pack();
+  }// </editor-fold>//GEN-END:initComponents
+  // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton jButtonAbbrechen;
+  private javax.swing.JButton jButtonBeenden;
+  private javax.swing.JButton jButtonHelp;
+  private javax.swing.JPanel jPanelExtra;
+  private javax.swing.JScrollPane jScrollPane1;
+  // End of variables declaration//GEN-END:variables
 
 }

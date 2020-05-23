@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class DatenAbo implements Comparable<DatenAbo> {
 
@@ -31,6 +32,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
+    public static final String ABO_TARGET_BOOKMARK = "Merken";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private final GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -38,8 +40,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public boolean min = true;
     public String[] arr;
     public int nr;
+    private Date lastCheckDate;
     public String[] titel, thema, irgendwo;
-
+    
     public DatenAbo() {
         initialize();
     }
@@ -108,6 +111,17 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
     }
+    
+    public void setNewAboState(boolean newstate) {
+      arr[ABO_EINGESCHALTET] = String.valueOf(newstate);
+      if (!newstate && isAboTargetBookmark()) { // if deactivated reset download date to force new scan after activation 
+        arr[ABO_DOWN_DATUM] = "";
+      }
+    }
+    
+    public boolean isAboTargetBookmark() {
+      return this.arr[ABO_PSET].equals(ABO_TARGET_BOOKMARK);
+    }
 
     private void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
@@ -123,5 +137,16 @@ public class DatenAbo implements Comparable<DatenAbo> {
     @Override
     public int compareTo(@NotNull DatenAbo arg0) {
         return sorter.compare(arr[ABO_NAME], arg0.arr[ABO_NAME]);
+    }
+    
+    /**
+     * Init variable from array field ABO_DOWN_DATUM, needed for bookmark abo operation
+     */
+    public void setLastCheckdate(Date lcd) {
+      lastCheckDate = lcd;
+    }
+    
+    public Date getLastCheckDate() {
+      return lastCheckDate;
     }
 }
