@@ -22,6 +22,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MVHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Stores a full list of bookmarked movies.
@@ -290,6 +296,41 @@ public class BookmarkDataList
       bookmarkMoviesInBackground(pendingAddList);
       pendingAddList = null;
     }
+  }
+
+
+ /**
+   * Try to retrieve the expiry date from the associated webpage
+   */
+  private static final Pattern[] DATE_PATTERNS = {null, null};
+  private static final String[] DATE_PATTERN_STRINGS = {"verfügbar.+?bis.+?([0-9]{2}\\.[0-9]{2}\\.[0-9]{4})", "verfügbar.+?bis.+?([0-9]{2}/[0-9]{2}/[0-9]{4})"};
+  public static  String searchExpiryDate(BookmarkData data) {
+    String result = "";
+    if (data.hasWebURL()) {
+      final Request request = new Request.Builder().url(data.getWebUrl())
+                .header("User-Agent", ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT))
+                .build();
+      try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+        if (response.isSuccessful()) {
+          String responsedata = response.body().string();
+          if (responsedata.length() > 0) {
+            // 2.) use regex to extract date
+            for (int k = 0; k < DATE_PATTERNS.length; k++) {
+              if (DATE_PATTERNS[k] == null) {   // compile pattern only once!
+                DATE_PATTERNS[k] = Pattern.compile(DATE_PATTERN_STRINGS[k], Pattern.CASE_INSENSITIVE );
+              }
+              Matcher matcher = DATE_PATTERNS[k].matcher(responsedata);
+              if (matcher.find()) {
+                result = matcher.group(1).replaceAll("/", "\\.");
+                break;
+              }
+            }
+          }
+        }
+      }
+      catch (Exception UNUSED) {}
+    }
+    return result;
   }
 
 }

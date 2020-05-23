@@ -108,6 +108,8 @@ public class BookmarkWindowController {
   @FXML
   private Button btnMarkViewed;
   @FXML
+  private Button btnAllExpiry;
+  @FXML
   private ToggleButton btnShowDetails;
   @FXML
   private Button btnFilter;
@@ -640,6 +642,20 @@ public class BookmarkWindowController {
         refresh();
       }
     });
+  }
+
+  /**
+   * Ablaufdatum zu allen Filmen hinzufügen
+   * @param e
+   */
+  @FXML
+  private void btnAllExpiryAction(ActionEvent e) {
+    btnAllExpiry.setDisable(true);
+    if (new FXDialogControl("/mediathek/res/programm/fxml/bookmarkDialogSetExpiry.fxml",
+            "\"Verfügbar bis\" Datum finden", Modality.NONE).SetAndShow(this)) {
+      refresh();
+    }
+    btnAllExpiry.setDisable(false);
   }
 
   /**

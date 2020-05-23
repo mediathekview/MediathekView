@@ -45,6 +45,15 @@
             </graphic>
         </Button>
         <Separator orientation="VERTICAL"/>
+        <Button fx:id="btnAllExpiry" mnemonicParsing="false" onAction="#btnAllExpiryAction">
+            <tooltip>
+                <Tooltip text="'Verfügbar bis' Datum hinzufügen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="CALENDAR" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Separator orientation="VERTICAL"/>
         <Button fx:id="btnSaveList" disable="true" mnemonicParsing="false" onAction="#btnSaveBookMarkList">
             <tooltip>
                 <Tooltip text="Geänderte Merkliste abspeichern"/>

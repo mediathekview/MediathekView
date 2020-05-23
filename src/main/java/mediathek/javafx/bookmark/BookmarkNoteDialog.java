@@ -97,7 +97,7 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
     Task<String> task = new Task<>() {
       @Override
       protected String call() {
-        return searchExpiryDate();
+        return BookmarkDataList.searchExpiryDate(data);
       }
     };
     task.setOnSucceeded((WorkerStateEvent t) -> {
@@ -181,60 +181,4 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
     }
     return dv;
   }
-  
-  /**
-   * Try to retrieve the expiry date from the associated webpage
-   */
-  private static final Pattern[] DATE_PATTERNS = {null, null};
-  private static final String[] DATE_PATTERN_STRINGS = {"verfügbar.+?bis.+?([0-9]{2}\\.[0-9]{2}\\.[0-9]{4})", "verfügbar.+?bis.+?([0-9]{2}/[0-9]{2}/[0-9]{4})"};
-  private static final int EXCERPT_LEN = 1000;
-  private String searchExpiryDate() {
-    String result = null;   
-    if (hasWebURL) {   
-      try {
-        //FIXME use okhttp here instead of plain Java networking
-        URL uri= new URL(data.getWebUrl());
-        BufferedReader in = new BufferedReader(new InputStreamReader(uri.openConnection().getInputStream(), "UTF-8"));
-        StringBuilder a = new StringBuilder();
-        String str;
-        boolean save = false;
-        // 1.) get EXCERPT_LEN characters beginning with the search term
-        while ((str = in.readLine()) != null) {
-          if (!save) {
-            int idx = str.toLowerCase().indexOf("verfügbar ");
-            if (idx > -1) {
-              String sdate = str.substring(idx, str.length()-1); // < idx+EXCERPT_LEN ? str.length() : idx+EXCERPT_LEN);
-              a.append(sdate);
-              save = true;
-            } 
-          }
-          else {           
-            if (a.length() < EXCERPT_LEN) {
-              a.append(str.toLowerCase());
-            }
-            else {
-              break;             
-            }
-          }
-        }
-        in.close();
-        
-        if (a.length() > 0) {
-          // 2.) use regex to extract date
-          for (int k = 0; k < DATE_PATTERNS.length; k++) {
-            if (DATE_PATTERNS[k] == null) {   // compile pattern only once!
-              DATE_PATTERNS[k] = Pattern.compile(DATE_PATTERN_STRINGS[k], Pattern.CASE_INSENSITIVE );
-            }
-            Matcher matcher = DATE_PATTERNS[k].matcher(a);
-            if (matcher.find()) {
-              result = matcher.group(1).replaceAll("/", "\\.");
-              break;
-            }
-          }
-        }
-      }
-      catch (IOException ignored) {}
-    }
-    return result;
-  }  
 }
