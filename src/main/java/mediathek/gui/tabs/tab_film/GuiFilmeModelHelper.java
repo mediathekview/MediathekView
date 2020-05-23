@@ -30,6 +30,7 @@ public class GuiFilmeModelHelper {
     private boolean dontShowGebaerdensprache;
     private boolean dontShowAudioVersions;
     private long maxLength;
+    private boolean noDetailedFilterSet; // Indicates that no detail filters are used
     private String[] arrIrgendwo;
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
@@ -70,11 +71,8 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
-        boolean ret = false;
-
-        if (fap.senderList.getCheckModel().isEmpty()
+        noDetailedFilterSet = (fap.senderList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
-                && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
                 && ((int) fap.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !fap.dontShowAbos.getValue()
@@ -86,10 +84,9 @@ public class GuiFilmeModelHelper {
                 && !fap.showBookMarkedOnly.getValue()
                 && !fap.dontShowTrailers.getValue()
                 && !fap.dontShowSignLanguage.getValue()
-                && !fap.dontShowAudioVersions.getValue())
-            ret = true;
-
-        return ret;
+                && !fap.dontShowAudioVersions.getValue());
+        fap.SetFilterButtonColor(!noDetailedFilterSet);
+        return noDetailedFilterSet && fap.roSearchStringProperty.getValueSafe().isEmpty();
     }
 
     private void updateFilterVars() {

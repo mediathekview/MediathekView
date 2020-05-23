@@ -350,4 +350,25 @@ public class FilmActionPanel {
         return new Scene(toolBar);
     }
 
+    /**
+     * Save settings
+     **/
+    public void saveSettings() {
+      toolBar.saveSettings();
+    } 
+
+    /**
+     * Assign button style depending on filter state
+     **/
+    public final static String FILTER_ACTIVE_CLASS =  "filterActive";
+    public void SetFilterButtonColor(boolean filtered) {
+      if (filtered) {
+        toolBar.btnShowFilter.getGraphic().getStyleClass().add(FILTER_ACTIVE_CLASS);
+        toolBar.btnShowFilter.getStyleClass().add(FILTER_ACTIVE_CLASS);
+      } 
+      else {
+        toolBar.btnShowFilter.getGraphic().getStyleClass().removeAll(FILTER_ACTIVE_CLASS);
+        toolBar.btnShowFilter.getStyleClass().removeAll(FILTER_ACTIVE_CLASS);
+      } 
+    }
 }
