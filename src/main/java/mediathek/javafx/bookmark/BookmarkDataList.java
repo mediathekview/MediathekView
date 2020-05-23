@@ -24,17 +24,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Stores a full list of bookmarked movies. 
+ * Stores a full list of bookmarked movies.
  * @author K. Wich
  */
-public class BookmarkDataList 
+public class BookmarkDataList
 {
   private final ObservableList<BookmarkData> olist;
   private static SeenHistoryController history;
   private static BookmarkDataList instance;
-  private static boolean linked;  // Indicates if list is linked with movie list 
+  private static boolean linked;  // Indicates if list is linked with movie list
   private List <DatenFilm> pendingAddList;
-  
+
   private BookmarkDataList(Daten daten) {
     olist = FXCollections.observableArrayList((BookmarkData data) -> new Observable[]{
       data.getSeenProperty()
@@ -52,7 +52,7 @@ public class BookmarkDataList
       });
     }
   }
-  
+
   /**
    * Return singleton
    * @param daten Reference to Daten object used by list
@@ -61,15 +61,15 @@ public class BookmarkDataList
   public static BookmarkDataList getInstance(Daten daten) {
     return instance == null ? instance = new BookmarkDataList(daten) : instance;
   }
-  
+
   /**
    * Return data list for Bookmark window
-   * @return observable List 
+   * @return observable List
    */
   public ObservableList<BookmarkData> getObervableList() {
     return olist;
   }
-  
+
   /**
    * Get size of bookmark list
    * @return number of stored movies
@@ -77,14 +77,14 @@ public class BookmarkDataList
   public int getNbOfEntries() {
     return olist.size();
   }
-  
+
   /**
    * Delete Bookmarklist
    */
   public void clear() {
     olist.clear();
   }
-    
+
   /**
    * Get number of Films marked as seen
    * @return number
@@ -98,12 +98,12 @@ public class BookmarkDataList
     }
     return count;
   }
-  
+
   /**
    * Add given film(s) to List if not yet in list
    * otherwise remove them from list
-   * Note: if one of the given films is not bookmarked all are bookmarked 
-   * 
+   * Note: if one of the given films is not bookmarked all are bookmarked
+   *
    * @param movies: list of movies to be added
    */
   public void checkAndBookmarkMovies(List <DatenFilm> movies) {
@@ -116,17 +116,19 @@ public class BookmarkDataList
         addlist.add(data);
       }
       else {
-        BookmarkData movie = findMovieInList(data);
-        if (movie != null) {
-          dellist.add(movie);
+        if (!add) { // not necessary to store movie for add operation
+          BookmarkData movie = findMovieInList(data);
+          if (movie != null) {
+            dellist.add(movie);
+          }
         }
       }
     }
-    
+
     if (add) {
       // Check if history list is known
       if (history == null) {
-        history = Daten.getInstance().getSeenHistoryController();  
+        history = Daten.getInstance().getSeenHistoryController();
       }
       for (DatenFilm movie: addlist) {
         BookmarkData bdata = new BookmarkData(movie);
@@ -143,8 +145,8 @@ public class BookmarkDataList
       olist.removeAll(dellist);
     }
   }
-  
-  
+
+
   /**
    * Add movies into bookmarks as backgrund task
    * @param movies: list of movies to be added
@@ -153,7 +155,7 @@ public class BookmarkDataList
     if (linked) {
       new Thread(() -> {
         if (history == null) {
-          history = Daten.getInstance().getSeenHistoryController();  
+          history = Daten.getInstance().getSeenHistoryController();
         }
         for (DatenFilm movie: movies) {
           if (!movie.isBookmarked()) {
@@ -170,10 +172,10 @@ public class BookmarkDataList
       pendingAddList = movies;
     }
   }
-  
+
   /**
    * Delete given bookmarks from list and remove reference in film list)
-   * @param bookmarks 
+   * @param bookmarks
    */
   public void deleteEntries(ObservableList<BookmarkData> bookmarks) {
     for (BookmarkData bookmark: bookmarks) {  // delete references
@@ -184,18 +186,18 @@ public class BookmarkDataList
     }
     olist.removeAll(bookmarks);
   }
-  
-  
+
+
   /**
    * Load Bookmarklist from backup medium
    * @param filePath: File to read from
-   * 
-   * TODO: Add File checks 
+   *
+   * TODO: Add File checks
    */
   public void loadFromFile(Path filePath) {
     try (JsonParser parser = new MappingJsonFactory().createParser(filePath.toFile()))
     {
-      JsonToken jToken;      
+      JsonToken jToken;
       while((jToken = parser.nextToken()) != null){
         if (jToken == JsonToken.START_ARRAY) {
           while (parser.nextToken() != JsonToken.END_ARRAY) {
@@ -225,29 +227,29 @@ public class BookmarkDataList
     try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8).useDefaultPrettyPrinter())
     {
       jGenerator.writeStartObject();
-      jGenerator.writeFieldName("bookmarks"); 
+      jGenerator.writeFieldName("bookmarks");
       jGenerator.writeStartArray();
       for (BookmarkData bookmarkData : olist) {
         jGenerator.writeObject(bookmarkData);
-      } 
+      }
       jGenerator.writeEndArray();
-      jGenerator.writeEndObject(); 
+      jGenerator.writeEndObject();
     }
     catch (IOException e)
     {
       LogManager.getLogger(Daten.class).warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
     }
   }
-  
+
   /**
-   * Updates the seen state 
+   * Updates the seen state
    * @param seen: True if movies are seen
    * @param list: List of movies
    */
   public void updateSeen(boolean seen, List<DatenFilm> list) {
     list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> movie.getBookmark().setSeen(seen));
   }
-  
+
   /**
    * Find Movie in list
    */
@@ -261,7 +263,7 @@ public class BookmarkDataList
     }
     return result;
   }
-  
+
   /**
    * Updates the stored bookmark data reference with actual film list
    * and links the entries
@@ -283,7 +285,7 @@ public class BookmarkDataList
       }
     }
     linked = true;
-    
+
     if (pendingAddList != null) {
       bookmarkMoviesInBackground(pendingAddList);
       pendingAddList = null;

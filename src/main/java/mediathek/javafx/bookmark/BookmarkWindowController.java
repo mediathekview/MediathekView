@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -55,11 +54,9 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javafx.scene.input.KeyCode;
@@ -69,6 +66,7 @@ import javafx.scene.input.KeyEvent;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
 import static mediathek.config.MVColor.*;
+import mediathek.tool.javafx.FXDialogControl;
 
 
 /**
@@ -77,7 +75,7 @@ import static mediathek.config.MVColor.*;
  *
  * @author Klaus Wich <klaus.wich@aim.com>
  */
-public class BookmarkWindowController implements Initializable {
+public class BookmarkWindowController {
 
   private Stage stage;
   private final BookmarkDataList listeBookmarkList;
@@ -100,7 +98,7 @@ public class BookmarkWindowController implements Initializable {
   private boolean listUpdated; // indicates new updates to bookmarklist
   private ScheduledFuture<?> SaveBookmarkTask; // Future task to save
   private int FilterState;
-  
+
   private static final KeyCombination K_CTRL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_ANY);
 
   @FXML
@@ -210,26 +208,11 @@ public class BookmarkWindowController implements Initializable {
 
   @FXML
   private void btnEditNote(Event e) {
-
-    Stage dlgstage = new Stage();
-    dlgstage.initModality(Modality.WINDOW_MODAL);
-    dlgstage.initOwner(this.stage);
-    try {
-      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml"));
-      BookmarkNoteDialog bdialog = new BookmarkNoteDialog();
-      fxmlLoader.setController(bdialog);
-      Scene scene = new Scene(fxmlLoader.load());
-      scene.getStylesheets().add(getClass().getResource("/mediathek/res/css/bookmarkNoteDialog.css").toExternalForm());
-      dlgstage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
-      dlgstage.setScene(scene);
-      if (bdialog.SetandShow(dlgstage, tbBookmarks.getSelectionModel().getSelectedItem())) {
-        listUpdated = true;
-        refresh();
-      }
-    }
-    catch (IOException ex) {
-      LogManager.getLogger(BookmarkWindowController.class).error("{} Can't find/load the FXML description! Exception - {}",
-                                                                  getClass(), ex.toString());
+    FXDialogControl ctrl = new FXDialogControl("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml", null);
+    ctrl.addStylesheet("/mediathek/res/css/bookmarkNoteDialog.css");
+    if (ctrl.SetAndShow(tbBookmarks.getSelectionModel().getSelectedItem())) {
+      listUpdated = true;
+      refresh();
     }
   }
 
@@ -254,8 +237,8 @@ public class BookmarkWindowController implements Initializable {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
   }
 
-  @Override
-  public void initialize(URL arg0, ResourceBundle arg1) {
+  @FXML
+  public void initialize() {
     restoreTableStateAndContextMenu();
     // connect columns with underlying data
     colSender.setCellValueFactory(new PropertyValueFactory<>("sender"));
@@ -361,7 +344,7 @@ public class BookmarkWindowController implements Initializable {
         setButtonAndMenuState();
       }
     });
-     
+
     tbBookmarks.getSortOrder().addListener((ListChangeListener.Change<? extends TableColumn<BookmarkData,?>> pc) -> {
       tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
@@ -370,7 +353,6 @@ public class BookmarkWindowController implements Initializable {
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
-    btnShowDetailsAction(null);
     updateDescriptionArea();
 
     setupColumnContextMenu();
@@ -400,7 +382,7 @@ public class BookmarkWindowController implements Initializable {
     // change description
     updateDescriptionArea();
   }
-  
+
   private void setupColumnContextMenu() {
     tbBookmarks.setTableMenuButtonVisible(true);
     // setup column context menu
@@ -654,6 +636,7 @@ public class BookmarkWindowController implements Initializable {
 
       if (stage != null) {
         stage.show();
+        btnShowDetailsAction(null);
         refresh();
       }
     });
@@ -661,10 +644,11 @@ public class BookmarkWindowController implements Initializable {
 
   /**
    * Store reference used to inform about changes
+   * @param partner
    */
   public void setPartner(GuiFilme partner) { this.infotab = partner;}
 
-  private void refresh() {
+  public void refresh() {
     if (stage.isShowing()) {
       tbBookmarks.refresh();
       updateDisplay();

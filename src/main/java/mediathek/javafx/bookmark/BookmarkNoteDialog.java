@@ -4,21 +4,12 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import mediathek.gui.actions.UrlHyperlinkAction;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import mediathek.tool.javafx.FXDialogTemplate;
 
 
 /**
@@ -26,19 +17,22 @@ import java.util.regex.Pattern;
  *
  * includes search for movies's expiry date on webpage
  *
+ * Returns true if data was changed
+ *
  * @author Klaus Wich <klaus.wich@aim.com>
  */
 
-public class BookmarkNoteDialog implements Initializable
-{
+public class BookmarkNoteDialog extends FXDialogTemplate {
+
+  // defined by template:
+  //  protected Button fxCancelButton;
+  //  protected Button fxSaveButton;
+  //  protected Label fxStatus;
+
   @FXML
   private DatePicker fxDate;
   @FXML
   private TextArea fxNote;
-  @FXML
-  protected Button SaveButton;
-  @FXML
-  protected Button CancelButton;
   @FXML
   protected Button btnWebDate;
   @FXML
@@ -46,51 +40,40 @@ public class BookmarkNoteDialog implements Initializable
   @FXML
   private ProgressIndicator fxProgress;
   @FXML
-  private Label fxStatus; 
-  @FXML
-  private Label fxResult; 
+  private Label fxResult;
   @FXML
   private Label fxExpiry;
 
-  protected Stage dlgstage;
-  protected boolean datachanged;
   private BookmarkData data;
   private DateTimeFormatter dateformatter;
   private boolean hasWebURL;
 
   @Override
-  public void initialize(URL arg0, ResourceBundle arg1) {  
+  public void initialize() {
     dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     fxDate.setOnKeyTyped((var e) -> handleChange());
     fxDate.setOnMouseClicked((var e) -> handleChange());
     fxDate.getEditor().setOnKeyTyped((var e) -> handleChange());
   }
-  
-  @FXML
-  protected void handleCancel() {
-    datachanged = false;
-    dlgstage.hide();
-  }
 
-  @FXML
+  @Override
   protected void handleSave() {
     if (!fxNote.getText().equals(data.getNote())) {
-      data.setNote(fxNote.getText());   
-      datachanged = true;
+      data.setNote(fxNote.getText());
+      result = true;
     }
-
     String dv = getDateValue();
     if (!(dv == null && data.getExpiry() == null) || (dv != null && !dv.equals(data.getExpiry()))) {
       data.setExpiry(dv);
-      datachanged = true;
+      result = true;
     }
-    dlgstage.hide();
+    _dlgstage.hide();
   }
 
-  @FXML
+  @Override
   protected void handleChange() {
     boolean isok = Verify();
-    SaveButton.setDisable(!isok);
+    fxSaveButton.setDisable(!isok);
     int idx = fxDate.getEditor().getStyleClass().indexOf("Invalid");
     if (isok && idx > -1) {
       fxDate.getEditor().getStyleClass().remove("Invalid");
@@ -99,11 +82,11 @@ public class BookmarkNoteDialog implements Initializable
       fxDate.getEditor().getStyleClass().add("Invalid");
     }
   }
-  
+
   /**
    * Search the expiry date on Webpage
-   * @param e 
-   * 
+   * @param e
+   *
    * Starts own background task
    */
   @FXML
@@ -118,10 +101,10 @@ public class BookmarkNoteDialog implements Initializable
       }
     };
     task.setOnSucceeded((WorkerStateEvent t) -> {
-      String result = task.getValue();
-      if (result != null) {
-        fxResult.setText("\"Verfügbar bis Datum\" -" + result + "- gefunden");
-        fxDate.getEditor().setText(result);
+      String value = task.getValue();
+      if (value != null && !value.isEmpty()) {
+        fxResult.setText("\"Verfügbar bis Datum\" -" + value + "- gefunden");
+        fxDate.getEditor().setText(value);
       }
       else {
         fxResult.setText("\"Verfügbar bis\" Datum nicht gefunden");
@@ -132,7 +115,7 @@ public class BookmarkNoteDialog implements Initializable
     });
     new Thread(task).start();
   }
-  
+
   /**
    * Opens the linked webpage Webpage
    * @param e (unused)
@@ -146,13 +129,12 @@ public class BookmarkNoteDialog implements Initializable
     }
     catch (URISyntaxException ignored) {}
   }
-  
-  
-  public final boolean SetandShow(Stage dlgstage, BookmarkData data) {
-    this.dlgstage = dlgstage;
-    this.data = data;
+
+  @Override
+  protected void Setup(Object o) {
+    this.data = (BookmarkData) o;
     this.hasWebURL = data.hasWebURL();
-    this.dlgstage.setTitle(data.getNote() != null || data.getExpiry() != null ? "Anmerkungen ändern" : "neue Anmerkungen");
+    this._dlgstage.setTitle(data.getNote() != null || data.getExpiry() != null ? "Anmerkungen ändern" : "neue Anmerkungen");
     fxNote.setText(data.getNote() != null ? data.getNote() :  "");
     if (data.isLiveStream()) { // For live stream disable expiry handling
       fxExpiry.setDisable(true);
@@ -166,15 +148,13 @@ public class BookmarkNoteDialog implements Initializable
         }
         catch (Exception ignored) {}
       }
-      btnWebDate.setDisable(!hasWebURL); 
+      btnWebDate.setDisable(!hasWebURL);
       btnWebLink.setDisable(!hasWebURL);
-    }   
+    }
     handleChange();
-    // Display the Dialog and wait
-    this.dlgstage.showAndWait();
-    return datachanged;
   }
-  
+
+  @Override
   protected boolean Verify() {
     boolean rc = true;
     // Check date format:

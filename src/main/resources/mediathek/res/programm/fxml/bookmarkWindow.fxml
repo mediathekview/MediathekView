@@ -31,15 +31,6 @@
             </graphic>
         </Button>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="btnSaveList" disable="true" mnemonicParsing="false" onAction="#btnSaveBookMarkList">
-            <tooltip>
-                <Tooltip text="Geänderte Merkliste abspeichern"/>
-            </tooltip>
-            <graphic>
-                <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
-            </graphic>
-        </Button>
-        <Separator orientation="VERTICAL"/>
         <ToggleButton fx:id="btnShowDetails" mnemonicParsing="false" onAction="#btnShowDetailsAction">
             <tooltip>
                 <Tooltip text="Erweiterte Film Informationen anzeigen"/>
@@ -51,6 +42,15 @@
         <Button fx:id="btnFilter" mnemonicParsing="false" onAction="#btnFilterAction">
             <graphic>
                 <Glyph fontFamily="FontAwesome" icon="FILTER" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Separator orientation="VERTICAL"/>
+        <Button fx:id="btnSaveList" disable="true" mnemonicParsing="false" onAction="#btnSaveBookMarkList">
+            <tooltip>
+                <Tooltip text="Geänderte Merkliste abspeichern"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
             </graphic>
         </Button>
     </ToolBar>
