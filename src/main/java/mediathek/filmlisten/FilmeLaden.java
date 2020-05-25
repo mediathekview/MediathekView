@@ -31,9 +31,11 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -74,7 +76,7 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                logger.debug("Filme laden, ende");
+                logger.trace("Filme laden, ende");
                 undEnde(event);
             }
         });
@@ -87,7 +89,7 @@ public class FilmeLaden {
      */
     private boolean hasNewRemoteFilmlist() {
         boolean result = false;
-        logger.debug("hasNewRemoteFilmList()");
+        logger.trace("hasNewRemoteFilmList()");
 
         final String id = Daten.getInstance().getListeFilme().metaData().getId();
 
@@ -148,7 +150,7 @@ public class FilmeLaden {
     }
 
     /**
-     * Determin whether we want to perform a remote update check.
+     * Determine whether we want to perform a remote update check.
      * This will be done if:
      * 1. don´t have film entries
      * 2. dateiUrl is either empty or string starts with http
@@ -187,7 +189,7 @@ public class FilmeLaden {
         if (!performUpdateCheck(listeFilme, dateiUrl))
             return false;
 
-        logger.debug("loadFilmlist(String,boolean)");
+        logger.trace("loadFilmlist(String,boolean)");
         logger.info("");
         logger.info("Alte Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
@@ -254,7 +256,7 @@ public class FilmeLaden {
 
         logger.debug("undEnde()");
         final var listeFilme = daten.getListeFilme();
-        final var readDate = new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date());
+        final var readDate = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
