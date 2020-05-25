@@ -162,16 +162,20 @@ public class FilmeLaden {
         boolean result = true;
 
         //always perform update when list is empty
-        if (!listeFilme.isEmpty()) {
+        if (listeFilme.isEmpty()) {
+            return true;
+        }
+        else {
             //remote download is using an empty file name!...
             //or somebody put a web adress into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
-                //perform check only if we dont want to use DIFF list...
+                //perform check only if we don´t want to use DIFF list...
                 if (!listeFilme.metaData().canUseDiffList()) {
                     if (!hasNewRemoteFilmlist())
                         result = false;
                 }
             }
+
         }
 
         return result;
