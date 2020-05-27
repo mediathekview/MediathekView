@@ -24,6 +24,9 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
 					name: "panel1"
 					"border": new javax.swing.border.TitledBorder( "Mein Standort" )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonDe"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
