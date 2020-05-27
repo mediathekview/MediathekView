@@ -41,7 +41,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_bandwidth = "Download";
     private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
-    private static final String NAME_allgemeineEinstellungenGeo = "Geo";
+    private static final String NAME_allgemeineEinstellungenGeo = "Standort & Geoblocking";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
     private static final String NAME_filmListe = "Filmliste";
     private static final String NAME_filmListeLaden = "Filmliste laden";
