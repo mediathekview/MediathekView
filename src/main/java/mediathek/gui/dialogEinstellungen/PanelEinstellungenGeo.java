@@ -92,7 +92,7 @@ public class PanelEinstellungenGeo extends JPanel {
     private void initComponents() {
         var jPanel6 = new JPanel();
         jCheckBoxMarkieren = new JCheckBox();
-        panel1 = new JPanel();
+        var panel1 = new JPanel();
         jRadioButtonDe = new JRadioButton();
         jRadioButtonCH = new JRadioButton();
         jRadioButtonAt = new JRadioButton();
@@ -197,7 +197,6 @@ public class PanelEinstellungenGeo extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JCheckBox jCheckBoxMarkieren;
-    private JPanel panel1;
     private JRadioButton jRadioButtonDe;
     private JRadioButton jRadioButtonCH;
     private JRadioButton jRadioButtonAt;
