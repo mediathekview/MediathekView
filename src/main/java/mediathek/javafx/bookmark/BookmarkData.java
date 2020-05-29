@@ -26,6 +26,7 @@ public class BookmarkData {
   private String note;
   private String expiry;
   private boolean willExpire;
+  private boolean newlyAdded;
   private String category;
   
   public BookmarkData() {
@@ -42,6 +43,7 @@ public class BookmarkData {
     this.urlKlein = filmdata.getUrlKlein();
     this.filmdata = filmdata; 
     this.willExpire = false;
+    this.newlyAdded = true;
   }
     
   public BookmarkData(DatenFilm filmdata, String category) {  
@@ -127,6 +129,11 @@ public class BookmarkData {
   @JsonIgnore
   public boolean isLiveStream() {
     return (this.filmdata != null) ? this.filmdata.isLivestream() : false;
+  }
+  
+  @JsonIgnore
+  public boolean isNew() {
+    return this.newlyAdded;
   }
     
   @JsonIgnore
