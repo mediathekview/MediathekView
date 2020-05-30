@@ -28,6 +28,8 @@ import org.apache.logging.log4j.LogManager;
  *  ctrl.addStylesheet(..)
  *  // execute
  *  result boolean = ctrl.SetAndShow(Object o);
+ *  // get details back:
+ *  Object o = ctrl.getResult()
  *
  *   Object o : Dialog specific data (packed into one object), e.g. record to be displayed
  *
@@ -42,8 +44,7 @@ public class FXDialogControl
     this(resourcename, title, Modality.APPLICATION_MODAL);
   }
 
-  public FXDialogControl(String resourcename, String title, Modality modal)
-  {
+  public FXDialogControl(String resourcename, String title, Modality modal) {
     try {
       dlgstage = new Stage();
       loader = new FXMLLoader(getClass().getResource(resourcename));
@@ -64,6 +65,10 @@ public class FXDialogControl
 
   public boolean SetAndShow(Object o) {
     return ((FXDialogTemplate) loader.getController()).SetandShow(dlgstage, o);
+  }
+  
+  public Object getResult() {
+    return ((FXDialogTemplate) loader.getController()).getResult();
   }
 
   public void addStylesheet(String pathToStyleSheet) {

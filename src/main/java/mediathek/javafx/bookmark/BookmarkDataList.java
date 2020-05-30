@@ -15,8 +15,6 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class BookmarkDataList
   private static SeenHistoryController history;
   private static BookmarkDataList instance;
   private static boolean linked;  // Indicates if list is linked with movie list
-  private List <DatenFilm> pendingAddList;
+  private List <BookmarkCollectionData> pendingAddList;
 
   private BookmarkDataList(Daten daten) {
     olist = FXCollections.observableArrayList((BookmarkData data) -> new Observable[]{
@@ -152,31 +150,69 @@ public class BookmarkDataList
     }
   }
 
-
   /**
    * Add movies into bookmarks as backgrund task
    * @param movies: list of movies to be added
+   * @param categories: optoinal categories to be assigned to movie in bookmarklist (used for abo)
+   * Note: Block processing to improve speed
    */
-  public void bookmarkMoviesInBackground(List <DatenFilm> movies) {
+  private static final int BLOCKSIZE = 250;
+  public void bookmarkMoviesInBackground(List <BookmarkCollectionData> movies) {
     if (linked) {
+      if (history == null) { // ensure that reference exists
+        history = Daten.getInstance().getSeenHistoryController();
+      }
       new Thread(() -> {
-        if (history == null) {
-          history = Daten.getInstance().getSeenHistoryController();
-        }
-        for (DatenFilm movie: movies) {
+        ArrayList<BookmarkData> templist = null;
+        int i = 0;
+        for (int k = 0; k < movies.size(); k++) {
+          if (i == 0) {
+            templist = new ArrayList<>(BLOCKSIZE < movies.size()- k ? BLOCKSIZE : movies.size()- k);
+          }
+          DatenFilm movie = movies.get(k).movie;
           if (!movie.isBookmarked()) {
-            BookmarkData bdata = new BookmarkData(movie);
+            BookmarkData bdata = new BookmarkData(movie, movies.get(k).category);
             movie.setBookmark(bdata); // Link backwards
             // Set seen marker if in history and not livestream
             bdata.setSeen(!bdata.isLiveStream() && history.urlPruefen(movie.getUrl()));
-            olist.add(bdata);
+            templist.add(bdata);
+            i++;
+          }
+          if (i > BLOCKSIZE) {
+            olist.addAll(templist);
+            i = 0;
           }
         }
-      }).start();
+        if (i > 0) {
+          olist.addAll(templist);
+        }
+      }, "BookmarkAddMovies").start();
     }
     else {
       pendingAddList = movies;
     }
+  }
+
+   /**
+   * Delete categories in background
+   * @param categoryNames: list of categorie names to be deleted
+   */
+  public void deleteCategoriesInBackground(ArrayList<String> categoryNames) {
+    new Thread(() -> {
+      deleteCategories(categoryNames);
+    }, "BookmarkDeleteCategories").start();
+  }
+
+  /**
+   * Delete categories
+   * @param categoryNames: list of categorie names to be deleted
+   */
+  public void deleteCategories(ArrayList<String> categoryNames) {
+    categoryNames.forEach((category) -> {
+      olist.stream().filter((data) -> (data.hasCategory(category))).forEachOrdered((data) -> {
+        data.setCategory(null);
+      });
+    });
   }
 
   /**
@@ -219,11 +255,10 @@ public class BookmarkDataList
     }
 
     //sanity check if someone added way too many bookmarks
-    if (olist.size() > 1000)
-      logger.warn("Bookmark entries exceed threshold: {}", olist.size());
+    if (olist.size() > 2000) {
+      LogManager.getLogger().warn("Bookmark entries exceed threshold: {}", olist.size());
+    }
   }
-
-  private static final Logger logger = LogManager.getLogger();
 
   /**
    * Save Bookmarklist to backup medium

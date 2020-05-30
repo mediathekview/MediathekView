@@ -26,6 +26,7 @@ public class BookmarkData {
   private String note;
   private String expiry;
   private boolean willExpire;
+  private String category;
   
   public BookmarkData() {
     seen = new SimpleBooleanProperty(false);
@@ -41,6 +42,11 @@ public class BookmarkData {
     this.urlKlein = filmdata.getUrlKlein();
     this.filmdata = filmdata; 
     this.willExpire = false;
+  }
+    
+  public BookmarkData(DatenFilm filmdata, String category) {  
+    this(filmdata);
+    this.category = category;
   }
 
   // getter/setter used for Jackson
@@ -83,6 +89,9 @@ public class BookmarkData {
   
   public String getUrlKlein() { return urlKlein; }
   public void setUrlKlein(String urlKlein) { this.urlKlein = urlKlein; }
+  
+  public String getCategory(){ return this.category; }
+  public void   setCategory(String category){ this.category = category; }
   
   // property access:
   @JsonIgnore
@@ -179,5 +188,15 @@ public class BookmarkData {
   @JsonIgnore
   public boolean willExpire() {
     return this.willExpire;
+  }
+  
+  @JsonIgnore
+  public boolean hasCategory(String category) {
+    return this.category != null && this.category.equals(category);
+  }
+  
+  @JsonIgnore
+  public boolean hasNoCategory() {
+    return this.category == null;
   }
 }

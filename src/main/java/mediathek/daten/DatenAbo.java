@@ -23,14 +23,15 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
+    public static final int ABO_CATEGORY = 13;  // for target Bookmarklist
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset", "Kategorie"};
     public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
+            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset", "Kategorie"};
 
-    public static final int MAX_ELEM = 13;
+    public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
     public static final String ABO_TARGET_BOOKMARK = "Merken";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
@@ -47,7 +48,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
         initialize();
     }
 
-    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
+    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, 
+                    String ziel, String pset, String category) {
         initialize();
         arr[ABO_NAME] = name;
         arr[ABO_SENDER] = sender;
@@ -60,6 +62,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+        arr[ABO_CATEGORY] = category;
     }
 
     public static boolean anzeigen(int i) {
@@ -121,6 +124,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
     
     public boolean isAboTargetBookmark() {
       return this.arr[ABO_PSET].equals(ABO_TARGET_BOOKMARK);
+    }
+    
+    public boolean isAboCategory(String category) {
+      return this.arr[ABO_CATEGORY].equals(category);
+    }
+    
+    public String getAboCategory() {
+      return this.arr[ABO_CATEGORY];
     }
 
     private void aboEin() {

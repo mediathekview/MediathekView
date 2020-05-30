@@ -9,6 +9,7 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.util.StringConverter;
 import mediathek.tool.javafx.FXDialogTemplate;
 
 
@@ -43,6 +44,8 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
   private Label fxResult;
   @FXML
   private Label fxExpiry;
+  @FXML
+  private ComboBox<BookmarkCategory> cbKategory;
 
   private BookmarkData data;
   private DateTimeFormatter dateformatter;
@@ -54,6 +57,23 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
     fxDate.setOnKeyTyped((var e) -> handleChange());
     fxDate.setOnMouseClicked((var e) -> handleChange());
     fxDate.getEditor().setOnKeyTyped((var e) -> handleChange());
+    cbKategory.getItems().add(new BookmarkCategory(BookmarkCategoryList.NOCATEGORY));
+    cbKategory.getItems().addAll(BookmarkCategoryList.getInstance().getObervableList());
+    cbKategory.setCellFactory((ListView<BookmarkCategory> param) -> {
+        return new BookmarkCategoryListCell(true);
+    });
+    cbKategory.setButtonCell(new BookmarkCategoryListCell(false));
+    cbKategory.setConverter(new StringConverter<BookmarkCategory>() {
+      @Override
+      public String toString(BookmarkCategory bc) {
+        return bc != null ? bc.getName() : null;
+      }
+
+      @Override
+      public BookmarkCategory fromString(String string) { // not needed
+        return null;
+      }
+    });
   }
 
   @Override
@@ -66,6 +86,10 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
     if (!(dv == null && data.getExpiry() == null) || (dv != null && !dv.equals(data.getExpiry()))) {
       data.setExpiry(dv);
       result = true;
+    }
+    int idx = cbKategory.getSelectionModel().getSelectedIndex();
+    if (idx > -1 ) {
+      data.setCategory(idx > 0 ? cbKategory.getValue().getName() : null);
     }
     _dlgstage.hide();
   }

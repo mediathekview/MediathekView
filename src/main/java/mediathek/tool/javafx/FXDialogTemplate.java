@@ -62,12 +62,21 @@ public abstract class FXDialogTemplate
    * Setup the dialog parameters and display the dialog
    * @param dlgstage: Stage, provided by FXDialogControl
    * @param o       : Parameter object, forwarded to setup
-   * @return boolean: Result of dialog;
+   * @return boolean: Result of dialog, for details use getResult()
    */ 
   public final boolean SetandShow(Stage dlgstage, Object o) {
     this._dlgstage = dlgstage;
     Setup(o);                 // Forward parameter object to implementation
     _dlgstage.showAndWait();  // Display the Dialog and wait for execution
+    return result;
+  }
+  
+  /**
+   * Can be overwritten to return result details
+   *
+   * @return result Object with results
+   */
+  protected Object getResult() {
     return result;
   }
 
@@ -95,7 +104,7 @@ public abstract class FXDialogTemplate
   protected boolean Save() {
     return true;
   }
-
+  
   protected void setStatus(boolean ok, String s) {
     if (fxStatus != null) {
       fxStatus.setText(ok ? "OK" : s);

@@ -18,6 +18,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.util.ArrayList;
+import mediathek.javafx.bookmark.BookmarkCategoryList;
 
 @SuppressWarnings("serial")
 public class DialogEditAbo extends JDialog {
@@ -26,6 +27,7 @@ public class DialogEditAbo extends JDialog {
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
     private final JComboBox<String> comboboxSender = new JComboBox<>();
     private final JComboBox<String> comboboxPfad = new JComboBox<>();
+    private final JComboBox<String> comboboxCategory = new JComboBox<>();
     private final JCheckBox checkBoxEingeschaltet = new JCheckBox();
     private final JRadioButton rbMin = new JRadioButton("Mindestdauer");
     private final JRadioButton rbMax = new JRadioButton("Maximaldauer");
@@ -54,9 +56,18 @@ public class DialogEditAbo extends JDialog {
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxPSet.addItem(DatenAbo.ABO_TARGET_BOOKMARK);
+        comboboxPSet.addActionListener(e -> {
+          comboboxCategory.setEnabled(comboboxPSet.getSelectedItem() != null && comboboxPSet.getSelectedItem().equals(DatenAbo.ABO_TARGET_BOOKMARK));
+        });
+        
         comboboxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(Daten.getInstance().getListeFilme()));
+        
+        comboboxCategory.addItem(BookmarkCategoryList.NOCATEGORY);
+        Daten.getInstance().getListeBookmarkCategoryList().getSelectionList().forEach((category) -> {
+          comboboxCategory.addItem(category);
+        });
 
-        // Zeilpfad ========================
+        // Zielpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
@@ -235,6 +246,16 @@ public class DialogEditAbo extends JDialog {
                 gridbag.setConstraints(p, c);
                 panel.add(p);
                 break;
+            case DatenAbo.ABO_CATEGORY:
+                comboboxCategory.setEnabled(aktAbo.arr[DatenAbo.ABO_PSET].equals(DatenAbo.ABO_TARGET_BOOKMARK));
+                if (comboboxCategory.isEnabled() && aktAbo.arr[DatenAbo.ABO_CATEGORY] != null) {
+                  comboboxCategory.setSelectedItem(aktAbo.arr[DatenAbo.ABO_CATEGORY]);
+                } else {
+                  comboboxCategory.setSelectedIndex(0);
+                }
+                gridbag.setConstraints(comboboxCategory, c);
+                panel.add(comboboxCategory);
+                break;
             default:
                 textfeld = new JTextField();
                 textfeldListe[i] = textfeld;
@@ -327,6 +348,13 @@ public class DialogEditAbo extends JDialog {
                     break;
                 case (DatenAbo.ABO_NR):
                 case (DatenAbo.ABO_DOWN_DATUM):
+                    break;
+                case (DatenAbo.ABO_CATEGORY):
+                    if (comboboxCategory.isEnabled() && comboboxCategory.getSelectedIndex() > 0) {
+                      abo.arr[DatenAbo.ABO_CATEGORY] = comboboxCategory.getSelectedItem().toString();
+                    } else {
+                      abo.arr[DatenAbo.ABO_CATEGORY] = null;
+                    }
                     break;
                 default:
                     abo.arr[i] = textfeldListe[i].getText().trim();

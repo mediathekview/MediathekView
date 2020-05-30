@@ -1020,6 +1020,7 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
         daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
+        daten.getListeBookmarkCategoryList().saveToFile(Daten.getBookmarkCategoryFilePath());
 
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();

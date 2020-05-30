@@ -351,13 +351,6 @@ public class FilmActionPanel {
     }
 
     /**
-     * Save settings
-     **/
-    public void saveSettings() {
-      toolBar.saveSettings();
-    } 
-
-    /**
      * Assign button style depending on filter state
      **/
     public final static String FILTER_ACTIVE_CLASS =  "filterActive";

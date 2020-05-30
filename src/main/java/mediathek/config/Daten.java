@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import mediathek.javafx.bookmark.BookmarkCategoryList;
 
 public class Daten {
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
@@ -85,6 +86,7 @@ public class Daten {
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
     private final BookmarkDataList listeBookmarkList;
+    private final BookmarkCategoryList listeBookmarkCategoryList;
     private final ListeMediaDB listeMediaDB;
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
@@ -116,7 +118,8 @@ public class Daten {
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
         listeBookmarkList = BookmarkDataList.getInstance(this);
-
+        listeBookmarkCategoryList = BookmarkCategoryList.getInstance();
+        
         listePset = new ListePset();
 
         listeAbo = new ListeAbo(this);
@@ -239,10 +242,20 @@ public class Daten {
     }
     
     /**
-     * Load the stored bookmarkdata form JSON file
+     * Return the path to "bookmarkcategories.json"
+     *
+     * @return Path object of bookmark file
+     */
+    public static Path getBookmarkCategoryFilePath() {
+        return Daten.getSettingsDirectory().resolve(Konstanten.BOOKMARKCATEGORY_FILE);
+    }
+    
+    /**
+     * Load the stored bookmarkdata and categories form respective JSON files
      * into memory
      */
     public void loadBookMarkData() {
+      listeBookmarkCategoryList.loadFromFile(getBookmarkCategoryFilePath());
       listeBookmarkList.loadFromFile(getBookmarkFilePath());
     }
     
@@ -559,6 +572,11 @@ public class Daten {
     public BookmarkDataList getListeBookmarkList() {
         return listeBookmarkList;
     }
+    
+    public BookmarkCategoryList getListeBookmarkCategoryList() {
+        return listeBookmarkCategoryList;
+    }
+    
 
     public ListeMediaDB getListeMediaDB() {
         return listeMediaDB;

@@ -70,7 +70,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-        DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
+        DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "", "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false /*onlyOne*/);
         dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
@@ -84,6 +84,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
         }
+        
     }
 
     public void addAbo(DatenAbo datenAbo) {
@@ -307,5 +308,38 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
         stopwatch.stop();
         logger.debug("setAboFuerFilm: {}", stopwatch);
+    }
+    
+    /**
+     * Checks if bookmark abo with given category exists
+     * @param category: Category to be checked
+     * @return True if there is an abo with teh given category 
+     */
+    public boolean hasBookmarkAboWithCategory(String category) {
+      boolean result = false;
+      for (DatenAbo abo: this) {
+        if (abo.isAboTargetBookmark() && abo.isAboCategory(category) ) {
+          result = true;
+          break;
+        }
+      }
+      return result;
+    }
+    
+    /**
+     * Returns a list of all categories used in abos
+     * @return Arraylist or null if no ones exist
+     */
+    public ArrayList<String> getBookmarkAboCategories() {
+      ArrayList<String> result = new ArrayList<>();
+      for (DatenAbo abo: this) {
+        if (abo.isAboTargetBookmark()) {
+          String category = abo.getAboCategory();
+          if (category != null) {
+            result.add(category);
+          }
+        }
+      }
+      return result;
     }
 }

@@ -286,6 +286,7 @@ public class ManageAboPanel extends JPanel {
         }
 
         tabelleLaden();
+        this.revalidate();
         daten.getListeAbo().aenderungMelden(akt.aboIstEingeschaltet());
     }
 

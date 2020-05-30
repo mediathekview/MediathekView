@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import mediathek.javafx.bookmark.BookmarkCollectionData;
 
 @SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -335,7 +336,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void abosSuchen(JFrame parent) {
-        // in der Filmliste nach passenden Filmen suchen und 
+        // in der Filmliste nach passenden Filmen suchen und
         // in die Liste der Downloads eintragen
         final HashSet<String> listeUrls = new HashSet<>();
         // mit den bereits enthaltenen URL füllen
@@ -348,8 +349,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
         final var sdf = new SimpleDateFormat("dd.MM.yyyy");
         final var todayDateStr = sdf.format(new Date());
-        final ArrayList<DatenFilm> bookmarklist = new ArrayList<>();
-        
+        final ArrayList<BookmarkCollectionData> bookmarklist = new ArrayList<>();
+
         daten.getListeAbo().forEach((DatenAbo da) -> {
           // prepare abo date for comparision (used for pset bookmark target)
           try {
@@ -374,13 +375,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
-            if (abo.isAboTargetBookmark()) { 
-              if (film.isNew() || film.getDatumFilm().after(abo.getLastCheckDate())) { 
-                bookmarklist.add(film);
+            if (abo.isAboTargetBookmark()) {
+              if (film.isNew() || film.getDatumFilm().after(abo.getLastCheckDate())) {
+                bookmarklist.add(new BookmarkCollectionData(film, abo.arr[DatenAbo.ABO_CATEGORY]));
               }
               continue; // Target is bookmark: skip other steps specific to download operation
             }
-            
+
             if (daten.getAboHistoryController().urlPruefen(film.getUrl())) {
                 // ist schon mal geladen worden
                 continue;
@@ -415,7 +416,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             listeNummerieren();
         }
         listeUrls.clear();
-        
+
         if (!bookmarklist.isEmpty()) {
           logger.info("Abo: {}  Filme in Merkliste eintragen", bookmarklist.size());
           Daten.getInstance().getListeBookmarkList().bookmarkMoviesInBackground(bookmarklist);
