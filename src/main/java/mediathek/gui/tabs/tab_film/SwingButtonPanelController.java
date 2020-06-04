@@ -81,31 +81,42 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         c.insets = DEFAULT_INSETS;
     }
 
-    private void addExtraFeld(int i, int spalte, int zeile) {
-        c.gridx = spalte;
-        c.gridy = zeile;
+    private JLabel createLabel(@NotNull String psetName, Color psetColor, int row, int col) {
+        var label = new JLabel(psetName);
+        if (psetColor != null) {
+            label.setForeground(psetColor);
+        }
 
+        c.gridx = col;
+        c.gridy = row;
+        gridbag.setConstraints(label, c);
+
+        return label;
+    }
+
+    private JButton createButton(@NotNull DatenPset pset, @NotNull String psetName, Color psetColor, int row, int col) {
+        var button = new JButton(psetName);
+        button.addActionListener(new BeobOpenPlayer(guiFilme, pset));
+        if (psetColor != null) {
+            button.setBackground(psetColor);
+        }
+
+        c.gridx = col;
+        c.gridy = row;
+        gridbag.setConstraints(button, c);
+
+        return button;
+    }
+
+    private void addExtraFeld(int i, int spalte, int zeile) {
         var pset = listeButton.get(i);
         final var psetName = pset.arr[DatenPset.PROGRAMMSET_NAME];
         final var psetColor = pset.getFarbe();
 
-        if (pset.isLable()) {
-            JLabel label = new JLabel(psetName);
-            if (psetColor != null) {
-                label.setForeground(psetColor);
-            }
-            gridbag.setConstraints(label, c);
-
-            buttonsPanel.add(label);
+        if (pset.isLabel()) {
+            buttonsPanel.add(createLabel(psetName,psetColor, zeile, spalte));
         } else {
-            var button = new JButton(psetName);
-            button.addActionListener(new BeobOpenPlayer(guiFilme, pset));
-            if (psetColor != null) {
-                button.setBackground(psetColor);
-            }
-            gridbag.setConstraints(button, c);
-
-            buttonsPanel.add(button);
+            buttonsPanel.add(createButton(pset, psetName, psetColor, zeile, spalte));
         }
     }
 
@@ -113,7 +124,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         // erst sauber machen
         // zum Anlegen der Button:
         // Programmgruppe ohne Namen: Leerfeld
-        // Programmgruppe ohen Programme: Label
+        // Programmgruppe ohne Programme: Label
         // sonst ein Button
         buttonsPanel.removeAll();
         final int maxSpalten = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON); //Anzahl der Spalten der Schalter
@@ -135,13 +146,13 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         }
 
         // zum zusammenschieben
+        JLabel label = new JLabel();
         c.weightx = 10;
         c.gridx = maxSpalten + 1;
         c.gridy = 0;
-        JLabel label = new JLabel();
         gridbag.setConstraints(label, c);
-
         buttonsPanel.add(label);
+
         buttonsPanel.updateUI();
     }
 
