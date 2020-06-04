@@ -1,7 +1,8 @@
 package mediathek.tool;
 
 import mediathek.config.Daten;
-import mediathek.config.MVColor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -9,29 +10,21 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 public class CellRendererColor extends DefaultTableCellRenderer {
+    private static final Logger logger = LogManager.getLogger();
+
     @Override
-    public Component getTableCellRendererComponent(
-            JTable table,
-            Object value,
-            boolean isSelected,
-            boolean hasFocus,
-            int row,
-            int column) {
-        setBackground(null);
-        setHorizontalAlignment(SwingConstants.LEADING);
-        super.getTableCellRendererComponent(
-                table, value, isSelected, hasFocus, row, column);
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                   boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        final int r = table.convertRowIndexToModel(row);
+
         try {
-            int r = table.convertRowIndexToModel(row);
-            int c = table.convertColumnIndexToModel(column);
             MVC color = Daten.mVColor.liste.get(r);
-            if (c == MVColor.MVC_COLOR) {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setBackground(color.color);
-                setText("");
-            }
-        } catch (Exception ex) {
-            Log.errorLog(630365892, ex);
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setBackground(color.color);
+            setText("");
+        } catch (IndexOutOfBoundsException ex) {
+            logger.error("unable to get color", ex);
         }
         return this;
     }

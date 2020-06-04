@@ -10,6 +10,8 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,8 +32,8 @@ import java.util.Objects;
 @SuppressWarnings("serial")
 public class DialogAddDownload extends JDialog {
     private DatenPset pSet;
-    private boolean ok = false;
-    private DatenDownload datenDownload = null;
+    private boolean ok;
+    private DatenDownload datenDownload;
     private final Daten daten;
     private final DatenFilm datenFilm;
     private String orgPfad = "";
@@ -39,11 +41,11 @@ public class DialogAddDownload extends JDialog {
     private String dateiGroesse_HD = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
-    private boolean nameGeaendert = false;
-    private boolean stopBeob = false;
+    private boolean nameGeaendert;
+    private boolean stopBeob;
     private final JTextComponent cbPathTextComponent;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-
+    private static final Logger logger = LogManager.getLogger();
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -471,7 +473,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
+                        logger.error("error saving file", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -489,7 +491,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
+                        logger.error("error saving file", ex);
                     }
                 }
             }
