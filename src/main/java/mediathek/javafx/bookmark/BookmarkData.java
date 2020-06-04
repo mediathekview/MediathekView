@@ -158,13 +158,39 @@ public class BookmarkData {
   
   @JsonIgnore
   public String getExtendedDescription() {
-    if (expiry != null && !expiry.isEmpty()) {
-      return String.format("%s - %s (Verfügbar bis %s)\n\n%s%s", sender, titel, expiry, getDescription(), getFormattedNote());
+    StringBuilder sb = new StringBuilder(sender);
+    boolean ex = expiry != null && !expiry.isEmpty();
+    sb.append(" - ");
+    sb.append(getThema());
+    sb.append(" - ");
+    sb.append(titel);
+    if (ex) {
+      sb.append("     (Verfügbar bis ");
+      sb.append(expiry);
     }
-    else {
-      return String.format("%s - %s\n\n%s%s", sender, titel, getDescription(), getFormattedNote());
+    if (this.filmdata != null) {
+      if (ex) {
+        sb.append(", ");
+      } else {
+        sb.append("     (");
+        ex = true;
+      } 
+      sb.append("gesendet am ");
+      sb.append(filmdata.getSendeDatum());
+      sb.append(" ");
+      sb.append(filmdata.getSendeZeit().subSequence(0, 5));
+      sb.append(" -  Dauer ");
+      sb.append(this.getDauer());
     }
+    if (ex) {
+      sb.append(")");
+    }
+    sb.append("\n\n");
+    sb.append(getDescription());
+    sb.append(getFormattedNote());
+    return sb.toString();
   }
+  
   
   /**
    * Get either the stored DatenFilm object or a new created from the internal data

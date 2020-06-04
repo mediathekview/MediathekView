@@ -50,8 +50,7 @@ public class BookmarkDataList
       daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
         @Override
         public void fertig(ListenerFilmeLadenEvent event) {
-          Runnable r = () -> updateBookMarksFromFilmList();
-          new Thread(r).start();
+          new Thread(() -> updateBookMarksFromFilmList(), "BookmarkUpdate").start();
         }
       });
     }
@@ -60,7 +59,7 @@ public class BookmarkDataList
   /**
    * Return singleton
    * @param daten Reference to Daten object used by list
-   * @return exisitng or new instance
+   * @return existing or new instance
    */
   public static BookmarkDataList getInstance(Daten daten) {
     return instance == null ? instance = new BookmarkDataList(daten) : instance;
@@ -310,7 +309,7 @@ public class BookmarkDataList
    * and links the entries
    * Executed in background
    */
-  private void updateBookMarksFromFilmList() {
+  synchronized private void updateBookMarksFromFilmList() {
     Iterator<BookmarkData> iterator = olist.iterator();
     ListeFilme listefilme = Daten.getInstance().getListeFilme();
     DatenFilm filmdata;

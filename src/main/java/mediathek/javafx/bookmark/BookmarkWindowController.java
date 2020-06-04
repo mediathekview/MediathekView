@@ -105,6 +105,7 @@ public class BookmarkWindowController {
   private int FilterState;
   private String FilterCategoryName;
   private ListView<BookmarkCategory> categorylistview;
+  private boolean noComboFilterAction;
 
   private static final KeyCombination K_CTRL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_ANY);
 
@@ -316,6 +317,7 @@ public class BookmarkWindowController {
           }
         } else {
           this.setText(null);
+          this.getStyleClass().removeAll("Expiry");
         }
       }
     });
@@ -424,9 +426,13 @@ public class BookmarkWindowController {
     cbCategoryFilter.setButtonCell(new BookmarkCategoryListCell(false));
     updateCategoryFilterList();
     cbCategoryFilter.getSelectionModel().select(0);
+    cbCategoryFilter.setOnShowing((Event t) -> {
+      noComboFilterAction = true; // prevent filtering on opening of combobox
+      cbCategoryFilter.getSelectionModel().clearSelection();
+    });
 
     FilterState = -1;
-    FilterCategoryName = null;
+    FilterCategoryName = BookmarkCategoryList.ALLCATEGORY;
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
@@ -667,6 +673,7 @@ public class BookmarkWindowController {
         ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
         ccopyitem.setText((pos.getTableColumn() != null ? pos.getTableColumn().getText(): "Text" ) +  " kopieren");
       }
+      categorylistview.getSelectionModel().clearSelection();
       cellContextMenu.show(tbBookmarks, event.getScreenX(), event.getScreenY());
     }
   }
@@ -674,9 +681,9 @@ public class BookmarkWindowController {
   @FXML
   private void tbviewMouseClick(MouseEvent e) {
     if (e.getButton() == PRIMARY) {
-      if (cellContextMenu.isShowing())
+      if (cellContextMenu.isShowing()) {
         cellContextMenu.hide();
-
+      }
       if (e.getClickCount() > 1 && tbBookmarks.getSelectionModel().getSelectedItems().size() == 1) {
         btnEditNote(null);
       }
@@ -776,7 +783,11 @@ public class BookmarkWindowController {
 
   @FXML
   private void cbCategoryFilterAction(ActionEvent e) {
-    setTableFilter();
+    if (!noComboFilterAction) {
+      setTableFilter();
+    } else {
+      noComboFilterAction = false;
+    }
   }
 
   /**
@@ -828,8 +839,8 @@ public class BookmarkWindowController {
 
   private void playAction(BookmarkData data) {
     Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
-    tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
-    tbBookmarks.getSelectionModel().select(data);
+    data.setSeen(true);
+    refresh();
   }
 
   /**
@@ -842,7 +853,6 @@ public class BookmarkWindowController {
   private void loadAction(@NotNull BookmarkData data) {
     Optional<DatenFilm> datenFilm = Optional.ofNullable(data.getDatenFilm());
     final var daten = Daten.getInstance();
-
     refresh();
     datenFilm.ifPresent(film -> {
       DatenDownload previouslyCreatedDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrl());
@@ -989,7 +999,7 @@ public class BookmarkWindowController {
   private boolean onlyLifeStreamSelected() {
     boolean lifestream = true;
     for (BookmarkData data: tbBookmarks.getSelectionModel().getSelectedItems()) {
-      if (!data.isLiveStream()) {
+      if (data != null && !data.isLiveStream()) {
         lifestream = false;
         break;
       }
@@ -1031,7 +1041,11 @@ public class BookmarkWindowController {
       tbBookmarks.getSelectionModel().getSelectedItems().forEach((data) -> {
         data.setCategory(bc.getName());
       });
-      refresh();
+      if (FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY)) {
+        refresh();
+      } else {
+        setTableFilter();
+      }
     });
     return categorylistview;
   }
