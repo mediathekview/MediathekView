@@ -226,7 +226,12 @@ public class BookmarkWindowController {
     ctrl.addStylesheet("/mediathek/res/css/bookmarkNoteDialog.css");
     if (ctrl.SetAndShow(tbBookmarks.getSelectionModel().getSelectedItem())) {
       listUpdated = true;
-      refresh();
+      if (FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY)) {
+        refresh();
+      } else {
+        setTableFilter();
+        updateDisplay();
+      }
     }
   }
 
@@ -360,14 +365,7 @@ public class BookmarkWindowController {
             // set foreground color:
             Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : data.isNew()? ColorNew: Color.BLACK;
             getChildren().forEach((n) -> {
-              if (n.getId().equals("colCategory")) { // special for Category
-                if (data.getCategory() != null) {
-                  BookmarkCategory category = BookmarkCategoryList.getInstance().findCategory(data.getCategory());
-                  ((Labeled) n).setTextFill(category != null ? category.getColor(): fillcolor);
-                } else {
-                  ((Labeled) n).setTextFill(fillcolor);
-                }
-              } else {
+              if (!n.getId().equals("colCategory")) { // exclude Category, special color is set in column Factory
                 ((Labeled) n).setTextFill(fillcolor);
               }
             });
@@ -430,9 +428,20 @@ public class BookmarkWindowController {
       noComboFilterAction = true; // prevent filtering on opening of combobox
       cbCategoryFilter.getSelectionModel().clearSelection();
     });
+    cbCategoryFilter.setOnHiding((Event t) -> {
+      noComboFilterAction = true; // prevent filtering on closing of combobox
+      if (cbCategoryFilter.getSelectionModel().isEmpty()) { // restore old category when no selection
+        for (BookmarkCategory category: cbCategoryFilter.getItems()) {
+          if (category.getName().equals(FilterCategoryName)) {
+            cbCategoryFilter.getSelectionModel().select(category);
+            break;
+          }
+        }
+      }
+    });
 
     FilterState = -1;
-    FilterCategoryName = BookmarkCategoryList.ALLCATEGORY;
+    FilterCategoryName = cbCategoryFilter.getSelectionModel().getSelectedItem().getName();
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
@@ -442,7 +451,7 @@ public class BookmarkWindowController {
   }
 
   /**
-   * Enable/Disable buttons and menues depending on selction state
+   * Enable/Disable buttons and menues depending on selection state
    */
   private void setButtonAndMenuState() {
     boolean disable = tbBookmarks.getSelectionModel().getSelectedItems().isEmpty();
@@ -642,6 +651,7 @@ public class BookmarkWindowController {
   private static final String[] BTNFILTER_TOOLTIPTEXT = {"Nur ungesehene Filme anzeigen", "Nur gesehene Filme anzeigen", "Alle Filme anzeigen"};
   private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
   private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
+  public final static String FILTER_ACTIVE_CLASS =  "filterActive";
   @FXML
   private void btnFilterAction(ActionEvent e) {
     if (++FilterState > 2) {
@@ -650,16 +660,10 @@ public class BookmarkWindowController {
     btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
     lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
     lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
-    if (FilterState > 0) {
-      btnFilter.getGraphic().getStyleClass().add("filterActive");
-      btnFilter.getStyleClass().add("filterActive");
-    }
-    else {
-      btnFilter.getGraphic().getStyleClass().removeAll("filterActive");
-      btnFilter.getStyleClass().removeAll("filterActive");
-    }
+    setConditionalButtonStyle(btnFilter, FILTER_ACTIVE_CLASS, FilterState > 0);
     setTableFilter();
-    refresh();
+    updateDisplay();
+//    refresh();
   }
 
   @FXML
@@ -755,11 +759,10 @@ public class BookmarkWindowController {
     btnCategory.setDisable(true);
     FXDialogControl ctrldlg = new FXDialogControl("/mediathek/res/programm/fxml/bookmarkDialogCategory.fxml",
             "Kategorien bearbeiten", Modality.NONE);
-    boolean result = ctrldlg.SetAndShow(this);
-    updateCategoryViewList();
-    updateCategoryFilterList();
-    btnCategory.setDisable(false);
+    boolean result = ctrldlg.SetAndShow(this);   
     if (result) {  // has to excuted after filter list update
+      updateCategoryViewList();
+      updateCategoryFilterList();
       // reselect old value in category filter or all if old value no longer exists
       boolean wasdeleted = true;
       for (BookmarkCategory category: cbCategoryFilter.getItems()) {
@@ -778,6 +781,7 @@ public class BookmarkWindowController {
         JavaFxUtils.invokeInFxThreadAndWait(() -> refresh());
       }, "BookmarkDeleteCategories").start();
     }
+    btnCategory.setDisable(false);
     refresh();
   }
 
@@ -785,6 +789,7 @@ public class BookmarkWindowController {
   private void cbCategoryFilterAction(ActionEvent e) {
     if (!noComboFilterAction) {
       setTableFilter();
+      updateDisplay();
     } else {
       noComboFilterAction = false;
     }
@@ -1039,12 +1044,15 @@ public class BookmarkWindowController {
     });
     categorylistview.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends BookmarkCategory> ov, BookmarkCategory t, BookmarkCategory bc) -> {
       tbBookmarks.getSelectionModel().getSelectedItems().forEach((data) -> {
-        data.setCategory(bc.getName());
+        if (bc != null) {
+          data.setCategory(bc.getName());
+        }
       });
       if (FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY)) {
         refresh();
       } else {
         setTableFilter();
+        updateDisplay();
       }
     });
     return categorylistview;
@@ -1109,6 +1117,23 @@ public class BookmarkWindowController {
             break;
         }
         break;
+    }
+  }
+  
+  /**
+   * Convenience routine to style button depending on state
+   * @param button: Button to be styled
+   * @param styleclass: Style class to be added or removes
+   * @param condition : condition
+   */
+  public static void setConditionalButtonStyle(Button button, String styleclass, boolean condition) {
+    if (condition) {
+      button.getGraphic().getStyleClass().add(styleclass);
+      button.getStyleClass().add(styleclass);
+    }
+    else {
+      button.getGraphic().getStyleClass().removeAll(styleclass);
+      button.getStyleClass().removeAll(styleclass);
     }
   }
 

@@ -25,7 +25,7 @@ public class BookmarkCategoryList {
   
   public static final String NOCATEGORY = "Keine Kategorie";  // Strings used for selection defaults
   public static final String WITHOUTCATEGORY ="Ohne Kategorie";
-  public static final String ALLCATEGORY ="Alles anzeigen";
+  public static final String ALLCATEGORY ="Alle Kategorien";
   
   private static BookmarkCategoryList instance;
   private final ObservableList<BookmarkCategory> olist;

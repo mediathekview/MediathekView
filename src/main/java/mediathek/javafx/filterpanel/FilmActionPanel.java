@@ -31,6 +31,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import static mediathek.javafx.bookmark.BookmarkWindowController.FILTER_ACTIVE_CLASS;
+import static mediathek.javafx.bookmark.BookmarkWindowController.setConditionalButtonStyle;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar.
@@ -353,15 +355,7 @@ public class FilmActionPanel {
     /**
      * Assign button style depending on filter state
      **/
-    public final static String FILTER_ACTIVE_CLASS =  "filterActive";
     public void SetFilterButtonColor(boolean filtered) {
-      if (filtered) {
-        toolBar.btnShowFilter.getGraphic().getStyleClass().add(FILTER_ACTIVE_CLASS);
-        toolBar.btnShowFilter.getStyleClass().add(FILTER_ACTIVE_CLASS);
-      } 
-      else {
-        toolBar.btnShowFilter.getGraphic().getStyleClass().removeAll(FILTER_ACTIVE_CLASS);
-        toolBar.btnShowFilter.getStyleClass().removeAll(FILTER_ACTIVE_CLASS);
-      } 
+      setConditionalButtonStyle(toolBar.btnShowFilter, FILTER_ACTIVE_CLASS, filtered); 
     }
 }

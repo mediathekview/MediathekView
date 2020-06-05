@@ -89,7 +89,12 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
     }
     int idx = cbKategory.getSelectionModel().getSelectedIndex();
     if (idx > -1 ) {
-      data.setCategory(idx > 0 ? cbKategory.getValue().getName() : null);
+      String newCategory = idx > 0 ? cbKategory.getValue().getName() : null;
+      String oldCategory = data.getCategory();
+      if ((oldCategory == null && newCategory != null) || (oldCategory != null && newCategory == null) || !newCategory.equals(oldCategory)) {
+        result = true;
+        data.setCategory(newCategory);
+      }
     }
     _dlgstage.hide();
   }
@@ -174,6 +179,13 @@ public class BookmarkNoteDialog extends FXDialogTemplate {
       }
       btnWebDate.setDisable(!hasWebURL);
       btnWebLink.setDisable(!hasWebURL);
+    }
+    String category = data.getCategory() != null ? data.getCategory() : BookmarkCategoryList.NOCATEGORY;
+    for (BookmarkCategory bcat : cbKategory.getItems()) {
+      if (bcat.getName().equals(category)) {
+        cbKategory.getSelectionModel().select(bcat);
+        break;
+      }
     }
     handleChange();
   }
