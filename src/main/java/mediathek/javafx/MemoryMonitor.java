@@ -43,8 +43,6 @@ public class MemoryMonitor extends Stage {
         setAlwaysOnTop(true);
         if (SystemUtils.IS_OS_MAC_OSX)
             initStyle(StageStyle.UTILITY);
-        else
-            initStyle(StageStyle.UNIFIED);
 
         createPropertiesAndBindings();
 
