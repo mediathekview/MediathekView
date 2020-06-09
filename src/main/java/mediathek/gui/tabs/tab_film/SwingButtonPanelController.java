@@ -3,7 +3,6 @@ package mediathek.gui.tabs.tab_film;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
@@ -63,17 +62,17 @@ public final class SwingButtonPanelController {
             }
         });
 
-        contentPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        contentPanel.setVisible(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE));
 
         SwingUtilities.invokeLater(() -> contentPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(true));
+                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, true);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(false));
+                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
             }
         }));
     }
@@ -112,7 +111,7 @@ public final class SwingButtonPanelController {
         btnClose.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16));
         btnClose.addActionListener(e -> {
             final boolean visibility = false;
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.toString(visibility));
+            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, visibility);
             Daten.getInstance().getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(visibility));
         });
 

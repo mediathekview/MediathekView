@@ -196,7 +196,6 @@ public class MVConfig {
         // Fenstereinstellungen
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
