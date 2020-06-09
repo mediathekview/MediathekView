@@ -60,8 +60,27 @@ public class SettingsMigrator {
                     case "maxDownload":
                         migrateMaxNumDownloads(element);
                         break;
+
+                    case "system-tab-filme-anzahl-button":
+                        migrateNumButtons(element);
+                        break;
                 }
             }
+        }
+    }
+
+    private void migrateNumButtons(Element element) {
+        var node = element.getFirstChild();
+        int numButtons;
+        if (node != null) {
+            try {
+                numButtons = Integer.parseInt(node.getNodeValue());
+            }
+            catch (NumberFormatException ex) {
+                numButtons = 4;
+            }
+            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, numButtons);
+            logger.debug("migrateNumButtons");
         }
     }
 

@@ -7,6 +7,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.PsetNumberOfButtonsChangedEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Listener;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -127,7 +128,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         // Programmgruppe ohne Programme: Label
         // sonst ein Button
         buttonsPanel.removeAll();
-        final int maxSpalten = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON); //Anzahl der Spalten der Schalter
+        final int maxColumns = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
 
         initConstraints();
 
@@ -139,7 +140,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
                 addExtraFeld(i, spalte, zeile);
             }
             ++spalte;
-            if (spalte > maxSpalten - 1) {
+            if (spalte > maxColumns - 1) {
                 spalte = 0;
                 ++zeile;
             }
@@ -148,7 +149,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         // zum zusammenschieben
         JLabel label = new JLabel();
         c.weightx = 10;
-        c.gridx = maxSpalten + 1;
+        c.gridx = maxColumns + 1;
         c.gridy = 0;
         gridbag.setConstraints(label, c);
         buttonsPanel.add(label);
@@ -165,7 +166,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         private final EmptyBorder emptyBorder = new EmptyBorder(3, 5, 3, 5);
 
         public BeobMausButton() {
-            int start = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON);
+            final int start = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
             jSpinner.setValue(start);
             jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
         }
@@ -187,7 +188,8 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
             jSpinner.addChangeListener(e -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
+                var columns = String.valueOf(((Number) jSpinner.getModel().getValue()).intValue());
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE,columns);
                 Daten.getInstance().getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
             });
             JPanel jPanelAnzahl = new JPanel();
