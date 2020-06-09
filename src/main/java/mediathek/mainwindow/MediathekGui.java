@@ -817,7 +817,7 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
-        cbShowButtons.setSelected(evt.visible);
+        SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
     }
 
     private JCheckBoxMenuItem cbShowButtons;
