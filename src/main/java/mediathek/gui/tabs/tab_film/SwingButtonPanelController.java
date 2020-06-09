@@ -18,7 +18,6 @@ import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -57,7 +56,7 @@ public final class SwingButtonPanelController {
             }
         });
 
-        setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        contentPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
 
         SwingUtilities.invokeLater(() -> contentPanel.addComponentListener(new ComponentAdapter() {
             @Override
@@ -75,6 +74,11 @@ public final class SwingButtonPanelController {
     @Handler
     private void handlePsetButtonChangedEvent(PsetNumberOfButtonsChangedEvent e) {
         SwingUtilities.invokeLater(this::setupButtons);
+    }
+
+    @Handler
+    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+        SwingUtilities.invokeLater(() -> contentPanel.setVisible(evt.visible));
     }
 
     private void createContentPanel(JPanel jPanel2) {
@@ -194,51 +198,49 @@ public final class SwingButtonPanelController {
         buttonsPanel.updateUI();
     }
 
-    public void setVisible(boolean visible) {
-        contentPanel.setVisible(visible);
-    }
-
     private static class BeobMausButton extends MouseAdapter {
-        private final JSpinner jSpinner = new JSpinner(new SpinnerNumberModel(4, 2, 10, 1));
-        private final EmptyBorder emptyBorder = new EmptyBorder(3, 5, 3, 5);
+        private final SpinnerNumberModel columnModel = new SpinnerNumberModel(4, 2, 10, 1);
+        private final JPopupMenu jPopupMenu = new JPopupMenu();
 
         public BeobMausButton() {
             final int start = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
-            jSpinner.setValue(start);
-            jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            jSpinner.addChangeListener(e -> {
-                var columns = String.valueOf(((Number) jSpinner.getModel().getValue()).intValue());
+            columnModel.setValue(start);
+            columnModel.addChangeListener(e -> {
+                int columns = (int) columnModel.getValue();
+                System.out.println("SPINNER MODEL CHANGED EVENT: " + columns);
                 ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, columns);
                 Daten.getInstance().getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
             });
+
+            createPopupMenu();
+        }
+
+        public SpinnerNumberModel getColumnModel() { return columnModel;}
+
+        private void createPopupMenu() {
+            JSpinner jSpinner = new JSpinner(columnModel);
+            jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
+
             JPanel jPanelAnzahl = new JPanel();
             jPanelAnzahl.setLayout(new BorderLayout());
-            jPanelAnzahl.setBorder(emptyBorder);
             jPanelAnzahl.add(new JLabel("Anzahl Button je Zeile: "), BorderLayout.WEST);
             jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
 
             jPopupMenu.add(jPanelAnzahl);
+        }
 
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        @Override
+        public void mousePressed(MouseEvent evt) {
+            if (evt.isPopupTrigger()) {
+                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent evt) {
+            if (evt.isPopupTrigger()) {
+                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            }
         }
     }
 }

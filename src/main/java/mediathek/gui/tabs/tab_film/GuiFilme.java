@@ -458,11 +458,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Handler
-    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
-        buttonPanelController.setVisible(evt.visible);
-    }
-
-    @Handler
     private void handleStartEvent(StartEvent msg) {
         SwingUtilities.invokeLater(this::setInfoStatusbar);
     }
