@@ -51,7 +51,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -1735,7 +1734,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private void initComponents() {
         jSplitPane1 = new JSplitPane();
         jPanelFilterExtern = new JPanel();
-        var panel1 = new JPanel();
         var panel3 = new JPanel();
         var label1 = new JLabel();
         cbDisplayCategories = new JComboBox<>();
@@ -1748,7 +1746,6 @@ public class GuiDownloads extends AGuiTabPanel {
         var lblBandwidth = new JLabel();
         var jLabel1 = new JLabel();
         jSpinner1 = new JSpinner();
-        var panel4 = new JPanel();
         var spDownload = new JScrollPane();
         txtDownload = new JEditorPane();
 
@@ -1762,105 +1759,94 @@ public class GuiDownloads extends AGuiTabPanel {
             //======== jPanelFilterExtern ========
             {
                 jPanelFilterExtern.setPreferredSize(new Dimension(200, 644));
-                jPanelFilterExtern.setLayout(new BorderLayout(0, 10));
+                jPanelFilterExtern.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3).gridGap("0", "0"), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().fill(),
+                    // rows
+                    new AC()
+                        .gap()
+                        .fill().gap()
+                        .grow().fill()));
 
-                //======== panel1 ========
+                //======== panel3 ========
                 {
-                    panel1.setLayout(new MigLayout(
-                        new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                    panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
+                    panel3.setLayout(new MigLayout(
+                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
                         // columns
                         new AC()
+                            .fill().gap()
                             .grow().fill(),
                         // rows
                         new AC()
                             .fill().gap()
+                            .fill().gap()
                             .fill()));
 
-                    //======== panel3 ========
-                    {
-                        panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
-                        panel3.setLayout(new MigLayout(
-                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                            // columns
-                            new AC()
-                                .fill().gap()
-                                .grow().fill(),
-                            // rows
-                            new AC()
-                                .fill().gap()
-                                .fill().gap()
-                                .fill()));
+                    //---- label1 ----
+                    label1.setText("Typ:"); //NON-NLS
+                    panel3.add(label1, new CC().cell(0, 0));
+                    panel3.add(cbDisplayCategories, new CC().cell(1, 0));
 
-                        //---- label1 ----
-                        label1.setText("Typ:"); //NON-NLS
-                        panel3.add(label1, new CC().cell(0, 0));
-                        panel3.add(cbDisplayCategories, new CC().cell(1, 0));
+                    //---- label2 ----
+                    label2.setText("Status:"); //NON-NLS
+                    panel3.add(label2, new CC().cell(0, 1));
+                    panel3.add(cbView, new CC().cell(1, 1));
 
-                        //---- label2 ----
-                        label2.setText("Status:"); //NON-NLS
-                        panel3.add(label2, new CC().cell(0, 1));
-                        panel3.add(cbView, new CC().cell(1, 1));
-
-                        //---- btnClear ----
-                        btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
-                        btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
-                        panel3.add(btnClear, new CC().cell(1, 2).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
-                    }
-                    panel1.add(panel3, new CC().cell(0, 0));
-
-                    //======== panel2 ========
-                    {
-                        panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
-                        panel2.setLayout(new MigLayout(
-                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                            // columns
-                            new AC()
-                                .fill().gap()
-                                .fill(),
-                            // rows
-                            new AC()
-                                .gap()
-                                .fill()));
-
-                        //---- jLabel3 ----
-                        jLabel3.setText("gleichzeitig:"); //NON-NLS
-                        panel2.add(jLabel3, new CC().cell(0, 0));
-                        panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
-
-                        //---- lblBandwidth ----
-                        lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
-                        panel2.add(lblBandwidth, new CC().cell(0, 1));
-
-                        //---- jLabel1 ----
-                        jLabel1.setText("KiB/s"); //NON-NLS
-                        panel2.add(jLabel1, new CC().cell(2, 1));
-
-                        //---- jSpinner1 ----
-                        jSpinner1.setModel(new SpinnerNumberModel(0, 0, 1048576, 1));
-                        jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
-                        panel2.add(jSpinner1, new CC().cell(1, 1));
-                    }
-                    panel1.add(panel2, new CC().cell(0, 1));
+                    //---- btnClear ----
+                    btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
+                    btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
+                    panel3.add(btnClear, new CC().cell(0, 2, 2, 1).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
                 }
-                jPanelFilterExtern.add(panel1, BorderLayout.NORTH);
+                jPanelFilterExtern.add(panel3, new CC().cell(0, 0));
 
-                //======== panel4 ========
+                //======== panel2 ========
                 {
-                    panel4.setBorder(new EmptyBorder(5, 5, 5, 5));
-                    panel4.setLayout(new BorderLayout());
+                    panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
+                    panel2.setLayout(new MigLayout(
+                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                        // columns
+                        new AC()
+                            .fill().gap()
+                            .fill(),
+                        // rows
+                        new AC()
+                            .gap()
+                            .fill()));
 
-                    //======== spDownload ========
-                    {
+                    //---- jLabel3 ----
+                    jLabel3.setText("gleichzeitig:"); //NON-NLS
+                    panel2.add(jLabel3, new CC().cell(0, 0));
+                    panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
 
-                        //---- txtDownload ----
-                        txtDownload.setEditable(false);
-                        txtDownload.setOpaque(false);
-                        txtDownload.setPreferredSize(new Dimension(10, 21));
-                        spDownload.setViewportView(txtDownload);
-                    }
-                    panel4.add(spDownload, BorderLayout.CENTER);
+                    //---- lblBandwidth ----
+                    lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
+                    panel2.add(lblBandwidth, new CC().cell(0, 1));
+
+                    //---- jLabel1 ----
+                    jLabel1.setText("KiB/s"); //NON-NLS
+                    panel2.add(jLabel1, new CC().cell(2, 1));
+
+                    //---- jSpinner1 ----
+                    jSpinner1.setModel(new SpinnerNumberModel(0, 0, 1048576, 1));
+                    jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
+                    panel2.add(jSpinner1, new CC().cell(1, 1));
                 }
-                jPanelFilterExtern.add(panel4, BorderLayout.CENTER);
+                jPanelFilterExtern.add(panel2, new CC().cell(0, 1));
+
+                //======== spDownload ========
+                {
+                    spDownload.setPreferredSize(new Dimension(14, 150));
+
+                    //---- txtDownload ----
+                    txtDownload.setEditable(false);
+                    txtDownload.setOpaque(false);
+                    txtDownload.setPreferredSize(new Dimension(10, 500));
+                    spDownload.setViewportView(txtDownload);
+                }
+                jPanelFilterExtern.add(spDownload, new CC().cell(0, 2));
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
         }
