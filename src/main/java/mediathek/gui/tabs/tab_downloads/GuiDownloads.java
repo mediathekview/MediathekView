@@ -342,6 +342,14 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     @Handler
+    private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+            jSpinnerAnzahlDownloads.setValue(maxNumDownloads);
+        });
+    }
+
+    @Handler
     private void handleDownloadFilterVisibilityChanged(DownloadFilterVisibilityChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             boolean visibility = !jPanelFilterExtern.isVisible();
