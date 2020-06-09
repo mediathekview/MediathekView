@@ -1,9 +1,9 @@
-JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.4" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.0.298" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "mediathek.gui.AGuiTabPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
 				name: "jSplitPane1"
@@ -69,7 +69,7 @@ new FormModel {
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "btnClear"
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-clear.png" )
-								"toolTipText": "Alles löschen"
+								"toolTipText": "Filter zurücksetzen"
 							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 								"value": "cell 1 2,alignx right,growx 0,width 32:32:32,height 32:32:32"
 							} )
