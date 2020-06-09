@@ -2,7 +2,6 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ParallelDownloadNumberChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import net.engio.mbassy.listener.Handler;
@@ -17,7 +16,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-public class PanelDownload extends PanelVorlage {
+public class PanelDownload extends JPanel {
 
     @Handler
     private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
@@ -27,12 +26,10 @@ public class PanelDownload extends PanelVorlage {
         });
     }
 
-    public PanelDownload(Daten d, JFrame parent) {
-        super(d, parent);
+    public PanelDownload() {
         initComponents();
-        daten = d;
 
-        daten.getMessageBus().subscribe(this);
+        Daten.getInstance().getMessageBus().subscribe(this);
 
         jSpinnerAnzahlDownload.setModel(new SpinnerNumberModel(1, 1, 9, 1));
         final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
@@ -55,7 +52,7 @@ public class PanelDownload extends PanelVorlage {
             final int maxDownloads = ((Number)jSpinnerAnzahlDownload.getModel().getValue()).intValue();
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxDownloads);
 
-            daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
+            Daten.getInstance().getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         }
     }
 

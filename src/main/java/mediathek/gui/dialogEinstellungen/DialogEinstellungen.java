@@ -19,7 +19,7 @@ import javax.swing.tree.TreeSelectionModel;
 @SuppressWarnings("serial")
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
-    public boolean ok = false;
+    public boolean ok;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
     private PanelMediaDB panelMediaDB;
@@ -126,7 +126,7 @@ public class DialogEinstellungen extends JFrame {
 
     private void initPanels() {
         panelEinstellungen = new PanelEinstellungen(daten, this);
-        panelDownload = new PanelDownload(daten, this);
+        panelDownload = new PanelDownload();
         panelMediaDB = new PanelMediaDB(daten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(daten, this);
         panelEinstellungenGeo = new PanelEinstellungenGeo(this);
