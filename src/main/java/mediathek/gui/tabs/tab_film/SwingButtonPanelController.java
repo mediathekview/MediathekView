@@ -6,9 +6,11 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
+import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
 import mediathek.gui.messages.PsetNumberOfButtonsChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Listener;
+import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -19,10 +21,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public final class SwingButtonPanelController implements IButtonPanelController {
+public final class SwingButtonPanelController {
     private final GuiFilme guiFilme;
     private final JPanel contentPanel = new JPanel();
     private final JPanel buttonsPanel = new JPanel();
@@ -38,6 +42,39 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         createCloseButton();
         createButtonsPanel();
         buttonsPanel.addMouseListener(new BeobMausButton());
+
+        //fill with data...
+        setupButtons();
+
+        //register message bus handler
+        Daten.getInstance().getMessageBus().subscribe(this);
+
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, SwingButtonPanelController.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                // psets have changed and we need to update
+                setupButtons();
+            }
+        });
+
+        setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+
+        SwingUtilities.invokeLater(() -> contentPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(true));
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(false));
+            }
+        }));
+    }
+
+    @Handler
+    private void handlePsetButtonChangedEvent(PsetNumberOfButtonsChangedEvent e) {
+        SwingUtilities.invokeLater(this::setupButtons);
     }
 
     private void createContentPanel(JPanel jPanel2) {
@@ -68,9 +105,9 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         btnClose.setBorderPainted(false);
         btnClose.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16));
         btnClose.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
-            Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
-            guiFilme.getButtonPanelController().setVisible(false);
+            final boolean visibility = false;
+            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.toString(visibility));
+            Daten.getInstance().getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(visibility));
         });
 
         contentPanel.add(btnClose, new CC().pad("5 5 3 3").cell(0, 0).alignX("left").alignY("top").grow(0, 0).width("20:20:20").height("20:20:20")); //NON-NLS
@@ -115,13 +152,13 @@ public final class SwingButtonPanelController implements IButtonPanelController 
         final var psetColor = pset.getFarbe();
 
         if (pset.isLabel()) {
-            buttonsPanel.add(createLabel(psetName,psetColor, zeile, spalte));
+            buttonsPanel.add(createLabel(psetName, psetColor, zeile, spalte));
         } else {
             buttonsPanel.add(createButton(pset, psetName, psetColor, zeile, spalte));
         }
     }
 
-    public void setupButtons() {
+    private void setupButtons() {
         // erst sauber machen
         // zum Anlegen der Button:
         // Programmgruppe ohne Namen: Leerfeld
@@ -189,7 +226,7 @@ public final class SwingButtonPanelController implements IButtonPanelController 
             JPopupMenu jPopupMenu = new JPopupMenu();
             jSpinner.addChangeListener(e -> {
                 var columns = String.valueOf(((Number) jSpinner.getModel().getValue()).intValue());
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE,columns);
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, columns);
                 Daten.getInstance().getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
             });
             JPanel jPanelAnzahl = new JPanel();

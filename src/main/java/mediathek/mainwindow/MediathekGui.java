@@ -815,22 +815,23 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void createViewMenu() {
-        JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
+    @Handler
+    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+        cbShowButtons.setSelected(evt.visible);
+    }
+
+    private JCheckBoxMenuItem cbShowButtons;
+
+    private void createButtonPanelMenuItem() {
+        cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
         cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-        cbShowButtons.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbShowButtons.isSelected()));
-            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
-        });
+        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
+    }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-            }
-        });
+    private void createViewMenu() {
+        createButtonPanelMenuItem();
 
         cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false));
         cbBandwidthDisplay.addActionListener(e -> {
