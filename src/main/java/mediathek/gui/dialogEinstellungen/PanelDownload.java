@@ -6,9 +6,12 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ParallelDownloadNumberChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -60,92 +63,87 @@ public class PanelDownload extends PanelVorlage {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         var jPanel2 = new JPanel();
-        var jLabel3 = new JLabel();
-        jSpinnerAnzahlDownload = new JSpinner();
+        cbkDownloadError = new JCheckBox();
+        var panel1 = new JPanel();
         jCheckBoxBeep = new JCheckBox();
         jButtonBeep = new JButton();
-        cbkDownloadError = new JCheckBox();
+        var panel2 = new JPanel();
+        var jLabel3 = new JLabel();
+        jSpinnerAnzahlDownload = new JSpinner();
 
         //======== this ========
+        setLayout(new BorderLayout());
 
         //======== jPanel2 ========
         {
-            jPanel2.setBorder(new TitledBorder("")); //NON-NLS
-
-            //---- jLabel3 ----
-            jLabel3.setText("gleichzeitige Downloads laden:"); //NON-NLS
-
-            //---- jSpinnerAnzahlDownload ----
-            jSpinnerAnzahlDownload.setModel(new SpinnerNumberModel(1, 1, 9, 1));
-
-            //---- jCheckBoxBeep ----
-            jCheckBoxBeep.setText("nach jedem Download einen \"Beep\" ausgeben"); //NON-NLS
-
-            //---- jButtonBeep ----
-            jButtonBeep.setText("Testen"); //NON-NLS
+            jPanel2.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("0", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().align("left"), //NON-NLS
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
 
             //---- cbkDownloadError ----
-            cbkDownloadError.setText("Bei Downloadfehler, Fehlermeldung anzeigen"); //NON-NLS
+            cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen"); //NON-NLS
+            jPanel2.add(cbkDownloadError, new CC().cell(0, 0));
 
-            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup()
-                            .addComponent(cbkDownloadError)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jCheckBoxBeep)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonBeep))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(51, 51, 51)
-                                .addComponent(jSpinnerAnzahlDownload, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 5, Short.MAX_VALUE))
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbkDownloadError)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jCheckBoxBeep)
-                            .addComponent(jButtonBeep))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel3)
-                            .addComponent(jSpinnerAnzahlDownload, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
+            //======== panel1 ========
+            {
+                panel1.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3).gridGap("15", "5"), //NON-NLS
+                    // columns
+                    new AC()
+                        .fill().gap()
+                        .fill(),
+                    // rows
+                    new AC()
+                        .fill()));
+
+                //---- jCheckBoxBeep ----
+                jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben"); //NON-NLS
+                panel1.add(jCheckBoxBeep, new CC().cell(0, 0));
+
+                //---- jButtonBeep ----
+                jButtonBeep.setText("Testen"); //NON-NLS
+                panel1.add(jButtonBeep, new CC().cell(1, 0));
+            }
+            jPanel2.add(panel1, new CC().cell(0, 1));
+
+            //======== panel2 ========
+            {
+                panel2.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3).gridGap("15", "5"), //NON-NLS
+                    // columns
+                    new AC()
+                        .fill().gap()
+                        .fill(),
+                    // rows
+                    new AC()
+                        .fill()));
+
+                //---- jLabel3 ----
+                jLabel3.setText("Anzahl gleichzeitiger Downloads:"); //NON-NLS
+                panel2.add(jLabel3, new CC().cell(0, 0));
+
+                //---- jSpinnerAnzahlDownload ----
+                jSpinnerAnzahlDownload.setModel(new SpinnerNumberModel(1, 1, 9, 1));
+                panel2.add(jSpinnerAnzahlDownload, new CC().cell(1, 0));
+            }
+            jPanel2.add(panel2, new CC().cell(0, 2));
         }
-
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(3, Short.MAX_VALUE))
-        );
+        add(jPanel2, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JSpinner jSpinnerAnzahlDownload;
+    private JCheckBox cbkDownloadError;
     private JCheckBox jCheckBoxBeep;
     private JButton jButtonBeep;
-    private JCheckBox cbkDownloadError;
+    private JSpinner jSpinnerAnzahlDownload;
     // End of variables declaration//GEN-END:variables
 }
