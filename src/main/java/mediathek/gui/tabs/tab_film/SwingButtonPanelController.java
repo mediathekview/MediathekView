@@ -30,23 +30,24 @@ public final class SwingButtonPanelController {
     private final Insets DEFAULT_INSETS = new Insets(4, 10, 4, 10);
     private final GridBagConstraints c = new GridBagConstraints();
     private final Configuration config = ApplicationConfiguration.getConfiguration();
+    private final SpinnerNumberModel columnModel = new SpinnerNumberModel(4, 2, 10, 1);
     private ListePset listeButton;
 
-    public SwingButtonPanelController(@NotNull GuiFilme guiFilme, @NotNull JPanel jPanel2) {
+    public SwingButtonPanelController(@NotNull GuiFilme guiFilme, @NotNull JPanel parent) {
         this.guiFilme = guiFilme;
 
-        createContentPanel(jPanel2);
+        createContentPanel(parent);
         createCloseButton();
         createButtonsPanel();
 
         final int initialColumns = config.getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
-        var contextMenu = new ButtonPanelContextMenu(initialColumns);
-        contextMenu.getColumnModel().addChangeListener(e -> {
-            final int columns = (int) contextMenu.getColumnModel().getValue();
+        columnModel.setValue(initialColumns);
+        columnModel.addChangeListener(e -> {
+            final int columns = (int) columnModel.getValue();
             config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, columns);
             setupButtons();
         });
-        buttonsPanel.setComponentPopupMenu(contextMenu.getPopupMenu());
+        buttonsPanel.setComponentPopupMenu(createPopupMenu());
 
         //fill with data...
         setupButtons();
@@ -82,7 +83,7 @@ public final class SwingButtonPanelController {
         SwingUtilities.invokeLater(() -> contentPanel.setVisible(evt.visible));
     }
 
-    private void createContentPanel(JPanel jPanel2) {
+    private void createContentPanel(JPanel parent) {
         contentPanel.setBorder(new LineBorder(new Color(153, 153, 153)));
         contentPanel.setLayout(new MigLayout(
                 new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
@@ -93,7 +94,7 @@ public final class SwingButtonPanelController {
                 // rows
                 new AC()
                         .grow().fill()));
-        jPanel2.add(contentPanel, new CC().cell(0, 1));
+        parent.add(contentPanel, new CC().cell(0, 1));
     }
 
     private void createButtonsPanel() {
@@ -199,34 +200,18 @@ public final class SwingButtonPanelController {
         buttonsPanel.updateUI();
     }
 
-    private static class ButtonPanelContextMenu {
-        private final SpinnerNumberModel columnModel = new SpinnerNumberModel(4, 2, 10, 1);
-        private final JPopupMenu jPopupMenu = new JPopupMenu();
+    private JPopupMenu createPopupMenu() {
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        JSpinner jSpinner = new JSpinner(columnModel);
+        jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
 
-        public ButtonPanelContextMenu(int start) {
-            columnModel.setValue(start);
+        JPanel jPanelAnzahl = new JPanel();
+        jPanelAnzahl.setLayout(new BorderLayout());
+        jPanelAnzahl.add(new JLabel("Anzahl Button je Zeile: "), BorderLayout.WEST);
+        jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
 
-            createPopupMenu();
-        }
+        jPopupMenu.add(jPanelAnzahl);
 
-        public SpinnerNumberModel getColumnModel() {
-            return columnModel;
-        }
-
-        public JPopupMenu getPopupMenu() {
-            return jPopupMenu;
-        }
-
-        private void createPopupMenu() {
-            JSpinner jSpinner = new JSpinner(columnModel);
-            jSpinner.setToolTipText("Damit kann die Anzahl der Button verändert werden");
-
-            JPanel jPanelAnzahl = new JPanel();
-            jPanelAnzahl.setLayout(new BorderLayout());
-            jPanelAnzahl.add(new JLabel("Anzahl Button je Zeile: "), BorderLayout.WEST);
-            jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
-
-            jPopupMenu.add(jPanelAnzahl);
-        }
+        return jPopupMenu;
     }
 }
