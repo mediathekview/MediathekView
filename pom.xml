@@ -85,6 +85,7 @@
 		<miglayout.version>5.3-SNAPSHOT</miglayout.version>
 		<log4j2.version>2.13.2</log4j2.version>
 		<mockito.version>3.3.3</mockito.version>
+		<okhttp.version>4.7.2</okhttp.version>
 
 		<mainclass>mediathek.Main</mainclass>
 		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
@@ -309,7 +310,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>4.6.0</version>
+			<version>${okhttp.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jetbrains</groupId>
@@ -320,7 +321,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>logging-interceptor</artifactId>
-			<version>4.6.0</version>
+			<version>${okhttp.version}</version>
 		</dependency>
 
 		<dependency>
