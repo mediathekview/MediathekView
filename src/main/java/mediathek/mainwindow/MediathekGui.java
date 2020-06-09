@@ -826,7 +826,7 @@ public class MediathekGui extends JFrame {
         cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-        cbShowButtons.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE));
+        cbShowButtons.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
         cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
     }
 
