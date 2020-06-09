@@ -1,0 +1,49 @@
+JFDML JFormDesigner: "7.0.2.0.298" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, comp jPanel2:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel2:::p::p, space ::3:x}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, par l {comp cbkDownloadError:::p::p, seq {comp jCheckBoxBeep:::p::p, space u:::p, comp jButtonBeep:::p::p}, seq l {comp jLabel3:::p::p, space :p:51:p, comp jSpinnerAnzahlDownload:::p::p}}, space :0:5:x}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp cbkDownloadError:::p::p, space :::p, par b {comp jCheckBoxBeep::b:p::p, comp jButtonBeep::b:p::p}, space :::p, par c {comp jLabel3::c:p::p, comp jSpinnerAnzahlDownload::c:p::p}, space :::x}}"
+			} ) {
+				name: "jPanel2"
+				"border": new javax.swing.border.TitledBorder( "" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel3"
+					"text": "gleichzeitige Downloads laden:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JSpinner" ) {
+					name: "jSpinnerAnzahlDownload"
+					"model": new javax.swing.SpinnerNumberModel( 1, 1, 9, 1 )
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxBeep"
+					"text": "nach jedem Download einen \"Beep\" ausgeben"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonBeep"
+					"text": "Testen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbkDownloadError"
+					"text": "Bei Downloadfehler, Fehlermeldung anzeigen"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 440, 140 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

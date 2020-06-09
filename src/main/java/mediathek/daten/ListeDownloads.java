@@ -319,7 +319,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void setModelProgress(TModelDownload tModel) {
         int row = 0;
 
-        for (Vector item : tModel.getDataVector()) {
+        for (var item : tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) item.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
@@ -488,7 +488,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
         final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
         if (this.size() > 0 && getDown(maxNumDownloads)) {
-            naechsterStart().ifPresent(datenDownload -> {
+            nextPossibleDownload().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
                     if (datenDownload.start.status == Start.STATUS_INIT)
                         ret[0] = datenDownload;
@@ -541,7 +541,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return true;
     }
 
-    private Optional<DatenDownload> naechsterStart() {
+    private Optional<DatenDownload> nextPossibleDownload() {
         //erster Versuch, Start mit einem anderen Sender
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
@@ -553,17 +553,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
 
-        int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
-            // dann darf nur ein Download pro Server gestartet werden
-            maxProSender = 1;
-        }
-
         //zweiter Versuch, Start mit einem passenden Sender
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
-                    if (!maxSenderLaufen(datenDownload, maxProSender)) {
+                    if (!maxSenderLaufen(datenDownload, Konstanten.MAX_SENDER_FILME_LADEN)) {
                         return Optional.of(datenDownload);
                     }
                 }
