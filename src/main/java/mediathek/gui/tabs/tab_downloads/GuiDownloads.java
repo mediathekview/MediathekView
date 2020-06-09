@@ -1639,7 +1639,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final class ViewCategoryListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JComboBox source = (JComboBox) e.getSource();
+            JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
                 case INDEX_COMBO_VIEW_ALL:
@@ -1803,7 +1803,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
                         //---- btnClear ----
                         btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
-                        btnClear.setToolTipText("Alles l\u00f6schen"); //NON-NLS
+                        btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
                         panel3.add(btnClear, new CC().cell(1, 2).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
                     }
                     panel1.add(panel3, new CC().cell(0, 0));
