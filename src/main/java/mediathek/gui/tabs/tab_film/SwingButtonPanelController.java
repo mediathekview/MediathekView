@@ -7,7 +7,6 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
-import mediathek.gui.messages.PsetNumberOfButtonsChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Listener;
 import net.engio.mbassy.listener.Handler;
@@ -15,6 +14,7 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.configuration2.Configuration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -22,8 +22,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public final class SwingButtonPanelController {
     private final GuiFilme guiFilme;
@@ -32,6 +30,7 @@ public final class SwingButtonPanelController {
     private final GridBagLayout gridbag = new GridBagLayout();
     private final Insets DEFAULT_INSETS = new Insets(4, 10, 4, 10);
     private final GridBagConstraints c = new GridBagConstraints();
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
     private ListePset listeButton;
 
     public SwingButtonPanelController(@NotNull GuiFilme guiFilme, @NotNull JPanel jPanel2) {
@@ -40,7 +39,15 @@ public final class SwingButtonPanelController {
         createContentPanel(jPanel2);
         createCloseButton();
         createButtonsPanel();
-        buttonsPanel.addMouseListener(new BeobMausButton());
+
+        final int initialColumns = config.getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
+        var contextMenu = new ButtonPanelContextMenu(initialColumns);
+        contextMenu.getColumnModel().addChangeListener(e -> {
+            final int columns = (int) contextMenu.getColumnModel().getValue();
+            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, columns);
+            setupButtons();
+        });
+        buttonsPanel.setComponentPopupMenu(contextMenu.getPopupMenu());
 
         //fill with data...
         setupButtons();
@@ -51,7 +58,7 @@ public final class SwingButtonPanelController {
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, SwingButtonPanelController.class.getSimpleName()) {
             @Override
             public void ping() {
-                // psets have changed and we need to update
+                // psets have changed and we need to update the columns
                 setupButtons();
             }
         });
@@ -69,11 +76,6 @@ public final class SwingButtonPanelController {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(false));
             }
         }));
-    }
-
-    @Handler
-    private void handlePsetButtonChangedEvent(PsetNumberOfButtonsChangedEvent e) {
-        SwingUtilities.invokeLater(this::setupButtons);
     }
 
     @Handler
@@ -198,24 +200,23 @@ public final class SwingButtonPanelController {
         buttonsPanel.updateUI();
     }
 
-    private static class BeobMausButton extends MouseAdapter {
+    private static class ButtonPanelContextMenu {
         private final SpinnerNumberModel columnModel = new SpinnerNumberModel(4, 2, 10, 1);
         private final JPopupMenu jPopupMenu = new JPopupMenu();
 
-        public BeobMausButton() {
-            final int start = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
+        public ButtonPanelContextMenu(int start) {
             columnModel.setValue(start);
-            columnModel.addChangeListener(e -> {
-                int columns = (int) columnModel.getValue();
-                System.out.println("SPINNER MODEL CHANGED EVENT: " + columns);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, columns);
-                Daten.getInstance().getMessageBus().publishAsync(new PsetNumberOfButtonsChangedEvent());
-            });
 
             createPopupMenu();
         }
 
-        public SpinnerNumberModel getColumnModel() { return columnModel;}
+        public SpinnerNumberModel getColumnModel() {
+            return columnModel;
+        }
+
+        public JPopupMenu getPopupMenu() {
+            return jPopupMenu;
+        }
 
         private void createPopupMenu() {
             JSpinner jSpinner = new JSpinner(columnModel);
@@ -227,20 +228,6 @@ public final class SwingButtonPanelController {
             jPanelAnzahl.add(jSpinner, BorderLayout.EAST);
 
             jPopupMenu.add(jPanelAnzahl);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent evt) {
-            if (evt.isPopupTrigger()) {
-                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent evt) {
-            if (evt.isPopupTrigger()) {
-                jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-            }
         }
     }
 }
