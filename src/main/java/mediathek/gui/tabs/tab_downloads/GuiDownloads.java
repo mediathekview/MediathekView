@@ -179,7 +179,6 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setupToolBar() {
-        //TODO convert to FXML
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             var toolBar = new FXDownloadToolBar();
             toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
@@ -1080,10 +1079,8 @@ public class GuiDownloads extends AGuiTabPanel {
             }
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
-//            // ausrichten
-//            tabelle.setSelRow(rows[0]);
         } catch (Exception ex) {
-            Log.errorLog(451203625, ex);
+            logger.error("downloadLoeschen()", ex);
         }
     }
 
@@ -1696,7 +1693,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final class DisplayCategoryListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JComboBox source = (JComboBox) e.getSource();
+            JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
                 case INDEX_COMBO_DISPLAY_ALL:
