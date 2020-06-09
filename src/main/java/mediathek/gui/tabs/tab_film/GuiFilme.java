@@ -108,7 +108,7 @@ public class GuiFilme extends AGuiTabPanel {
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
     private JFXPanel fxDescriptionPanel;
-    private IButtonPanelController buttonPanelController;
+    private final SwingButtonPanelController buttonPanelController;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -127,7 +127,9 @@ public class GuiFilme extends AGuiTabPanel {
         installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(mediathekGui);
-        setupButtonPanel();
+
+        buttonPanelController = new SwingButtonPanelController(this, extensionArea);
+
         setupDescriptionPanel();
         setupFilmActionPanel();
 
@@ -447,20 +449,17 @@ public class GuiFilme extends AGuiTabPanel {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                buttonPanelController.setupButtons();
-                buttonPanelController.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-            }
-        });
-
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 loadTable();
             }
         });
+    }
+
+    @Handler
+    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+        buttonPanelController.setVisible(evt.visible);
     }
 
     @Handler
@@ -551,8 +550,7 @@ public class GuiFilme extends AGuiTabPanel {
                             repaint();
                         }));
             });
-        }
-        else {
+        } else {
             daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
             repaint();
         }
@@ -645,22 +643,6 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void setInfoStatusbar() {
         daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
-    @Handler
-    private void handlePsetButtonChangedEvent(PsetNumberOfButtonsChangedEvent e) {
-        SwingUtilities.invokeLater(() -> buttonPanelController.setupButtons());
-    }
-
-    public IButtonPanelController getButtonPanelController() {
-        return buttonPanelController;
-    }
-
-    private void setupButtonPanel() {
-        buttonPanelController = new SwingButtonPanelController(this, extensionArea);
-        buttonPanelController.setupButtons();
-        // und jetzt noch anzeigen
-        buttonPanelController.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
     }
 
     private void reloadTable() {
