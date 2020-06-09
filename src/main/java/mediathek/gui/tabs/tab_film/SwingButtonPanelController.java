@@ -62,7 +62,7 @@ public final class SwingButtonPanelController {
             }
         });
 
-        contentPanel.setVisible(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE));
+        contentPanel.setVisible(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
 
         SwingUtilities.invokeLater(() -> contentPanel.addComponentListener(new ComponentAdapter() {
             @Override
