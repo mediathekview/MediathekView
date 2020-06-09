@@ -11,8 +11,6 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 @SuppressWarnings("serial")
@@ -31,10 +29,16 @@ public class PanelDownload extends JPanel {
 
         Daten.getInstance().getMessageBus().subscribe(this);
 
-        jSpinnerAnzahlDownload.setModel(new SpinnerNumberModel(1, 1, 9, 1));
+        var spinnerModel = new SpinnerNumberModel(1, 1, 9, 1);
+        jSpinnerAnzahlDownload.setModel(spinnerModel);
         final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
         jSpinnerAnzahlDownload.setValue(maxNumDownloads);
-        jSpinnerAnzahlDownload.addChangeListener(new BeobSpinnerDownload());
+        spinnerModel.addChangeListener(e -> {
+            final int maxDownloads = ((Number)jSpinnerAnzahlDownload.getModel().getValue()).intValue();
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxDownloads);
+
+            Daten.getInstance().getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
+        });
 
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
         cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
@@ -43,17 +47,6 @@ public class PanelDownload extends JPanel {
         jCheckBoxBeep.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
 
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
-    }
-
-    private class BeobSpinnerDownload implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent arg0) {
-            final int maxDownloads = ((Number)jSpinnerAnzahlDownload.getModel().getValue()).intValue();
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxDownloads);
-
-            Daten.getInstance().getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
