@@ -64,8 +64,21 @@ public class SettingsMigrator {
                     case "system-tab-filme-anzahl-button":
                         migrateNumButtons(element);
                         break;
+
+                    case "system-panel-videoplayer-anzeigen":
+                        migrateSystemPanelVideoplayerAnzeigen(element);
+                        break;
                 }
             }
+        }
+    }
+
+    private void migrateSystemPanelVideoplayerAnzeigen(Element element) {
+        var node = element.getFirstChild();
+        if (node != null) {
+            boolean result = Boolean.parseBoolean(node.getNodeValue());
+            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, result);
+            logger.debug("migrateSystemPanelVideoplayerAnzeigen");
         }
     }
 

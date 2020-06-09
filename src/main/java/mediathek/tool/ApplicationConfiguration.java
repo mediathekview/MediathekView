@@ -71,6 +71,7 @@ public class ApplicationConfiguration {
 
     public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
     public static final String APPLICATION_BUTTONS_PANEL_MAX_VISIBLE = "application.buttons_panel.max_visible";
+    public static final String APPLICATION_BUTTONS_PANEL_VISIBLE = "application.buttons_panel.visible";
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
