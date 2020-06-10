@@ -105,8 +105,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String END = "</body></html>";
     private final AtomicLong _lastUpdate = new AtomicLong(0);
     private final JPanel jPanelBeschreibung = new JPanel();
-    private final JScrollPane downloadListScrollPane = new JScrollPane();
-    private final JPanel downloadListArea = new JPanel();
     private final AtomicBoolean tabVisible = new AtomicBoolean(false);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private final Configuration config = ApplicationConfiguration.getConfiguration();
@@ -139,7 +137,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         initComponents();
 
-        createDownloadListArea();
         createToolBar();
         createDescriptionPanel();
 
@@ -274,13 +271,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         fxDescriptionPanel = new JFXPanel();
         jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
-    }
-
-    private void createDownloadListArea() {
-        downloadListArea.setLayout(new BorderLayout());
-        jSplitPane1.setRightComponent(downloadListArea);
-
-        downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
     }
 
     private void createToolBar() {
@@ -1748,6 +1738,8 @@ public class GuiDownloads extends AGuiTabPanel {
         jSpinner1 = new JSpinner();
         var spDownload = new JScrollPane();
         txtDownload = new JEditorPane();
+        downloadListArea = new JPanel();
+        downloadListScrollPane = new JScrollPane();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1849,6 +1841,13 @@ public class GuiDownloads extends AGuiTabPanel {
                 jPanelFilterExtern.add(spDownload, new CC().cell(0, 2));
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
+
+            //======== downloadListArea ========
+            {
+                downloadListArea.setLayout(new BorderLayout());
+                downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
+            }
+            jSplitPane1.setRightComponent(downloadListArea);
         }
         add(jSplitPane1, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -1863,5 +1862,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private JSpinner jSpinnerAnzahlDownloads;
     private JSpinner jSpinner1;
     private JEditorPane txtDownload;
+    private JPanel downloadListArea;
+    private JScrollPane downloadListScrollPane;
     // End of variables declaration//GEN-END:variables
 }
