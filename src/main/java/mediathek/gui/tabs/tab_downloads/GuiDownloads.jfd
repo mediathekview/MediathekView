@@ -143,6 +143,7 @@ new FormModel {
 					name: "downloadListArea"
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "downloadListArea"
+						"JavaCodeGenerator.variableLocal": true
 					}
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "downloadListScrollPane"
@@ -154,6 +155,11 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "jPanelBeschreibung"
+						add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
+							name: "fxDescriptionPanel"
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "Center"
+						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "South"
 					} )

@@ -123,7 +123,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
     private JFXPanel toolBarPanel;
-    private JFXPanel fxDescriptionPanel;
+
     /**
      * macOS touch bar support.
      */
@@ -137,7 +137,6 @@ public class GuiDownloads extends AGuiTabPanel {
         initComponents();
 
         createToolBar();
-        createDescriptionPanel();
 
         setupF4Key(mediathekGui);
 
@@ -262,11 +261,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 });
             }
         });
-    }
-
-    private void createDescriptionPanel() {
-        fxDescriptionPanel = new JFXPanel();
-        jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
     }
 
     private void createToolBar() {
@@ -1734,9 +1728,10 @@ public class GuiDownloads extends AGuiTabPanel {
         jSpinner1 = new JSpinner();
         var spDownload = new JScrollPane();
         txtDownload = new JEditorPane();
-        downloadListArea = new JPanel();
+        var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
         jPanelBeschreibung = new JPanel();
+        fxDescriptionPanel = new JFXPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1847,6 +1842,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 //======== jPanelBeschreibung ========
                 {
                     jPanelBeschreibung.setLayout(new BorderLayout());
+                    jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
                 }
                 downloadListArea.add(jPanelBeschreibung, BorderLayout.SOUTH);
             }
@@ -1865,8 +1861,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private JSpinner jSpinnerAnzahlDownloads;
     private JSpinner jSpinner1;
     private JEditorPane txtDownload;
-    private JPanel downloadListArea;
     private JScrollPane downloadListScrollPane;
     private JPanel jPanelBeschreibung;
+    private JFXPanel fxDescriptionPanel;
     // End of variables declaration//GEN-END:variables
 }
