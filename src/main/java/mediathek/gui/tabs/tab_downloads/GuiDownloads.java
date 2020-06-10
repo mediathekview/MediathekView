@@ -528,7 +528,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 TabPane descriptionPane = loader.load();
                 final DescriptionPanelController descriptionPanelController = loader.getController();
                 descriptionPanelController.setOnCloseRequest(e -> {
-                    SwingUtilities.invokeLater(() -> jPanelBeschreibung.setVisible(false));
+                    SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
                     e.consume();
                 });
 
@@ -839,9 +839,9 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private void setupShowFilmDescriptionMenuItem() {
         cbShowDownloadDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
-        cbShowDownloadDescription.addActionListener(l -> jPanelBeschreibung.setVisible(cbShowDownloadDescription.isSelected()));
+        cbShowDownloadDescription.addActionListener(l -> fxDescriptionPanel.setVisible(cbShowDownloadDescription.isSelected()));
         cbShowDownloadDescription.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, cbShowDownloadDescription.isSelected()));
-        jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
+        fxDescriptionPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 cbShowDownloadDescription.setSelected(true);
@@ -858,7 +858,7 @@ public class GuiDownloads extends AGuiTabPanel {
      * Show description panel based on settings.
      */
     private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
+        fxDescriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
     }
 
     private synchronized void reloadTable() {
@@ -1730,7 +1730,6 @@ public class GuiDownloads extends AGuiTabPanel {
         txtDownload = new JEditorPane();
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
-        jPanelBeschreibung = new JPanel();
         fxDescriptionPanel = new JFXPanel();
 
         //======== this ========
@@ -1838,13 +1837,7 @@ public class GuiDownloads extends AGuiTabPanel {
             {
                 downloadListArea.setLayout(new BorderLayout());
                 downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
-
-                //======== jPanelBeschreibung ========
-                {
-                    jPanelBeschreibung.setLayout(new BorderLayout());
-                    jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
-                }
-                downloadListArea.add(jPanelBeschreibung, BorderLayout.SOUTH);
+                downloadListArea.add(fxDescriptionPanel, BorderLayout.SOUTH);
             }
             jSplitPane1.setRightComponent(downloadListArea);
         }
@@ -1862,7 +1855,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JSpinner jSpinner1;
     private JEditorPane txtDownload;
     private JScrollPane downloadListScrollPane;
-    private JPanel jPanelBeschreibung;
     private JFXPanel fxDescriptionPanel;
     // End of variables declaration//GEN-END:variables
 }
