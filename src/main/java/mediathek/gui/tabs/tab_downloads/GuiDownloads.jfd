@@ -153,13 +153,8 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
-						name: "jPanelBeschreibung"
-						add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
-							name: "fxDescriptionPanel"
-						}, new FormLayoutConstraints( class java.lang.String ) {
-							"value": "Center"
-						} )
+					add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
+						name: "fxDescriptionPanel"
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "South"
 					} )
