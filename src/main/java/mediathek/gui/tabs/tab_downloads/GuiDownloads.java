@@ -331,7 +331,10 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void updateFilterVisibility(boolean visible) {
         jPanelFilterExtern.setVisible(visible);
-        jSplitPane1.updateUI();
+        if (visible) {
+            final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+            jSplitPane1.setDividerLocation(location);
+        }
     }
 
     private void setupTaskbarMenu() {
