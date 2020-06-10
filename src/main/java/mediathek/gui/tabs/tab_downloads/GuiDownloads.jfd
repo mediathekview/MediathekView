@@ -139,11 +139,27 @@ new FormModel {
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "left"
 				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "downloadListArea"
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "downloadListArea"
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "downloadListScrollPane"
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "downloadListScrollPane"
+						}
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 522, 640 )
+			"size": new java.awt.Dimension( 640, 640 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
