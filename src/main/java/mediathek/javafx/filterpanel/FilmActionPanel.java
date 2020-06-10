@@ -263,11 +263,9 @@ public class FilmActionPanel {
     private void setupShowBookmarkedMoviesButton() {
       toolBar.btnShowBookmarkedMovies.setSelected(false);
       toolBar.btnShowBookmarkedMovies.setTooltip(BOOKMARKLIST_DESELECTED);
-      toolBar.btnShowBookmarkedMovies.setOnAction((event) -> {
-        viewSettingsPane.cbShowBookMarkedOnly.selectedProperty().set(toolBar.btnShowBookmarkedMovies.isSelected());
-      });
+      toolBar.btnShowBookmarkedMovies.setOnAction((event) -> viewSettingsPane.cbShowBookMarkedOnly.selectedProperty().set(toolBar.btnShowBookmarkedMovies.isSelected()));
       showBookMarkedOnly.addListener((observable, oldValue, newValue) -> {
-        boolean benabled = (boolean) newValue;
+        boolean benabled = newValue;
         toolBar.btnShowBookmarkedMovies.setTooltip(benabled ? BOOKMARKLIST_SELECTED : BOOKMARKLIST_DESELECTED);
         toolBar.btnShowBookmarkedMovies.setSelected(benabled);
         if (benabled) {
