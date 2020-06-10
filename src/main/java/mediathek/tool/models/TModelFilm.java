@@ -128,6 +128,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_URL:
+            case DatenFilm.FILM_URL_HISTORY:
                 result = film.getUrl();
                 break;
 
@@ -145,10 +146,6 @@ public class TModelFilm extends TModel {
 
             case DatenFilm.FILM_URL_HD:
                 result = film.getHighQualityUrl();
-                break;
-
-            case DatenFilm.FILM_URL_HISTORY:
-                result = film.getUrl();
                 break;
 
             case DatenFilm.FILM_REF:

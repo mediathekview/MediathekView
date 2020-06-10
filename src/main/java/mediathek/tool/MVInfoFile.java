@@ -163,9 +163,7 @@ public class MVInfoFile {
 
             logger.info("Infodatei geschrieben");
         } catch (IOException ex) {
-            Platform.runLater(() -> {
-                FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex);
-            });
+            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex));
             logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex);
         }
     }
