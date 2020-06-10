@@ -152,6 +152,11 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
 					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "jPanelBeschreibung"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "right"
 				} )

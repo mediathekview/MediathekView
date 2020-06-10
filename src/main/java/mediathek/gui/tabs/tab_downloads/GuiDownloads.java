@@ -104,7 +104,6 @@ public class GuiDownloads extends AGuiTabPanel {
             + "<body>";
     private static final String END = "</body></html>";
     private final AtomicLong _lastUpdate = new AtomicLong(0);
-    private final JPanel jPanelBeschreibung = new JPanel();
     private final AtomicBoolean tabVisible = new AtomicBoolean(false);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private final Configuration config = ApplicationConfiguration.getConfiguration();
@@ -266,9 +265,6 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void createDescriptionPanel() {
-        jPanelBeschreibung.setLayout(new BorderLayout());
-        downloadListArea.add(jPanelBeschreibung, BorderLayout.SOUTH);
-
         fxDescriptionPanel = new JFXPanel();
         jPanelBeschreibung.add(fxDescriptionPanel, BorderLayout.CENTER);
     }
@@ -1740,6 +1736,7 @@ public class GuiDownloads extends AGuiTabPanel {
         txtDownload = new JEditorPane();
         downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
+        jPanelBeschreibung = new JPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1846,6 +1843,12 @@ public class GuiDownloads extends AGuiTabPanel {
             {
                 downloadListArea.setLayout(new BorderLayout());
                 downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
+
+                //======== jPanelBeschreibung ========
+                {
+                    jPanelBeschreibung.setLayout(new BorderLayout());
+                }
+                downloadListArea.add(jPanelBeschreibung, BorderLayout.SOUTH);
             }
             jSplitPane1.setRightComponent(downloadListArea);
         }
@@ -1864,5 +1867,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JEditorPane txtDownload;
     private JPanel downloadListArea;
     private JScrollPane downloadListScrollPane;
+    private JPanel jPanelBeschreibung;
     // End of variables declaration//GEN-END:variables
 }
