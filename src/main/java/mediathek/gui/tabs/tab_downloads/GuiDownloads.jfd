@@ -164,6 +164,11 @@ new FormModel {
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )
+			add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
+				name: "toolBarPanel"
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 640, 640 )
 			"location": new java.awt.Point( 0, 0 )
