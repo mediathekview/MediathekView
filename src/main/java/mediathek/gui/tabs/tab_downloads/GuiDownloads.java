@@ -122,7 +122,6 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
-    private JFXPanel toolBarPanel;
 
     /**
      * macOS touch bar support.
@@ -135,8 +134,6 @@ public class GuiDownloads extends AGuiTabPanel {
         this.mediathekGui = mediathekGui;
 
         initComponents();
-
-        createToolBar();
 
         setupF4Key(mediathekGui);
 
@@ -261,11 +258,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 });
             }
         });
-    }
-
-    private void createToolBar() {
-        toolBarPanel = new JFXPanel();
-        add(toolBarPanel, BorderLayout.NORTH);
     }
 
     private void setupDownloadListTable() {
@@ -1731,6 +1723,7 @@ public class GuiDownloads extends AGuiTabPanel {
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
         fxDescriptionPanel = new JFXPanel();
+        toolBarPanel = new JFXPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1842,6 +1835,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jSplitPane1.setRightComponent(downloadListArea);
         }
         add(jSplitPane1, BorderLayout.CENTER);
+        add(toolBarPanel, BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1856,5 +1850,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JEditorPane txtDownload;
     private JScrollPane downloadListScrollPane;
     private JFXPanel fxDescriptionPanel;
+    private JFXPanel toolBarPanel;
     // End of variables declaration//GEN-END:variables
 }
