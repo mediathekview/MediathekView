@@ -3,6 +3,7 @@ package mediathek.gui.tabs.tab_film;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
@@ -40,7 +41,7 @@ public final class SwingButtonPanelController {
         createCloseButton();
         createButtonsPanel();
 
-        final int initialColumns = config.getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
+        final int initialColumns = config.getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, Konstanten.DEFAULT_BUTTON_PANEL_COLUMNS);
         columnModel.setValue(initialColumns);
         columnModel.addChangeListener(e -> {
             final int columns = (int) columnModel.getValue();
@@ -171,7 +172,7 @@ public final class SwingButtonPanelController {
         // Programmgruppe ohne Programme: Label
         // sonst ein Button
         buttonsPanel.removeAll();
-        final int maxColumns = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE);
+        final int maxColumns = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, Konstanten.DEFAULT_BUTTON_PANEL_COLUMNS);
 
         initConstraints();
 
