@@ -55,9 +55,11 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -1036,7 +1038,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 return;
             }
 
-            String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+            var zeit = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
             ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
             LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
