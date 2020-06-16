@@ -563,7 +563,7 @@ public class GuiFilme extends AGuiTabPanel {
      */
     public void showBookmarkWindow() {
         if (bookmarkWindowController.isEmpty()) {
-            bookmarkWindowController = Optional.of(new BookmarkWindowController());
+            bookmarkWindowController = Optional.of(new BookmarkWindowController(mediathekGui));
             bookmarkWindowController.get().setPartner(this);
         }
         bookmarkWindowController.get().show();

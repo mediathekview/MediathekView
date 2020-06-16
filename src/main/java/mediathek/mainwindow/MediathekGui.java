@@ -929,16 +929,16 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private DialogEinstellungen getSettingsDialog() {
-        if (dialogEinstellungen == null) {
-            dialogEinstellungen = new DialogEinstellungen();
-        }
-
-        return dialogEinstellungen;
-    }
-
     public void showSettingsDialog() {
-        getSettingsDialog().setVisible(true);
+      if (dialogEinstellungen == null) {
+        dialogEinstellungen = new DialogEinstellungen();
+      }  
+      else {
+        if (dialogEinstellungen.getExtendedState() != NORMAL) {
+          dialogEinstellungen.setExtendedState(NORMAL);
+        }
+      }
+      dialogEinstellungen.setVisible(true);
     }
 
     private void writeOldConfiguration() {

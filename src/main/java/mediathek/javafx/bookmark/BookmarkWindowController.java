@@ -48,7 +48,6 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -68,6 +67,7 @@ import javafx.scene.input.KeyEvent;
 import static javafx.scene.input.MouseButton.PRIMARY;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
+import javax.swing.SwingUtilities;
 import static mediathek.config.MVColor.*;
 import mediathek.tool.javafx.FXDialogControl;
 
@@ -106,6 +106,7 @@ public class BookmarkWindowController {
   private String FilterCategoryName;
   private ListView<BookmarkCategory> categorylistview;
   private boolean noComboFilterAction;
+  private MediathekGui mediathekGui;
 
   private static final KeyCombination K_CTRL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_ANY);
 
@@ -166,10 +167,11 @@ public class BookmarkWindowController {
   @FXML
   private Hyperlink hyperLink;
 
-  public BookmarkWindowController() {
+  public BookmarkWindowController(MediathekGui mediathekGui) {
     history = Daten.getInstance().getSeenHistoryController();
     listeBookmarkList = Daten.getInstance().getListeBookmarkList();
     listUpdated = false;
+    this.mediathekGui = mediathekGui;
   }
 
   /**
@@ -397,9 +399,13 @@ public class BookmarkWindowController {
     tbBookmarks.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
       setButtonAndMenuState();
     });
+    
     tbBookmarks.setOnKeyReleased((KeyEvent ke) -> { // handle Strg-A
       if (K_CTRL_A.match(ke)) {
         setButtonAndMenuState();
+      } 
+      else {
+        onKeyReleased(ke);
       }
     });
 
@@ -450,6 +456,14 @@ public class BookmarkWindowController {
     setupColumnContextMenu();
   }
 
+  @FXML
+  private void onKeyReleased(KeyEvent ke) {
+    if (ke.getCode() == KeyCode.F4) {
+      SwingUtilities.invokeLater(() -> {
+        mediathekGui.showSettingsDialog();
+      });    
+    }
+  }
   /**
    * Enable/Disable buttons and menues depending on selection state
    */
