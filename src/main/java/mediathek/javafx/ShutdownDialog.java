@@ -8,6 +8,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ShutdownState;
 import org.tbee.javafx.scene.layout.MigPane;
@@ -33,6 +34,7 @@ public class ShutdownDialog {
             stage = new Stage();
             stage.setOnHidden(e -> hidden = true);
             stage.setAlwaysOnTop(true);
+            stage.initOwner(JFXHiddenApplication.getPrimaryStage());
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
             stage.initStyle(StageStyle.UNDECORATED);

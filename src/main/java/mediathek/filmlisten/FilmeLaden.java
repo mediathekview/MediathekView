@@ -13,6 +13,7 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
@@ -289,10 +290,9 @@ public class FilmeLaden {
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Fehler");
                 alert.setContentText("Das Laden der Filmliste hat nicht geklappt!");
-                alert.show();
+                JFXHiddenApplication.showAlert(alert,ui);
             });
 
             // dann die alte Liste wieder laden
