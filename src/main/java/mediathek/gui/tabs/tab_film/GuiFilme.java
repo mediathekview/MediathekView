@@ -88,7 +88,6 @@ public class GuiFilme extends AGuiTabPanel {
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
-    private final JPanel descriptionPanel = new JPanel();
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
@@ -107,7 +106,7 @@ public class GuiFilme extends AGuiTabPanel {
     private JFXPanel fxFilmActionPanel;
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
-    private JFXPanel fxDescriptionPanel;
+    private final JFXPanel fxDescriptionPanel = new JFXPanel();
     private final SwingButtonPanelController buttonPanelController;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
@@ -120,7 +119,9 @@ public class GuiFilme extends AGuiTabPanel {
         createFilmListArea();
         createExtensionArea();
         createFilmActionPanel();
-        createDescriptionPanel();
+
+        //add film description panel
+        extensionArea.add(fxDescriptionPanel, new CC().cell(0, 0));
 
         setupFilmListTable();
 
@@ -202,14 +203,6 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void createFilmListArea() {
         add(filmListScrollPane, BorderLayout.CENTER);
-    }
-
-    private void createDescriptionPanel() {
-        descriptionPanel.setLayout(new BorderLayout());
-        extensionArea.add(descriptionPanel, new CC().cell(0, 0));
-
-        fxDescriptionPanel = new JFXPanel();
-        descriptionPanel.add(fxDescriptionPanel, BorderLayout.CENTER);
     }
 
     private void createExtensionArea() {
@@ -303,7 +296,7 @@ public class GuiFilme extends AGuiTabPanel {
                 TabPane descriptionPane = loader.load();
                 final DescriptionPanelController descriptionPanelController = loader.getController();
                 descriptionPanelController.setOnCloseRequest(e -> {
-                    SwingUtilities.invokeLater(() -> descriptionPanel.setVisible(false));
+                    SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
                     e.consume();
                 });
 
@@ -322,7 +315,7 @@ public class GuiFilme extends AGuiTabPanel {
      * Show description panel based on settings.
      */
     private void showDescriptionPanel() {
-        descriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
+        fxDescriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
     }
 
     private void onComponentShown() {
@@ -700,9 +693,9 @@ public class GuiFilme extends AGuiTabPanel {
      */
     private void setupShowFilmDescriptionMenuItem() {
         cbkShowDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
-        cbkShowDescription.addActionListener(l -> descriptionPanel.setVisible(cbkShowDescription.isSelected()));
+        cbkShowDescription.addActionListener(l -> fxDescriptionPanel.setVisible(cbkShowDescription.isSelected()));
         cbkShowDescription.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbkShowDescription.isSelected()));
-        descriptionPanel.addComponentListener(new ComponentAdapter() {
+        fxDescriptionPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 cbkShowDescription.setSelected(true);
@@ -739,6 +732,8 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private synchronized void loadTable() {
+        final var messageBus = Daten.getInstance().getMessageBus();
+        messageBus.publishAsync(new TableModelChangeEvent(true));
         try {
             stopBeob = true;
             tabelle.getSpalten();
@@ -756,6 +751,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         tabelle.scrollToSelection();
 
+        messageBus.publishAsync(new TableModelChangeEvent(false));
     }
 
     public class FilterFilmAction extends AbstractAction {

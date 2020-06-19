@@ -6,6 +6,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.mainwindow.MediathekGui;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -42,7 +44,8 @@ public class FXErrorDialog {
 
             alert.getDialogPane().setExpandableContent(expContent);
             alert.initModality(Modality.APPLICATION_MODAL);
-            alert.showAndWait();
+            alert.initOwner(JFXHiddenApplication.getPrimaryStage());
+            JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
         } catch (IOException ignored) {
         }
     }

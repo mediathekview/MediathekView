@@ -1,5 +1,6 @@
 package mediathek.javafx.filterpanel;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -7,6 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import mediathek.config.Daten;
+import mediathek.gui.messages.TableModelChangeEvent;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,6 +68,32 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
         }
     }
 
+    /**
+     * Prevent user from changing filter settings while the swing table model gets updated.
+     * @param evt the model event
+     */
+    @Handler
+    private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
+        Platform.runLater(() -> {
+            final boolean disable = evt.active;
+            btnDeleteFilterSettings.setDisable(disable);
+            cbShowOnlyHd.setDisable(disable);
+            cbShowSubtitlesOnly.setDisable(disable);
+            cbShowNewOnly.setDisable(disable);
+            cbShowBookMarkedOnly.setDisable(disable);
+            cbShowOnlyLivestreams.setDisable(disable);
+            cbShowUnseenOnly.setDisable(disable);
+            cbDontShowAbos.setDisable(disable);
+            cbDontShowGebaerdensprache.setDisable(disable);
+            cbDontShowTrailers.setDisable(disable);
+            cbDontShowAudioVersions.setDisable(disable);
+            senderBoxNode.setDisable(disable);
+            _themaComboBox.setDisable(disable);
+            filmLengthSliderNode.setDisable(disable);
+            zeitraumSpinner.setDisable(disable);
+        });
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         _themaLabel.setMinWidth(USE_PREF_SIZE);
@@ -72,5 +102,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
             _themaLabel.setPrefWidth(50d);
         else
             _themaLabel.setPrefWidth(45d);
+
+        Daten.getInstance().getMessageBus().subscribe(this);
     }
 }

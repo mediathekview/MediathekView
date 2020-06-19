@@ -43,6 +43,7 @@ import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
@@ -1037,6 +1038,8 @@ public class MediathekGui extends JFrame {
         }
 
         dispose();
+
+        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
 
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();

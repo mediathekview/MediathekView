@@ -14,6 +14,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
@@ -329,6 +330,14 @@ public class Main {
 
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
+
+            if (SystemUtils.IS_OS_MAC_OSX)
+                initializeJavaFX(); // let swing grab the macOS menuBar...
+
+            JFXHiddenApplication.launchApplication();
+            checkMemoryRequirements();
+            installSingleInstanceHandler();
+
             setupPortableMode();
 
             printVersionInformation();
@@ -348,12 +357,6 @@ public class Main {
         }
 
         printDirectoryPaths();
-
-        initializeJavaFX();
-
-        checkMemoryRequirements();
-
-        installSingleInstanceHandler();
 
         setSystemLookAndFeel();
 
@@ -510,19 +513,14 @@ public class Main {
         final var maxMem = Runtime.getRuntime().maxMemory();
         // more than 450MB avail...
         if (maxMem < 450 * FileUtils.ONE_MB) {
-            if (SystemUtils.isJavaAwtHeadless()) {
-                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen bekommen.");
-                System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
-            } else {
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Speicherwarnung");
-                    alert.setContentText("MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.\n" +
-                            "Es werden mindestens 512MB RAM benötigt.");
-                    alert.showAndWait();
-                });
-            }
+            JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Nicht genügend Arbeitsspeicher");
+                alert.setContentText("Es werden mindestens 512MB RAM für einen halbwegs vernünftigen Betrieb benötigt.\n\n" +
+                        "Das Programm wird nun beendet.");
+                alert.showAndWait();
+            });
 
             System.exit(3);
         }
