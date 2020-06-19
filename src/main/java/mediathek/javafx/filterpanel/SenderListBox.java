@@ -10,6 +10,9 @@ public class SenderListBox extends CheckListView<String> {
         setPrefHeight(150d);
         setMinHeight(100d);
 
+        //there seems to be a bug in CheckListView where the checklist model does not update its state after
+        //the source list has changed.
+        //->manually reset check list model after changes
         Daten.getInstance()
                 .getListeFilmeNachBlackList().
                 getSenders()
