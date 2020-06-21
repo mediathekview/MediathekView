@@ -17,6 +17,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeDownloads;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
@@ -57,7 +58,7 @@ public class BandwidthMonitorController {
     }
 
     public void close() {
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             if (updateMemoryTimer != null)
                 updateMemoryTimer.stop();
         });
