@@ -201,7 +201,6 @@ public class MediathekGui extends JFrame {
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
-        workaroundControlsFxNotificationBug();
         workaroundJavaFxInitializationBug();
 
         SwingUtilities.invokeLater(() -> {
@@ -345,14 +344,6 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar);
-    }
-
-    /**
-     * ControlsFX Notifications expect a stage to be open.
-     * Create a utility window hidden and transparent as a stage for them.
-     */
-    protected void workaroundControlsFxNotificationBug() {
-        //does not work on windows and linux
     }
 
     /**
@@ -953,10 +944,6 @@ public class MediathekGui extends JFrame {
             GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
-    protected void closeControlsFxWorkaroundStage() {
-        //not used on windows and linux
-    }
-
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
@@ -976,8 +963,6 @@ public class MediathekGui extends JFrame {
             automaticFilmlistUpdate.close();
 
         showMemoryMonitorAction.closeMemoryMonitor();
-
-        closeControlsFxWorkaroundStage();
 
         endProgramUpdateChecker();
 

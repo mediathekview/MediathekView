@@ -1,6 +1,5 @@
 package mediathek.mac;
 
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -9,7 +8,6 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.tabs.TabDownloadsMac;
 import mediathek.mac.tabs.TabFilmeMac;
 import mediathek.mac.touchbar.TouchBarUtils;
@@ -37,7 +35,6 @@ public class MediathekGuiMac extends MediathekGui {
     private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
     private final OsxPowerManager powerManager = new OsxPowerManager();
     protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
-    protected Stage controlsFxWorkaroundStage;
 
     public MediathekGuiMac() {
         super();
@@ -48,14 +45,6 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     public void initializeSystemTray() {
         //we don´t use it on macOS
-    }
-
-    @Override
-    protected void closeControlsFxWorkaroundStage() {
-        Platform.runLater(() -> {
-            if (controlsFxWorkaroundStage != null)
-                controlsFxWorkaroundStage.close();
-        });
     }
 
     @Override
@@ -77,15 +66,6 @@ public class MediathekGuiMac extends MediathekGui {
             });
         }
 
-    }
-
-    @Override
-    protected void workaroundControlsFxNotificationBug() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            controlsFxWorkaroundStage = new WorkaroundStage();
-            controlsFxWorkaroundStage.show();
-            controlsFxWorkaroundStage.toBack();
-        });
     }
 
     @Override
