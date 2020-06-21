@@ -117,6 +117,8 @@ public class BandwidthMonitorController {
 
         //convert to MBits per second
         bandwidth = bandwidth * 8d / 1000d / 1000d;
+        if (bandwidth < 0d)
+            bandwidth = 0d;
 
         return bandwidth;
     }
