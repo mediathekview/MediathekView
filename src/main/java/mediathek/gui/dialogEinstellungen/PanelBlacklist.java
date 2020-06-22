@@ -3,7 +3,7 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.daten.DatenBlacklist;
+import mediathek.daten.blacklist.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;

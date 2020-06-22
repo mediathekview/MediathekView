@@ -18,6 +18,8 @@ package mediathek.controller;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import mediathek.daten.blacklist.DatenBlacklist;
+import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.ReplaceList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;

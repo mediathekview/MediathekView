@@ -12,6 +12,7 @@ import mediathek.controller.history.AboHistoryController;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
+import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
