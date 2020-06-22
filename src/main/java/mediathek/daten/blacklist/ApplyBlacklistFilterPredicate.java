@@ -19,19 +19,15 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
 
     @Override
     public boolean test(DatenFilm film) {
-        //logger.trace("BL ENTRY SIZE: {}", listeBlacklist.size());
-        //long counter = 0;
+
         for (DatenBlacklist entry : listeBlacklist) {
-            //counter++;
             final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
             final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
 
             if (performFiltering(entry, pTitel, pThema, film)) {
-                //logger.trace("LEAVING AFTER ITERATION: {}", counter);
                 return isWhitelist;
             }
         }
-        //logger.trace("HAVE REACHED FINAL RETURN");
 
         //found nothing
         return !isWhitelist;
@@ -86,7 +82,11 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
         return result;
     }
 
+    public boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0;
+    }
+
     private boolean checkLengthWithMin(long filmLaenge) {
-        return Filter.lengthCheck(0, filmLaenge) || filmLaenge > 0;
+        return lengthCheck(0, filmLaenge) || filmLaenge > 0;
     }
 }

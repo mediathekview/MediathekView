@@ -29,9 +29,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private long filmlaengeSoll = 0;
     private int nr = 0;
 
-    public ListeBlacklist() {
-    }
-
     /**
      * Add item without notifying registered listeners.
      *
