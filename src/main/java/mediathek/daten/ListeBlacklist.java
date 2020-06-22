@@ -118,7 +118,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         final ListeFilme filteredList = daten.getListeFilmeNachBlackList();
 
         filteredList.clear();
-        //filteredList.neueFilme = false;
 
         loadCurrentFilterSettings();
 
@@ -157,11 +156,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             filterList.add(this::checkDate);
 
         if (blacklistIsActive) {
-            //add the filter predicates to the list
-            if (!isEmpty()) {
-                filterList.add(this::applyBlacklistFilters);
-            }
-
             if (doNotShowGeoBlockedFilms) {
                 filterList.add(this::checkGeoBlockedFilm);
             }
@@ -169,6 +163,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 filterList.add(this::checkIfFilmIsInFuture);
             }
             filterList.add(this::checkFilmLength);
+
+            //add the filter predicates to the list
+            if (!isEmpty()) {
+                ApplyBlacklistFilterPredicate predicate = new ApplyBlacklistFilterPredicate(this);
+                filterList.add(predicate);
+            }
+
         }
 
         final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(x -> true);
@@ -305,71 +306,82 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             return pTitle;
     }
 
-    private String[] createPattern(final boolean isPattern, final String inputString) {
-        if (isPattern)
-            return new String[]{inputString};
-        else
-            return mySplit(inputString);
-    }
+    class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
+        private final boolean isWhitelist;
+        private final ListeBlacklist listeBlacklist;
 
-    /**
-     * Apply filters to film.
-     *
-     * @param film item to be filtered
-     * @return true if film can be displayed
-     */
-    private boolean applyBlacklistFilters(DatenFilm film) {
-        final boolean isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
-
-        for (DatenBlacklist entry : this) {
-            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
-            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
-
-            if (performFiltering(entry, pTitel, pThema, film)) {
-                return isWhitelist;
-            }
+        public ApplyBlacklistFilterPredicate(ListeBlacklist listeBlacklist) {
+            isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
+            this.listeBlacklist = listeBlacklist;
         }
 
-        return !isWhitelist;
-    }
+        private String[] createPattern(final boolean isPattern, final String inputString) {
+            if (isPattern)
+                return new String[]{inputString};
+            else
+                return mySplit(inputString);
+        }
 
-    private boolean performFiltering(final DatenBlacklist entry,
-                                     final String[] titelSuchen, final String[] themaTitelSuchen,
-                                     final DatenFilm film) {
-        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
-        // senderSuchen exakt mit sender
-        // themaSuchen exakt mit thema
-        // titelSuchen muss im Titel nur enthalten sein
+        @Override
+        public boolean test(DatenFilm film) {
+            //logger.trace("BL ENTRY SIZE: {}", listeBlacklist.size());
+            //long counter = 0;
+            for (DatenBlacklist entry : listeBlacklist) {
+                //counter++;
+                final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
+                final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
 
-        boolean result = false;
-        final String thema = film.getThema();
-        final String title = film.getTitle();
+                if (performFiltering(entry, pTitel, pThema, film)) {
+                    //logger.trace("LEAVING AFTER ITERATION: {}", counter);
+                    return isWhitelist;
+                }
+            }
+            //logger.trace("HAVE REACHED FINAL RETURN");
+
+            //found nothing
+            return !isWhitelist;
+        }
+
+        private boolean performFiltering(final DatenBlacklist entry,
+                                         final String[] titelSuchen, final String[] themaTitelSuchen,
+                                         final DatenFilm film) {
+            // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
+            // senderSuchen exakt mit sender
+            // themaSuchen exakt mit thema
+            // titelSuchen muss im Titel nur enthalten sein
+
+            boolean result = false;
+            final String thema = film.getThema();
+            final String title = film.getTitle();
 
 
-        final String senderSuchen = entry.arr[DatenBlacklist.BLACKLIST_SENDER];
-        final String themaSuchen = entry.arr[DatenBlacklist.BLACKLIST_THEMA];
+            final String senderSuchen = entry.arr[DatenBlacklist.BLACKLIST_SENDER];
+            final String themaSuchen = entry.arr[DatenBlacklist.BLACKLIST_THEMA];
 
-        if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
-            if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
-                if (titelSuchen.length == 0 || Filter.pruefen(titelSuchen, title)) {
-                    if (themaTitelSuchen.length == 0
-                            || Filter.pruefen(themaTitelSuchen, thema)
-                            || Filter.pruefen(themaTitelSuchen, title)) {
-                        // die Länge soll mit geprüft werden
-                        if (checkLengthWithMin(film.getFilmLength())) {
-                            result = true;
+            if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
+                if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
+                    if (titelSuchen.length == 0 || Filter.pruefen(titelSuchen, title)) {
+                        if (themaTitelSuchen.length == 0
+                                || Filter.pruefen(themaTitelSuchen, thema)
+                                || Filter.pruefen(themaTitelSuchen, title)) {
+                            // die Länge soll mit geprüft werden
+                            if (checkLengthWithMin(film.getFilmLength())) {
+                                result = true;
+                            }
                         }
                     }
                 }
             }
+
+            return result;
         }
 
-        return result;
+        private boolean checkLengthWithMin(long filmLaenge) {
+            return Filter.lengthCheck(0, filmLaenge) || filmLaenge > 0;
+        }
     }
 
-    private boolean checkLengthWithMin(long filmLaenge) {
-        return Filter.lengthCheck(0, filmLaenge) || filmLaenge > 0;
-    }
+
 
     /**
      * Check film based on date
