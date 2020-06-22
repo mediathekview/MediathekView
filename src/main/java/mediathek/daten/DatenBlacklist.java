@@ -28,16 +28,27 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
         this();
-        arr[BLACKLIST_NR] = "";
+        //arr[BLACKLIST_NR] = "";
         arr[BLACKLIST_SENDER] = sender;
         arr[BLACKLIST_THEMA] = thema;
         arr[BLACKLIST_TITEL] = titel;
         arr[BLACKLIST_THEMA_TITEL] = themaTitel;
     }
 
+    /**
+     * Determine if we have regexp patterns somewhere and also precompile the pattern into the cache to speed up
+     * operations a bit.
+     */
     public void checkPatterns() {
         patternTitle = Filter.isPattern(arr[BLACKLIST_TITEL]);
         patternThema = Filter.isPattern(arr[BLACKLIST_THEMA_TITEL]);
+
+        //precompile and cache the regexp patterns if needed...
+        if (patternTitle)
+            Filter.makePattern(arr[BLACKLIST_TITEL]);
+
+        if (patternThema)
+            Filter.makePattern(arr[BLACKLIST_THEMA_TITEL]);
     }
 
     public boolean hasTitlePattern() {
