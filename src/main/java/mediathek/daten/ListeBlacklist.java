@@ -114,38 +114,36 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     public synchronized void filterListe() {
         final Daten daten = Daten.getInstance();
-        final ListeFilme listeFilme = daten.getListeFilme();
-        final ListeFilme listeRet = daten.getListeFilmeNachBlackList();
+        final ListeFilme completeFilmList = daten.getListeFilme();
+        final ListeFilme filteredList = daten.getListeFilmeNachBlackList();
+
+        filteredList.clear();
+        //filteredList.neueFilme = false;
 
         loadCurrentFilterSettings();
 
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        listeRet.clear();
 
-        if (listeFilme != null && listeFilme.size() > 0) { // Check if there are any movies
-            listeRet.setMetaData(listeFilme.metaData());
+        if (completeFilmList != null && !completeFilmList.isEmpty()) { // Check if there are any movies
+            filteredList.setMetaData(completeFilmList.metaData());
 
             this.parallelStream().forEach(entry -> {
-                entry.toLower();
-                entry.hasPattern();
+                entry.convertToLowerCase();
+                entry.checkPatterns();
             });
 
-            listeRet.neueFilme = false;
 
             final Predicate<DatenFilm> pred = createPredicate();
 
             Stopwatch stopwatch2 = Stopwatch.createStarted();
-            listeFilme.parallelStream().filter(pred).forEachOrdered(listeRet::add);
+            completeFilmList.parallelStream().filter(pred).forEachOrdered(filteredList::add);
             stopwatch2.stop();
             logger.debug("FILTERING and ADDING() took: {}", stopwatch2);
 
             setupNewEntries();
 
             // Array mit Sendernamen/Themen füllen
-            listeRet.fillSenderList();
+            filteredList.fillSenderList();
         }
-        stopwatch.stop();
-        logger.debug("filterListe(): {}", stopwatch);
     }
 
     /**
@@ -324,17 +322,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         final boolean isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
 
         for (DatenBlacklist entry : this) {
-            final String[] pTitel = createPattern(entry.patternTitle, entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
-            final String[] pThema = createPattern(entry.patternThema, entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
+            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
+            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
 
-            if (performFiltering(
-                    entry,
-                    pTitel,
-                    pThema,
-                    film)) {
+            if (performFiltering(entry, pTitel, pThema, film)) {
                 return isWhitelist;
             }
         }
+
         return !isWhitelist;
     }
 

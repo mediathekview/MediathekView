@@ -17,17 +17,17 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
     public static final String TAG = "Blacklist";
     public static final String[] COLUMN_NAMES = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
     public static final String[] XML_NAMES = {"black-nr", "black-sender", "black-thema", "black-titel", "black-thema-titel"};
-    public boolean patternTitle = true;
-    public boolean patternThema = true;
-
     public String[] arr;
+    private boolean patternTitle = true;
+    private boolean patternThema = true;
 
     public DatenBlacklist() {
-        initialize();
+        arr = new String[MAX_ELEM];
+        Arrays.fill(arr, "");
     }
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
-        initialize();
+        this();
         arr[BLACKLIST_NR] = "";
         arr[BLACKLIST_SENDER] = sender;
         arr[BLACKLIST_THEMA] = thema;
@@ -35,18 +35,22 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
         arr[BLACKLIST_THEMA_TITEL] = themaTitel;
     }
 
-    public void hasPattern() {
+    public void checkPatterns() {
         patternTitle = Filter.isPattern(arr[BLACKLIST_TITEL]);
         patternThema = Filter.isPattern(arr[BLACKLIST_THEMA_TITEL]);
     }
 
-    public void toLower() {
+    public boolean hasTitlePattern() {
+        return patternTitle;
+    }
+
+    public boolean hasThemaPattern() {
+        return patternThema;
+    }
+
+    public void convertToLowerCase() {
         arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
         arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
-    }
-    private void initialize() {
-        arr = new String[MAX_ELEM];
-        Arrays.fill(arr,"");
     }
 
     @Override
