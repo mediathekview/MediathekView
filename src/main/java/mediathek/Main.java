@@ -331,8 +331,7 @@ public class Main {
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
 
-            if (SystemUtils.IS_OS_MAC_OSX)
-                initializeJavaFX(); // let swing grab the macOS menuBar...
+            initializeJavaFX();
 
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
