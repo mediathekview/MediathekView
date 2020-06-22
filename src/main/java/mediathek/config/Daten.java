@@ -16,12 +16,12 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.mainwindow.SeenHistoryCallable;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
@@ -135,11 +134,16 @@ public class Daten {
         setupTimerPool();
     }
 
-    public static boolean isReset() {
+    /**
+     * Indicator if configuration data should be reset.
+     *
+     * @return true if reset is necessary.
+     */
+    public static boolean resetConfigurationData() {
         return reset;
     }
 
-    public static void setReset(final boolean aIsReset) {
+    public static void setRestConfigurationData(final boolean aIsReset) {
         reset = aIsReset;
     }
 
@@ -471,12 +475,12 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        konfigCopy();
+        createConfigurationBackupCopies();
 
         final IoXmlSchreiben configWriter = new IoXmlSchreiben();
         configWriter.writeConfigurationFile(getMediathekXmlFilePath());
 
-        if (Daten.isReset()) {
+        if (resetConfigurationData()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
             String dir1 = getSettingsDirectory_String();
@@ -493,11 +497,16 @@ public class Daten {
             } catch (IOException e) {
                 logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
                 if (MediathekGui.ui() != null) {
-                    MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
-                            + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                            + getSettingsDirectory_String() + '\n'
-                            + "von Hand löschen und dann das Programm wieder starten.\n\n"
-                            + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
+                        alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                                + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
+                                + getSettingsDirectory_String() + '\n'
+                                + "von Hand löschen und dann das Programm wieder starten.\n\n"
+                                + "Im Forum erhalten Sie weitere Hilfe.");
+                        JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+                    });
                 }
             }
         }
@@ -506,7 +515,7 @@ public class Daten {
     /**
      * Create backup copies of settings file.
      */
-    private void konfigCopy() {
+    private void createConfigurationBackupCopies() {
         if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
             logger.info("-------------------------------------------------------");
