@@ -23,6 +23,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import mediathek.daten.blacklist.DatenBlacklist;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
