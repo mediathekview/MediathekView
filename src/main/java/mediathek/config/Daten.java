@@ -44,8 +44,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -490,7 +496,8 @@ public class Daten {
 
             try {
                 final Path path1 = Paths.get(dir1);
-                final String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
+                final var nowStr = DateTimeFormatter.ofPattern("yyyy.MM.dd__HH.mm.ss").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+                final String dir2 = dir1 + "--" + nowStr;
 
                 Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
