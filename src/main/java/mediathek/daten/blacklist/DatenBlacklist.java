@@ -28,7 +28,7 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
         this();
-        //arr[BLACKLIST_NR] = "";
+
         arr[BLACKLIST_SENDER] = sender;
         arr[BLACKLIST_THEMA] = thema;
         arr[BLACKLIST_TITEL] = titel;
