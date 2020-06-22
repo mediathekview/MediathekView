@@ -1,6 +1,9 @@
 package mediathek.config;
 
 import com.google.common.util.concurrent.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import mediathek.Main;
 import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
@@ -13,6 +16,7 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.mainwindow.SeenHistoryCallable;
@@ -42,10 +46,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -421,6 +422,7 @@ public class Daten {
 
     private boolean loadBackup() {
         boolean ret = false;
+
         var path = Daten.getMediathekXmlCopyFilePath();
         if (path.isEmpty()) {
             logger.info("Es gibt kein Backup");
@@ -430,30 +432,41 @@ public class Daten {
         Main.splashScreen.ifPresent(SplashScreen::close);
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
-        int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
-                + "und können nicht geladen werden.\n"
-                + "Soll versucht werden, mit gesicherten\n"
-                + "Einstellungen zu starten?\n\n"
-                + "(ansonsten startet das Programm mit\n"
-                + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
-        if (r != JOptionPane.OK_OPTION) {
-            logger.info("User will kein Backup laden.");
-            return false;
-        }
+        var loadBackup = JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    ButtonType btnYes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType btnNo = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "Die Einstellungen sind beschädigt und können nicht geladen werden. "
+                                    + "Soll versucht werden diese aus einem Backup wiederherzustellen?",
+                            btnYes,
+                            btnNo);
 
-        for (Path p : path) {
-            // teils geladene Reste entfernen
-            clearKonfig();
-            logger.info("Versuch Backup zu laden: {}", p.toString());
-            final IoXmlLesen configReader = new IoXmlLesen();
-            if (configReader.datenLesen(p)) {
-                logger.info("Backup hat geklappt: {}", p.toString());
-                ret = true;
-                break;
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Gesicherte Einstellungen laden");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.orElse(btnNo) == btnNo) {
+                        logger.info("User will kein Backup laden.");
+                        return false;
+                    } else
+                        return true;
+                }
+        );
+
+        if (loadBackup) {
+            for (Path p : path) {
+                // teils geladene Reste entfernen
+                clearKonfig();
+                logger.info("Versuch Backup zu laden: {}", p.toString());
+                final IoXmlLesen configReader = new IoXmlLesen();
+                if (configReader.datenLesen(p)) {
+                    logger.info("Backup hat geklappt: {}", p.toString());
+                    ret = true;
+                    break;
+                }
             }
-
         }
+
         return ret;
     }
 
@@ -581,7 +594,7 @@ public class Daten {
 
     /**
      * Thread factory to give timer pool threads a recognizable name.
-     * Follows the {@link java.util.concurrent.Executors.DefaultThreadFactory} implementation for
+     * Follows the java.util.concurrent.Executors.DefaultThreadFactory implementation for
      * setting up the threads.
      */
     private static class TimerPoolThreadFactory implements ThreadFactory {
