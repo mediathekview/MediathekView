@@ -90,15 +90,9 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     @Override
-    public boolean add(DatenFilm aFilm) {
-        return super.add(aFilm);
-    }
-
-    @Override
     public synchronized void clear() {
-        neueFilme = false;
-
         super.clear();
+        neueFilme = false;
     }
 
     public synchronized void setMetaData(FilmListMetaData meta) {
