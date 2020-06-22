@@ -1,6 +1,5 @@
 package mediathek.config;
 
-import mediathek.javafx.bookmark.BookmarkDataList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -13,6 +12,7 @@ import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.mainwindow.SeenHistoryCallable;
@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -215,18 +216,21 @@ public class Daten {
     }
 
     /**
-     * Return the path to "mediathek.xml_copy_"
-     * first copy exists
+     * Return the path to "mediathek.xml_copy_" files which do exist
      *
-     * @param xmlFilePath Path to file.
+     * @return all the existing paths to backup file
      */
-    private static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath) {
+    private static List<Path> getMediathekXmlCopyFilePath() {
+        List<Path> xmlFilePath = new ArrayList<>();
+
         for (int i = 1; i <= MAX_COPY; ++i) {
             Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
             if (Files.exists(path)) {
                 xmlFilePath.add(path);
             }
         }
+
+        return xmlFilePath;
     }
 
     /**
@@ -417,8 +421,7 @@ public class Daten {
 
     private boolean loadBackup() {
         boolean ret = false;
-        ArrayList<Path> path = new ArrayList<>();
-        Daten.getMediathekXmlCopyFilePath(path);
+        var path = Daten.getMediathekXmlCopyFilePath();
         if (path.isEmpty()) {
             logger.info("Es gibt kein Backup");
             return false;
