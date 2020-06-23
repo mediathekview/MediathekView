@@ -1,6 +1,5 @@
 package mediathek.tool.dns
 
-import mediathek.tool.Functions
 import okhttp3.Dns
 import org.apache.logging.log4j.LogManager
 import java.net.Inet4Address
@@ -22,8 +21,7 @@ class DnsSelector(private val preferenceMode: IPvPreferenceMode) : Dns {
             IPvPreferenceMode.SYSTEM -> addresses
         }
 
-        if (Functions.isDebuggerAttached())
-            logger.trace("Dns ($hostname): " + addresses.joinToString(", ") { it.toString() })
+        logger.trace("Dns ($hostname): " + addresses.joinToString(", ") { it.toString() })
 
         return addresses
     }
