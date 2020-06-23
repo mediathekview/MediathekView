@@ -66,9 +66,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return ret;
     }
 
-    public synchronized DatenBlacklist remove(String idx) {
+    public synchronized DatenBlacklist remove(String ruleNumber) {
         DatenBlacklist bl;
-        if ((bl = get(idx)) != null) {
+        if ((bl = getRuleByNr(ruleNumber)) != null) {
             remove(bl);
         }
         filterListAndNotifyListeners();
@@ -83,12 +83,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     /**
      * Return the element at the specified {@link String} position.
      *
-     * @param strIndex Index string of the specified element
+     * @param ruleNumber Index string of the specified element
      * @return the specified element in the list
      */
-    public synchronized DatenBlacklist get(final String strIndex) {
+    public synchronized DatenBlacklist getRuleByNr(final String ruleNumber) {
         return stream()
-                .filter(e -> e.arr[DatenBlacklist.BLACKLIST_NR].equals(strIndex))
+                .filter(e -> e.arr[DatenBlacklist.BLACKLIST_NR].equals(ruleNumber))
                 .findFirst()
                 .orElse(null);
 
