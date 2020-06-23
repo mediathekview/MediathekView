@@ -97,6 +97,7 @@ public class ApplicationConfiguration {
     public static final String FILMLIST_LOAD_AUDIODESCRIPTION = "filmlist.load.audio_description";
     public static final String FILMLIST_LOAD_SIGNLANGUAGE = "filmlist.load.sign_language";
     public static final String FILMLIST_LOAD_NUM_DAYS = "filmlist.load.days";
+    public static final String FILMLIST_LOAD_LIVESTREAMS = "filmlist.load.livestreams";
 
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
