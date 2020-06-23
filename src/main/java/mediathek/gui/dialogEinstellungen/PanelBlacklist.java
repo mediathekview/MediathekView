@@ -567,10 +567,11 @@ public class PanelBlacklist extends JPanel {
                 jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
                 //---- jLabel10 ----
-                jLabel10.setText("alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
+                jLabel10.setText("Alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
 
                 //---- jButtonTabelleLoeschen ----
                 jButtonTabelleLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); //NON-NLS
+                jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
 
                 GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
