@@ -173,7 +173,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "jLabel10"
-						"text": "alle Einträge löschen:"
+						"text": "Alle Einträge löschen:"
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -181,6 +181,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonTabelleLoeschen"
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
+						"toolTipText": "Alle Einträge löschen"
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Sender-Thema-Titel"
