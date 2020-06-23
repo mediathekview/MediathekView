@@ -16,8 +16,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -93,7 +91,12 @@ public class PanelBlacklist extends JPanel {
 
     private void init() {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
-        jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        jTableBlacklist.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                tableSelect();
+            }
+        });
+
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
@@ -162,8 +165,31 @@ public class PanelBlacklist extends JPanel {
             }
         });
         jComboBoxSender.addActionListener(e -> comboThemaLaden());
-        jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        jTextFieldThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+
+        var documentListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                Filter.checkPattern1(jTextFieldThemaTitel);
+                Filter.checkPattern1(jTextFieldTitel);
+            }
+        };
+        jTextFieldTitel.getDocument().addDocumentListener(documentListener);
+        jTextFieldThemaTitel.getDocument().addDocumentListener(documentListener);
+
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
@@ -238,23 +264,13 @@ public class PanelBlacklist extends JPanel {
         }
     }
 
-    private void tabelleZeileLoeschen() {
+    private void removeTableRow() {
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
             daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
-        }
-    }
-
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                tableSelect();
-            }
         }
     }
 
@@ -284,33 +300,10 @@ public class PanelBlacklist extends JPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
             JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(l -> tabelleZeileLoeschen());
+            item.addActionListener(l -> removeTableRow());
             jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-    }
-
-    private class BeobFilterTitelDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(jTextFieldThemaTitel);
-            Filter.checkPattern1(jTextFieldTitel);
         }
     }
 
