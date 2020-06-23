@@ -144,7 +144,7 @@ public class PanelBlacklist extends JPanel {
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                     String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR).toString();
-                    DatenBlacklist bl = daten.getListeBlacklist().get(delNr);
+                    DatenBlacklist bl = daten.getListeBlacklist().getRuleByNr(delNr);
                     bl.arr[DatenBlacklist.BLACKLIST_SENDER] = se;
                     bl.arr[DatenBlacklist.BLACKLIST_THEMA] = th;
                     bl.arr[DatenBlacklist.BLACKLIST_TITEL] = ti;
@@ -254,7 +254,7 @@ public class PanelBlacklist extends JPanel {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            bl = daten.getListeBlacklist().get(delNr);
+            bl = daten.getListeBlacklist().getRuleByNr(delNr);
         }
         if (bl != null) {
             jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER]);
@@ -269,7 +269,7 @@ public class PanelBlacklist extends JPanel {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            daten.getListeBlacklist().remove(delNr);
+            daten.getListeBlacklist().remove(Integer.parseInt(delNr));
             tabelleLaden();
         }
     }
