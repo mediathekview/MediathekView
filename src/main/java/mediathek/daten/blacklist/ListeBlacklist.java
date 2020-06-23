@@ -23,11 +23,11 @@ import java.util.function.Predicate;
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
-    private long days = 0;
+    private long days;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
-    private long filmlaengeSoll = 0;
-    private int nr = 0;
+    private long filmlaengeSoll;
+    private int nr;
 
     /**
      * Add item without notifying registered listeners.
