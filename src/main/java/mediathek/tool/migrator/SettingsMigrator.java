@@ -68,8 +68,21 @@ public class SettingsMigrator {
                     case "system-panel-videoplayer-anzeigen":
                         migrateSystemPanelVideoplayerAnzeigen(element);
                         break;
+
+                    case "Blacklist-Geo-nicht-anzeigen":
+                        migrateDoNotShowGeoFilms(element);
+                        break;
                 }
             }
+        }
+    }
+
+    private void migrateDoNotShowGeoFilms(Element element) {
+        var node = element.getFirstChild();
+        if (node != null) {
+            boolean result = Boolean.parseBoolean(node.getNodeValue());
+            config.setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, result);
+            logger.debug("migrateDoNotShowGeoFilms");
         }
     }
 

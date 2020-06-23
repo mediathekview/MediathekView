@@ -225,7 +225,6 @@ public class MVConfig {
         SYSTEM_VERSION_PROGRAMMSET("Version-Programmset"),
         // Blacklist
         SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN("Blacklist-Zukunft-nicht-anzeigen"),
-        SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN("Blacklist-Geo-nicht-anzeigen"),
         SYSTEM_BLACKLIST_AUCH_ABO("Blacklist-auch-Abo"),
         SYSTEM_BLACKLIST_START_ON("Blacklist-Start-ausgeschaltet", Boolean.FALSE.toString()),
         SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet", Boolean.FALSE.toString()),

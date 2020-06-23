@@ -102,6 +102,8 @@ public class ApplicationConfiguration {
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
 
+    public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
+
     public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
     public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 

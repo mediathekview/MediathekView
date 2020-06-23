@@ -8,10 +8,7 @@ import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.Filter;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Listener;
-import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.*;
 import mediathek.tool.models.TModel;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -80,9 +77,10 @@ public class PanelBlacklist extends JPanel {
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
 
-        jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
+        var config = ApplicationConfiguration.getConfiguration();
+        jCheckBoxGeo.setSelected(config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false));
         jCheckBoxGeo.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
+            config.setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
             notifyBlacklistChanged();
         });
 
