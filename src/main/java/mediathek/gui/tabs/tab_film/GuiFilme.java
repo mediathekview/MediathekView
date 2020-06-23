@@ -22,7 +22,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
-import mediathek.daten.blacklist.DatenBlacklist;
+import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
@@ -1034,14 +1034,13 @@ public class GuiFilme extends AGuiTabPanel {
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);
             //anlegen
-            JMenuItem itemBlackSender;
-            JMenuItem itemBlackSenderThema;
-            JMenuItem itemBlackThema;
-            itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
-            itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
-            itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
+            var itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
             itemBlackSender.addActionListener(beobBlacklistSender);
+
+            var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
             itemBlackThema.addActionListener(beobBlacklistThema);
+
+            var itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
             itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
             submenueBlack.add(itemBlackSender);
             submenueBlack.add(itemBlackThema);
@@ -1242,9 +1241,9 @@ public class GuiFilme extends AGuiTabPanel {
             private final boolean sender;
             private final boolean thema;
 
-            BeobBlacklist(boolean ssender, boolean tthema) {
-                sender = ssender;
-                thema = tthema;
+            BeobBlacklist(boolean sender, boolean thema) {
+                this.sender = sender;
+                this.thema = thema;
             }
 
             @Override
@@ -1253,17 +1252,17 @@ public class GuiFilme extends AGuiTabPanel {
                 if (nr >= 0) {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String th = film.getThema();
-                        final String se = film.getSender();
+                        final String thema = film.getThema();
+                        final String sender = film.getSender();
                         // Blackliste für alle Fälle einschalten, notify kommt beim add()
                         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
                         var listeBlacklist = daten.getListeBlacklist();
-                        if (!sender) {
-                            listeBlacklist.add(new DatenBlacklist("", th, "", ""));
-                        } else if (!thema) {
-                            listeBlacklist.add(new DatenBlacklist(se, "", "", ""));
+                        if (!this.sender) {
+                            listeBlacklist.add(new BlacklistRule("", thema, "", ""));
+                        } else if (!this.thema) {
+                            listeBlacklist.add(new BlacklistRule(sender, "", "", ""));
                         } else {
-                            listeBlacklist.add(new DatenBlacklist(se, th, "", ""));
+                            listeBlacklist.add(new BlacklistRule(sender, thema, "", ""));
                         }
                     });
                 }

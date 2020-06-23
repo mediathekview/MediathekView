@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @SuppressWarnings("serial")
-public class ListeBlacklist extends LinkedList<DatenBlacklist> {
+public class ListeBlacklist extends LinkedList<BlacklistRule> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();
@@ -37,16 +37,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     /**
      * Add item without notifying registered listeners.
      *
-     * @param b {@link DatenBlacklist} item.
+     * @param b {@link BlacklistRule} item.
      */
-    public synchronized void addWithoutNotification(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
+    public synchronized void addWithoutNotification(BlacklistRule b) {
+        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
         super.add(b);
     }
 
     @Override
-    public synchronized boolean add(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
+    public synchronized boolean add(BlacklistRule b) {
+        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;
@@ -60,14 +60,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     @Override
-    public synchronized DatenBlacklist remove(int idx) {
-        DatenBlacklist ret = super.remove(idx);
+    public synchronized BlacklistRule remove(int idx) {
+        BlacklistRule ret = super.remove(idx);
         filterListAndNotifyListeners();
         return ret;
     }
 
-    public synchronized DatenBlacklist remove(String ruleNumber) {
-        DatenBlacklist bl;
+    public synchronized BlacklistRule remove(String ruleNumber) {
+        BlacklistRule bl;
         if ((bl = getRuleByNr(ruleNumber)) != null) {
             remove(bl);
         }
@@ -76,7 +76,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     @Override
-    public synchronized DatenBlacklist get(int idx) {
+    public synchronized BlacklistRule get(int idx) {
         return super.get(idx);
     }
 
@@ -86,9 +86,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @param ruleNumber Index string of the specified element
      * @return the specified element in the list
      */
-    public synchronized DatenBlacklist getRuleByNr(final String ruleNumber) {
+    public synchronized BlacklistRule getRuleByNr(final String ruleNumber) {
         return stream()
-                .filter(e -> e.arr[DatenBlacklist.BLACKLIST_NR].equals(ruleNumber))
+                .filter(e -> e.arr[BlacklistRule.BLACKLIST_NR].equals(ruleNumber))
                 .findFirst()
                 .orElse(null);
 
@@ -101,10 +101,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     public synchronized Object[][] getObjectData() {
-        Object[][] object = new Object[size()][DatenBlacklist.MAX_ELEM];
+        Object[][] object = new Object[size()][BlacklistRule.MAX_ELEM];
 
         int i = 0;
-        for (DatenBlacklist blacklist : this) {
+        for (BlacklistRule blacklist : this) {
             object[i] = blacklist.arr;
             ++i;
         }
@@ -280,12 +280,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
-        for (DatenBlacklist blacklistEntry : this) {
-            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
-                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
-                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
+        for (BlacklistRule blacklistEntry : this) {
+            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[BlacklistRule.BLACKLIST_SENDER], blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA],
+                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL])
+                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL].toLowerCase().split(","),
+                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL])
+                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, true, film, true)) {
                 return bl_is_whitelist;
             }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class DatenBlacklist implements Comparable<DatenBlacklist> {
+public class BlacklistRule implements Comparable<BlacklistRule> {
 
     public static final int BLACKLIST_NR = 0;
     public static final int BLACKLIST_SENDER = 1;
@@ -21,12 +21,12 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
     private boolean patternTitle = true;
     private boolean patternThema = true;
 
-    public DatenBlacklist() {
+    public BlacklistRule() {
         arr = new String[MAX_ELEM];
         Arrays.fill(arr, "");
     }
 
-    public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
+    public BlacklistRule(String sender, String thema, String titel, String themaTitel) {
         this();
 
         arr[BLACKLIST_SENDER] = sender;
@@ -65,7 +65,7 @@ public class DatenBlacklist implements Comparable<DatenBlacklist> {
     }
 
     @Override
-    public int compareTo(@NotNull DatenBlacklist o) {
+    public int compareTo(@NotNull BlacklistRule o) {
         return 0;
     }
 }

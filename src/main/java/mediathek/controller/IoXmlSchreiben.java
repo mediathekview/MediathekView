@@ -23,7 +23,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
-import mediathek.daten.blacklist.DatenBlacklist;
+import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,8 +75,8 @@ public class IoXmlSchreiben {
         //writer.writeComment("Blacklist");
         writeNewLine(writer);
         //Blacklist schreiben
-        for (DatenBlacklist blacklist : Daten.getInstance().getListeBlacklist()) {
-            xmlSchreibenDaten(writer, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, blacklist.arr, false);
+        for (BlacklistRule blacklist : Daten.getInstance().getListeBlacklist()) {
+            xmlSchreibenDaten(writer, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklist.arr, false);
         }
     }
 

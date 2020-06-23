@@ -20,9 +20,9 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
     @Override
     public boolean test(DatenFilm film) {
 
-        for (DatenBlacklist entry : listeBlacklist) {
-            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[DatenBlacklist.BLACKLIST_TITEL]);
-            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
+        for (BlacklistRule entry : listeBlacklist) {
+            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[BlacklistRule.BLACKLIST_TITEL]);
+            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
 
             if (performFiltering(entry, pTitel, pThema, film)) {
                 return isWhitelist;
@@ -48,7 +48,7 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
             return mySplit(inputString);
     }
 
-    private boolean performFiltering(final DatenBlacklist entry,
+    private boolean performFiltering(final BlacklistRule entry,
                                      final String[] titelSuchen, final String[] themaTitelSuchen,
                                      final DatenFilm film) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
@@ -61,8 +61,8 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
         final String title = film.getTitle();
 
 
-        final String senderSuchen = entry.arr[DatenBlacklist.BLACKLIST_SENDER];
-        final String themaSuchen = entry.arr[DatenBlacklist.BLACKLIST_THEMA];
+        final String senderSuchen = entry.arr[BlacklistRule.BLACKLIST_SENDER];
+        final String themaSuchen = entry.arr[BlacklistRule.BLACKLIST_THEMA];
 
         if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
