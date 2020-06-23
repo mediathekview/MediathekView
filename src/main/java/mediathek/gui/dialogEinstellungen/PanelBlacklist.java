@@ -3,7 +3,7 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.daten.blacklist.DatenBlacklist;
+import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -130,7 +130,7 @@ public class PanelBlacklist extends JPanel {
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
-                daten.getListeBlacklist().add(new DatenBlacklist(se, th, ti, thti));
+                daten.getListeBlacklist().add(new BlacklistRule(se, th, ti, thti));
                 tabelleLaden();
             }
         });
@@ -143,12 +143,12 @@ public class PanelBlacklist extends JPanel {
                 int selectedTableRow = jTableBlacklist.getSelectedRow();
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-                    String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR).toString();
-                    DatenBlacklist bl = daten.getListeBlacklist().getRuleByNr(delNr);
-                    bl.arr[DatenBlacklist.BLACKLIST_SENDER] = se;
-                    bl.arr[DatenBlacklist.BLACKLIST_THEMA] = th;
-                    bl.arr[DatenBlacklist.BLACKLIST_TITEL] = ti;
-                    bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL] = thti;
+                    String delNr = jTableBlacklist.getModel().getValueAt(row, BlacklistRule.BLACKLIST_NR).toString();
+                    BlacklistRule bl = daten.getListeBlacklist().getRuleByNr(delNr);
+                    bl.arr[BlacklistRule.BLACKLIST_SENDER] = se;
+                    bl.arr[BlacklistRule.BLACKLIST_THEMA] = th;
+                    bl.arr[BlacklistRule.BLACKLIST_TITEL] = ti;
+                    bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = thti;
                     tabelleLaden();
                     jTableBlacklist.addRowSelectionInterval(row, row);
                     notifyBlacklistChanged();
@@ -244,23 +244,23 @@ public class PanelBlacklist extends JPanel {
     }
 
     private void tabelleLaden() {
-        var model = new DefaultTableModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES);
+        var model = new DefaultTableModel(daten.getListeBlacklist().getObjectData(), BlacklistRule.COLUMN_NAMES);
         jTableBlacklist.setModel(model);
     }
 
     private void tableSelect() {
-        DatenBlacklist bl = null;
+        BlacklistRule bl = null;
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
+            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
             bl = daten.getListeBlacklist().getRuleByNr(delNr);
         }
         if (bl != null) {
-            jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER]);
-            jComboBoxThema.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_THEMA]);
-            jTextFieldTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_TITEL]);
-            jTextFieldThemaTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
+            jComboBoxSender.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_SENDER]);
+            jComboBoxThema.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_THEMA]);
+            jTextFieldTitel.setText(bl.arr[BlacklistRule.BLACKLIST_TITEL]);
+            jTextFieldThemaTitel.setText(bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
         }
     }
 
@@ -268,7 +268,7 @@ public class PanelBlacklist extends JPanel {
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
+            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
             daten.getListeBlacklist().remove(Integer.parseInt(delNr));
             tabelleLaden();
         }
