@@ -20,15 +20,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class PanelBlacklist extends JPanel {
-    public boolean ok = false;
+    public boolean ok;
     public String ziel;
     private final String name;
     private final Daten daten;
@@ -262,9 +260,6 @@ public class PanelBlacklist extends JPanel {
 
     private class BeobMausTabelle extends MouseAdapter {
 
-        //rechhte Maustaste in der Tabelle
-        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
-
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
@@ -289,18 +284,10 @@ public class PanelBlacklist extends JPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
             JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(beobLoeschen);
+            item.addActionListener(l -> tabelleZeileLoeschen());
             jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobLoeschen implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelleZeileLoeschen();
-            }
         }
     }
 
