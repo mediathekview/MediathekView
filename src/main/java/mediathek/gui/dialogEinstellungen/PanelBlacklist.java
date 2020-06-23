@@ -9,7 +9,6 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
-import mediathek.tool.models.TModel;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -19,6 +18,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -220,7 +220,8 @@ public class PanelBlacklist extends JPanel {
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES));
+        var model = new DefaultTableModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES);
+        jTableBlacklist.setModel(model);
     }
 
     private void tableSelect() {
