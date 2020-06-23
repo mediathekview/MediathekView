@@ -20,26 +20,14 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, par l {comp jLabel3:::p::p, comp jCheckBoxZukunftNichtAnzeigen:::p::p}, space :::x}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp jLabel3:::p::p, space u:::p, comp jCheckBoxZukunftNichtAnzeigen:::p::p, space :::x}}"
-					} ) {
-						name: "jPanel5"
-						"border": new javax.swing.border.EtchedBorder( 1, null, null )
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "jLabel3"
-							"text": "Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"
-							auxiliary() {
-								"JavaCodeGenerator.variableLocal": true
-							}
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "jCheckBoxZukunftNichtAnzeigen"
-							"text": "Filme mit Datum in der Zukunft nicht anzeigen"
-						} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxZukunftNichtAnzeigen"
+						"text": "Filme mit Datum in der Zukunft nicht anzeigen"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxGeo"
+						"text": "Filme, die per Geoblocking gesperrt sind, nicht anzeigen"
+						"toolTipText": "<html>Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {comp jSliderMinuten::l:::x, seq {par l {seq l {comp jLabel1:::p::p, space :::p, comp jTextFieldMinuten:::p:81:p}, comp jLabel13::l:p::p}, space :0:405:x}}, space :::p}}"
@@ -68,34 +56,6 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel13"
 							"text": "Filme, die keine Längenangabe haben, werden immer angezeigt."
-							auxiliary() {
-								"JavaCodeGenerator.variableLocal": true
-							}
-						} )
-					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :12:12:p, comp jLabel9:::p::p}, comp jLabel4:::p::p, comp jCheckBoxGeo::l:p::p}, space :::x}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp jLabel4:::p::p, space :::p, comp jLabel9:::p::p, space u:::p, comp jCheckBoxGeo:::p::p, space :::x}}"
-					} ) {
-						name: "jPanel7"
-						"border": new javax.swing.border.EtchedBorder( 1, null, null )
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "jLabel4"
-							"text": "Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden."
-							auxiliary() {
-								"JavaCodeGenerator.variableLocal": true
-							}
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "jCheckBoxGeo"
-							"text": "Filme, die per Geoblocking gesperrt sind, nicht anzeigen"
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "jLabel9"
-							"text": "(Dazu muss die eigene Position in den Einstellungen angegeben werden)"
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}

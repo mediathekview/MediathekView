@@ -338,18 +338,13 @@ public class PanelBlacklist extends JPanel {
     private void initComponents() {
         var jTabbedPaneBlacklist = new JTabbedPane();
         var jPanel3 = new JPanel();
-        var jPanel5 = new JPanel();
-        var jLabel3 = new JLabel();
         jCheckBoxZukunftNichtAnzeigen = new JCheckBox();
+        jCheckBoxGeo = new JCheckBox();
         var jPanel6 = new JPanel();
         jSliderMinuten = new JSlider();
         var jLabel1 = new JLabel();
         jTextFieldMinuten = new JTextField();
         var jLabel13 = new JLabel();
-        var jPanel7 = new JPanel();
-        var jLabel4 = new JLabel();
-        jCheckBoxGeo = new JCheckBox();
-        var jLabel9 = new JLabel();
         var jPanel1 = new JPanel();
         var jScrollPane1 = new JScrollPane();
         jTableBlacklist = new JTable();
@@ -385,38 +380,14 @@ public class PanelBlacklist extends JPanel {
             {
                 jPanel3.setLayout(new VerticalLayout(5));
 
-                //======== jPanel5 ========
-                {
-                    jPanel5.setBorder(new EtchedBorder());
+                //---- jCheckBoxZukunftNichtAnzeigen ----
+                jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen"); //NON-NLS
+                jPanel3.add(jCheckBoxZukunftNichtAnzeigen);
 
-                    //---- jLabel3 ----
-                    jLabel3.setText("Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"); //NON-NLS
-
-                    //---- jCheckBoxZukunftNichtAnzeigen ----
-                    jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen"); //NON-NLS
-
-                    GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
-                    jPanel5.setLayout(jPanel5Layout);
-                    jPanel5Layout.setHorizontalGroup(
-                        jPanel5Layout.createParallelGroup()
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel5Layout.createParallelGroup()
-                                    .addComponent(jLabel3)
-                                    .addComponent(jCheckBoxZukunftNichtAnzeigen))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                    jPanel5Layout.setVerticalGroup(
-                        jPanel5Layout.createParallelGroup()
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBoxZukunftNichtAnzeigen)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                }
-                jPanel3.add(jPanel5);
+                //---- jCheckBoxGeo ----
+                jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen"); //NON-NLS
+                jCheckBoxGeo.setToolTipText("<html>Geogeblockte Filme k\u00f6nnen im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>"); //NON-NLS
+                jPanel3.add(jCheckBoxGeo);
 
                 //======== jPanel6 ========
                 {
@@ -467,47 +438,6 @@ public class PanelBlacklist extends JPanel {
                     );
                 }
                 jPanel3.add(jPanel6);
-
-                //======== jPanel7 ========
-                {
-                    jPanel7.setBorder(new EtchedBorder());
-
-                    //---- jLabel4 ----
-                    jLabel4.setText("Geogeblockte Filme k\u00f6nnen im jeweiligen \"Ausland\" nicht abgerufen werden."); //NON-NLS
-
-                    //---- jCheckBoxGeo ----
-                    jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen"); //NON-NLS
-
-                    //---- jLabel9 ----
-                    jLabel9.setText("(Dazu muss die eigene Position in den Einstellungen angegeben werden)"); //NON-NLS
-
-                    GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
-                    jPanel7.setLayout(jPanel7Layout);
-                    jPanel7Layout.setHorizontalGroup(
-                        jPanel7Layout.createParallelGroup()
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel7Layout.createParallelGroup()
-                                    .addGroup(jPanel7Layout.createSequentialGroup()
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jLabel9))
-                                    .addComponent(jLabel4)
-                                    .addComponent(jCheckBoxGeo))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                    jPanel7Layout.setVerticalGroup(
-                        jPanel7Layout.createParallelGroup()
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBoxGeo)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                }
-                jPanel3.add(jPanel7);
             }
             jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3); //NON-NLS
 
@@ -752,9 +682,9 @@ public class PanelBlacklist extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JCheckBox jCheckBoxZukunftNichtAnzeigen;
+    private JCheckBox jCheckBoxGeo;
     private JSlider jSliderMinuten;
     private JTextField jTextFieldMinuten;
-    private JCheckBox jCheckBoxGeo;
     private JTable jTableBlacklist;
     private JComboBox<String> jComboBoxSender;
     private JComboBox<String> jComboBoxThema;
