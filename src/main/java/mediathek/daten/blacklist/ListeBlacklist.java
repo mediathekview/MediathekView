@@ -23,10 +23,15 @@ import java.util.function.Predicate;
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
+    private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();
     private long days;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
-    private long filmlaengeSoll;
+    /**
+     * The minimum length in minutes a film should have.
+     * Configuration in Settings/Blacklist panel.
+     */
+    private long minimumFilmLength;
     private int nr;
 
     /**
@@ -153,12 +158,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
         if (blacklistIsActive) {
             if (doNotShowGeoBlockedFilms) {
-                filterList.add(this::checkGeoBlockedFilm);
+                filterList.add(geoblockingPredicate);
             }
             if (doNotShowFutureFilms) {
                 filterList.add(this::checkIfFilmIsInFuture);
             }
-            filterList.add(this::checkFilmLength);
+            if (minimumFilmLength != 0) {
+                filterList.add(this::checkFilmLength);
+            }
 
             //add the filter predicates to the list
             if (!isEmpty()) {
@@ -226,14 +233,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             days = 0;
         }
         try {
-            filmlaengeSoll = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            minimumFilmLength = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
-            filmlaengeSoll = 0;
+            minimumFilmLength = 0;
         }
         blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         var config = ApplicationConfiguration.getConfiguration();
-        doNotShowGeoBlockedFilms = config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false);
+        doNotShowGeoBlockedFilms = config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+
+        geoblockingPredicate.updateLocation();
     }
 
     /**
@@ -253,15 +262,18 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (!blacklistIsActive) {
             return true;
         }
-        if (doNotShowGeoBlockedFilms && !checkGeoBlockedFilm(film)) {
+        if (doNotShowGeoBlockedFilms && !geoblockingPredicate.test(film)) {
             return false;
         }
         if (doNotShowFutureFilms && !checkIfFilmIsInFuture(film)) {
             return false;
         }
-        if (!checkFilmLength(film)) {
-            // wegen der Möglichkeit "Whiteliste" muss das extra geprüft werden
-            return false;
+
+        if (minimumFilmLength != 0) {
+            if (!checkFilmLength(film)) {
+                // wegen der Möglichkeit "Whiteliste" muss das extra geprüft werden
+                return false;
+            }
         }
         if (this.isEmpty()) {
             return true;
@@ -279,21 +291,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             }
         }
         return !bl_is_whitelist;
-    }
-
-    /**
-     * Check if film would be geoblocked for user
-     *
-     * @param film item to be checked
-     * @return true if it is NOT blocked, false if it IS blocked
-     */
-    private boolean checkGeoBlockedFilm(DatenFilm film) {
-        var geoOpt = film.getGeo();
-        if (geoOpt.isEmpty())
-            return true;
-
-        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
-        return geoOpt.orElse("").contains(geoLocation);
     }
 
     /**
@@ -329,7 +326,34 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private boolean checkFilmLength(@NotNull DatenFilm film) {
         final long filmLength = film.getFilmLength();
-        return !(filmlaengeSoll != 0 && filmLength != 0 && filmlaengeSoll > filmLength);
+        return !(filmLength != 0 && minimumFilmLength > filmLength);
+    }
 
+    static class GeoblockingPredicate implements Predicate<DatenFilm> {
+        /**
+         * Stores the current user´s location. Can be modified by another thread.
+         */
+        private String geoLocation;
+
+        public GeoblockingPredicate() {
+            setLocationData();
+        }
+
+        public void updateLocation() {
+            setLocationData();
+        }
+
+        private void setLocationData() {
+            geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        }
+
+        @Override
+        public boolean test(DatenFilm film) {
+            var geoOpt = film.getGeo();
+            if (geoOpt.isEmpty())
+                return true;
+            else
+                return geoOpt.orElse("").contains(geoLocation);
+        }
     }
 }
