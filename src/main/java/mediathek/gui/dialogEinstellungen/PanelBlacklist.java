@@ -13,6 +13,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Listener;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -78,7 +79,13 @@ public class PanelBlacklist extends JPanel {
         jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
+
         jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
+        jCheckBoxGeo.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
+            notifyBlacklistChanged();
+        });
+
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
@@ -102,10 +109,6 @@ public class PanelBlacklist extends JPanel {
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
-            notifyBlacklistChanged();
-        });
-        jCheckBoxGeo.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
             notifyBlacklistChanged();
         });
         jCheckBoxAbo.addActionListener(e -> {
@@ -380,6 +383,7 @@ public class PanelBlacklist extends JPanel {
 
             //======== jPanel3 ========
             {
+                jPanel3.setLayout(new VerticalLayout(5));
 
                 //======== jPanel5 ========
                 {
@@ -412,6 +416,7 @@ public class PanelBlacklist extends JPanel {
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
+                jPanel3.add(jPanel5);
 
                 //======== jPanel6 ========
                 {
@@ -461,6 +466,7 @@ public class PanelBlacklist extends JPanel {
                                 .addContainerGap())
                     );
                 }
+                jPanel3.add(jPanel6);
 
                 //======== jPanel7 ========
                 {
@@ -501,30 +507,7 @@ public class PanelBlacklist extends JPanel {
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
-
-                GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-                jPanel3.setLayout(jPanel3Layout);
-                jPanel3Layout.setHorizontalGroup(
-                    jPanel3Layout.createParallelGroup()
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(jPanel3Layout.createParallelGroup()
-                                .addComponent(jPanel6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addContainerGap())
-                );
-                jPanel3Layout.setVerticalGroup(
-                    jPanel3Layout.createParallelGroup()
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(205, Short.MAX_VALUE))
-                );
+                jPanel3.add(jPanel7);
             }
             jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3); //NON-NLS
 
@@ -672,7 +655,7 @@ public class PanelBlacklist extends JPanel {
                                     .addGroup(jPanel1Layout.createParallelGroup()
                                         .addComponent(jRadioButtonWhitelist)
                                         .addComponent(jRadioButtonBlacklist))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 386, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 373, Short.MAX_VALUE)
                                     .addComponent(jButtonHilfe))
                                 .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                     .addGap(0, 0, Short.MAX_VALUE)
@@ -692,7 +675,7 @@ public class PanelBlacklist extends JPanel {
                                     .addComponent(jRadioButtonWhitelist))
                                 .addComponent(jButtonHilfe))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                 .addComponent(jLabel10)

@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -13,9 +13,8 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel6::l:::x, comp jPanel5::l:::x, comp jPanel7::l:::x}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :p::p, comp jPanel5:::p::p, space :::p, comp jPanel6:::p::p, space :::p, comp jPanel7:::p::p, space ::205:x}}"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+					"gap": 5
 				} ) {
 					name: "jPanel3"
 					auxiliary() {
@@ -106,8 +105,8 @@ new FormModel {
 					"title": "Blacklist allgemein"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, comp jPanel4::l:::x, seq {par l {comp jRadioButtonWhitelist:::p::p, comp jRadioButtonBlacklist::l:p::p}, space ::386:x, comp jButtonHilfe:::p::p}, seq t {space :0:0:x, comp jLabel10:::p::p, space :::p, comp jButtonTabelleLoeschen:::p::p}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :p::p, par l {seq {comp jRadioButtonBlacklist:::p::p, space :::p, comp jRadioButtonWhitelist:::p::p}, comp jButtonHilfe::l:p::p}, space :p::p, comp jScrollPane1::::115:x, space :p::p, par c {comp jLabel10::c:p::p, comp jButtonTabelleLoeschen::c:p::p}, space u:p::p, comp jPanel4:::p::p, space :p::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, comp jPanel4::l:::x, seq {par l {comp jRadioButtonWhitelist:::p::p, comp jRadioButtonBlacklist::l:p::p}, space ::373:x, comp jButtonHilfe:::p::p}, seq t {space :0:0:x, comp jLabel10:::p::p, space :::p, comp jButtonTabelleLoeschen:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p::p, par l {seq {comp jRadioButtonBlacklist:::p::p, space :::p, comp jRadioButtonWhitelist:::p::p}, comp jButtonHilfe::l:p::p}, space :p::p, comp jScrollPane1::::113:x, space :p::p, par c {comp jLabel10::c:p::p, comp jButtonTabelleLoeschen::c:p::p}, space u:p::p, comp jPanel4:::p::p, space :p::p}}"
 				} ) {
 					name: "jPanel1"
 					auxiliary() {
