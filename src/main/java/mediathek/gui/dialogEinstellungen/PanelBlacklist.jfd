@@ -214,17 +214,6 @@ new FormModel {
 			"size": new java.awt.Dimension( 870, 625 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
-		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {space :0:100:x}"
-			"$verticalGroup": "par l {space :0:100:x}"
-		} ) {
-			name: "jPanel2"
-			auxiliary() {
-				"JavaCodeGenerator.variableLocal": true
-			}
-		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 316 )
-		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
 			name: "buttonGroup1"
 			auxiliary() {

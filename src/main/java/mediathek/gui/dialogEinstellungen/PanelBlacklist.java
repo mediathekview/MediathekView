@@ -348,7 +348,6 @@ public class PanelBlacklist extends JPanel {
         jCheckBoxStart = new JCheckBox();
         jCheckBoxBlacklistEingeschaltet = new JCheckBox();
         jCheckBoxAbo = new JCheckBox();
-        var jPanel2 = new JPanel();
 
         //======== this ========
 
@@ -637,21 +636,6 @@ public class PanelBlacklist extends JPanel {
                     .addComponent(jTabbedPaneBlacklist, GroupLayout.PREFERRED_SIZE, 510, GroupLayout.PREFERRED_SIZE)
                     .addContainerGap())
         );
-
-        //======== jPanel2 ========
-        {
-
-            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGap(0, 100, Short.MAX_VALUE)
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGap(0, 100, Short.MAX_VALUE)
-            );
-        }
 
         //---- buttonGroup1 ----
         var buttonGroup1 = new ButtonGroup();
