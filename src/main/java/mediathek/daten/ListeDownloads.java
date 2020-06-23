@@ -348,8 +348,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         final var sdf = new SimpleDateFormat("dd.MM.yyyy");
         final var todayDateStr = sdf.format(new Date());
 
+        var listeAbo = daten.getListeAbo();
+        var listeBlacklist = daten.getListeBlacklist();
+        var aboHistoryController = daten.getAboHistoryController();
         for (DatenFilm film : daten.getListeFilme()) {
-            DatenAbo abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true);
+            DatenAbo abo = listeAbo.getAboFuerFilm_schnell(film, true);
             if (abo == null) {
                 // dann gibts dafür kein Abo
                 continue;
@@ -359,11 +362,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
             if (checkWithBlackList) {
                 //Blacklist auch bei Abos anwenden
-                if (!daten.getListeBlacklist().checkBlackOkFilme_Downloads(film)) {
+                if (!listeBlacklist.checkBlackOkFilme_Downloads(film)) {
                     continue;
                 }
             }
-            if (daten.getAboHistoryController().urlPruefen(film.getUrl())) {
+            if (aboHistoryController.urlPruefen(film.getUrl())) {
                 // ist schon mal geladen worden
                 continue;
             }

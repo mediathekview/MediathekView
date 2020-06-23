@@ -885,8 +885,9 @@ public class GuiDownloads extends AGuiTabPanel {
             return;
         }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
-        daten.getListeDownloads().abosAuffrischen();
-        daten.getListeDownloads().abosSuchen(mediathekGui);
+        var listeDownloads = daten.getListeDownloads();
+        listeDownloads.abosAuffrischen();
+        listeDownloads.abosSuchen(mediathekGui);
         reloadTable();
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
