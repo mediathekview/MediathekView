@@ -110,6 +110,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * Main filtering routine
      */
     public synchronized void filterListe() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         final Daten daten = Daten.getInstance();
         final ListeFilme completeFilmList = daten.getListeFilme();
         final ListeFilme filteredList = daten.getListeFilmeNachBlackList();
@@ -117,7 +118,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         filteredList.clear();
 
         loadCurrentFilterSettings();
-
 
         if (completeFilmList != null && !completeFilmList.isEmpty()) { // Check if there are any movies
             filteredList.setMetaData(completeFilmList.metaData());
@@ -130,16 +130,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
             final Predicate<DatenFilm> pred = createPredicate();
 
-            Stopwatch stopwatch2 = Stopwatch.createStarted();
             completeFilmList.parallelStream().filter(pred).forEachOrdered(filteredList::add);
-            stopwatch2.stop();
-            logger.debug("FILTERING and ADDING() took: {}", stopwatch2);
 
             setupNewEntries();
 
             // Array mit Sendernamen/Themen füllen
             filteredList.fillSenderList();
         }
+        stopwatch.stop();
+        logger.trace("Complete filtering took: {}", stopwatch);
     }
 
     /**

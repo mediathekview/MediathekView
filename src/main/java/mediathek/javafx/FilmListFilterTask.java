@@ -33,7 +33,7 @@ public class FilmListFilterTask extends Task<Void> {
         updateProgress(-1, 4);
         daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false);
 
-        updateMessage("Blacklist filtern");
+        updateMessage("Alle Filter anwenden");
         updateProgress(-1, 4);
         daten.getListeBlacklist().filterListe();
 
