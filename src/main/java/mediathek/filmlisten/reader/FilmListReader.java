@@ -288,6 +288,7 @@ public class FilmListReader implements AutoCloseable {
         final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER, true);
         final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION, true);
         final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE, true);
+        final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true);
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
@@ -331,6 +332,11 @@ public class FilmListReader implements AutoCloseable {
 
                 if (!loadSignLanguage) {
                     if (datenFilm.isSignLanguage())
+                        continue;
+                }
+
+                if (!loadLivestreams) {
+                    if (datenFilm.isLivestream())
                         continue;
                 }
 

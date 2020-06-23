@@ -52,6 +52,9 @@ public class PanelFilmlisteLaden extends JPanel {
 
         cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,true));
         cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,cbTrailer.isSelected()));
+
+        cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true));
+        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
     }
 
     private void init() {
@@ -198,6 +201,7 @@ public class PanelFilmlisteLaden extends JPanel {
         cbSign = new JCheckBox();
         cbTrailer = new JCheckBox();
         cbAudio = new JCheckBox();
+        cbLivestreams = new JCheckBox();
 
         //======== this ========
         setMinimumSize(new Dimension(746, 400));
@@ -305,6 +309,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 new AC()
                     .fill().gap()
                     .fill().gap()
+                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
@@ -321,6 +326,10 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- cbAudio ----
             cbAudio.setText("H\u00f6rfassungen"); //NON-NLS
             jPanel1.add(cbAudio, new CC().cell(1, 0));
+
+            //---- cbLivestreams ----
+            cbLivestreams.setText("Livestreams"); //NON-NLS
+            jPanel1.add(cbLivestreams, new CC().cell(3, 0));
         }
         add(jPanel1, new CC().cell(1, 2));
 
@@ -344,5 +353,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox cbSign;
     private JCheckBox cbTrailer;
     private JCheckBox cbAudio;
+    private JCheckBox cbLivestreams;
     // End of variables declaration//GEN-END:variables
 }
