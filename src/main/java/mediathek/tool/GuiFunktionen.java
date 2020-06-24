@@ -8,7 +8,6 @@ import mediathek.daten.ListeFilme;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.Functions.OperatingSystemType;
 import org.apache.commons.lang3.SystemUtils;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,39 +42,6 @@ public class GuiFunktionen extends MVFunctionSys {
         } catch (Exception ignored) {
         }
 
-    }
-
-    public static File chooseSaveFileLocation(Frame parent, @NotNull String title, @NotNull String initialFile) {
-        File resultFile = null;
-
-        if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_WINDOWS) {
-            FileDialog chooser = new FileDialog(parent, title);
-            chooser.setMode(FileDialog.SAVE);
-            chooser.setMultipleMode(false);
-            if (!initialFile.isEmpty()) {
-                chooser.setDirectory(initialFile);
-            }
-            chooser.setVisible(true);
-            if (chooser.getFile() != null) {
-                var files = chooser.getFiles();
-                if (files.length != 0)
-                    resultFile = files[0];
-            }
-        } else {
-            JFileChooser chooser = new JFileChooser();
-            if (!initialFile.isEmpty()) {
-                chooser.setCurrentDirectory(new File(initialFile));
-            }
-            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            chooser.setDialogTitle(title);
-            chooser.setFileHidingEnabled(true);
-            int returnVal = chooser.showSaveDialog(parent);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                resultFile = new File(chooser.getSelectedFile().getAbsolutePath());
-            }
-        }
-
-        return resultFile;
     }
 
     public static void copyToClipboard(String s) {
