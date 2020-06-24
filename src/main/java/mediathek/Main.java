@@ -246,6 +246,7 @@ public class Main {
         var cpu = hal.getProcessor();
         logger.debug("=== Hardware Information ===");
         logger.debug(cpu);
+        logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
         logger.debug("=== Memory Information ===");
         var mi = hal.getMemory();
         logger.debug(mi);
@@ -268,6 +269,10 @@ public class Main {
         final String[] java = Functions.getJavaVersion();
         for (String ja : java) {
             logger.debug(ja);
+        }
+        var arch = System.getProperty("os.arch");
+        if (arch != null) {
+            logger.debug("Architecture: {}", arch);
         }
         logger.debug("===");
     }
