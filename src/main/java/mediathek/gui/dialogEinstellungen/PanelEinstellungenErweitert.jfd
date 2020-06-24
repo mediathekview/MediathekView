@@ -1,0 +1,141 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+			"gap": 5
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+				"$columnConstraints": "[grow,fill]"
+				"$rowConstraints": "[fill][fill]"
+			} ) {
+				name: "jPanel6"
+				"border": new javax.swing.border.TitledBorder( "Nach dem Neuladen der Filmliste" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxAboSuchen"
+					"text": "Abos automatisch suchen"
+					"toolTipText": "<html>Nach dem Neuladen einer Filmliste wird dann sofort nach neuen Abos gesucht.<br>Ansonsten muss man im Tab Download auf <i>Downloadliste aktualisieren</i> klicken.</html>"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxDownloadSofortStarten"
+					"text": "Downloads aus Abos sofort starten"
+					"toolTipText": "<html>Neu angelegte Downloads (aus Abos) werden sofort gestartet.<br>Ansonsten muss man sie selbst starten.</html>"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq t {comp jTextFieldProgrammDateimanager:::::x, space :::p, comp jButtonProgrammDateimanager:::p::p, space :::p, comp jButtonHilfeProgrammDateimanager:::p::p}, seq t {comp jTextFieldVideoplayer:::::x, space :::p, comp jButtonProgrammVideoplayer:::p::p, space :::p, comp jButtonHilfeVideoplayer:::p::p}, seq {par l {comp jLabel1:::p::p, comp jLabel2::l:p::p}, space :0:214:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par b {comp jTextFieldProgrammDateimanager:3:b:p::p, comp jButtonProgrammDateimanager:3:b:p::p, comp jButtonHilfeProgrammDateimanager:3:b:p::p}, space u:::p, par t {seq t {comp jLabel2:::p::p, space :::p, comp jTextFieldVideoplayer:5::p::p, space :p:1:p}, par b:t {comp jButtonHilfeVideoplayer:5:b:p::p, comp jButtonProgrammVideoplayer:5:b:p::p}}, space :::x}}"
+			} ) {
+				name: "jPanel2"
+				"border": new javax.swing.border.TitledBorder( "Tab Downloads" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldProgrammDateimanager"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonProgrammDateimanager"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Programm auswählen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonHilfeProgrammDateimanager"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+					"toolTipText": "Hilfe anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "Datei-Manager zum Öffnen des Downloadordners"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel2"
+					"text": "Videoplayer zum Abspielen gespeicherter Filme"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldVideoplayer"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonHilfeVideoplayer"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+					"toolTipText": "Hilfe anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonProgrammVideoplayer"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Programm auswählen"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, comp jTextFieldProgrammUrl:::::x, space :::p, comp jButtonProgrammUrl:::p::p, space :::p, comp jButtonHilfeProgrammUrl:::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par b {comp jTextFieldProgrammUrl:4:b:p::p, comp jButtonProgrammUrl:4:b:p::p, comp jButtonHilfeProgrammUrl:4:b:p::p}, space :::x}}"
+			} ) {
+				name: "jPanel4"
+				"border": new javax.swing.border.TitledBorder( "Webbrowser zum Öffnen von URLs" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldProgrammUrl"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonProgrammUrl"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Programm auswählen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonHilfeProgrammUrl"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+					"toolTipText": "Hilfe anzeigen"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space :::p, comp jTextFieldProgrammShutdown::::444:x, space :::p, comp jButtonProgrammShutdown:::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq l {par t {comp jButtonProgrammShutdown:6::p::p, comp jTextFieldProgrammShutdown:6::p::p}, space :0:12:x}}"
+			} ) {
+				name: "jPanel3"
+				"border": new javax.swing.border.TitledBorder( "Linux: Aufruf zum Shutdown" )
+				"toolTipText": "<html>Unter Linux wird das ausgewählte Programm/Script ausgeführt um den Recher herunter zu fahren.<br>Mögliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonProgrammShutdown"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Programm/Script auswählen"
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldProgrammShutdown"
+					"text": "shutdown -h now"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 560, 410 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+	}
+}

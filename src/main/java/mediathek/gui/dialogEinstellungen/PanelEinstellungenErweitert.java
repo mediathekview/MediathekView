@@ -8,15 +8,21 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Functions.OperatingSystemType;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -24,10 +30,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import static mediathek.tool.Functions.getOs;
-
 @SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends PanelVorlage {
+    private static final Logger logger = LogManager.getLogger();
+
     @Handler
     private void handleProgramLocationChangedEvent(ProgramLocationChangedEvent e) {
         SwingUtilities.invokeLater(this::init);
@@ -76,9 +82,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
         jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
-        if (getOs() != OperatingSystemType.LINUX) {
-            // Funktion ist nur für Linux
-            jButtonHilfeProgrammShutdown.setEnabled(false);
+        if (!SystemUtils.IS_OS_LINUX) {
             jTextFieldProgrammShutdown.setEnabled(false);
             jButtonProgrammShutdown.setEnabled(false);
         }
@@ -103,16 +107,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 + "Normalerweise wird der Dateimanager des\n"
                 + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
                 + "kann hier ein Programm dafür angegeben werden.").setVisible(true));
-        jButtonHilfeNeuladen.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Abos automatisch suchen:\n"
-                + "Nach dem Neuladen einer Filmliste wird dann\n"
-                + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
-                + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
-                + "\n"
-                + "Downloads sofort starten:\n"
-                + "Neu angelegte Downloads (aus Abos) werden\n"
-                + "sofort gestartet. Ansonsten muss man sie\n"
-                + "selbst starten.\n").setVisible(true));
+
         jButtonHilfeVideoplayer.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Im Tab \"Downloads\" kann man den gespeicherten\n"
                 + "Film in einem Videoplayer öffnen.\n"
@@ -125,24 +120,12 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
                 + "kann damit ein Programm ausgewählt und\n"
                 + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true));
-        jButtonHilfeProgrammShutdown.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Bei Linux wird das Programm/Script ausgeführt\n"
-                + "um den Recher herunter zu fahren\n"
-                + "\n"
-                + "mögliche Aufrufe sind:\n"
-                + "\n"
-                + "systemctl poweroff\n"
-                + "poweroff\n"
-                + "sudo shutdown -P now\n"
-                + "shutdown -h now").setVisible(true));
     }
 
     private void setIcon() {
-        jButtonHilfeNeuladen.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammUrl.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeProgrammShutdown.setIcon(Icons.ICON_BUTTON_HELP);
 
         jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -150,7 +133,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
     }
 
-    private class BeobDoc implements DocumentListener {
+    static private class BeobDoc implements DocumentListener {
 
         MVConfig.Configs config;
         JTextField txt;
@@ -181,7 +164,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
     }
 
-    private class BeobPfad implements ActionListener {
+    static private class BeobPfad implements ActionListener {
 
         MVConfig.Configs config;
         String title;
@@ -205,7 +188,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         textField.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(915263014, ex);
+                        logger.error("BeobPfad.actionPerformed", ex);
                     }
                 }
             } else {
@@ -222,7 +205,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(751214501, ex);
+                        logger.error("BeobPfad.actionPerformed", ex);
                     }
                 }
             }
@@ -250,249 +233,224 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
      * always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jPanel6 = new JPanel();
+        jCheckBoxAboSuchen = new JCheckBox();
+        jCheckBoxDownloadSofortStarten = new JCheckBox();
+        var jPanel2 = new JPanel();
+        jTextFieldProgrammDateimanager = new JTextField();
+        jButtonProgrammDateimanager = new JButton();
+        jButtonHilfeProgrammDateimanager = new JButton();
+        var jLabel1 = new JLabel();
+        var jLabel2 = new JLabel();
+        jTextFieldVideoplayer = new JTextField();
+        jButtonHilfeVideoplayer = new JButton();
+        jButtonProgrammVideoplayer = new JButton();
+        var jPanel4 = new JPanel();
+        jTextFieldProgrammUrl = new JTextField();
+        jButtonProgrammUrl = new JButton();
+        jButtonHilfeProgrammUrl = new JButton();
+        var jPanel3 = new JPanel();
+        jButtonProgrammShutdown = new JButton();
+        jTextFieldProgrammShutdown = new JTextField();
 
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        jCheckBoxAboSuchen = new javax.swing.JCheckBox();
-        jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
-        jButtonHilfeNeuladen = new javax.swing.JButton();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jTextFieldProgrammDateimanager = new javax.swing.JTextField();
-        jButtonProgrammDateimanager = new javax.swing.JButton();
-        jButtonHilfeProgrammDateimanager = new javax.swing.JButton();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jTextFieldVideoplayer = new javax.swing.JTextField();
-        jButtonHilfeVideoplayer = new javax.swing.JButton();
-        jButtonProgrammVideoplayer = new javax.swing.JButton();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
-        jTextFieldProgrammUrl = new javax.swing.JTextField();
-        jButtonProgrammUrl = new javax.swing.JButton();
-        jButtonHilfeProgrammUrl = new javax.swing.JButton();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jButtonHilfeProgrammShutdown = new javax.swing.JButton();
-        jButtonProgrammShutdown = new javax.swing.JButton();
-        jTextFieldProgrammShutdown = new javax.swing.JTextField();
+        //======== this ========
+        setLayout(new VerticalLayout(5));
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nach dem Neuladen der Filmliste"));
+        //======== jPanel6 ========
+        {
+            jPanel6.setBorder(new TitledBorder("Nach dem Neuladen der Filmliste")); //NON-NLS
+            jPanel6.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill()));
 
-        jCheckBoxAboSuchen.setText("Abos automatisch suchen");
+            //---- jCheckBoxAboSuchen ----
+            jCheckBoxAboSuchen.setText("Abos automatisch suchen"); //NON-NLS
+            jCheckBoxAboSuchen.setToolTipText("<html>Nach dem Neuladen einer Filmliste wird dann sofort nach neuen Abos gesucht.<br>Ansonsten muss man im Tab Download auf <i>Downloadliste aktualisieren</i> klicken.</html>"); //NON-NLS
+            jPanel6.add(jCheckBoxAboSuchen, new CC().cell(0, 0));
 
-        jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten");
+            //---- jCheckBoxDownloadSofortStarten ----
+            jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten"); //NON-NLS
+            jCheckBoxDownloadSofortStarten.setToolTipText("<html>Neu angelegte Downloads (aus Abos) werden sofort gestartet.<br>Ansonsten muss man sie selbst starten.</html>"); //NON-NLS
+            jPanel6.add(jCheckBoxDownloadSofortStarten, new CC().cell(0, 1));
+        }
+        add(jPanel6);
 
-        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfeNeuladen.setToolTipText("Hilfe anzeigen");
+        //======== jPanel2 ========
+        {
+            jPanel2.setBorder(new TitledBorder("Tab Downloads")); //NON-NLS
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jCheckBoxAboSuchen)
-                                        .addComponent(jCheckBoxDownloadSofortStarten))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButtonHilfeNeuladen)
-                                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jCheckBoxAboSuchen)
-                                        .addComponent(jButtonHilfeNeuladen))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBoxDownloadSofortStarten)
-                                .addContainerGap(17, Short.MAX_VALUE))
-        );
+            //---- jButtonProgrammDateimanager ----
+            jButtonProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonProgrammDateimanager.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Downloads"));
+            //---- jButtonHilfeProgrammDateimanager ----
+            jButtonHilfeProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+            jButtonHilfeProgrammDateimanager.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonProgrammDateimanager.setToolTipText("Programm auswählen");
+            //---- jLabel1 ----
+            jLabel1.setText("Datei-Manager zum \u00d6ffnen des Downloadordners"); //NON-NLS
 
-        jButtonHilfeProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfeProgrammDateimanager.setToolTipText("Hilfe anzeigen");
+            //---- jLabel2 ----
+            jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme"); //NON-NLS
 
-        jLabel1.setText("Datei-Manager zum Öffnen des Downloadordners");
+            //---- jButtonHilfeVideoplayer ----
+            jButtonHilfeVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+            jButtonHilfeVideoplayer.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme");
+            //---- jButtonProgrammVideoplayer ----
+            jButtonProgrammVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonProgrammVideoplayer.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
 
-        jButtonHilfeVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfeVideoplayer.setToolTipText("Hilfe anzeigen");
+            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jTextFieldProgrammDateimanager)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonProgrammDateimanager)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonHilfeProgrammDateimanager))
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jTextFieldVideoplayer)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonProgrammVideoplayer)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonHilfeVideoplayer))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup()
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addGap(0, 214, Short.MAX_VALUE)))
+                        .addContainerGap())
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextFieldProgrammDateimanager, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonProgrammDateimanager)
+                            .addComponent(jButtonHilfeProgrammDateimanager))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldVideoplayer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1))
+                            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButtonHilfeVideoplayer)
+                                .addComponent(jButtonProgrammVideoplayer)))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
+            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
+        }
+        add(jPanel2);
 
-        jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonProgrammVideoplayer.setToolTipText("Programm auswählen");
+        //======== jPanel4 ========
+        {
+            jPanel4.setBorder(new TitledBorder("Webbrowser zum \u00d6ffnen von URLs")); //NON-NLS
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jTextFieldProgrammDateimanager)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonProgrammDateimanager)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonHilfeProgrammDateimanager))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jTextFieldVideoplayer)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonProgrammVideoplayer)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonHilfeVideoplayer))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel1)
-                                                        .addComponent(jLabel2))
-                                                .addGap(0, 180, Short.MAX_VALUE)))
-                                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jTextFieldProgrammDateimanager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButtonProgrammDateimanager)
-                                        .addComponent(jButtonHilfeProgrammDateimanager))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel2)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextFieldVideoplayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(1, 1, 1))
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(jButtonHilfeVideoplayer)
-                                                .addComponent(jButtonProgrammVideoplayer)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+            //---- jButtonProgrammUrl ----
+            jButtonProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonProgrammUrl.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
+            //---- jButtonHilfeProgrammUrl ----
+            jButtonHilfeProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+            jButtonHilfeProgrammUrl.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
+            GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
+            jPanel4.setLayout(jPanel4Layout);
+            jPanel4Layout.setHorizontalGroup(
+                jPanel4Layout.createParallelGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jTextFieldProgrammUrl)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonProgrammUrl)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonHilfeProgrammUrl)
+                        .addContainerGap())
+            );
+            jPanel4Layout.setVerticalGroup(
+                jPanel4Layout.createParallelGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextFieldProgrammUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonProgrammUrl)
+                            .addComponent(jButtonHilfeProgrammUrl))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
+        }
+        add(jPanel4);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Webbrowser zum Öffnen von URLs"));
+        //======== jPanel3 ========
+        {
+            jPanel3.setBorder(new TitledBorder("Linux: Aufruf zum Shutdown")); //NON-NLS
+            jPanel3.setToolTipText("<html>Unter Linux wird das ausgew\u00e4hlte Programm/Script ausgef\u00fchrt um den Recher herunter zu fahren.<br>M\u00f6gliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>"); //NON-NLS
 
-        jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonProgrammUrl.setToolTipText("Programm auswählen");
+            //---- jButtonProgrammShutdown ----
+            jButtonProgrammShutdown.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonProgrammShutdown.setToolTipText("Programm/Script ausw\u00e4hlen"); //NON-NLS
 
-        jButtonHilfeProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfeProgrammUrl.setToolTipText("Hilfe anzeigen");
+            //---- jTextFieldProgrammShutdown ----
+            jTextFieldProgrammShutdown.setText("shutdown -h now"); //NON-NLS
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTextFieldProgrammUrl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammUrl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHilfeProgrammUrl)
-                                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButtonProgrammUrl)
-                                        .addComponent(jButtonHilfeProgrammUrl))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Linux: Aufruf zum Shutdown"));
-
-        jButtonHilfeProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfeProgrammShutdown.setToolTipText("Hilfe anzeigen");
-
-        jButtonProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonProgrammShutdown.setToolTipText("Programm/Script auswählen");
-
-        jTextFieldProgrammShutdown.setText("shutdown -h now");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTextFieldProgrammShutdown)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammShutdown)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHilfeProgrammShutdown)
-                                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jTextFieldProgrammShutdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jButtonHilfeProgrammShutdown)
-                                                .addComponent(jButtonProgrammShutdown)))
-                                .addGap(0, 12, Short.MAX_VALUE))
-        );
-
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammShutdown, jButtonProgrammShutdown, jTextFieldProgrammShutdown});
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(218, Short.MAX_VALUE))
-        );
+            GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
+            jPanel3.setLayout(jPanel3Layout);
+            jPanel3Layout.setHorizontalGroup(
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jTextFieldProgrammShutdown, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonProgrammShutdown)
+                        .addContainerGap())
+            );
+            jPanel3Layout.setVerticalGroup(
+                jPanel3Layout.createParallelGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButtonProgrammShutdown)
+                            .addComponent(jTextFieldProgrammShutdown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 12, Short.MAX_VALUE))
+            );
+            jPanel3Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammShutdown, jTextFieldProgrammShutdown});
+        }
+        add(jPanel3);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonHilfeNeuladen;
-    private javax.swing.JButton jButtonHilfeProgrammDateimanager;
-    private javax.swing.JButton jButtonHilfeProgrammShutdown;
-    private javax.swing.JButton jButtonHilfeProgrammUrl;
-    private javax.swing.JButton jButtonHilfeVideoplayer;
-    private javax.swing.JButton jButtonProgrammDateimanager;
-    private javax.swing.JButton jButtonProgrammShutdown;
-    private javax.swing.JButton jButtonProgrammUrl;
-    private javax.swing.JButton jButtonProgrammVideoplayer;
-    private javax.swing.JCheckBox jCheckBoxAboSuchen;
-    private javax.swing.JCheckBox jCheckBoxDownloadSofortStarten;
-    private javax.swing.JTextField jTextFieldProgrammDateimanager;
-    private javax.swing.JTextField jTextFieldProgrammShutdown;
-    private javax.swing.JTextField jTextFieldProgrammUrl;
-    private javax.swing.JTextField jTextFieldVideoplayer;
+    // Generated using JFormDesigner non-commercial license
+    private JCheckBox jCheckBoxAboSuchen;
+    private JCheckBox jCheckBoxDownloadSofortStarten;
+    private JTextField jTextFieldProgrammDateimanager;
+    private JButton jButtonProgrammDateimanager;
+    private JButton jButtonHilfeProgrammDateimanager;
+    private JTextField jTextFieldVideoplayer;
+    private JButton jButtonHilfeVideoplayer;
+    private JButton jButtonProgrammVideoplayer;
+    private JTextField jTextFieldProgrammUrl;
+    private JButton jButtonProgrammUrl;
+    private JButton jButtonHilfeProgrammUrl;
+    private JButton jButtonProgrammShutdown;
+    private JTextField jTextFieldProgrammShutdown;
     // End of variables declaration//GEN-END:variables
 }
