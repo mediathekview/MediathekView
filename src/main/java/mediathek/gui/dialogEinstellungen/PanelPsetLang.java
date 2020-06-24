@@ -20,8 +20,6 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +28,7 @@ import java.util.LinkedList;
 
 @SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
-    private int neuZaehler = 0;
+    private int neuZaehler;
     private String exportPfad = "";
     private final ListePset listePset;
     private final MVTable tabellePset;
@@ -107,7 +105,10 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgSuffix.setEnabled(false);
 
         jButtonProgPfad.addActionListener(new BeobDateiDialogProg());
-        jButtonProgPlus.addActionListener(new BeobProgNeueZeile());
+        jButtonProgPlus.addActionListener(l -> {
+            DatenProg prog = new DatenProg();
+            progNeueZeile(prog);
+        });
         jButtonProgMinus.addActionListener(new BeobProgLoeschen());
         jButtonProgDuplizieren.addActionListener(new BeobProgDuplizieren());
         jButtonProgAuf.addActionListener(new BeobProgAufAb(true));
@@ -250,10 +251,31 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
         jButtonPruefen.addActionListener(new BeobPuefen());
-        tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+
+        tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                if (!stopBeob) {
+                    fillTextProgramme();
+                }
+            }
+        });
         tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme());
+
         tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
-        tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
+        tabellePset.getSelectionModel().addListSelectionListener(event -> {
+            if (!stopBeob) {
+                if (!event.getValueIsAdjusting()) {
+                    tabelleProgramme();
+                    DatenPset datenPset;
+                    int row = tabellePset.getSelectedRow();
+                    if (row != -1) {
+                        datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
+                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
+                    }
+                }
+            }
+        });
         tabellePset();
 
         if (tabellePset.getRowCount() > 0) {
@@ -662,25 +684,6 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-    private class BeobTableSelectPset implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!stopBeob) {
-                if (!event.getValueIsAdjusting()) {
-                    tabelleProgramme();
-                    DatenPset datenPset;
-                    int row = tabellePset.getSelectedRow();
-                    if (row != -1) {
-                        datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
-                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
-                    }
-                }
-            }
-        }
-    }
-
     private class BeobDateiDialogProg implements ActionListener {
 
         @Override
@@ -741,7 +744,7 @@ public class PanelPsetLang extends PanelVorlage {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (!jTextFieldGruppeZielPfad.getText().equals("")) {
+                if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
                 }
                 returnVal = chooser.showOpenDialog(null);
@@ -753,15 +756,6 @@ public class PanelPsetLang extends PanelVorlage {
                     }
                 }
             }
-        }
-    }
-
-    private class BeobProgNeueZeile implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenProg prog = new DatenProg();
-            progNeueZeile(prog);
         }
     }
 
@@ -968,19 +962,6 @@ public class PanelPsetLang extends PanelVorlage {
                 pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
                 tabellePset();
                 notifyPset();
-            }
-
-        }
-    }
-
-    public class BeobTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                if (!stopBeob) {
-                    fillTextProgramme();
-                }
             }
 
         }
