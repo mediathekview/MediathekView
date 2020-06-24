@@ -25,8 +25,6 @@ import java.awt.*;
 public class PanelDateinamen extends PanelVorlage {
     public boolean ok;
     public String ziel = "";
-    private static final Color cGruen = new Color(0, 153, 51);
-    private static final Color cRot = new Color(255, 0, 0);
 
     @Handler
     private void handleReplaceListChange(ReplaceListChangedEvent e) {
@@ -39,8 +37,6 @@ public class PanelDateinamen extends PanelVorlage {
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
-        daten = d;
-
         daten.getMessageBus().subscribe(this);
 
         jLabelAlert.setVisible(false);
@@ -115,19 +111,11 @@ public class PanelDateinamen extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
-            setColor(jCheckBoxTable);
-        });
+        jCheckBoxTable.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
         jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
-        setColor(jCheckBoxTable);
 
         jCheckBoxAscii.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
         jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-    }
-
-    private void setColor(final JCheckBox cb) {
-        cb.setForeground(cb.isSelected() ? cGruen : cRot);
     }
 
     private void setVon() {
@@ -283,7 +271,7 @@ public class PanelDateinamen extends PanelVorlage {
             {
 
                 //---- jCheckBoxTable ----
-                jCheckBoxTable.setText("Ersetzungstabelle"); //NON-NLS
+                jCheckBoxTable.setText("Ersetzungstabelle anwenden"); //NON-NLS
 
                 //======== jPanel3 ========
                 {
@@ -382,7 +370,7 @@ public class PanelDateinamen extends PanelVorlage {
                         jPanel3Layout.createParallelGroup()
                             .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                     .addComponent(jLabelVon)

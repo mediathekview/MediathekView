@@ -51,11 +51,11 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "jCheckBoxTable"
-						"text": "Ersetzungstabelle"
+						"text": "Ersetzungstabelle anwenden"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq l {space :::p, par l {comp jScrollPane4:::::x, seq l {comp jScrollPane3:::::x, space u:::p, comp jLabelAlert:::p::p}, seq {comp jButtonReset:::p::p, space :0:0:x}, seq l {comp jLabelVon:::p::p, space :::p, comp jTextFieldVon:::p:100:p, space u:::p, comp jLabelNach:::p::p, space :::p, comp jTextFieldNach:::p:100:p, space ::111:x, comp jButtonUp:::p::p, space :::p, comp jButtonDown:::p::p, space :::p, comp jButtonPlus:::p::p, space :::p, comp jButtonMinus:::p::p}}, space :p:15:p}}"
-						"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane4::::230:x, space u:p::p, par c {comp jLabelVon:1:c:p::p, comp jTextFieldVon:1:c:p::p, comp jLabelNach:1:c:p::p, comp jTextFieldNach:1:c:p::p, comp jButtonUp:1:c:p::p, comp jButtonDown:1:c:p::p, comp jButtonPlus:1:c:p::p, comp jButtonMinus:1:c:p::p}, space u:p::p, par c {comp jScrollPane3::c:p::p, comp jLabelAlert::c:p::p}, space :p::p, comp jButtonReset:::p::p, space :p::p}}"
+						"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane4::::328:x, space u:p::p, par c {comp jLabelVon:1:c:p::p, comp jTextFieldVon:1:c:p::p, comp jLabelNach:1:c:p::p, comp jTextFieldNach:1:c:p::p, comp jButtonUp:1:c:p::p, comp jButtonDown:1:c:p::p, comp jButtonPlus:1:c:p::p, comp jButtonMinus:1:c:p::p}, space u:p::p, par c {comp jScrollPane3::c:p::p, comp jLabelAlert::c:p::p}, space :p::p, comp jButtonReset:::p::p, space :p::p}}"
 					} ) {
 						name: "jPanel3"
 						"border": new javax.swing.border.EtchedBorder( 1, null, null )
