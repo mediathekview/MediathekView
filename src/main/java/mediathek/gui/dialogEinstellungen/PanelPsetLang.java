@@ -948,10 +948,9 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             DatenPset pSet = getPset();
             if (pSet != null) {
-                DialogFarbe dialog = new DialogFarbe(parentComponent, pSet.getFarbe());
-                dialog.setVisible(true);
-                if (dialog.farbe != null) {
-                    pSet.setFarbe(dialog.farbe);
+                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
+                if (selectedColor != null) {
+                    pSet.setFarbe(selectedColor);
                     tabellePset();
                     notifyPset();
                 }
