@@ -599,7 +599,7 @@ public class PanelPsetLang extends PanelVorlage {
                 JavaFxUtils.invokeInFxThreadAndWait(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setHeaderText("Programmset exportieren");
-                    alert.setContentText("Das Programmset wurde erflgreich exportiert.");
+                    alert.setContentText("Das Programmset wurde erfolgreich exportiert.");
                     JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
                 });
             }
