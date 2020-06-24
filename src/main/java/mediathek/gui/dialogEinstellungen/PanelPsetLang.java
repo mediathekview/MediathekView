@@ -16,6 +16,8 @@ import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -34,6 +36,7 @@ public class PanelPsetLang extends PanelVorlage {
     private final MVTable tabellePset;
     private final MVTable tabelleProgramme;
     private final boolean modalHilfe;
+    private static final Logger logger = LogManager.getLogger();
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
@@ -209,7 +212,15 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
         jButtonGruppeLoeschen.addActionListener(new BeobGruppeLoeschen());
         jButtonGruppeFarbe.addActionListener(new BeobachterFarbe());
-        jButtonGruppeStandardfarbe.addActionListener(new BeobStandardfarbe());
+        jButtonGruppeStandardfarbe.addActionListener(l -> {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
+                tabellePset();
+                notifyPset();
+            }
+        });
+
         jButtonGruppeAuf.addActionListener(new BeobGruppeAufAb(true));
         jButtonGruppeAb.addActionListener(new BeobGruppeAufAb(false));
         jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
@@ -245,12 +256,12 @@ public class PanelPsetLang extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldGruppeZielPfad);
         jTextFieldGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
 
-        //rest
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
-        jButtonPruefen.addActionListener(new BeobPuefen());
+        jButtonPruefen.addActionListener(l -> GuiFunktionenProgramme.programmePruefen(parentComponent));
+
 
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -697,14 +708,14 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(369047894, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (!jTextFieldProgPfad.getText().equals("")) {
+                if (!jTextFieldProgPfad.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
                 }
                 returnVal = chooser.showOpenDialog(null);
@@ -713,7 +724,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        Log.errorLog(825630443, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
             }
@@ -735,7 +746,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(392847589, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -752,7 +763,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.errorLog(319860075, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
             }
@@ -776,8 +787,8 @@ public class PanelPsetLang extends PanelVorlage {
 
     private class BeobDoc implements DocumentListener {
 
-        JTextField textfeld = null;
-        JTextArea textArea = null;
+        JTextField textfeld;
+        JTextArea textArea;
         int nr;
 
         public BeobDoc(JTextField ttextfeld, int nnr) {
@@ -876,14 +887,6 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-    private class BeobPuefen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            GuiFunktionenProgramme.programmePruefen(parentComponent);
-        }
-    }
-
     private class BeobProgAufAb implements ActionListener {
 
         boolean auf;
@@ -948,20 +951,6 @@ public class PanelPsetLang extends PanelVorlage {
                     tabellePset();
                     notifyPset();
                 }
-            }
-
-        }
-    }
-
-    private class BeobStandardfarbe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
-                tabellePset();
-                notifyPset();
             }
 
         }
