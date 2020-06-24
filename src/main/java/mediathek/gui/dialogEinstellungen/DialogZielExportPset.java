@@ -2,6 +2,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.FileDialogs;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -16,8 +17,8 @@ public class DialogZielExportPset extends JDialog {
     public String ziel = "";
     private final Component parentComponent;
 
-    public DialogZielExportPset(JFrame parent, boolean modal, String pfad, String name) {
-        super(parent, modal);
+    public DialogZielExportPset(JFrame parent, String pfad, String name) {
+        super(parent, true);
 
         parentComponent = parent;
         initComponents();
@@ -41,7 +42,7 @@ public class DialogZielExportPset extends JDialog {
                 }
             }
 
-            File result = GuiFunktionen.chooseSaveFileLocation(parent, "PSET exportieren", initialFile);
+            File result = FileDialogs.chooseSaveFileLocation(parent, "PSet exportieren", initialFile);
             if (result != null) {
                 jTextFieldPfad.setText(result.getAbsolutePath());
             }
