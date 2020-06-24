@@ -3,6 +3,7 @@
     <Loggers>
         <Logger name="hsqldb.db" level="warn"/>
         <Logger name="javax.jmdns.impl" level="warn"/>
+        <Logger name="oshi" level="warn"/>
         <Root level="trace">
         </Root>
     </Loggers>
