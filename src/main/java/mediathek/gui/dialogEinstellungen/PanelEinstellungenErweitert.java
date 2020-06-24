@@ -345,34 +345,24 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         {
             jPanel3.setBorder(new TitledBorder("Linux: Aufruf zum Shutdown")); //NON-NLS
             jPanel3.setToolTipText("<html>Unter Linux wird das ausgew\u00e4hlte Programm/Script ausgef\u00fchrt um den Recher herunter zu fahren.<br>M\u00f6gliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>"); //NON-NLS
+            jPanel3.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill()));
 
             //---- jButtonProgrammShutdown ----
             jButtonProgrammShutdown.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammShutdown.setToolTipText("Programm/Script ausw\u00e4hlen"); //NON-NLS
+            jPanel3.add(jButtonProgrammShutdown, new CC().cell(1, 0));
 
             //---- jTextFieldProgrammShutdown ----
             jTextFieldProgrammShutdown.setText("shutdown -h now"); //NON-NLS
-
-            GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-            jPanel3.setLayout(jPanel3Layout);
-            jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextFieldProgrammShutdown, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgrammShutdown)
-                        .addContainerGap())
-            );
-            jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup()
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonProgrammShutdown)
-                            .addComponent(jTextFieldProgrammShutdown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 12, Short.MAX_VALUE))
-            );
-            jPanel3Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammShutdown, jTextFieldProgrammShutdown});
+            jPanel3.add(jTextFieldProgrammShutdown, new CC().cell(0, 0));
         }
         add(jPanel3);
     }// </editor-fold>//GEN-END:initComponents
