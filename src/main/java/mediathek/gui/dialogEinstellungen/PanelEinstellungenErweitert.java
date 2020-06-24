@@ -254,68 +254,44 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         //======== jPanel2 ========
         {
             jPanel2.setBorder(new TitledBorder("Tab Downloads")); //NON-NLS
+            jPanel2.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
 
             //---- jTextFieldProgrammDateimanager ----
             jTextFieldProgrammDateimanager.setToolTipText("<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads \u00f6ffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und ge\u00f6ffnet.<br><br>Klappt das nicht, kann hier ein Programm daf\u00fcr angegeben werden.</html>"); //NON-NLS
+            jPanel2.add(jTextFieldProgrammDateimanager, new CC().cell(0, 1));
 
             //---- jButtonProgrammDateimanager ----
             jButtonProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammDateimanager.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
+            jPanel2.add(jButtonProgrammDateimanager, new CC().cell(1, 1));
 
             //---- jLabel1 ----
-            jLabel1.setText("Datei-Manager zum \u00d6ffnen des Downloadordners"); //NON-NLS
+            jLabel1.setText("Datei-Manager zum \u00d6ffnen des Downloadordners:"); //NON-NLS
+            jPanel2.add(jLabel1, new CC().cell(0, 0, 2, 1));
 
             //---- jLabel2 ----
-            jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme"); //NON-NLS
+            jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme:"); //NON-NLS
+            jPanel2.add(jLabel2, new CC().cell(0, 2, 2, 1));
 
             //---- jTextFieldVideoplayer ----
             jTextFieldVideoplayer.setToolTipText("<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer \u00f6ffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und ge\u00f6ffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>"); //NON-NLS
+            jPanel2.add(jTextFieldVideoplayer, new CC().cell(0, 3));
 
             //---- jButtonProgrammVideoplayer ----
             jButtonProgrammVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammVideoplayer.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
-
-            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextFieldProgrammDateimanager, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammDateimanager))
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextFieldVideoplayer, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammVideoplayer))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup()
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addGap(0, 214, Short.MAX_VALUE)))
-                        .addContainerGap())
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonProgrammDateimanager)
-                            .addComponent(jTextFieldProgrammDateimanager, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup()
-                            .addComponent(jButtonProgrammVideoplayer)
-                            .addComponent(jTextFieldVideoplayer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(7, Short.MAX_VALUE))
-            );
-            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
-            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammVideoplayer, jTextFieldVideoplayer});
+            jPanel2.add(jButtonProgrammVideoplayer, new CC().cell(1, 3));
         }
         add(jPanel2);
 

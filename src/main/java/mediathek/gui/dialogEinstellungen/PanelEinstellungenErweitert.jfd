@@ -32,9 +32,10 @@ new FormModel {
 					"value": "cell 0 1"
 				} )
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq t {comp jTextFieldProgrammDateimanager::::444:x, space :::p, comp jButtonProgrammDateimanager:::p::p}, seq t {comp jTextFieldVideoplayer::::444:x, space :::p, comp jButtonProgrammVideoplayer:::p::p}, seq {par l {comp jLabel1:::p::p, comp jLabel2::l:p::p}, space :0:214:x}}, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par t {comp jButtonProgrammDateimanager:3::p::p, comp jTextFieldProgrammDateimanager:3::p::p}, space u:::p, comp jLabel2:::p::p, space :::p, par l {comp jButtonProgrammVideoplayer:5::p::p, comp jTextFieldVideoplayer:5::p::p}, space ::7:x}}"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+				"$columnConstraints": "[grow,fill][fill]"
+				"$rowConstraints": "[fill][fill][fill][fill]"
 			} ) {
 				name: "jPanel2"
 				"border": new javax.swing.border.TitledBorder( "Tab Downloads" )
@@ -44,34 +45,46 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldProgrammDateimanager"
 					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads öffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und geöffnet.<br><br>Klappt das nicht, kann hier ein Programm dafür angegeben werden.</html>"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammDateimanager"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "Programm auswählen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 1"
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Datei-Manager zum Öffnen des Downloadordners"
+					"text": "Datei-Manager zum Öffnen des Downloadordners:"
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel2"
-					"text": "Videoplayer zum Abspielen gespeicherter Filme"
+					"text": "Videoplayer zum Abspielen gespeicherter Filme:"
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldVideoplayer"
 					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer öffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und geöffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 3"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammVideoplayer"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "Programm auswählen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 3"
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
