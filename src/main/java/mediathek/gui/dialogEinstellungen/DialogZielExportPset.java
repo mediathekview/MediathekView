@@ -154,7 +154,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Logdatei speichern");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pset exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
