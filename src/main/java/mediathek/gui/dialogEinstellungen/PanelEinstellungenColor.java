@@ -43,7 +43,7 @@ public class PanelEinstellungenColor extends JPanel {
     }
 
     private void getColor(MVC mvc) {
-        DialogFarbe dialog = new DialogFarbe(parentComponent, true, mvc.color);
+        DialogFarbe dialog = new DialogFarbe(parentComponent, mvc.color);
         dialog.setVisible(true);
         if (dialog.farbe != null) {
             if (!dialog.farbe.equals(mvc.color)) {
