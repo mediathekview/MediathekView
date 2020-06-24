@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
+import javafx.scene.control.Alert;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.daten.DatenProg;
@@ -9,6 +10,8 @@ import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.models.TModel;
@@ -580,18 +583,25 @@ public class PanelPsetLang extends PanelVorlage {
                     liste.add(pSet);
                 }
             }
-            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
-            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
-            dialogZiel.setVisible(true);
-            if (dialogZiel.ok) {
-                if (dialogZiel.ziel.contains(File.separator)) {
-                    exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
-                }
 
+            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
+            var fileName = FilenameUtils.replaceLeerDateiname(name, false,
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
+            var resultFile = FileDialogs.chooseSaveFileLocation(parentComponent,"PSet exportieren", fileName);
+            if (resultFile != null) {
+                var ziel = resultFile.getAbsolutePath();
+                if (ziel.contains(File.separator)) {
+                    exportPfad = ziel.substring(0, ziel.lastIndexOf(File.separator));
+                }
                 IoXmlSchreiben configWriter = new IoXmlSchreiben();
-                configWriter.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
+                configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("Programmset exportieren");
+                    alert.setContentText("Das Programmset wurde erflgreich exportiert.");
+                    JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+                });
             }
         } else {
             NoSelectionErrorDialog.show();
