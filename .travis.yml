@@ -45,11 +45,13 @@ jobs:
     - stage: Build and Deploy Snapshots
       script:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-        - ./mvnw clean install -Plinux,install4j-linux
+        - ./mvnw clean install -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
         - scripte/deploy/deploy.sh nightly linux $TRAVIS_COMMIT
-        - ./mvnw clean install -Pwindows,install4j-win,!linux
+        - ./mvnw clean install -Parm,install4j,!linux
+        - scripte/deploy/deploy.sh nightly linux-armhf $TRAVIS_COMMIT
+        - ./mvnw clean install -Pwindows,install4j,!linux
         - scripte/deploy/deploy.sh nightly win $TRAVIS_COMMIT
         - ./mvnw clean install -Pmac,!linux
         - scripte/deploy/deploy.sh nightly mac $TRAVIS_COMMIT
@@ -59,7 +61,7 @@ jobs:
           - $HOME/.m2
     - stage: Build and Deploy Linux
       script:
-        - ./mvnw clean install -Plinux -Pinstall4j-linux
+        - ./mvnw clean install -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
       before_deploy:
@@ -82,6 +84,17 @@ jobs:
 #            - target/*.AppImage
 #          on:
 #            tags: true
+    - stage: Build and Deploy Linux ARM
+        script:
+          - ./mvnw clean install -Parm,install4j,!linux
+        before_deploy:
+          - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+        deploy:
+          - provider: script
+            script: scripte/deploy/deploy.sh release linux-armhf
+            skip_cleanup: true
+            on:
+              tags: true
     - stage: Build and Deploy Windows
       script:
         - ./mvnw clean install -Pwindows,!linux,install4j-win
