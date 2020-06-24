@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.1" transformSequenceNumber="8">
-  <directoryPresets config="${project.build.directory}/res" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" macVolumeId="d594baf3c2b3424d" javaMinVersion="11">
+<install4j version="8.0.7" transformSequenceNumber="8">
+  <directoryPresets config="${project.build.directory}/res"/>
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView"
+               publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
+               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
     <languages>
       <principalLanguage id="de" />
     </languages>
@@ -26,7 +28,7 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
@@ -40,7 +42,7 @@
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G -Djava.net.preferIPv4Stack=true">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
@@ -54,7 +56,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G" arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
