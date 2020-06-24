@@ -948,7 +948,7 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             DatenPset pSet = getPset();
             if (pSet != null) {
-                DialogFarbe dialog = new DialogFarbe(parentComponent, true, pSet.getFarbe());
+                DialogFarbe dialog = new DialogFarbe(parentComponent, pSet.getFarbe());
                 dialog.setVisible(true);
                 if (dialog.farbe != null) {
                     pSet.setFarbe(dialog.farbe);
