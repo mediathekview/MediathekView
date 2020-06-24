@@ -85,7 +85,7 @@ public abstract class PanelErledigteUrls extends JPanel {
     }
 
     protected String getExportFileLocation() {
-        DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
+        DialogZiel dialog = new DialogZiel(null, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
         dialog.setVisible(true);
         if (!dialog.ok)
             return "";
