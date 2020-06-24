@@ -81,7 +81,7 @@ public class MediathekGuiMac extends MediathekGui {
 
         final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
         // we need to figure if we have native support available
-        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, true);
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
 
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
