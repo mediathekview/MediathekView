@@ -323,33 +323,21 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         {
             jPanel4.setBorder(new TitledBorder("Webbrowser zum \u00d6ffnen von URLs")); //NON-NLS
             jPanel4.setToolTipText("<html>Wenn das Programm versucht, einen Link zu \u00f6ffnen und die Standardanwendung nicht startet, kann damit ein Programm ausgew\u00e4hlt und fest zugeordnet werden.</html>"); //NON-NLS
+            jPanel4.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill()));
+            jPanel4.add(jTextFieldProgrammUrl, new CC().cell(0, 0));
 
             //---- jButtonProgrammUrl ----
             jButtonProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammUrl.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
-
-            GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-            jPanel4.setLayout(jPanel4Layout);
-            jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup()
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextFieldProgrammUrl, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonProgrammUrl)
-                        .addContainerGap())
-            );
-            jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup()
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonProgrammUrl)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextFieldProgrammUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-            jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammUrl, jTextFieldProgrammUrl});
+            jPanel4.add(jButtonProgrammUrl, new CC().cell(1, 0));
         }
         add(jPanel4);
 
