@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.1" transformSequenceNumber="8">
-  <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" macVolumeId="d594baf3c2b3424d" javaMinVersion="11">
+<install4j version="8.0.7" transformSequenceNumber="8">
+  <directoryPresets config="${project.basedir}/.install4j"/>
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView"
+               publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
+               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
     <languages>
       <principalLanguage id="de" />
     </languages>
@@ -27,11 +29,13 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
+      <desktopFile>Categories=Network;FileTransfer</desktopFile>
       <iconImageFiles>
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
@@ -41,11 +45,13 @@
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G -Djava.net.preferIPv4Stack=true">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
+      <desktopFile>Categories=Network;FileTransfer</desktopFile>
       <iconImageFiles>
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
@@ -55,7 +61,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1G" arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
@@ -489,6 +495,25 @@ return console.askYesNo(message, true);
       <jreBundle jreBundleSource="generated">
         <modules>
           <defaultModules set="jre" />
+        </modules>
+      </jreBundle>
+    </linuxDeb>
+    <unixInstaller name="Unix Installer ARM32" id="161"
+                   mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}">
+      <jreBundle jdkProviderId="Liberica" release="OpenJDK 14.0.1+8" overrideJdkRelease="true"
+                 jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
+        <modules>
+          <defaultModules set="all"/>
+        </modules>
+      </jreBundle>
+    </unixInstaller>
+    <linuxDeb name="Linux Deb Archive ARM32" id="164"
+              mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}"
+              maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="armhf">
+      <jreBundle jdkProviderId="Liberica" release="OpenJDK 14.0.1+8" overrideJdkRelease="true"
+                 jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
+        <modules>
+          <defaultModules set="all"/>
         </modules>
       </jreBundle>
     </linuxDeb>
