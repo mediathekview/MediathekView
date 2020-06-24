@@ -14,21 +14,31 @@ import java.io.File;
 
 @SuppressWarnings("serial")
 public class DialogZiel extends JDialog {
-    public boolean ok = false;
+    public boolean ok;
     public String ziel;
     private final Dialog parent;
 
-    public DialogZiel(Dialog pparent, boolean modal, String ziel, String titel) {
-        super(pparent, modal);
+    public DialogZiel(Dialog pparent, String ziel, String titel) {
+        super(pparent, true);
         parent = pparent;
+        this.ziel = ziel;
+
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         setTitle(titel);
-        jButtonOk.addActionListener(new OkBeobachter());
-        jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
+        jButtonOk.addActionListener(l -> {
+            check();
+            beenden();
+        });
+
+        jButtonAbbrechen.addActionListener(l -> {
+            ok = false;
+            beenden();
+        });
+
         jButtonZiel.addActionListener(new ZielBeobachter());
+
         jTextFieldPfad.setText(ziel);
-        this.ziel = ziel;
         if (pparent != null) {
             setLocationRelativeTo(pparent);
         }
@@ -157,23 +167,6 @@ public class DialogZiel extends JDialog {
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
 
-    private class OkBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            check();
-            beenden();
-        }
-    }
-
-    private class AbbrechenBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ok = false;
-            beenden();
-        }
-    }
 
     private class ZielBeobachter implements ActionListener {
 

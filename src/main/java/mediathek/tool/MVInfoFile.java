@@ -112,7 +112,7 @@ public class MVInfoFile {
         }
 
         pfad = GuiFunktionen.addsPfad(pfad, titel);
-        DialogZiel dialog = new DialogZiel(null, true, pfad, "Infos speichern");
+        DialogZiel dialog = new DialogZiel(null, pfad, "Infos speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
