@@ -9,10 +9,10 @@ internal class DnsSelectorTest {
     fun lookup() {
         var lookup = DnsSelector(IPvPreferenceMode.IPV4_ONLY)
         var result = lookup.lookup(hostName)
-        assertEquals(result.size,1);
+        assertEquals(result.size,1)
 
         lookup = DnsSelector(IPvPreferenceMode.IPV6_ONLY)
         result = lookup.lookup(hostName)
-        assertEquals(result.size,1);
+        assertEquals(result.size,1)
     }
 }
