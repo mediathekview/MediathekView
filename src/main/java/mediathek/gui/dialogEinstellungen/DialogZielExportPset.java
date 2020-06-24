@@ -1,23 +1,18 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Icons;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 @SuppressWarnings("serial")
-public class DialogZielExportPset extends javax.swing.JDialog {
+public class DialogZielExportPset extends JDialog {
 
-    public boolean ok = false;
+    public boolean ok;
     public String ziel = "";
     private final Component parentComponent;
 
@@ -27,8 +22,31 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         parentComponent = parent;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-         jButtonOk.addActionListener(new OkBeobachter());
-        jButtonZiel.addActionListener(new ZielBeobachter());
+        jButtonOk.addActionListener(l -> {
+            if (check()) {
+                ok = true;
+                dispose();
+            }
+        });
+
+        jButtonZiel.addActionListener(l -> {
+            String initialFile = "";
+            if (!jTextFieldPfad.getText().isEmpty()) {
+                var filePath = jTextFieldPfad.getText();
+                if (filePath.contains(File.separator)) {
+                    filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
+                    initialFile = new File(filePath).getAbsolutePath();
+                } else {
+                    initialFile = new File(jTextFieldPfad.getText()).getAbsolutePath();
+                }
+            }
+
+            File result = GuiFunktionen.chooseSaveFileLocation(parent, "PSET exportieren", initialFile);
+            if (result != null) {
+                jTextFieldPfad.setText(result.getAbsolutePath());
+            }
+        });
+
         if (name.isEmpty()) {
             name = "name.xml";
         }
@@ -136,58 +154,4 @@ public class DialogZielExportPset extends javax.swing.JDialog {
     private javax.swing.JButton jButtonZiel;
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
-
-    private class OkBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (check()) {
-                ok = true;
-                dispose();
-            }
-        }
-    }
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pset exportieren");
-                chooser.setMode(FileDialog.SAVE);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldPfad.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(639874637, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldPfad.getText().isEmpty()) {
-                    String pfad = jTextFieldPfad.getText();
-                    if (pfad.contains(File.separator)) {
-                        pfad = pfad.substring(0, pfad.lastIndexOf(File.separator));
-                        chooser.setCurrentDirectory(new File(pfad));
-                    } else {
-                        chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
-                    }
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(362259105, ex);
-                    }
-                }
-            }
-        }
-    }
 }
