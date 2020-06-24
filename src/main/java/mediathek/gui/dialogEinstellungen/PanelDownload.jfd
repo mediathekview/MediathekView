@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.0.298" Java: "11.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -6,9 +6,9 @@ new FormModel {
 		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "insets 5,hidemode 3,gap 0 5"
-				"$columnConstraints": "[grow,left]"
-				"$rowConstraints": "[fill][fill][fill]"
+				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+				"$columnConstraints": "[left][fill]"
+				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanel2"
 				auxiliary() {
@@ -20,62 +20,23 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "insets 0,hidemode 3,gap 15 5"
-					"$columnConstraints": "[fill][fill]"
-					"$rowConstraints": "[fill]"
-				} ) {
-					name: "panel1"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "jCheckBoxBeep"
-						"text": "Nach jedem Download einen \"Beep\" ausgeben"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 0"
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "jButtonBeep"
-						"text": "Testen"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 0"
-					} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxBeep"
+					"text": "Nach jedem Download einen \"Beep\" ausgeben"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1"
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "insets 0,hidemode 3,gap 15 5"
-					"$columnConstraints": "[fill][fill]"
-					"$rowConstraints": "[fill]"
-				} ) {
-					name: "panel2"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "jLabel3"
-						"text": "Anzahl gleichzeitiger Downloads:"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 0"
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "jSpinnerAnzahlDownload"
-						"model": new javax.swing.SpinnerNumberModel( 1, 1, 9, 1 )
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 0"
-					} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonBeep"
+					"text": "Test"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 2"
+					"value": "cell 1 1"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 440, 140 )
+			"size": new java.awt.Dimension( 655, 385 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
