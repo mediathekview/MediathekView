@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk11/jdk-11.0.4+11" />
+    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk14/jdk-14.0.1+7" />
   </application>
   <files>
     <mountPoints>
