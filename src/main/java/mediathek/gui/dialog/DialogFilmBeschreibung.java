@@ -3,8 +3,9 @@ package mediathek.gui.dialog;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import mediathek.config.Icons;
-import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVInfoFile;
 import net.miginfocom.layout.AC;
@@ -40,7 +41,6 @@ public class DialogFilmBeschreibung extends JDialog {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
             alert.setHeaderText("Hilfe zu " + TITLE);
             alert.setContentText("Diese Funktion richtet sich z.B. an Benutzer,"
                     + "welche eine angepasste Beschreibung der Sendung in Form "
@@ -48,13 +48,13 @@ public class DialogFilmBeschreibung extends JDialog {
                     + "und durch Drittprogramme einlesen lassen wollen.\n\n"
                     + "Achtung: Diese Änderungen gehen nach dem Neuladen "
                     + "einer Filmliste verloren.");
-            alert.showAndWait();
-
+            JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
         }));
 
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());
             MVInfoFile file = new MVInfoFile();
+            //TODO move UI stuff for file selection to here from writeInfoFile!!!!
             file.writeInfoFile(datenFilm);
         });
     }
