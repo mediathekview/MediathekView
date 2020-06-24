@@ -5,7 +5,6 @@ import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
@@ -46,7 +45,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         init();
         setIcon();
-        setHelp();
 
         jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
         jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
@@ -99,34 +97,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammUrl.setText(getWebBrowserLocation());
     }
 
-    private void setHelp() {
-        jButtonHilfeProgrammDateimanager.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Im Tab \"Downloads\" kann man mit der rechten\n"
-                + "Maustaste den Downloadordner (Zielordner)\n"
-                + "des jeweiligen Downloads öffnen.\n"
-                + "Normalerweise wird der Dateimanager des\n"
-                + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                + "kann hier ein Programm dafür angegeben werden.").setVisible(true));
-
-        jButtonHilfeVideoplayer.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Im Tab \"Downloads\" kann man den gespeicherten\n"
-                + "Film in einem Videoplayer öffnen.\n"
-                + "Normalerweise wird der Videoplayer des\n"
-                + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                + "kann hier ein Programm dafür angegeben werden.").setVisible(true));
-        jButtonHilfeProgrammUrl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Wenn das Programm versucht, einen Link zu öffnen\n"
-                + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
-                + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
-                + "kann damit ein Programm ausgewählt und\n"
-                + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true));
-    }
-
     private void setIcon() {
-        jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeProgrammUrl.setIcon(Icons.ICON_BUTTON_HELP);
-
         jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -241,16 +212,13 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         var jPanel2 = new JPanel();
         jTextFieldProgrammDateimanager = new JTextField();
         jButtonProgrammDateimanager = new JButton();
-        jButtonHilfeProgrammDateimanager = new JButton();
         var jLabel1 = new JLabel();
         var jLabel2 = new JLabel();
         jTextFieldVideoplayer = new JTextField();
-        jButtonHilfeVideoplayer = new JButton();
         jButtonProgrammVideoplayer = new JButton();
         var jPanel4 = new JPanel();
         jTextFieldProgrammUrl = new JTextField();
         jButtonProgrammUrl = new JButton();
-        jButtonHilfeProgrammUrl = new JButton();
         var jPanel3 = new JPanel();
         jButtonProgrammShutdown = new JButton();
         jTextFieldProgrammShutdown = new JTextField();
@@ -287,13 +255,12 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         {
             jPanel2.setBorder(new TitledBorder("Tab Downloads")); //NON-NLS
 
+            //---- jTextFieldProgrammDateimanager ----
+            jTextFieldProgrammDateimanager.setToolTipText("<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads \u00f6ffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und ge\u00f6ffnet.<br><br>Klappt das nicht, kann hier ein Programm daf\u00fcr angegeben werden.</html>"); //NON-NLS
+
             //---- jButtonProgrammDateimanager ----
             jButtonProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammDateimanager.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
-
-            //---- jButtonHilfeProgrammDateimanager ----
-            jButtonHilfeProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-            jButtonHilfeProgrammDateimanager.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
             //---- jLabel1 ----
             jLabel1.setText("Datei-Manager zum \u00d6ffnen des Downloadordners"); //NON-NLS
@@ -301,9 +268,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             //---- jLabel2 ----
             jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme"); //NON-NLS
 
-            //---- jButtonHilfeVideoplayer ----
-            jButtonHilfeVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-            jButtonHilfeVideoplayer.setToolTipText("Hilfe anzeigen"); //NON-NLS
+            //---- jTextFieldVideoplayer ----
+            jTextFieldVideoplayer.setToolTipText("<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer \u00f6ffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und ge\u00f6ffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>"); //NON-NLS
 
             //---- jButtonProgrammVideoplayer ----
             jButtonProgrammVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
@@ -317,17 +283,13 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup()
                             .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextFieldProgrammDateimanager)
+                                .addComponent(jTextFieldProgrammDateimanager, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammDateimanager)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHilfeProgrammDateimanager))
+                                .addComponent(jButtonProgrammDateimanager))
                             .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jTextFieldVideoplayer)
+                                .addComponent(jTextFieldVideoplayer, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonProgrammVideoplayer)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHilfeVideoplayer))
+                                .addComponent(jButtonProgrammVideoplayer))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup()
                                     .addComponent(jLabel1)
@@ -341,38 +303,30 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         .addContainerGap()
                         .addComponent(jLabel1)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldProgrammDateimanager, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonProgrammDateimanager)
-                            .addComponent(jButtonHilfeProgrammDateimanager))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldVideoplayer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addGap(1, 1, 1))
-                            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButtonHilfeVideoplayer)
-                                .addComponent(jButtonProgrammVideoplayer)))
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButtonProgrammDateimanager)
+                            .addComponent(jTextFieldProgrammDateimanager, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup()
+                            .addComponent(jButtonProgrammVideoplayer)
+                            .addComponent(jTextFieldVideoplayer, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(7, Short.MAX_VALUE))
             );
-            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeProgrammDateimanager, jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
-            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
+            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammDateimanager, jTextFieldProgrammDateimanager});
+            jPanel2Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammVideoplayer, jTextFieldVideoplayer});
         }
         add(jPanel2);
 
         //======== jPanel4 ========
         {
             jPanel4.setBorder(new TitledBorder("Webbrowser zum \u00d6ffnen von URLs")); //NON-NLS
+            jPanel4.setToolTipText("<html>Wenn das Programm versucht, einen Link zu \u00f6ffnen und die Standardanwendung nicht startet, kann damit ein Programm ausgew\u00e4hlt und fest zugeordnet werden.</html>"); //NON-NLS
 
             //---- jButtonProgrammUrl ----
             jButtonProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
             jButtonProgrammUrl.setToolTipText("Programm ausw\u00e4hlen"); //NON-NLS
-
-            //---- jButtonHilfeProgrammUrl ----
-            jButtonHilfeProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-            jButtonHilfeProgrammUrl.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
             GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
             jPanel4.setLayout(jPanel4Layout);
@@ -380,24 +334,22 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 jPanel4Layout.createParallelGroup()
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jTextFieldProgrammUrl)
+                        .addComponent(jTextFieldProgrammUrl, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonProgrammUrl)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonHilfeProgrammUrl)
                         .addContainerGap())
             );
             jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup()
                     .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButtonProgrammUrl)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldProgrammUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonProgrammUrl)
-                            .addComponent(jButtonHilfeProgrammUrl))
+                        .addComponent(jTextFieldProgrammUrl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
-            jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
+            jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgrammUrl, jTextFieldProgrammUrl});
         }
         add(jPanel4);
 
@@ -443,13 +395,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private JCheckBox jCheckBoxDownloadSofortStarten;
     private JTextField jTextFieldProgrammDateimanager;
     private JButton jButtonProgrammDateimanager;
-    private JButton jButtonHilfeProgrammDateimanager;
     private JTextField jTextFieldVideoplayer;
-    private JButton jButtonHilfeVideoplayer;
     private JButton jButtonProgrammVideoplayer;
     private JTextField jTextFieldProgrammUrl;
     private JButton jButtonProgrammUrl;
-    private JButton jButtonHilfeProgrammUrl;
     private JButton jButtonProgrammShutdown;
     private JTextField jTextFieldProgrammShutdown;
     // End of variables declaration//GEN-END:variables

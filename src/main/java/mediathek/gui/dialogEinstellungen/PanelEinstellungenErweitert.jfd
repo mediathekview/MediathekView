@@ -33,8 +33,8 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq t {comp jTextFieldProgrammDateimanager:::::x, space :::p, comp jButtonProgrammDateimanager:::p::p, space :::p, comp jButtonHilfeProgrammDateimanager:::p::p}, seq t {comp jTextFieldVideoplayer:::::x, space :::p, comp jButtonProgrammVideoplayer:::p::p, space :::p, comp jButtonHilfeVideoplayer:::p::p}, seq {par l {comp jLabel1:::p::p, comp jLabel2::l:p::p}, space :0:214:x}}, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par b {comp jTextFieldProgrammDateimanager:3:b:p::p, comp jButtonProgrammDateimanager:3:b:p::p, comp jButtonHilfeProgrammDateimanager:3:b:p::p}, space u:::p, par t {seq t {comp jLabel2:::p::p, space :::p, comp jTextFieldVideoplayer:5::p::p, space :p:1:p}, par b:t {comp jButtonHilfeVideoplayer:5:b:p::p, comp jButtonProgrammVideoplayer:5:b:p::p}}, space :::x}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq t {comp jTextFieldProgrammDateimanager::::444:x, space :::p, comp jButtonProgrammDateimanager:::p::p}, seq t {comp jTextFieldVideoplayer::::444:x, space :::p, comp jButtonProgrammVideoplayer:::p::p}, seq {par l {comp jLabel1:::p::p, comp jLabel2::l:p::p}, space :0:214:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par t {comp jButtonProgrammDateimanager:3::p::p, comp jTextFieldProgrammDateimanager:3::p::p}, space u:::p, comp jLabel2:::p::p, space :::p, par l {comp jButtonProgrammVideoplayer:5::p::p, comp jTextFieldVideoplayer:5::p::p}, space ::7:x}}"
 			} ) {
 				name: "jPanel2"
 				"border": new javax.swing.border.TitledBorder( "Tab Downloads" )
@@ -43,16 +43,12 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldProgrammDateimanager"
+					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads öffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und geöffnet.<br><br>Klappt das nicht, kann hier ein Programm dafür angegeben werden.</html>"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammDateimanager"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "Programm auswählen"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonHilfeProgrammDateimanager"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-					"toolTipText": "Hilfe anzeigen"
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
@@ -70,11 +66,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldVideoplayer"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonHilfeVideoplayer"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-					"toolTipText": "Hilfe anzeigen"
+					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer öffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und geöffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammVideoplayer"
@@ -83,11 +75,12 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp jTextFieldProgrammUrl:::::x, space :::p, comp jButtonProgrammUrl:::p::p, space :::p, comp jButtonHilfeProgrammUrl:::p::p, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, par b {comp jTextFieldProgrammUrl:4:b:p::p, comp jButtonProgrammUrl:4:b:p::p, comp jButtonHilfeProgrammUrl:4:b:p::p}, space :::x}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp jTextFieldProgrammUrl::::444:x, space :::p, comp jButtonProgrammUrl:::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq l {comp jButtonProgrammUrl:4::p::p, space :0:0:x}, seq l {space :::p, comp jTextFieldProgrammUrl:4::p::p, space :::x}}"
 			} ) {
 				name: "jPanel4"
 				"border": new javax.swing.border.TitledBorder( "Webbrowser zum Öffnen von URLs" )
+				"toolTipText": "<html>Wenn das Programm versucht, einen Link zu öffnen und die Standardanwendung nicht startet, kann damit ein Programm ausgewählt und fest zugeordnet werden.</html>"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -98,11 +91,6 @@ new FormModel {
 					name: "jButtonProgrammUrl"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 					"toolTipText": "Programm auswählen"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonHilfeProgrammUrl"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-					"toolTipText": "Hilfe anzeigen"
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
