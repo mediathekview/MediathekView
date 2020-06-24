@@ -1,14 +1,14 @@
 language: java
 jdk:
-  - openjdk12
+  - openjdk14
 sudo: required
 before_install:
   - git lfs pull
 install:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
-  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_1.tar.gz
-  - tar zxvf install4j_unix_8_0_1.tar.gz
+  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
+  - tar zxvf install4j_unix_8_0_7.tar.gz
   - mvn clean
   - mvn install4j:install-license -Pinstall4j-linux
 notifications:
