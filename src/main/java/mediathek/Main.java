@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import oshi.SystemInfo;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -239,6 +240,20 @@ public class Main {
         Security.setProperty("crypto.policy", "unlimited");
     }
 
+    private static void printEnvironmentInformation() {
+        SystemInfo si = new SystemInfo();
+        var hal = si.getHardware();
+        var cpu = hal.getProcessor();
+        logger.debug("=== Hardware Information ===");
+        logger.debug(cpu);
+        logger.debug("=== Memory Information ===");
+        var mi = hal.getMemory();
+        logger.debug(mi);
+        logger.debug("=== Operating System ===");
+        var os = si.getOperatingSystem();
+        logger.debug(os);
+    }
+
     private static void printVersionInformation() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -340,6 +355,7 @@ public class Main {
             setupPortableMode();
 
             printVersionInformation();
+            printEnvironmentInformation();
             printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
