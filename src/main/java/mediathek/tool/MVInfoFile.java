@@ -1,20 +1,11 @@
 package mediathek.tool;
 
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPset;
-import mediathek.daten.ListePset;
-import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.javafx.FXErrorDialog;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -91,34 +82,8 @@ public class MVInfoFile {
                 .orElse(0);
     }
 
-    public void writeInfoFile(DatenFilm film) {
-        String titel = FilenameUtils.replaceLeerDateiname(film.getTitle(), false,
-                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
-                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-        String pfad = "";
-        ListePset lp = Daten.listePset.getListeSpeichern();
-        if (!lp.isEmpty()) {
-            DatenPset p = lp.get(0);
-            pfad = p.getZielPfad();
-        }
-        if (pfad.isEmpty()) {
-            pfad = GuiFunktionen.getStandardDownloadPath();
-        }
-
-        if (titel.isEmpty()) {
-            titel = StringUtils.replace(film.getSender(), " ", "-") + ".txt";
-        } else {
-            titel += ".txt";
-        }
-
-        pfad = GuiFunktionen.addsPfad(pfad, titel);
-        DialogZiel dialog = new DialogZiel(null, pfad, "Infos speichern");
-        dialog.setVisible(true);
-        if (!dialog.ok) {
-            return;
-        }
-
-        final Path path = Paths.get(dialog.ziel);
+    public void writeInfoFile(DatenFilm film, @NotNull Path path) throws IOException {
+        logger.info("Infofile schreiben nach: {}", path.toAbsolutePath().toString());
         path.toFile().getParentFile().mkdirs();
 
         try (OutputStream os = Files.newOutputStream(path);
@@ -127,45 +92,18 @@ public class MVInfoFile {
              BufferedWriter br = new BufferedWriter(osw)) {
             br.write(formatFilmAsString(film, FILM_GROESSE.length() + 2));
             br.flush();
-
-            showSuccessDialog();
-        } catch (IOException ex) {
-            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex));
-            logger.error("Ziel: {}", dialog.ziel, ex);
         }
+
+        logger.info("Infodatei geschrieben");
     }
 
-    private void showSuccessDialog() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText("Infodatei schreiben");
-            alert.setContentText("Infodatei wurde erfolgreich geschrieben.");
-            alert.showAndWait();
-        });
-    }
-
-    public void writeInfoFile(DatenDownload datenDownload) {
-        logger.info("Infofile schreiben nach: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
-
+    public void writeInfoFile(@NotNull DatenDownload datenDownload) throws IOException {
         new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
         final Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
 
-        try (OutputStream os = Files.newOutputStream(path);
-             DataOutputStream dos = new DataOutputStream(os);
-             OutputStreamWriter osw = new OutputStreamWriter(dos);
-             BufferedWriter br = new BufferedWriter(osw)) {
-            final DatenFilm film = datenDownload.film;
-            if (film != null) {
-                br.write(formatFilmAsString(film, FILM_GROESSE.length() + 2));
-                br.flush();
-            }
-
-            logger.info("Infodatei geschrieben");
-        } catch (IOException ex) {
-            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex));
-            logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex);
+        final DatenFilm film = datenDownload.film;
+        if (film != null) {
+            writeInfoFile(film, path);
         }
     }
-
 }
