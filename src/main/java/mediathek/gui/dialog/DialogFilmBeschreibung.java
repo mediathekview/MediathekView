@@ -12,10 +12,7 @@ import mediathek.daten.ListePset;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVInfoFile;
+import mediathek.tool.*;
 import mediathek.tool.javafx.FXErrorDialog;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -28,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @SuppressWarnings("serial")
 public class DialogFilmBeschreibung extends JDialog {
@@ -89,10 +85,9 @@ public class DialogFilmBeschreibung extends JDialog {
             }
 
             pfad = GuiFunktionen.addsPfad(pfad, titel);
-            DialogZiel dialog = new DialogZiel(null, pfad, "Infos speichern");
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                final Path path = Paths.get(dialog.ziel);
+            var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),"Infos speichern", pfad);
+            if (destFile != null) {
+                final Path path = destFile.toPath();
                 try {
                     MVInfoFile file = new MVInfoFile();
                     file.writeInfoFile(datenFilm, path);
