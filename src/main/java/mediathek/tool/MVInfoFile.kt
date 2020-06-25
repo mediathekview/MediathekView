@@ -1,100 +1,90 @@
-package mediathek.tool;
+package mediathek.tool
 
-import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
-import org.apache.commons.text.WordUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import mediathek.daten.DatenDownload
+import mediathek.daten.DatenFilm
+import org.apache.commons.text.WordUtils
+import org.apache.logging.log4j.LogManager
+import java.io.*
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.*
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
-public class MVInfoFile {
-
-    private static final Logger logger = LogManager.getLogger(MVInfoFile.class);
-    private static final String FILM_GROESSE = "Größe [MB]";
-    private static final String FILM_SENDER = "Sender";
-    private static final String FILM_THEMA = "Thema";
-    private static final String FILM_TITEL = "Titel";
-    private static final String FILM_DATUM = "Datum";
-    private static final String FILM_ZEIT = "Zeit";
-    private static final String FILM_DAUER = "Dauer";
-    private static final String FILM_URL = "URL";
-
-    protected String formatFilmAsString(DatenFilm film, int maxLengthHeaders) {
-
+open class MVInfoFile {
+    protected fun formatFilmAsString(film: DatenFilm?, maxLengthHeaders: Int): String {
         if (null == film)
-            return "";
+            return ""
 
-        String formatString = String.format("%%-%ds %%s", maxLengthHeaders);
-
-        StringBuilder sb = new StringBuilder();
-
-        sb = appendFormatedTableLine(sb, formatString, FILM_SENDER, film.getSender());
-        sb = appendFormatedTableLine(sb, formatString, FILM_THEMA, film.getThema()).append(System.lineSeparator());
-        sb = appendFormatedTableLine(sb, formatString, FILM_TITEL, film.getTitle()).append(System.lineSeparator());
-        sb = appendFormatedTableLine(sb, formatString, FILM_DATUM, film.getSendeDatum());
-        sb = appendFormatedTableLine(sb, formatString, FILM_ZEIT, film.getSendeZeit());
-        sb = appendFormatedTableLine(sb, formatString, FILM_DAUER, film.getDauer());
-        sb = appendFormatedTableLine(sb, formatString, FILM_GROESSE, film.getSize()).append(System.lineSeparator());
-
-        sb.append("Website");
-        sb.append(System.lineSeparator());
-        sb.append(film.getWebsiteLink());
-        sb.append(System.lineSeparator());
-        sb.append(System.lineSeparator());
-
-        sb.append(FILM_URL);
-        sb.append(System.lineSeparator());
-        sb.append(film.getUrl());
-        sb.append(System.lineSeparator());
-        sb.append(System.lineSeparator());
-
-        sb.append(splitStringIntoMaxFixedLengthLines(film.getDescription(), 62));
-        sb.append(System.lineSeparator());
-        sb.append(System.lineSeparator());
-
-        return sb.toString();
-
+        val formatString = String.format("%%-%ds %%s", maxLengthHeaders)
+        var sb = StringBuilder()
+        sb = appendFormattedTableLine(sb, formatString, FILM_SENDER, film.sender)
+        sb = appendFormattedTableLine(sb, formatString, FILM_THEMA, film.thema).append(System.lineSeparator())
+        sb = appendFormattedTableLine(sb, formatString, FILM_TITEL, film.title).append(System.lineSeparator())
+        sb = appendFormattedTableLine(sb, formatString, FILM_DATUM, film.sendeDatum)
+        sb = appendFormattedTableLine(sb, formatString, FILM_ZEIT, film.sendeZeit)
+        sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.dauer)
+        sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, film.size).append(System.lineSeparator())
+        sb.append("Website")
+        sb.append(System.lineSeparator())
+        sb.append(film.websiteLink)
+        sb.append(System.lineSeparator())
+        sb.append(System.lineSeparator())
+        sb.append(FILM_URL)
+        sb.append(System.lineSeparator())
+        sb.append(film.url)
+        sb.append(System.lineSeparator())
+        sb.append(System.lineSeparator())
+        sb.append(splitStringIntoMaxFixedLengthLines(film.description, 62))
+        sb.append(System.lineSeparator())
+        sb.append(System.lineSeparator())
+        return sb.toString()
     }
 
-    protected StringBuilder appendFormatedTableLine(StringBuilder sb, String formatString, String keyTitle, String value) {
-        return sb.append(String.format(formatString, String.format("%s:", keyTitle), value))
-                .append(System.lineSeparator());
+    protected fun appendFormattedTableLine(sb: StringBuilder, formatString: String?, keyTitle: String?, value: String?): StringBuilder {
+        return sb.append(String.format(formatString!!, String.format("%s:", keyTitle), value))
+                .append(System.lineSeparator())
     }
 
-    protected String splitStringIntoMaxFixedLengthLines(String input, int lineLength) {
+    protected fun splitStringIntoMaxFixedLengthLines(input: String?, lineLength: Int): String {
         return Optional.ofNullable(input)
-                .map(s -> WordUtils.wrap(s, lineLength))
-                .orElse("");
+                .map { s: String? -> WordUtils.wrap(s, lineLength) }
+                .orElse("")
     }
 
-    public void writeInfoFile(DatenFilm film, @NotNull Path path) throws IOException {
-        logger.info("Infofile schreiben nach: {}", path.toAbsolutePath().toString());
-        path.toFile().getParentFile().mkdirs();
-
-        try (OutputStream os = Files.newOutputStream(path);
-             DataOutputStream dos = new DataOutputStream(os);
-             OutputStreamWriter osw = new OutputStreamWriter(dos);
-             BufferedWriter br = new BufferedWriter(osw)) {
-            br.write(formatFilmAsString(film, FILM_GROESSE.length() + 2));
-            br.flush();
+    @Throws(IOException::class)
+    fun writeInfoFile(film: DatenFilm?, path: Path) {
+        logger.info("Infofile schreiben nach: {}", path.toAbsolutePath().toString())
+        path.toFile().parentFile.mkdirs()
+        Files.newOutputStream(path).use { os ->
+            DataOutputStream(os).use { dos ->
+                OutputStreamWriter(dos).use { osw ->
+                    BufferedWriter(osw).use { br ->
+                        br.write(formatFilmAsString(film, FILM_GROESSE.length + 2))
+                        br.flush()
+                    }
+                }
+            }
         }
-
-        logger.info("Infodatei geschrieben");
+        logger.info("Infodatei geschrieben")
     }
 
-    public void writeInfoFile(@NotNull DatenDownload datenDownload) throws IOException {
-        new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
-        final Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
+    @Throws(IOException::class)
+    fun writeInfoFile(datenDownload: DatenDownload) {
+        File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs()
+        val path = Paths.get(datenDownload.fileNameWithoutSuffix + ".txt")
+        val film = datenDownload.film
+        film?.let { writeInfoFile(it, path) }
+    }
 
-        final DatenFilm film = datenDownload.film;
-        if (film != null) {
-            writeInfoFile(film, path);
-        }
+    private companion object {
+        private val logger = LogManager.getLogger(MVInfoFile::class.java)
+        private const val FILM_GROESSE = "Größe [MB]"
+        private const val FILM_SENDER = "Sender"
+        private const val FILM_THEMA = "Thema"
+        private const val FILM_TITEL = "Titel"
+        private const val FILM_DATUM = "Datum"
+        private const val FILM_ZEIT = "Zeit"
+        private const val FILM_DAUER = "Dauer"
+        private const val FILM_URL = "URL"
     }
 }
