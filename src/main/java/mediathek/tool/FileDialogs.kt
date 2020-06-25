@@ -9,6 +9,42 @@ import javax.swing.JFileChooser
 class FileDialogs {
     companion object {
         @JvmStatic
+        fun chooseDirectoryLocation(parent: Frame, title: String, initialFile: String): File? {
+            var resultFile: File? = null
+
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //we want to select a directory only, so temporarily change properties
+                val chooser = FileDialog(parent, title)
+                System.setProperty("apple.awt.fileDialogForDirectories", "true")
+                chooser.mode = FileDialog.LOAD
+                chooser.isMultipleMode = false
+                if (initialFile.isNotEmpty()) {
+                    chooser.directory = initialFile
+                }
+                chooser.isVisible = true
+                if (chooser.file != null) {
+                    val files = chooser.files
+                    if (files.isNotEmpty()) {
+                        resultFile = files[0]
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false")
+            } else {
+                val chooser = JFileChooser()
+                if (initialFile.isNotEmpty()) {
+                    chooser.currentDirectory = File(initialFile)
+                }
+                chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+                chooser.dialogTitle = title
+                chooser.isFileHidingEnabled = true
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    resultFile = File(chooser.selectedFile.absolutePath)
+                }
+            }
+            return resultFile
+        }
+
+        @JvmStatic
         fun chooseLoadFileLocation(parent: Frame, title: String, initialFile: String): File? {
             var resultFile: File? = null
 
