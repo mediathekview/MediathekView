@@ -27,13 +27,13 @@ public class DialogZiel extends JDialog {
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         setTitle(titel);
         jButtonOk.addActionListener(l -> {
-            check();
-            beenden();
+            ok = true;
+            dispose();
         });
 
         jButtonAbbrechen.addActionListener(l -> {
             ok = false;
-            beenden();
+            dispose();
         });
 
         jButtonZiel.addActionListener(new ZielBeobachter());
@@ -47,32 +47,6 @@ public class DialogZiel extends JDialog {
             ok = false;
             dispose();
         });
-    }
-
-    void check() {
-        boolean ret = false;
-        String pfad = jTextFieldPfad.getText();
-        if (!pfad.isEmpty()) {
-            try {
-                int ook;
-                if (new File(pfad).exists()) {
-                    ook = JOptionPane.showConfirmDialog(this, "Datei:  " + '"' + pfad + '"' + "  existiert bereits", "Überschreiben?",
-                            JOptionPane.YES_NO_OPTION);
-                } else {
-                    ook = JOptionPane.OK_OPTION;
-                }
-                if (ook == JOptionPane.OK_OPTION) {
-                    ziel = pfad;
-                    ret = true;
-                }
-            } catch (Exception ignored) {
-            }
-        }
-        ok = ret;
-    }
-
-    private void beenden() {
-        dispose();
     }
 
     /** This method is called from within the constructor to
