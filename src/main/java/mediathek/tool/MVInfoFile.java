@@ -11,8 +11,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Optional;
 
 public class MVInfoFile {
@@ -27,7 +25,7 @@ public class MVInfoFile {
     private static final String FILM_DAUER = "Dauer";
     private static final String FILM_URL = "URL";
 
-    protected static String formatFilmAsString(DatenFilm film, int maxLengthHeaders) {
+    protected String formatFilmAsString(DatenFilm film, int maxLengthHeaders) {
 
         if (null == film)
             return "";
@@ -56,7 +54,7 @@ public class MVInfoFile {
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
 
-        sb.append(splittStringIntoMaxFixedLengthLines(film.getDescription(), 62));
+        sb.append(splitStringIntoMaxFixedLengthLines(film.getDescription(), 62));
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
 
@@ -64,22 +62,15 @@ public class MVInfoFile {
 
     }
 
-    protected static StringBuilder appendFormatedTableLine(StringBuilder sb, String formatString, String keyTitle, String value) {
+    protected StringBuilder appendFormatedTableLine(StringBuilder sb, String formatString, String keyTitle, String value) {
         return sb.append(String.format(formatString, String.format("%s:", keyTitle), value))
                 .append(System.lineSeparator());
     }
 
-    public static String splittStringIntoMaxFixedLengthLines(String input, int lineLength) {
+    protected String splitStringIntoMaxFixedLengthLines(String input, int lineLength) {
         return Optional.ofNullable(input)
                 .map(s -> WordUtils.wrap(s, lineLength))
                 .orElse("");
-    }
-
-    public static int getMaxLengthFromStringArray(String[] array) {
-        return Optional.ofNullable(array).stream().flatMap(Arrays::stream)
-                .max(Comparator.comparing(String::length))
-                .map(String::length)
-                .orElse(0);
     }
 
     public void writeInfoFile(DatenFilm film, @NotNull Path path) throws IOException {
