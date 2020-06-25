@@ -59,7 +59,7 @@ public class DialogFilmBeschreibung extends JDialog {
                     + "und durch Drittprogramme einlesen lassen wollen.\n\n"
                     + "Achtung: Diese Änderungen gehen nach dem Neuladen "
                     + "einer Filmliste verloren.");
-            JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+            JFXHiddenApplication.showAlert(alert, this);
         }));
 
         jButtonSpeichern.addActionListener(e -> {
