@@ -577,6 +577,7 @@
 			</activation>
 			<properties>
 				<javafx.platform>win</javafx.platform>
+				<install4j.platform>windows</install4j.platform>
 			</properties>
 			<dependencies>
 				<!-- JavaFX -->
@@ -673,6 +674,7 @@
 			</activation>
 			<properties>
 				<javafx.platform>linux</javafx.platform>
+				<install4j.platform>linux</install4j.platform>
 			</properties>
 			<dependencies>
 				<!-- JavaFX -->
@@ -760,6 +762,7 @@
 			<id>arm</id>
 			<properties>
 				<javafx.platform>linux</javafx.platform>
+				<install4j.platform>arm</install4j.platform>
 			</properties>
 			<dependencies>
 				<!-- JavaFX -->
@@ -961,7 +964,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>install4j-win</id>
+			<id>install4j</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -976,36 +979,7 @@
 									<goal>compile</goal>
 								</goals>
 								<configuration>
-									<projectFile>${project.build.directory}/mediathekview_windows.install4j</projectFile>
-									<installDir>${install4j.home}</installDir>
-									<jvmArguments>
-										<arg>-Xmx2G</arg>
-									</jvmArguments>
-									<attach>true</attach>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>install4j-linux</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.install4j</groupId>
-						<artifactId>install4j-maven-plugin</artifactId>
-						<version>1.1.1</version>
-						<executions>
-							<execution>
-								<id>compile-installers</id>
-								<phase>package</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<projectFile>${project.build.directory}/mediathekview_linux.install4j</projectFile>
+									<projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
 									<installDir>${install4j.home}</installDir>
 									<jvmArguments>
 										<arg>-Xmx2G</arg>
