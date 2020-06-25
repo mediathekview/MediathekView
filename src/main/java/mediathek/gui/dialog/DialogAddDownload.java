@@ -192,12 +192,22 @@ public class DialogAddDownload extends JDialog {
 
             }
         });
-        jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
+
+        var listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setNameFilm();
+            }
+        };
+        jRadioButtonAufloesungHd.addActionListener(listener);
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.getHighQualityUrl().isEmpty());
+
+        jRadioButtonAufloesungKlein.addActionListener(listener);
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getUrlKlein().isEmpty());
+
+        jRadioButtonAufloesungHoch.addActionListener(listener);
         jRadioButtonAufloesungHoch.setSelected(true);
+
         if (jRadioButtonAufloesungHd.isEnabled()) {
             dateiGroesse_HD = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD));
             if (!dateiGroesse_HD.isEmpty()) {
@@ -221,6 +231,7 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
         jCheckBoxPfadSpeichern.addActionListener(e -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
+
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
@@ -458,14 +469,6 @@ public class DialogAddDownload extends JDialog {
         }
         saveComboPfad(jComboBoxPfad, orgPfad);
         this.dispose();
-    }
-
-    private class BeobRadio implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setNameFilm();
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
