@@ -73,8 +73,20 @@ public class PanelFilmlisteLaden extends JPanel {
                 filmeLaden.loadFilmlist(jTextFieldUrl.getText(), false);
         });
 
-        jRadioButtonManuell.addActionListener(new BeobOption());
-        jRadioButtonAuto.addActionListener(new BeobOption());
+        var listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jRadioButtonManuell.isSelected())
+                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+                else
+                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
+
+                daten.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
+            }
+        };
+        jRadioButtonManuell.addActionListener(listener);
+        jRadioButtonAuto.addActionListener(listener);
+
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         TextCopyPasteHandler<JTextField> handler = new TextCopyPasteHandler<>(jTextFieldUrl);
         jTextFieldUrl.setComponentPopupMenu(handler.getPopupMenu());
@@ -107,19 +119,6 @@ public class PanelFilmlisteLaden extends JPanel {
         } else {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
-        }
-    }
-
-    private class BeobOption implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (jRadioButtonManuell.isSelected())
-                GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
-            else
-                GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
-
-            daten.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
         }
     }
 
