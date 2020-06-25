@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
@@ -11,7 +12,6 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.models.TModel;
@@ -611,11 +611,11 @@ public class PanelPsetLang extends PanelVorlage {
 
                 IoXmlSchreiben configWriter = new IoXmlSchreiben();
                 configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setHeaderText("Programmset exportieren");
                     alert.setContentText("Das Programmset wurde erfolgreich exportiert.");
-                    JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+                    JFXHiddenApplication.showAlert(alert, this);
                 });
             }
         } else {
