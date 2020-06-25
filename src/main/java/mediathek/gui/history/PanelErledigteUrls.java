@@ -1,15 +1,13 @@
 package mediathek.gui.history;
 
 import mediathek.config.Daten;
-import mediathek.controller.history.MVUsedUrl;
-import mediathek.controller.history.MVUsedUrlModelHelper;
-import mediathek.controller.history.MVUsedUrls;
+import mediathek.controller.history.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FileDialogs;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.models.TModel;
 import net.miginfocom.layout.AC;
@@ -84,16 +82,6 @@ public abstract class PanelErledigteUrls extends JPanel {
         }
     }
 
-    protected String getExportFileLocation() {
-        DialogZiel dialog = new DialogZiel(null, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
-        dialog.setVisible(true);
-        if (!dialog.ok)
-            return "";
-        else
-            return dialog.ziel;
-
-    }
-
     protected List<MVUsedUrl> getExportableList() {
         return workList.getSortedList();
     }
@@ -102,10 +90,17 @@ public abstract class PanelErledigteUrls extends JPanel {
         if (jTable1.getModel().getRowCount() <= 0)
             return;
 
-        final String ziel = getExportFileLocation();
-        if (!ziel.isEmpty())
-            new HistoryWriterThread(ziel, getExportableList()).start();
-
+        var title = "Filmtitel speichern";
+        if (workList instanceof AboHistoryController) {
+            title = "Erledigte Abos speichern";
+        }
+        if (workList instanceof SeenHistoryController) {
+            title = "Download-Historie speichern";
+        }
+        var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),title,GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt");
+        if (destFile != null) {
+            new HistoryWriterThread(destFile.getAbsolutePath(), getExportableList()).start();
+        }
     }
 
     class BeobMausTabelle extends MouseAdapter {
