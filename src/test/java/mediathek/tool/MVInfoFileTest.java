@@ -43,7 +43,7 @@ class MVInfoFileTest {
     void appendFormatedTableStringToEmptyStringBuilder() {
         StringBuilder sb = new StringBuilder();
         MVInfoFile infoFile = new MVInfoFile();
-        sb = infoFile.appendFormatedTableLine(sb, "%-12s %s", "Größe [MB]", "194");
+        sb = infoFile.appendFormattedTableLine(sb, "%-12s %s", "Größe [MB]", "194");
 
         assertThat(sb.toString()).isEqualTo("Größe [MB]:  194" + System.lineSeparator());
 
