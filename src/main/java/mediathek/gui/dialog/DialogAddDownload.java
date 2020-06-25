@@ -10,8 +10,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -45,7 +43,6 @@ public class DialogAddDownload extends JDialog {
     private boolean stopBeob;
     private final JTextComponent cbPathTextComponent;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private static final Logger logger = LogManager.getLogger();
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -85,7 +82,21 @@ public class DialogAddDownload extends JDialog {
             ok = false;
             beenden();
         }
-        jButtonZiel.addActionListener(new ZielBeobachter());
+
+        jButtonZiel.addActionListener(l -> {
+            var initialDirectory = "";
+            if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
+                initialDirectory = jComboBoxPfad.getSelectedItem().toString();
+            }
+            var directory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(),"Film speichern",initialDirectory);
+            if (directory != null) {
+                var selectedDirectory = directory.getAbsolutePath();
+                jComboBoxPfad.addItem(selectedDirectory);
+                jComboBoxPfad.setSelectedItem(selectedDirectory);
+
+            }
+        });
+
         jButtonOk.addActionListener(e -> {
             if (check()) {
                 beenden();
@@ -454,47 +465,6 @@ public class DialogAddDownload extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             setNameFilm();
-        }
-    }
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
-                        jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
-                    } catch (Exception ex) {
-                        logger.error("error saving file", ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPfad.getSelectedItem().toString()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
-                        jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        logger.error("error saving file", ex);
-                    }
-                }
-            }
         }
     }
 
