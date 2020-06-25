@@ -28,7 +28,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.LinkedList;
 
 @SuppressWarnings("serial")
@@ -237,7 +236,16 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAb.addActionListener(new BeobGruppeAufAb(false));
         jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
         jButtonExport.addActionListener(new BeobGruppeExport());
-        jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
+        jButtonGruppePfad.addActionListener(l -> {
+            var initialFile = "";
+            if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
+                initialFile = jTextFieldGruppeZielPfad.getText();
+            }
+            var destDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Filme speichern unter", initialFile);
+            if (destDirectory != null) {
+                jTextFieldGruppeZielPfad.setText(destDirectory.getAbsolutePath());
+            }
+        });
 
         jTextAreaSetBeschreibung.getDocument().addDocumentListener(new BeobDoc(jTextAreaSetBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG));
         var handler2 = new TextCopyPasteHandler<>(jTextAreaSetBeschreibung);
@@ -707,45 +715,6 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
                     tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
 //                    progNamePruefen();
-                }
-            }
-        }
-    }
-
-    private class BeobDateiDialogPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
-                        logger.error("actionPerformed", ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
-                    } catch (Exception ex) {
-                        logger.error("actionPerformed", ex);
-                    }
                 }
             }
         }
