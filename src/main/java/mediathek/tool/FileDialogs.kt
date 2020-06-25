@@ -8,6 +8,40 @@ import javax.swing.JFileChooser
 
 class FileDialogs {
     companion object {
+        @JvmStatic
+        fun chooseLoadFileLocation(parent: Frame, title: String, initialFile: String): File? {
+            var resultFile: File? = null
+
+            if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_WINDOWS) {
+                val chooser = FileDialog(parent, title)
+                chooser.mode = FileDialog.LOAD
+                chooser.isMultipleMode = false
+                if (initialFile.isNotEmpty()) {
+                    chooser.directory = initialFile
+                }
+                chooser.isVisible = true
+                if (chooser.file != null) {
+                    val files = chooser.files
+                    if (files.isNotEmpty()) {
+                        resultFile = files[0]
+                    }
+                }
+            } else {
+                val chooser = JFileChooser()
+                if (initialFile.isNotEmpty()) {
+                    chooser.currentDirectory = File(initialFile)
+                }
+                chooser.fileSelectionMode = JFileChooser.FILES_ONLY
+                chooser.dialogTitle = title
+                chooser.isFileHidingEnabled = true
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    resultFile = File(chooser.selectedFile.absolutePath)
+                }
+            }
+
+            return resultFile
+        }
+
         /**
          * Show a native file dialog where possible, otherwise use the crappy swing file dialog.
          * @param parent the parent for the dialog. Used only for native dialogs
@@ -41,8 +75,7 @@ class FileDialogs {
                 chooser.fileSelectionMode = JFileChooser.FILES_ONLY
                 chooser.dialogTitle = title
                 chooser.isFileHidingEnabled = true
-                val returnVal = chooser.showSaveDialog(null)
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                     resultFile = File(chooser.selectedFile.absolutePath)
                 }
             }

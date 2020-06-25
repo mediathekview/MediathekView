@@ -6,18 +6,12 @@ import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.FilmListUpdateType;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -26,19 +20,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 @SuppressWarnings("serial")
 public class PanelFilmlisteLaden extends JPanel {
-    private final Daten daten;
-    private static final Logger logger = LogManager.getLogger();
-
-
-    public PanelFilmlisteLaden(Daten d) {
+    public PanelFilmlisteLaden() {
         super();
-        daten = d;
 
-        daten.getMessageBus().subscribe(this);
+        Daten.getInstance().getMessageBus().subscribe(this);
 
         initComponents();
         init();
@@ -60,11 +48,16 @@ public class PanelFilmlisteLaden extends JPanel {
     private void init() {
         initRadio();
 
-        final var filmeLaden = daten.getFilmeLaden();
+        final var filmeLaden = Daten.getInstance().getFilmeLaden();
         jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist("", false));
 
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
+        jButtonDateiAuswaehlen.addActionListener(l -> {
+            var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
+            if (loadFile != null) {
+                jTextFieldUrl.setText(loadFile.getAbsolutePath());
+            }
+        });
 
         jButtonFilmeLaden.addActionListener(e -> {
             if (jCheckBoxUpdate.isSelected())
@@ -81,7 +74,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 else
                     GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
 
-                daten.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
+                Daten.getInstance().getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
             }
         };
         jRadioButtonManuell.addActionListener(listener);
@@ -119,43 +112,6 @@ public class PanelFilmlisteLaden extends JPanel {
         } else {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
-        }
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filmliste laden");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldUrl.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        logger.error("set file destination failed", ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldUrl.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        logger.error("set file destination failed", ex);
-                    }
-                }
-            }
         }
     }
 
