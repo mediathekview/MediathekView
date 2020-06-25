@@ -141,8 +141,13 @@ public class DirectHttpDownload extends Thread {
         final boolean downloadInfoFile = Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]);
         if (downloadInfoFile) {
             infoFuture = CompletableFuture.runAsync(() -> {
-                MVInfoFile infoFile = new MVInfoFile();
-                infoFile.writeInfoFile(datenDownload);
+                try {
+                    MVInfoFile infoFile = new MVInfoFile();
+                    infoFile.writeInfoFile(datenDownload);
+                }
+                catch (IOException ex) {
+                    logger.error("Failed to write info file", ex);
+                }
             });
         }
     }
