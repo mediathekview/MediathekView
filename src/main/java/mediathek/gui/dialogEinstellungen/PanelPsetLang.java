@@ -34,7 +34,6 @@ import java.util.LinkedList;
 @SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler;
-    private String exportPfad = "";
     private final ListePset listePset;
     private final MVTable tabellePset;
     private final MVTable tabelleProgramme;
@@ -110,7 +109,17 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgPraefix.setEnabled(false);
         jTextFieldProgSuffix.setEnabled(false);
 
-        jButtonProgPfad.addActionListener(new BeobDateiDialogProg());
+        jButtonProgPfad.addActionListener(l -> {
+            String initialFile = "";
+            if (!jTextFieldProgPfad.getText().isEmpty()) {
+                initialFile = jTextFieldProgPfad.getText();
+            }
+            var destFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Programm auswählen", initialFile);
+            if (destFile != null) {
+                jTextFieldProgPfad.setText(destFile.getAbsolutePath());
+            }
+        });
+
         jButtonProgPlus.addActionListener(l -> {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
@@ -591,9 +600,7 @@ public class PanelPsetLang extends PanelVorlage {
             var resultFile = FileDialogs.chooseSaveFileLocation(parentComponent,"PSet exportieren", fileName);
             if (resultFile != null) {
                 var ziel = resultFile.getAbsolutePath();
-                if (ziel.contains(File.separator)) {
-                    exportPfad = ziel.substring(0, ziel.lastIndexOf(File.separator));
-                }
+
                 IoXmlSchreiben configWriter = new IoXmlSchreiben();
                 configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
                 JavaFxUtils.invokeInFxThreadAndWait(() -> {
@@ -700,42 +707,6 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
                     tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
 //                    progNamePruefen();
-                }
-            }
-        }
-    }
-
-    private class BeobDateiDialogProg implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programm auswählen");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
-                        logger.error("actionPerformed", ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (!jTextFieldProgPfad.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        String str = chooser.getSelectedFile().getPath();
-                        jTextFieldProgPfad.setText(str);
-                    } catch (Exception ex) {
-                        logger.error("actionPerformed", ex);
-                    }
                 }
             }
         }
