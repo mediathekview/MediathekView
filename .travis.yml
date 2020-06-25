@@ -10,7 +10,7 @@ install:
   - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
   - tar zxvf install4j_unix_8_0_7.tar.gz
   - mvn clean
-  - mvn install4j:install-license -Pinstall4j-linux
+  - mvn install4j:install-license -Pinstall4j
 notifications:
   webhooks:
     urls:
@@ -97,7 +97,7 @@ jobs:
             tags: true
     - stage: Build and Deploy Windows
       script:
-        - ./mvnw clean install -Pwindows,!linux,install4j-win
+        - ./mvnw clean install -Pwindows,!linux,install4j
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
