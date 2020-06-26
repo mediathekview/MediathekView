@@ -8,7 +8,7 @@ STATUSDATEI="target/upload.status"
 PLATTFORMDATEI="target/plattform.txt"
 COMMITDATEI="target/gitcommithash.txt"
 
-PORT="22"
+PORT="52150"
 ADRESSE="deploy@mediathekview.de"
 KEYFILE="scripte/deploy/deploy.key"
 
