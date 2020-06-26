@@ -1,18 +1,16 @@
 package mediathek.tool;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.TimeZone;
 
 @SuppressWarnings("serial")
 public class DatumFilm extends Date {
     // die Filme werden immer in der Zeitzone "Europe/Berlin" gesucht
-    private static final FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy", TimeZone.getTimeZone("Europe/Berlin"));
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.of("Europe/Berlin"));
 
     public DatumFilm(long l) {
         super(l);
-
     }
 
     @Override
@@ -20,7 +18,8 @@ public class DatumFilm extends Date {
         if (getTime() == 0) {
             return "";
         } else {
-            return dateFormatter1.format(this);
+
+            return formatter.format(DateUtil.convertToLocalDate(this));
         }
     }
 }
