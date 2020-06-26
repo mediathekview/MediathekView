@@ -39,7 +39,14 @@ public class FilmListAgeLabel extends ComputedLabel {
     }
 
     private String computeAge(long seconds) {
-      var duration = java.time.Duration.ofSeconds(seconds);
-      return String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
+        String result;
+        try {
+            var duration = java.time.Duration.ofSeconds(seconds);
+            result = String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
+        }
+        catch (IllegalArgumentException ex) {
+            result = "Ungültiges Alter in der Filmliste";
+        }
+      return result;
     }
 }
