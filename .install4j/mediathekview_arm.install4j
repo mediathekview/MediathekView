@@ -27,9 +27,10 @@
   <launchers>
     <launcher name="mediathekview arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false" />
+          <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
       </java>
       <desktopFile>Categories=Network;FileTransfer</desktopFile>
@@ -42,9 +43,10 @@
     </launcher>
     <launcher name="MediathekView_ipv4 arm" id="325" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false" />
+          <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
       </java>
       <desktopFile>Categories=Network;FileTransfer</desktopFile>
@@ -56,13 +58,15 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/update.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
+  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/updates-linux-armhf.xml"
+                useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
           <screen id="1" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" actionElevationType="none" rollbackBarrierExitCode="0" />
+              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction"
+                      actionElevationType="none" rollbackBarrierExitCode="0"/>
             </actions>
           </screen>
         </startup>
