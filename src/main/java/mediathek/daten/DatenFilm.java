@@ -1,9 +1,9 @@
 package mediathek.daten;
 
-import mediathek.javafx.bookmark.BookmarkData;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.sansorm.SqlClosure;
 import mediathek.config.Daten;
+import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.tool.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -62,8 +62,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
-    private DatenAbo abo = null;
-    private BookmarkData bookmark = null;
+    private DatenAbo abo;
+    private BookmarkData bookmark;
     /**
      * film date stored IN SECONDS!!!
      */
@@ -75,20 +75,21 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     /**
      * film length in seconds.
      */
-    private long filmLength = 0;
+    private long filmLength;
     /**
      * Internal film number, used for storage in database
      */
     private int databaseFilmNumber;
-    private Cleaner.Cleanable cleaner = null;
-    private String websiteLink = null;
-    private String description = null;
+    private Cleaner.Cleanable cleaner;
+    private String websiteLink;
+    private String description;
     private String urlKlein = "";
     /**
      * High Quality (formerly known as HD) URL if available.
      */
     private Optional<String> highQuality_url = Optional.empty();
     private String aboName = "";
+    @Deprecated
     private String datumLong = "";
     private String film_nr = "";
     private String sender = "";
@@ -165,10 +166,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         this.aboName = aboName;
     }
 
+    @Deprecated
     public String getDatumLong() {
         return datumLong;
     }
 
+    @Deprecated
     public void setDatumLong(String datumLong) {
         this.datumLong = datumLong;
     }
@@ -546,15 +549,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * @return url as String.
      */
     private String getUrlByAufloesung(@NotNull final String aufloesung) {
-        switch (aufloesung) {
-            case FilmResolution.AUFLOESUNG_HD:
-                return getHighQualityUrl();
-            case FilmResolution.AUFLOESUNG_KLEIN:
-                return getUrlKlein();
-
-            default:
-                return getUrl();
-        }
+        return switch (aufloesung) {
+            case FilmResolution.AUFLOESUNG_HD -> getHighQualityUrl();
+            case FilmResolution.AUFLOESUNG_KLEIN -> getUrlKlein();
+            default -> getUrl();
+        };
     }
 
     public String getNr() {
