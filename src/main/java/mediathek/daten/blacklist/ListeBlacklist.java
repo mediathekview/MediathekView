@@ -24,7 +24,11 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();
-    private long days;
+    /**
+     * This specifies the lower boundary for all films to be shown or not.
+     * Content is num of days converted to milliseconds from UNIX start.
+     */
+    private long days_lower_boundary;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
     /**
@@ -153,7 +157,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      */
     private Predicate<DatenFilm> createPredicate() {
         final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
-        if (days != 0)
+        if (days_lower_boundary != 0)
             filterList.add(this::checkDate);
 
         if (blacklistIsActive) {
@@ -203,7 +207,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
         // hier werden die Filme für Downloads gesucht, Zeit ist "0"
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
         loadCurrentFilterSettings();
-        days = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
+        days_lower_boundary = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
         blacklistIsActive = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
 
         return applyFiltersForAbos(film);
@@ -218,19 +222,27 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
     }
 
     /**
+     * Convert days to milliseconds
+     * @param days days
+     * @return the input converted to milliseconds
+     */
+    private long daysToMilliseconds(int days) {
+        return 1000L * 60L * 60L * 24L * days;
+    }
+
+    /**
      * Load current filter settings from Config
      */
     private void loadCurrentFilterSettings() {
         try {
             final String val = MediathekGui.ui().tabFilme.fap.zeitraumProperty.getValue();
             if (val.equals(ZeitraumSpinner.UNLIMITED_VALUE))
-                days = 0;
+                days_lower_boundary = 0;
             else {
-                final long max = 1000L * 60L * 60L * 24L * Integer.parseInt(val);
-                days = System.currentTimeMillis() - max;
+                days_lower_boundary = System.currentTimeMillis() - daysToMilliseconds(Integer.parseInt(val));
             }
         } catch (Exception ex) {
-            days = 0;
+            days_lower_boundary = 0;
         }
         try {
             minimumFilmLength = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
@@ -300,9 +312,9 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      * @return true if film can be displayed
      */
     private boolean checkDate(@NotNull DatenFilm film) {
-        if (days != 0) {
+        if (days_lower_boundary != 0) {
             final long filmTime = film.getDatumFilm().getTime();
-            return filmTime == 0 || filmTime >= days;
+            return filmTime == 0 || filmTime >= days_lower_boundary;
         }
 
         return true;
