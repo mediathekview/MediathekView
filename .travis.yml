@@ -34,6 +34,8 @@ stages:
     if: tag IS present
   - name: Build and Deploy Windows
     if: tag IS present
+  - name: Build and Deploy Windows 32bit
+    if: tag IS present
 jobs:
   include:
     - stage: Test
