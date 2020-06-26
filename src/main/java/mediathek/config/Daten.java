@@ -264,7 +264,7 @@ public class Daten {
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    private static long getHeute_0Uhr() {
+    private long getHeute_0Uhr() {
         LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
         var zdt = ZonedDateTime.of(todayMidnight, ZoneId.systemDefault());
 
