@@ -37,7 +37,8 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true"/>
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
@@ -51,7 +52,24 @@
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true"/>
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -Djava.net.preferIPv4Stack=true">
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
+        <classPath>
+          <archive location="MediathekView.jar" failOnError="false"/>
+        </classPath>
+      </java>
+      <iconImageFiles>
+        <file path="${project.basedir}/.install4j/MediathekView@x16.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x32.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x48.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png"/>
+      </iconImageFiles>
+    </launcher>
+    <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui"/>
+      <java mainClass="mediathek.Main"
+            vmParameters="-Xmx2G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED"
+            arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
@@ -321,6 +339,7 @@
         <launcherIds>
           <launcher id="59"/>
           <launcher id="60"/>
+          <launcher id="61"/>
         </launcherIds>
         <startup>
           <screen id="320" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
