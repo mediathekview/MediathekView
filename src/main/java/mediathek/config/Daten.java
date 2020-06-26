@@ -45,12 +45,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
@@ -268,13 +265,10 @@ public class Daten {
      * @return Number of milliseconds from today´s midnight.
      */
     private static long getHeute_0Uhr() {
-        final Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+        var zdt = ZonedDateTime.of(todayMidnight, ZoneId.systemDefault());
 
-        return cal.getTimeInMillis();
+        return zdt.toInstant().toEpochMilli();
     }
 
     public INotificationCenter notificationCenter() {
