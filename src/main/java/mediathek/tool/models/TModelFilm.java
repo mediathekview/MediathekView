@@ -2,7 +2,7 @@ package mediathek.tool.models;
 
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenFilmCaptions;
-import mediathek.tool.Datum;
+import mediathek.tool.DatumFilm;
 import mediathek.tool.FilmSize;
 
 import java.util.Vector;
@@ -43,7 +43,7 @@ public class TModelFilm extends TModel {
                 break;
 
             case DatenFilm.FILM_DATUM:
-                result = Datum.class;
+                result = DatumFilm.class;
                 break;
 
             case DatenFilm.FILM_GROESSE:

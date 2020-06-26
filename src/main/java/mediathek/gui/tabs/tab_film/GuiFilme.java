@@ -363,7 +363,7 @@ public class GuiFilme extends AGuiTabPanel {
     private void setupCellRenderer() {
         final CellRendererFilme cellRenderer = new CellRendererFilme(daten);
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
-        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
+        tabelle.setDefaultRenderer(DatumFilm.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
