@@ -6,7 +6,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class Datum extends Date {
-    protected final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
+    private final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
 
     public Datum() {
         super();
