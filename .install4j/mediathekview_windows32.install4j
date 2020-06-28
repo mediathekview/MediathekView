@@ -562,8 +562,7 @@
                   <property name="subTitle" type="string">${i18n:updater.CommentsSubTitle}</property>
                   <property name="title" type="string">${i18n:updater.CommentsTitle}</property>
                 </serializedBean>
-                <condition>false // This screen is only shown if the user clicks the "Show comments" hyperlink label in
-                  the previous screen.
+                <condition>false // This screen is only shown if the user clicks the "Show comments" hyperlink label in the previous screen.
                 </condition>
                 <validation>if (context.isConsole()) {
                   context.goBackInHistory(1);
@@ -706,8 +705,7 @@
                             <serializedBean>
                               <property name="script">
                                 <object class="com.install4j.api.beans.ScriptProperty">
-                                  <property name="value" type="string">import
-                                    com.install4j.runtime.installer.frontend.SplashProgressInterface;
+                                  <property name="value" type="string">import com.install4j.runtime.installer.frontend.SplashProgressInterface;
 
                                     List&lt;String&gt; args = new ArrayList&lt;String&gt;();
                                     String installationDirectory = context.getInstallationDirectory().getPath();
