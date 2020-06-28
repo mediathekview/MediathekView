@@ -111,6 +111,6 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win32
-          skip_cleanup: true
+          cleanup: true
           on:
             tags: true
