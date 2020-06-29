@@ -73,22 +73,11 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private InputStream selectDecompressor(String source, InputStream in) throws Exception {
-        final InputStream is;
-
-        switch (source.substring(source.lastIndexOf('.'))) {
-            case Konstanten.FORMAT_XZ:
-                is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
-                break;
-
-            case ".json":
-                is = in;
-                break;
-
-            default:
-                throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
-        }
-
-        return is;
+        return switch (source.substring(source.lastIndexOf('.'))) {
+            case Konstanten.FORMAT_XZ -> new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
+            case ".json" -> in;
+            default -> throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
+        };
     }
 
     private void parseNeu(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -200,8 +189,20 @@ public class FilmListReader implements AutoCloseable {
         datenFilm.setHighQualityUrl(checkedString(jp));
     }
 
-    private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setDatumLong(checkedString(jp));
+    private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) {
+        long l;
+        try {
+            final var val = checkedString(jp);
+            if (val.isEmpty())
+                l = 0;
+            else
+                l = Long.parseLong(val);
+        }
+        catch (Exception ex) {
+            l = 0;
+            logger.error("parseDatumLong:", ex);
+        }
+        datenFilm.setDatumLong(l);
     }
 
     private void parseSendedatum(JsonParser jp, DatenFilm datenFilm) throws IOException {
