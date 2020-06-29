@@ -1619,53 +1619,48 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_VIEW_ALL:
+                case INDEX_COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_NOT_STARTED:
+                }
+                case INDEX_COMBO_VIEW_NOT_STARTED -> {
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_STARTED:
+                }
+                case INDEX_COMBO_VIEW_STARTED -> {
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_WAITING:
+                }
+                case INDEX_COMBO_VIEW_WAITING -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_FINISHED_ONLY:
+                }
+                case INDEX_COMBO_VIEW_FINISHED_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_RUN_ONLY:
+                }
+                case INDEX_COMBO_VIEW_RUN_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = true;
-                    break;
+                }
             }
 
             reloadTable();
@@ -1681,20 +1676,18 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_DISPLAY_ALL:
+                case INDEX_COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY -> {
                     onlyAbos = false;
                     onlyDownloads = true;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_ABOS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_ABOS_ONLY -> {
                     onlyAbos = true;
                     onlyDownloads = false;
-                    break;
+                }
             }
 
             reloadTable();
