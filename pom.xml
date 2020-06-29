@@ -731,9 +731,6 @@
 										</transformer>
 										<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -779,9 +776,6 @@
 										<transformer
 												implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -827,9 +821,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -870,9 +861,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -917,9 +905,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
