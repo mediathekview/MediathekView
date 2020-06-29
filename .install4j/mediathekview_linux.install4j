@@ -15,10 +15,12 @@
       <fileEntry mountPoint="58" file="${project.build.directory}/MediathekView.jar" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
       <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.ico" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
       <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.svg" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
-      <dirEntry mountPoint="58" file="${project.build.directory}/res/bin" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="bin">
+      <dirEntry mountPoint="58" file="${project.build.directory}/res/bin" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="bin" excludeSuffixes="*.exe">
         <exclude>
           <entry location="ffmpeg.exe" />
           <entry location="ffmpeg.txt" />
+          <entry location="ffmpeg32.exe" />
+          <entry location="ffmpeg32.txt" />
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="58" file="${project.build.directory}/res/README.txt" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
@@ -29,7 +31,7 @@
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <desktopFile>Categories=Network;FileTransfer</desktopFile>
@@ -44,7 +46,7 @@
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck -Djava.net.preferIPv4Stack=true">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <desktopFile>Categories=Network;FileTransfer</desktopFile>
@@ -57,10 +59,9 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck"
-            arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck" arguments="Einstellungen/.mediathek3">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
@@ -71,15 +72,13 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/updates-linux.xml"
-                useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://mediathekview.de/downloads/stabil/">
+  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/updates-linux.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://mediathekview.de/downloads/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
           <screen id="1" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction"
-                      actionElevationType="none" rollbackBarrierExitCode="0"/>
+              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" actionElevationType="none" rollbackBarrierExitCode="0" />
             </actions>
           </screen>
         </startup>
@@ -292,7 +291,7 @@ return console.askYesNo(message, true);
         <launcherIds>
           <launcher id="59" />
           <launcher id="60" />
-          <launcher id="61"/>
+          <launcher id="61" />
         </launcherIds>
         <startup>
           <screen id="322" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
