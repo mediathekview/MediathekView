@@ -105,8 +105,13 @@ public class FilmActionPanel {
             senderList.getCheckModel().clearChecks();
             themaBox.getSelectionModel().select("");
 
+            filmLengthSlider.setLowValueChanging(true);
             filmLengthSlider.lowValueProperty().setValue(0);
+            filmLengthSlider.setLowValueChanging(false);
+
+            filmLengthSlider.setHighValueChanging(true);
             filmLengthSlider.highValueProperty().setValue(FilmLengthSlider.UNLIMITED_VALUE);
+            filmLengthSlider.setHighValueChanging(false);
 
             viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(ZeitraumSpinner.UNLIMITED_VALUE);
         });
