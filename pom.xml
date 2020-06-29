@@ -483,6 +483,7 @@
 				<version>3.8.1</version>
 				<configuration>
 					<release>${jdk.language.version}</release>
+					<forceJavacCompilerUse>true</forceJavacCompilerUse>
 					<compilerArgs>--enable-preview</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
@@ -586,7 +587,9 @@
 		<profile>
 			<id>64bit</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<os>
+					<arch>amd64</arch>
+				</os>
 			</activation>
 			<dependencies>
 				<!-- JavaFX -->
