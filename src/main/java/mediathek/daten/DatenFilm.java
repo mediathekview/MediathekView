@@ -368,19 +368,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
     public String getUrlFuerAufloesung(String aufloesung) {
-        final String ret;
-        switch (aufloesung) {
-            case FilmResolution.AUFLOESUNG_KLEIN:
-            case FilmResolution.AUFLOESUNG_HD:
-                ret = getUrlNormalOrRequested(aufloesung);
-                break;
-
-            default://AUFLOESUNG_NORMAL
-                ret = getUrl();
-                break;
-        }
-
-        return ret;
+        return switch (aufloesung) {
+            case FilmResolution.AUFLOESUNG_KLEIN, FilmResolution.AUFLOESUNG_HD -> getUrlNormalOrRequested(aufloesung);
+            //AUFLOESUNG_NORMAL
+            default -> getUrl();
+        };
     }
 
     public String getDateigroesse(String url) {
