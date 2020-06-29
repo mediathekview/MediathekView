@@ -89,7 +89,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     private Optional<String> highQuality_url = Optional.empty();
     private String aboName = "";
-    private long datumLong = -1;
+    @Deprecated
+    private String datumLong = "";
     private String film_nr = "";
     private String sender = "";
     private String thema = "";
@@ -165,11 +166,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         this.aboName = aboName;
     }
 
-    public long getDatumLong() {
+    @Deprecated
+    public String getDatumLong() {
         return datumLong;
     }
 
-    public void setDatumLong(long datumLong) {
+    @Deprecated
+    public void setDatumLong(String datumLong) {
         this.datumLong = datumLong;
     }
 
@@ -365,11 +368,19 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
     public String getUrlFuerAufloesung(String aufloesung) {
-        return switch (aufloesung) {
-            case FilmResolution.AUFLOESUNG_KLEIN, FilmResolution.AUFLOESUNG_HD -> getUrlNormalOrRequested(aufloesung);
-            //AUFLOESUNG_NORMAL
-            default -> getUrl();
-        };
+        final String ret;
+        switch (aufloesung) {
+            case FilmResolution.AUFLOESUNG_KLEIN:
+            case FilmResolution.AUFLOESUNG_HD:
+                ret = getUrlNormalOrRequested(aufloesung);
+                break;
+
+            default://AUFLOESUNG_NORMAL
+                ret = getUrl();
+                break;
+        }
+
+        return ret;
     }
 
     public String getDateigroesse(String url) {
@@ -476,9 +487,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             try {
-                datumFilm = new DatumFilm(datumLong * 1000); // convert from SECONDS to msec
+                final long l = Long.parseLong(getDatumLong());
+                datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.error("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), datumLong, ex);
+                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
                 datumFilm = new DatumFilm(0);
                 setSendeDatum("");
                 setSendeZeit("");
