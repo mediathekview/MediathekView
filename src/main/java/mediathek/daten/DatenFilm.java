@@ -490,7 +490,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
                 final long l = Long.parseLong(getDatumLong());
                 datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
             } catch (Exception ex) {
-                logger.debug("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
+                logger.error("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
                 datumFilm = new DatumFilm(0);
                 setSendeDatum("");
                 setSendeZeit("");
