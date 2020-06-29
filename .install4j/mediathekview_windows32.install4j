@@ -1,105 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.7" transformSequenceNumber="8">
-  <directoryPresets config="${project.build.directory}/res"/>
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView"
-               publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
-               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
+  <directoryPresets config="/home/nicklas/git/MediathekView" />
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
     <languages>
-      <principalLanguage id="de"/>
+      <principalLanguage id="de" />
     </languages>
     <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.1+8">
       <modules>
-        <defaultModules set="all"/>
+        <defaultModules set="all" />
       </modules>
     </jreBundles>
   </application>
   <files>
     <mountPoints>
-      <mountPoint id="58"/>
+      <mountPoint id="58" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="58" file="${project.build.directory}/MediathekView.jar" overwriteMode="1" uninstallMode="2"
-                 overrideOverwriteMode="true" overrideUninstallMode="true"/>
-      <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.ico" overwriteMode="1"
-                 uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true"/>
-      <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.svg" overwriteMode="1"
-                 uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true"/>
-      <dirEntry mountPoint="58" file="${project.build.directory}/res/bin" overwriteMode="1" uninstallMode="2"
-                overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="bin">
+      <fileEntry mountPoint="58" file="${project.build.directory}/MediathekView.jar" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
+      <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.ico" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
+      <fileEntry mountPoint="58" file="${project.build.directory}/res/MediathekView.svg" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
+      <dirEntry mountPoint="58" file="${project.build.directory}/res/bin" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="bin">
         <exclude>
-          <entry location="aria2-remote.sh"/>
+          <entry location="ffmpeg.exe" />
+          <entry location="aria2-remote.sh" />
+          <entry location="ffmpeg.txt" />
         </exclude>
       </dirEntry>
-      <fileEntry mountPoint="58" file="${project.build.directory}/res/README.txt" overwriteMode="1" uninstallMode="2"
-                 overrideOverwriteMode="true" overrideUninstallMode="true"/>
+      <fileEntry mountPoint="58" file="${project.build.directory}/res/README.txt" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
     </entries>
   </files>
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
-      <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true"/>
-      <java mainClass="mediathek.Main"
-            vmParameters="-Xmx1G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+      <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
+      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
-        <file path="${project.basedir}/.install4j/MediathekView@x16.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x32.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x48.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x128.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
-      <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true"/>
-      <java mainClass="mediathek.Main"
-            vmParameters="-Xmx1G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
+      <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
+      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
-        <file path="${project.basedir}/.install4j/MediathekView@x16.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x32.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x48.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x128.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
-      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui"/>
-      <java mainClass="mediathek.Main"
-            vmParameters="-Xmx1G -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED"
-            arguments="Einstellungen/.mediathek3">
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
+      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED" arguments="Einstellungen/.mediathek3">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
-        <file path="${project.basedir}/.install4j/MediathekView@x16.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x32.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x48.png"/>
-        <file path="${project.basedir}/.install4j/MediathekView@x128.png"/>
+        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/update.xml" useAutoUpdateBaseUrl="true"
-                autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
+  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/update.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
           <screen id="1" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction"
-                      actionElevationType="none" rollbackBarrierExitCode="0"/>
+              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" actionElevationType="none" rollbackBarrierExitCode="0" />
             </actions>
           </screen>
         </startup>
         <screens>
-          <screen id="2" beanClass="com.install4j.runtime.beans.screens.WelcomeScreen" styleId="41"
-                  rollbackBarrierExitCode="0">
+          <screen id="2" beanClass="com.install4j.runtime.beans.screens.WelcomeScreen" styleId="41" rollbackBarrierExitCode="0">
             <actions>
-              <action id="7" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction"
-                      rollbackBarrierExitCode="0" multiExec="true">
+              <action id="7" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction" rollbackBarrierExitCode="0" multiExec="true">
                 <serializedBean>
                   <property name="excludedVariables" type="array" elementType="string" length="1">
                     <element index="0">sys.installationDir</element>
@@ -127,27 +114,22 @@
                   </property>
                 </serializedBean>
               </formComponent>
-              <formComponent id="5" beanClass="com.install4j.runtime.beans.formcomponents.UpdateAlertComponent"
-                             useExternalParametrization="true" externalParametrizationName="Update Alert"
-                             externalParametrizationMode="include">
+              <formComponent id="5" beanClass="com.install4j.runtime.beans.formcomponents.UpdateAlertComponent" useExternalParametrization="true" externalParametrizationName="Update Alert" externalParametrizationMode="include">
                 <externalParametrizationPropertyNames>
                   <propertyName>updateCheck</propertyName>
                 </externalParametrizationPropertyNames>
               </formComponent>
-              <formComponent id="6" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                             insetTop="20">
+              <formComponent id="6" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetTop="20">
                 <serializedBean>
                   <property name="labelText" type="string">${i18n:ClickNext}</property>
                 </serializedBean>
               </formComponent>
             </formComponents>
           </screen>
-          <screen id="8" beanClass="com.install4j.runtime.beans.screens.InstallationDirectoryScreen"
-                  rollbackBarrierExitCode="0">
+          <screen id="8" beanClass="com.install4j.runtime.beans.screens.InstallationDirectoryScreen" rollbackBarrierExitCode="0">
             <condition>!context.getBooleanVariable("sys.confirmedUpdateInstallation")</condition>
             <actions>
-              <action id="11" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction"
-                      rollbackBarrierExitCode="0" multiExec="true">
+              <action id="11" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction" rollbackBarrierExitCode="0" multiExec="true">
                 <serializedBean>
                   <property name="excludedVariables" type="array" elementType="string" length="1">
                     <element index="0">sys.installationDir</element>
@@ -157,19 +139,14 @@
               </action>
             </actions>
             <formComponents>
-              <formComponent id="9" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                             insetBottom="25">
+              <formComponent id="9" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="25">
                 <serializedBean>
                   <property name="labelText" type="string">${i18n:SelectDirLabel(${compiler:sys.fullName})}</property>
                 </serializedBean>
               </formComponent>
-              <formComponent id="10"
-                             beanClass="com.install4j.runtime.beans.formcomponents.InstallationDirectoryChooserComponent"
-                             useExternalParametrization="true"
-                             externalParametrizationName="Installation Directory Chooser"
-                             externalParametrizationMode="include">
+              <formComponent id="10" beanClass="com.install4j.runtime.beans.formcomponents.InstallationDirectoryChooserComponent" useExternalParametrization="true" externalParametrizationName="Installation Directory Chooser" externalParametrizationMode="include">
                 <serializedBean>
-                  <property name="requestFocus" type="boolean" value="true"/>
+                  <property name="requestFocus" type="boolean" value="true" />
                 </serializedBean>
                 <externalParametrizationPropertyNames>
                   <propertyName>suggestAppDir</propertyName>
@@ -187,14 +164,10 @@
               </formComponent>
             </formComponents>
           </screen>
-          <screen id="15" beanClass="com.install4j.runtime.beans.screens.InstallationScreen" rollbackBarrier="true"
-                  rollbackBarrierExitCode="0">
+          <screen id="15" beanClass="com.install4j.runtime.beans.screens.InstallationScreen" rollbackBarrier="true" rollbackBarrierExitCode="0">
             <actions>
-              <action id="17" beanClass="com.install4j.runtime.beans.actions.InstallFilesAction"
-                      actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="quit"
-                      errorMessage="${i18n:FileCorrupted}"/>
-              <action id="18" beanClass="com.install4j.runtime.beans.actions.desktop.CreateProgramGroupAction"
-                      actionElevationType="elevated" rollbackBarrierExitCode="0">
+              <action id="17" beanClass="com.install4j.runtime.beans.actions.InstallFilesAction" actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="quit" errorMessage="${i18n:FileCorrupted}" />
+              <action id="18" beanClass="com.install4j.runtime.beans.actions.desktop.CreateProgramGroupAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
                 <serializedBean>
                   <property name="uninstallerMenuName" type="string">
                     ${i18n:UninstallerMenuEntry(${compiler:sys.fullName})}
@@ -202,8 +175,7 @@
                 </serializedBean>
                 <condition>!context.getBooleanVariable("sys.programGroupDisabled")</condition>
               </action>
-              <action id="19" beanClass="com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction"
-                      actionElevationType="elevated" rollbackBarrierExitCode="0">
+              <action id="19" beanClass="com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
                 <serializedBean>
                   <property name="itemName" type="string">${compiler:sys.fullName} ${compiler:sys.version}</property>
                 </serializedBean>
@@ -217,11 +189,9 @@
               </formComponent>
             </formComponents>
           </screen>
-          <screen id="20" beanClass="com.install4j.runtime.beans.screens.FinishedScreen" styleId="41"
-                  rollbackBarrierExitCode="0" finishScreen="true">
+          <screen id="20" beanClass="com.install4j.runtime.beans.screens.FinishedScreen" styleId="41" rollbackBarrierExitCode="0" finishScreen="true">
             <formComponents>
-              <formComponent id="21" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                             insetBottom="10">
+              <formComponent id="21" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="10">
                 <serializedBean>
                   <property name="labelText" type="string">${form:finishedMessage}</property>
                 </serializedBean>
@@ -235,24 +205,20 @@
           <property name="customMacosExecutableName" type="string">
             ${i18n:UninstallerMenuEntry(${compiler:sys.fullName})}
           </property>
-          <property name="useCustomMacosExecutableName" type="boolean" value="true"/>
+          <property name="useCustomMacosExecutableName" type="boolean" value="true" />
         </serializedBean>
         <startup>
           <screen id="23" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="33" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction"
-                      rollbackBarrierExitCode="0"/>
-              <action id="34" beanClass="com.install4j.runtime.beans.actions.misc.RequireInstallerPrivilegesAction"
-                      actionElevationType="none" rollbackBarrierExitCode="0"/>
+              <action id="33" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction" rollbackBarrierExitCode="0" />
+              <action id="34" beanClass="com.install4j.runtime.beans.actions.misc.RequireInstallerPrivilegesAction" actionElevationType="none" rollbackBarrierExitCode="0" />
             </actions>
           </screen>
         </startup>
         <screens>
-          <screen id="24" beanClass="com.install4j.runtime.beans.screens.UninstallWelcomeScreen" styleId="41"
-                  rollbackBarrierExitCode="0">
+          <screen id="24" beanClass="com.install4j.runtime.beans.screens.UninstallWelcomeScreen" styleId="41" rollbackBarrierExitCode="0">
             <formComponents>
-              <formComponent id="25" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                             insetBottom="10">
+              <formComponent id="25" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="10">
                 <serializedBean>
                   <property name="labelText" type="string">${form:welcomeMessage}</property>
                 </serializedBean>
@@ -272,11 +238,9 @@
               </formComponent>
             </formComponents>
           </screen>
-          <screen id="27" beanClass="com.install4j.runtime.beans.screens.UninstallationScreen"
-                  rollbackBarrierExitCode="0">
+          <screen id="27" beanClass="com.install4j.runtime.beans.screens.UninstallationScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="29" beanClass="com.install4j.runtime.beans.actions.UninstallFilesAction"
-                      actionElevationType="elevated" rollbackBarrierExitCode="0"/>
+              <action id="29" beanClass="com.install4j.runtime.beans.actions.UninstallFilesAction" actionElevationType="elevated" rollbackBarrierExitCode="0" />
             </actions>
             <formComponents>
               <formComponent id="28" beanClass="com.install4j.runtime.beans.formcomponents.ProgressComponent">
@@ -286,13 +250,10 @@
               </formComponent>
             </formComponents>
           </screen>
-          <screen id="32" beanClass="com.install4j.runtime.beans.screens.UninstallFailureScreen"
-                  rollbackBarrierExitCode="0" finishScreen="true"/>
-          <screen id="30" beanClass="com.install4j.runtime.beans.screens.UninstallSuccessScreen" styleId="41"
-                  rollbackBarrierExitCode="0" finishScreen="true">
+          <screen id="32" beanClass="com.install4j.runtime.beans.screens.UninstallFailureScreen" rollbackBarrierExitCode="0" finishScreen="true" />
+          <screen id="30" beanClass="com.install4j.runtime.beans.screens.UninstallSuccessScreen" styleId="41" rollbackBarrierExitCode="0" finishScreen="true">
             <formComponents>
-              <formComponent id="31" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                             insetBottom="10">
+              <formComponent id="31" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="10">
                 <serializedBean>
                   <property name="labelText" type="string">${form:successMessage}</property>
                 </serializedBean>
@@ -301,9 +262,7 @@
           </screen>
         </screens>
       </application>
-      <application name="Update downloader with silent version check" id="319"
-                   beanClass="com.install4j.runtime.beans.applications.CustomApplication"
-                   automaticLauncherIntegration="true" launchSchedule="always" allLaunchers="false">
+      <application name="Update downloader with silent version check" id="319" beanClass="com.install4j.runtime.beans.applications.CustomApplication" automaticLauncherIntegration="true" launchSchedule="always" allLaunchers="false">
         <serializedBean>
           <property name="customIconImageFiles">
             <add>
@@ -333,29 +292,27 @@
             </add>
           </property>
           <property name="executableName" type="string">update</property>
-          <property name="useCustomIcon" type="boolean" value="true"/>
+          <property name="useCustomIcon" type="boolean" value="true" />
           <property name="windowTitle" type="string">${i18n:updater.WindowTitle("${compiler:sys.fullName}")}</property>
         </serializedBean>
         <launcherIds>
-          <launcher id="59"/>
-          <launcher id="60"/>
-          <launcher id="61"/>
+          <launcher id="59" />
+          <launcher id="60" />
+          <launcher id="61" />
         </launcherIds>
         <startup>
           <screen id="320" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="363" beanClass="com.install4j.runtime.beans.actions.update.CheckForUpdateAction"
-                      actionElevationType="none" failureStrategy="quit">
+              <action id="363" beanClass="com.install4j.runtime.beans.actions.update.CheckForUpdateAction" actionElevationType="none" failureStrategy="quit">
                 <serializedBean>
-                  <property name="showError" type="boolean" value="false"/>
+                  <property name="showError" type="boolean" value="false" />
                   <property name="url" type="string">${installer:updatesUrl?:${compiler:sys.updatesUrl}}</property>
                   <property name="variable" type="string">updateDescriptor</property>
                 </serializedBean>
               </action>
-              <action name="Update descriptor entry" id="364"
-                      beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" failureStrategy="quit">
+              <action name="Update descriptor entry" id="364" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" failureStrategy="quit">
                 <serializedBean>
-                  <property name="failIfNull" type="boolean" value="true"/>
+                  <property name="failIfNull" type="boolean" value="true" />
                   <property name="script">
                     <object class="com.install4j.api.beans.ScriptProperty">
                       <property name="value" type="string">
@@ -376,8 +333,7 @@
                   </property>
                 </serializedBean>
                 <beans>
-                  <action name="New version" id="366"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="New version" id="366" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -389,8 +345,7 @@
                       <property name="variableName" type="string">updaterNewVersion</property>
                     </serializedBean>
                   </action>
-                  <action name="Download size" id="367"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="Download size" id="367" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -402,8 +357,7 @@
                       <property name="variableName" type="string">updaterDownloadSize</property>
                     </serializedBean>
                   </action>
-                  <action name="Comment" id="368"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="Comment" id="368" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -415,8 +369,7 @@
                       <property name="variableName" type="string">updaterComment</property>
                     </serializedBean>
                   </action>
-                  <action name="Download URL" id="369"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="Download URL" id="369" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -428,8 +381,7 @@
                       <property name="variableName" type="string">updaterDownloadUrl</property>
                     </serializedBean>
                   </action>
-                  <action name="Archive" id="370"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="Archive" id="370" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -488,17 +440,14 @@
                           <int>255</int>
                         </object>
                       </property>
-                      <property name="valueLabelFontStyle" type="enum"
-                                class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD"/>
-                      <property name="valueLabelFontType" type="enum"
-                                class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED"/>
+                      <property name="valueLabelFontStyle" type="enum" class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD" />
+                      <property name="valueLabelFontType" type="enum" class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED" />
                       <property name="valueLabelText" type="string">${installer:sys.version}</property>
                     </serializedBean>
                   </formComponent>
                   <group id="324" beanClass="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup">
                     <beans>
-                      <formComponent id="325"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.KeyValuePairComponent">
+                      <formComponent id="325" beanClass="com.install4j.runtime.beans.formcomponents.KeyValuePairComponent">
                         <serializedBean>
                           <property name="labelText" type="string">${i18n:updater.NewVersionLabel}</property>
                           <property name="valueLabelColor">
@@ -509,16 +458,12 @@
                               <int>255</int>
                             </object>
                           </property>
-                          <property name="valueLabelFontStyle" type="enum"
-                                    class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD"/>
-                          <property name="valueLabelFontType" type="enum"
-                                    class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED"/>
+                          <property name="valueLabelFontStyle" type="enum" class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD" />
+                          <property name="valueLabelFontType" type="enum" class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED" />
                           <property name="valueLabelText" type="string">${installer:updaterNewVersion}</property>
                         </serializedBean>
                       </formComponent>
-                      <formComponent id="326"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.HyperlinkActionLabelComponent"
-                                     insetLeft="5">
+                      <formComponent id="326" beanClass="com.install4j.runtime.beans.formcomponents.HyperlinkActionLabelComponent" insetLeft="5">
                         <serializedBean>
                           <property name="actionScript">
                             <object class="com.install4j.api.beans.ScriptProperty">
@@ -532,19 +477,17 @@
                       </formComponent>
                     </beans>
                   </group>
-                  <formComponent id="327" beanClass="com.install4j.runtime.beans.formcomponents.SpacerComponent"/>
-                  <formComponent id="328"
-                                 beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent">
+                  <formComponent id="327" beanClass="com.install4j.runtime.beans.formcomponents.SpacerComponent" />
+                  <formComponent id="328" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent">
                     <serializedBean>
                       <property name="labelText" type="string">${i18n:updater.DownloadLocationLabel}</property>
                     </serializedBean>
                   </formComponent>
-                  <formComponent id="329"
-                                 beanClass="com.install4j.runtime.beans.formcomponents.DirectoryChooserComponent">
+                  <formComponent id="329" beanClass="com.install4j.runtime.beans.formcomponents.DirectoryChooserComponent">
                     <serializedBean>
                       <property name="initialFile" type="string">${installer:sys.downloadsDir}</property>
                       <property name="labelText" type="string">${i18n:updater.DownloadToLabel}</property>
-                      <property name="manualEntryAllowed" type="boolean" value="false"/>
+                      <property name="manualEntryAllowed" type="boolean" value="false" />
                       <property name="variableName" type="string">updaterDownloadLocation</property>
                     </serializedBean>
                   </formComponent>
@@ -558,7 +501,7 @@
               </screen>
               <screen name="Update message" id="331" beanClass="com.install4j.runtime.beans.screens.FormScreen">
                 <serializedBean>
-                  <property name="scrollable" type="boolean" value="false"/>
+                  <property name="scrollable" type="boolean" value="false" />
                   <property name="subTitle" type="string">${i18n:updater.CommentsSubTitle}</property>
                   <property name="title" type="string">${i18n:updater.CommentsTitle}</property>
                 </serializedBean>
@@ -574,11 +517,9 @@
                   wizardContext.setControlButtonVisible(ControlButtonType.CANCEL, false);
                 </postActivation>
                 <formComponents>
-                  <formComponent id="332" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                                 useExternalParametrization="true" externalParametrizationName="Header"
-                                 externalParametrizationMode="include">
+                  <formComponent id="332" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
                     <serializedBean>
-                      <property name="hideIfBlank" type="boolean" value="true"/>
+                      <property name="hideIfBlank" type="boolean" value="true" />
                       <property name="labelText" type="string">${i18n:updater.CommentsLabel}</property>
                     </serializedBean>
                     <visibilityScript>!context.isConsole()</visibilityScript>
@@ -586,15 +527,11 @@
                       <propertyName>labelText</propertyName>
                     </externalParametrizationPropertyNames>
                   </formComponent>
-                  <formComponent id="333"
-                                 beanClass="com.install4j.runtime.beans.formcomponents.HtmlDisplayFormComponent"
-                                 useExternalParametrization="true" externalParametrizationName="HTML display"
-                                 externalParametrizationMode="include">
+                  <formComponent id="333" beanClass="com.install4j.runtime.beans.formcomponents.HtmlDisplayFormComponent" useExternalParametrization="true" externalParametrizationName="HTML display" externalParametrizationMode="include">
                     <serializedBean>
                       <property name="displayedText" type="string">${installer:updaterComment}</property>
-                      <property name="fillVertical" type="boolean" value="true"/>
-                      <property name="textSource" type="enum"
-                                class="com.install4j.runtime.beans.screens.components.TextSource" value="DIRECT"/>
+                      <property name="fillVertical" type="boolean" value="true" />
+                      <property name="textSource" type="enum" class="com.install4j.runtime.beans.screens.components.TextSource" value="DIRECT" />
                     </serializedBean>
                     <externalParametrizationPropertyNames>
                       <propertyName>textSource</propertyName>
@@ -603,8 +540,7 @@
                       <propertyName>variableName</propertyName>
                     </externalParametrizationPropertyNames>
                   </formComponent>
-                  <formComponent id="334"
-                                 beanClass="com.install4j.runtime.beans.formcomponents.ConsoleHandlerFormComponent">
+                  <formComponent id="334" beanClass="com.install4j.runtime.beans.formcomponents.ConsoleHandlerFormComponent">
                     <serializedBean>
                       <property name="consoleScript">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -627,8 +563,7 @@
                   context.goForward(1, true, true);
                 </postActivation>
                 <actions>
-                  <action name="Download location" id="336"
-                          beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                  <action name="Download location" id="336" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                     <serializedBean>
                       <property name="script">
                         <object class="com.install4j.api.beans.ScriptProperty">
@@ -641,8 +576,7 @@
                       <property name="variableName" type="string">updaterDownloadFile</property>
                     </serializedBean>
                   </action>
-                  <action id="337" beanClass="com.install4j.runtime.beans.actions.net.DownloadFileAction"
-                          actionElevationType="elevated" failureStrategy="quit">
+                  <action id="337" beanClass="com.install4j.runtime.beans.actions.net.DownloadFileAction" actionElevationType="elevated" failureStrategy="quit">
                     <serializedBean>
                       <property name="targetFile">
                         <object class="java.io.File">
@@ -652,8 +586,7 @@
                       <property name="url" type="string">${installer:updaterDownloadUrl}</property>
                     </serializedBean>
                   </action>
-                  <action id="338" beanClass="com.install4j.runtime.beans.actions.files.SetModeAction"
-                          actionElevationType="elevated">
+                  <action id="338" beanClass="com.install4j.runtime.beans.actions.files.SetModeAction" actionElevationType="elevated">
                     <serializedBean>
                       <property name="files" type="array" class="java.io.File" length="1">
                         <element index="0">
@@ -667,9 +600,7 @@
                   </action>
                 </actions>
                 <formComponents>
-                  <formComponent id="339" beanClass="com.install4j.runtime.beans.formcomponents.ProgressComponent"
-                                 useExternalParametrization="true" externalParametrizationName="Directory"
-                                 externalParametrizationMode="include">
+                  <formComponent id="339" beanClass="com.install4j.runtime.beans.formcomponents.ProgressComponent" useExternalParametrization="true" externalParametrizationName="Directory" externalParametrizationMode="include">
                     <externalParametrizationPropertyNames>
                       <propertyName>statusVisible</propertyName>
                       <propertyName>initialStatusMessage</propertyName>
@@ -679,8 +610,7 @@
               </screen>
               <group name="Finish" id="340" beanClass="com.install4j.runtime.beans.groups.ScreenGroup">
                 <beans>
-                  <screen name="Finish" id="341" beanClass="com.install4j.runtime.beans.screens.FormScreen" styleId="41"
-                          finishScreen="true">
+                  <screen name="Finish" id="341" beanClass="com.install4j.runtime.beans.screens.FormScreen" styleId="41" finishScreen="true">
                     <serializedBean>
                       <property name="title" type="string">${i18n:updater.FinishTitle}</property>
                     </serializedBean>
@@ -688,8 +618,7 @@
                       context.getBooleanVariable("isDmg"))
                     </condition>
                     <actions>
-                      <group name="Execute installer" id="342"
-                             beanClass="com.install4j.runtime.beans.groups.ActionGroup">
+                      <group name="Execute installer" id="342" beanClass="com.install4j.runtime.beans.groups.ActionGroup">
                         <serializedBean>
                           <property name="conditionExpression">
                             <object class="com.install4j.api.beans.ScriptProperty">
@@ -700,8 +629,7 @@
                           </property>
                         </serializedBean>
                         <beans>
-                          <action name="Set installer arguments" id="343"
-                                  beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
+                          <action name="Set installer arguments" id="343" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction">
                             <serializedBean>
                               <property name="script">
                                 <object class="com.install4j.api.beans.ScriptProperty">
@@ -730,12 +658,8 @@
                               <property name="variableName" type="string">installerArguments</property>
                             </serializedBean>
                           </action>
-                          <action id="344"
-                                  beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction"
-                                  actionElevationType="none"/>
-                          <action id="345" beanClass="com.install4j.runtime.beans.actions.misc.RunExecutableAction"
-                                  actionElevationType="elevated" failureStrategy="quit"
-                                  errorMessage="${i18n:updater.LaunchError}">
+                          <action id="344" beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction" actionElevationType="none" />
+                          <action id="345" beanClass="com.install4j.runtime.beans.actions.misc.RunExecutableAction" actionElevationType="elevated" failureStrategy="quit" errorMessage="${i18n:updater.LaunchError}">
                             <serializedBean>
                               <property name="arguments" type="array" elementType="string" length="1">
                                 <element index="0">${installer:installerArguments}</element>
@@ -756,24 +680,18 @@
                       </group>
                     </actions>
                     <formComponents>
-                      <formComponent id="346"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                                     insetBottom="20" useExternalParametrization="true"
-                                     externalParametrizationName="Header" externalParametrizationMode="include">
+                      <formComponent id="346" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="20" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
                         <serializedBean>
-                          <property name="hideIfBlank" type="boolean" value="true"/>
+                          <property name="hideIfBlank" type="boolean" value="true" />
                         </serializedBean>
                         <visibilityScript>!context.isConsole()</visibilityScript>
                         <externalParametrizationPropertyNames>
                           <propertyName>labelText</propertyName>
                         </externalParametrizationPropertyNames>
                       </formComponent>
-                      <formComponent id="347"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                                     insetBottom="20" useExternalParametrization="true"
-                                     externalParametrizationName="Header" externalParametrizationMode="include">
+                      <formComponent id="347" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="20" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
                         <serializedBean>
-                          <property name="hideIfBlank" type="boolean" value="true"/>
+                          <property name="hideIfBlank" type="boolean" value="true" />
                           <property name="labelText" type="string">
                             ${i18n:updater.FinishInfoText("${compiler:sys.fullName}")}
                           </property>
@@ -790,11 +708,10 @@
                       </formComponent>
                       <formComponent id="349" beanClass="com.install4j.runtime.beans.formcomponents.SpacerComponent">
                         <serializedBean>
-                          <property name="height" type="int" value="5"/>
+                          <property name="height" type="int" value="5" />
                         </serializedBean>
                       </formComponent>
-                      <formComponent id="350"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.RadiobuttonsComponent">
+                      <formComponent id="350" beanClass="com.install4j.runtime.beans.formcomponents.RadiobuttonsComponent">
                         <serializedBean>
                           <property name="radioButtonLabels" type="array" elementType="string" length="2">
                             <element index="0">${i18n:updater.LaunchUpdaterLabel}</element>
@@ -804,8 +721,7 @@
                         </serializedBean>
                         <visibilityScript>!context.getBooleanVariable("isArchive")</visibilityScript>
                       </formComponent>
-                      <formComponent id="351"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.HyperlinkActionLabelComponent">
+                      <formComponent id="351" beanClass="com.install4j.runtime.beans.formcomponents.HyperlinkActionLabelComponent">
                         <serializedBean>
                           <property name="actionScript">
                             <object class="com.install4j.api.beans.ScriptProperty">
@@ -821,22 +737,20 @@
                       </formComponent>
                       <formComponent id="352" beanClass="com.install4j.runtime.beans.formcomponents.ProgressComponent">
                         <serializedBean>
-                          <property name="detailVisible" type="boolean" value="false"/>
-                          <property name="hideInitially" type="boolean" value="true"/>
+                          <property name="detailVisible" type="boolean" value="false" />
+                          <property name="hideInitially" type="boolean" value="true" />
                         </serializedBean>
                       </formComponent>
                     </formComponents>
                   </screen>
-                  <screen name="Finish DMG Archive" id="353" beanClass="com.install4j.runtime.beans.screens.FormScreen"
-                          styleId="41" finishScreen="true">
+                  <screen name="Finish DMG Archive" id="353" beanClass="com.install4j.runtime.beans.screens.FormScreen" styleId="41" finishScreen="true">
                     <serializedBean>
                       <property name="title" type="string">${i18n:updater.FinishTitle}</property>
                     </serializedBean>
                     <condition>context.getBooleanVariable("isArchive") &amp;&amp; context.getBooleanVariable("isDmg")
                     </condition>
                     <actions>
-                      <group name="Execute installer" id="354"
-                             beanClass="com.install4j.runtime.beans.groups.ActionGroup">
+                      <group name="Execute installer" id="354" beanClass="com.install4j.runtime.beans.groups.ActionGroup">
                         <serializedBean>
                           <property name="conditionExpression">
                             <object class="com.install4j.api.beans.ScriptProperty">
@@ -846,11 +760,8 @@
                           </property>
                         </serializedBean>
                         <beans>
-                          <action id="355"
-                                  beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction"
-                                  actionElevationType="none"/>
-                          <action name="Open DMG" id="356"
-                                  beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction">
+                          <action id="355" beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction" actionElevationType="none" />
+                          <action name="Open DMG" id="356" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction">
                             <serializedBean>
                               <property name="script">
                                 <object class="com.install4j.api.beans.ScriptProperty">
@@ -866,24 +777,18 @@
                       </group>
                     </actions>
                     <formComponents>
-                      <formComponent id="357"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                                     insetBottom="20" useExternalParametrization="true"
-                                     externalParametrizationName="Header" externalParametrizationMode="include">
+                      <formComponent id="357" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="20" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
                         <serializedBean>
-                          <property name="hideIfBlank" type="boolean" value="true"/>
+                          <property name="hideIfBlank" type="boolean" value="true" />
                         </serializedBean>
                         <visibilityScript>!context.isConsole()</visibilityScript>
                         <externalParametrizationPropertyNames>
                           <propertyName>labelText</propertyName>
                         </externalParametrizationPropertyNames>
                       </formComponent>
-                      <formComponent id="358"
-                                     beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent"
-                                     insetBottom="20" useExternalParametrization="true"
-                                     externalParametrizationName="Header" externalParametrizationMode="include">
+                      <formComponent id="358" beanClass="com.install4j.runtime.beans.formcomponents.MultilineLabelComponent" insetBottom="20" useExternalParametrization="true" externalParametrizationName="Header" externalParametrizationMode="include">
                         <serializedBean>
-                          <property name="hideIfBlank" type="boolean" value="true"/>
+                          <property name="hideIfBlank" type="boolean" value="true" />
                           <property name="labelText" type="string">
                             ${i18n:updater.FinishInfoText("${compiler:sys.fullName}")}
                           </property>
@@ -900,21 +805,21 @@
                       </formComponent>
                       <formComponent id="360" beanClass="com.install4j.runtime.beans.formcomponents.SpacerComponent">
                         <serializedBean>
-                          <property name="height" type="int" value="5"/>
+                          <property name="height" type="int" value="5" />
                         </serializedBean>
                       </formComponent>
                       <formComponent id="361" beanClass="com.install4j.runtime.beans.formcomponents.CheckboxComponent">
                         <serializedBean>
                           <property name="checkboxText" type="string">${i18n:updater.OpenContainingFolderLabel}
                           </property>
-                          <property name="initiallySelected" type="boolean" value="true"/>
+                          <property name="initiallySelected" type="boolean" value="true" />
                           <property name="variableName" type="string">updaterOpenDmg</property>
                         </serializedBean>
                       </formComponent>
                       <formComponent id="362" beanClass="com.install4j.runtime.beans.formcomponents.ProgressComponent">
                         <serializedBean>
-                          <property name="detailVisible" type="boolean" value="false"/>
-                          <property name="hideInitially" type="boolean" value="true"/>
+                          <property name="detailVisible" type="boolean" value="false" />
+                          <property name="hideInitially" type="boolean" value="true" />
                         </serializedBean>
                       </formComponent>
                     </formComponents>
@@ -929,30 +834,24 @@
     <styles defaultStyleId="35">
       <style name="Standard" id="35" beanClass="com.install4j.runtime.beans.styles.FormStyle">
         <formComponents>
-          <formComponent name="Header" id="36" beanClass="com.install4j.runtime.beans.styles.NestedStyleComponent"
-                         insetTop="0" insetBottom="0">
+          <formComponent name="Header" id="36" beanClass="com.install4j.runtime.beans.styles.NestedStyleComponent" insetTop="0" insetBottom="0">
             <serializedBean>
               <property name="styleId" type="string">48</property>
             </serializedBean>
           </formComponent>
           <group name="Main" id="37" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup">
             <beans>
-              <formComponent id="38" beanClass="com.install4j.runtime.beans.styles.ContentComponent" insetTop="10"
-                             insetLeft="20" insetBottom="10" insetRight="20"/>
-              <formComponent name="Watermark" id="39"
-                             beanClass="com.install4j.runtime.beans.formcomponents.SeparatorComponent" insetTop="0"
-                             insetLeft="5" insetBottom="0" useExternalParametrization="true"
-                             externalParametrizationName="Custom watermark" externalParametrizationMode="include">
+              <formComponent id="38" beanClass="com.install4j.runtime.beans.styles.ContentComponent" insetTop="10" insetLeft="20" insetBottom="10" insetRight="20" />
+              <formComponent name="Watermark" id="39" beanClass="com.install4j.runtime.beans.formcomponents.SeparatorComponent" insetTop="0" insetLeft="5" insetBottom="0" useExternalParametrization="true" externalParametrizationName="Custom watermark" externalParametrizationMode="include">
                 <serializedBean>
-                  <property name="enabledTitleText" type="boolean" value="false"/>
+                  <property name="enabledTitleText" type="boolean" value="false" />
                   <property name="labelText" type="string">install4j</property>
                 </serializedBean>
                 <externalParametrizationPropertyNames>
                   <propertyName>labelText</propertyName>
                 </externalParametrizationPropertyNames>
               </formComponent>
-              <formComponent name="Footer" id="40" beanClass="com.install4j.runtime.beans.styles.NestedStyleComponent"
-                             insetTop="0" insetBottom="0">
+              <formComponent name="Footer" id="40" beanClass="com.install4j.runtime.beans.styles.NestedStyleComponent" insetTop="0" insetBottom="0">
                 <serializedBean>
                   <property name="styleId" type="string">52</property>
                 </serializedBean>
@@ -963,9 +862,7 @@
       </style>
       <style name="Banner" id="41" beanClass="com.install4j.runtime.beans.styles.FormStyle">
         <formComponents>
-          <group id="42" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup"
-                 useExternalParametrization="true" externalParametrizationName="Customize banner image"
-                 externalParametrizationMode="include">
+          <group id="42" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize banner image" externalParametrizationMode="include">
             <serializedBean>
               <property name="backgroundColor">
                 <object class="java.awt.Color">
@@ -977,7 +874,7 @@
               </property>
               <property name="borderSides">
                 <object class="com.install4j.runtime.beans.formcomponents.BorderSides">
-                  <property name="bottom" type="boolean" value="true"/>
+                  <property name="bottom" type="boolean" value="true" />
                 </object>
               </property>
               <property name="imageEdgeBackgroundColor">
@@ -988,7 +885,7 @@
                   <int>255</int>
                 </object>
               </property>
-              <property name="imageEdgeBorder" type="boolean" value="true"/>
+              <property name="imageEdgeBorder" type="boolean" value="true" />
               <property name="imageFile">
                 <object class="com.install4j.api.beans.ExternalFile">
                   <string>${compiler:sys.install4jHome}/resource/styles/wizard.png</string>
@@ -1006,16 +903,13 @@
             <beans>
               <formComponent id="43" beanClass="com.install4j.runtime.beans.styles.ScreenTitleComponent" insetTop="0">
                 <serializedBean>
-                  <property name="labelFontSizePercent" type="int" value="130"/>
-                  <property name="labelFontStyle" type="enum"
-                            class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD"/>
-                  <property name="labelFontType" type="enum" class="com.install4j.runtime.beans.formcomponents.FontType"
-                            value="DERIVED"/>
+                  <property name="labelFontSizePercent" type="int" value="130" />
+                  <property name="labelFontStyle" type="enum" class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD" />
+                  <property name="labelFontType" type="enum" class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED" />
                 </serializedBean>
               </formComponent>
-              <formComponent id="44" beanClass="com.install4j.runtime.beans.formcomponents.SeparatorComponent"/>
-              <formComponent id="45" beanClass="com.install4j.runtime.beans.styles.ContentComponent" insetTop="10"
-                             insetBottom="0"/>
+              <formComponent id="44" beanClass="com.install4j.runtime.beans.formcomponents.SeparatorComponent" />
+              <formComponent id="45" beanClass="com.install4j.runtime.beans.styles.ContentComponent" insetTop="10" insetBottom="0" />
             </beans>
             <externalParametrizationPropertyNames>
               <propertyName>imageAnchor</propertyName>
@@ -1034,14 +928,12 @@
         <beans>
           <style name="Standard header" id="48" beanClass="com.install4j.runtime.beans.styles.FormStyle">
             <serializedBean>
-              <property name="fillVertical" type="boolean" value="false"/>
-              <property name="standalone" type="boolean" value="false"/>
-              <property name="verticalAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTH"/>
+              <property name="fillVertical" type="boolean" value="false" />
+              <property name="standalone" type="boolean" value="false" />
+              <property name="verticalAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTH" />
             </serializedBean>
             <formComponents>
-              <group id="49" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup"
-                     useExternalParametrization="true" externalParametrizationName="Customize title bar"
-                     externalParametrizationMode="include">
+              <group id="49" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <property name="backgroundColor">
                     <object class="java.awt.Color">
@@ -1053,11 +945,11 @@
                   </property>
                   <property name="borderSides">
                     <object class="com.install4j.runtime.beans.formcomponents.BorderSides">
-                      <property name="bottom" type="boolean" value="true"/>
+                      <property name="bottom" type="boolean" value="true" />
                     </object>
                   </property>
-                  <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST"/>
-                  <property name="imageEdgeBorderWidth" type="int" value="2"/>
+                  <property name="imageAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="NORTHEAST" />
+                  <property name="imageEdgeBorderWidth" type="int" value="2" />
                   <property name="imageFile">
                     <object class="com.install4j.api.beans.ExternalFile">
                       <string>icon:${installer:sys.installerApplicationMode}_header.png</string>
@@ -1081,20 +973,15 @@
                   </property>
                 </serializedBean>
                 <beans>
-                  <formComponent name="Title" id="50"
-                                 beanClass="com.install4j.runtime.beans.styles.ScreenTitleComponent">
+                  <formComponent name="Title" id="50" beanClass="com.install4j.runtime.beans.styles.ScreenTitleComponent">
                     <serializedBean>
-                      <property name="labelFontStyle" type="enum"
-                                class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD"/>
-                      <property name="labelFontType" type="enum"
-                                class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED"/>
+                      <property name="labelFontStyle" type="enum" class="com.install4j.runtime.beans.formcomponents.FontStyle" value="BOLD" />
+                      <property name="labelFontType" type="enum" class="com.install4j.runtime.beans.formcomponents.FontType" value="DERIVED" />
                     </serializedBean>
                   </formComponent>
-                  <formComponent name="Subtitle" id="51"
-                                 beanClass="com.install4j.runtime.beans.styles.ScreenTitleComponent" insetLeft="8">
+                  <formComponent name="Subtitle" id="51" beanClass="com.install4j.runtime.beans.styles.ScreenTitleComponent" insetLeft="8">
                     <serializedBean>
-                      <property name="titleType" type="enum" class="com.install4j.runtime.beans.styles.TitleType"
-                                value="SUB_TITLE"/>
+                      <property name="titleType" type="enum" class="com.install4j.runtime.beans.styles.TitleType" value="SUB_TITLE" />
                     </serializedBean>
                   </formComponent>
                 </beans>
@@ -1110,14 +997,14 @@
           </style>
           <style name="Standard footer" id="52" beanClass="com.install4j.runtime.beans.styles.FormStyle">
             <serializedBean>
-              <property name="fillVertical" type="boolean" value="false"/>
-              <property name="standalone" type="boolean" value="false"/>
-              <property name="verticalAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="SOUTH"/>
+              <property name="fillVertical" type="boolean" value="false" />
+              <property name="standalone" type="boolean" value="false" />
+              <property name="verticalAnchor" type="enum" class="com.install4j.api.beans.Anchor" value="SOUTH" />
             </serializedBean>
             <formComponents>
               <group id="53" beanClass="com.install4j.runtime.beans.groups.HorizontalFormComponentGroup">
                 <serializedBean>
-                  <property name="alignFirstLabel" type="boolean" value="false"/>
+                  <property name="alignFirstLabel" type="boolean" value="false" />
                   <property name="insets">
                     <object class="java.awt.Insets">
                       <int>3</int>
@@ -1128,30 +1015,23 @@
                   </property>
                 </serializedBean>
                 <beans>
-                  <formComponent id="54" beanClass="com.install4j.runtime.beans.formcomponents.SpringComponent"/>
-                  <formComponent name="Back button" id="55"
-                                 beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent">
+                  <formComponent id="54" beanClass="com.install4j.runtime.beans.formcomponents.SpringComponent" />
+                  <formComponent name="Back button" id="55" beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent">
                     <serializedBean>
                       <property name="buttonText" type="string">&lt; ${i18n:ButtonBack}</property>
-                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType"
-                                value="PREVIOUS"/>
+                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType" value="PREVIOUS" />
                     </serializedBean>
                   </formComponent>
-                  <formComponent name="Next button" id="56"
-                                 beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent">
+                  <formComponent name="Next button" id="56" beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent">
                     <serializedBean>
                       <property name="buttonText" type="string">${i18n:ButtonNext} &gt;</property>
-                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType"
-                                value="NEXT"/>
+                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType" value="NEXT" />
                     </serializedBean>
                   </formComponent>
-                  <formComponent name="Cancel button" id="57"
-                                 beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent"
-                                 insetLeft="5">
+                  <formComponent name="Cancel button" id="57" beanClass="com.install4j.runtime.beans.styles.StandardControlButtonComponent" insetLeft="5">
                     <serializedBean>
                       <property name="buttonText" type="string">${i18n:ButtonCancel}</property>
-                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType"
-                                value="CANCEL"/>
+                      <property name="controlButtonType" type="enum" class="com.install4j.api.context.ControlButtonType" value="CANCEL" />
                     </serializedBean>
                   </formComponent>
                 </beans>
@@ -1163,20 +1043,17 @@
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows 32" id="63"
-             mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" jreBitType="32">
+    <windows name="Windows 32" id="63" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" jreBitType="32">
       <jreBundle usePack200="false" jreBundleSource="generated">
         <modules>
-          <defaultModules set="all"/>
+          <defaultModules set="all" />
         </modules>
       </jreBundle>
     </windows>
-    <windowsArchive name="Windows Archive" id="65"
-                    mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}"
-                    jreBitType="32">
+    <windowsArchive name="Windows Archive" id="65" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" jreBitType="32">
       <jreBundle jdkProviderId="Liberica" jreBundleSource="generated">
         <modules>
-          <defaultModules set="all"/>
+          <defaultModules set="all" />
         </modules>
       </jreBundle>
     </windowsArchive>
