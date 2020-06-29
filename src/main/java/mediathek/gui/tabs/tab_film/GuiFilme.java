@@ -81,6 +81,7 @@ public class GuiFilme extends AGuiTabPanel {
             DatenFilm.FILM_MERKEN
     };
     private static final Logger logger = LogManager.getLogger(GuiFilme.class);
+    public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
@@ -92,6 +93,8 @@ public class GuiFilme extends AGuiTabPanel {
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
+    private final JFXPanel fxDescriptionPanel = new JFXPanel();
+    private final SwingButtonPanelController buttonPanelController;
     /**
      * The JavaFx Film action popup panel.
      */
@@ -107,8 +110,6 @@ public class GuiFilme extends AGuiTabPanel {
     private JFXPanel fxFilmActionPanel;
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
-    private final JFXPanel fxDescriptionPanel = new JFXPanel();
-    private final SwingButtonPanelController buttonPanelController;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -408,7 +409,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void setupHeaderPopupMenu() {
         final var headerListener = new BeobTableHeader(tabelle,
-                Daten.spaltenAnzeigenFilme,
+                VISIBLE_COLUMNS,
                 HIDDEN_COLUMNS,
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN},
                 true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
