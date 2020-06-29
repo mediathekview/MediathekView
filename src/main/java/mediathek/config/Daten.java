@@ -66,7 +66,6 @@ public class Daten {
      */
     private final static int MAX_COPY = 5;
     private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
-    public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
     private static Daten instance;
     // flags

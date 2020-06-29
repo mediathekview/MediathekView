@@ -1,8 +1,8 @@
 package mediathek.tool.table;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.tool.FilmSize;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,7 @@ public class MVFilmTable extends ASelectableMVTable {
         //logger.debug("setupTableType()");
 
         maxSpalten = DatenFilm.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(Daten.spaltenAnzeigenFilme, DatenFilm.MAX_ELEM);
+        spaltenAnzeigen = getSpaltenEinAus(GuiFilme.VISIBLE_COLUMNS, DatenFilm.MAX_ELEM);
         indexSpalte = DatenFilm.FILM_NR;
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
