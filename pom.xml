@@ -483,6 +483,7 @@
 				<version>3.8.1</version>
 				<configuration>
 					<release>${jdk.language.version}</release>
+					<forceJavacCompilerUse>true</forceJavacCompilerUse>
 					<compilerArgs>--enable-preview</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
@@ -584,16 +585,12 @@
 
 	<profiles>
 		<profile>
-			<id>windows</id>
+			<id>64bit</id>
 			<activation>
 				<os>
-					<family>windows</family>
+					<arch>amd64</arch>
 				</os>
 			</activation>
-			<properties>
-				<javafx.platform>win</javafx.platform>
-				<install4j.platform>windows</install4j.platform>
-			</properties>
 			<dependencies>
 				<!-- JavaFX -->
 				<dependency>
@@ -639,6 +636,73 @@
 					<classifier>${javafx.platform}</classifier>
 				</dependency>
 			</dependencies>
+		</profile>
+		<profile>
+			<id>32bit</id>
+			<dependencies>
+				<!-- JavaFX -->
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-base</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-swing</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<javafx.platform>win</javafx.platform>
+				<install4j.platform>windows</install4j.platform>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -670,9 +734,51 @@
 										</transformer>
 										<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>windows32</id>
+			<properties>
+				<javafx.platform>win</javafx.platform>
+				<install4j.platform>windows32</install4j.platform>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:linux</exclude>
+											<exclude>*:*:*:mac</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+											<manifestEntries>
+												<Multi-Release>true</Multi-Release>
+											</manifestEntries>
+										</transformer>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+									</transformers>
 								</configuration>
 							</execution>
 						</executions>
@@ -691,51 +797,6 @@
 				<javafx.platform>linux</javafx.platform>
 				<install4j.platform>linux</install4j.platform>
 			</properties>
-			<dependencies>
-				<!-- JavaFX -->
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-swing</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -763,9 +824,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -779,58 +837,6 @@
 				<javafx.platform>linux</javafx.platform>
 				<install4j.platform>arm</install4j.platform>
 			</properties>
-			<dependencies>
-				<!-- JavaFX -->
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-swing</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-					<scope>provided</scope>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -858,9 +864,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -878,51 +881,6 @@
 			<properties>
 				<javafx.platform>mac</javafx.platform>
 			</properties>
-			<dependencies>
-				<!-- JavaFX -->
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-swing</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -950,9 +908,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
