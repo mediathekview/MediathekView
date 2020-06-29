@@ -26,13 +26,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class StarterClass {
     private static final Logger logger = LogManager.getLogger(StarterClass.class);
     private final Daten daten;
     private final Starten starten;
-    private boolean pause;
+    private boolean pause = false;
 
     public StarterClass(Daten daten) {
         this.daten = daten;
@@ -142,7 +143,7 @@ public class StarterClass {
         }
 
         text.add("Startzeit: " + formatter.format(start.startZeit));
-        text.add("Endzeit: " + formatter.format(System.currentTimeMillis()));
+        text.add("Endzeit: " + formatter.format(new Date().getTime()));
         text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
         long dauer = start.startZeit.diffInMinuten();
@@ -360,15 +361,17 @@ public class StarterClass {
             Thread downloadThread;
 
             switch (datenDownload.art) {
-                case DatenDownload.ART_PROGRAMM -> {
+                case DatenDownload.ART_PROGRAMM:
                     downloadThread = new ExternalProgramDownload(daten, datenDownload);
                     downloadThread.start();
-                }
-                case DatenDownload.ART_DOWNLOAD -> {
+                    break;
+                case DatenDownload.ART_DOWNLOAD:
                     downloadThread = new DirectHttpDownload(daten, datenDownload);
                     downloadThread.start();
-                }
-                default -> logger.error("StarterClass.Starten - Switch-default");
+                    break;
+                default:
+                    logger.error("StarterClass.Starten - Switch-default");
+                    break;
             }
         }
     }
