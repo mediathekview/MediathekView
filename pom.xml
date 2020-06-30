@@ -591,9 +591,9 @@
 		<profile>
 			<id>64bit</id>
 			<activation>
-				<os>
-					<arch>amd64</arch>
-				</os>
+				<property>
+					<name>!use32bit</name>
+				</property>
 			</activation>
 			<dependencies>
 				<!-- JavaFX -->

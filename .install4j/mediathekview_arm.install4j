@@ -988,14 +988,14 @@ return true;</property>
   </installerGui>
   <mediaSets>
     <unixInstaller name="Unix Installer ARM32" id="161" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}">
-      <jreBundle jdkProviderId="Liberica" release="OpenJDK 14.0.1+8" overrideJdkRelease="true" jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
+      <jreBundle jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
         <modules>
           <defaultModules set="all" />
         </modules>
       </jreBundle>
     </unixInstaller>
     <linuxDeb name="Linux Deb Archive ARM32" id="164" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}" maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="armhf">
-      <jreBundle jdkProviderId="Liberica" release="OpenJDK 14.0.1+8" overrideJdkRelease="true" jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
+      <jreBundle jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
         <modules>
           <defaultModules set="all" />
         </modules>
