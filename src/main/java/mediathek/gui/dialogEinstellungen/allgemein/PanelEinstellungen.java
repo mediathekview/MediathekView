@@ -66,18 +66,17 @@ public class PanelEinstellungen extends JPanel {
 
     private void setupDays() {
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parent, true, '\n'
-                + "Es werden nur Filme der letzten\n"
-                + "xx Tage geladen."
-                + '\n'
-                + "Bei \"Alle\" werden alle Filme geladen.\n"
-                + '\n'
-                + "(Eine kleinere Filmliste\n"
-                + "kann bei Rechnern mit wenig\n"
-                + "Speicher hilfreich sein.)"
-                + "\n\n"
-                + "Auswirkung hat das erst nach dem\n"
-                + "Neuladen der kompletten Filmliste.").setVisible(true));
+        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parent, true, """
+                Es werden nur Filme der letzten
+                xx Tage geladen.
+                Bei "Alle" werden alle Filme geladen.
+
+                (Eine kleinere Filmliste
+                kann bei Rechnern mit wenig
+                Speicher hilfreich sein.)
+
+                Auswirkung hat das erst nach dem
+                Neuladen der kompletten Filmliste.""").setVisible(true));
 
         jSpinnerDays.setModel(daySpinnerModel);
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);

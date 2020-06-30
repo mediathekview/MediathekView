@@ -252,10 +252,9 @@ public abstract class MVTable extends JTable {
     }
 
     private void scrollToSelection(int rowIndex) {
-        if (!(getParent() instanceof JViewport)) {
+        if (!(getParent() instanceof JViewport viewport)) {
             return;
         }
-        JViewport viewport = (JViewport) getParent();
         Rectangle rect = getCellRect(rowIndex, 0, true);
         Rectangle viewRect = viewport.getViewRect();
         rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);

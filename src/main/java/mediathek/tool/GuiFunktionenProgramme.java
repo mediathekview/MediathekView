@@ -421,7 +421,11 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     //sollte alles passen
                     text += PIPE + PFEIL + "Ok!" + '\n';
                 }
-                text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n\n\n";
+                text += """
+                        ++++++++++++++++++++++++++++++++++++++++++++
+
+
+                        """;
             }
         }
         new DialogHilfe(jFrame, true, text).setVisible(true);

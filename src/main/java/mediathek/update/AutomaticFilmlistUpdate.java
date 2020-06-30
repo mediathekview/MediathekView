@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class AutomaticFilmlistUpdate implements Closeable {
     private static final Logger logger = LogManager.getLogger(AutomaticFilmlistUpdate.class);
     private final IUpdateAction action;
-    private ScheduledFuture actionFuture;
+    private ScheduledFuture<?> actionFuture;
 
     public AutomaticFilmlistUpdate(IUpdateAction action) {
         this.action = action;

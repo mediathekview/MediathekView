@@ -537,8 +537,10 @@ public class Main {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Nicht genügend Arbeitsspeicher");
-                alert.setContentText("Es werden mindestens 512MB RAM für einen halbwegs vernünftigen Betrieb benötigt.\n\n" +
-                        "Das Programm wird nun beendet.");
+                alert.setContentText("""
+                        Es werden mindestens 512MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
+
+                        Das Programm wird nun beendet.""");
                 alert.showAndWait();
             });
 
