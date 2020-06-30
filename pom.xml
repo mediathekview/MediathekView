@@ -425,7 +425,7 @@
 				<version>3.0.0-M4</version>
 				<configuration>
 					<argLine>
-						--illegal-access=deny
+						--illegal-access=deny --enable-preview
 					</argLine>
 				</configuration>
 			</plugin>
@@ -484,7 +484,10 @@
 				<configuration>
 					<release>${jdk.language.version}</release>
 					<forceJavacCompilerUse>true</forceJavacCompilerUse>
-					<compilerArgs>--enable-preview</compilerArgs>
+					<compilerArgs>
+						<arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+						<arg>--enable-preview</arg>
+					</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>info.picocli</groupId>
@@ -492,9 +495,6 @@
 							<version>${picocli.version}</version>
 						</path>
 					</annotationProcessorPaths>
-					<compilerArgs>
-						<arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
-					</compilerArgs>
 				</configuration>
 				<executions>
 					<!-- Replacing default-compile as it is treated specially by maven -->
@@ -510,12 +510,16 @@
 					<execution>
 						<id>java-compile</id>
 						<phase>compile</phase>
-						<goals> <goal>compile</goal> </goals>
+						<goals>
+							<goal>compile</goal>
+						</goals>
 					</execution>
 					<execution>
 						<id>java-test-compile</id>
 						<phase>test-compile</phase>
-						<goals> <goal>testCompile</goal> </goals>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
