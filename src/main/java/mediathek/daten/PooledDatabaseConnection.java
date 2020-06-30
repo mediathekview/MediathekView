@@ -57,7 +57,7 @@ public class PooledDatabaseConnection {
     }
 
     private HikariDataSource setupDataSource() {
-        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "/mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
 
         HikariConfig config = new HikariConfig();
         config.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
