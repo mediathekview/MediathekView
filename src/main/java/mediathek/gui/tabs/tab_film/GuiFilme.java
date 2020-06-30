@@ -81,6 +81,7 @@ public class GuiFilme extends AGuiTabPanel {
             DatenFilm.FILM_MERKEN
     };
     private static final Logger logger = LogManager.getLogger(GuiFilme.class);
+    private static final int[] BUTTON_COLUMNS = new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN};
     public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();
@@ -411,7 +412,7 @@ public class GuiFilme extends AGuiTabPanel {
         final var headerListener = new BeobTableHeader(tabelle,
                 VISIBLE_COLUMNS,
                 HIDDEN_COLUMNS,
-                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN},
+                BUTTON_COLUMNS,
                 true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
         tabelle.getTableHeader().addMouseListener(headerListener);
     }
