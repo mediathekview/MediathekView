@@ -37,7 +37,7 @@ class ServerProgramInformation {
     /**
      * Tag definition for server response file
      */
-    class ParserTags {
+    static class ParserTags {
         final static String VERSION = "Program_Version";
         final static String RELEASE_NOTES = "Program_Release_Info";
         final static String UPDATE_URL = "Download_Programm";

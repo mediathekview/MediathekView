@@ -25,7 +25,7 @@ public class FXProgressPane extends HBox {
                 new CenteredBorderPane(prog));
     }
 
-    public void bindTask(Task task) {
+    public void bindTask(Task<?> task) {
         lb.textProperty().bind(task.messageProperty());
         prog.progressProperty().bind(task.progressProperty());
     }

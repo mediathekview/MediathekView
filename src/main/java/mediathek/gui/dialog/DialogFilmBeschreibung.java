@@ -53,12 +53,10 @@ public class DialogFilmBeschreibung extends JDialog {
         jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Hilfe zu " + TITLE);
-            alert.setContentText("Diese Funktion richtet sich z.B. an Benutzer,"
-                    + "welche eine angepasste Beschreibung der Sendung in Form "
-                    + "der Infodatei (\"Filmname.txt\") anlegen "
-                    + "und durch Drittprogramme einlesen lassen wollen.\n\n"
-                    + "Achtung: Diese Änderungen gehen nach dem Neuladen "
-                    + "einer Filmliste verloren.");
+            alert.setContentText("""
+                    Diese Funktion richtet sich z.B. an Benutzer,welche eine angepasste Beschreibung der Sendung in Form der Infodatei ("Filmname.txt") anlegen und durch Drittprogramme einlesen lassen wollen.
+
+                    Achtung: Diese Änderungen gehen nach dem Neuladen einer Filmliste verloren.""");
             JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
         }));
 
