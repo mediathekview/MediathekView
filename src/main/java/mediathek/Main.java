@@ -492,7 +492,7 @@ public class Main {
         if (!MemoryUtils.isLowMemoryEnvironment()) {
             //we can delete the database as it is not needed.
             try {
-                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "mediathekview.mv.db";
+                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "/mediathekview.mv.db";
                 Files.deleteIfExists(Paths.get(dbLocation));
             } catch (IOException e) {
                 logger.error("deleteDatabase()", e);
