@@ -4,6 +4,7 @@ jdk:
 before_install:
   - git lfs pull
 install:
+  - cat ~/.ssh/known_hosts
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
   - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
