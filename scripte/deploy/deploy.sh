@@ -35,8 +35,7 @@ echo $2 > $PLATTFORMDATEI
 
 #Update xml für platform umbenennen
 for file in $(find $LOCAL/ -type f \( -name 'updates*.xml' \)); do
-  echo "Found $file and renamed it to updates-$2.xml"
-  mv $file "updates-$2.xml"
+  mv $file "target/media/updates-$2.xml"
 done
 
 # Ins Verzeichnis wechseln Befehl
@@ -44,7 +43,6 @@ echo "cd $REMOTE" >> $BATCHDATEI
 
 for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' -o -name 'updates-*.xml' \)); do
   # einzelne fertige Dateien hochladen
-  echo "Uploading $file"
   echo "put $file" >> $BATCHDATEI
 done
 
