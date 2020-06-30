@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final Version MVVERSION = new Version(13, 6, 0);
+    public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
     public static final String USER_AGENT_DATABASE = "user_agents.mv.db";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
