@@ -34,6 +34,8 @@ stages:
     if: tag IS present
   - name: Build and Deploy Windows
     if: tag IS present
+  - name: Build and Deploy Windows 32bit
+    if: tag IS present
 jobs:
   include:
     - stage: Test
@@ -44,17 +46,18 @@ jobs:
           - .autoconf
           - $HOME/.m2
     - stage: Build and Deploy Snapshots
-      cleanup: true
       script:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
         - ./mvnw clean install -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
         - scripte/deploy/deploy.sh nightly linux $TRAVIS_COMMIT
-        - ./mvnw clean install -Parm,install4j,!linux
+        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
         - scripte/deploy/deploy.sh nightly linux-armhf $TRAVIS_COMMIT
         - ./mvnw clean install -Pwindows,install4j,!linux
         - scripte/deploy/deploy.sh nightly win $TRAVIS_COMMIT
+        - ./mvnw clean install -Pwindows32,!64bit,32bit,install4j,!linux
+        - scripte/deploy/deploy.sh nightly win32 $TRAVIS_COMMIT
         - ./mvnw clean install -Pmac,!linux
         - scripte/deploy/deploy.sh nightly mac $TRAVIS_COMMIT
       cache:
@@ -70,21 +73,17 @@ jobs:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
-          edge: true
           script: scripte/deploy/deploy.sh release linux
-          cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Linux ARM
       script:
-        - ./mvnw clean install -Parm,install4j,!linux
+        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
-          edge: true
           script: scripte/deploy/deploy.sh release linux-armhf
-          cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Windows
@@ -94,8 +93,16 @@ jobs:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
-          edge: true
           script: scripte/deploy/deploy.sh release win
-          cleanup: true
+          on:
+            tags: true
+    - stage: Build and Deploy Windows 32bit
+      script:
+        - ./mvnw clean install -Pwindows32,!64bit,32bit,!linux,install4j
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+      deploy:
+        - provider: script
+          script: scripte/deploy/deploy.sh release win32
           on:
             tags: true
