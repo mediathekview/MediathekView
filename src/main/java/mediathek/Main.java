@@ -531,14 +531,13 @@ public class Main {
 
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
-        // more than 450MB avail...
-        if (maxMem < 450 * FileUtils.ONE_MB) {
+        if (maxMem < Konstanten.LOW_MEMORY_THRESHOLD) {
             JavaFxUtils.invokeInFxThreadAndWait(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Nicht genügend Arbeitsspeicher");
                 alert.setContentText("""
-                        Es werden mindestens 512MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
+                        Es werden mindestens 640MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
 
                         Das Programm wird nun beendet.""");
                 alert.showAndWait();
