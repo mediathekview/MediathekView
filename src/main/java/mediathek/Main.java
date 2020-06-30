@@ -531,7 +531,7 @@ public class Main {
 
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
-        if (maxMem < Konstanten.LOW_MEMORY_THRESHOLD) {
+        if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
             JavaFxUtils.invokeInFxThreadAndWait(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(Konstanten.PROGRAMMNAME);

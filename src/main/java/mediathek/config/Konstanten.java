@@ -27,7 +27,8 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
-    public static final long LOW_MEMORY_THRESHOLD = 640 * FileUtils.ONE_MB;
+    public static final long MINIMUM_MEMORY_THRESHOLD = 640 * FileUtils.ONE_MB;
+    public static final long LOW_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
     public static final Version MVVERSION = new Version(13, 6, 0);
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
