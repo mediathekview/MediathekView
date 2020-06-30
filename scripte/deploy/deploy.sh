@@ -41,7 +41,7 @@ done
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' -o -name 'updates*.xml' \)); do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' -o -name 'updates-*.xml' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done
