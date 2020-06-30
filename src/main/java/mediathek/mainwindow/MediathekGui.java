@@ -997,6 +997,9 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(ShutdownState.SAVE_CONFIG);
         writeOldConfiguration();
 
+        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
+
         dialog.setStatusText(ShutdownState.CLOSE_DB);
         if (MemoryUtils.isLowMemoryEnvironment()) {
             DatenFilm.Database.closeDatabase();
@@ -1004,9 +1007,6 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
-
-        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
-        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
 
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();
