@@ -72,9 +72,7 @@ public class FilmListExportAction extends AbstractAction {
 
         var selectedFile = FileDialogs.chooseSaveFileLocation(gui,"Lesbare Filmliste sichern","");
         if (selectedFile != null) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                export(selectedFile);
-            });
+            JavaFxUtils.invokeInFxThreadAndWait(() -> export(selectedFile));
         }
 
         setEnabled(true);
