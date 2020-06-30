@@ -35,7 +35,6 @@ public class Konstanten {
     public static final String USER_AGENT_DATABASE = "user_agents.mv.db";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
-    public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
     public static final int DEFAULT_BUTTON_PANEL_COLUMNS = 4;
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
@@ -52,6 +51,8 @@ public class Konstanten {
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 120;
 
     // MediathekView URLs
+    public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
+    public static final HttpUrl WEBSITE_BASE_URL = HttpUrl.get("https://mediathekview.de");
     public static final HttpUrl URL_MEDIATHEKVIEW_RESOURCES = HttpUrl.get("https://res.mediathekview.de");
     public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
     public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
