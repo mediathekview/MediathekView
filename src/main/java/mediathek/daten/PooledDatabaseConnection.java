@@ -46,7 +46,7 @@ public class PooledDatabaseConnection {
                 //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
             } else {
-                strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
+                strDatabase = Daten.getSettingsDirectory_String() + File.separator;
             }
         }
 
