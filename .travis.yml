@@ -4,7 +4,6 @@ jdk:
 before_install:
   - git lfs pull
 install:
-  - cat ~/.ssh/known_hosts
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
   - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
@@ -20,7 +19,7 @@ notifications:
     on_start: never
 addons:
   ssh_known_hosts:
-    - mediathekview.de
+    - mediathekview.de:52150
   sonarcloud:
     organization: "mediathekview"
     token:
@@ -28,7 +27,7 @@ addons:
 stages:
   - Test
   - name: Build and Deploy Snapshots
-    if: branch = develop AND type = cron
+    if: branch = develop #AND type = cron
   - name: Build and Deploy Linux
     if: tag IS present
   - name: Build and Deploy Linux ARM
