@@ -118,7 +118,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public DatenFilm() {
         filmSize = new FilmSize(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
-        writeFilmNumberToDatabase();
 
         setupDatabaseCleanup();
     }
@@ -174,18 +173,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     @Deprecated
     public void setDatumLong(String datumLong) {
         this.datumLong = datumLong;
-    }
-
-    private void writeFilmNumberToDatabase() {
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            SqlClosure.sqlExecute(connection -> {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)");
-                insertStatement.setInt(1, databaseFilmNumber);
-                insertStatement.executeUpdate();
-
-                return null;
-            });
-        }
     }
 
     public boolean isTrailerTeaser() {
@@ -271,9 +258,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public String getDescription() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
             return SqlClosure.sqlExecute(connection -> {
-                PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?");
-                statement.setLong(1, databaseFilmNumber);
-                ResultSet rs = statement.executeQuery();
+                var statement = connection.createStatement();
+                ResultSet rs = statement.executeQuery("SELECT desc FROM mediathekview.description WHERE id = " + databaseFilmNumber);
 
                 return (rs.next() ? rs.getString(1) : "");
             });
@@ -307,9 +293,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public String getWebsiteLink() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
             return SqlClosure.sqlExecute(connection -> {
-                PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?");
-                statement.setLong(1, databaseFilmNumber);
-                ResultSet rs = statement.executeQuery();
+                var statement = connection.createStatement();
+                ResultSet rs = statement.executeQuery("SELECT link FROM mediathekview.website_links WHERE id = " + databaseFilmNumber);
                 return (rs.next() ? rs.getString(1) : "");
             });
         } else
@@ -689,7 +674,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
             logger.trace("Creating SQL indices");
             SqlClosure.sqlExecute(connection -> {
                 Statement statement = connection.createStatement();
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
                 statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
                 statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
 
@@ -702,27 +686,20 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
             logger.debug("initializeDatabase()");
             SqlClosure.sqlExecute(connection -> {
                 Statement statement = connection.createStatement();
-                if (!MemoryUtils.isLowMemoryEnvironment()) {
-                    statement.executeUpdate("SET WRITE_DELAY 5000");
-                    statement.executeUpdate("SET MAX_OPERATION_MEMORY 0");
-                }
-
+                statement.executeUpdate("SET WRITE_DELAY 5000");
                 statement.executeUpdate("SET LOG 0");
 
                 statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS mediathekview");
                 statement.executeUpdate("SET SCHEMA mediathekview");
 
-                statement.executeUpdate("DROP INDEX IF EXISTS IDX_FILM_ID");
                 statement.executeUpdate("DROP INDEX IF EXISTS IDX_DESC_ID");
                 statement.executeUpdate("DROP INDEX IF EXISTS IDX_WEBSITE_LINKS_ID");
 
                 statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.description");
                 statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.website_links");
-                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.film");
 
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS film (id INTEGER NOT NULL PRIMARY KEY)");
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, desc VARCHAR(1024))");
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, link VARCHAR(1024))");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY, desc VARCHAR(1024))");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY, link VARCHAR(2048))");
 
                 return null;
             });
