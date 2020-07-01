@@ -687,7 +687,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
             SqlClosure.sqlExecute(connection -> {
                 Statement statement = connection.createStatement();
                 statement.executeUpdate("SET WRITE_DELAY 5000");
-                statement.executeUpdate("SET LOG 0");
 
                 statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS mediathekview");
                 statement.executeUpdate("SET SCHEMA mediathekview");
