@@ -290,8 +290,8 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
             logger.error("listeBauen()", ex);
         }
 
-        logger.warn("File {} contains {} invalid entries ", urlPath, badEntriesList.size());
         if (!badEntriesList.isEmpty()) {
+            logger.warn("File {} contains {} invalid entries ", urlPath, badEntriesList.size());
             removeIllegalEntries(badEntriesList);
             badEntriesList.clear();
         }
