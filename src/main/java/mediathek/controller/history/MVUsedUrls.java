@@ -34,7 +34,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@SuppressWarnings("serial")
 public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);

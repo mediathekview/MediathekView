@@ -11,7 +11,7 @@ enum class IPvPreferenceMode(val code: String) {
     IPV4_ONLY("ip_v4_only");
 
     override fun toString(): String {
-        return code;
+        return code
     }
 
     companion object {
