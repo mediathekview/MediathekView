@@ -36,12 +36,17 @@ public class Spotlight {
 
     private static List<File> doSearch(String[] command) throws IOException {
         var process = Runtime.getRuntime().exec(command);
-        var out = new BufferedReader(new InputStreamReader(process.getInputStream()));
         ArrayList<File> results = new ArrayList<>();
-        String line;
+        try (var is = new InputStreamReader(process.getInputStream());
+             var out = new BufferedReader(is)) {
+            String line;
 
-        while ((line = out.readLine()) != null)
-            results.add(new File(line));
+            while ((line = out.readLine()) != null)
+                results.add(new File(line));
+        }
+        if (process.isAlive())
+            process.destroy();
+
         return results;
     }
 
@@ -55,18 +60,25 @@ public class Spotlight {
      */
     public static Map<String, String> getMetadata(File file) throws IOException {
         var process = Runtime.getRuntime().exec(new String[]{"mdls", file.getAbsolutePath()});
-        var out = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        HashMap<String, String> results = new HashMap<>();
-        String line;
 
-        while ((line = out.readLine()) != null) {
-            final int equals = line.indexOf('=');
-            if (equals > -1) {
-                String key = line.substring(0, equals).trim();
-                String value = line.substring(equals + 1).trim();
-                results.put(key, value);
+        HashMap<String, String> results = new HashMap<>();
+        try (var is = new InputStreamReader(process.getInputStream());
+             var out = new BufferedReader(is)) {
+            String line;
+
+            while ((line = out.readLine()) != null) {
+                final int equals = line.indexOf('=');
+                if (equals > -1) {
+                    String key = line.substring(0, equals).trim();
+                    String value = line.substring(equals + 1).trim();
+                    results.put(key, value);
+                }
             }
         }
+
+        if (process.isAlive())
+            process.destroy();
+
         return results;
     }
 }
