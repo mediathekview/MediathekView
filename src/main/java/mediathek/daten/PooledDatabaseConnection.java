@@ -27,8 +27,16 @@ public class PooledDatabaseConnection {
         return INSTANCE;
     }
 
-    public HikariDataSource getDataSource() {
-        return dataSource;
+    public static String getDatabaseCacheDirectory() {
+        String strDatabase;
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
+        } else {
+            strDatabase = Daten.getSettingsDirectory_String() + File.separator;
+        }
+
+        return strDatabase;
     }
 
     /**
@@ -42,18 +50,17 @@ public class PooledDatabaseConnection {
         if (Config.isPortableMode()) {
             strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
         } else {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
-            } else {
-                strDatabase = Daten.getSettingsDirectory_String() + File.separator;
-            }
+            strDatabase = getDatabaseCacheDirectory();
         }
 
         final Path filePath = Paths.get(strDatabase);
         final Path absolutePath = filePath.toAbsolutePath();
 
         return absolutePath.toString();
+    }
+
+    public HikariDataSource getDataSource() {
+        return dataSource;
     }
 
     private HikariDataSource setupDataSource() {

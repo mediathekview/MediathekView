@@ -18,7 +18,7 @@ import static org.apache.commons.io.FileUtils.*;
  * If anyone sees a serious issue, please give me a call.
  * <p>
  * --
- * Well, what Sammy Trojette did, is not actually exactly what e.g. Windows does. // TODO- test other OS.
+ * Well, what Sammy Trojette did, is not actually exactly what e.g. Windows does.
  * 1) Windows will round down, at least in displaying free space and when displaying file properties.
  * Rounding mode half up is not used here.
  * e.g. 2^30 B is displayed as 1 TB,
