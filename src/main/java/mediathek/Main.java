@@ -40,7 +40,6 @@ import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -102,7 +101,7 @@ public class Main {
         if (!Config.isPortableMode())
             path = Daten.getSettingsDirectory_String() + "/mediathekview.log";
         else
-            path = Config.baseFilePath + "/mediathekview.log"; //TODO maybe resolve is better in this case
+            path = Config.baseFilePath + "/mediathekview.log";
 
 
         final PatternLayout consolePattern;
@@ -282,13 +281,7 @@ public class Main {
      * Unfortunately we cannot work from within jar :(
      */
     private static void copyUserAgentDatabase() {
-        String strDatabase;
-        //FIXME create function for this redundant code!
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
-        } else {
-            strDatabase = Daten.getSettingsDirectory_String() + File.separator;
-        }
+        var strDatabase = PooledDatabaseConnection.getDatabaseCacheDirectory();
 
         Path p = Paths.get(strDatabase + Konstanten.USER_AGENT_DATABASE);
         logger.trace("deleting user agent database");
