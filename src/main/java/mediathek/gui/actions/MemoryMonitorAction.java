@@ -1,6 +1,5 @@
 package mediathek.gui.actions;
 
-import javafx.application.Platform;
 import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.tool.JavaFxUtils;
 
