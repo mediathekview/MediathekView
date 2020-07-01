@@ -2,11 +2,16 @@ package mediathek.tool;
 
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public class FileSize {
+    private static final Logger logger = LogManager.getLogger();
+
     public static String laengeString(String url) {
         // liefert die Dateigröße einer URL in MB!!
         // Anzeige der Größe in MiB und deshalb: Faktor 1000
@@ -24,6 +29,7 @@ public class FileSize {
 
     /**
      * Get the content length from Http Header. Used with HEAD requests
+     *
      * @param response the response for reading length
      * @return the length if available, -1 otherwise.
      */
@@ -34,8 +40,8 @@ public class FileSize {
         if (sizeStr != null) {
             try {
                 respLength = Long.parseLong(sizeStr);
+            } catch (NumberFormatException ignored) {
             }
-            catch (NumberFormatException ignored) {}
         }
 
         return respLength;
@@ -53,6 +59,7 @@ public class FileSize {
             return -1;
         }
 
+        logger.trace("getFileSizeFromUrl for: {}", url);
         final Request request = new Request.Builder().url(url).head().build();
         long respLength = -1;
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
@@ -62,7 +69,7 @@ public class FileSize {
         } catch (IOException ignored) {
         }
 
-        if (respLength < 1_000_000) {
+        if (respLength < FileUtils.ONE_MB) {
             // alles unter 1MB sind Playlisten, ORF: Trailer bei im Ausland gesperrten Filmen, ...
             // dann wars nix
             respLength = -1;
