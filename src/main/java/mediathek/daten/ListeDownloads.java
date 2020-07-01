@@ -63,7 +63,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .forEach(d ->
                 {
                     d.film = listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
-                    d.setSizeFromUrl();
+                    d.setGroesse("");
                 });
     }
 
