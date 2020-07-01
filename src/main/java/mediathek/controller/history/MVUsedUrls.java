@@ -24,20 +24,21 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
 import mediathek.tool.GermanStringSorter;
 import okhttp3.HttpUrl;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @SuppressWarnings("serial")
 public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
-    private static final FastDateFormat SDF = FastDateFormat.getInstance("dd.MM.yyyy");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     /**
      * Quick lookup list for history checks.
      * Stores only URLs
@@ -199,7 +200,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
-        String datum = SDF.format(new Date());
+        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
@@ -218,7 +219,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(List<DatenFilm> arrayFilms) {
-        final String datum = SDF.format(new Date());
+        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
 
         checkUrlFilePath();
 
