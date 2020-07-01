@@ -291,8 +291,10 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         }
 
         logger.warn("File {} contains {} invalid entries ", urlPath, badEntriesList.size());
-        removeIllegalEntries(badEntriesList);
-        badEntriesList.clear();
+        if (!badEntriesList.isEmpty()) {
+            removeIllegalEntries(badEntriesList);
+            badEntriesList.clear();
+        }
     }
 
     private void removeIllegalEntries(List<String> badEntriesList) {
