@@ -23,6 +23,7 @@ import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
 import mediathek.tool.GermanStringSorter;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,7 +104,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     public synchronized void urlAusLogfileLoeschen(String urlFilm) {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
-        //wenn die URL im Logfiel ist, dann true zurück
+        //wenn die URL im Logfile ist, dann true zurück
         boolean gefunden = false;
 
         checkUrlFilePath();
@@ -259,18 +260,37 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         //LinkedList mit den URLs aus dem Logfile bauen
         checkUrlFilePath();
 
+        List<String> badUrlList = new ArrayList<>();
+
         try (InputStream is = Files.newInputStream(urlPath);
              InputStreamReader isr = new InputStreamReader(is);
              LineNumberReader in = new LineNumberReader(isr)) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 MVUsedUrl mvuu = MVUsedUrl.getUrlAusZeile(zeile);
-                listeUrls.add(mvuu.getUrl());
+                var url = mvuu.getUrl();
+                if (url.startsWith("rtmp:")) {
+                    //logger.warn("RTMP URL found in file {}, skipping: {}", urlPath, url);
+                    badUrlList.add(zeile);
+                    continue;
+                }
+                var okHttpUrl = HttpUrl.parse(url);
+                if (okHttpUrl == null) {
+                    //logger.warn("Invalid URL received in {}, skipping: {}", urlPath,url);
+                    badUrlList.add(zeile);
+                    continue;
+                }
+                // so far so good, add to lists
+                listeUrls.add(url);
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
             logger.error("listeBauen()", ex);
         }
+
+        logger.warn("File {} contains {} invalid entries ", urlPath, badUrlList.size());
+        //TODO remove bad entries
+        badUrlList.clear();
     }
 
     class LineWriterThread extends Thread {
