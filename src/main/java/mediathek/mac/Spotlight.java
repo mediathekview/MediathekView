@@ -37,13 +37,20 @@ public class Spotlight {
     private static List<File> doSearch(String[] command) throws IOException {
         var process = Runtime.getRuntime().exec(command);
         ArrayList<File> results = new ArrayList<>();
-        try (var is = new InputStreamReader(process.getInputStream());
-             var out = new BufferedReader(is)) {
+        try (var is = process.getInputStream();
+             var isr = new InputStreamReader(is);
+             var out = new BufferedReader(isr)) {
             String line;
 
             while ((line = out.readLine()) != null)
                 results.add(new File(line));
         }
+
+        try {
+            process.waitFor();
+        } catch (InterruptedException ignored) {
+        }
+
         if (process.isAlive())
             process.destroy();
 
@@ -62,8 +69,9 @@ public class Spotlight {
         var process = Runtime.getRuntime().exec(new String[]{"mdls", file.getAbsolutePath()});
 
         HashMap<String, String> results = new HashMap<>();
-        try (var is = new InputStreamReader(process.getInputStream());
-             var out = new BufferedReader(is)) {
+        try (var is = process.getInputStream();
+             var isr = new InputStreamReader(is);
+             var out = new BufferedReader(isr)) {
             String line;
 
             while ((line = out.readLine()) != null) {
@@ -74,6 +82,11 @@ public class Spotlight {
                     results.put(key, value);
                 }
             }
+        }
+
+        try {
+            process.waitFor();
+        } catch (InterruptedException ignored) {
         }
 
         if (process.isAlive())
