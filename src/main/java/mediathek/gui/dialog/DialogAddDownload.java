@@ -305,7 +305,7 @@ public class DialogAddDownload extends JDialog {
             jPanelSize.repaint();
 
             // jetzt noch prüfen, obs auf die Platte passt
-            usableSpace /= 1_000_000;
+            usableSpace /= FileSize.ONE_MiB;
             if (usableSpace > 0) {
                 int size;
                 if (!dateiGroesse_HD.isEmpty()) {

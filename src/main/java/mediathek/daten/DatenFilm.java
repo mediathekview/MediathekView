@@ -364,7 +364,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         if (url.equals(getUrl())) {
             return getSize();
         } else {
-            return FileSize.laengeString(url);
+            return FileSize.getFileLengthFromUrl(url);
         }
     }
 

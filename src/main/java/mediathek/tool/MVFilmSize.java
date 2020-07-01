@@ -12,26 +12,8 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
     private long aktSizeL = -1L;
     private Long sizeL = 0L;
     private static final Logger logger = LogManager.getLogger();
-    private static final int TO_MBYTES = 1_000_000;
 
     public MVFilmSize() {
-    }
-
-    /**
-     * Convert size from bytes to MBytes
-     * @param l size in bytes
-     *
-     * @return size in MBytes as String.
-     */
-    public static String getFilmSize(long l) {
-        String ret = "";
-        if (l > TO_MBYTES) {
-            // größer als 1MB sonst kann ich mirs sparen
-            ret = String.valueOf(l / TO_MBYTES);
-        } else if (l > 0) {
-            ret = "1";
-        }
-        return ret;
     }
 
     @Override
@@ -65,7 +47,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
             sizeL = 0L;
         } else {
             try {
-                sizeL = Long.parseLong(size) * TO_MBYTES;
+                sizeL = Long.parseLong(size) * FileSize.ONE_MiB;
             } catch (Exception ex) {
                 logger.error("string: {}, ex: {}", size, ex);
                 sizeL = 0L;
@@ -94,14 +76,14 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
 
         if (aktSizeL <= 0) {
             if (sizeL > 0) {
-                sizeStr = getFilmSize(sizeL);
+                sizeStr = FileSize.convertSize(sizeL);
             } else {
                 sizeStr = "";
             }
         } else if (sizeL > 0) {
-            sizeStr = getFilmSize(aktSizeL) + " von " + getFilmSize(sizeL);
+            sizeStr = FileSize.convertSize(aktSizeL) + " von " + FileSize.convertSize(sizeL);
         } else {
-            sizeStr = getFilmSize(aktSizeL);
+            sizeStr = FileSize.convertSize(aktSizeL);
         }
 
         return sizeStr;
