@@ -32,7 +32,7 @@ public class FilmListExportAction extends AbstractAction {
         StatusBar bar = gui.getStatusBarController().getStatusBar();
         FXProgressPane hb = new FXProgressPane();
 
-        FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile);
+        FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile, true);
         task.setOnSucceeded(e -> {
             bar.getRightItems().remove(hb);
             showSuccess();

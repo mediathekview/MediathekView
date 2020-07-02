@@ -15,7 +15,7 @@ public class FilmListWriteWorkerTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        FilmListWriter writer = new FilmListWriter();
+        FilmListWriter writer = new FilmListWriter(false);
         updateMessage("Schreibe Filmliste");
         updateProgress(0d, 1d);
         writer.writeFilmList(Daten.getDateiFilmliste(),
