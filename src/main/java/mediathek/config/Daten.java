@@ -19,9 +19,7 @@ import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
-import mediathek.mainwindow.AboHistoryCallable;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.mainwindow.SeenHistoryCallable;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.ReplaceList;
@@ -351,7 +349,7 @@ public class Daten {
     }
 
     private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
-        var historyFuture = pool.submit(new SeenHistoryCallable());
+        var historyFuture = pool.submit(SeenHistoryController::new);
         Futures.addCallback(historyFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
@@ -368,7 +366,7 @@ public class Daten {
     }
 
     private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
-        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        var aboHistoryFuture = decoratedPool.submit(AboHistoryController::new);
         Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
