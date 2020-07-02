@@ -70,7 +70,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://mediathekview.de/downloads/updates-win.xml" useAutoUpdateBaseUrl="true"
+  <installerGui autoUpdateDescriptorUrl="https://download.mediathekview.de/stabil/updates-win.xml" useAutoUpdateBaseUrl="true"
                 autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
