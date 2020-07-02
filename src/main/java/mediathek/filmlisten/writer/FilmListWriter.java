@@ -28,12 +28,20 @@ public class FilmListWriter {
     private static final String TAG_JSON_LIST = "X";
     private String sender = "";
     private String thema = "";
+    private final boolean readable;
+
+    public FilmListWriter() {
+        // use config if nothing specified
+        readable = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false);
+    }
+
+    public FilmListWriter(boolean readable) {
+        this.readable = readable;
+    }
 
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
         JsonGenerator jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
-
-        final boolean readable = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false);
         if (readable)
             jg = jg.useDefaultPrettyPrinter();
 
