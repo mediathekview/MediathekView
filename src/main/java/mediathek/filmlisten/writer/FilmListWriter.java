@@ -8,7 +8,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
-import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,11 +28,6 @@ public class FilmListWriter {
     private String sender = "";
     private String thema = "";
     private final boolean readable;
-
-    public FilmListWriter() {
-        // use config if nothing specified
-        readable = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false);
-    }
 
     public FilmListWriter(boolean readable) {
         this.readable = readable;

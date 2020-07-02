@@ -126,12 +126,6 @@ public class PanelEinstellungen extends JPanel {
         cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
     }
 
-    private void setupSaveHumanReadableFilmlistCheckbox() {
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-        cbSaveHumanReadableFilmlist.setSelected(config.getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false));
-        cbSaveHumanReadableFilmlist.addActionListener(l -> config.setProperty(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, cbSaveHumanReadableFilmlist.isSelected()));
-    }
-
     public PanelEinstellungen(Daten d, JFrame parent) {
         super();
         this.parent = parent;
@@ -144,8 +138,6 @@ public class PanelEinstellungen extends JPanel {
         setupProxySettings();
 
         setupDatabaseCleanerCheckbox();
-
-        setupSaveHumanReadableFilmlistCheckbox();
 
         jButtonLoad.addActionListener(ae -> {
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
@@ -260,8 +252,6 @@ public class PanelEinstellungen extends JPanel {
         jButtonHelpDays = new JButton();
         var jPanel7 = new JPanel();
         cbUseDatabaseCleaner = new JCheckBox();
-        var jPanel8 = new JPanel();
-        cbSaveHumanReadableFilmlist = new JCheckBox();
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
@@ -496,31 +486,6 @@ public class PanelEinstellungen extends JPanel {
             );
         }
 
-        //======== jPanel8 ========
-        {
-            jPanel8.setBorder(new TitledBorder("Speicherung der Filmliste")); //NON-NLS
-
-            //---- cbSaveHumanReadableFilmlist ----
-            cbSaveHumanReadableFilmlist.setText("in les- und editierbarem Format speichern"); //NON-NLS
-
-            GroupLayout jPanel8Layout = new GroupLayout(jPanel8);
-            jPanel8.setLayout(jPanel8Layout);
-            jPanel8Layout.setHorizontalGroup(
-                jPanel8Layout.createParallelGroup()
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-            jPanel8Layout.setVerticalGroup(
-                jPanel8Layout.createParallelGroup()
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-        }
-
         //---- jCheckBoxTray ----
         jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
 
@@ -538,7 +503,6 @@ public class PanelEinstellungen extends JPanel {
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup()
                         .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -566,14 +530,12 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbAutomaticUpdateChecks)
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap(3, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -590,7 +552,6 @@ public class PanelEinstellungen extends JPanel {
     private JButton jButtonLoad;
     private JButton jButtonHelpDays;
     private JCheckBox cbUseDatabaseCleaner;
-    private JCheckBox cbSaveHumanReadableFilmlist;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
