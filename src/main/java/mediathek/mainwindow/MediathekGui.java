@@ -254,7 +254,8 @@ public class MediathekGui extends JFrame {
     protected void closeNotificationCenter() {
         try {
             var center = daten.notificationCenter();
-            center.close();
+            if (center != null)
+                center.close();
         } catch (Exception ignored) {
         }
     }
