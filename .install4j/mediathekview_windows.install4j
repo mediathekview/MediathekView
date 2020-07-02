@@ -28,7 +28,7 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
@@ -42,7 +42,7 @@
     </launcher>
     <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck -Djava.net.preferIPv4Stack=true">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
@@ -56,7 +56,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -DexternalUpdateCheck"
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck"
             arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
