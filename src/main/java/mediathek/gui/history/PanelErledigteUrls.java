@@ -8,6 +8,7 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FileDialogs;
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.models.TModel;
 import net.miginfocom.layout.AC;
@@ -23,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -83,7 +85,11 @@ public abstract class PanelErledigteUrls extends JPanel {
     }
 
     protected List<MVUsedUrl> getExportableList() {
-        return workList.getSortedList();
+        ArrayList<MVUsedUrl> ret = new ArrayList<>(workList.getListeUrlsSortDate());
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
+
+        return ret;
     }
 
     private void export() {

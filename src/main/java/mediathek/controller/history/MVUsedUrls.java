@@ -22,7 +22,6 @@ package mediathek.controller.history;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
-import mediathek.tool.GermanStringSorter;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,14 +91,6 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     public boolean urlPruefen(String urlFilm) {
         //wenn url gefunden, dann true zurück
         return listeUrls.contains(urlFilm);
-    }
-
-    public synchronized List<MVUsedUrl> getSortedList() {
-        ArrayList<MVUsedUrl> ret = new ArrayList<>(listeUrlsSortDate);
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
-
-        return ret;
     }
 
     public synchronized void urlAusLogfileLoeschen(String urlFilm) {
@@ -295,6 +286,8 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
             removeIllegalEntries(badEntriesList);
             badEntriesList.clear();
         }
+        logger.debug("listeUrls size: {} for file {}", listeUrls.size(), urlPath);
+        logger.debug("listeUrlsSortDate size: {} for file {}", listeUrlsSortDate.size(), urlPath);
     }
 
     private void removeIllegalEntries(List<String> badEntriesList) {
