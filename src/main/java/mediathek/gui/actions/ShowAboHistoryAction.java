@@ -15,7 +15,7 @@ public class ShowAboHistoryAction extends AbstractAction {
         this.owner = owner;
         this.daten = daten;
 
-        putValue(Action.NAME, "Erledigte Abos anzeigen...");
+        putValue(Action.NAME, "Abo-Historie anzeigen...");
     }
 
     @Override

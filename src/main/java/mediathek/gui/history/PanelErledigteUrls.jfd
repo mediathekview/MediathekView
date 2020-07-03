@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.0.5.251" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -25,19 +25,13 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5 5 0 5,hidemode 3,gap 5 5"
-				"$columnConstraints": "[fill][grow,fill][fill][fill]"
+				"$columnConstraints": "[fill][grow,fill][fill]"
 				"$rowConstraints": "[fill]"
 			} ) {
 				name: "panel1"
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonLoeschen"
-					"text": "Liste löschen"
-					auxiliary() {
-						"JavaCodeGenerator.variableModifiers": 4
-					}
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 3 0"
-				} )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
 				add( new FormComponent( "javax.swing.JToggleButton" ) {
 					name: "jToggleButtonLaden"
 					"text": "Laden"

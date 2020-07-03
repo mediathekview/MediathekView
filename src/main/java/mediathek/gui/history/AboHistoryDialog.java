@@ -10,7 +10,7 @@ public class AboHistoryDialog extends StandardCloseDialog {
     private final Daten daten;
 
     public AboHistoryDialog(Frame owner, Daten daten) {
-        super(owner, "Erledigte Abos", true);
+        super(owner, "Abo-Historie", true);
         this.daten = daten;
     }
 
