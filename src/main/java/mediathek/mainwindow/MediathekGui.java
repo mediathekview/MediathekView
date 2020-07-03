@@ -769,19 +769,14 @@ public class MediathekGui extends JFrame {
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
         switch (msg.event) {
-            case INSTALL:
-                SwingUtilities.invokeLater(() -> {
-                    jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
-                    jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
-                });
-                break;
-
-            case REMOVE:
-                SwingUtilities.invokeLater(() -> {
-                    jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
-                    jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
-                });
-                break;
+            case INSTALL -> SwingUtilities.invokeLater(() -> {
+                jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
+                jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
+            });
+            case REMOVE -> SwingUtilities.invokeLater(() -> {
+                jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
+                jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
+            });
         }
     }
 
