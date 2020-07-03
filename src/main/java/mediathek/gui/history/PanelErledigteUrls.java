@@ -37,7 +37,6 @@ public abstract class PanelErledigteUrls extends JPanel {
 
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
-        jButtonLoeschen.setEnabled(false);
         jButtonExport.addActionListener((ActionEvent e) -> export());
         initListeners();
     }
@@ -50,18 +49,9 @@ public abstract class PanelErledigteUrls extends JPanel {
     private void initListeners() {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
-                jButtonLoeschen.setEnabled(true);
                 updateModelAndRecalculate(createDataModel());
             } else {
-                jButtonLoeschen.setEnabled(false);
                 updateModelAndRecalculate(new TModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
-            }
-        });
-
-        jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            final int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                workList.alleLoeschen();
             }
         });
     }
@@ -98,7 +88,7 @@ public abstract class PanelErledigteUrls extends JPanel {
 
         var title = "Filmtitel speichern";
         if (workList instanceof AboHistoryController) {
-            title = "Erledigte Abos speichern";
+            title = "Abo-Historie speichern";
         }
         if (workList instanceof SeenHistoryController) {
             title = "Download-Historie speichern";
@@ -223,8 +213,7 @@ public abstract class PanelErledigteUrls extends JPanel {
     private void initComponents() {
         var jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
-        panel1 = new JPanel();
-        jButtonLoeschen = new JButton();
+        var panel1 = new JPanel();
         jToggleButtonLaden = new JToggleButton();
         jButtonExport = new JButton();
         jLabelSum = new JLabel();
@@ -254,15 +243,10 @@ public abstract class PanelErledigteUrls extends JPanel {
                 new AC()
                     .fill().gap()
                     .grow().fill().gap()
-                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
                     .fill()));
-
-            //---- jButtonLoeschen ----
-            jButtonLoeschen.setText("Liste l\u00f6schen"); //NON-NLS
-            panel1.add(jButtonLoeschen, new CC().cell(3, 0));
 
             //---- jToggleButtonLaden ----
             jToggleButtonLaden.setText("Laden"); //NON-NLS
@@ -278,8 +262,6 @@ public abstract class PanelErledigteUrls extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     protected JTable jTable1;
-    private JPanel panel1;
-    protected JButton jButtonLoeschen;
     protected JToggleButton jToggleButtonLaden;
     private JButton jButtonExport;
     private JLabel jLabelSum;
