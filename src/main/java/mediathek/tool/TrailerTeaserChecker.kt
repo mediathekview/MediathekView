@@ -4,8 +4,11 @@ package mediathek.tool
  * This class check if titel contains specific keywords.
  */
 class TrailerTeaserChecker {
-    fun check(titel: String): Boolean {
-        val lTitel = titel.toLowerCase()
+    /**
+     * Check if a string might belong to a trailer, teaser, etc.
+     */
+    fun check(content: String): Boolean {
+        val lTitel = content.toLowerCase()
         return containsTrailer(lTitel) || containsTeaser(lTitel) || containsVorschau(lTitel)
     }
 
