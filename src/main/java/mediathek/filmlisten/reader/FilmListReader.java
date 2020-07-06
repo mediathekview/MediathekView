@@ -144,6 +144,10 @@ public class FilmListReader implements AutoCloseable {
             datenFilm.setThema(value);
             thema = value;
         }
+
+        //we need to check thema as well as (currently) ARD also puts teaser only into thema...
+        if (ttc.check(datenFilm.getThema()))
+            datenFilm.setTrailerTeaser(true);
     }
 
     private String checkedString(JsonParser jp) throws IOException {
