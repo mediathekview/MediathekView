@@ -89,7 +89,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     private Optional<String> highQuality_url = Optional.empty();
     private String aboName = "";
-    @Deprecated
     private String datumLong = "";
     private String film_nr = "";
     private String sender = "";
@@ -165,12 +164,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         this.aboName = aboName;
     }
 
-    @Deprecated
     public String getDatumLong() {
         return datumLong;
     }
 
-    @Deprecated
     public void setDatumLong(String datumLong) {
         this.datumLong = datumLong;
     }
@@ -361,7 +358,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     public String getDateigroesse(String url) {
-        if (url.equals(getUrl())) {
+        if (url.equalsIgnoreCase(getUrl())) {
             return getSize();
         } else {
             return FileSize.getFileLengthFromUrl(url);
