@@ -20,5 +20,9 @@ public enum DatenFilmFlags {
     /**
      * Indicates that the film is "new" and has not been in the local filmlist before.
      */
-    NEW_ENTRY
+    NEW_ENTRY,
+    /**
+     * Indicates that a film has "burned in" subtitles.
+     */
+    BURNED_IN_SUBTITLES
 }

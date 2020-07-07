@@ -161,7 +161,8 @@ public class GuiFilmeModelHelper {
             }
             if (nurUt) {
                 if (!film.hasSubtitle()) {
-                    continue;
+                    if (!film.hasBurnedInSubtitles())
+                        continue;
                 }
             }
             if (keineAbos) {

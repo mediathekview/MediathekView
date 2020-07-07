@@ -265,6 +265,9 @@ public class FilmListReader implements AutoCloseable {
         //check if it is in sign language
         parseSignLanguage(title, datenFilm);
         parseTrailerTeaser(title, datenFilm);
+        // check for burned in subtitles
+        if (title.contains("(mit Untertitel)"))
+            datenFilm.setBurnedInSubtitles(true);
     }
 
     private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
