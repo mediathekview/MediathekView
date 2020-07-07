@@ -70,13 +70,8 @@ public class TModelFilm extends TModel {
             case DatenFilm.FILM_HD -> film.isHighQuality();
             case DatenFilm.FILM_UT -> film.hasSubtitle();
             case DatenFilm.FILM_GEO -> film.getGeo().orElse("");
-            case DatenFilm.FILM_URL, DatenFilm.FILM_URL_HISTORY -> film.getUrl();
-            case DatenFilm.FILM_ABO_NAME -> film.getAboName();
-            case DatenFilm.FILM_URL_SUBTITLE -> film.getUrlSubtitle();
-            case DatenFilm.FILM_URL_KLEIN -> film.getUrlKlein();
-            case DatenFilm.FILM_URL_HD -> film.getHighQualityUrl();
+            case DatenFilm.FILM_URL -> film.getUrl();
             case DatenFilm.FILM_REF -> film;
-            case DatenFilm.FILM_DATUM_LONG -> film.getDatumLong();
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };
     }
