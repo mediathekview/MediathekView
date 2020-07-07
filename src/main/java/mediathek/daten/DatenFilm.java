@@ -19,11 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
- * TODO: 8 Step plan
- * + DONE: Introduce Setters and Getters for each Field
- * + DONE: Each field gets an "get<FieldName>Title" to get the German title of the field (see DatenFilmCaptions)
- * + DONE: replace all access to arr to a getter or a setter respectively
- * + DONE: Make a Real Entity. Remove the Array
+ * TODO:
  * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
  * - Finalize a Real Entity
  * - Write test cases for each Method
@@ -46,15 +42,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public static final int FILM_UT = 12; // no getter/setter access
     public static final int FILM_GEO = 13; // Geoblocking
     public static final int FILM_URL = 14;
-    public static final int FILM_ABO_NAME = 15; // wird vor dem Speichern gelöscht!
-    public static final int FILM_DATUM_LONG = 16; // Datum als Long ABER Sekunden!!
-    public static final int FILM_URL_HISTORY = 17; // set null only
-    public static final int FILM_REF = 18; // no getter/setter access // Referenz auf this
-    public static final int FILM_URL_HD = 19;
-    public static final int FILM_URL_SUBTITLE = 20;
-    public static final int FILM_URL_KLEIN = 21;
-    public static final int FILM_NEU = 22;
-    public static final int MAX_ELEM = 22;
+    /**
+     * Index for Date as long value in SECONDS!!
+     */
+    public static final int FILM_DATUM_LONG = 15;
+    public static final int FILM_REF = 16; // no getter/setter access // Referenz auf this
+    public static final int MAX_ELEM = 17;
     /**
      * The database instance for all descriptions.
      */
@@ -344,6 +337,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
     }
 
+    public void setBurnedInSubtitles(boolean val) {
+        if (val) {
+            flags.add(DatenFilmFlags.BURNED_IN_SUBTITLES);
+        } else {
+            flags.remove(DatenFilmFlags.BURNED_IN_SUBTITLES);
+        }
+    }
+
+    /**
+     * Indicate if the film has encoded aka. "burned in" subtitles"
+     * @return true if they are burned in, false othewise.
+     */
+    public boolean hasBurnedInSubtitles() {
+        return flags.contains(DatenFilmFlags.BURNED_IN_SUBTITLES);
+    }
+
     public boolean hasSubtitle() {
         return subtitle_url.isPresent();
     }
@@ -631,33 +640,35 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setGeo(Optional<String> availableInCountries) {
         this.availableInCountries = availableInCountries;
     }
-    
-    /**
-     * Link with bookmark entry
-     * @param bookmark Bookmark entry
-     */
-    public void setBookmark(BookmarkData bookmark) {
-      this.bookmark = bookmark;
-    }
-    
+
     /**
      * Get bookmark entry
+     *
      * @return BookmarkData entry
      */
     public BookmarkData getBookmark() {
-      return this.bookmark;
+        return this.bookmark;
     }
-    
+
+    /**
+     * Link with bookmark entry
+     *
+     * @param bookmark Bookmark entry
+     */
+    public void setBookmark(BookmarkData bookmark) {
+        this.bookmark = bookmark;
+    }
+
     /**
      * check if movie is bookmarked
+     *
      * @return boolean true
      */
     public boolean isBookmarked() {
-      return this.bookmark != null;
+        return this.bookmark != null;
     }
-    
-    
-    
+
+
     public static class Database {
         private Database() {
         }

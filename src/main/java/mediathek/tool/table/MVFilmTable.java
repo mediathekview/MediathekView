@@ -54,32 +54,13 @@ public class MVFilmTable extends ASelectableMVTable {
         reihe[i] = i;
         breite[i] = 200;
         switch (i) {
-            case DatenFilm.FILM_NR:
-                breite[i] = 75;
-                break;
-            case DatenFilm.FILM_TITEL:
-                breite[i] = 300;
-                break;
-            case DatenFilm.FILM_DATUM:
-            case DatenFilm.FILM_ZEIT:
-            case DatenFilm.FILM_SENDER:
-            case DatenFilm.FILM_GROESSE:
-            case DatenFilm.FILM_DAUER:
-            case DatenFilm.FILM_GEO:
-                breite[i] = 100;
-                break;
-            case DatenFilm.FILM_URL:
-                breite[i] = 500;
-                break;
-            case DatenFilm.FILM_ABSPIELEN:
-            case DatenFilm.FILM_AUFZEICHNEN:
-            case DatenFilm.FILM_MERKEN:
-                breite[i] = 20;
-                break;
-            case DatenFilm.FILM_HD:
-            case DatenFilm.FILM_UT:
-                breite[i] = 50;
-                break;
+            case DatenFilm.FILM_NR -> breite[i] = 75;
+            case DatenFilm.FILM_TITEL -> breite[i] = 300;
+            case DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_SENDER, DatenFilm.FILM_GROESSE,
+                    DatenFilm.FILM_DAUER, DatenFilm.FILM_GEO -> breite[i] = 100;
+            case DatenFilm.FILM_URL -> breite[i] = 500;
+            case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> breite[i] = 20;
+            case DatenFilm.FILM_HD, DatenFilm.FILM_UT -> breite[i] = 50;
         }
     }
 
@@ -100,20 +81,7 @@ public class MVFilmTable extends ASelectableMVTable {
 
     @Override
     protected void spaltenAusschalten() {
-        //logger.debug("spaltenAusschalten()");
-
-        for (int i = 0; i < maxSpalten; ++i) {
-            switch (i) {
-                case DatenFilm.FILM_NEU:
-                case DatenFilm.FILM_URL_HD:
-                case DatenFilm.FILM_URL_KLEIN:
-                case DatenFilm.FILM_URL_HISTORY:
-                case DatenFilm.FILM_URL_SUBTITLE:
-                case DatenFilm.FILM_REF:
-                    breite[i] = 0;
-                    break;
-            }
-        }
+        // do nothing here
     }
 
     @Override
