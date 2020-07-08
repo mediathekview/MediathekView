@@ -12,7 +12,7 @@ import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -29,7 +29,7 @@ import java.io.File;
 
 @SuppressWarnings("serial")
 public class PanelMediaDB extends PanelVorlage {
-    private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
+    private final NonEditableTableModel modelPath = new NonEditableTableModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
     private static final Logger logger = LogManager.getLogger();
 
