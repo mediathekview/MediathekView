@@ -1,0 +1,4 @@
+[Application]
+name=de.mediathekview.MediathekView
+runtime=org.freedesktop.Platform/x86_64/19.08
+sdk=org.freedesktop.Sdk/x86_64/19.08

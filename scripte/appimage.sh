@@ -50,7 +50,7 @@ Name=$APP
 Icon=$LOWERAPP
 Exec=$LOWERAPP
 Type=Application
-Categories=AudioVideo;
+Categories=Network;File Transfer;
 Comment=Mediatheken
 EOF
 
@@ -78,7 +78,7 @@ cat > usr/bin/$LOWERAPP <<'EOF'
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
-MediathekView -Xmx1G -jar MediathekView.jar "$@"
+MediathekView -Xmx2G -jar MediathekView.jar "$@"
 cd $OLDPWD
 EOF
 

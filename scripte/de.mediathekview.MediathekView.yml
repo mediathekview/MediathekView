@@ -1,0 +1,47 @@
+app-id: de.mediathekview.MediathekView
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: /opt/mediathekview/MediathekView
+finish-args:
+  - --socket=x11
+  - --share=ipc
+  - --socket=wayland
+  - --filesystem=host
+  - --share=network
+modules:
+  - name: ffmpeg
+    config-opts:
+      - --enable-rpath
+      - --enable-gpl
+      - --disable-static
+      - --enable-shared
+      - --disable-doc
+      - --disable-ffplay
+      - --disable-avdevice
+      - --disable-swresample
+      - --disable-swscale
+      - --disable-postproc
+    cleanup:
+      - /share/ffmpeg/examples
+    sources:
+      - type: archive
+        url: https://www.ffmpeg.org/releases/ffmpeg-4.3.tar.xz
+        sha512: f031eb6c4423887af323ab7d1f431234d4e30993a52db45dccf427b41eb442a3bd020dcbc13e83cbf813fad0f36c849cb651203570148387c864507aa19f313a
+  - name: mediathekview
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 -t /app/share/metainfo de.mediathekview.MediathekView.appdata.xml
+      - install -Dm644 -t /app/share/applications de.mediathekview.MediathekView.desktop
+      - install -Dm644 -t /app/share/icons/hicolor/128x128/apps de.mediathekview.MediathekView.png
+    sources:
+      - type: file
+        path: ../.install4j/MediathekView@x128.png
+        dest-filename: de.mediathekview.MediathekView.png
+      - type: file
+        path: de.mediathekview.MediathekView.desktop
+      - type: file
+        path: de.mediathekview.MediathekView.appdata.xml
+      - type: archive
+        path: ../target/media/MediathekView_unix_13_6_0-SNAPSHOT.tar.gz
+        #path: MediathekView.tar.gz

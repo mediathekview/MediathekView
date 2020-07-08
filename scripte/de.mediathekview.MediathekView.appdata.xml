@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2020 Nicklas Wiegandt <nicklas@wiegandt.eu> -->
+<component type="desktop-application">
+    <id>de.mediathekview.MediathekView</id>
+    <metadata_license>MIT</metadata_license>
+    <project_license>GPL-3.0+</project_license>
+    <name>MediathekView</name>
+    <developer_name>MediathekView Team</developer_name>
+    <summary>MediathekView durchsucht die Online-Mediatheken verschiedener Öffentlich-Rechtlicher Sender und ermöglicht es deren download</summary>
+
+    <description>
+        <p>
+            Das Programm MediathekView durchsucht die Online-Mediatheken verschiedener Sender (ARD, ZDF, Arte, 3Sat, SWR, BR, MDR, NDR, WDR, HR, RBB, ORF, SRF) und listet die gefundenen Sendungen auf. Die Liste kann mit verschiedenen Filtern nach Beiträgen durchsucht werden. Mit einem Programm deiner Wahl können die Filme angesehen und aufgezeichnet werden. Es lassen sich Abos anlegen und neue Beiträge automatisch herunterladen.
+        </p>
+    </description>
+    <categories>
+        <category>Network</category>
+        <category>File Transfer</category>
+    </categories>
+    <launchable type="desktop-id">de.mediathekview.MediathekView.desktop</launchable>
+
+    <screenshots>
+        <screenshot type="default">
+            <caption>Filme Übersicht - Standardansicht</caption>
+            <image>https://mediathekview.de/images/screenshots/screenshot1.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Filme Übersicht - Filter Panel</caption>
+            <image>https://mediathekview.de/images/screenshots/screenshot4_filter.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Download</caption>
+            <image>https://mediathekview.de/images/screenshots/screenshot8_downloadmenue_klein.jpg</image>
+        </screenshot>
+    </screenshots>
+
+    <url type="homepage">https://mediathekview.de/</url>
+    <url type="bugtracker">https://github.com/mediathekview/MediathekView/issues</url>
+    <url type="donation">https://mediathekview.de/spenden/</url>
+    <provides>
+        <binary>MediathekView</binary>
+        <binary>MediathekView_ipv4</binary>
+    </provides>
+</component>
