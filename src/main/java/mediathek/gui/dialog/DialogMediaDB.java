@@ -21,8 +21,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -79,7 +77,11 @@ public class DialogMediaDB extends JDialog {
         tabelleFilme.setDefaultRenderer(Object.class, cellRenderer);
         tabelleFilme.setModel(modelFilm);
         tabelleFilme.addMouseListener(new BeobMausTabelle());
-        tabelleFilme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        tabelleFilme.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                aktFilmSetzen();
+            }
+        });
         tabelleFilme.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tabelleFilme.initTabelle();
 
@@ -221,33 +223,20 @@ public class DialogMediaDB extends JDialog {
         setVis();
     }
 
-    private class BeobTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                aktFilmSetzen();
-            }
-        }
-    }
-
     private class BeobDoc implements DocumentListener {
 
         @Override
-        public void insertUpdate(DocumentEvent e
-        ) {
+        public void insertUpdate(DocumentEvent e) {
             tus();
         }
 
         @Override
-        public void removeUpdate(DocumentEvent e
-        ) {
+        public void removeUpdate(DocumentEvent e) {
             tus();
         }
 
         @Override
-        public void changedUpdate(DocumentEvent e
-        ) {
+        public void changedUpdate(DocumentEvent e) {
             tus();
         }
 
