@@ -16,6 +16,8 @@ import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -29,6 +31,7 @@ import java.io.File;
 public class PanelMediaDB extends PanelVorlage {
     private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
+    private static final Logger logger = LogManager.getLogger();
 
     @Handler
     private void handleMediaDbStartEvent(MediaDbStartEvent e) {
@@ -131,7 +134,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonExport.addActionListener(new BeobExport());
+        jButtonExport.addActionListener(l -> filmeExportieren());
         jButtonExportPath.addActionListener(new BeobPfad());
         btnExtAdd.addActionListener(l -> {
             String s = (String) cbxExtMedien.getSelectedItem();
@@ -176,7 +179,7 @@ public class PanelMediaDB extends PanelVorlage {
                     }
                 }
             } catch (Exception ex) {
-                Log.errorLog(732165489, ex);
+                logger.error("filmeExportieren()", ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -227,6 +230,120 @@ public class PanelMediaDB extends PanelVorlage {
             cbxExtMedien.setSelectedItem(add);
         } else {
             cbxExtMedien.setModel(daten.getListeMediaPath().getComboModel());
+        }
+    }
+
+    private class BeobPath implements ActionListener {
+
+        boolean ext;
+
+        public BeobPath(boolean ext) {
+            this.ext = ext;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native directory chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pfad zu den Filmen wählen");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        String path = new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath();
+                        if (ext) {
+                            setCbkExt(path);
+                        } else {
+                            jTextFieldPath.setText(path);
+                        }
+                    } catch (Exception ex) {
+                        logger.error("BeobPath.actionPerformed", ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                if (!jTextFieldPath.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPath.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        String path = chooser.getSelectedFile().getPath();
+                        if (ext) {
+                            setCbkExt(path);
+                        } else {
+                            jTextFieldPath.setText(path);
+                        }
+                    } catch (Exception ex) {
+                        logger.error("BeobPath.actionPerformed", ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobTextFeld implements DocumentListener {
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tusEinfach();
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tusEinfach();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tusEinfach();
+        }
+
+        void tusEinfach() {
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
+        }
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filme exportieren");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldExportPath.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(679890147, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldExportPath.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldExportPath.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldExportPath.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error("BeobPfad.actionPerformed", ex);
+                    }
+                }
+            }
         }
     }
 
@@ -713,127 +830,4 @@ public class PanelMediaDB extends PanelVorlage {
     private javax.swing.JToggleButton jToggleButtonLoad;
     private javax.swing.JProgressBar progress;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobPath implements ActionListener {
-
-        boolean ext;
-
-        public BeobPath(boolean ext) {
-            this.ext = ext;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pfad zu den Filmen wählen");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        String path = new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath();
-                        if (ext) {
-                            setCbkExt(path);
-                        } else {
-                            jTextFieldPath.setText(path);
-                        }
-                    } catch (Exception ex) {
-                        Log.errorLog(951024789, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (!jTextFieldPath.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldPath.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        String path = chooser.getSelectedFile().getPath();
-                        if (ext) {
-                            setCbkExt(path);
-                        } else {
-                            jTextFieldPath.setText(path);
-                        }
-                    } catch (Exception ex) {
-                        Log.errorLog(765212369, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobTextFeld implements DocumentListener {
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tusEinfach();
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tusEinfach();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tusEinfach();
-        }
-
-        void tusEinfach() {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
-        }
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filme exportieren");
-                chooser.setMode(FileDialog.SAVE);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldExportPath.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(679890147, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldExportPath.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldExportPath.getText()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldExportPath.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(911025463, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobExport implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            filmeExportieren();
-        }
-    }
-
 }
