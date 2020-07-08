@@ -221,6 +221,99 @@ public class DialogMediaDB extends JDialog {
         setVis();
     }
 
+    private class BeobTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                aktFilmSetzen();
+            }
+        }
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e
+        ) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e
+        ) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e
+        ) {
+            tus();
+        }
+
+        private void tus() {
+            Filter.checkPattern1(jTextFieldSearch);
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
+                searchFilmInDb();
+            }
+        }
+    }
+
+    public class BeobMausTabelle extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            Point p = evt.getPoint();
+            int nr = tabelleFilme.rowAtPoint(p);
+            if (nr >= 0) {
+                tabelleFilme.setRowSelectionInterval(nr, nr);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            // Film abspielen
+            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
+            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
+            itemPlayerDownload.addActionListener(e -> filmAbspielen_());
+            jPopupMenu.add(itemPlayerDownload);
+
+            // Film löschen
+            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
+            itemDeleteDownload.setIcon(Icons.ICON_BUTTON_DEL);
+            itemDeleteDownload.addActionListener(e -> filmLoeschen_());
+            jPopupMenu.add(itemDeleteDownload);
+
+            // Zielordner öffnen
+            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
+            jPopupMenu.add(itemOeffnen);
+            itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
+
+            jPopupMenu.addSeparator();
+            // Reset Tabelle
+            JMenuItem itemResetTab = new JMenuItem("Tabelle zurücksetzen");
+            jPopupMenu.add(itemResetTab);
+            itemResetTab.addActionListener(arg0 -> tabelleFilme.resetTabelle());
+
+            // ######################
+            // Menü anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -372,98 +465,4 @@ public class DialogMediaDB extends JDialog {
     private javax.swing.JTextField jTextFieldSearch;
     private javax.swing.JProgressBar progress;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                aktFilmSetzen();
-            }
-        }
-    }
-
-    private class BeobDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e
-        ) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e
-        ) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e
-        ) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(jTextFieldSearch);
-            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
-                searchFilmInDb();
-            }
-        }
-    }
-
-    public class BeobMausTabelle extends MouseAdapter {
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            Point p = evt.getPoint();
-            int nr = tabelleFilme.rowAtPoint(p);
-            if (nr >= 0) {
-                tabelleFilme.setRowSelectionInterval(nr, nr);
-            }
-            JPopupMenu jPopupMenu = new JPopupMenu();
-
-            // Film abspielen
-            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-            itemPlayerDownload.addActionListener(e -> filmAbspielen_());
-            jPopupMenu.add(itemPlayerDownload);
-
-            // Film löschen
-            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(Icons.ICON_BUTTON_DEL);
-            itemDeleteDownload.addActionListener(e -> filmLoeschen_());
-            jPopupMenu.add(itemDeleteDownload);
-
-            // Zielordner öffnen
-            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
-            jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
-
-            jPopupMenu.addSeparator();
-            // Reset Tabelle
-            JMenuItem itemResetTab = new JMenuItem("Tabelle zurücksetzen");
-            jPopupMenu.add(itemResetTab);
-            itemResetTab.addActionListener(arg0 -> tabelleFilme.resetTabelle());
-
-            // ######################
-            // Menü anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-    }
-
 }
