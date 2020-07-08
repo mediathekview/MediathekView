@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -67,7 +68,6 @@ public class DialogMediaDB extends JDialog {
                 beenden();
             }
         });
-        this.setTitle("Mediensammlung durchsuchen");
 
         tabelleFilme = new MVMediaDbTable();
         jScrollPane3.setViewportView(tabelleFilme);
@@ -304,154 +304,174 @@ public class DialogMediaDB extends JDialog {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jButtonBeenden = new JButton();
+        jButtonHelp = new JButton();
+        jTextFieldSearch = new JTextField();
+        jButtonSearch = new JButton();
+        jScrollPane3 = new JScrollPane();
+        var jTableFilm = new JTable();
+        var jLabel1 = new JLabel();
+        jLabelSizeFound = new JLabel();
+        var jLabel4 = new JLabel();
+        jButtonIndex = new JButton();
+        jLabelSum = new JLabel();
+        progress = new JProgressBar();
+        var jLabel3 = new JLabel();
+        jTextFieldFilmTitle = new JTextField();
+        var jLabel5 = new JLabel();
+        jTextFieldFilmPfad = new JTextField();
 
-        jButtonBeenden = new javax.swing.JButton();
-        jButtonHelp = new javax.swing.JButton();
-        jTextFieldSearch = new javax.swing.JTextField();
-        jButtonSearch = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        javax.swing.JTable jTableFilm = new javax.swing.JTable();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jLabelSizeFound = new javax.swing.JLabel();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jButtonIndex = new javax.swing.JButton();
-        jLabelSum = new javax.swing.JLabel();
-        progress = new javax.swing.JProgressBar();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jTextFieldFilmTitle = new javax.swing.JTextField();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jTextFieldFilmPfad = new javax.swing.JTextField();
+        //======== this ========
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Mediensammlung durchsuchen"); //NON-NLS
+        var contentPane = getContentPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        //---- jButtonBeenden ----
+        jButtonBeenden.setText("Schlie\u00dfen"); //NON-NLS
 
-        jButtonBeenden.setText("Ok");
+        //---- jButtonHelp ----
+        jButtonHelp.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+        jButtonHelp.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHelp.setToolTipText("Hilfe anzeigen");
+        //---- jButtonSearch ----
+        jButtonSearch.setText("Suchen"); //NON-NLS
 
-        jButtonSearch.setText("Suchen");
+        //======== jScrollPane3 ========
+        {
 
-        jTableFilm.setAutoCreateRowSorter(true);
-        jTableFilm.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane3.setViewportView(jTableFilm);
+            //---- jTableFilm ----
+            jTableFilm.setAutoCreateRowSorter(true);
+            jTableFilm.setModel(new DefaultTableModel(
+                new Object[][] {
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null},
+                },
+                new String[] {
+                    "Title 1", "Title 2", "Title 3", "Title 4" //NON-NLS
+                }
+            ));
+            jScrollPane3.setViewportView(jTableFilm);
+        }
 
-        jLabel1.setText("Treffer:");
+        //---- jLabel1 ----
+        jLabel1.setText("Treffer:"); //NON-NLS
 
-        jLabelSizeFound.setText("0");
+        //---- jLabelSizeFound ----
+        jLabelSizeFound.setText("0"); //NON-NLS
 
-        jLabel4.setText("Anzahl Medien gesamt:");
+        //---- jLabel4 ----
+        jLabel4.setText("Anzahl Medien gesamt:"); //NON-NLS
 
-        jButtonIndex.setText("Index neu aufbauen");
+        //---- jButtonIndex ----
+        jButtonIndex.setText("Index neu aufbauen"); //NON-NLS
 
-        jLabelSum.setText("0");
+        //---- jLabelSum ----
+        jLabelSum.setText("0"); //NON-NLS
 
-        jLabel3.setText("Titel:");
+        //---- jLabel3 ----
+        jLabel3.setText("Titel:"); //NON-NLS
 
+        //---- jTextFieldFilmTitle ----
         jTextFieldFilmTitle.setEditable(false);
 
-        jLabel5.setText("Pfad:");
+        //---- jLabel5 ----
+        jLabel5.setText("Pfad:"); //NON-NLS
 
+        //---- jTextFieldFilmPfad ----
         jTextFieldFilmPfad.setEditable(false);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextFieldSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSearch)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addComponent(jTextFieldSearch)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonSearch)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonHelp))
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                            .addComponent(progress, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonIndex)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonBeenden, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelSum)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabelSizeFound))
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextFieldFilmTitle))
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextFieldFilmPfad)))
+                    .addContainerGap())
+        );
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextFieldSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonSearch))
                         .addComponent(jButtonHelp))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonIndex)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelSum)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelSizeFound))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGap(18, 18, 18)
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabelSum))
+                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabelSizeFound)))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilmTitle))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextFieldFilmTitle, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilmPfad)))
-                .addContainerGap())
+                        .addComponent(jTextFieldFilmPfad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(progress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonIndex)
+                        .addComponent(jButtonBeenden))
+                    .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButtonSearch))
-                    .addComponent(jButtonHelp))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(jLabelSum))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabelSizeFound)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextFieldFilmTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextFieldFilmPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonIndex)
-                    .addComponent(jButtonBeenden))
-                .addContainerGap())
-        );
-
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHelp, jButtonSearch, jTextFieldSearch});
-
+        contentPaneLayout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonHelp, jButtonSearch, jTextFieldSearch});
         pack();
+        setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBeenden;
-    private javax.swing.JButton jButtonHelp;
-    private javax.swing.JButton jButtonIndex;
-    private javax.swing.JButton jButtonSearch;
-    private javax.swing.JLabel jLabelSizeFound;
-    private javax.swing.JLabel jLabelSum;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextFieldFilmPfad;
-    private javax.swing.JTextField jTextFieldFilmTitle;
-    private javax.swing.JTextField jTextFieldSearch;
-    private javax.swing.JProgressBar progress;
+    // Generated using JFormDesigner non-commercial license
+    private JButton jButtonBeenden;
+    private JButton jButtonHelp;
+    private JTextField jTextFieldSearch;
+    private JButton jButtonSearch;
+    private JScrollPane jScrollPane3;
+    private JLabel jLabelSizeFound;
+    private JButton jButtonIndex;
+    private JLabel jLabelSum;
+    private JProgressBar progress;
+    private JTextField jTextFieldFilmTitle;
+    private JTextField jTextFieldFilmPfad;
     // End of variables declaration//GEN-END:variables
 }
