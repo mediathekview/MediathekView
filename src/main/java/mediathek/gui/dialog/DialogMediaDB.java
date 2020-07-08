@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -311,7 +310,6 @@ public class DialogMediaDB extends JDialog {
         jTextFieldSearch = new JTextField();
         jButtonSearch = new JButton();
         jScrollPane3 = new JScrollPane();
-        var jTableFilm = new JTable();
         var jLabel1 = new JLabel();
         jLabelSizeFound = new JLabel();
         var jLabel4 = new JLabel();
@@ -337,25 +335,6 @@ public class DialogMediaDB extends JDialog {
 
         //---- jButtonSearch ----
         jButtonSearch.setText("Suchen"); //NON-NLS
-
-        //======== jScrollPane3 ========
-        {
-
-            //---- jTableFilm ----
-            jTableFilm.setAutoCreateRowSorter(true);
-            jTableFilm.setModel(new DefaultTableModel(
-                new Object[][] {
-                    {null, null, null, null},
-                    {null, null, null, null},
-                    {null, null, null, null},
-                    {null, null, null, null},
-                },
-                new String[] {
-                    "Title 1", "Title 2", "Title 3", "Title 4" //NON-NLS
-                }
-            ));
-            jScrollPane3.setViewportView(jTableFilm);
-        }
 
         //---- jLabel1 ----
         jLabel1.setText("Treffer:"); //NON-NLS
