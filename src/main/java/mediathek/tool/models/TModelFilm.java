@@ -1,7 +1,6 @@
 package mediathek.tool.models;
 
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenFilmCaptions;
 import mediathek.tool.DatumFilm;
 import mediathek.tool.FilmSize;
 
@@ -49,7 +48,19 @@ public class TModelFilm extends TModel {
     public String getColumnName(int column) {
         return switch (column) {
             case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
-            default -> DatenFilmCaptions.getTitleByFieldIndex(column);
+            case DatenFilm.FILM_NR -> "Nr";
+            case DatenFilm.FILM_SENDER -> "Sender";
+            case DatenFilm.FILM_THEMA -> "Thema";
+            case DatenFilm.FILM_TITEL -> "Titel";
+            case DatenFilm.FILM_DATUM -> "Datum";
+            case DatenFilm.FILM_ZEIT -> "Zeit";
+            case DatenFilm.FILM_DAUER -> "Dauer";
+            case DatenFilm.FILM_GROESSE -> "Größe [MB]";
+            case DatenFilm.FILM_HD -> "HQ";
+            case DatenFilm.FILM_UT -> "UT";
+            case DatenFilm.FILM_GEO -> "Geo";
+            case DatenFilm.FILM_URL -> "URL";
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
         };
     }
 
