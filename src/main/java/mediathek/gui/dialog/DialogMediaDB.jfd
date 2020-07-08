@@ -28,59 +28,6 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane3"
-				add( new FormComponent( "javax.swing.JTable" ) {
-					name: "jTableFilm"
-					"autoCreateRowSorter": true
-					"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
-						add( new java.util.Vector {
-							add( null )
-							add( null )
-							add( null )
-							add( null )
-						} )
-						add( new java.util.Vector {
-							add( null )
-							add( null )
-							add( null )
-							add( null )
-						} )
-						add( new java.util.Vector {
-							add( null )
-							add( null )
-							add( null )
-							add( null )
-						} )
-						add( new java.util.Vector {
-							add( null )
-							add( null )
-							add( null )
-							add( null )
-						} )
-					}, new java.util.Vector {
-						add( "Title 1" )
-						add( "Title 2" )
-						add( "Title 3" )
-						add( "Title 4" )
-					}, new java.util.Vector {
-						add( class java.lang.Object )
-						add( class java.lang.Object )
-						add( class java.lang.Object )
-						add( class java.lang.Object )
-					}, new java.util.Vector {
-						add( true )
-						add( true )
-						add( true )
-						add( true )
-					}, new java.util.Vector {
-						add( null )
-						add( null )
-						add( null )
-						add( null )
-					} )
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-				} )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel1"
