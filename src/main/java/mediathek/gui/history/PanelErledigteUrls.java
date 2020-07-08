@@ -10,7 +10,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FileDialogs;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -18,6 +18,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,19 +52,19 @@ public abstract class PanelErledigteUrls extends JPanel {
             if (jToggleButtonLaden.isSelected()) {
                 updateModelAndRecalculate(createDataModel());
             } else {
-                updateModelAndRecalculate(new TModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
+                updateModelAndRecalculate(new NonEditableTableModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
             }
         });
     }
 
-    private void updateModelAndRecalculate(@NotNull TModel model) {
+    private void updateModelAndRecalculate(@NotNull TableModel model) {
         jTable1.setModel(model);
         setsum();
     }
 
-    protected TModel createDataModel() {
+    protected TableModel createDataModel() {
         final var data = MVUsedUrlModelHelper.getObjectData(workList.getListeUrlsSortDate());
-        return new TModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
+        return new NonEditableTableModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
     }
 
     private void setsum() {

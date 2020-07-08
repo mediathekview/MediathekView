@@ -8,7 +8,7 @@ import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.TextCopyPasteHandler;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -158,7 +158,7 @@ public class PanelDateinamen extends PanelVorlage {
         if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
 
-        TModel model = new TModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
+        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
         model.setRowCount(0);
         Object[] object = new Object[ReplaceList.MAX_ELEM];
         for (String[] s : ReplaceList.list) {
