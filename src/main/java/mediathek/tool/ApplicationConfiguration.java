@@ -78,21 +78,6 @@ public class ApplicationConfiguration {
     public static final String HTTP_PROXY_USERNAME = "http.proxy.user";
     public static final String HTTP_PROXY_PASSWORD = "http.proxy.password";
 
-    public static final String FILTER_PANEL_SHOW_HD_ONLY = "filter.show.hd_only";
-    public static final String FILTER_PANEL_SHOW_SUBTITLES_ONLY = "filter.show.subtitles_only";
-    public static final String FILTER_PANEL_SHOW_NEW_ONLY = "filter.show.new_only";
-    public static final String FILTER_PANEL_SHOW_UNSEEN_ONLY = "filter.show.unseen_only";
-    public static final String FILTER_PANEL_SHOW_LIVESTREAMS_ONLY = "filter.show.livestreams_only";
-    public static final String FILTER_PANEL_DONT_SHOW_ABOS = "filter.dont_show.abos";
-    public static final String FILTER_PANEL_DONT_SHOW_TRAILERS = "filter.dont_show.trailers";
-    public static final String FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE =
-            "filter.dont_show.sign_language";
-    public static final String FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS =
-            "filter.dont_show.audio_versions";
-    public static final String FILTER_PANEL_FILM_LENGTH_MIN = "filter.film_length.min";
-    public static final String FILTER_PANEL_FILM_LENGTH_MAX = "filter.film_length.max";
-    public static final String FILTER_PANEL_ZEITRAUM = "filter.zeitraum";
-
     public static final String FILMLIST_LOAD_TRAILER = "filmlist.load.trailer";
     public static final String FILMLIST_LOAD_AUDIODESCRIPTION = "filmlist.load.audio_description";
     public static final String FILMLIST_LOAD_SIGNLANGUAGE = "filmlist.load.sign_language";
