@@ -26,6 +26,7 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration(Configuration configuration) {
+    super();
     this.configuration = configuration;
     migrateOldFilterConfigurations();
   }
@@ -348,7 +349,15 @@ public class FilterConfiguration {
   public UUID getCurrentFilterID() {
     if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER_ID)
         || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID) == null) {
-      setCurrentFilterID(getAvailableFilterIds().stream().findFirst().orElse(UUID.randomUUID()));
+      setCurrentFilterID(
+          getAvailableFilterIds().stream()
+              .findFirst()
+              .orElseGet(
+                  () -> {
+                    UUID filterId = UUID.randomUUID();
+                    addNewFilter(filterId, "Filter 1");
+                    return filterId;
+                  }));
     }
     return configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID);
   }

@@ -155,7 +155,6 @@ public class FilmActionPanel {
   }
 
   private void restoreConfigSettings() {
-    filterConfig.clearCurrentFilter();
     showOnlyHd.set(filterConfig.isShowHdOnly());
     showSubtitlesOnly.set(filterConfig.isShowSubtitlesOnly());
     showNewOnly.set(filterConfig.isShowNewOnly());
@@ -171,13 +170,17 @@ public class FilmActionPanel {
       filmLengthSlider.lowValueProperty().set(filterConfig.getFilmLengthMin());
       filmLengthSlider.highValueProperty().set(filterConfig.getFilmLengthMax());
     } catch (Exception exception) {
-      LOG.debug("Something wen't wrong resetting the film length slider.");
+      LOG.debug(
+          "Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",
+          exception);
     }
 
     try {
       viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
     } catch (Exception exception) {
-      LOG.debug("Something wen't wrong resetting the zeitraum spinner.");
+      LOG.debug(
+          "Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
+          exception);
     }
   }
 
