@@ -1,9 +1,11 @@
 package mediathek.tool;
 
+import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
@@ -39,12 +41,12 @@ public class FilterConfiguration {
     }
 
     public boolean isShowHdOnly() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_HD_ONLY), false);
     }
 
     public FilterConfiguration setShowHdOnly(boolean showHdOnly) {
-        getConfiguration()
+        configuration
                 .setProperty(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_HD_ONLY), showHdOnly);
         return this;
     }
@@ -59,7 +61,7 @@ public class FilterConfiguration {
     }
 
     public FilterConfiguration setShowSubtitlesOnly(boolean showSubtitlesOnly) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_SUBTITLES_ONLY),
                         showSubtitlesOnly);
@@ -67,35 +69,35 @@ public class FilterConfiguration {
     }
 
     public boolean isShowNewOnly() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_NEW_ONLY), false);
     }
 
     public FilterConfiguration setShowNewOnly(boolean showNewOnly) {
-        getConfiguration()
+        configuration
                 .setProperty(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_NEW_ONLY), showNewOnly);
         return this;
     }
 
     public boolean isShowUnseenOnly() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_UNSEEN_ONLY), false);
     }
 
     public FilterConfiguration setShowUnseenOnly(boolean showUnseenOnly) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_UNSEEN_ONLY), showUnseenOnly);
         return this;
     }
 
     public boolean isShowLivestreamsOnly() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_LIVESTREAMS_ONLY), false);
     }
 
     public FilterConfiguration setShowLivestreamsOnly(boolean showLivestreamsOnly) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_SHOW_LIVESTREAMS_ONLY),
                         showLivestreamsOnly);
@@ -103,37 +105,37 @@ public class FilterConfiguration {
     }
 
     public boolean isDontShowAbos() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_ABOS), false);
     }
 
     public FilterConfiguration setDontShowAbos(boolean dontShowAbos) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_ABOS), dontShowAbos);
         return this;
     }
 
     public boolean isDontShowTrailers() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_TRAILERS), false);
     }
 
     public FilterConfiguration setDontShowTrailers(boolean dontShowTrailers) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_TRAILERS), dontShowTrailers);
         return this;
     }
 
     public boolean isDontShowSignLanguage() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE), false);
     }
 
     public FilterConfiguration setDontShowSignLanguage(boolean dontShowSignLanguage) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE),
                         dontShowSignLanguage);
@@ -141,13 +143,13 @@ public class FilterConfiguration {
     }
 
     public boolean isDontShowAudioVersions() {
-        return getConfiguration()
+        return configuration
                 .getBoolean(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS), false);
     }
 
     public FilterConfiguration setDontShowAudioVersions(boolean dontShowAudioVersions) {
-        getConfiguration()
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS),
                         dontShowAudioVersions);
@@ -155,36 +157,38 @@ public class FilterConfiguration {
     }
 
     public double getFilmLengthMin() {
-        return getConfiguration()
-                .getDouble(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MIN), 110.0d);
+        return configuration
+                .getDouble(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MIN), 0.0d);
     }
 
-    public FilterConfiguration setFilmLengthMin(int filmLengthMin) {
-        getConfiguration()
+    public FilterConfiguration setFilmLengthMin(double filmLengthMin) {
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MIN), filmLengthMin);
         return this;
     }
 
     public double getFilmLengthMax() {
-        return getConfiguration()
-                .getDouble(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MAX), 0.0d);
+        return configuration
+                .getDouble(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MAX), 110.0d);
     }
 
-    public FilterConfiguration setFilmLengthMax(int filmLengthMax) {
-        getConfiguration()
+    public FilterConfiguration setFilmLengthMax(double filmLengthMax) {
+        configuration
                 .setProperty(
                         toFilterConfigNameWithCurrentFilter(FILTER_PANEL_FILM_LENGTH_MAX), filmLengthMax);
         return this;
     }
 
     public String getZeitraum() {
-        return getConfiguration()
-                .getString(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_ZEITRAUM), "∞");
+        return configuration
+                .getString(
+                        toFilterConfigNameWithCurrentFilter(FILTER_PANEL_ZEITRAUM),
+                        ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
     public FilterConfiguration setZeitraum(String zeitraum) {
-        getConfiguration()
+        configuration
                 .setProperty(toFilterConfigNameWithCurrentFilter(FILTER_PANEL_ZEITRAUM), zeitraum);
         return this;
     }
@@ -213,7 +217,7 @@ public class FilterConfiguration {
     public UUID getCurrentFilterID() {
         if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER_ID)
                 || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID) == null) {
-            setCurrentFilterID(UUID.randomUUID());
+            setCurrentFilterID(getAvailableFilterIds().stream().findFirst().orElse(UUID.randomUUID()));
         }
         return configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID);
     }
@@ -225,17 +229,20 @@ public class FilterConfiguration {
 
     public List<UUID> getAvailableFilterIds() {
         return Collections.unmodifiableList(
-                configuration.getList(UUID.class, FILTER_PANEL_AVAILABLE_FILTERS_IDS));
+                Optional.ofNullable(configuration.getList(UUID.class, FILTER_PANEL_AVAILABLE_FILTERS_IDS))
+                        .orElse(Collections.emptyList()));
     }
 
     public List<String> getFilterNames() {
         return Collections.unmodifiableList(
-                configuration.getList(String.class, FILTER_PANEL_AVAILABLE_FILTERS_NAMES));
+                Optional.ofNullable(
+                        configuration.getList(String.class, FILTER_PANEL_AVAILABLE_FILTERS_NAMES))
+                        .orElse(Collections.emptyList()));
     }
 
     public FilterConfiguration addNewFilter(UUID filterId, String filterName) {
-        configuration.getList(UUID.class, FILTER_PANEL_AVAILABLE_FILTERS_IDS).add(filterId);
-        configuration.getList(String.class, FILTER_PANEL_AVAILABLE_FILTERS_NAMES).add(filterName);
+        configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, filterId);
+        configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_NAMES, filterName);
         return this;
     }
 }
