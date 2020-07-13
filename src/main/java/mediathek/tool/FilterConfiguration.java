@@ -92,8 +92,8 @@ public class FilterConfiguration {
             newFilterId,
             String.class,
             this::setZeitraum)) {
-      addNewFilter(newFilterId, "Old filter");
-      LOG.info("Finished filter migration.");
+      addNewFilter(newFilterId, "Alter Filter");
+      LOG.info("Filter migration abgeschlossen.");
     }
   }
 
@@ -104,14 +104,16 @@ public class FilterConfiguration {
       Consumer<T> newFilterSetter) {
     if (configuration.containsKey(oldFilterConfigKey)) {
       LOG.info(
-          "Found old filter configuration {} with value {}. Migrating it to new filter configuration with ID {}.",
+          "Alte Filter Konfiguration {} mit dem Wert {} gefunden. Migriere es zu einer neuen Filter Konfiguration mit der Filter ID {}.",
           oldFilterConfigKey,
           configuration.getString(oldFilterConfigKey),
           newFilterId);
       setCurrentFilterID(newFilterId);
       T oldValue = configuration.get(classOfValueType, oldFilterConfigKey);
       if (oldValue == null) {
-        LOG.info("Value of {} is null, ignoring it for migration.", oldFilterConfigKey);
+        LOG.info(
+            "Filter Konfiguration {} ist null, ignoriere Konfiguration für Migration.",
+            oldFilterConfigKey);
       } else {
         newFilterSetter.accept(oldValue);
         configuration.clearProperty(oldFilterConfigKey);
