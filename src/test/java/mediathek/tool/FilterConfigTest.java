@@ -12,6 +12,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_IDS;
+import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_NAMES;
+import static mediathek.tool.FilterConfiguration.FilterConfigurationKeys.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -117,11 +120,14 @@ class FilterConfigTest {
     XMLConfiguration xmlConfiguration = new XMLConfiguration();
 
     UUID firstFilterID = UUID.randomUUID();
-    xmlConfiguration.addProperty("filter.available.filters.ids", firstFilterID);
-    xmlConfiguration.addProperty("filter.available.filters.names", "First test filter");
-    xmlConfiguration.addProperty(String.format("filter.%s.dont_show.abos", firstFilterID), true);
-    xmlConfiguration.addProperty(String.format("filter.%s.show.new_only", firstFilterID), true);
-    xmlConfiguration.addProperty(String.format("filter.%s.film_length.max", firstFilterID), 42d);
+    xmlConfiguration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, firstFilterID);
+    xmlConfiguration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_NAMES, "First test filter");
+    xmlConfiguration.addProperty(
+        String.format(FILTER_PANEL_DONT_SHOW_ABOS.getKey(), firstFilterID), true);
+    xmlConfiguration.addProperty(
+        String.format(FILTER_PANEL_SHOW_NEW_ONLY.getKey(), firstFilterID), true);
+    xmlConfiguration.addProperty(
+        String.format(FILTER_PANEL_FILM_LENGTH_MAX.getKey(), firstFilterID), 42d);
 
     FilterConfiguration config = new FilterConfiguration(xmlConfiguration);
 
@@ -151,9 +157,76 @@ class FilterConfigTest {
     assertThat(config.getZeitraum()).isEqualTo("3");
   }
 
+  @DisplayName("Check if all old filters migrated correctly")
   @Test
-  public void saveFilter_unloadAndLoadAgain_AllFilterSettingsLoaded() {}
+  void initializeFilterConfig_migrateConfig_OldFilterConfigMigrated() {
+    XMLConfiguration xmlConfiguration = new XMLConfiguration();
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(), 85d);
+    xmlConfiguration.addProperty(FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), 23d);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_ZEITRAUM.getOldKey(), "5");
 
+    FilterConfiguration config = new FilterConfiguration(xmlConfiguration);
+
+    assertThat(config.getCurrentFilterID()).isNotNull();
+    assertThat(config.getAvailableFilterIds()).hasSize(1);
+
+    assertThat(config.isDontShowAbos()).isTrue();
+    assertThat(config.isDontShowAudioVersions()).isTrue();
+    assertThat(config.isDontShowSignLanguage()).isFalse();
+    assertThat(config.isDontShowTrailers()).isTrue();
+    assertThat(config.getFilmLengthMax()).isEqualTo(85d);
+    assertThat(config.getFilmLengthMin()).isEqualTo(23d);
+    assertThat(config.isShowHdOnly()).isTrue();
+    assertThat(config.isShowLivestreamsOnly()).isFalse();
+    assertThat(config.isShowNewOnly()).isTrue();
+    assertThat(config.isShowSubtitlesOnly()).isTrue();
+    assertThat(config.isShowUnseenOnly()).isFalse();
+    assertThat(config.getZeitraum()).isEqualTo("5");
+  }
+
+  @DisplayName("Check if all old filters are deleted afer migration")
   @Test
-  public void initializeFilterConfig_migrateConfig_OldFilterConfigMigrated() {}
+  void initializeFilterConfig_migrateConfig_OldFiltersDeleted() {
+    XMLConfiguration xmlConfiguration = new XMLConfiguration();
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(), 85d);
+    xmlConfiguration.addProperty(FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), 23d);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(), true);
+    xmlConfiguration.addProperty(FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(), false);
+    xmlConfiguration.addProperty(FILTER_PANEL_ZEITRAUM.getOldKey(), "5");
+
+    new FilterConfiguration(xmlConfiguration);
+
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_DONT_SHOW_ABOS.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey()))
+        .isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey()))
+        .isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_FILM_LENGTH_MAX.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_FILM_LENGTH_MIN.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_HD_ONLY.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey()))
+        .isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_NEW_ONLY.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey()))
+        .isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey())).isFalse();
+    assertThat(xmlConfiguration.containsKey(FILTER_PANEL_ZEITRAUM.getOldKey())).isFalse();
+  }
 }
