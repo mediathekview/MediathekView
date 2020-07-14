@@ -8,12 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME;
 import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_IDS;
-import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_NAMES;
 import static mediathek.tool.FilterConfiguration.FilterConfigurationKeys.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -121,7 +122,9 @@ class FilterConfigTest {
 
     UUID firstFilterID = UUID.randomUUID();
     xmlConfiguration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, firstFilterID);
-    xmlConfiguration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_NAMES, "First test filter");
+    xmlConfiguration.addProperty(
+        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, firstFilterID),
+        "First test filter");
     xmlConfiguration.addProperty(
         String.format(FILTER_PANEL_DONT_SHOW_ABOS.getKey(), firstFilterID), true);
     xmlConfiguration.addProperty(
@@ -228,5 +231,49 @@ class FilterConfigTest {
         .isFalse();
     assertThat(xmlConfiguration.containsKey(FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey())).isFalse();
     assertThat(xmlConfiguration.containsKey(FILTER_PANEL_ZEITRAUM.getOldKey())).isFalse();
+  }
+
+  @DisplayName("Check if filter names have correct ids")
+  @Test
+  void getFilterName_existingIdWithOtherFilters_correctName() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 1");
+    UUID secondFilterId = UUID.randomUUID();
+    String secondFilterName = "Filter 2";
+    filterConfig.addNewFilter(secondFilterId, secondFilterName);
+    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 3");
+
+    assertThat(filterConfig.getFilterName(secondFilterId)).isEqualTo(secondFilterName);
+  }
+
+  @DisplayName("Check if list of filter names have all correct values")
+  @Test
+  void getAvailableFilterNames_fourNewFiltersWithNames_allCorrectNames() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    List<String> filterNames = List.of("Filter 1", "Filter 2", "Filter 3", "Test Filter 4");
+    filterNames.forEach(name -> filterConfig.addNewFilter(UUID.randomUUID(), name));
+
+    assertThat(filterConfig.getAvailableFilterNames())
+        .containsExactlyInAnyOrderElementsOf(filterNames);
+  }
+
+  @DisplayName("Check if list of available filters have all correct values")
+  @Test
+  void getAvailableFilterN_fourNewFilters_allCorrect() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            new FilterDTO(UUID.randomUUID(), "Filter 2"),
+            new FilterDTO(UUID.randomUUID(), "Filter 3"),
+            new FilterDTO(UUID.randomUUID(), "Test Filter 4"));
+    filters.forEach(filterConfig::addNewFilter);
+
+    assertThat(filterConfig.getAvailableFilters()).containsExactlyInAnyOrderElementsOf(filters);
+
+    UUID filterId = UUID.randomUUID();
+    String filterName = "Other add new filter test";
+    filterConfig.addNewFilter(filterId, filterName);
+    assertThat(filterConfig.getAvailableFilters()).contains(new FilterDTO(filterId, filterName));
   }
 }

@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER_ID = "filter.current.filter.id";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS_IDS = "filter.available.filters.ids";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_NAMES =
-      "filter.available.filters.names.";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME =
+      "filter.available.filters.%s.name";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
   private final Configuration configuration;
 
@@ -373,17 +374,32 @@ public class FilterConfiguration {
             .orElse(Collections.emptyList()));
   }
 
-  public List<String> getFilterNames() {
-    return Collections.unmodifiableList(
-        Optional.ofNullable(
-                configuration.getList(String.class, FILTER_PANEL_AVAILABLE_FILTERS_NAMES))
-            .orElse(Collections.emptyList()));
+  public List<String> getAvailableFilterNames() {
+    return getAvailableFilterIds().stream()
+        .map(this::getFilterName)
+        .collect(Collectors.toUnmodifiableList());
+  }
+
+  public List<FilterDTO> getAvailableFilters() {
+    return getAvailableFilterIds().stream()
+        .map(id -> new FilterDTO(id, getFilterName(id)))
+        .collect(Collectors.toUnmodifiableList());
+  }
+
+  public String getFilterName(UUID id) {
+    return configuration.getString(String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, id));
+  }
+
+  public FilterConfiguration addNewFilter(FilterDTO filterDTO) {
+    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, filterDTO.id());
+    configuration.addProperty(
+        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, filterDTO.id()),
+        filterDTO.name());
+    return this;
   }
 
   public FilterConfiguration addNewFilter(UUID filterId, String filterName) {
-    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, filterId);
-    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_NAMES, filterName);
-    return this;
+    return addNewFilter(new FilterDTO(filterId, filterName));
   }
 
   protected enum FilterConfigurationKeys {

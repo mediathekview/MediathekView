@@ -13,7 +13,7 @@
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
-
+    <ComboBox editable="true" fx:id="filterSelect" promptText="Filter Auswahl" />
     <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
         <tooltip>
             <Tooltip text="Filter zurücksetzen"/>

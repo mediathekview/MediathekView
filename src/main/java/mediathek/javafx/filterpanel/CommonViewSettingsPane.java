@@ -1,15 +1,18 @@
 package mediathek.javafx.filterpanel;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.gui.messages.TableModelChangeEvent;
+import mediathek.tool.FilterDTO;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +56,9 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     public ZeitraumSpinner zeitraumSpinner;
     @FXML
     private Label _themaLabel;
+
+    @FXML
+    private ComboBox<FilterDTO> filterSelect;
 
     public CommonViewSettingsPane() {
         super();
@@ -104,5 +110,15 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
             _themaLabel.setPrefWidth(45d);
 
         Daten.getInstance().getMessageBus().subscribe(this);
+    }
+
+    public void setAvailableFilters(ObservableList<FilterDTO> filters)
+    {
+        filterSelect.setItems(filters);
+    }
+
+    public void selectFilter(FilterDTO filter)
+    {
+        filterSelect.getSelectionModel().select(filter);
     }
 }
