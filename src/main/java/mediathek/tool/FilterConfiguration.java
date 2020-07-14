@@ -5,10 +5,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -110,7 +107,7 @@ public class FilterConfiguration {
           oldFilterConfigKey,
           configuration.getString(oldFilterConfigKey),
           newFilterId);
-      setCurrentFilterID(newFilterId);
+      setCurrentFilter(newFilterId);
       T oldValue = configuration.get(classOfValueType, oldFilterConfigKey);
       if (oldValue == null) {
         LOG.info(
@@ -350,7 +347,7 @@ public class FilterConfiguration {
   public UUID getCurrentFilterID() {
     if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER_ID)
         || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID) == null) {
-      setCurrentFilterID(
+      setCurrentFilter(
           getAvailableFilterIds().stream()
               .findFirst()
               .orElseGet(
@@ -363,7 +360,11 @@ public class FilterConfiguration {
     return configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID);
   }
 
-  public FilterConfiguration setCurrentFilterID(UUID currentFilterID) {
+  public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
+    return setCurrentFilter(currentFilter.id());
+  }
+
+  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
     configuration.setProperty(FILTER_PANEL_CURRENT_FILTER_ID, currentFilterID);
     return this;
   }
@@ -400,6 +401,28 @@ public class FilterConfiguration {
 
   public FilterConfiguration addNewFilter(UUID filterId, String filterName) {
     return addNewFilter(new FilterDTO(filterId, filterName));
+  }
+
+  public FilterConfiguration deleteFilter(FilterDTO filterToDelete) {
+    return deleteFilter(filterToDelete.id());
+  }
+
+  public FilterConfiguration deleteFilter(UUID idToDelete) {
+    List<UUID> availableFilterIds = new ArrayList<>(getAvailableFilterIds());
+    availableFilterIds.remove(idToDelete);
+    configuration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, availableFilterIds);
+    configuration.clearProperty(
+        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, idToDelete));
+    configuration
+        .getKeys()
+        .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
+    return this;
+  }
+
+  private void clearPropertyWithKeyIfContainsId(UUID idToDelete, String key) {
+    if (key.contains(idToDelete.toString())) {
+      configuration.clearProperty(key);
+    }
   }
 
   protected enum FilterConfigurationKeys {

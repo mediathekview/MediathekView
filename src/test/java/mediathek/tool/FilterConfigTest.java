@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -87,18 +88,18 @@ class FilterConfigTest {
     UUID secondFilterID = UUID.randomUUID();
     config.addNewFilter(secondFilterID, "Second filter");
 
-    config.setCurrentFilterID(firstFilterID);
+    config.setCurrentFilter(firstFilterID);
     config.setDontShowAbos(true);
     config.setShowNewOnly(true);
     config.setFilmLengthMax(42d);
 
-    config.setCurrentFilterID(secondFilterID);
+    config.setCurrentFilter(secondFilterID);
     config.clearCurrentFilter();
     config.setFilmLengthMax(21d);
     config.setShowLivestreamsOnly(true);
     config.setZeitraum("3");
 
-    config.setCurrentFilterID(firstFilterID);
+    config.setCurrentFilter(firstFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(firstFilterID);
     assertThat(config.isDontShowAbos()).isTrue();
     assertThat(config.isShowNewOnly()).isTrue();
@@ -106,7 +107,7 @@ class FilterConfigTest {
     assertThat(config.isShowLivestreamsOnly()).isFalse();
     assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinner.UNLIMITED_VALUE);
 
-    config.setCurrentFilterID(secondFilterID);
+    config.setCurrentFilter(secondFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(secondFilterID);
     assertThat(config.isDontShowAbos()).isFalse();
     assertThat(config.isShowNewOnly()).isFalse();
@@ -137,13 +138,13 @@ class FilterConfigTest {
     UUID secondFilterID = UUID.randomUUID();
     config.addNewFilter(secondFilterID, "Second filter");
 
-    config.setCurrentFilterID(secondFilterID);
+    config.setCurrentFilter(secondFilterID);
     config.clearCurrentFilter();
     config.setFilmLengthMax(21d);
     config.setShowLivestreamsOnly(true);
     config.setZeitraum("3");
 
-    config.setCurrentFilterID(firstFilterID);
+    config.setCurrentFilter(firstFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(firstFilterID);
     assertThat(config.isDontShowAbos()).isTrue();
     assertThat(config.isShowNewOnly()).isTrue();
@@ -151,7 +152,7 @@ class FilterConfigTest {
     assertThat(config.isShowLivestreamsOnly()).isFalse();
     assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinner.UNLIMITED_VALUE);
 
-    config.setCurrentFilterID(secondFilterID);
+    config.setCurrentFilter(secondFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(secondFilterID);
     assertThat(config.isDontShowAbos()).isFalse();
     assertThat(config.isShowNewOnly()).isFalse();
@@ -259,7 +260,7 @@ class FilterConfigTest {
 
   @DisplayName("Check if list of available filters have all correct values")
   @Test
-  void getAvailableFilterN_fourNewFilters_allCorrect() {
+  void getAvailableFilter_fourNewFilters_allCorrect() {
     FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
     List<FilterDTO> filters =
         List.of(
@@ -275,5 +276,101 @@ class FilterConfigTest {
     String filterName = "Other add new filter test";
     filterConfig.addNewFilter(filterId, filterName);
     assertThat(filterConfig.getAvailableFilters()).contains(new FilterDTO(filterId, filterName));
+  }
+
+  @DisplayName("Check if filter is removed correctly after delete by filter")
+  @Test
+  void deleteFilter_addThreeFiltersDeleteOneByFilter_deleteNotInConfigAnymore() {
+    XMLConfiguration xmlConfiguration = new XMLConfiguration();
+    FilterConfiguration filterConfig = new FilterConfiguration(xmlConfiguration);
+    FilterDTO filterToDelete = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filterToDelete,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+
+    filterConfig.deleteFilter(filterToDelete);
+
+    assertThat(filterConfig.getAvailableFilters()).doesNotContain(filterToDelete);
+    assertThat(filterConfig.getAvailableFilterIds()).doesNotContain(filterToDelete.id());
+    assertThat(filterConfig.getAvailableFilterNames()).doesNotContain(filterToDelete.name());
+  }
+
+  @DisplayName("Check if all filter configs are deleted after remove of filter")
+  @Test
+  void deleteFilter_addThreeFiltersDeleteOneByFilter_noFilterConfigForFilterExistAnymore() {
+    XMLConfiguration xmlConfiguration = new XMLConfiguration();
+    FilterConfiguration filterConfig = new FilterConfiguration(xmlConfiguration);
+    FilterDTO filterToDelete = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filterToDelete,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+    filterConfig.setCurrentFilter(filterToDelete);
+    filterConfig.setShowNewOnly(true);
+    filterConfig.setDontShowTrailers(true);
+
+    filterConfig.deleteFilter(filterToDelete);
+
+    List<String> propertyKes = new ArrayList<>();
+    xmlConfiguration.getKeys().forEachRemaining(propertyKes::add);
+
+    assertThat(propertyKes).noneMatch(key -> key.contains(filterToDelete.id().toString()));
+  }
+
+  @DisplayName("Check if filter is removed correctly after delete by filter ID")
+  @Test
+  void deleteFilter_addThreeFiltersDeleteOneByFilterId_deleteNotInConfigAnymore() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    UUID filterIdToDelete = UUID.randomUUID();
+    FilterDTO filter2 = new FilterDTO(filterIdToDelete, "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filter2,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+
+    filterConfig.deleteFilter(filterIdToDelete);
+
+    assertThat(filterConfig.getAvailableFilters()).doesNotContain(filter2);
+    assertThat(filterConfig.getAvailableFilterIds()).doesNotContain(filterIdToDelete);
+    assertThat(filterConfig.getAvailableFilterNames()).doesNotContain(filter2.name());
+  }
+
+  @DisplayName("Check if filter isn't the current filter after it's removal")
+  @Test
+  void deleteFilter_addThreeFiltersDeleteOneByFilter_deletedNotCurrentAnymore() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filter2,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+    filterConfig.setCurrentFilter(filter2.id());
+    filterConfig.deleteFilter(filter2);
+
+    assertThat(filterConfig.getCurrentFilterID()).isNotEqualTo(filter2);
+  }
+
+  @DisplayName("Check if current filter with filter DTO sets the correct filter id as current")
+  @Test
+  void setCurrentFilter_setCurrentFilter_currentFilterIsSet() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filter2,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+    filterConfig.setCurrentFilter(filter2);
+    assertThat(filterConfig.getCurrentFilterID()).isEqualTo(filter2.id());
   }
 }
