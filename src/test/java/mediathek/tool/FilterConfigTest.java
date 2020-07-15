@@ -14,8 +14,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME;
-import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS_IDS;
+import static mediathek.tool.FilterConfiguration.FILTER_PANEL_AVAILABLE_FILTERS;
 import static mediathek.tool.FilterConfiguration.FilterConfigurationKeys.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -122,10 +121,8 @@ class FilterConfigTest {
     XMLConfiguration xmlConfiguration = new XMLConfiguration();
 
     UUID firstFilterID = UUID.randomUUID();
-    xmlConfiguration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, firstFilterID);
     xmlConfiguration.addProperty(
-        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, firstFilterID),
-        "First test filter");
+        FILTER_PANEL_AVAILABLE_FILTERS, new FilterDTO(firstFilterID, "First test filter"));
     xmlConfiguration.addProperty(
         String.format(FILTER_PANEL_DONT_SHOW_ABOS.getKey(), firstFilterID), true);
     xmlConfiguration.addProperty(

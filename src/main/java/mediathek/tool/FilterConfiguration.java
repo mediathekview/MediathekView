@@ -12,10 +12,8 @@ import java.util.stream.Collectors;
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
-  protected static final String FILTER_PANEL_CURRENT_FILTER_ID = "filter.current.filter";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_IDS = "filter.available.filters";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME =
-      "filter.available.filters.%s.name";
+  protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
   private final Configuration configuration;
 
@@ -30,75 +28,75 @@ public class FilterConfiguration {
   }
 
   private void migrateOldFilterConfigurations() {
-    UUID newFilterId = UUID.randomUUID();
+    FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), "Alter Filter");
     if (migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setDontShowAbos)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setDontShowAudioVersions)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setDontShowSignLanguage)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setDontShowTrailers)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(),
-            newFilterId,
+            newFilter,
             Double.class,
             this::setFilmLengthMax)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(),
-            newFilterId,
+            newFilter,
             Double.class,
             this::setFilmLengthMin)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setShowHdOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setShowLivestreamsOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setShowNewOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setShowSubtitlesOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(),
-            newFilterId,
+            newFilter,
             Boolean.class,
             this::setShowUnseenOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getOldKey(),
-            newFilterId,
+            newFilter,
             String.class,
             this::setZeitraum)) {
-      addNewFilter(newFilterId, "Alter Filter");
+      addNewFilter(newFilter);
       LOG.info("Filter migration abgeschlossen.");
     }
   }
 
   private <T> boolean migrateOldFilterConfiguration(
       String oldFilterConfigKey,
-      UUID newFilterId,
+      FilterDTO newFilter,
       Class<T> classOfValueType,
       Consumer<T> newFilterSetter) {
     if (configuration.containsKey(oldFilterConfigKey)) {
@@ -106,8 +104,8 @@ public class FilterConfiguration {
           "Alte Filter Konfiguration {} mit dem Wert {} gefunden. Migriere es zu einer neuen Filter Konfiguration mit der Filter ID {}.",
           oldFilterConfigKey,
           configuration.getString(oldFilterConfigKey),
-          newFilterId);
-      setCurrentFilter(newFilterId);
+          newFilter.id());
+      setCurrentFilter(newFilter);
       T oldValue = configuration.get(classOfValueType, oldFilterConfigKey);
       if (oldValue == null) {
         LOG.info(
@@ -344,63 +342,67 @@ public class FilterConfiguration {
     return this;
   }
 
-  public FilterDTO getCurrentFilter() {
-    UUID currentFilterID = getCurrentFilterID();
-    return new FilterDTO(currentFilterID, getFilterName(currentFilterID));
-  }
-
-  public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
-    return setCurrentFilter(currentFilter.id());
-  }
-
-  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
-    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER_ID, currentFilterID);
-    return this;
-  }
-
   public UUID getCurrentFilterID() {
-    if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER_ID)
-        || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID) == null) {
+    return getCurrentFilter().id();
+  }
+
+  public FilterDTO getCurrentFilter() {
+    if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER)
+        || configuration.get(FilterDTO.class, FILTER_PANEL_CURRENT_FILTER) == null) {
       setCurrentFilter(
-          getAvailableFilterIds().stream()
+          getAvailableFilters().stream()
               .findFirst()
               .orElseGet(
                   () -> {
-                    UUID filterId = UUID.randomUUID();
-                    addNewFilter(filterId, "Filter 1");
-                    return filterId;
+                    FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), "Filter 1");
+                    addNewFilter(newFilter);
+                    return newFilter;
                   }));
     }
-    return configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID);
+    return configuration.get(FilterDTO.class, FILTER_PANEL_CURRENT_FILTER);
+  }
+
+  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
+    getAvailableFilters().stream()
+        .filter(filter -> currentFilterID.equals(filter.id()))
+        .findFirst()
+        .ifPresent(this::setCurrentFilter);
+    return this;
+  }
+
+  public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
+    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilter);
+    return this;
   }
 
   public List<UUID> getAvailableFilterIds() {
-    return Collections.unmodifiableList(
-        Optional.ofNullable(configuration.getList(UUID.class, FILTER_PANEL_AVAILABLE_FILTERS_IDS))
-            .orElse(Collections.emptyList()));
+    return getAvailableFilters().stream()
+        .map(FilterDTO::id)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   public List<String> getAvailableFilterNames() {
-    return getAvailableFilterIds().stream()
-        .map(this::getFilterName)
+    return getAvailableFilters().stream()
+        .map(FilterDTO::name)
         .collect(Collectors.toUnmodifiableList());
   }
 
   public List<FilterDTO> getAvailableFilters() {
-    return getAvailableFilterIds().stream()
-        .map(id -> new FilterDTO(id, getFilterName(id)))
-        .collect(Collectors.toUnmodifiableList());
+    return Collections.unmodifiableList(
+        Optional.ofNullable(configuration.getList(FilterDTO.class, FILTER_PANEL_AVAILABLE_FILTERS))
+            .orElse(Collections.emptyList()));
   }
 
   public String getFilterName(UUID id) {
-    return configuration.getString(String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, id));
+    return getAvailableFilters().stream()
+        .filter(filter -> filter.id().equals(id))
+        .map(FilterDTO::name)
+        .findFirst()
+        .orElse("");
   }
 
   public FilterConfiguration addNewFilter(FilterDTO filterDTO) {
-    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, filterDTO.id());
-    configuration.addProperty(
-        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, filterDTO.id()),
-        filterDTO.name());
+    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS, filterDTO);
     return this;
   }
 
@@ -413,11 +415,9 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration deleteFilter(UUID idToDelete) {
-    List<UUID> availableFilterIds = new ArrayList<>(getAvailableFilterIds());
-    availableFilterIds.remove(idToDelete);
-    configuration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS_IDS, availableFilterIds);
-    configuration.clearProperty(
-        String.format(FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME, idToDelete));
+    List<FilterDTO> filters = new ArrayList<>(getAvailableFilters());
+    filters.removeIf(filter -> filter.id().equals(idToDelete));
+    configuration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS, filters);
     configuration
         .getKeys()
         .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
