@@ -145,7 +145,7 @@ public class ApplicationConfiguration {
 
   private void setupXmlConfiguration() {
     config = new XMLConfiguration();
-    config.setConversionHandler(new UUIDConversionHandler());
+    config.setConversionHandler(new CustomConversionHandler());
     config.setSynchronizer(new ReadWriteSynchronizer());
     config.setRootElementName("settings");
     config.setThrowExceptionOnMissing(true);

@@ -5,7 +5,9 @@ import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -13,7 +15,7 @@ import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
   private final Configuration configuration;
 
@@ -74,6 +76,11 @@ public class FilterConfiguration {
             newFilter,
             Boolean.class,
             this::setShowNewOnly)
+        | migrateOldFilterConfiguration(
+            FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getOldKey(),
+            newFilter,
+            Boolean.class,
+            this::setShowBookMarkedOnly)
         | migrateOldFilterConfiguration(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(),
             newFilter,
@@ -166,6 +173,21 @@ public class FilterConfiguration {
         toFilterConfigNameWithCurrentFilter(
             FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getKey()),
         showNewOnly);
+    return this;
+  }
+
+  public boolean isShowBookMarkedOnly() {
+    return configuration.getBoolean(
+        toFilterConfigNameWithCurrentFilter(
+            FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getKey()),
+        false);
+  }
+
+  public FilterConfiguration setShowBookMarkedOnly(boolean showBookMarkedOnly) {
+    configuration.setProperty(
+        toFilterConfigNameWithCurrentFilter(
+            FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getKey()),
+        showBookMarkedOnly);
     return this;
   }
 
@@ -348,7 +370,7 @@ public class FilterConfiguration {
 
   public FilterDTO getCurrentFilter() {
     if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER)
-        || configuration.get(FilterDTO.class, FILTER_PANEL_CURRENT_FILTER) == null) {
+        || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER) == null) {
       setCurrentFilter(
           getAvailableFilters().stream()
               .findFirst()
@@ -359,19 +381,16 @@ public class FilterConfiguration {
                     return newFilter;
                   }));
     }
-    return configuration.get(FilterDTO.class, FILTER_PANEL_CURRENT_FILTER);
-  }
-
-  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
-    getAvailableFilters().stream()
-        .filter(filter -> currentFilterID.equals(filter.id()))
-        .findFirst()
-        .ifPresent(this::setCurrentFilter);
-    return this;
+    UUID currentFilterId = configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER);
+    return new FilterDTO(currentFilterId, getFilterName(currentFilterId));
   }
 
   public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
-    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilter);
+    return setCurrentFilter(currentFilter.id());
+  }
+
+  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
+    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
     return this;
   }
 
@@ -388,9 +407,21 @@ public class FilterConfiguration {
   }
 
   public List<FilterDTO> getAvailableFilters() {
-    return Collections.unmodifiableList(
-        Optional.ofNullable(configuration.getList(FilterDTO.class, FILTER_PANEL_AVAILABLE_FILTERS))
-            .orElse(Collections.emptyList()));
+    List<String> availableFilterKeys = new ArrayList<>();
+    configuration
+        .getKeys()
+        .forEachRemaining(
+            key -> {
+              if (key.startsWith(FILTER_PANEL_AVAILABLE_FILTERS)) {
+                availableFilterKeys.add(key);
+              }
+            });
+    return availableFilterKeys.stream()
+        .map(
+            key ->
+                new FilterDTO(
+                    UUID.fromString(key.split("_")[1]), configuration.getProperty(key).toString()))
+        .collect(Collectors.toUnmodifiableList());
   }
 
   public String getFilterName(UUID id) {
@@ -402,7 +433,8 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration addNewFilter(FilterDTO filterDTO) {
-    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS, filterDTO);
+    configuration.addProperty(
+        FILTER_PANEL_AVAILABLE_FILTERS + "_" + filterDTO.id(), filterDTO.name());
     return this;
   }
 
@@ -415,9 +447,6 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration deleteFilter(UUID idToDelete) {
-    List<FilterDTO> filters = new ArrayList<>(getAvailableFilters());
-    filters.removeIf(filter -> filter.id().equals(idToDelete));
-    configuration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS, filters);
     configuration
         .getKeys()
         .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
@@ -431,18 +460,19 @@ public class FilterConfiguration {
   }
 
   protected enum FilterConfigurationKeys {
-    FILTER_PANEL_SHOW_HD_ONLY("filter.%s.show.hd_only"),
-    FILTER_PANEL_SHOW_SUBTITLES_ONLY("filter.%s.show.subtitles_only"),
-    FILTER_PANEL_SHOW_NEW_ONLY("filter.%s.show.new_only"),
-    FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.%s.show.unseen_only"),
-    FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.%s.show.livestreams_only"),
-    FILTER_PANEL_DONT_SHOW_ABOS("filter.%s.dont_show.abos"),
-    FILTER_PANEL_DONT_SHOW_TRAILERS("filter.%s.dont_show.trailers"),
-    FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.%s.dont_show.sign_language"),
-    FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.%s.dont_show.audio_versions"),
-    FILTER_PANEL_FILM_LENGTH_MIN("filter.%s.film_length.min"),
-    FILTER_PANEL_FILM_LENGTH_MAX("filter.%s.film_length.max"),
-    FILTER_PANEL_ZEITRAUM("filter.%s.zeitraum");
+    FILTER_PANEL_SHOW_HD_ONLY("filter.filter_%s.show.hd_only"),
+    FILTER_PANEL_SHOW_SUBTITLES_ONLY("filter.filter_%s.show.subtitles_only"),
+    FILTER_PANEL_SHOW_BOOK_MARKED_ONLY("filter.filter_%s.show.book_marked_only"),
+    FILTER_PANEL_SHOW_NEW_ONLY("filter.filter_%s.show.new_only"),
+    FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.filter_%s.show.unseen_only"),
+    FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.filter_%s.show.livestreams_only"),
+    FILTER_PANEL_DONT_SHOW_ABOS("filter.filter_%s.dont_show.abos"),
+    FILTER_PANEL_DONT_SHOW_TRAILERS("filter.filter_%s.dont_show.trailers"),
+    FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"),
+    FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),
+    FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"),
+    FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
+    FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum");
 
     private final String key;
 
@@ -455,7 +485,7 @@ public class FilterConfiguration {
     }
 
     public String getOldKey() {
-      return key.replace(".%s", "");
+      return key.replace(".filter_%s", "");
     }
   }
 }

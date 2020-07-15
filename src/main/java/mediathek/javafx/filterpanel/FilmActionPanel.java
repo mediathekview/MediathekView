@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +55,7 @@ public class FilmActionPanel {
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
   private final Tooltip bookmarklistDeselected = new Tooltip("Gemerkte Filme anzeigen");
   private final FilterConfiguration filterConfig;
+  private final ObservableList<FilterDTO> availableFilters;
   public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
   public BooleanProperty showOnlyHd;
   public BooleanProperty showSubtitlesOnly;
@@ -81,6 +83,10 @@ public class FilmActionPanel {
   public FilmActionPanel(Daten daten) {
     this.daten = daten;
     this.filterConfig = new FilterConfiguration();
+    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 1");
+    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 2");
+    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 3");
+
     setupViewSettingsPane();
     setupDeleteFilterButton();
 
@@ -91,9 +97,24 @@ public class FilmActionPanel {
 
     setupConfigListeners();
 
-    ObservableList<FilterDTO> availableFilters =
-        FXCollections.observableArrayList(filterConfig.getAvailableFilters());
+    availableFilters = FXCollections.observableArrayList(filterConfig.getAvailableFilters());
     viewSettingsPane.setAvailableFilters(availableFilters);
+    viewSettingsPane.setFilterSelectionEvent(
+        (event -> {
+          filterConfig.setCurrentFilter(viewSettingsPane.getSelectedFilter());
+          restoreConfigSettings();
+        }));
+
+    viewSettingsPane.btnDeleteCurrentFilter.setOnAction(
+        event -> {
+          FilterDTO filterToDelete = filterConfig.getCurrentFilter();
+          filterConfig.deleteFilter(filterToDelete);
+          availableFilters.remove(filterToDelete);
+
+          if (availableFilters.size() <= 1) {
+            viewSettingsPane.btnDeleteCurrentFilter.setDisable(true);
+          }
+        });
 
     daten.getMessageBus().subscribe(this);
   }
@@ -138,6 +159,7 @@ public class FilmActionPanel {
     showOnlyHd.set(filterConfig.isShowHdOnly());
     showSubtitlesOnly.set(filterConfig.isShowSubtitlesOnly());
     showNewOnly.set(filterConfig.isShowNewOnly());
+    showBookMarkedOnly.set(filterConfig.isShowBookMarkedOnly());
     showUnseenOnly.set(filterConfig.isShowUnseenOnly());
     showLivestreamsOnly.set(filterConfig.isShowLivestreamsOnly());
 
@@ -169,6 +191,8 @@ public class FilmActionPanel {
         (observable, oldValue, newValue) -> filterConfig.setShowHdOnly(newValue));
     showSubtitlesOnly.addListener(
         ((observable, oldValue, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
+    showBookMarkedOnly.addListener(
+        ((observable, oldValue, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
     showNewOnly.addListener(
         ((observable, oldValue, newValue) -> filterConfig.setShowNewOnly(newValue)));
     showUnseenOnly.addListener(

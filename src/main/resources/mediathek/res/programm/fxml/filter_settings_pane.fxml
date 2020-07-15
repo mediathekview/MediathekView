@@ -14,7 +14,7 @@
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
     <HBox spacing="4.0">
-        <ComboBox editable="true" fx:id="filterSelect" promptText="Filter Auswahl" />
+        <ComboBox fx:id="filterSelect" promptText="Filter Auswahl" />
         <Button fx:id="btnDeleteCurrentFilter">
             <tooltip>
                 <Tooltip text="Aktuellen Filter löschen"/>

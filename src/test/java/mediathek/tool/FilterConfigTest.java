@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.XMLPropertiesConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -122,7 +123,7 @@ class FilterConfigTest {
 
     UUID firstFilterID = UUID.randomUUID();
     xmlConfiguration.addProperty(
-        FILTER_PANEL_AVAILABLE_FILTERS, new FilterDTO(firstFilterID, "First test filter"));
+        FILTER_PANEL_AVAILABLE_FILTERS+"_"+firstFilterID, "First test filter");
     xmlConfiguration.addProperty(
         String.format(FILTER_PANEL_DONT_SHOW_ABOS.getKey(), firstFilterID), true);
     xmlConfiguration.addProperty(
@@ -353,7 +354,7 @@ class FilterConfigTest {
     filterConfig.setCurrentFilter(filter2.id());
     filterConfig.deleteFilter(filter2);
 
-    assertThat(filterConfig.getCurrentFilterID()).isNotEqualTo(filter2);
+    assertThat(filterConfig.getCurrentFilter()).isNotEqualTo(filter2);
   }
 
   @DisplayName("Check if current filter with filter DTO sets the correct filter id as current")
