@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -15,7 +16,7 @@ import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
   private final Configuration configuration;
 
@@ -325,42 +326,11 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration clearCurrentFilter() {
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getKey()));
-    configuration.clearProperty(
-        toFilterConfigNameWithCurrentFilter(
-            FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()));
+    Arrays.stream(FilterConfigurationKeys.values())
+        .forEach(
+            filterKey ->
+                configuration.clearProperty(
+                    toFilterConfigNameWithCurrentFilter(filterKey.getKey())));
     return this;
   }
 
@@ -433,8 +403,7 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration addNewFilter(FilterDTO filterDTO) {
-    configuration.addProperty(
-        FILTER_PANEL_AVAILABLE_FILTERS + "_" + filterDTO.id(), filterDTO.name());
+    configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS + filterDTO.id(), filterDTO.name());
     return this;
   }
 
@@ -447,6 +416,9 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration deleteFilter(UUID idToDelete) {
+    if (idToDelete.equals(getCurrentFilterID())) {
+      configuration.clearProperty(FILTER_PANEL_CURRENT_FILTER);
+    }
     configuration
         .getKeys()
         .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));

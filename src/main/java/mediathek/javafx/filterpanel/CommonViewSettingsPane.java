@@ -23,120 +23,101 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 public class CommonViewSettingsPane extends VBox implements Initializable {
-    private static final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
-    @FXML
-    public Button btnDeleteFilterSettings;
-    @FXML
-    public CheckBox cbShowOnlyHd;
-    @FXML
-    public CheckBox cbShowSubtitlesOnly;
-    @FXML
-    public CheckBox cbShowNewOnly;
-    @FXML
-    public CheckBox cbShowBookMarkedOnly;
-    @FXML
-    public CheckBox cbShowOnlyLivestreams;
-    @FXML
-    public CheckBox cbShowUnseenOnly;
-    @FXML
-    public CheckBox cbDontShowAbos;
-    @FXML
-    public CheckBox cbDontShowGebaerdensprache;
-    @FXML
-    public CheckBox cbDontShowTrailers;
-    @FXML
-    public CheckBox cbDontShowAudioVersions;
-    @FXML
-    public SenderBoxNode senderBoxNode;
-    @FXML
-    public ThemaComboBox _themaComboBox;
-    @FXML
-    public FilmLenghtSliderNode filmLengthSliderNode;
-    @FXML
-    public ZeitraumSpinner zeitraumSpinner;
-    @FXML
-    private Label _themaLabel;
+  private static final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
+  @FXML public Button btnDeleteFilterSettings;
+  @FXML public CheckBox cbShowOnlyHd;
+  @FXML public CheckBox cbShowSubtitlesOnly;
+  @FXML public CheckBox cbShowNewOnly;
+  @FXML public CheckBox cbShowBookMarkedOnly;
+  @FXML public CheckBox cbShowOnlyLivestreams;
+  @FXML public CheckBox cbShowUnseenOnly;
+  @FXML public CheckBox cbDontShowAbos;
+  @FXML public CheckBox cbDontShowGebaerdensprache;
+  @FXML public CheckBox cbDontShowTrailers;
+  @FXML public CheckBox cbDontShowAudioVersions;
+  @FXML public SenderBoxNode senderBoxNode;
+  @FXML public ThemaComboBox _themaComboBox;
+  @FXML public FilmLenghtSliderNode filmLengthSliderNode;
+  @FXML public ZeitraumSpinner zeitraumSpinner;
+  @FXML public Button btnDeleteCurrentFilter;
+  @FXML private Label _themaLabel;
+  @FXML private ComboBox<FilterDTO> filterSelect;
+  private boolean deleteCurrentFilterButtonDisabled;
 
-    @FXML
-    private ComboBox<FilterDTO> filterSelect;
+  public CommonViewSettingsPane() {
+    super();
 
-    @FXML
-    public Button btnDeleteCurrentFilter;
-
-    public CommonViewSettingsPane() {
-        super();
-
-        try {
-            URL url = getClass().getResource("/mediathek/res/programm/fxml/filter_settings_pane.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(url);
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
-            fxmlLoader.load();
-        } catch (IOException e) {
-            logger.error("Failed to load FXML!", e);
-        }
+    try {
+      URL url = getClass().getResource("/mediathek/res/programm/fxml/filter_settings_pane.fxml");
+      FXMLLoader fxmlLoader = new FXMLLoader(url);
+      fxmlLoader.setRoot(this);
+      fxmlLoader.setController(this);
+      fxmlLoader.load();
+    } catch (IOException e) {
+      logger.error("Failed to load FXML!", e);
     }
+  }
 
-    /**
-     * Prevent user from changing filter settings while the swing table model gets updated.
-     * @param evt the model event
-     */
-    @Handler
-    private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
-        Platform.runLater(() -> {
-            final boolean disable = evt.active;
-            btnDeleteFilterSettings.setDisable(disable);
-            cbShowOnlyHd.setDisable(disable);
-            cbShowSubtitlesOnly.setDisable(disable);
-            cbShowNewOnly.setDisable(disable);
-            cbShowBookMarkedOnly.setDisable(disable);
-            cbShowOnlyLivestreams.setDisable(disable);
-            cbShowUnseenOnly.setDisable(disable);
-            cbDontShowAbos.setDisable(disable);
-            cbDontShowGebaerdensprache.setDisable(disable);
-            cbDontShowTrailers.setDisable(disable);
-            cbDontShowAudioVersions.setDisable(disable);
-            senderBoxNode.setDisable(disable);
-            _themaComboBox.setDisable(disable);
-            filmLengthSliderNode.setDisable(disable);
-            zeitraumSpinner.setDisable(disable);
-            filterSelect.setDisable(disable);
-            btnDeleteCurrentFilter.setDisable(disable);
+  /**
+   * Prevent user from changing filter settings while the swing table model gets updated.
+   *
+   * @param evt the model event
+   */
+  @Handler
+  private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
+    Platform.runLater(
+        () -> {
+          final boolean disable = evt.active;
+          btnDeleteFilterSettings.setDisable(disable);
+          cbShowOnlyHd.setDisable(disable);
+          cbShowSubtitlesOnly.setDisable(disable);
+          cbShowNewOnly.setDisable(disable);
+          cbShowBookMarkedOnly.setDisable(disable);
+          cbShowOnlyLivestreams.setDisable(disable);
+          cbShowUnseenOnly.setDisable(disable);
+          cbDontShowAbos.setDisable(disable);
+          cbDontShowGebaerdensprache.setDisable(disable);
+          cbDontShowTrailers.setDisable(disable);
+          cbDontShowAudioVersions.setDisable(disable);
+          senderBoxNode.setDisable(disable);
+          _themaComboBox.setDisable(disable);
+          filmLengthSliderNode.setDisable(disable);
+          zeitraumSpinner.setDisable(disable);
+          filterSelect.setDisable(disable);
+          btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
         });
-    }
+  }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        _themaLabel.setMinWidth(USE_PREF_SIZE);
-        //font size is greater on tested ubuntu linux :(
-        if (SystemUtils.IS_OS_LINUX)
-            _themaLabel.setPrefWidth(50d);
-        else
-            _themaLabel.setPrefWidth(45d);
+  public void disableDeleteCurrentFilterButton(boolean disable) {
+    deleteCurrentFilterButtonDisabled = disable;
+    btnDeleteCurrentFilter.setDisable(disable);
+  }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
-    }
+  @Override
+  public void initialize(URL url, ResourceBundle resourceBundle) {
+    _themaLabel.setMinWidth(USE_PREF_SIZE);
+    // font size is greater on tested ubuntu linux :(
+    if (SystemUtils.IS_OS_LINUX) _themaLabel.setPrefWidth(50d);
+    else _themaLabel.setPrefWidth(45d);
 
-    public void setFilterSelectionEvent(EventHandler<ActionEvent> eventHandler)
-    {
-        filterSelect.setOnAction(eventHandler);
-    }
+    Daten.getInstance().getMessageBus().subscribe(this);
+  }
 
-    public FilterDTO getSelectedFilter()
-    {
-        return filterSelect.getValue();
-    }
+  public void setFilterSelectionEvent(EventHandler<ActionEvent> eventHandler) {
+    filterSelect.setOnAction(eventHandler);
+  }
 
-    public void setAvailableFilters(ObservableList<FilterDTO> filters)
-    {
-        filterSelect.setItems(filters);
-    }
+  public FilterDTO getSelectedFilter() {
+    return filterSelect.getValue();
+  }
 
-    public void selectFilter(FilterDTO filter)
-    {
-        filterSelect.getSelectionModel().select(filter);
-    }
+  public void setAvailableFilters(ObservableList<FilterDTO> filters) {
+    filterSelect.setItems(filters);
+  }
+
+  public void selectFilter(FilterDTO filter) {
+    filterSelect.getSelectionModel().select(filter);
+  }
 }

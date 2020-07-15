@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -83,9 +82,6 @@ public class FilmActionPanel {
   public FilmActionPanel(Daten daten) {
     this.daten = daten;
     this.filterConfig = new FilterConfiguration();
-    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 1");
-    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 2");
-    filterConfig.addNewFilter(UUID.randomUUID(), "Filter 3");
 
     setupViewSettingsPane();
     setupDeleteFilterButton();
@@ -109,11 +105,12 @@ public class FilmActionPanel {
         event -> {
           FilterDTO filterToDelete = filterConfig.getCurrentFilter();
           filterConfig.deleteFilter(filterToDelete);
-          availableFilters.remove(filterToDelete);
+          viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
 
-          if (availableFilters.size() <= 1) {
-            viewSettingsPane.btnDeleteCurrentFilter.setDisable(true);
+          if (availableFilters.size() <= 2) {
+            viewSettingsPane.disableDeleteCurrentFilterButton(true);
           }
+          availableFilters.remove(filterToDelete);
         });
 
     daten.getMessageBus().subscribe(this);
