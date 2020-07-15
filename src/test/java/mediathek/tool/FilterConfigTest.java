@@ -373,4 +373,19 @@ class FilterConfigTest {
     filterConfig.setCurrentFilter(filter2);
     assertThat(filterConfig.getCurrentFilterID()).isEqualTo(filter2.id());
   }
+
+  @DisplayName("Check if current filter set by ID return correct filter as current")
+  @Test
+  void getCurrentFilter_setCurrentFilterByIdGetCurrentFilter_correctFilterIsReturned() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filter2,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+    filterConfig.setCurrentFilter(filter2.id());
+    assertThat(filterConfig.getCurrentFilter()).isEqualTo(filter2);
+  }
 }

@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
-  protected static final String FILTER_PANEL_CURRENT_FILTER_ID = "filter.current.filter.id";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_IDS = "filter.available.filters.ids";
+  protected static final String FILTER_PANEL_CURRENT_FILTER_ID = "filter.current.filter";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS_IDS = "filter.available.filters";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS_FILTER_NAME =
       "filter.available.filters.%s.name";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
@@ -344,6 +344,20 @@ public class FilterConfiguration {
     return this;
   }
 
+  public FilterDTO getCurrentFilter() {
+    UUID currentFilterID = getCurrentFilterID();
+    return new FilterDTO(currentFilterID, getFilterName(currentFilterID));
+  }
+
+  public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
+    return setCurrentFilter(currentFilter.id());
+  }
+
+  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
+    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER_ID, currentFilterID);
+    return this;
+  }
+
   public UUID getCurrentFilterID() {
     if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER_ID)
         || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID) == null) {
@@ -358,15 +372,6 @@ public class FilterConfiguration {
                   }));
     }
     return configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER_ID);
-  }
-
-  public FilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
-    return setCurrentFilter(currentFilter.id());
-  }
-
-  public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
-    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER_ID, currentFilterID);
-    return this;
   }
 
   public List<UUID> getAvailableFilterIds() {

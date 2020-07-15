@@ -60,6 +60,9 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     @FXML
     private ComboBox<FilterDTO> filterSelect;
 
+    @FXML
+    private Button btnDeleteCurrentFilter;
+
     public CommonViewSettingsPane() {
         super();
 
@@ -97,6 +100,8 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
             _themaComboBox.setDisable(disable);
             filmLengthSliderNode.setDisable(disable);
             zeitraumSpinner.setDisable(disable);
+            filterSelect.setDisable(disable);
+            btnDeleteCurrentFilter.setDisable(disable);
         });
     }
 
