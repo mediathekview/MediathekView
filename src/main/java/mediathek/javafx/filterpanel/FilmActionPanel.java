@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -92,28 +94,81 @@ public class FilmActionPanel {
     restoreConfigSettings();
 
     setupConfigListeners();
-
     availableFilters = FXCollections.observableArrayList(filterConfig.getAvailableFilters());
-    viewSettingsPane.setAvailableFilters(availableFilters);
-    viewSettingsPane.setFilterSelectionEvent(
-        (event -> {
-          filterConfig.setCurrentFilter(viewSettingsPane.getSelectedFilter());
-          restoreConfigSettings();
-        }));
+    setupFilterSelection();
+    setupDeleteCurrentFilterButton();
+    setupAddNewFilterButton();
+
+    daten.getMessageBus().subscribe(this);
+  }
+
+  private void setupAddNewFilterButton() {
+    viewSettingsPane.setAddNewFilterButtonEventHandler(
+        event -> {
+          FilterDTO newFilter =
+              new FilterDTO(
+                  UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
+          filterConfig.addNewFilter(newFilter);
+          availableFilters.add(newFilter);
+          viewSettingsPane.disableDeleteCurrentFilterButton(false);
+          viewSettingsPane.selectFilter(newFilter);
+        });
+  }
+
+  private void setupDeleteCurrentFilterButton() {
+    if (availableFilters.size() <= 1) {
+      viewSettingsPane.disableDeleteCurrentFilterButton(true);
+    }
 
     viewSettingsPane.btnDeleteCurrentFilter.setOnAction(
         event -> {
           FilterDTO filterToDelete = filterConfig.getCurrentFilter();
           filterConfig.deleteFilter(filterToDelete);
           viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
+          availableFilters.remove(filterToDelete);
 
-          if (availableFilters.size() <= 2) {
+          if (availableFilters.size() <= 1) {
             viewSettingsPane.disableDeleteCurrentFilterButton(true);
           }
-          availableFilters.remove(filterToDelete);
+        });
+  }
+
+  private void setupFilterSelection() {
+    viewSettingsPane.setAvailableFilters(availableFilters);
+    viewSettingsPane.setFilterSelectionChangeListener(
+        (observableValue, oldValue, newValue) -> {
+          if (newValue != null && !newValue.equals(oldValue)) {
+            filterConfig.setCurrentFilter(newValue);
+            restoreConfigSettings();
+          }
         });
 
-    daten.getMessageBus().subscribe(this);
+    viewSettingsPane.setFilterSelectionNameListener(
+        (observableValue, oldValue, newValue) -> {
+          if (!newValue.equals(oldValue)) {
+            availableFilters.remove(filterConfig.getCurrentFilter());
+            filterConfig.renameCurrentFilter(newValue);
+            availableFilters.add(filterConfig.getCurrentFilter());
+            LOG.error("RENAMED##########################################################");
+          }
+        });
+
+    viewSettingsPane.setFilterSelectionStringConverter(
+        new StringConverter<>() {
+
+          @Override
+          public String toString(FilterDTO filter) {
+            if (filter == null) {
+              return null;
+            }
+            return filter.name();
+          }
+
+          @Override
+          public FilterDTO fromString(String name) {
+            return filterConfig.findFilterForName(name).orElse(null);
+          }
+        });
   }
 
   private void setupDeleteFilterButton() {

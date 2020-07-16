@@ -1,6 +1,7 @@
 package mediathek.javafx.filterpanel;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,6 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.FilterDTO;
@@ -44,6 +46,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   @FXML public Button btnDeleteCurrentFilter;
   @FXML private Label _themaLabel;
   @FXML private ComboBox<FilterDTO> filterSelect;
+  @FXML private Button btnAddNewFilter;
   private boolean deleteCurrentFilterButtonDisabled;
 
   public CommonViewSettingsPane() {
@@ -87,6 +90,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
           zeitraumSpinner.setDisable(disable);
           filterSelect.setDisable(disable);
           btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
+          btnAddNewFilter.setDisable(disable);
         });
   }
 
@@ -105,8 +109,12 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     Daten.getInstance().getMessageBus().subscribe(this);
   }
 
-  public void setFilterSelectionEvent(EventHandler<ActionEvent> eventHandler) {
-    filterSelect.setOnAction(eventHandler);
+  public void setFilterSelectionChangeListener(ChangeListener<FilterDTO> changeListener) {
+    filterSelect.getSelectionModel().selectedItemProperty().addListener(changeListener);
+  }
+
+  public void setFilterSelectionNameListener(ChangeListener<String> changeListener) {
+    filterSelect.getEditor().textProperty().addListener(changeListener);
   }
 
   public FilterDTO getSelectedFilter() {
@@ -119,5 +127,13 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
 
   public void selectFilter(FilterDTO filter) {
     filterSelect.getSelectionModel().select(filter);
+  }
+
+  public void setAddNewFilterButtonEventHandler(EventHandler<ActionEvent> eventHandler) {
+    btnAddNewFilter.setOnAction(eventHandler);
+  }
+
+  public void setFilterSelectionStringConverter(StringConverter<FilterDTO> filterStringConverter) {
+    filterSelect.setConverter(filterStringConverter);
   }
 }

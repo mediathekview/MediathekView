@@ -385,4 +385,21 @@ class FilterConfigTest {
     filterConfig.setCurrentFilter(filter2.id());
     assertThat(filterConfig.getCurrentFilter()).isEqualTo(filter2);
   }
+
+  @DisplayName("Check if current filter could be renamed")
+  @Test
+  void renameCurrentFilter_changeCurrentFilterName_correctFilterName() {
+    FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    List<FilterDTO> filters =
+            List.of(
+                    new FilterDTO(UUID.randomUUID(), "Filter 1"),
+                    filter2,
+                    new FilterDTO(UUID.randomUUID(), "Filter 3"));
+    filters.forEach(filterConfig::addNewFilter);
+    filterConfig.setCurrentFilter(filter2.id());
+    String newName = "Second Filter";
+    filterConfig.renameCurrentFilter(newName);
+    assertThat(filterConfig.getCurrentFilter().name()).isEqualTo(newName);
+  }
 }
