@@ -143,16 +143,6 @@ public class FilmActionPanel {
           }
         });
 
-    viewSettingsPane.setFilterSelectionNameListener(
-        (observableValue, oldValue, newValue) -> {
-          if (!newValue.equals(oldValue)) {
-            availableFilters.remove(filterConfig.getCurrentFilter());
-            filterConfig.renameCurrentFilter(newValue);
-            availableFilters.add(filterConfig.getCurrentFilter());
-            LOG.error("RENAMED##########################################################");
-          }
-        });
-
     viewSettingsPane.setFilterSelectionStringConverter(
         new StringConverter<>() {
 
@@ -166,9 +156,24 @@ public class FilmActionPanel {
 
           @Override
           public FilterDTO fromString(String name) {
-            return filterConfig.findFilterForName(name).orElse(null);
+            return filterConfig.findFilterForName(name).orElseGet(() -> renameCurrentFilter(name));
           }
         });
+  }
+
+  private FilterDTO renameCurrentFilter(String newValue) {
+    FilterDTO currentFilter = filterConfig.getCurrentFilter();
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(
+          "Can't find a filter with name \"{}\". Renaming the current filter \"{}\" to it.",
+          newValue,
+          currentFilter.name());
+    }
+    availableFilters.remove(currentFilter);
+    filterConfig.renameCurrentFilter(newValue);
+    currentFilter = filterConfig.getCurrentFilter();
+    availableFilters.add(currentFilter);
+    return currentFilter;
   }
 
   private void setupDeleteFilterButton() {
