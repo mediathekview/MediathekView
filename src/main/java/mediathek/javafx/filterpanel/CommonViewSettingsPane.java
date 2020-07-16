@@ -8,10 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
@@ -122,7 +119,10 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   }
 
   public void selectFilter(FilterDTO filter) {
-    filterSelect.getSelectionModel().select(filter);
+      SingleSelectionModel<FilterDTO> selectionModel = filterSelect.getSelectionModel();
+      if (!filter.equals(selectionModel.getSelectedItem())) {
+      selectionModel.select(filter);
+    }
   }
 
   public void setAddNewFilterButtonEventHandler(EventHandler<ActionEvent> eventHandler) {

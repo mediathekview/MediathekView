@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -392,14 +394,114 @@ class FilterConfigTest {
     FilterConfiguration filterConfig = new FilterConfiguration(new XMLConfiguration());
     FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
     List<FilterDTO> filters =
-            List.of(
-                    new FilterDTO(UUID.randomUUID(), "Filter 1"),
-                    filter2,
-                    new FilterDTO(UUID.randomUUID(), "Filter 3"));
+        List.of(
+            new FilterDTO(UUID.randomUUID(), "Filter 1"),
+            filter2,
+            new FilterDTO(UUID.randomUUID(), "Filter 3"));
     filters.forEach(filterConfig::addNewFilter);
     filterConfig.setCurrentFilter(filter2.id());
     String newName = "Second Filter";
     filterConfig.renameCurrentFilter(newName);
     assertThat(filterConfig.getCurrentFilter().name()).isEqualTo(newName);
+  }
+
+  @DisplayName("Check if available filter observer callback is called when filter is added")
+  @Test
+  void addAvailableFiltersObserver_addFilter_callbackIsCalled() {
+    new FilterConfiguration(new XMLConfiguration())
+        .addNewFilter(new FilterDTO(UUID.randomUUID(), "Filter 1"));
+
+    AtomicBoolean called = new AtomicBoolean(false);
+    FilterConfiguration.addAvailableFiltersObserver(() -> called.set(true));
+
+    new FilterConfiguration(new XMLConfiguration())
+        .addNewFilter(new FilterDTO(UUID.randomUUID(), "Neuer Filter"));
+
+    assertThat(called.get()).describedAs("is callback called?").isTrue();
+  }
+
+  @DisplayName("Check if available filter observer callback is called when filter is deleted")
+  @Test
+  void addAvailableFiltersObserver_removeFilter_callbackIsCalled() {
+    UUID filterId = UUID.randomUUID();
+    FilterConfiguration filterConfig =
+        new FilterConfiguration(new XMLConfiguration())
+            .addNewFilter(new FilterDTO(filterId, "Filter 1"));
+    AtomicBoolean called = new AtomicBoolean(false);
+    FilterConfiguration.addAvailableFiltersObserver(() -> called.set(true));
+
+    filterConfig.deleteFilter(filterId);
+
+    assertThat(called.get()).describedAs("is callback called?").isTrue();
+  }
+
+  @DisplayName("Check if available filter observer callback is called when filter is renamed")
+  @Test
+  void addAvailableFiltersObserver_renameFilter_callbackIsCalled() {
+    UUID filterId = UUID.randomUUID();
+    FilterConfiguration filterConfig =
+        new FilterConfiguration(new XMLConfiguration())
+            .addNewFilter(new FilterDTO(filterId, "Filter 1"));
+    AtomicBoolean called = new AtomicBoolean(false);
+    FilterConfiguration.addAvailableFiltersObserver(() -> called.set(true));
+
+    filterConfig.setCurrentFilter(filterId).renameCurrentFilter("New name");
+
+    assertThat(called.get()).describedAs("is callback called?").isTrue();
+  }
+
+  @DisplayName("Check if current filter observer callback is called when filter is renamed")
+  @Test
+  void addCurrentFiltersObserver_renameFilter_callbackIsCalledAndGotNewNamedFilter() {
+    FilterDTO filterBeforeRename = new FilterDTO(UUID.randomUUID(), "Filter 1");
+    FilterConfiguration filterConfig =
+        new FilterConfiguration(new XMLConfiguration()).addNewFilter(filterBeforeRename);
+    AtomicReference<FilterDTO> filter = new AtomicReference<>();
+    FilterConfiguration.addCurrentFiltersObserver(filter::set);
+
+    String new_name = "New name";
+    filterConfig.setCurrentFilter(filterBeforeRename).renameCurrentFilter(new_name);
+
+    assertThat(filter.get()).describedAs("is callback called?").isNotNull();
+    assertThat(filter.get().id()).isEqualTo(filterBeforeRename.id());
+    assertThat(filter.get().name()).isEqualTo(new_name);
+  }
+
+  @DisplayName(
+      "Check if current filter observer callback is called when new filter is set as current")
+  @Test
+  void addCurrentFiltersObserver_changeCurrentFilter_callbackIsCalledAndGotCorrectFilter() {
+    FilterDTO filter1 = new FilterDTO(UUID.randomUUID(), "Filter 1");
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    FilterConfiguration filterConfig =
+        new FilterConfiguration(new XMLConfiguration())
+            .addNewFilter(filter1)
+            .addNewFilter(filter2)
+            .setCurrentFilter(filter1);
+    AtomicReference<FilterDTO> filter = new AtomicReference<>();
+    FilterConfiguration.addCurrentFiltersObserver(filter::set);
+
+    filterConfig.setCurrentFilter(filter2);
+
+    assertThat(filter.get()).isEqualTo(filter2);
+  }
+
+  @DisplayName(
+          "Check if current filter observer callback is called when current filter is deleted")
+  @Test
+  void addCurrentFiltersObserver_deleteCurrentFilter_callbackIsCalledAndGotCorrectFilter() {
+    FilterDTO filter1 = new FilterDTO(UUID.randomUUID(), "Filter 1");
+    FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
+    FilterConfiguration filterConfig =
+            new FilterConfiguration(new XMLConfiguration())
+                    .addNewFilter(filter1)
+                    .addNewFilter(filter2)
+                    .setCurrentFilter(filter1);
+    AtomicReference<FilterDTO> filter = new AtomicReference<>();
+    FilterConfiguration.addCurrentFiltersObserver(filter::set);
+
+    filterConfig.deleteFilter(filter1);
+
+    assertThat(filter.get()).isEqualTo(filter2);
   }
 }

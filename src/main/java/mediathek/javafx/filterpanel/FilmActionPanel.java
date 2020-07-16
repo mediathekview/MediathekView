@@ -109,7 +109,6 @@ public class FilmActionPanel {
               new FilterDTO(
                   UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
           filterConfig.addNewFilter(newFilter);
-          availableFilters.add(newFilter);
           viewSettingsPane.disableDeleteCurrentFilterButton(false);
           viewSettingsPane.selectFilter(newFilter);
         });
@@ -124,8 +123,6 @@ public class FilmActionPanel {
         event -> {
           FilterDTO filterToDelete = filterConfig.getCurrentFilter();
           filterConfig.deleteFilter(filterToDelete);
-          viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
-          availableFilters.remove(filterToDelete);
 
           if (availableFilters.size() <= 1) {
             viewSettingsPane.disableDeleteCurrentFilterButton(true);
@@ -135,11 +132,19 @@ public class FilmActionPanel {
 
   private void setupFilterSelection() {
     viewSettingsPane.setAvailableFilters(availableFilters);
+    FilterConfiguration.addAvailableFiltersObserver(() -> {
+      availableFilters.clear();
+      availableFilters.addAll(filterConfig.getAvailableFilters());
+    });
+    FilterConfiguration.addCurrentFiltersObserver(filter -> {
+      viewSettingsPane.selectFilter(filter);
+      restoreConfigSettings();
+    });
+
     viewSettingsPane.setFilterSelectionChangeListener(
         (observableValue, oldValue, newValue) -> {
           if (newValue != null && !newValue.equals(oldValue)) {
             filterConfig.setCurrentFilter(newValue);
-            restoreConfigSettings();
           }
         });
 
@@ -169,11 +174,8 @@ public class FilmActionPanel {
           newValue,
           currentFilter.name());
     }
-    availableFilters.remove(currentFilter);
     filterConfig.renameCurrentFilter(newValue);
-    currentFilter = filterConfig.getCurrentFilter();
-    availableFilters.add(currentFilter);
-    return currentFilter;
+    return filterConfig.getCurrentFilter();
   }
 
   private void setupDeleteFilterButton() {

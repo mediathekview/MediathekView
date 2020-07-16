@@ -98,6 +98,8 @@
     
     <Region HBox.hgrow="ALWAYS"/>
 
+    <ComboBox fx:id="filterSelect" promptText="Filter Auswahl" />
+
     <Button mnemonicParsing="false" fx:id="btnShowFilter">
         <tooltip>
             <Tooltip text="Filter anzeigen"/>

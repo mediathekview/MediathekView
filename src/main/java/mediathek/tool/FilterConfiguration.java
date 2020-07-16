@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,10 @@ public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
+  private static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks =
+      new CopyOnWriteArraySet<>();
+  private static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks =
+      new CopyOnWriteArraySet<>();
   private final Configuration configuration;
 
   public FilterConfiguration() {
@@ -25,6 +30,14 @@ public class FilterConfiguration {
     super();
     this.configuration = configuration;
     migrateOldFilterConfigurations();
+  }
+
+  public static void addAvailableFiltersObserver(Runnable availableFiltersChangedCallback) {
+    availableFiltersChangedCallbacks.add(availableFiltersChangedCallback);
+  }
+
+  public static void addCurrentFiltersObserver(Consumer<FilterDTO> currentFilterChangedCallback) {
+    currentFilterChangedCallbacks.add(currentFilterChangedCallback);
   }
 
   private void migrateOldFilterConfigurations() {
@@ -357,6 +370,7 @@ public class FilterConfiguration {
 
   public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
     configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
+    currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
 
@@ -400,6 +414,7 @@ public class FilterConfiguration {
 
   public FilterConfiguration addNewFilter(FilterDTO filterDTO) {
     configuration.addProperty(FILTER_PANEL_AVAILABLE_FILTERS + filterDTO.id(), filterDTO.name());
+    availableFiltersChangedCallbacks.forEach(Runnable::run);
     return this;
   }
 
@@ -412,12 +427,17 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration deleteFilter(UUID idToDelete) {
-    if (idToDelete.equals(getCurrentFilterID())) {
+    boolean filterToDeleteIsCurrentFilter = idToDelete.equals(getCurrentFilterID());
+    if (filterToDeleteIsCurrentFilter) {
       configuration.clearProperty(FILTER_PANEL_CURRENT_FILTER);
     }
     configuration
         .getKeys()
         .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
+    availableFiltersChangedCallbacks.forEach(Runnable::run);
+    if (filterToDeleteIsCurrentFilter) {
+      currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
+    }
     return this;
   }
 
@@ -429,6 +449,8 @@ public class FilterConfiguration {
 
   public FilterConfiguration renameCurrentFilter(String newName) {
     configuration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS + getCurrentFilterID(), newName);
+    availableFiltersChangedCallbacks.forEach(Runnable::run);
+    currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
 
