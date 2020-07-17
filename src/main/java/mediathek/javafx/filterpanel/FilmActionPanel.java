@@ -204,7 +204,7 @@ public class FilmActionPanel {
     senderList = viewSettingsPane.senderBoxNode.senderBox;
     viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
 
-    themaBox = viewSettingsPane._themaComboBox;
+    themaBox = viewSettingsPane.themaComboBox;
     themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
     TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
@@ -372,7 +372,7 @@ public class FilmActionPanel {
     toolBar.btnShowBookmarkedMovies.setSelected(false);
     toolBar.btnShowBookmarkedMovies.setTooltip(bookmarklistDeselected);
     toolBar.btnShowBookmarkedMovies.setOnAction(
-        (event) ->
+        event ->
             viewSettingsPane
                 .cbShowBookMarkedOnly
                 .selectedProperty()

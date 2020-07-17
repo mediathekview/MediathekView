@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
+  public static final String KEY_UUDI_SPLITERATOR = "_";
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
@@ -42,74 +44,96 @@ public class FilterConfiguration {
 
   private void migrateOldFilterConfigurations() {
     FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), "Alter Filter");
-    if (migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setDontShowAbos)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setDontShowAudioVersions)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setDontShowSignLanguage)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setDontShowTrailers)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(),
-            newFilter,
-            Double.class,
-            this::setFilmLengthMax)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(),
-            newFilter,
-            Double.class,
-            this::setFilmLengthMin)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowHdOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowLivestreamsOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowNewOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowBookMarkedOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowSubtitlesOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(),
-            newFilter,
-            Boolean.class,
-            this::setShowUnseenOnly)
-        | migrateOldFilterConfiguration(
-            FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getOldKey(),
-            newFilter,
-            String.class,
-            this::setZeitraum)) {
+    if (migrateAll(
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setDontShowAbos),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setDontShowAudioVersions),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setDontShowSignLanguage),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setDontShowTrailers),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(),
+                newFilter,
+                Double.class,
+                this::setFilmLengthMax),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(),
+                newFilter,
+                Double.class,
+                this::setFilmLengthMin),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowHdOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowLivestreamsOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowNewOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowBookMarkedOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowSubtitlesOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(),
+                newFilter,
+                Boolean.class,
+                this::setShowUnseenOnly),
+        () ->
+            migrateOldFilterConfiguration(
+                FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getOldKey(),
+                newFilter,
+                String.class,
+                this::setZeitraum))) {
       addNewFilter(newFilter);
       LOG.info("Filter migration abgeschlossen.");
     }
+  }
+
+  private boolean migrateAll(Supplier<Boolean>... migrationSteps) {
+    return !Arrays.stream(migrationSteps)
+        .map(Supplier::get)
+        .filter(Boolean::booleanValue)
+        .collect(Collectors.toUnmodifiableList())
+        .isEmpty();
   }
 
   private <T> boolean migrateOldFilterConfiguration(
@@ -400,7 +424,8 @@ public class FilterConfiguration {
         .map(
             key ->
                 new FilterDTO(
-                    UUID.fromString(key.split("_")[1]), configuration.getProperty(key).toString()))
+                    UUID.fromString(key.split(KEY_UUDI_SPLITERATOR)[1]),
+                    configuration.getProperty(key).toString()))
         .collect(Collectors.toUnmodifiableList());
   }
 

@@ -37,11 +37,11 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   @FXML public CheckBox cbDontShowTrailers;
   @FXML public CheckBox cbDontShowAudioVersions;
   @FXML public SenderBoxNode senderBoxNode;
-  @FXML public ThemaComboBox _themaComboBox;
+  @FXML public ThemaComboBox themaComboBox;
   @FXML public FilmLenghtSliderNode filmLengthSliderNode;
   @FXML public ZeitraumSpinner zeitraumSpinner;
   @FXML public Button btnDeleteCurrentFilter;
-  @FXML private Label _themaLabel;
+  @FXML private Label themaLabel;
   @FXML private ComboBox<FilterDTO> filterSelect;
   @FXML private Button btnAddNewFilter;
   private boolean deleteCurrentFilterButtonDisabled;
@@ -82,7 +82,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
           cbDontShowTrailers.setDisable(disable);
           cbDontShowAudioVersions.setDisable(disable);
           senderBoxNode.setDisable(disable);
-          _themaComboBox.setDisable(disable);
+          themaComboBox.setDisable(disable);
           filmLengthSliderNode.setDisable(disable);
           zeitraumSpinner.setDisable(disable);
           filterSelect.setDisable(disable);
@@ -98,10 +98,10 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    _themaLabel.setMinWidth(USE_PREF_SIZE);
+    themaLabel.setMinWidth(USE_PREF_SIZE);
     // font size is greater on tested ubuntu linux :(
-    if (SystemUtils.IS_OS_LINUX) _themaLabel.setPrefWidth(50d);
-    else _themaLabel.setPrefWidth(45d);
+    if (SystemUtils.IS_OS_LINUX) themaLabel.setPrefWidth(50d);
+    else themaLabel.setPrefWidth(45d);
 
     Daten.getInstance().getMessageBus().subscribe(this);
   }

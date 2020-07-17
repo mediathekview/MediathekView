@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.util.StringConverter;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 import org.apache.logging.log4j.LogManager;
@@ -56,22 +55,25 @@ public class FXFilmToolBar extends ToolBar {
 
   private void setUpFilterSelect() {
     FilterConfiguration filterConfig = new FilterConfiguration();
-    ObservableList<FilterDTO> availableFilters = FXCollections.observableArrayList(filterConfig.getAvailableFilters());
-    FilterConfiguration.addAvailableFiltersObserver(() -> {
-      availableFilters.clear();
-      availableFilters.addAll(filterConfig.getAvailableFilters());
-    });
+    ObservableList<FilterDTO> availableFilters =
+        FXCollections.observableArrayList(filterConfig.getAvailableFilters());
+    FilterConfiguration.addAvailableFiltersObserver(
+        () -> {
+          availableFilters.clear();
+          availableFilters.addAll(filterConfig.getAvailableFilters());
+        });
 
     SingleSelectionModel<FilterDTO> selectionModel = filterSelect.getSelectionModel();
     FilterConfiguration.addCurrentFiltersObserver(selectionModel::select);
     filterSelect.setItems(availableFilters);
     selectionModel.select(filterConfig.getCurrentFilter());
-    selectionModel.selectedItemProperty().addListener(
+    selectionModel
+        .selectedItemProperty()
+        .addListener(
             (observableValue, oldValue, newValue) -> {
               if (newValue != null && !newValue.equals(filterConfig.getCurrentFilter())) {
                 filterConfig.setCurrentFilter(newValue);
               }
             });
-
   }
 }
