@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
@@ -298,7 +299,8 @@ public class DirectHttpDownload extends Thread {
                 if (response.isSuccessful() && body != null) {
                     downloadContent(body.byteStream());
                 } else {
-                    if (response.code() == HTTP_RANGE_NOT_SATISFIABLE) {
+                    final int responseCode = response.code();
+                    if (responseCode == HTTP_RANGE_NOT_SATISFIABLE) {
                         //close old stuff first
                         if (body != null)
                             body.close();
@@ -315,7 +317,14 @@ public class DirectHttpDownload extends Thread {
                             printHttpErrorMessage(response);
                         }
                     } else {
-                        printHttpErrorMessage(response);
+                        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                            logger.error("HTTP error 404 received for URL: {}", request.url().toString());
+                            state = HttpDownloadState.ERROR;
+                            start.status = Start.STATUS_ERR;
+                        }
+                        else {
+                            printHttpErrorMessage(response);
+                        }
                     }
                 }
             }
