@@ -113,6 +113,8 @@
         </graphic>
     </Button>
 
+    <VerticalSeparator/>
+
     <JFXSearchPanel fx:id="jfxSearchField"/>
 
     <ToggleButton mnemonicParsing="false" fx:id="btnSearchThroughDescription">
