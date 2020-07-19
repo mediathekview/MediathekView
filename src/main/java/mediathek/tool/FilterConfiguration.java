@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
-  public static final String KEY_UUDI_SPLITERATOR = "_";
+  private static final String KEY_UUID_SPLITERATOR = "_";
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
@@ -128,6 +128,7 @@ public class FilterConfiguration {
     }
   }
 
+  @SafeVarargs
   private boolean migrateAll(Supplier<Boolean>... migrationSteps) {
     return !Arrays.stream(migrationSteps)
         .map(Supplier::get)
@@ -424,7 +425,7 @@ public class FilterConfiguration {
         .map(
             key ->
                 new FilterDTO(
-                    UUID.fromString(key.split(KEY_UUDI_SPLITERATOR)[1]),
+                    UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]),
                     configuration.getProperty(key).toString()))
         .collect(Collectors.toUnmodifiableList());
   }
