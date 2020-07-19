@@ -495,7 +495,9 @@
 							<version>${picocli.version}</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
 				<executions>
 					<!-- Replacing default-compile as it is treated specially by maven -->
 					<execution>
