@@ -38,7 +38,6 @@ public class Icons {
 
     public static final ImageIcon ICON_BUTTON_REMOVE = GetIcon.getProgramIcon("button-remove.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_ADD = GetIcon.getProgramIcon("button-add.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_AKTUALISIEREN = GetIcon.getProgramIcon("button-aktualisieren.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_DOWN = GetIcon.getProgramIcon("button-move-down.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_HELP = GetIcon.getProgramIcon("button-help.png", 16, 16);
