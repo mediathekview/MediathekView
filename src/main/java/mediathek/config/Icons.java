@@ -27,8 +27,6 @@ import java.awt.*;
 public class Icons {
     public static final ImageIcon ICON_DIALOG_EIN_SW = GetIcon.getProgramIcon("dialog-ein-sw.png", 16, 16);
 
-    public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
-    public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
     public static final ImageIcon ICON_MENUE_VORZIEHEN = GetIcon.getProgramIcon("menue-vorziehen.png", 16, 16);
