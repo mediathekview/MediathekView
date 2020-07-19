@@ -54,12 +54,12 @@ public class PanelPsetLang extends PanelVorlage {
     private void init() {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgPlus.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonProgPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
         jButtonProgPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonGruppeNeu.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonGruppeNeu.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
