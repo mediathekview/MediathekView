@@ -388,7 +388,6 @@ public class GuiDownloads extends AGuiTabPanel {
         miDownloadsStartAll.addActionListener(e -> starten(true));
 
         JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads um xx:yy Uhr starten");
-        miDownloadStartTimed.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
         miDownloadStartTimed.addActionListener(e -> startAtTime());
 
         JMenuItem miStopAllDownloads = new JMenuItem("Alle Downloads stoppen");

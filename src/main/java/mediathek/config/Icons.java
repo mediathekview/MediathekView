@@ -30,7 +30,6 @@ public class Icons {
 
     public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
     public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNLOAD_ALLE_STARTEN = GetIcon.getProgramIcon("menue-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_ADD = GetIcon.getProgramIcon("menue-history-add.png", 16, 16);
