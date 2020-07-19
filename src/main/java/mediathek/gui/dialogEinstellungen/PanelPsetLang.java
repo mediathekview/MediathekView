@@ -1,6 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javafx.scene.control.Alert;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.daten.DatenProg;
@@ -19,8 +21,6 @@ import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -37,7 +37,6 @@ public class PanelPsetLang extends PanelVorlage {
     private final MVTable tabellePset;
     private final MVTable tabelleProgramme;
     private final boolean modalHilfe;
-    private static final Logger logger = LogManager.getLogger();
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
@@ -63,8 +62,11 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
-        jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
+
+        var exclamationIcon = IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 16);
+        jLabelMeldungAbspielen.setIcon(exclamationIcon);
+        jLabelMeldungSeichern.setIcon(exclamationIcon);
+
         //Programme
         tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
@@ -412,15 +414,9 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]) {
-                case FilmResolution.AUFLOESUNG_HD:
-                    jRadioButtonAufloesungHD.setSelected(true);
-                    break;
-                case FilmResolution.AUFLOESUNG_KLEIN:
-                    jRadioButtonAufloesungKlein.setSelected(true);
-                    break;
-                default:
-                    jRadioButtonAufloesungNormal.setSelected(true);
-                    break;
+                case FilmResolution.AUFLOESUNG_HD -> jRadioButtonAufloesungHD.setSelected(true);
+                case FilmResolution.AUFLOESUNG_KLEIN -> jRadioButtonAufloesungKlein.setSelected(true);
+                default -> jRadioButtonAufloesungNormal.setSelected(true);
             }
             tabelleProgramme.setModel(pSet.getListeProg().getModel());
             if (tabelleProgramme.getRowCount() > 0) {

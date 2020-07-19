@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -41,7 +43,7 @@ public class PanelDateinamen extends PanelVorlage {
 
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
-        jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
+        jLabelAlert.setIcon(IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 32));
         jButtonPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
