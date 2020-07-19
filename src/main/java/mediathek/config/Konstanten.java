@@ -48,7 +48,7 @@ public class Konstanten {
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
     public static final byte CONTINUE_DOWNLOAD = 60; //seconds
-    public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 120;
+    public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
     // MediathekView URLs
     public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
