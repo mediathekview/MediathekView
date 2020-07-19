@@ -8,6 +8,7 @@
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import mediathek.javafx.filterpanel.ZeitraumSpinner?>
+<?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
@@ -31,9 +32,10 @@
                 <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
             </graphic>
         </Button>
+        <VerticalSeparator/>
         <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
             <tooltip>
-                <Tooltip text="Filter zurücksetzen"/>
+                <Tooltip text="Aktuellen Filter zurücksetzen"/>
             </tooltip>
             <graphic>
                 <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
