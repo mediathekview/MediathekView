@@ -25,8 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    public static final ImageIcon ICON_DIALOG_PLUS = GetIcon.getProgramIcon("dialog-plus.png", 16, 16);
-    public static final ImageIcon ICON_DIALOG_MINUS = GetIcon.getProgramIcon("dialog-minus.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_ADD = GetIcon.getProgramIcon("dialog-add.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_EIN_SW = GetIcon.getProgramIcon("dialog-ein-sw.png", 16, 16);
 
