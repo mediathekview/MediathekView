@@ -272,6 +272,7 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(miPlayFilm);
         menu.add(miRecordFilm);
         menu.add(miBookmarkFilm);
+        menu.addSeparator();
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.addSeparator();
@@ -962,16 +963,11 @@ public class GuiFilme extends AGuiTabPanel {
 
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            //Thema laden
             jPopupMenu.add(miPlay);
-            //Url
             jPopupMenu.add(miSave);
-            // Film merken
             jPopupMenu.add(miBookmark);
-
-            //##Trenner##
             jPopupMenu.addSeparator();
-            //##Trenner##
+
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             //Abo anlegen
