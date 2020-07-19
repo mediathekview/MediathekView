@@ -17,7 +17,6 @@ import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
@@ -260,12 +259,10 @@ public class GuiFilme extends AGuiTabPanel {
 
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
         miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
 
         JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
         miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
         JMenuItem miSearchMediaCollection = new JMenuItem("Titel in der Mediensammlung suchen");
