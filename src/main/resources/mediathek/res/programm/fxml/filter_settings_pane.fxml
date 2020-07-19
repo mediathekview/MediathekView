@@ -58,10 +58,10 @@
     <HBox spacing="4.0" maxWidth="Infinity">
         <BorderPane>
             <center>
-                <Label fx:id="_themaLabel" text="Thema:"/>
+                <Label fx:id="themaLabel" text="Thema:"/>
             </center>
         </BorderPane>
-        <ThemaComboBox fx:id="_themaComboBox" HBox.hgrow="ALWAYS">
+        <ThemaComboBox fx:id="themaComboBox" HBox.hgrow="ALWAYS">
             <promptText>Themaauswahl</promptText>
         </ThemaComboBox>
     </HBox>
