@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
     <Loggers>
         <Logger name="hsqldb.db" level="warn"/>
         <Logger name="javax.jmdns.impl" level="warn"/>
         <Logger name="oshi" level="warn"/>
         <Logger name="com.zaxxer.hikari" level="warn"/>
-        <Root level="trace">
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
         </Root>
     </Loggers>
 </Configuration>

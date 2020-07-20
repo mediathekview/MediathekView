@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,6 +49,9 @@ class FilterConfigTest {
         arguments("isShowUnseenOnly", (Supplier<Boolean>) filterConfig::isShowUnseenOnly, false),
         arguments("getFilmLengthMax", (Supplier<Double>) filterConfig::getFilmLengthMax, 110.0d),
         arguments("getFilmLengthMin", (Supplier<Double>) filterConfig::getFilmLengthMin, 0.0d),
+        arguments(
+            "getSender", (Supplier<List<String>>) filterConfig::getSender, Collections.emptyList()),
+        arguments("getThemen", (Supplier<String>) filterConfig::getThema, ""),
         arguments(
             "getZeitraum",
             (Supplier<String>) filterConfig::getZeitraum,
@@ -91,18 +95,21 @@ class FilterConfigTest {
 
     config.setCurrentFilter(firstFilterID);
     config.setDontShowAbos(true);
+    config.setThema("Tagesschau");
     config.setShowNewOnly(true);
     config.setFilmLengthMax(42d);
 
     config.setCurrentFilter(secondFilterID);
     config.clearCurrentFilter();
     config.setFilmLengthMax(21d);
+    config.setSender(List.of("DW"));
     config.setShowLivestreamsOnly(true);
     config.setZeitraum("3");
 
     config.setCurrentFilter(firstFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(firstFilterID);
     assertThat(config.isDontShowAbos()).isTrue();
+    assertThat(config.getThema()).isEqualTo("Tagesschau");
     assertThat(config.isShowNewOnly()).isTrue();
     assertThat(config.getFilmLengthMax()).isEqualTo(42d);
     assertThat(config.isShowLivestreamsOnly()).isFalse();
@@ -111,6 +118,7 @@ class FilterConfigTest {
     config.setCurrentFilter(secondFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(secondFilterID);
     assertThat(config.isDontShowAbos()).isFalse();
+    assertThat(config.getSender()).containsExactly("DW");
     assertThat(config.isShowNewOnly()).isFalse();
     assertThat(config.getFilmLengthMax()).isEqualTo(21d);
     assertThat(config.isShowLivestreamsOnly()).isTrue();
@@ -140,6 +148,8 @@ class FilterConfigTest {
     config.setCurrentFilter(secondFilterID);
     config.clearCurrentFilter();
     config.setFilmLengthMax(21d);
+    config.setSender(List.of("ARD", "BR"));
+    config.setThema("Tagesschau");
     config.setShowLivestreamsOnly(true);
     config.setZeitraum("3");
 
@@ -156,6 +166,8 @@ class FilterConfigTest {
     assertThat(config.isDontShowAbos()).isFalse();
     assertThat(config.isShowNewOnly()).isFalse();
     assertThat(config.getFilmLengthMax()).isEqualTo(21d);
+    assertThat(config.getSender()).containsExactly("ARD", "BR");
+    assertThat(config.getThema()).isEqualTo("Tagesschau");
     assertThat(config.isShowLivestreamsOnly()).isTrue();
     assertThat(config.getZeitraum()).isEqualTo("3");
   }
@@ -486,17 +498,16 @@ class FilterConfigTest {
     assertThat(filter.get()).isEqualTo(filter2);
   }
 
-  @DisplayName(
-          "Check if current filter observer callback is called when current filter is deleted")
+  @DisplayName("Check if current filter observer callback is called when current filter is deleted")
   @Test
   void addCurrentFiltersObserver_deleteCurrentFilter_callbackIsCalledAndGotCorrectFilter() {
     FilterDTO filter1 = new FilterDTO(UUID.randomUUID(), "Filter 1");
     FilterDTO filter2 = new FilterDTO(UUID.randomUUID(), "Filter 2");
     FilterConfiguration filterConfig =
-            new FilterConfiguration(new XMLConfiguration())
-                    .addNewFilter(filter1)
-                    .addNewFilter(filter2)
-                    .setCurrentFilter(filter1);
+        new FilterConfiguration(new XMLConfiguration())
+            .addNewFilter(filter1)
+            .addNewFilter(filter2)
+            .setCurrentFilter(filter1);
     AtomicReference<FilterDTO> filter = new AtomicReference<>();
     FilterConfiguration.addCurrentFiltersObserver(filter::set);
 

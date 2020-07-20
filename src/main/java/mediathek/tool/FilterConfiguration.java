@@ -212,6 +212,33 @@ public class FilterConfiguration {
     return this;
   }
 
+  public List<String> getSender() {
+    return configuration.getList(
+        String.class,
+        toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SENDER.getKey()),
+        Collections.emptyList());
+  }
+
+  public FilterConfiguration setSender(List<String> sender) {
+    configuration.setProperty(
+        toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SENDER.getKey()),
+        sender);
+    return this;
+  }
+
+  public String getThema() {
+    return configuration.getString(
+        toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
+        "");
+  }
+
+  public FilterConfiguration setThema(String thema) {
+    configuration.setProperty(
+        toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
+        thema);
+    return this;
+  }
+
   public boolean isShowBookMarkedOnly() {
     return configuration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -496,6 +523,8 @@ public class FilterConfiguration {
     FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"),
     FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),
     FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"),
+    FILTER_PANEL_SENDER("filter.filter_%s.sender"),
+    FILTER_PANEL_THEMA("filter.filter_%s.thema"),
     FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
     FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum");
 

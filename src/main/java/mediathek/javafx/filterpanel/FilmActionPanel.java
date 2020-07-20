@@ -7,7 +7,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -26,6 +28,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
+import org.controlsfx.control.IndexedCheckModel;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -76,7 +79,7 @@ public class FilmActionPanel {
     this.filterConfig = new FilterConfiguration();
 
     setupViewSettingsPane();
-    setupDeleteFilterButton();
+    setupClearCurrentFilterButton();
 
     SwingUtilities.invokeLater(
         () -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), viewSettingsPane));
@@ -170,7 +173,7 @@ public class FilmActionPanel {
     return filterConfig.getCurrentFilter();
   }
 
-  private void setupDeleteFilterButton() {
+  private void setupClearCurrentFilterButton() {
     viewSettingsPane.btnDeleteFilterSettings.setOnAction(
         e -> {
           filterConfig.clearCurrentFilter();
@@ -194,6 +197,10 @@ public class FilmActionPanel {
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
     senderList = viewSettingsPane.senderBoxNode.senderBox;
+    senderList
+        .itemsProperty()
+        .addListener((ChangeListener) (observable, oldValue, newValue) -> loadSavedSenderChecks());
+
     viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
 
     themaBox = viewSettingsPane.themaComboBox;
@@ -203,6 +210,13 @@ public class FilmActionPanel {
     filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
     zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
+  }
+
+  private void loadSavedSenderChecks() {
+    IndexedCheckModel<String> senderCheckModel = senderList.getCheckModel();
+    List<String> loadedSender = filterConfig.getSender();
+    senderCheckModel.clearChecks();
+    loadedSender.forEach(senderCheckModel::check);
   }
 
   private void restoreConfigSettings() {
@@ -218,6 +232,9 @@ public class FilmActionPanel {
     dontShowTrailers.set(filterConfig.isDontShowTrailers());
     dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
     dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
+
+    loadSavedSenderChecks();
+    themaBox.getSelectionModel().select(filterConfig.getThema());
 
     try {
         double loadedMin = filterConfig.getFilmLengthMin();
@@ -276,6 +293,17 @@ public class FilmActionPanel {
         ((observable, oldValue, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
     dontShowAudioVersions.addListener(
         ((observable, oldValue, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+
+    senderList
+        .getCheckModel()
+        .getCheckedItems()
+        .addListener(
+            (ListChangeListener<String>)
+                change -> filterConfig.setSender(new ArrayList<String>(change.getList())));
+    themaBox
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(((observable, oldValue, newValue) -> filterConfig.setThema(newValue)));
 
     filmLengthSlider
         .lowValueProperty()
