@@ -80,7 +80,7 @@
 		<maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
 		<junit.jupiter.version>5.6.2</junit.jupiter.version>
-		<javafx.version>14.0.1</javafx.version>
+		<javafx.version>14.0.2</javafx.version>
 		<picocli.version>4.3.2</picocli.version>
 		<miglayout.version>5.3-SNAPSHOT</miglayout.version>
 		<log4j2.version>2.13.3</log4j2.version>
