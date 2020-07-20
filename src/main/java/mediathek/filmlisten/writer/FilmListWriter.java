@@ -100,7 +100,7 @@ public class FilmListWriter {
                 writeFormatDescription(jg);
 
                 final long filmEntries = listeFilme.size();
-                double curEntry = 0d;
+                float curEntry = 0f;
 
                 for (DatenFilm datenFilm : listeFilme) {
                     writeEntry(datenFilm, jg);
