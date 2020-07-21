@@ -36,7 +36,7 @@
     <launcher name="mediathekview arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main"
-            vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+            vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
@@ -52,7 +52,7 @@
     <launcher name="MediathekView_ipv4 arm" id="325" menuName="MediathekView IPv4">
       <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main"
-            vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
+            vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>
