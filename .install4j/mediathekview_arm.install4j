@@ -7,7 +7,7 @@
     <languages>
       <principalLanguage id="de"/>
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.1+8">
+    <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.2+13">
       <modules>
         <defaultModules set="all"/>
       </modules>
