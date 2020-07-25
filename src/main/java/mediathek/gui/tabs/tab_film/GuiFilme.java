@@ -79,7 +79,7 @@ public class GuiFilme extends AGuiTabPanel {
   private static final Logger logger = LogManager.getLogger(GuiFilme.class);
   private static final int[] BUTTON_COLUMNS =
       new int[] {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN};
-  protected static final boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
+  public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
   public final FilterFilmAction filterFilmAction = new FilterFilmAction();
   public final PlayFilmAction playAction = new PlayFilmAction();
   public final SaveFilmAction saveFilmAction = new SaveFilmAction();
@@ -720,8 +720,6 @@ public class GuiFilme extends AGuiTabPanel {
               .lowValueChangingProperty()
               .addListener(
                   (observable, oldValue, newValue) -> {
-                    // newValue is true when changing begins and false when it's ended, so reload
-                    // when false
                     if (!newValue) {
                       SwingUtilities.invokeLater(this::reloadTable);
                     }
