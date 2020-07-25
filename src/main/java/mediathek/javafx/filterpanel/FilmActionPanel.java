@@ -132,14 +132,16 @@ public class FilmActionPanel {
 
   private void setupFilterSelection() {
     viewSettingsPane.setAvailableFilters(availableFilters);
-    FilterConfiguration.addAvailableFiltersObserver(() -> {
-      availableFilters.clear();
-      availableFilters.addAll(filterConfig.getAvailableFilters());
-    });
-    FilterConfiguration.addCurrentFiltersObserver(filter -> {
-      viewSettingsPane.selectFilter(filter);
-      restoreConfigSettings();
-    });
+    FilterConfiguration.addAvailableFiltersObserver(
+        () -> {
+          availableFilters.clear();
+          availableFilters.addAll(filterConfig.getAvailableFilters());
+        });
+    FilterConfiguration.addCurrentFiltersObserver(
+        filter -> {
+          viewSettingsPane.selectFilter(filter);
+          restoreConfigSettings();
+        });
 
     viewSettingsPane.setFilterSelectionChangeListener(
         (observableValue, oldValue, newValue) -> {
@@ -228,8 +230,13 @@ public class FilmActionPanel {
     dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
 
     try {
-      filmLengthSlider.lowValueProperty().set(filterConfig.getFilmLengthMin());
-      filmLengthSlider.highValueProperty().set(filterConfig.getFilmLengthMax());
+      filmLengthSlider.setLowValueChanging(true);
+      filmLengthSlider.setLowValue(filterConfig.getFilmLengthMin());
+      filmLengthSlider.setLowValueChanging(false);
+
+      filmLengthSlider.setHighValueChanging(true);
+      filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+      filmLengthSlider.setHighValueChanging(false);
     } catch (Exception exception) {
       LOG.debug(
           "Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",
