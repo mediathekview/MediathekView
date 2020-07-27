@@ -92,13 +92,8 @@ public class PanelFilmlisteLaden extends JPanel {
 
     private void initRadio() {
         switch (GuiFunktionen.getImportArtFilme()) {
-            case MANUAL:
-                jRadioButtonManuell.setSelected(true);
-                break;
-
-            case AUTOMATIC:
-                jRadioButtonAuto.setSelected(true);
-                break;
+            case MANUAL -> jRadioButtonManuell.setSelected(true);
+            case AUTOMATIC -> jRadioButtonAuto.setSelected(true);
         }
 
         jTextFieldUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL));
