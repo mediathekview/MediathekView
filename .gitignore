@@ -17,3 +17,4 @@ RepoZugang.properties
 /target/
 /dependency-reduced-pom.xml
 *.iml
+/install4j8.0.7/
