@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import mediathek.config.Config;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -26,8 +27,16 @@ public class PooledDatabaseConnection {
         return INSTANCE;
     }
 
-    public HikariDataSource getDataSource() {
-        return dataSource;
+    public static String getDatabaseCacheDirectory() {
+        String strDatabase;
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            strDatabase = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator;
+        } else {
+            strDatabase = Daten.getSettingsDirectory_String() + File.separator;
+        }
+
+        return strDatabase;
     }
 
     /**
@@ -41,12 +50,7 @@ public class PooledDatabaseConnection {
         if (Config.isPortableMode()) {
             strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
         } else {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strDatabase = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView/database" + File.separator;
-            } else {
-                strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
-            }
+            strDatabase = getDatabaseCacheDirectory();
         }
 
         final Path filePath = Paths.get(strDatabase);
@@ -55,11 +59,16 @@ public class PooledDatabaseConnection {
         return absolutePath.toString();
     }
 
+    public HikariDataSource getDataSource() {
+        return dataSource;
+    }
+
     private HikariDataSource setupDataSource() {
-        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "/mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
 
         HikariConfig config = new HikariConfig();
         config.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
+        config.setAutoCommit(false);
         config.addDataSourceProperty("URL", driverCommand);
         config.setMaximumPoolSize(Runtime.getRuntime().availableProcessors());
 

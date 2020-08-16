@@ -5,6 +5,8 @@ import mediathek.daten.ListeFilme;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 class FilmeImportierenAutoThread extends Thread {
     private static final Logger logger = LogManager.getLogger(FilmeImportierenAutoThread.class);
     private final ListeFilme listeFilme;
@@ -27,41 +29,40 @@ class FilmeImportierenAutoThread extends Thread {
     @Override
     public void run() {
         boolean ret;
-        if (listeFilme.isTooOldForDiff()) {
+        if (listeFilme.isEmpty() || !listeFilme.metaData().canUseDiffList()) {
             // dann eine komplette Liste laden
             listeFilme.clear();
-            ret = searchFullList(listeFilme, FilmListDownloadType.FULL);
+            ret = downloadAction.performDownload(getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
         } else {
             // nur ein Update laden
-            ret = searchFullList(listeFilmeDiff, FilmListDownloadType.DIFF_ONLY);
+            ret = downloadAction.performDownload(getFilmListUrl(FilmListDownloadType.DIFF_ONLY), listeFilmeDiff, days);
             if (!ret || listeFilmeDiff.isEmpty()) {
                 // wenn diff, dann nochmal mit einer kompletten Liste versuchen
                 listeFilme.clear();
                 listeFilmeDiff.clear();
-                ret = searchFullList(listeFilme, FilmListDownloadType.FULL);
+                ret = downloadAction.performDownload(getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
             }
         }
 
         if (!ret) {
             /* listeFilme ist schon wieder null -> "FilmeLaden" */
-            logger.error("Es konnten keine Filme geladen werden!");
+            logger.warn("Es konnten keine Filme geladen werden!");
         }
         onFinished.onFinished(ret);
     }
 
-    private boolean searchFullList(ListeFilme liste, FilmListDownloadType state) {
-        String updateUrl = Konstanten.ROUTER_BASE_ADDRESS;
+    private String getFilmListUrl(FilmListDownloadType state) {
+        String urlStr = null;
 
         switch (state) {
             case FULL:
-                updateUrl += "Filmliste-akt.xz";
+                urlStr = Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
                 break;
             case DIFF_ONLY:
-                updateUrl += "Filmliste-diff.xz";
+                urlStr = Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
                 break;
         }
 
-        return downloadAction.performDownload(updateUrl, liste, days);
+        return urlStr;
     }
-
 }

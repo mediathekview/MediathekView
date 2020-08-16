@@ -19,7 +19,7 @@ import javax.swing.tree.TreeSelectionModel;
 @SuppressWarnings("serial")
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
-    public boolean ok = false;
+    public boolean ok;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
     private PanelMediaDB panelMediaDB;
@@ -41,7 +41,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_bandwidth = "Download";
     private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
-    private static final String NAME_allgemeineEinstellungenGeo = "Geo";
+    private static final String NAME_allgemeineEinstellungenGeo = "Standort & Geoblocking";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
     private static final String NAME_filmListe = "Filmliste";
     private static final String NAME_filmListeLaden = "Filmliste laden";
@@ -125,13 +125,13 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void initPanels() {
-        panelEinstellungen = new PanelEinstellungen(daten, this);
-        panelDownload = new PanelDownload(daten, this);
+        panelEinstellungen = new PanelEinstellungen(daten);
+        panelDownload = new PanelDownload();
         panelMediaDB = new PanelMediaDB(daten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(daten, this);
         panelEinstellungenGeo = new PanelEinstellungenGeo(this);
-        panelEinstellungenColor = new PanelEinstellungenColor(this);
-        panelImportFilme = new PanelFilmlisteLaden(daten);
+        panelEinstellungenColor = new PanelEinstellungenColor();
+        panelImportFilme = new PanelFilmlisteLaden();
         panelBlacklist = new PanelBlacklist(daten, this, PanelBlacklist.class.getName());
         panelDateinamen = new PanelDateinamen(daten, this);
         panelPset = new PanelPset(daten, this);

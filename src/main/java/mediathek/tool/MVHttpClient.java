@@ -1,6 +1,8 @@
 package mediathek.tool;
 
 import mediathek.config.Config;
+import mediathek.tool.dns.DnsSelector;
+import mediathek.tool.dns.IPvPreferenceMode;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -73,17 +75,21 @@ public class MVHttpClient {
             try {
                 var levelName = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL);
                 level = HttpLoggingInterceptor.Level.valueOf(levelName);
-            }
-            catch (Exception ignored) {
+            } catch (Exception ignored) {
                 logger.error("Error reading http traffic debug trace level, using BASIC");
             }
             interceptor.level(level);
             builder.addInterceptor(interceptor);
             logger.debug("HTTP Logging interceptor installed");
         }
+
+        var config = ApplicationConfiguration.getConfiguration();
+        IPvPreferenceMode mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(IPvPreferenceMode.IPV4_ONLY)));
+
         builder.connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS);
+                .readTimeout(30, TimeUnit.SECONDS)
+                .dns(new DnsSelector(mode));
         return builder;
     }
 

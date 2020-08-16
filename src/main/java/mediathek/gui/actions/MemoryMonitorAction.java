@@ -1,7 +1,7 @@
 package mediathek.gui.actions;
 
-import javafx.application.Platform;
 import mediathek.javafx.MemoryMonitor;
+import mediathek.javafx.tool.JavaFxUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,11 +15,11 @@ public class MemoryMonitorAction extends AbstractAction {
 
     public void closeMemoryMonitor() {
         if (memoryMonitor != null)
-            Platform.runLater(() -> memoryMonitor.close());
+            JavaFxUtils.invokeInFxThreadAndWait(() -> memoryMonitor.close());
     }
 
     public void showMemoryMonitor() {
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             if (memoryMonitor == null) {
                 memoryMonitor = new MemoryMonitor();
             }

@@ -1,12 +1,12 @@
 package mediathek.tool;
 
+import mediathek.config.Konstanten;
+
 public class MemoryUtils {
     private static final boolean isLowMemory;
 
     static {
-        final long mem = Runtime.getRuntime().maxMemory();
-        //we consider <640MB as low memory
-        isLowMemory = mem < 640 * 1024 * 1024;
+        isLowMemory = Runtime.getRuntime().maxMemory() <= Konstanten.LOW_MEMORY_THRESHOLD;
     }
 
     public static boolean isLowMemoryEnvironment() {

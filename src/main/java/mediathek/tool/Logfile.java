@@ -1,16 +1,23 @@
 package mediathek.tool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Logfile {
+
+    private static final Logger logger = LogManager.getLogger();
 
     public static boolean LogDateiSchreiben(String ziel, String progVersion, String settingsDir, ArrayList<String> progs, String[][] configs) {
         boolean ret;
@@ -19,7 +26,7 @@ public class Logfile {
         try (OutputStream os = Files.newOutputStream(logFilePath);
              OutputStreamWriter osw = new OutputStreamWriter(os);
              BufferedWriter bw = new BufferedWriter(osw)) {
-            bw.write("Erstellt: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            bw.write("Erstellt: " + DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
             bw.newLine();
             bw.write("#####################################################");
             bw.newLine();
@@ -74,7 +81,7 @@ public class Logfile {
 
             ret = true;
         } catch (Exception ex) {
-            Log.errorLog(319865493, ex);
+            logger.error("Error writing log file",ex);
             ret = false;
         }
         return ret;

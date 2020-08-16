@@ -1,9 +1,6 @@
 package mediathek.gui.dialogEinstellungen.allgemein;
 
 import mediathek.config.Daten;
-import mediathek.config.Icons;
-import mediathek.config.MVConfig;
-import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
@@ -17,14 +14,17 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungen extends JPanel {
     private final static String ALLE = " Alle ";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private final JFrame parent;
     private final Daten daten;
+    private final SpinnerListModel daySpinnerModel = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+            "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
+
 
     private void setupProxySettings() {
 
@@ -51,29 +51,18 @@ public class PanelEinstellungen extends JPanel {
         jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
-    private void cbUseWikipediaSenderLogosActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
         daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
     }
+    
+    private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
+        daten.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
+    }
 
     private void setupDays() {
-        jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parent, true, '\n'
-                + "Es werden nur Filme der letzten\n"
-                + "xx Tage geladen."
-                + '\n'
-                + "Bei \"Alle\" werden alle Filme geladen.\n"
-                + '\n'
-                + "(Eine kleinere Filmliste\n"
-                + "kann bei Rechnern mit wenig\n"
-                + "Speicher hilfreich sein.)"
-                + "\n\n"
-                + "Auswirkung hat das erst nach dem\n"
-                + "Neuladen der kompletten Filmliste.").setVisible(true));
-
-        SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                "12", "14", "16", "18", "20", "25", "30"});
-        jSpinnerDays.setModel(lm);
+        jSpinnerDays.setModel(daySpinnerModel);
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
@@ -97,7 +86,7 @@ public class PanelEinstellungen extends JPanel {
 
     @Handler
     private void handleTrayIconEvent(TrayIconEvent e) {
-        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))));
+        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false)));
     }
 
     private void setupTray() {
@@ -107,9 +96,9 @@ public class PanelEinstellungen extends JPanel {
         } else {
             daten.getMessageBus().subscribe(this);
 
-            jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
+            jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false));
             jCheckBoxTray.addActionListener(ae -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
+                config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,jCheckBoxTray.isSelected());
                 MediathekGui.ui().initializeSystemTray();
             });
         }
@@ -121,15 +110,8 @@ public class PanelEinstellungen extends JPanel {
         cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
     }
 
-    private void setupSaveHumanReadableFilmlistCheckbox() {
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-        cbSaveHumanReadableFilmlist.setSelected(config.getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false));
-        cbSaveHumanReadableFilmlist.addActionListener(l -> config.setProperty(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, cbSaveHumanReadableFilmlist.isSelected()));
-    }
-
-    public PanelEinstellungen(Daten d, JFrame parent) {
+    public PanelEinstellungen(Daten d) {
         super();
-        this.parent = parent;
         daten = d;
 
         initComponents();
@@ -140,11 +122,9 @@ public class PanelEinstellungen extends JPanel {
 
         setupDatabaseCleanerCheckbox();
 
-        setupSaveHumanReadableFilmlistCheckbox();
-
         jButtonLoad.addActionListener(ae -> {
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("");
+            daten.getFilmeLaden().loadFilmlist("", false);
         });
 
         setupDays();
@@ -158,6 +138,9 @@ public class PanelEinstellungen extends JPanel {
         cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
         final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
+        
+        cbAutomaticUpdateChecks.addActionListener(this::cbAutomaticUpdateChecksActionPerformed);
+        cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK,true));
     }
 
     @Handler
@@ -195,13 +178,13 @@ public class PanelEinstellungen extends JPanel {
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
-        }
-        String s = MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE);
-        if (s.equals("0")) {
+        String s;
+        final int num_days = config.getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+        if (num_days == 0)
             s = ALLE;
-        }
+        else
+            s = Integer.toString(num_days);
+
         jSpinnerDays.setValue(s);
     }
 
@@ -213,7 +196,15 @@ public class PanelEinstellungen extends JPanel {
             if (s.equals(ALLE)) {
                 s = "0";
             }
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, s);
+
+            int num_days;
+            try {
+                num_days = Integer.parseInt(s);
+            }
+            catch (NumberFormatException e) {
+                num_days = 0;
+            }
+            config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, num_days);
         }
     }
 
@@ -241,13 +232,11 @@ public class PanelEinstellungen extends JPanel {
         var jLabel6 = new JLabel();
         jSpinnerDays = new JSpinner();
         jButtonLoad = new JButton();
-        jButtonHelpDays = new JButton();
         var jPanel7 = new JPanel();
         cbUseDatabaseCleaner = new JCheckBox();
-        var jPanel8 = new JPanel();
-        cbSaveHumanReadableFilmlist = new JCheckBox();
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
+        cbAutomaticUpdateChecks = new JCheckBox();
 
         //======== this ========
         setMaximumSize(new Dimension(10, 10));
@@ -277,7 +266,7 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jCheckBoxTabIcon)
                         .addGap(5, 5, 5)
                         .addComponent(cbAutomaticMenuTabSwitching)
-                        .addContainerGap(20, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel5Layout.setVerticalGroup(
                 jPanel5Layout.createParallelGroup()
@@ -310,7 +299,7 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jLabel3)
                         .addGap(5, 5, 5)
                         .addComponent(jtfUserAgent, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(15, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup()
@@ -363,7 +352,7 @@ public class PanelEinstellungen extends JPanel {
                         .addGroup(jPanel4Layout.createParallelGroup()
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jtfProxyPort, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 175, Short.MAX_VALUE))
                             .addComponent(jpfProxyPassword))
                         .addContainerGap())
             );
@@ -388,7 +377,7 @@ public class PanelEinstellungen extends JPanel {
 
         //======== jPanel2 ========
         {
-            jPanel2.setBorder(new TitledBorder("")); //NON-NLS
+            jPanel2.setBorder(new TitledBorder("Einschr\u00e4nkungen f\u00fcr das Laden der Filmliste")); //NON-NLS
 
             //======== jPanel6 ========
             {
@@ -397,14 +386,10 @@ public class PanelEinstellungen extends JPanel {
                 jLabel6.setText("Nur die Filme der letzten Tage laden:"); //NON-NLS
 
                 //---- jSpinnerDays ----
-                jSpinnerDays.setModel(new SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"})); //NON-NLS
+                jSpinnerDays.setToolTipText("<html>Es werden nur Filme der letzten <i>xx</i> Tage geladen.<br>Bei \"Alle\" werden alle Filme geladen.<br>(Eine kleinere Filmliste kann bei Rechnern mit wenig Speicher hilfreich sein.)<br><br>\nAuswirkung hat das erst <b>nach dem Neuladen der kompletten Filmliste</b>.</html>"); //NON-NLS
 
                 //---- jButtonLoad ----
                 jButtonLoad.setText("Filmliste jetzt neu laden"); //NON-NLS
-
-                //---- jButtonHelpDays ----
-                jButtonHelpDays.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-                jButtonHelpDays.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
                 GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
                 jPanel6.setLayout(jPanel6Layout);
@@ -417,8 +402,6 @@ public class PanelEinstellungen extends JPanel {
                             .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButtonLoad)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jButtonHelpDays)
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 jPanel6Layout.setVerticalGroup(
@@ -430,11 +413,9 @@ public class PanelEinstellungen extends JPanel {
                                     .addComponent(jLabel6))
                                 .addGroup(jPanel6Layout.createSequentialGroup()
                                     .addGap(6, 6, 6)
-                                    .addGroup(jPanel6Layout.createParallelGroup()
-                                        .addComponent(jButtonHelpDays)
-                                        .addGroup(jPanel6Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jButtonLoad)))))
+                                    .addGroup(jPanel6Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButtonLoad))))
                             .addGap(2, 2, 2))
                 );
             }
@@ -446,12 +427,12 @@ public class PanelEinstellungen extends JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(96, Short.MAX_VALUE))
             );
             jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
             );
         }
@@ -471,7 +452,7 @@ public class PanelEinstellungen extends JPanel {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(cbUseDatabaseCleaner)
-                        .addContainerGap(408, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             jPanel7Layout.setVerticalGroup(
                 jPanel7Layout.createParallelGroup()
@@ -482,36 +463,14 @@ public class PanelEinstellungen extends JPanel {
             );
         }
 
-        //======== jPanel8 ========
-        {
-            jPanel8.setBorder(new TitledBorder("Speicherung der Filmliste")); //NON-NLS
-
-            //---- cbSaveHumanReadableFilmlist ----
-            cbSaveHumanReadableFilmlist.setText("in les- und editierbarem Format speichern"); //NON-NLS
-
-            GroupLayout jPanel8Layout = new GroupLayout(jPanel8);
-            jPanel8.setLayout(jPanel8Layout);
-            jPanel8Layout.setHorizontalGroup(
-                jPanel8Layout.createParallelGroup()
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(335, Short.MAX_VALUE))
-            );
-            jPanel8Layout.setVerticalGroup(
-                jPanel8Layout.createParallelGroup()
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbSaveHumanReadableFilmlist)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-        }
-
         //---- jCheckBoxTray ----
         jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
 
         //---- cbUseWikipediaSenderLogos ----
         cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
+
+        //---- cbAutomaticUpdateChecks ----
+        cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -521,17 +480,16 @@ public class PanelEinstellungen extends JPanel {
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup()
                         .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel8, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jPanel2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxTray)
-                                .addComponent(cbUseWikipediaSenderLogos))
-                            .addGap(0, 1, Short.MAX_VALUE))
-                        .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(cbUseWikipediaSenderLogos)
+                                .addComponent(cbAutomaticUpdateChecks)
+                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -548,12 +506,12 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
-                    .addContainerGap(7, Short.MAX_VALUE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(cbAutomaticUpdateChecks)
+                    .addContainerGap(3, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -568,10 +526,9 @@ public class PanelEinstellungen extends JPanel {
     private JPasswordField jpfProxyPassword;
     private JSpinner jSpinnerDays;
     private JButton jButtonLoad;
-    private JButton jButtonHelpDays;
     private JCheckBox cbUseDatabaseCleaner;
-    private JCheckBox cbSaveHumanReadableFilmlist;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
+    private JCheckBox cbAutomaticUpdateChecks;
     // End of variables declaration//GEN-END:variables
 }

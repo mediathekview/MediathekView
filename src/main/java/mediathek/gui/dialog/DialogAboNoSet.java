@@ -27,10 +27,12 @@ public class DialogAboNoSet extends JDialog {
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 
-        jTextArea1.setText("Ein Set von Programmen zum Aufzeichnen wurde nicht angelegt.\n\n"
-                + "Im Menü unter:\n"
-                + "\"Datei->Einstellungen->Aufzeichnen und Abspielen\"\n"
-                + "ein Programm zum Aufzeichnen für Abos festlegen. (Oder die Standardsets importieren)");
+        jTextArea1.setText("""
+                Ein Set von Programmen zum Aufzeichnen wurde nicht angelegt.
+
+                Im Menü unter:
+                "Datei->Einstellungen->Aufzeichnen und Abspielen"
+                ein Programm zum Aufzeichnen für Abos festlegen. (Oder die Standardsets importieren)""");
         jButtonImport.addActionListener(l
                 -> GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(),
                         ListePsetVorlagen.getStandarset(parent, true), true));

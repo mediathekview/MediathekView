@@ -2,12 +2,9 @@ package mediathek.filmlisten;
 
 import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -16,11 +13,15 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVHttpClient;
 import mediathek.tool.javafx.FXErrorDialog;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -31,10 +32,13 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -53,8 +57,8 @@ public class FilmeLaden {
     private final Daten daten;
     private final ImportFilmliste importFilmliste;
     private final EventListenerList listeners = new EventListenerList();
-    private boolean istAmLaufen = false;
-    private boolean onlyOne = false;
+    private boolean istAmLaufen;
+    private boolean onlyOne;
 
     public FilmeLaden(Daten aDaten) {
         daten = aDaten;
@@ -73,14 +77,10 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                logger.debug("Filme laden, ende");
+                logger.trace("Filme laden, ende");
                 undEnde(event);
             }
         });
-    }
-
-    public void loadFilmlist(String dateiUrl) {
-        loadFilmlist(dateiUrl, false);
     }
 
     /**
@@ -90,18 +90,17 @@ public class FilmeLaden {
      */
     private boolean hasNewRemoteFilmlist() {
         boolean result = false;
-        logger.debug("hasNewRemoteFilmList()");
+        logger.trace("hasNewRemoteFilmList()");
 
-        final String id = Daten.getInstance().getListeFilme().getId();
+        final String id = Daten.getInstance().getListeFilme().metaData().getId();
 
         boolean showDialogs = true;
 
         if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
-        final Request request = new Request.Builder()
-                .url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get()
-                .build();
+        HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");
+        final Request request = new Request.Builder().url(Objects.requireNonNull(filmListUrl)).build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (body != null && response.isSuccessful()) {
@@ -152,7 +151,7 @@ public class FilmeLaden {
     }
 
     /**
-     * Determin whether we want to perform a remote update check.
+     * Determine whether we want to perform a remote update check.
      * This will be done if:
      * 1. don´t have film entries
      * 2. dateiUrl is either empty or string starts with http
@@ -164,16 +163,20 @@ public class FilmeLaden {
         boolean result = true;
 
         //always perform update when list is empty
-        if (!listeFilme.isEmpty()) {
+        if (listeFilme.isEmpty()) {
+            return true;
+        }
+        else {
             //remote download is using an empty file name!...
             //or somebody put a web adress into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
-                //perform check only if we dont want to use DIFF list...
-                if (listeFilme.isTooOldForDiff()) {
+                //perform check only if we don´t want to use DIFF list...
+                if (!listeFilme.metaData().canUseDiffList()) {
                     if (!hasNewRemoteFilmlist())
                         result = false;
                 }
             }
+
         }
 
         return result;
@@ -191,9 +194,9 @@ public class FilmeLaden {
         if (!performUpdateCheck(listeFilme, dateiUrl))
             return false;
 
-        logger.debug("loadFilmlist(String,boolean)");
+        logger.trace("loadFilmlist(String,boolean)");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("Alte Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
@@ -210,7 +213,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
 
-            final int days = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE));
+            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (Netzwerk)");
@@ -230,7 +233,7 @@ public class FilmeLaden {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().genDate());
+        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
         logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
         if (!istAmLaufen) {
@@ -243,7 +246,8 @@ public class FilmeLaden {
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
-            importFilmliste.importFromFile(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
         }
     }
 
@@ -257,12 +261,12 @@ public class FilmeLaden {
 
         logger.debug("undEnde()");
         final var listeFilme = daten.getListeFilme();
-        final var readDate = new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date());
+        final var readDate = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
             logger.info("Liste Diff gelesen am: {}", readDate);
-            logger.info("  Liste Diff erstellt am: {}", diffListe.genDate());
+            logger.info("  Liste Diff erstellt am: {}", diffListe.metaData().getGenerationDateTimeAsString());
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
             listeFilme.updateFromFilmList(diffListe);
@@ -271,7 +275,7 @@ public class FilmeLaden {
             diffListe.clear();
         } else {
             logger.info("Liste Kompl. gelesen am: {}", readDate);
-            logger.info("  Liste Kompl erstellt am: {}", listeFilme.genDate());
+            logger.info("  Liste Kompl erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
             logger.info("  Anzahl Filme: {}", listeFilme.size());
         }
 
@@ -286,17 +290,17 @@ public class FilmeLaden {
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Fehler");
                 alert.setContentText("Das Laden der Filmliste hat nicht geklappt!");
-                alert.show();
+                JFXHiddenApplication.showAlert(alert,ui);
             });
 
             // dann die alte Liste wieder laden
             listeFilme.clear();
 
             try (FilmListReader reader = new FilmListReader()) {
-                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
             }
             logger.info("");
 
@@ -306,14 +310,13 @@ public class FilmeLaden {
         }
 
         logger.info("");
-        logger.info("Jetzige Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("Jetzige Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms());
         logger.info("");
 
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             FXProgressPane hb = new FXProgressPane();
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
 
             FilmListFilterTask task = new FilmListFilterTask(true);
             task.setOnRunning(e -> {
@@ -321,25 +324,20 @@ public class FilmeLaden {
                 hb.lb.textProperty().bind(task.messageProperty());
                 hb.prog.progressProperty().bind(task.progressProperty());
             });
-            task.setOnFailed(workerStateEventEventHandler);
 
-            FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
-            writerTask.setOnRunning(e -> {
-                hb.lb.textProperty().bind(writerTask.messageProperty());
-                hb.prog.progressProperty().bind(writerTask.progressProperty());
-            });
-            
-            writerTask.setOnSucceeded(workerStateEventEventHandler);
-            writerTask.setOnFailed(workerStateEventEventHandler);
-
-            CompletableFuture<Void> filterTask = CompletableFuture.runAsync(task);
-            if (writeFilmList)
-                filterTask.thenRun(writerTask);
-            else {
-                //TODO this is not beautiful
-                //manual cleanup as ui cleanup is not
-                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            CompletableFuture<Void> workerTask = CompletableFuture.runAsync(task);
+            if (writeFilmList) {
+                FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
+                writerTask.setOnRunning(e -> {
+                    hb.lb.textProperty().bind(writerTask.messageProperty());
+                    hb.prog.progressProperty().bind(writerTask.progressProperty());
+                });
+                workerTask = workerTask.thenRun(writerTask);
             }
+
+            workerTask.thenRun(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+            }));
         });
     }
 

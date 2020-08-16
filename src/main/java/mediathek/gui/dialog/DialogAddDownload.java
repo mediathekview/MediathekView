@@ -30,8 +30,8 @@ import java.util.Objects;
 @SuppressWarnings("serial")
 public class DialogAddDownload extends JDialog {
     private DatenPset pSet;
-    private boolean ok = false;
-    private DatenDownload datenDownload = null;
+    private boolean ok;
+    private DatenDownload datenDownload;
     private final Daten daten;
     private final DatenFilm datenFilm;
     private String orgPfad = "";
@@ -39,11 +39,10 @@ public class DialogAddDownload extends JDialog {
     private String dateiGroesse_HD = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
-    private boolean nameGeaendert = false;
-    private boolean stopBeob = false;
+    private boolean nameGeaendert;
+    private boolean stopBeob;
     private final JTextComponent cbPathTextComponent;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -83,7 +82,21 @@ public class DialogAddDownload extends JDialog {
             ok = false;
             beenden();
         }
-        jButtonZiel.addActionListener(new ZielBeobachter());
+
+        jButtonZiel.addActionListener(l -> {
+            var initialDirectory = "";
+            if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
+                initialDirectory = jComboBoxPfad.getSelectedItem().toString();
+            }
+            var directory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(),"Film speichern",initialDirectory);
+            if (directory != null) {
+                var selectedDirectory = directory.getAbsolutePath();
+                jComboBoxPfad.addItem(selectedDirectory);
+                jComboBoxPfad.setSelectedItem(selectedDirectory);
+
+            }
+        });
+
         jButtonOk.addActionListener(e -> {
             if (check()) {
                 beenden();
@@ -179,12 +192,22 @@ public class DialogAddDownload extends JDialog {
 
             }
         });
-        jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
+
+        var listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setNameFilm();
+            }
+        };
+        jRadioButtonAufloesungHd.addActionListener(listener);
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.getHighQualityUrl().isEmpty());
+
+        jRadioButtonAufloesungKlein.addActionListener(listener);
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getUrlKlein().isEmpty());
+
+        jRadioButtonAufloesungHoch.addActionListener(listener);
         jRadioButtonAufloesungHoch.setSelected(true);
+
         if (jRadioButtonAufloesungHd.isEnabled()) {
             dateiGroesse_HD = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD));
             if (!dateiGroesse_HD.isEmpty()) {
@@ -208,6 +231,7 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
         jCheckBoxPfadSpeichern.addActionListener(e -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
+
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
@@ -281,7 +305,7 @@ public class DialogAddDownload extends JDialog {
             jPanelSize.repaint();
 
             // jetzt noch prüfen, obs auf die Platte passt
-            usableSpace /= 1_000_000;
+            usableSpace /= FileSize.ONE_MiB;
             if (usableSpace > 0) {
                 int size;
                 if (!dateiGroesse_HD.isEmpty()) {
@@ -445,55 +469,6 @@ public class DialogAddDownload extends JDialog {
         }
         saveComboPfad(jComboBoxPfad, orgPfad);
         this.dispose();
-    }
-
-    private class BeobRadio implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setNameFilm();
-        }
-    }
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
-                        jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPfad.getSelectedItem().toString()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
-                        jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-            }
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

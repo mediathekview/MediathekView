@@ -12,7 +12,6 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -21,17 +20,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 @SuppressWarnings("serial")
 public class PanelFilmlisteLaden extends JPanel {
-    private final Daten daten;
-
-    public PanelFilmlisteLaden(Daten d) {
+    public PanelFilmlisteLaden() {
         super();
-        daten = d;
 
-        daten.getMessageBus().subscribe(this);
+        Daten.getInstance().getMessageBus().subscribe(this);
 
         initComponents();
         init();
@@ -45,28 +40,48 @@ public class PanelFilmlisteLaden extends JPanel {
 
         cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,true));
         cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,cbTrailer.isSelected()));
+
+        cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true));
+        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
     }
 
     private void init() {
         initRadio();
 
-        final var filmeLaden = daten.getFilmeLaden();
-        jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist(""));
+        final var filmeLaden = Daten.getInstance().getFilmeLaden();
+        jButtonLoad.addActionListener(ae -> filmeLaden.loadFilmlist("", false));
 
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
+        jButtonDateiAuswaehlen.addActionListener(l -> {
+            var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
+            if (loadFile != null) {
+                jTextFieldUrl.setText(loadFile.getAbsolutePath());
+            }
+        });
 
         jButtonFilmeLaden.addActionListener(e -> {
             if (jCheckBoxUpdate.isSelected())
                 filmeLaden.updateFilmlist(jTextFieldUrl.getText());
             else
-                filmeLaden.loadFilmlist(jTextFieldUrl.getText());
+                filmeLaden.loadFilmlist(jTextFieldUrl.getText(), false);
         });
 
-        jRadioButtonManuell.addActionListener(new BeobOption());
-        jRadioButtonAuto.addActionListener(new BeobOption());
+        var listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jRadioButtonManuell.isSelected())
+                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+                else
+                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
+
+                Daten.getInstance().getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
+            }
+        };
+        jRadioButtonManuell.addActionListener(listener);
+        jRadioButtonAuto.addActionListener(listener);
+
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        TextCopyPasteHandler handler = new TextCopyPasteHandler<>(jTextFieldUrl);
+        TextCopyPasteHandler<JTextField> handler = new TextCopyPasteHandler<>(jTextFieldUrl);
         jTextFieldUrl.setComponentPopupMenu(handler.getPopupMenu());
     }
 
@@ -77,13 +92,8 @@ public class PanelFilmlisteLaden extends JPanel {
 
     private void initRadio() {
         switch (GuiFunktionen.getImportArtFilme()) {
-            case MANUAL:
-                jRadioButtonManuell.setSelected(true);
-                break;
-
-            case AUTOMATIC:
-                jRadioButtonAuto.setSelected(true);
-                break;
+            case MANUAL -> jRadioButtonManuell.setSelected(true);
+            case AUTOMATIC -> jRadioButtonAuto.setSelected(true);
         }
 
         jTextFieldUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL));
@@ -97,56 +107,6 @@ public class PanelFilmlisteLaden extends JPanel {
         } else {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
-        }
-    }
-
-    private class BeobOption implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (jRadioButtonManuell.isSelected())
-                GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
-            else
-                GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
-
-            daten.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
-        }
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filmliste laden");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldUrl.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(102036579, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldUrl.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(733025319, ex);
-                    }
-                }
-            }
         }
     }
 
@@ -191,6 +151,7 @@ public class PanelFilmlisteLaden extends JPanel {
         cbSign = new JCheckBox();
         cbTrailer = new JCheckBox();
         cbAudio = new JCheckBox();
+        cbLivestreams = new JCheckBox();
 
         //======== this ========
         setMinimumSize(new Dimension(746, 400));
@@ -298,6 +259,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 new AC()
                     .fill().gap()
                     .fill().gap()
+                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
@@ -314,6 +276,10 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- cbAudio ----
             cbAudio.setText("H\u00f6rfassungen"); //NON-NLS
             jPanel1.add(cbAudio, new CC().cell(1, 0));
+
+            //---- cbLivestreams ----
+            cbLivestreams.setText("Livestreams"); //NON-NLS
+            jPanel1.add(cbLivestreams, new CC().cell(3, 0));
         }
         add(jPanel1, new CC().cell(1, 2));
 
@@ -337,5 +303,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox cbSign;
     private JCheckBox cbTrailer;
     private JCheckBox cbAudio;
+    private JCheckBox cbLivestreams;
     // End of variables declaration//GEN-END:variables
 }

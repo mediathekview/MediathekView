@@ -13,10 +13,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.URL;
+import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
@@ -49,8 +46,8 @@ public class DirectHttpDownload extends Thread {
      * number of bytes already downloaded.
      * 0 if nothing has been downloaded before.
      */
-    private long alreadyDownloaded = 0;
-    private File file = null;
+    private long alreadyDownloaded;
+    private File file;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private CompletableFuture<Void> infoFuture;
@@ -112,7 +109,7 @@ public class DirectHttpDownload extends Thread {
      * @param url {@link java.net.URL} to the specified content.
      * @return Length in bytes or -1 on error.
      */
-    private long getContentLength(final URL url) throws IOException {
+    private long getContentLength(@NotNull HttpUrl url) throws IOException {
         long contentSize = -1;
 
         final Request request = new Request.Builder().url(url).head()
@@ -141,8 +138,13 @@ public class DirectHttpDownload extends Thread {
         final boolean downloadInfoFile = Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]);
         if (downloadInfoFile) {
             infoFuture = CompletableFuture.runAsync(() -> {
-                MVInfoFile infoFile = new MVInfoFile();
-                infoFile.writeInfoFile(datenDownload);
+                try {
+                    MVInfoFile infoFile = new MVInfoFile();
+                    infoFile.writeInfoFile(datenDownload);
+                }
+                catch (IOException ex) {
+                    logger.error("Failed to write info file", ex);
+                }
             });
         }
     }
@@ -264,7 +266,7 @@ public class DirectHttpDownload extends Thread {
         start.status = Start.STATUS_ERR;
     }
 
-    private Request buildDownloadRequest(@NotNull URL url) {
+    private Request buildDownloadRequest(@NotNull HttpUrl url) {
         var request = new Request.Builder().url(url).get()
                 .header("User-Agent", getUserAgent());
         if (alreadyDownloaded != 0)
@@ -286,7 +288,8 @@ public class DirectHttpDownload extends Thread {
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
 
             if (!cancelDownload()) {
-                final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+                HttpUrl url = HttpUrl.parse(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+                assert url != null;
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
 
@@ -296,7 +299,8 @@ public class DirectHttpDownload extends Thread {
                 if (response.isSuccessful() && body != null) {
                     downloadContent(body.byteStream());
                 } else {
-                    if (response.code() == HTTP_RANGE_NOT_SATISFIABLE) {
+                    final int responseCode = response.code();
+                    if (responseCode == HTTP_RANGE_NOT_SATISFIABLE) {
                         //close old stuff first
                         if (body != null)
                             body.close();
@@ -313,7 +317,14 @@ public class DirectHttpDownload extends Thread {
                             printHttpErrorMessage(response);
                         }
                     } else {
-                        printHttpErrorMessage(response);
+                        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                            logger.error("HTTP error 404 received for URL: {}", request.url().toString());
+                            state = HttpDownloadState.ERROR;
+                            start.status = Start.STATUS_ERR;
+                        }
+                        else {
+                            printHttpErrorMessage(response);
+                        }
                     }
                 }
             }

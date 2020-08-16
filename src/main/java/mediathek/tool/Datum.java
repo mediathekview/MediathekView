@@ -1,12 +1,12 @@
 package mediathek.tool;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @SuppressWarnings("serial")
 public class Datum extends Date {
-    protected final static FastDateFormat dateFormatter1 = FastDateFormat.getInstance("dd.MM.yyyy");
+    //hier war timezone nicht gefordert...
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");//.withZone(ZoneId.of("Europe/Berlin"));
 
     public Datum() {
         super();
@@ -21,7 +21,7 @@ public class Datum extends Date {
         if (getTime() == 0) {
             return "";
         } else {
-            return dateFormatter1.format(this);
+            return formatter.format(DateUtil.convertToLocalDate(this));
         }
     }
 
@@ -31,7 +31,7 @@ public class Datum extends Date {
      * @return Differenz in Sekunden.
      */
     public int diffInSekunden() {
-        final int ret = Long.valueOf((getTime() - new Date().getTime()) / 1000).intValue();
+        final int ret = Long.valueOf((getTime() - System.currentTimeMillis()) / 1000).intValue();
         return Math.abs(ret);
     }
 

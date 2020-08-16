@@ -8,24 +8,45 @@
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import mediathek.javafx.filterpanel.ZeitraumSpinner?>
+<?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
-
-    <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
-        <tooltip>
-            <Tooltip text="Filter zurücksetzen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
-        </graphic>
-    </Button>
+    <HBox spacing="4.0">
+        <ComboBox fx:id="filterSelect" editable="true" promptText="Filter Auswahl" />
+        <Button fx:id="btnAddNewFilter">
+            <tooltip>
+                <Tooltip text="Neuen Filter anlegen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="PLUS" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Button fx:id="btnDeleteCurrentFilter">
+            <tooltip>
+                <Tooltip text="Aktuellen Filter löschen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
+            </graphic>
+        </Button>
+        <VerticalSeparator/>
+        <Button mnemonicParsing="false" fx:id="btnDeleteFilterSettings">
+            <tooltip>
+                <Tooltip text="Aktuellen Filter zurücksetzen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
+            </graphic>
+        </Button>
+    </HBox>
     <Separator/>
+    <CheckBox mnemonicParsing="false" text="Nur neue Filme anzeigen" fx:id="cbShowNewOnly"/>
+    <CheckBox mnemonicParsing="false" text="Nur gemerkte Filme anzeigen" fx:id="cbShowBookMarkedOnly"/>
     <CheckBox mnemonicParsing="false" text="Nur HD-Filme anzeigen" fx:id="cbShowOnlyHd"/>
     <CheckBox mnemonicParsing="false" text="Nur Filme mit Untertitel anzeigen" fx:id="cbShowSubtitlesOnly"/>
-    <CheckBox mnemonicParsing="false" text="Nur neue Filme anzeigen" fx:id="cbShowNewOnly"/>
     <CheckBox mnemonicParsing="false" text="Nur Live Streams anzeigen" fx:id="cbShowOnlyLivestreams"/>
     <Separator/>
     <CheckBox mnemonicParsing="false" text="Gesehene Filme nicht anzeigen" fx:id="cbShowUnseenOnly"/>
@@ -39,10 +60,10 @@
     <HBox spacing="4.0" maxWidth="Infinity">
         <BorderPane>
             <center>
-                <Label fx:id="_themaLabel" text="Thema:"/>
+                <Label fx:id="themaLabel" text="Thema:"/>
             </center>
         </BorderPane>
-        <ThemaComboBox fx:id="_themaComboBox" HBox.hgrow="ALWAYS">
+        <ThemaComboBox fx:id="themaComboBox" HBox.hgrow="ALWAYS">
             <promptText>Themaauswahl</promptText>
         </ThemaComboBox>
     </HBox>

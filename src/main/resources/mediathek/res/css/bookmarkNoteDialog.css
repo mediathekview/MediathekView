@@ -1,0 +1,9 @@
+
+.root {
+    -fx-font-size: 11px
+}
+
+.Invalid {
+  -fx-text-fill: red;
+  -fx-font-weight: bold;
+}

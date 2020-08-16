@@ -3,13 +3,16 @@ package mediathek.x11;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.LinuxNotificationCenter;
+import mediathek.tool.notification.NullNotificationCenter;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 public class MediathekGuiX11 extends MediathekGui {
     private static final Logger logger = LogManager.getLogger(MediathekGuiX11.class);
@@ -18,31 +21,11 @@ public class MediathekGuiX11 extends MediathekGui {
         setupX11WindowManagerClassName();
     }
 
-    private void disableAccessWarnings() {
-        try {
-            var unsafeClass = Class.forName("sun.misc.Unsafe");
-            var field = unsafeClass.getDeclaredField("theUnsafe");
-            field.setAccessible(true);
-            var unsafe = field.get(null);
-
-            var putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile", Object.class, long.class, Object.class);
-            var staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset", Field.class);
-
-            var loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
-            var loggerField = loggerClass.getDeclaredField("logger");
-            Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
-            putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
-        } catch (Exception ignored) {
-        }
-    }
-
     /**
      * Setup the X11 window manager WM_CLASS hint.
      * Enables e.g. GNOME to determine application name and to enable app specific functionality.
      */
     private void setupX11WindowManagerClassName() {
-        disableAccessWarnings();
-
         try {
             var xToolkit = Toolkit.getDefaultToolkit();
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
@@ -50,6 +33,37 @@ public class MediathekGuiX11 extends MediathekGui {
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Could not set awtAppClassName");
+        }
+    }
+
+    @Override
+    protected void setupNotificationCenter() {
+        try {
+            var notificationCenter = daten.notificationCenter();
+            if (notificationCenter != null) {
+                notificationCenter.close();
+            }
+        } catch (IOException e) {
+            logger.error("error closing notification center", e);
+        }
+
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        // we need to figure if we have native support available
+        var notificationCenter = new LinuxNotificationCenter();
+        final boolean hasNativeSupport = notificationCenter.hasNativeSupport();
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, hasNativeSupport);
+
+        //reset if we don´t have native support
+        if (!hasNativeSupport) {
+           config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS,false);
+        }
+        if (!showNotifications) {
+            daten.setNotificationCenter(new NullNotificationCenter());
+        } else {
+            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false))
+                daten.setNotificationCenter(notificationCenter);
+            else
+                daten.setNotificationCenter(new GenericNotificationCenter());
         }
     }
 

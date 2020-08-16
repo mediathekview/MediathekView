@@ -1,16 +1,16 @@
-JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, comp jPanel6:::::x, space :::p}}"
+			"$horizontalGroup": "par l {seq l {space :::p, comp jPanel6:::::x, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::x}}"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, par l {comp jRadioButtonSonst:::p::p, comp jRadioButtonEu:::p::p, comp jCheckBoxMarkieren::l:p::p, comp jLabel1::l:p::p, comp jRadioButtonDe::l:p::p, comp jRadioButtonCH::l:p::p, comp jRadioButtonAt::l:p::p}, space :::x}, seq t {space :::x, comp jButtonHilfe:::p::p, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxMarkieren:::p::p, space s:::p, comp jLabel1:::p::p, space u:::p, comp jRadioButtonDe:::p::p, space u:::p, comp jRadioButtonCH:::p::p, space u:::p, comp jRadioButtonAt:::p::p, space u:::p, comp jRadioButtonEu:::p::p, space u:::p, comp jRadioButtonSonst:::p::p, space ::38:x, comp jButtonHilfe:::p::p, space :::p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp jCheckBoxMarkieren:::p::p, space :0:150:x}, comp panel1:::::x, seq t {space :0:331:x, comp jButtonHilfe:::p::p}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxMarkieren:::p::p, space :p:18:p, comp panel1:::::x, space :::p, comp jButtonHilfe:::p::p, space :p::p}}"
 			} ) {
 				name: "jPanel6"
 				"border": new javax.swing.border.TitledBorder( "Geogeblockte Filme" )
@@ -21,38 +21,38 @@ new FormModel {
 					name: "jCheckBoxMarkieren"
 					"text": "geblockte Sendungen gelb markieren"
 				} )
-				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonDe"
-					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"selected": true
-					"text": "DE - Deutschland"
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "jLabel1"
-					"text": "Mein Standort:"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
+					name: "panel1"
+					"border": new javax.swing.border.TitledBorder( "Mein Standort" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
-				} )
-				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonCH"
-					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "CH - Schweiz"
-				} )
-				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonAt"
-					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "AT - Österreich"
-				} )
-				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonEu"
-					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "EU (EBU - European Broadcasting Union)"
-				} )
-				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonSonst"
-					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "sonst"
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonDe"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"selected": true
+						"text": "DE - Deutschland"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonCH"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "CH - Schweiz"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAt"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "AT - Österreich"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonEu"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "EU (EBU - European Broadcasting Union)"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonSonst"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Sonstiger"
+					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonHilfe"
@@ -61,7 +61,7 @@ new FormModel {
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 375, 315 )
+			"size": new java.awt.Dimension( 445, 250 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
@@ -70,7 +70,7 @@ new FormModel {
 				"JavaCodeGenerator.variableLocal": true
 			}
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 5, 350 )
+			"location": new java.awt.Point( 25, 545 )
 		} )
 	}
 }

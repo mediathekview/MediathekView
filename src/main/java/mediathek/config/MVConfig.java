@@ -185,7 +185,6 @@ public class MVConfig {
 
     public enum Configs {
         //Programm-Configs, änderbar über Gui
-        SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
@@ -197,8 +196,6 @@ public class MVConfig {
         // Fenstereinstellungen
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
-        SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
@@ -207,7 +204,6 @@ public class MVConfig {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN("Meldungsfenster-Systemmeldungen"),
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
-        SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
         SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
@@ -223,14 +219,12 @@ public class MVConfig {
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
-        SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
         SYSTEM_PFAD_FFMPEG("pfad-ffmpeg", GuiFunktionenProgramme.getMusterPfadFFmpeg()),
         SYSTEM_VERSION_PROGRAMMSET("Version-Programmset"),
         // Blacklist
         SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN("Blacklist-Zukunft-nicht-anzeigen"),
-        SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN("Blacklist-Geo-nicht-anzeigen"),
         SYSTEM_BLACKLIST_AUCH_ABO("Blacklist-auch-Abo"),
         SYSTEM_BLACKLIST_START_ON("Blacklist-Start-ausgeschaltet", Boolean.FALSE.toString()),
         SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet", Boolean.FALSE.toString()),
@@ -242,8 +236,6 @@ public class MVConfig {
         SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
         SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten", Boolean.FALSE.toString()),
         SYSTEM_DOWNLOAD_ERRORMSG("download-error-msg", Boolean.TRUE.toString()),
-        SYSTEM_MAX_DOWNLOAD("maxDownload", "1"),
-        SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
         // Abo
         SYSTEM_ABO_MIN_SIZE("Abo-Mindestdauer-Minuten"),
@@ -260,6 +252,7 @@ public class MVConfig {
         FARBE__FILM_NEU("FARBE_FILM_NEU"),
         FARBE__FILM_GEOBLOCK_BACKGROUND("FARBE_FILM_GEOBLOCK_BACKGROUND"),
         FARBE__FILM_GEOBLOCK_BACKGROUND_SEL("FARBE_FILM_GEOBLOCK_BACKGROUND_SEL"),
+        FARBE__FILM_BOOKMARKED("FARBE_FILM_BOOKMARKED"),
         FARBE__DOWNLOAD_IST_ABO("FARBE_DOWNLOAD_IST_ABO"),
         FARBE__DOWNLOAD_IST_DIREKTER_DOWNLOAD("FARBE_DOWNLOAD_IST_DIREKTER_DOWNLOAD"),
         FARBE__DOWNLOAD_ANSEHEN("FARBE_DOWNLOAD_ANSEHEN"),
