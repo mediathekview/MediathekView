@@ -74,6 +74,7 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release linux
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Linux ARM
@@ -84,6 +85,7 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release linux-armhf
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Windows
@@ -94,6 +96,7 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Windows 32bit
@@ -104,5 +107,6 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win32
+          skip_cleanup: true
           on:
             tags: true
