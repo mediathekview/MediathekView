@@ -49,7 +49,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
-    private Document doc = null;
+    private Document doc;
 
     public TimedTextMarkupLanguageParser() {
     }
@@ -320,7 +320,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         subtitleList.clear();
     }
 
-    private class StyledString {
+    private static class StyledString {
 
         private String text = "";
         private String color = "";

@@ -9,6 +9,7 @@ import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Listener;
 import org.apache.commons.configuration2.Configuration;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -91,8 +92,8 @@ public class PanelEinstellungenGeo extends JPanel {
     private void initComponents() {
         var jPanel6 = new JPanel();
         jCheckBoxMarkieren = new JCheckBox();
+        var panel1 = new JPanel();
         jRadioButtonDe = new JRadioButton();
-        var jLabel1 = new JLabel();
         jRadioButtonCH = new JRadioButton();
         jRadioButtonAt = new JRadioButton();
         jRadioButtonEu = new JRadioButton();
@@ -108,24 +109,32 @@ public class PanelEinstellungenGeo extends JPanel {
             //---- jCheckBoxMarkieren ----
             jCheckBoxMarkieren.setText("geblockte Sendungen gelb markieren"); //NON-NLS
 
-            //---- jRadioButtonDe ----
-            jRadioButtonDe.setSelected(true);
-            jRadioButtonDe.setText("DE - Deutschland"); //NON-NLS
+            //======== panel1 ========
+            {
+                panel1.setBorder(new TitledBorder("Mein Standort")); //NON-NLS
+                panel1.setLayout(new VerticalLayout());
 
-            //---- jLabel1 ----
-            jLabel1.setText("Mein Standort:"); //NON-NLS
+                //---- jRadioButtonDe ----
+                jRadioButtonDe.setSelected(true);
+                jRadioButtonDe.setText("DE - Deutschland"); //NON-NLS
+                panel1.add(jRadioButtonDe);
 
-            //---- jRadioButtonCH ----
-            jRadioButtonCH.setText("CH - Schweiz"); //NON-NLS
+                //---- jRadioButtonCH ----
+                jRadioButtonCH.setText("CH - Schweiz"); //NON-NLS
+                panel1.add(jRadioButtonCH);
 
-            //---- jRadioButtonAt ----
-            jRadioButtonAt.setText("AT - \u00d6sterreich"); //NON-NLS
+                //---- jRadioButtonAt ----
+                jRadioButtonAt.setText("AT - \u00d6sterreich"); //NON-NLS
+                panel1.add(jRadioButtonAt);
 
-            //---- jRadioButtonEu ----
-            jRadioButtonEu.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
+                //---- jRadioButtonEu ----
+                jRadioButtonEu.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
+                panel1.add(jRadioButtonEu);
 
-            //---- jRadioButtonSonst ----
-            jRadioButtonSonst.setText("sonst"); //NON-NLS
+                //---- jRadioButtonSonst ----
+                jRadioButtonSonst.setText("Sonstiger"); //NON-NLS
+                panel1.add(jRadioButtonSonst);
+            }
 
             //---- jButtonHilfe ----
             jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
@@ -138,17 +147,13 @@ public class PanelEinstellungenGeo extends JPanel {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel6Layout.createParallelGroup()
-                            .addComponent(jRadioButtonSonst)
-                            .addComponent(jRadioButtonEu)
-                            .addComponent(jCheckBoxMarkieren)
-                            .addComponent(jLabel1)
-                            .addComponent(jRadioButtonDe)
-                            .addComponent(jRadioButtonCH)
-                            .addComponent(jRadioButtonAt))
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfe)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxMarkieren)
+                                .addGap(0, 150, Short.MAX_VALUE))
+                            .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                                .addGap(0, 331, Short.MAX_VALUE)
+                                .addComponent(jButtonHilfe)))
                         .addContainerGap())
             );
             jPanel6Layout.setVerticalGroup(
@@ -157,18 +162,8 @@ public class PanelEinstellungenGeo extends JPanel {
                         .addContainerGap()
                         .addComponent(jCheckBoxMarkieren)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonDe)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonCH)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonAt)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonEu)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonSonst)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                        .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonHilfe)
                         .addContainerGap())
             );

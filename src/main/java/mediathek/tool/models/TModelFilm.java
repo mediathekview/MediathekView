@@ -1,9 +1,8 @@
 package mediathek.tool.models;
 
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenFilmCaptions;
-import mediathek.tool.Datum;
-import mediathek.tool.MVFilmSize;
+import mediathek.tool.DatumFilm;
+import mediathek.tool.FilmSize;
 
 import java.util.Vector;
 
@@ -35,135 +34,56 @@ public class TModelFilm extends TModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        Class<?> result;
-        switch (columnIndex) {
-            case DatenFilm.FILM_NR:
-                result = Integer.class;
-                break;
-
-            case DatenFilm.FILM_DATUM:
-                result = Datum.class;
-                break;
-
-            case DatenFilm.FILM_GROESSE:
-                result = MVFilmSize.class;
-                break;
-
-            case DatenFilm.FILM_HD:
-            case DatenFilm.FILM_UT:
-                result = Boolean.class;
-                break;
-
-            default:
-                result = String.class;
-                break;
-        }
-
-        return result;
+        return switch (columnIndex) {
+            case DatenFilm.FILM_NR, DatenFilm.FILM_DAUER -> Integer.class;
+            case DatenFilm.FILM_DATUM -> DatumFilm.class;
+            case DatenFilm.FILM_GROESSE -> FilmSize.class;
+            case DatenFilm.FILM_HD, DatenFilm.FILM_UT -> Boolean.class;
+            case DatenFilm.FILM_DATUM_LONG -> Long.class;
+            default -> String.class;
+        };
     }
 
     @Override
-    public String getColumnName(int column) 
-    {
-    	// TODO: clear caption titles in DatenFilmCaptions?
-        if (column == DatenFilm.FILM_ABSPIELEN || column == DatenFilm.FILM_AUFZEICHNEN)
-        {
-        	return "";
-        }
-
-        return DatenFilmCaptions.getTitleByFieldIndex(column);
+    public String getColumnName(int column) {
+        return switch (column) {
+            case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
+            case DatenFilm.FILM_NR -> "Nr";
+            case DatenFilm.FILM_SENDER -> "Sender";
+            case DatenFilm.FILM_THEMA -> "Thema";
+            case DatenFilm.FILM_TITEL -> "Titel";
+            case DatenFilm.FILM_DATUM -> "Datum";
+            case DatenFilm.FILM_ZEIT -> "Zeit";
+            case DatenFilm.FILM_DAUER -> "Dauer";
+            case DatenFilm.FILM_GROESSE -> "Größe [MB]";
+            case DatenFilm.FILM_HD -> "HQ";
+            case DatenFilm.FILM_UT -> "UT";
+            case DatenFilm.FILM_GEO -> "Geo";
+            case DatenFilm.FILM_URL -> "URL";
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
+        };
     }
 
     @Override
     public Object getValueAt(int row, int column) {
         final DatenFilm film = (DatenFilm) dataVector.elementAt(row).elementAt(0);
-        Object result;
-        switch (column) {
-            case DatenFilm.FILM_NR:
-                result = film.getFilmNr();
-                break;
 
-            case DatenFilm.FILM_SENDER:
-                result = film.getSender();
-                break;
-
-            case DatenFilm.FILM_THEMA:
-                result = film.getThema();
-                break;
-
-            case DatenFilm.FILM_TITEL:
-                result = film.getTitle();
-                break;
-
-            case DatenFilm.FILM_ABSPIELEN:
-            case DatenFilm.FILM_AUFZEICHNEN:
-                result = "";
-                break;
-
-            case DatenFilm.FILM_DATUM:
-                result = film.getDatumFilm();
-                break;
-
-            case DatenFilm.FILM_ZEIT:
-                result = film.getSendeZeit();
-                break;
-
-            case DatenFilm.FILM_DAUER:
-                result = film.getDauer();
-                break;
-
-            case DatenFilm.FILM_GROESSE:
-                result = film.getFilmSize();
-                break;
-
-            case DatenFilm.FILM_HD:
-                result = film.isHighQuality();
-                break;
-
-            case DatenFilm.FILM_UT:
-                result = film.hasSubtitle();
-                break;
-
-            case DatenFilm.FILM_GEO:
-                result = film.getGeo().orElse("");
-                break;
-
-            case DatenFilm.FILM_URL:
-                result = film.getUrl();
-                break;
-
-            case DatenFilm.FILM_ABO_NAME:
-                result = film.getAboName();
-                break;
-
-            case DatenFilm.FILM_URL_SUBTITLE:
-                result = film.getUrlSubtitle();
-                break;
-
-            case DatenFilm.FILM_URL_KLEIN:
-                result = film.getUrlKlein();
-                break;
-
-            case DatenFilm.FILM_URL_HD:
-                result = film.getHighQualityUrl();
-                break;
-
-            case DatenFilm.FILM_URL_HISTORY:
-                result = film.getUrl();
-                break;
-
-            case DatenFilm.FILM_REF:
-                result = film;
-                break;
-
-            case DatenFilm.FILM_DATUM_LONG:
-                result = film.getDatumLong();
-                break;
-
-            default:
-                throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
-        }
-
-        return result;
+        return switch (column) {
+            case DatenFilm.FILM_NR -> film.getFilmNr();
+            case DatenFilm.FILM_SENDER -> film.getSender();
+            case DatenFilm.FILM_THEMA -> film.getThema();
+            case DatenFilm.FILM_TITEL -> film.getTitle();
+            case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
+            case DatenFilm.FILM_DATUM -> film.getDatumFilm();
+            case DatenFilm.FILM_ZEIT -> film.getSendeZeit();
+            case DatenFilm.FILM_DAUER -> film.getDuration();
+            case DatenFilm.FILM_GROESSE -> film.getFilmSize();
+            case DatenFilm.FILM_HD -> film.isHighQuality();
+            case DatenFilm.FILM_UT -> film.hasSubtitle();
+            case DatenFilm.FILM_GEO -> film.getGeo().orElse("");
+            case DatenFilm.FILM_URL -> film.getUrl();
+            case DatenFilm.FILM_REF -> film;
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
+        };
     }
 }

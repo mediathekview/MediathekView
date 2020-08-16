@@ -21,9 +21,10 @@ package mediathek.daten;
 
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -60,13 +61,14 @@ public class DatenPset implements Comparable<DatenPset> {
     public static final int MAX_ELEM = 22;
 
     public static final String[] COLUMN_NAMES = {"Setname", "Präfix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema anlegen",
-        "Abspielen", "Speichern", "Button", "Abo", "Länge", "Länge Feld", "max Länge", "max Länge Feld", "Auflösung", "AddOn",
-        "Beschreibung", "Url Info", "Infodatei", "Spotlight", "Untertitel"};
+            "Abspielen", "Speichern", "Button", "Abo", "Länge", "Länge Feld", "max Länge", "max Länge Feld", "Auflösung", "AddOn",
+            "Beschreibung", "Url Info", "Infodatei", "Spotlight", "Untertitel"};
     public static final String[] XML_NAMES = {"Name", "Praefix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
-        "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
-        "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
-    private final ListeProg listeProg = new ListeProg();
+            "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
+            "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
+    private static final Logger logger = LogManager.getLogger();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    private final ListeProg listeProg = new ListeProg();
     public String[] arr;
 
     public DatenPset() {
@@ -141,17 +143,21 @@ public class DatenPset implements Comparable<DatenPset> {
         return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABO]);
     }
 
-    public boolean isLable() {
-        // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
+    /**
+     * Is this pSet a label?
+     * @return true if it is a label, otherwise false
+     */
+    public boolean isLabel() {
+        //if program list is empty AND there is a name -> label
         if (this.listeProg.isEmpty()) {
-            return !this.arr[PROGRAMMSET_NAME].equals("");
+            return !this.arr[PROGRAMMSET_NAME].isEmpty();
         }
         return false;
     }
 
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        return this.arr[PROGRAMMSET_NAME].equals("");
+        return this.arr[PROGRAMMSET_NAME].isEmpty();
     }
 
     public void setAbspielen() {
@@ -241,7 +247,7 @@ public class DatenPset implements Comparable<DatenPset> {
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
-                Log.errorLog(669254033, ex);
+                logger.error("getFarbe()", ex);
             }
         }
         return ret;
@@ -281,7 +287,7 @@ public class DatenPset implements Comparable<DatenPset> {
 
     private void initialize() {
         arr = new String[MAX_ELEM];
-        Arrays.fill(arr,"");
+        Arrays.fill(arr, "");
 
         arr[PROGRAMMSET_THEMA_ANLEGEN] = Boolean.toString(true);
         arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);

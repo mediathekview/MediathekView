@@ -1,0 +1,192 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :::p, comp jTabbedPane1:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "jTabbedPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, comp jScrollPane5::::773:x, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane5:::p:119:p, space ::459:x}}"
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane5"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "jTextArea3"
+							"editable": false
+							"columns": 20
+							"rows": 5
+							"text": "\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will, kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n"
+							"margin": new java.awt.Insets( 3, 3, 3, 3 )
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Dateinamen"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :21:21:p, comp jPanel3:::::x}, seq {par l {comp jCheckBoxAscii:::p::p, comp jCheckBoxTable::l:p::p}, space :0:0:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p::p, comp jCheckBoxTable:::p::p, space :p::p, comp jPanel3:::::x, space s:p::p, comp jCheckBoxAscii:::p::p, space :::p}}"
+				} ) {
+					name: "jPanel2"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxTable"
+						"text": "Ersetzungstabelle anwenden"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, par l {comp jScrollPane4:::::x, seq l {comp jScrollPane3:::::x, space u:::p, comp jLabelAlert:::p::p}, seq {comp jButtonReset:::p::p, space :0:0:x}, seq l {comp jLabelVon:::p::p, space :::p, comp jTextFieldVon:::p:100:p, space u:::p, comp jLabelNach:::p::p, space :::p, comp jTextFieldNach:::p:100:p, space ::111:x, comp jButtonUp:::p::p, space :::p, comp jButtonDown:::p::p, space :::p, comp jButtonPlus:::p::p, space :::p, comp jButtonMinus:::p::p}}, space :p:15:p}}"
+						"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane4::::328:x, space u:p::p, par c {comp jLabelVon:1:c:p::p, comp jTextFieldVon:1:c:p::p, comp jLabelNach:1:c:p::p, comp jTextFieldNach:1:c:p::p, comp jButtonUp:1:c:p::p, comp jButtonDown:1:c:p::p, comp jButtonPlus:1:c:p::p, comp jButtonMinus:1:c:p::p}, space u:p::p, par c {comp jScrollPane3::c:p::p, comp jLabelAlert::c:p::p}, space :p::p, comp jButtonReset:::p::p, space :p::p}}"
+					} ) {
+						name: "jPanel3"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonReset"
+							"text": "Tabelle zurücksetzen"
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "jScrollPane3"
+							"border": new javax.swing.border.EmptyBorder( 1, 1, 1, 1 )
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JTextArea" ) {
+								name: "jTextArea2"
+								"editable": false
+								"background": new com.jformdesigner.model.SwingColor( "Label.background" )
+								"columns": 20
+								"rows": 4
+								"text": "Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!"
+								"border": new javax.swing.border.EmptyBorder( 1, 1, 1, 1 )
+								auxiliary() {
+									"JavaCodeGenerator.variableLocal": true
+								}
+							} )
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "jScrollPane4"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JTable" ) {
+								name: "tabelle"
+								"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+									add( new java.util.Vector {
+										add( null )
+										add( null )
+										add( null )
+										add( null )
+									} )
+									add( new java.util.Vector {
+										add( null )
+										add( null )
+										add( null )
+										add( null )
+									} )
+									add( new java.util.Vector {
+										add( null )
+										add( null )
+										add( null )
+										add( null )
+									} )
+									add( new java.util.Vector {
+										add( null )
+										add( null )
+										add( null )
+										add( null )
+									} )
+								}, new java.util.Vector {
+									add( "Title 1" )
+									add( "Title 2" )
+									add( "Title 3" )
+									add( "Title 4" )
+								}, new java.util.Vector {
+									add( class java.lang.Object )
+									add( class java.lang.Object )
+									add( class java.lang.Object )
+									add( class java.lang.Object )
+								}, new java.util.Vector {
+									add( true )
+									add( true )
+									add( true )
+									add( true )
+								}, new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabelAlert"
+							"text": "Achtung"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabelVon"
+							"text": "von:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldVon"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabelNach"
+							"text": "nach:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldNach"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonMinus"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-remove.png" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonPlus"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-add.png" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonDown"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-down.png" )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonUp"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-up.png" )
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxAscii"
+						"text": "Nur ASCII-Zeichen erlauben"
+						"toolTipText": "<html>Es werden alle Zeichen \"über 127\" ersetzt.  Auch Umlaute wie \"ö -> oe\" werden ersetzt.<br>Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.</html>"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Eigene Einstellungen"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 805, 650 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

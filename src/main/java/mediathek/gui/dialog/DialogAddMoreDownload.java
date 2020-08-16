@@ -4,41 +4,38 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.FileDialogs;
 import mediathek.tool.FilenameUtils;
-import mediathek.tool.Log;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.lang3.SystemUtils;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class DialogAddMoreDownload extends JDialog {
-    public boolean addAll = false;
-    public boolean cancel = false;
+    public boolean addAll;
+    public boolean cancel;
     public boolean info;
     public boolean subtitle;
 
-    private final JFrame parent;
     private final DatenPset pSet;
     private final String orgPfad;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     public DialogAddMoreDownload(JFrame parent, DatenPset pSet) {
-        super(parent, true);
-        this.parent = parent;
+        super(parent);
         this.pSet = pSet;
 
         initComponents();
-        setTitle("Alle Downloads starten");
 
         chkSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
         subtitle = chkSubtitle.isSelected();
@@ -65,12 +62,27 @@ public class DialogAddMoreDownload extends JDialog {
         });
 
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.addActionListener(l -> {
+            var initialDirectory = "";
+            var cbItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();
+            if (!cbItem.isEmpty()) {
+                initialDirectory = cbItem;
+            }
+            var selectedDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(),"Film speichern",initialDirectory);
+            if (selectedDirectory != null) {
+                final String absolutePath = selectedDirectory.getAbsolutePath();
+                jComboBoxPath.addItem(absolutePath);
+                jComboBoxPath.setSelectedItem(absolutePath);
+            }
+        });
+
+
         jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
-        jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{pSet.getZielPfad()}));
         });
+
         DialogAddDownload.setModelPfad(pSet.getZielPfad(), jComboBoxPath);
         orgPfad = pSet.getZielPfad();
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
@@ -101,7 +113,10 @@ public class DialogAddMoreDownload extends JDialog {
             }
         });
 
-        EscapeKeyHandler.installHandler(this, this::beenden);
+        EscapeKeyHandler.installHandler(this, () -> {
+            cancel = true;
+            beenden();
+        });
 
         pack();
     }
@@ -120,189 +135,162 @@ public class DialogAddMoreDownload extends JDialog {
     }
 
 
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(parent, "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        final String path = chooser.getDirectory() + chooser.getFile();
-                        jComboBoxPath.addItem(path);
-                        jComboBoxPath.setSelectedItem(path);
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jComboBoxPath.getSelectedItem().toString().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        final String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-                        jComboBoxPath.addItem(absolutePath);
-                        jComboBoxPath.setSelectedItem(absolutePath);
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-            }
-        }
-    }
-
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jPanelExtra = new JPanel();
+        var jLabel1 = new JLabel();
+        jComboBoxPath = new JComboBox<>();
+        jButtonDelPath = new JButton();
+        jButtonPath = new JButton();
+        var jPanel1 = new JPanel();
+        chkInfo = new JCheckBox();
+        jCheckBoxPfadSpeichern = new JCheckBox();
+        chkSubtitle = new JCheckBox();
+        chkStart = new JCheckBox();
+        btnChange = new JButton();
+        btnCancel = new JButton();
+        btnOk = new JButton();
 
-        javax.swing.JPanel jPanelExtra = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        chkInfo = new javax.swing.JCheckBox();
-        chkSubtitle = new javax.swing.JCheckBox();
-        jComboBoxPath = new javax.swing.JComboBox<>();
-        jButtonDelPath = new javax.swing.JButton();
-        jButtonPath = new javax.swing.JButton();
-        jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
-        btnOk = new javax.swing.JButton();
-        btnChange = new javax.swing.JButton();
-        chkStart = new javax.swing.JCheckBox();
-        btnCancel = new javax.swing.JButton();
+        //======== this ========
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Alle Downloads starten"); //NON-NLS
+        setModal(true);
+        setResizable(false);
+        var contentPane = getContentPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        //======== jPanelExtra ========
+        {
+            jPanelExtra.setBorder(new EtchedBorder());
 
-        jPanelExtra.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            //---- jLabel1 ----
+            jLabel1.setText("Speicherpfad:"); //NON-NLS
 
-        jLabel1.setText("Speicherpfad:");
+            //---- jComboBoxPath ----
+            jComboBoxPath.setEditable(true);
+            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[] {
 
-        chkInfo.setText("Infodatei anlegen: \"Filmname.txt\"");
+            }));
 
-        chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
+            //---- jButtonDelPath ----
+            jButtonDelPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); //NON-NLS
+            jButtonDelPath.setToolTipText("History l\u00f6schen"); //NON-NLS
 
-        jComboBoxPath.setEditable(true);
-        jComboBoxPath.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+            //---- jButtonPath ----
+            jButtonPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
+            jButtonPath.setToolTipText("Zielpfad ausw\u00e4hlen"); //NON-NLS
 
-        jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); // NOI18N
+            //======== jPanel1 ========
+            {
+                jPanel1.setLayout(new VerticalLayout(5));
 
-        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+                //---- chkInfo ----
+                chkInfo.setText("Infodatei anlegen: \"Filmname.txt\""); //NON-NLS
+                jPanel1.add(chkInfo);
 
-        jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
+                //---- jCheckBoxPfadSpeichern ----
+                jCheckBoxPfadSpeichern.setText("Zielpfad speichern"); //NON-NLS
+                jPanel1.add(jCheckBoxPfadSpeichern);
 
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                //---- chkSubtitle ----
+                chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\""); //NON-NLS
+                jPanel1.add(chkSubtitle);
+
+                //---- chkStart ----
+                chkStart.setText("Download sofort starten"); //NON-NLS
+                jPanel1.add(chkStart);
+            }
+
+            GroupLayout jPanelExtraLayout = new GroupLayout(jPanelExtra);
+            jPanelExtra.setLayout(jPanelExtraLayout);
+            jPanelExtraLayout.setHorizontalGroup(
+                jPanelExtraLayout.createParallelGroup()
                     .addGroup(jPanelExtraLayout.createSequentialGroup()
-                        .addComponent(chkSubtitle)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelExtraLayout.createSequentialGroup()
-                        .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelExtraLayout.createParallelGroup()
                             .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                .addComponent(chkInfo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jCheckBoxPfadSpeichern))
-                            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                .addComponent(jComboBoxPath, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxPath, GroupLayout.PREFERRED_SIZE, 450, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPath)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonDelPath)))
-                        .addContainerGap())))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonDelPath))
+                            .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+            );
+            jPanelExtraLayout.setVerticalGroup(
+                jPanelExtraLayout.createParallelGroup()
+                    .addGroup(jPanelExtraLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelExtraLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jComboBoxPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonDelPath)
+                            .addComponent(jButtonPath))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+        }
+
+        //---- btnChange ----
+        btnChange.setText("Einzeln anlegen"); //NON-NLS
+        btnChange.setToolTipText("Die Sammelaktion wird abgebrochen und Sie k\u00f6nnen im Anschlu\u00df die Einstellungen f\u00fcr jeden Download einzeln festlegen."); //NON-NLS
+
+        //---- btnCancel ----
+        btnCancel.setText("Abbrechen"); //NON-NLS
+
+        //---- btnOk ----
+        btnOk.setText("Speichern"); //NON-NLS
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(jPanelExtra, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(btnOk)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnCancel)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnChange)))
+                    .addContainerGap())
         );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelExtraLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBoxPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonDelPath)
-                    .addComponent(jButtonPath))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkInfo)
-                    .addComponent(jCheckBoxPfadSpeichern))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chkSubtitle)
-                .addContainerGap(49, Short.MAX_VALUE))
-        );
-
-        btnOk.setText("OK");
-
-        btnChange.setText("Ändern");
-
-        chkStart.setText("Download sofort starten");
-
-        btnCancel.setText("Abbrechen");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(chkStart)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanelExtra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(btnChange)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnOk)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel)))
-                .addContainerGap())
+                        .addComponent(btnCancel)
+                        .addComponent(btnOk))
+                    .addContainerGap(2, Short.MAX_VALUE))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCancel, btnChange, btnOk});
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnOk)
-                    .addComponent(btnChange)
-                    .addComponent(chkStart)
-                    .addComponent(btnCancel))
-                .addContainerGap())
-        );
-
         pack();
+        setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnChange;
-    private javax.swing.JButton btnOk;
-    private javax.swing.JCheckBox chkInfo;
-    private javax.swing.JCheckBox chkStart;
-    private javax.swing.JCheckBox chkSubtitle;
-    private javax.swing.JButton jButtonDelPath;
-    private javax.swing.JButton jButtonPath;
-    private javax.swing.JCheckBox jCheckBoxPfadSpeichern;
-    private javax.swing.JComboBox<String> jComboBoxPath;
+    // Generated using JFormDesigner non-commercial license
+    private JComboBox<String> jComboBoxPath;
+    private JButton jButtonDelPath;
+    private JButton jButtonPath;
+    private JCheckBox chkInfo;
+    private JCheckBox jCheckBoxPfadSpeichern;
+    private JCheckBox chkSubtitle;
+    private JCheckBox chkStart;
+    private JButton btnChange;
+    private JButton btnCancel;
+    private JButton btnOk;
     // End of variables declaration//GEN-END:variables
 }

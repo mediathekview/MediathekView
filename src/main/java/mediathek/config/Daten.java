@@ -1,24 +1,29 @@
 package mediathek.config;
 
 import com.google.common.util.concurrent.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import mediathek.Main;
+import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
+import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.mainwindow.AboHistoryCallable;
+import mediathek.javafx.bookmark.BookmarkDataList;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.mainwindow.SeenHistoryCallable;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
-import mediathek.tool.notification.NotificationFactory;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
@@ -29,7 +34,6 @@ import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
@@ -39,10 +43,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,7 +64,6 @@ public class Daten {
      */
     private final static int MAX_COPY = 5;
     private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
-    public static boolean[] spaltenAnzeigenFilme = new boolean[DatenFilm.MAX_ELEM];
     public static ListePset listePset;
     private static Daten instance;
     // flags
@@ -82,6 +86,7 @@ public class Daten {
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
+    private final BookmarkDataList listeBookmarkList;
     private final ListeMediaDB listeMediaDB;
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
@@ -103,7 +108,6 @@ public class Daten {
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
-        setupNotifications();
         setupMessageBus();
 
         listeFilme = new ListeFilme();
@@ -113,6 +117,7 @@ public class Daten {
 
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
+        listeBookmarkList = BookmarkDataList.getInstance(this);
 
         listePset = new ListePset();
 
@@ -130,11 +135,16 @@ public class Daten {
         setupTimerPool();
     }
 
-    public static boolean isReset() {
+    /**
+     * Indicator if configuration data should be reset.
+     *
+     * @return true if reset is necessary.
+     */
+    public static boolean resetConfigurationData() {
         return reset;
     }
 
-    public static void setReset(final boolean aIsReset) {
+    public static void setRestConfigurationData(final boolean aIsReset) {
         reset = aIsReset;
     }
 
@@ -161,7 +171,7 @@ public class Daten {
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + filePart;
+                strFile = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
             } else {
                 strFile = getSettingsDirectory_String() + filePart;
             }
@@ -212,37 +222,50 @@ public class Daten {
     }
 
     /**
-     * Return the path to "mediathek.xml_copy_"
-     * first copy exists
+     * Return the path to "mediathek.xml_copy_" files which do exist
      *
-     * @param xmlFilePath Path to file.
+     * @return all the existing paths to backup file
      */
-    private static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath) {
+    private static List<Path> getMediathekXmlCopyFilePath() {
+        List<Path> xmlFilePath = new ArrayList<>();
+
         for (int i = 1; i <= MAX_COPY; ++i) {
             Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
             if (Files.exists(path)) {
                 xmlFilePath.add(path);
             }
         }
+
+        return xmlFilePath;
     }
 
+    /**
+     * Return the path to "bookmarks.json"
+     *
+     * @return Path object of bookmark file
+     */
+    public static Path getBookmarkFilePath() {
+        return Daten.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
+    }
+    
+    /**
+     * Load the stored bookmarkdata form JSON file
+     * into memory
+     */
+    public void loadBookMarkData() {
+      listeBookmarkList.loadFromFile(getBookmarkFilePath());
+    }
+    
     /**
      * Return the number of milliseconds from today´s midnight.
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    private static long getHeute_0Uhr() {
-        final Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+    private long getHeute_0Uhr() {
+        LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+        var zdt = ZonedDateTime.of(todayMidnight, ZoneId.systemDefault());
 
-        return cal.getTimeInMillis();
-    }
-
-    public void setupNotifications() {
-        notificationCenter = NotificationFactory.createNotificationCenter();
+        return zdt.toInstant().toEpochMilli();
     }
 
     public INotificationCenter notificationCenter() {
@@ -326,7 +349,7 @@ public class Daten {
     }
 
     private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
-        var historyFuture = pool.submit(new SeenHistoryCallable());
+        var historyFuture = pool.submit(SeenHistoryController::new);
         Futures.addCallback(historyFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
@@ -343,7 +366,7 @@ public class Daten {
     }
 
     private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
-        var aboHistoryFuture = decoratedPool.submit(new AboHistoryCallable());
+        var aboHistoryFuture = decoratedPool.submit(AboHistoryController::new);
         Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
@@ -372,6 +395,7 @@ public class Daten {
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
+        listeBookmarkList.clear();
     }
 
     private boolean load() {
@@ -400,49 +424,61 @@ public class Daten {
 
     private boolean loadBackup() {
         boolean ret = false;
-        ArrayList<Path> path = new ArrayList<>();
-        Daten.getMediathekXmlCopyFilePath(path);
+
+        var path = Daten.getMediathekXmlCopyFilePath();
         if (path.isEmpty()) {
             logger.info("Es gibt kein Backup");
             return false;
         }
 
+        Main.splashScreen.ifPresent(SplashScreen::close);
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
-        int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
-                + "und können nicht geladen werden.\n"
-                + "Soll versucht werden, mit gesicherten\n"
-                + "Einstellungen zu starten?\n\n"
-                + "(ansonsten startet das Programm mit\n"
-                + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
-        if (r != JOptionPane.OK_OPTION) {
-            logger.info("User will kein Backup laden.");
-            return false;
-        }
+        var loadBackup = JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    ButtonType btnYes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType btnNo = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    Alert alert = new Alert(Alert.AlertType.WARNING,
+                            "Die Einstellungen sind beschädigt und können nicht geladen werden. "
+                                    + "Soll versucht werden diese aus einem Backup wiederherzustellen?",
+                            btnYes,
+                            btnNo);
 
-        for (Path p : path) {
-            // teils geladene Reste entfernen
-            clearKonfig();
-            logger.info("Versuch Backup zu laden: {}", p.toString());
-            final IoXmlLesen configReader = new IoXmlLesen();
-            if (configReader.datenLesen(p)) {
-                logger.info("Backup hat geklappt: {}", p.toString());
-                ret = true;
-                break;
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Gesicherte Einstellungen laden");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.orElse(btnNo) == btnNo) {
+                        logger.info("User will kein Backup laden.");
+                        return false;
+                    } else
+                        return true;
+                }
+        );
+
+        if (loadBackup) {
+            for (Path p : path) {
+                // teils geladene Reste entfernen
+                clearKonfig();
+                logger.info("Versuch Backup zu laden: {}", p.toString());
+                final IoXmlLesen configReader = new IoXmlLesen();
+                if (configReader.datenLesen(p)) {
+                    logger.info("Backup hat geklappt: {}", p.toString());
+                    ret = true;
+                    break;
+                }
             }
-
         }
+
         return ret;
     }
 
     public void allesSpeichern() {
-        konfigCopy();
+        createConfigurationBackupCopies();
 
         final IoXmlSchreiben configWriter = new IoXmlSchreiben();
         configWriter.writeConfigurationFile(getMediathekXmlFilePath());
 
-        if (Daten.isReset()) {
+        if (resetConfigurationData()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
             String dir1 = getSettingsDirectory_String();
@@ -452,18 +488,24 @@ public class Daten {
 
             try {
                 final Path path1 = Paths.get(dir1);
-                final String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
+                final var nowStr = DateTimeFormatter.ofPattern("yyyy.MM.dd__HH.mm.ss").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+                final String dir2 = dir1 + "--" + nowStr;
 
                 Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
                 if (MediathekGui.ui() != null) {
-                    MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
-                            + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                            + getSettingsDirectory_String() + '\n'
-                            + "von Hand löschen und dann das Programm wieder starten.\n\n"
-                            + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
+                        alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                                + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
+                                + getSettingsDirectory_String() + '\n'
+                                + "von Hand löschen und dann das Programm wieder starten.\n\n"
+                                + "Im Forum erhalten Sie weitere Hilfe.");
+                        JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+                    });
                 }
             }
         }
@@ -472,7 +514,7 @@ public class Daten {
     /**
      * Create backup copies of settings file.
      */
-    private void konfigCopy() {
+    private void createConfigurationBackupCopies() {
         if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
             logger.info("-------------------------------------------------------");
@@ -537,6 +579,10 @@ public class Daten {
     public ListeBlacklist getListeBlacklist() {
         return listeBlacklist;
     }
+    
+    public BookmarkDataList getListeBookmarkList() {
+        return listeBookmarkList;
+    }
 
     public ListeMediaDB getListeMediaDB() {
         return listeMediaDB;
@@ -556,7 +602,7 @@ public class Daten {
 
     /**
      * Thread factory to give timer pool threads a recognizable name.
-     * Follows the {@link java.util.concurrent.Executors.DefaultThreadFactory} implementation for
+     * Follows the java.util.concurrent.Executors.DefaultThreadFactory implementation for
      * setting up the threads.
      */
     private static class TimerPoolThreadFactory implements ThreadFactory {

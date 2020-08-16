@@ -128,7 +128,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-            Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
+            var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PSET_PROGRAM_GROUP_LIST_PATH);
+            assert url != null;
+            Request request = new Request.Builder().url(url).get().build();
             try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {

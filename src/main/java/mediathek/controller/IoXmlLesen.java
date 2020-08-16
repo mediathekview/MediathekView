@@ -18,6 +18,8 @@ package mediathek.controller;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import mediathek.daten.blacklist.BlacklistRule;
+import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.ReplaceList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -70,13 +72,13 @@ public class IoXmlLesen {
                             foundAbos++;
                             daten.getListeAbo().addAbo(datenAbo);
                         }
-                    } else if (black && parser.getLocalName().equals(DatenBlacklist.TAG)) {
+                    } else if (black && parser.getLocalName().equals(BlacklistRule.TAG)) {
                         // Blacklist
                         ListeBlacklist blacklist = daten.getListeBlacklist();
-                        DatenBlacklist datenBlacklist = new DatenBlacklist();
-                        if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
+                        BlacklistRule blacklistRule = new BlacklistRule();
+                        if (get(parser, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklistRule.arr)) {
                             foundBlacklistEntries++;
-                            blacklist.addWithoutNotification(datenBlacklist);
+                            blacklist.addWithoutNotification(blacklistRule);
                         }
                     } else if (replace && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
                         // Ersetzungstabelle
@@ -188,9 +190,9 @@ public class IoXmlLesen {
 
     private void readBlacklist(XMLStreamReader parser) {
         // Blacklist
-        DatenBlacklist datenBlacklist = new DatenBlacklist();
-        if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
-            daten.getListeBlacklist().addWithoutNotification(datenBlacklist);
+        BlacklistRule blacklistRule = new BlacklistRule();
+        if (get(parser, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklistRule.arr)) {
+            daten.getListeBlacklist().addWithoutNotification(blacklistRule);
         }
     }
 
@@ -248,7 +250,7 @@ public class IoXmlLesen {
                                 readDownloads(parser);
                                 break;
 
-                            case DatenBlacklist.TAG:
+                            case BlacklistRule.TAG:
                                 readBlacklist(parser);
                                 break;
 

@@ -1,6 +1,7 @@
 package mediathek.update;
 
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -8,13 +9,11 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.NetUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class ProgramUpdateCheck implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(ProgramUpdateCheck.class);
     private final Daten daten;
-    private ScheduledFuture actionFuture = null;
+    private ScheduledFuture<?> actionFuture;
 
     public ProgramUpdateCheck(Daten daten) {
         this.daten = daten;
@@ -114,23 +113,23 @@ public class ProgramUpdateCheck implements AutoCloseable {
         var gui = MediathekGui.ui();
         try {
             //first check if network is available...
-            InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
-            if (serverAddr.isReachable(1000)) {
+            if (NetUtils.isReachable("res.mediathekview.de",1000)) {
                 //we have internet...
                 SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 
-                searchForProgramUpdate();
+                var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
+                if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
+                    searchForProgramUpdate();
+                }
+                else {
+                    logger.info("External Update Mechanism in use -> skip program update check");
+                }
 
                 checkForPsetUpdates();
             } else
                 logger.warn("Update Check: Network is not reachable.");
         }
-        catch (UnknownHostException ignored) {
-        }
-        catch (IOException ex) {
-            //do not log errors as we expect them here...
-            logger.error("Update check caused exception:",ex);
-        } finally {
+        finally {
             SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
         }
         logger.debug("performUpdateCheck finished.");

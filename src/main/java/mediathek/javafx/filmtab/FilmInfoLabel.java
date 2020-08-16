@@ -2,7 +2,7 @@ package mediathek.javafx.filmtab;
 
 import javafx.scene.control.Label;
 import mediathek.config.Daten;
-import mediathek.gui.GuiFilme;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 
 public class FilmInfoLabel extends Label {
     private final Daten daten;

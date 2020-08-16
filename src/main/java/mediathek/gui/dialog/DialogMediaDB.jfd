@@ -1,0 +1,88 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane3::::386:x, seq l {comp jTextFieldSearch:::::x, space :::p, comp jButtonSearch:::p::p, space :::p, comp jButtonHelp:::p::p}, seq t {comp progress::::122:x, space :::p, comp jButtonIndex:::p::p, space :::p, comp jButtonBeenden:::p:93:p}, seq {comp jLabel4:::p::p, space :::p, comp jLabelSum:::p::p, space :::x, comp jLabel1:::p::p, space :::p, comp jLabelSizeFound:::p::p}, seq l {comp jLabel3:::p::p, space :::p, comp jTextFieldFilmTitle:::::x}, seq l {comp jLabel5:::p::p, space :::p, comp jTextFieldFilmPfad:::::x}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :::p, par l {par b {comp jTextFieldSearch:2:b:p::p, comp jButtonSearch:2:b:p::p}, comp jButtonHelp:2::p::p}, space s:::p, par l {par b {comp jLabel4::b:p::p, comp jLabelSum::b:p::p}, par b:l {comp jLabel1::b:p::p, comp jLabelSizeFound::b:p::p}}, space :::p, comp jScrollPane3::::80:x, space :::p, par b {comp jLabel3::b:p::p, comp jTextFieldFilmTitle::b:p::p}, space :::p, par b {comp jLabel5::b:p::p, comp jTextFieldFilmPfad::b:p::p}, space u:::p, par c {comp progress::c:p::p, comp jButtonIndex::c:p::p, comp jButtonBeenden::c:p::p}, space :::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Mediensammlung durchsuchen"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonBeenden"
+				"text": "Schließen"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonHelp"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+				"toolTipText": "Hilfe anzeigen"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldSearch"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonSearch"
+				"text": "Suchen"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane3"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "Treffer:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelSizeFound"
+				"text": "0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel4"
+				"text": "Anzahl Medien gesamt:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonIndex"
+				"text": "Index neu aufbauen"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelSum"
+				"text": "0"
+			} )
+			add( new FormComponent( "javax.swing.JProgressBar" ) {
+				name: "progress"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel3"
+				"text": "Titel:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldFilmTitle"
+				"editable": false
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel5"
+				"text": "Pfad:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldFilmPfad"
+				"editable": false
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

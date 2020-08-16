@@ -17,6 +17,8 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeDownloads;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
+import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import net.engio.mbassy.listener.Handler;
 
@@ -56,7 +58,7 @@ public class BandwidthMonitorController {
     }
 
     public void close() {
-        Platform.runLater(() -> {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
             if (updateMemoryTimer != null)
                 updateMemoryTimer.stop();
         });
@@ -115,6 +117,8 @@ public class BandwidthMonitorController {
 
         //convert to MBits per second
         bandwidth = bandwidth * 8d / 1000d / 1000d;
+        if (bandwidth < 0d)
+            bandwidth = 0d;
 
         return bandwidth;
     }
@@ -161,7 +165,7 @@ public class BandwidthMonitorController {
     }
 
     private void updateListeners() {
-        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
         Daten.getInstance().getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
     }
 
@@ -169,8 +173,8 @@ public class BandwidthMonitorController {
      * Show/hide bandwidth display. Take also care about the used timer.
      */
     public void setVisibility() {
-        final boolean isVis = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE));
-        hudDialog.setVisible(isVis);
+        final var vis = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        hudDialog.setVisible(vis);
     }
 
     public void writeConfig() {

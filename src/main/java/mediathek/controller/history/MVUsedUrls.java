@@ -22,21 +22,21 @@ package mediathek.controller.history;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
-import mediathek.tool.GermanStringSorter;
-import org.apache.commons.lang3.time.FastDateFormat;
+import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@SuppressWarnings("serial")
 public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
 
     private static final Logger logger = LogManager.getLogger(MVUsedUrls.class);
-    private static final FastDateFormat SDF = FastDateFormat.getInstance("dd.MM.yyyy");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     /**
      * Quick lookup list for history checks.
      * Stores only URLs
@@ -93,17 +93,9 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         return listeUrls.contains(urlFilm);
     }
 
-    public synchronized List<MVUsedUrl> getSortedList() {
-        ArrayList<MVUsedUrl> ret = new ArrayList<>(listeUrlsSortDate);
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
-
-        return ret;
-    }
-
     public synchronized void urlAusLogfileLoeschen(String urlFilm) {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
-        //wenn die URL im Logfiel ist, dann true zurück
+        //wenn die URL im Logfile ist, dann true zurück
         boolean gefunden = false;
 
         checkUrlFilePath();
@@ -198,7 +190,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
-        String datum = SDF.format(new Date());
+        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
@@ -217,7 +209,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     }
 
     public synchronized void zeileSchreiben(List<DatenFilm> arrayFilms) {
-        final String datum = SDF.format(new Date());
+        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
 
         checkUrlFilePath();
 
@@ -259,18 +251,73 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         //LinkedList mit den URLs aus dem Logfile bauen
         checkUrlFilePath();
 
+        List<String> badEntriesList = new ArrayList<>();
+
         try (InputStream is = Files.newInputStream(urlPath);
              InputStreamReader isr = new InputStreamReader(is);
              LineNumberReader in = new LineNumberReader(isr)) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 MVUsedUrl mvuu = MVUsedUrl.getUrlAusZeile(zeile);
-                listeUrls.add(mvuu.getUrl());
+                var url = mvuu.getUrl();
+                if (url.startsWith("rtmp:")) {
+                    //logger.warn("RTMP URL found in file {}, skipping: {}", urlPath, url);
+                    badEntriesList.add(zeile);
+                    continue;
+                }
+
+                var okHttpUrl = HttpUrl.parse(url);
+                if (okHttpUrl == null) {
+                    //logger.warn("Invalid URL received in {}, skipping: {}", urlPath,url);
+                    badEntriesList.add(zeile);
+                    continue;
+                }
+
+                // so far so good, add to lists
+                listeUrls.add(url);
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
             logger.error("listeBauen()", ex);
         }
+
+        if (!badEntriesList.isEmpty()) {
+            logger.warn("File {} contains {} invalid entries ", urlPath, badEntriesList.size());
+            removeIllegalEntries(badEntriesList);
+            badEntriesList.clear();
+        }
+        logger.debug("listeUrls size: {} for file {}", listeUrls.size(), urlPath);
+        logger.debug("listeUrlsSortDate size: {} for file {}", listeUrlsSortDate.size(), urlPath);
+    }
+
+    private void removeIllegalEntries(List<String> badEntriesList) {
+        logger.trace("Cleaning entries for {}", urlPath);
+
+        final List<String> cleanedEntriesList = new ArrayList<>();
+        try (InputStream is = Files.newInputStream(urlPath);
+             InputStreamReader isr = new InputStreamReader(is);
+             LineNumberReader in = new LineNumberReader(isr)) {
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                if (!badEntriesList.contains(zeile)) {
+                    cleanedEntriesList.add(zeile);
+                }
+            }
+        } catch (Exception ex) {
+            logger.error("removeIllegalEntries()", ex);
+        }
+
+        try (OutputStream os = Files.newOutputStream(urlPath);
+             OutputStreamWriter osw = new OutputStreamWriter(os);
+             BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
+            for (var entry : cleanedEntriesList)
+                bufferedWriter.write(entry + '\n');
+        } catch (Exception ex) {
+            logger.error("removeIllegalEntries()", ex);
+        }
+
+        cleanedEntriesList.clear();
+        logger.trace("Finished cleaning entries for {}", urlPath);
     }
 
     class LineWriterThread extends Thread {

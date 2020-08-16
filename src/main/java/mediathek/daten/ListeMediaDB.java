@@ -391,7 +391,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             }
             if (!s.isEmpty()) {
                 try {
-                    size = Integer.parseInt(s);
+                    size = Long.parseLong(s);
                 } catch (Exception ignore) {
                     size = 0;
                 }

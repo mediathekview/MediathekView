@@ -23,8 +23,6 @@ import mediathek.daten.ListeMediaDB;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
 import mediathek.gui.MVTray;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
@@ -39,13 +37,20 @@ import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.gui.history.ResetAboHistoryAction;
+import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
+import mediathek.gui.tabs.tab_downloads.GuiDownloads;
+import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.*;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
+import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
@@ -56,6 +61,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,6 +76,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
+
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
@@ -79,16 +87,18 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
-    private static final Logger logger = LogManager.getLogger(MediathekGui.class);
+    private static final int MIN_WINDOW_WIDTH = 800;
+    private static final int MIN_WINDOW_HEIGHT = 600;
+    protected static Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
      */
-    private static MediathekGui ui = null;
+    private static MediathekGui ui;
     /**
      * Number of active downloads
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
-    private final Daten daten = Daten.getInstance();
+    protected final Daten daten = Daten.getInstance();
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -133,6 +143,7 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private DialogMediaDB dialogMediaDB;
     private ManageAboAction manageAboAction;
+    private AutomaticFilmlistUpdate automaticFilmlistUpdate;
 
     public MediathekGui() {
         ui = this;
@@ -184,13 +195,14 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))) {
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
             getBandwidthMonitorController().setVisibility();
         }
 
+        setupNotificationCenter();
+
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
-        workaroundControlsFxNotificationBug();
         workaroundJavaFxInitializationBug();
 
         SwingUtilities.invokeLater(() -> {
@@ -204,9 +216,11 @@ public class MediathekGui extends JFrame {
 
         loadFilmlist();
 
-        setupUpdateCheck();
+        setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
 
         showVlcHintForAustrianUsers();
+
+        setupShutdownHook();
     }
 
     /**
@@ -216,6 +230,43 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    /**
+     * Create either a native or a javafx notification center depending on platform
+     */
+    protected void setupNotificationCenter() {
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
+
+        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
+        config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false);
+
+        if (!showNotifications) {
+            daten.setNotificationCenter(new NullNotificationCenter());
+        } else {
+            daten.setNotificationCenter(new GenericNotificationCenter());
+        }
+    }
+
+    @Handler
+    protected void handleNotificationCenterChangeEvent(NotificationCenterChangeEvent e) {
+        setupNotificationCenter();
+    }
+
+    protected void closeNotificationCenter() {
+        try {
+            var center = daten.notificationCenter();
+            if (center != null)
+                center.close();
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * This shutdown hook will try to save both log messages and write config changes to disk before app terminates.
+     */
+    private void setupShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread());
     }
 
     private void setupSystemTray() {
@@ -299,14 +350,6 @@ public class MediathekGui extends JFrame {
     }
 
     /**
-     * ControlsFX Notifications expect a stage to be open.
-     * Create a utility window hidden and transparent as a stage for them.
-     */
-    protected void workaroundControlsFxNotificationBug() {
-        //does not work on windows and linux
-    }
-
-    /**
      * JavaFX seems to need at least one window shown in order to function without further problems.
      * This is imminent on macOS, but seems to affect windows as well.
      */
@@ -338,7 +381,7 @@ public class MediathekGui extends JFrame {
     private void loadFilmlist() {
         Platform.runLater(() -> {
             //don´t write filmlist when we are reading only...
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
+            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
                 Daten.dontWriteFilmlistOnStartup.set(false);
             } else
                 Daten.dontWriteFilmlistOnStartup.set(true);
@@ -397,19 +440,19 @@ public class MediathekGui extends JFrame {
             installSelectedItemsLabel();
         });
 
-        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT,false);
+        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT, false);
         if (enablePowerManagement) {
-                addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowActivated(WindowEvent e) {
-                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
-                    }
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowActivated(WindowEvent e) {
+                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
+                }
 
-                    @Override
-                    public void windowDeactivated(WindowEvent e) {
-                        Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
-                    }
-                });
+                @Override
+                public void windowDeactivated(WindowEvent e) {
+                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
+                }
+            });
         }
     }
 
@@ -449,7 +492,8 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
-        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))));
+        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);
+        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(vis));
     }
 
     private void setWindowTitle() {
@@ -467,10 +511,15 @@ public class MediathekGui extends JFrame {
         var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
-            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH);
-            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT);
+            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, MIN_WINDOW_WIDTH);
+            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT, MIN_WINDOW_HEIGHT);
             int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_X);
             int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_Y);
+
+            if (width < MIN_WINDOW_WIDTH)
+                width = MIN_WINDOW_WIDTH;
+            if (height < MIN_WINDOW_HEIGHT)
+                height = MIN_WINDOW_HEIGHT;
 
             setBounds(x, y, width, height);
         } catch (NoSuchElementException e) {
@@ -521,12 +570,12 @@ public class MediathekGui extends JFrame {
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
                     FilmeLaden filmeLaden = new FilmeLaden(daten);
-                    filmeLaden.loadFilmlist("");
+                    filmeLaden.loadFilmlist("", false);
                 }
             }
         };
 
-        AutomaticFilmlistUpdate automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
+        automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
         automaticFilmlistUpdate.start();
     }
 
@@ -534,7 +583,7 @@ public class MediathekGui extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                if (tray != null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
+                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
                     setVisible(false);
                 } else {
                     beenden(false, false);
@@ -549,16 +598,32 @@ public class MediathekGui extends JFrame {
         mediaDb.createMediaDB("");
     }
 
+    @Handler
+    private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
+        SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
+    }
+
     /**
-     * This will setup a repeating update check every 24 hours.
+     * This creates a repeating update check every 24 hours.
      */
-    private void setupUpdateCheck() {
-        programUpdateChecker = new ProgramUpdateCheck(daten);
-        programUpdateChecker.start();
+    private void setupUpdateCheck(boolean newState) {
+        if (newState) {
+            programUpdateChecker = new ProgramUpdateCheck(daten);
+            programUpdateChecker.start();
+        } else {
+            endProgramUpdateChecker();
+        }
+    }
+
+    private void endProgramUpdateChecker() {
+        if (programUpdateChecker != null) {
+            programUpdateChecker.close();
+            programUpdateChecker = null;
+        }
     }
 
     public void initializeSystemTray() {
-        final var useTray = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY));
+        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
         if (tray == null && useTray) {
             tray = new MVTray().systemTray();
         } else if (tray != null && !useTray) {
@@ -567,24 +632,40 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    protected JPanel createTabFilme(@NotNull Daten daten) {
+        return new GuiFilme(daten, this);
+    }
+
+    protected JPanel createTabDownloads(@NotNull Daten daten) {
+        return new GuiDownloads(daten, this);
+    }
+
     private void initTabs() {
         Container contentPane = getContentPane();
         contentPane.add(tabbedPane, BorderLayout.CENTER);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_DOWNLOAD_TAB));
-        tabDownloads = new GuiDownloads(daten, this);
+        tabDownloads = (GuiDownloads) createTabDownloads(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_FILM_TAB));
-        tabFilme = new GuiFilme(daten, this);
+        tabFilme = (GuiFilme) createTabFilme(daten);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-        tabbedPane.setSelectedIndex(0);
+        tabbedPane.setSelectedComponent(tabFilme);
+
+        installTouchBarSupport();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
         configureTabIcons();
+    }
+
+    /**
+     * Install touch bar support on macOS
+     */
+    protected void installTouchBarSupport() {
     }
 
     /**
@@ -608,7 +689,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void configureTabIcons() {
-        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false);
+        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, false);
 
         //no icons...
         if (!icon) {
@@ -690,19 +771,14 @@ public class MediathekGui extends JFrame {
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
         switch (msg.event) {
-            case INSTALL:
-                SwingUtilities.invokeLater(() -> {
-                    jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
-                    jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
-                });
-                break;
-
-            case REMOVE:
-                SwingUtilities.invokeLater(() -> {
-                    jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
-                    jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
-                });
-                break;
+            case INSTALL -> SwingUtilities.invokeLater(() -> {
+                jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
+                jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
+            });
+            case REMOVE -> SwingUtilities.invokeLater(() -> {
+                jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
+                jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
+            });
         }
     }
 
@@ -729,26 +805,27 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void createViewMenu() {
-        JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
+    @Handler
+    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+        SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
+    }
+
+    private JCheckBoxMenuItem cbShowButtons;
+
+    private void createButtonPanelMenuItem() {
+        cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-        cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-        cbShowButtons.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbShowButtons.isSelected()));
-            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
-        });
+        cbShowButtons.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
+        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
+    }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                cbShowButtons.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-            }
-        });
+    private void createViewMenu() {
+        createButtonPanelMenuItem();
 
-        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
+        cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false));
         cbBandwidthDisplay.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, cbBandwidthDisplay.isSelected());
             getBandwidthMonitorController().setVisibility();
         });
 
@@ -769,6 +846,9 @@ public class MediathekGui extends JFrame {
 
         });
 
+        JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
+        showBookmarkList.addActionListener(l -> JavaFxUtils.invokeInFxThreadAndWait(() -> tabFilme.showBookmarkWindow()));
+
         jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
@@ -778,6 +858,8 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showBookmarkList);
+        jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(cbSearchMediaDb);
     }
 
@@ -785,7 +867,10 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new CreateProtocolFileAction());
+        jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
+        jMenuHilfe.add(new ResetDownloadHistoryAction(this));
+        jMenuHilfe.add(new ResetAboHistoryAction(this));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(searchProgramUpdateAction);
         jMenuHilfe.add(new ShowProgramInfosAction(this));
@@ -811,7 +896,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
         jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui(), daten));
         jMenuAbos.addSeparator();
-        manageAboAction = new ManageAboAction(daten);
+        manageAboAction = new ManageAboAction();
         tabFilme.fap.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
     }
@@ -834,7 +919,7 @@ public class MediathekGui extends JFrame {
         } else {
             // Filme werden automatisch geladen
             FilmeLaden filmeLaden = new FilmeLaden(daten);
-            filmeLaden.loadFilmlist("");
+            filmeLaden.loadFilmlist("", false);
         }
     }
 
@@ -860,10 +945,6 @@ public class MediathekGui extends JFrame {
             GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
-    protected void closeControlsFxWorkaroundStage() {
-        //not used on windows and linux
-    }
-
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
@@ -879,47 +960,56 @@ public class MediathekGui extends JFrame {
             shutDown = dialogBeenden.isShutdownRequested();
         }
 
+        if (automaticFilmlistUpdate != null)
+            automaticFilmlistUpdate.close();
+
         showMemoryMonitorAction.closeMemoryMonitor();
 
-        closeControlsFxWorkaroundStage();
+        endProgramUpdateChecker();
 
-        programUpdateChecker.close();
-
-        ShutdownDialog dialog = new ShutdownDialog(this, 9);
+        ShutdownDialog dialog = new ShutdownDialog(this);
         dialog.show();
+
+        dialog.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        closeNotificationCenter();
 
         manageAboAction.closeDialog();
 
-        dialog.setStatusText(1, "Beende Threadpools");
+        tabFilme.saveSettings();  // needs thread pools active!
+
+        dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         // Tabelleneinstellungen merken
-        dialog.setStatusText(2, "Film-Daten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_FILM_DATA);
         tabFilme.tabelleSpeichern();
 
-        dialog.setStatusText(3, "Download-Daten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(4, "MediaDB sichern");
+        dialog.setStatusText(ShutdownState.SAVE_MEDIA_DB);
         if (dialogMediaDB != null)
             getMediaDatabaseDialog().tabelleSpeichern();
 
-        dialog.setStatusText(5, "Downloads anhalten");
+        dialog.setStatusText(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
 
-        dialog.setStatusText(6, "Programmkonfiguration schreiben");
+        dialog.setStatusText(ShutdownState.SAVE_CONFIG);
         writeOldConfiguration();
 
+        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
+
+        dialog.setStatusText(ShutdownState.CLOSE_DB);
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            dialog.setStatusText(7, "Datenbank schließen");
             DatenFilm.Database.closeDatabase();
         }
 
-        dialog.setStatusText(8, "Programmdaten sichern");
+        dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
 
-        dialog.setStatusText(9, "Fertig.");
+        dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
@@ -927,13 +1017,15 @@ public class MediathekGui extends JFrame {
         if (bandwidthMonitor != null)
             bandwidthMonitor.close();
 
-        Log.endMsg();
+        Log.printRuntimeStatistics();
 
         if (shutDown) {
             shutdownComputer();
         }
 
         dispose();
+
+        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
 
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -994,5 +1086,20 @@ public class MediathekGui extends JFrame {
 
     public void searchForUpdateOrShowProgramInfos(boolean infos) {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
+    }
+
+    /**
+     * Gracefully shutdown config and log.
+     * This may be necessary in case the app is not properly quit.
+     */
+    static class ShutdownHookThread extends Thread {
+        @Override
+        public void run() {
+            //write all settings if not done already...just to be sure
+            ApplicationConfiguration.getInstance().writeConfiguration();
+
+            //shut down log4j
+            Log4jShutdownCallbackRegistry.Companion.execute();
+        }
     }
 }

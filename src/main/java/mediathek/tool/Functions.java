@@ -3,7 +3,39 @@ package mediathek.tool;
 import org.apache.commons.lang3.ArchUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+
 public class Functions {
+    /**
+     * Checks if the application has an debugger attached to it.
+     * @return true if debugger was detected, false othewise.
+     */
+    public static boolean isDebuggerAttached() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+    }
+
+    /**
+     * Disable java unsafe console warning.
+     */
+    public static void disableAccessWarnings() {
+        try {
+            var unsafeClass = Class.forName("sun.misc.Unsafe");
+            var field = unsafeClass.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            var unsafe = field.get(null);
+
+            var putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile", Object.class, long.class, Object.class);
+            var staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset", Field.class);
+
+            var loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+            var loggerField = loggerClass.getDeclaredField("logger");
+            Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
+            putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
+        } catch (Exception ignored) {
+        }
+    }
+
     public static String textLaenge(int max, String text, boolean mitte, boolean addVorne) {
         if (text.length() > max) {
             if (mitte) {

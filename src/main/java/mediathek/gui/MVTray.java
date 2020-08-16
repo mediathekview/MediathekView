@@ -2,11 +2,11 @@ package mediathek.gui;
 
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.MVConfig;
 import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
@@ -21,10 +21,10 @@ import java.awt.event.MouseEvent;
 public final class MVTray {
 
     private final Daten daten;
-    private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
-    private SystemTray tray = null;
-    private TrayIcon trayIcon = null;
-    private int count = 0;
+    private int trayState; // 0, 1=Download, 2=Download mit Fehler
+    private SystemTray tray;
+    private TrayIcon trayIcon;
+    private int count;
 
     public MVTray() {
         daten = Daten.getInstance();
@@ -88,8 +88,8 @@ public final class MVTray {
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
-                MediathekGui.ui().setVisible(true); // WICHTIG!!
-                MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
+                MediathekGui.ui().setVisible(true);
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
                 MediathekGui.ui().initializeSystemTray();
                 daten.getMessageBus().publishAsync(new TrayIconEvent());
             });
@@ -135,7 +135,7 @@ public final class MVTray {
     private String getTextInfos() {
         String strText = "";
 
-        strText += "Filmliste erstellt: " + daten.getListeFilme().genDate() + " Uhr  ";
+        strText += "Filmliste erstellt: " + daten.getListeFilme().metaData().getGenerationDateTimeAsString() + " Uhr  ";
         strText += "\n";
         strText += "Anz. Filme: " + daten.getListeFilme().size();
         strText += "\n";

@@ -2,7 +2,7 @@ package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 
 public class MVMediaDbTable extends MVTable {
     private static final long serialVersionUID = 5220131462717851342L;
@@ -13,7 +13,7 @@ public class MVMediaDbTable extends MVTable {
         spaltenAnzeigen = getSpaltenEinAus(new boolean[DatenMediaDB.MAX_ELEM], DatenMediaDB.MAX_ELEM);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB;
 
-        setModel(new TModel(new Object[][]{}, DatenMediaDB.COLUMN_NAMES));
+        setModel(new NonEditableTableModel(new Object[][]{}, DatenMediaDB.COLUMN_NAMES));
     }
 
     @Override

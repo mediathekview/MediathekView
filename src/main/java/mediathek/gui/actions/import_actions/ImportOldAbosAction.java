@@ -30,11 +30,11 @@ public class ImportOldAbosAction extends AbstractAction {
                     alert.setContentText(text);
                     alert.showAndWait();
                 } catch (Exception ex) {
-                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
+                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
                             "Fehler beim Importieren der Abos",
                             "Es trat ein Fehler beim Import der Abos auf.\n" +
                                     "Sollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                            ex);
+                            ex));
                 }
             } else {
                 var alert = new ImportSettingsAlert(Alert.AlertType.WARNING);

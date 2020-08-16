@@ -5,7 +5,6 @@ import javafx.scene.control.Alert;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Log;
 import mediathek.tool.MVHttpClient;
 import mediathek.tool.Version;
 import mediathek.tool.javafx.FXErrorDialog;
@@ -42,13 +41,13 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.getVersion().toNumber() == 0) {
+                if (progInfo.version().toNumber() == 0) {
                     Exception ex = new RuntimeException("progInfo.getVersion() == 0");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("getVersion().toNumber() == 0");
                 } else {
-                    if (checkForNewerVersion(progInfo.getVersion())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo);
+                    if (checkForNewerVersion(progInfo.version())) {
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo.version());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {
@@ -96,7 +95,7 @@ public class ProgrammUpdateSuchen {
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
             }
         } catch (Exception ex) {
-            Log.errorLog(693298731, ex);
+            logger.error("displayInfoMessages failed", ex);
         }
     }
 
@@ -135,32 +134,27 @@ public class ProgrammUpdateSuchen {
      */
     private Optional<ServerProgramInformation> retrieveProgramInformation() {
         XMLStreamReader parser = null;
-        ServerProgramInformation progInfo;
 
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-        final Request request = new Request.Builder().url(Konstanten.ADRESSE_PROGRAMM_VERSION).get().build();
+        var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PROGRAM_VERSION_PATH);
+        assert url != null;
+        final Request request = new Request.Builder().url(url).get().build();
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 try (InputStream is = body.byteStream();
                      InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                     parser = inFactory.createXMLStreamReader(inReader);
-                    progInfo = new ServerProgramInformation();
+                    String version = "";
 
                     while (parser.hasNext()) {
                         final int event = parser.next();
                         if (event == XMLStreamConstants.START_ELEMENT) {
                             switch (parser.getLocalName()) {
                                 case ServerProgramInformation.ParserTags.VERSION:
-                                    progInfo.setVersion(parser.getElementText());
-                                    break;
-                                case ServerProgramInformation.ParserTags.RELEASE_NOTES:
-                                    progInfo.setReleaseNotes(parser.getElementText());
-                                    break;
-                                case ServerProgramInformation.ParserTags.UPDATE_URL:
-                                    progInfo.setUpdateUrl(parser.getElementText());
+                                    version = parser.getElementText();
                                     break;
                                 case ServerProgramInformation.ParserTags.INFO:
                                     int count = parser.getAttributeCount();
@@ -181,7 +175,7 @@ public class ProgrammUpdateSuchen {
                         }
                     }
 
-                    return Optional.of(progInfo);
+                    return Optional.of(new ServerProgramInformation(new Version(version)));
                 } finally {
                     if (parser != null) {
                         try {
@@ -196,4 +190,5 @@ public class ProgrammUpdateSuchen {
             return Optional.empty();
         }
     }
+
 }

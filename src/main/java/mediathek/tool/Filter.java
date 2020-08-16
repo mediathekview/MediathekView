@@ -216,7 +216,7 @@ public class Filter {
 
         @Override
         public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
-            logger.debug("COMPILING PATTERN: " + pattern);
+            logger.trace("COMPILING PATTERN: " + pattern);
             Pattern p;
             p = Pattern.compile(pattern.substring(2),
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);

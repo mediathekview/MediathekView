@@ -33,7 +33,7 @@ public class DescriptionPanelController {
     private ScrollPane scrollPane;
 
     private EventHandler<Event> closeHandler;
-    private DatenFilm currentFilm = null;
+    private DatenFilm currentFilm;
     private ContextMenu contextMenu;
     private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
 
@@ -90,9 +90,9 @@ public class DescriptionPanelController {
 
         MenuItem edit = new MenuItem("Beschreibung ändern");
         edit.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-            DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), currentFilm);
-            dialog.setVisible(true);
-        }));
+        DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), currentFilm);
+        dialog.setVisible(true);
+    }));
 
         MenuItem copyToClipboard = new MenuItem("In Zwischenablage kopieren");
         copyToClipboard.setOnAction(e -> {

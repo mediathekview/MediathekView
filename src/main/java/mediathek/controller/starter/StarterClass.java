@@ -277,7 +277,10 @@ public class StarterClass {
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-
+            // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
+            if (ersterFilm.isBookmarked()) {
+              ersterFilm.getBookmark().setSeen(true);
+            }
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             daten.getListeDownloadsButton().addMitNummer(d);
         }

@@ -2,17 +2,29 @@ package mediathek.gui.dialog;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.MVInfoFile;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ListePset;
+import mediathek.javafx.tool.JFXHiddenApplication;
+import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.*;
+import mediathek.tool.javafx.FXErrorDialog;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Path;
 
 @SuppressWarnings("serial")
 public class DialogFilmBeschreibung extends JDialog {
@@ -40,24 +52,60 @@ public class DialogFilmBeschreibung extends JDialog {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
             alert.setHeaderText("Hilfe zu " + TITLE);
-            alert.setContentText("Diese Funktion richtet sich z.B. an Benutzer,"
-                    + "welche eine angepasste Beschreibung der Sendung in Form "
-                    + "der Infodatei (\"Filmname.txt\") anlegen "
-                    + "und durch Drittprogramme einlesen lassen wollen.\n\n"
-                    + "Achtung: Diese Änderungen gehen nach dem Neuladen "
-                    + "einer Filmliste verloren.");
-            alert.showAndWait();
+            alert.setContentText("""
+                    Diese Funktion richtet sich z.B. an Benutzer,welche eine angepasste Beschreibung der Sendung in Form der Infodatei ("Filmname.txt") anlegen und durch Drittprogramme einlesen lassen wollen.
 
+                    Achtung: Diese Änderungen gehen nach dem Neuladen einer Filmliste verloren.""");
+            JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
         }));
 
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());
-            MVInfoFile file = new MVInfoFile();
-            file.writeInfoFile(datenFilm);
+
+            String titel = FilenameUtils.replaceLeerDateiname(datenFilm.getTitle(), false,
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
+            String pfad = "";
+            ListePset lp = Daten.listePset.getListeSpeichern();
+            if (!lp.isEmpty()) {
+                DatenPset p = lp.get(0);
+                pfad = p.getZielPfad();
+            }
+            if (pfad.isEmpty()) {
+                pfad = GuiFunktionen.getStandardDownloadPath();
+            }
+
+            if (titel.isEmpty()) {
+                titel = StringUtils.replace(datenFilm.getSender(), " ", "-") + ".txt";
+            } else {
+                titel += ".txt";
+            }
+
+            pfad = GuiFunktionen.addsPfad(pfad, titel);
+            var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),"Infos speichern", pfad);
+            if (destFile != null) {
+                final Path path = destFile.toPath();
+                try {
+                    MVInfoFile file = new MVInfoFile();
+                    file.writeInfoFile(datenFilm, path);
+
+                    JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("Infodatei schreiben");
+                        alert.setContentText("Infodatei wurde erfolgreich geschrieben.");
+                        JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
+                    });
+                }
+                catch (IOException ex) {
+                    JavaFxUtils.invokeInFxThreadAndWait(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex));
+                    logger.error("Ziel: {}", path.toAbsolutePath().toString(), ex);
+                }
+            }
         });
     }
+
+    private static final Logger logger = LogManager.getLogger();
 
     /** This method is called from within the constructor to
      * initialize the form.

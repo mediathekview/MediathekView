@@ -1,6 +1,7 @@
 package mediathek.gui.dialog;
 
-import mediathek.config.Icons;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
@@ -32,7 +33,7 @@ public class MeldungDownloadfehler extends JDialog {
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         jButtonOk.addActionListener(e -> dispose());
         jLabelIcon.setText("");
-        jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
+        jLabelIcon.setIcon(IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 32));
 
         //start the countdown...
         countdownTimer = new Timer(0, new CountdownAction());

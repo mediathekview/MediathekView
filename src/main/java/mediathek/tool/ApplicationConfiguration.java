@@ -25,94 +25,101 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationConfiguration {
   public static final String APPLICATION_USER_AGENT = "application.user_agent";
   public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =
-          "application.ui.install_tab_listeners";
+      "application.ui.install_tab_listeners";
   public static final String APPLICATION_UI_TAB_POSITION_TOP = "application.ui.tab_position.top";
 
   public static final String APPLICATION_UI_MAINWINDOW_MAXIMIZED =
-          "application.ui.mainwindow.maximized";
+      "application.ui.mainwindow.maximized";
   public static final String APPLICATION_UI_MAINWINDOW_WIDTH = "application.ui.mainwindow.width";
   public static final String APPLICATION_UI_MAINWINDOW_HEIGHT = "application.ui.mainwindow.height";
   public static final String APPLICATION_UI_MAINWINDOW_LOCATION_X =
-          "application.ui.mainwindow.location.x";
+      "application.ui.mainwindow.location.x";
   public static final String APPLICATION_UI_MAINWINDOW_LOCATION_Y =
-          "application.ui.mainwindow.location.y";
+      "application.ui.mainwindow.location.y";
   public static final String APPLICATION_UI_MAINWINDOW_TAB_ICONS =
-          "application.ui.mainwindow.tab_icons";
+      "application.ui.mainwindow.tab_icons";
+  public static final String APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE =
+      "application.ui.bandwidth_monitor.visible";
+  public static final String APPLICATION_UI_USE_TRAY = "application.ui.tray.use";
 
   public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
-          "application.ui.download.tab.divider.location";
+      "application.ui.download.tab.divider.location";
 
   public static final String APPLICATION_UI_FILTER_DIALOG_WIDTH =
-          "application.ui.filter_dialog.width";
+      "application.ui.filter_dialog.width";
   public static final String APPLICATION_UI_FILTER_DIALOG_HEIGHT =
-          "application.ui.filter_dialog.height";
+      "application.ui.filter_dialog.height";
   public static final String APPLICATION_UI_FILTER_DIALOG_LOCATION_X =
-          "application.ui.filter_dialog.location.x";
+      "application.ui.filter_dialog.location.x";
   public static final String APPLICATION_UI_FILTER_DIALOG_LOCATION_Y =
-          "application.ui.filter_dialog.location.y";
+      "application.ui.filter_dialog.location.y";
   public static final String APPLICATION_UI_FILTER_DIALOG_VISIBLE =
-          "application.ui.filter_dialog.visible";
+      "application.ui.filter_dialog.visible";
+  public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
 
   public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE =
-          "application.http_download.file_buffer_size";
+      "application.http_download.file_buffer_size";
   public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
   public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
-          "application.notifications.native";
+      "application.notifications.show_native";
+  public static final String APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT =
+      "application.notifications.native_support";
   public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
-  /**
-   * can be BASIC, HEADERS, BODY
-   */
+  /** can be BASIC, HEADERS, BODY */
   public static final String APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL =
-          "application.debug.http_traffic_trace_level";
+      "application.debug.http_traffic_trace_level";
+
+  public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
+  public static final String APPLICATION_BUTTONS_PANEL_MAX_VISIBLE =
+      "application.buttons_panel.max_visible";
+  public static final String APPLICATION_BUTTONS_PANEL_VISIBLE =
+      "application.buttons_panel.visible";
 
   public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";
   public static final String HTTP_PROXY_PORT = "http.proxy.port";
   public static final String HTTP_PROXY_USERNAME = "http.proxy.user";
   public static final String HTTP_PROXY_PASSWORD = "http.proxy.password";
 
-  public static final String FILTER_PANEL_SHOW_HD_ONLY = "filter.show.hd_only";
-  public static final String FILTER_PANEL_SHOW_SUBTITLES_ONLY = "filter.show.subtitles_only";
-  public static final String FILTER_PANEL_SHOW_NEW_ONLY = "filter.show.new_only";
-  public static final String FILTER_PANEL_SHOW_UNSEEN_ONLY = "filter.show.unseen_only";
-  public static final String FILTER_PANEL_SHOW_LIVESTREAMS_ONLY = "filter.show.livestreams_only";
-  public static final String FILTER_PANEL_DONT_SHOW_ABOS = "filter.dont_show.abos";
-  public static final String FILTER_PANEL_DONT_SHOW_TRAILERS = "filter.dont_show.trailers";
-  public static final String FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE =
-          "filter.dont_show.sign_language";
-  public static final String FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS =
-          "filter.dont_show.audio_versions";
-  public static final String FILTER_PANEL_FILM_LENGTH_MIN = "filter.film_length.min";
-  public static final String FILTER_PANEL_FILM_LENGTH_MAX = "filter.film_length.max";
-  public static final String FILTER_PANEL_ZEITRAUM = "filter.zeitraum";
-
   public static final String FILMLIST_LOAD_TRAILER = "filmlist.load.trailer";
   public static final String FILMLIST_LOAD_AUDIODESCRIPTION = "filmlist.load.audio_description";
   public static final String FILMLIST_LOAD_SIGNLANGUAGE = "filmlist.load.sign_language";
+  public static final String FILMLIST_LOAD_NUM_DAYS = "filmlist.load.days";
+  public static final String FILMLIST_LOAD_LIVESTREAMS = "filmlist.load.livestreams";
 
   public static final String GEO_REPORT = "geo.report";
   public static final String GEO_LOCATION = "geo.location";
 
+  public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
+
   public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
-  public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 
   public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
   public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
   public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
   public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
+  public static final String DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number";
 
   public static final String SEARCH_USE_FILM_DESCRIPTIONS =
-          "searchfield.film.search_through_description";
+      "searchfield.film.search_through_description";
 
   public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
 
-  public static final String UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT = "ui.filmlist_label.enable_powermanagement";
-  /**
-   * logger for {@link TimerTaskListener} inner class.
-   */
+  public static final String UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT =
+      "ui.filmlist_label.enable_powermanagement";
+
+  public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
+
+  /** logger for {@link TimerTaskListener} inner class. */
   private static final Logger logger = LogManager.getLogger(ApplicationConfiguration.class);
+
   private static ApplicationConfiguration ourInstance;
   private XMLConfiguration config;
   private FileHandler handler;
+  /**
+   * Stores the previous writer task in order to cancel it if necessary. We don´t want to write
+   * several times in a row.
+   */
+  private ScheduledFuture<?> future;
 
   private ApplicationConfiguration() {
     setupXmlConfiguration();
@@ -138,6 +145,7 @@ public class ApplicationConfiguration {
 
   private void setupXmlConfiguration() {
     config = new XMLConfiguration();
+    config.setConversionHandler(new CustomConversionHandler());
     config.setSynchronizer(new ReadWriteSynchronizer());
     config.setRootElementName("settings");
     config.setThrowExceptionOnMissing(true);
@@ -163,6 +171,9 @@ public class ApplicationConfiguration {
 
   public void writeConfiguration() {
     try {
+      // cancel a pending writer task first
+      if (future != null) future.cancel(false);
+
       handler.save();
     } catch (ConfigurationException configurationException) {
       logger.debug("Something went wrong while saving the config.", configurationException);
@@ -178,7 +189,7 @@ public class ApplicationConfiguration {
       handler.save();
     } catch (ConfigurationException configurationException) {
       logger.error(
-              "Something went wrong while creating the default config.", configurationException);
+          "Something went wrong while creating the default config.", configurationException);
     } catch (NoSuchElementException noSuchElementException) {
       logger.error("A config element is missing.", noSuchElementException);
       System.exit(2);
@@ -203,31 +214,31 @@ public class ApplicationConfiguration {
    * config is written only once.
    */
   private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
-    /**
-     * stores the previous writer task in order to cancel it if necessary. We don´t want to write
-     * several times in a row.
-     */
-    private ScheduledFuture future = null;
+    private void launchWriterTask() {
+      future =
+          Daten.getInstance()
+              .getTimerPool()
+              .schedule(
+                  () -> {
+                    try {
+                      logger.trace("Writing app configuration file");
+                      handler.save();
+                    } catch (ConfigurationException e) {
+                      logger.error("writing app config file:", e);
+                    }
+                    future = null;
+                  },
+                  5,
+                  TimeUnit.SECONDS);
+    }
 
     @Override
     public void onEvent(ConfigurationEvent configurationEvent) {
-      if (future == null || future.isDone()) {
-        future =
-                Daten.getInstance()
-                        .getTimerPool()
-                        .schedule(
-                                () -> {
-                                  try {
-                                    logger.trace("Writing app configuration file");
-                                    handler.save();
-                                  } catch (ConfigurationException e) {
-                                    logger.error("writing app config file:", e);
-                                  }
-                                },
-                                5,
-                                TimeUnit.SECONDS);
-      } else {
-        future.cancel(false);
+      if (!configurationEvent.isBeforeUpdate()) {
+        if (future != null) {
+          future.cancel(false);
+        }
+        launchWriterTask();
       }
     }
   }

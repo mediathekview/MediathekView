@@ -14,7 +14,7 @@ public class FilmListNetworkReaderTask extends Task<Void> {
         updateProgress(-1, 4);
         updateMessage("Prüfe Alter der Filmliste");
 
-        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().isTooOld()) {
+        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
             updateMessage("Lade Filmliste Netzwerk");
             daten.getFilmeLaden().loadFilmlist("", true);
         }

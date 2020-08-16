@@ -1,8 +1,7 @@
 package mediathek.daten;
 
-import mediathek.tool.models.TModel;
-
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.LinkedList;
 
 @SuppressWarnings("serial")
@@ -17,7 +16,7 @@ public class ListeMediaPath extends LinkedList<DatenMediaPath> {
             return false;
     }
 
-    public void addObjectData(TModel model) {
+    public void addObjectData(DefaultTableModel model) {
         model.setRowCount(0);
         this.stream().filter(datenMediaPath -> !datenMediaPath.savePath())
                 .forEach(datenMediaPath -> model.addRow(datenMediaPath.arr));

@@ -1,16 +1,15 @@
 language: java
 jdk:
-  - openjdk12
-sudo: required
+  - openjdk14
 before_install:
   - git lfs pull
 install:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
-  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_1.tar.gz
-  - tar zxvf install4j_unix_8_0_1.tar.gz
+  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
+  - tar zxvf install4j_unix_8_0_7.tar.gz
   - mvn clean
-  - mvn install4j:install-license -Pinstall4j-linux
+  - mvn install4j:install-license -Pinstall4j
 notifications:
   webhooks:
     urls:
@@ -20,7 +19,7 @@ notifications:
     on_start: never
 addons:
   ssh_known_hosts:
-    - mediathekview.de
+    - mediathekview.de:52150
   sonarcloud:
     organization: "mediathekview"
     token:
@@ -28,10 +27,14 @@ addons:
 stages:
   - Test
   - name: Build and Deploy Snapshots
-    if: branch = develop AND type = cron
+    if: branch = develop #AND type = cron
   - name: Build and Deploy Linux
     if: tag IS present
+  - name: Build and Deploy Linux ARM
+    if: tag IS present
   - name: Build and Deploy Windows
+    if: tag IS present
+  - name: Build and Deploy Windows 32bit
     if: tag IS present
 jobs:
   include:
@@ -45,12 +48,16 @@ jobs:
     - stage: Build and Deploy Snapshots
       script:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-        - ./mvnw clean install -Plinux,install4j-linux
+        - ./mvnw clean install -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
         - scripte/deploy/deploy.sh nightly linux $TRAVIS_COMMIT
-        - ./mvnw clean install -Pwindows,install4j-win,!linux
+        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
+        - scripte/deploy/deploy.sh nightly linux-armhf $TRAVIS_COMMIT
+        - ./mvnw clean install -Pwindows,install4j,!linux
         - scripte/deploy/deploy.sh nightly win $TRAVIS_COMMIT
+        - ./mvnw clean install -Pwindows32,!64bit,32bit,install4j,!linux
+        - scripte/deploy/deploy.sh nightly win32 $TRAVIS_COMMIT
         - ./mvnw clean install -Pmac,!linux
         - scripte/deploy/deploy.sh nightly mac $TRAVIS_COMMIT
       cache:
@@ -59,7 +66,7 @@ jobs:
           - $HOME/.m2
     - stage: Build and Deploy Linux
       script:
-        - ./mvnw clean install -Plinux -Pinstall4j-linux
+        - ./mvnw clean install -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
       before_deploy:
@@ -67,39 +74,35 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release linux
-          skip_cleanup: true
           on:
             tags: true
-#        - provider: releases
-#          api_key:
-#            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-#          file_glob: true
-#          file:
-#            - target/media/*.deb
-#            - target/media/*.rpm
-#            - target/media/*.sh
-#            - target/media/*.tar.gz
-#            - target/*.AppImage
-#          on:
-#            tags: true
+    - stage: Build and Deploy Linux ARM
+      script:
+        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+      deploy:
+        - provider: script
+          script: scripte/deploy/deploy.sh release linux-armhf
+          on:
+            tags: true
     - stage: Build and Deploy Windows
       script:
-        - ./mvnw clean install -Pwindows,!linux,install4j-win
+        - ./mvnw clean install -Pwindows,!linux,install4j
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win
-          skip_cleanup: true
           on:
             tags: true
-#        - provider: releases
-#          api_key:
-#            secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-#          file_glob: true
-#          file:
-#            - target/media/*.exe
-#            - target/media/*.zip
-#          skip_cleanup: true
-#          on:
-#            tags: true
+    - stage: Build and Deploy Windows 32bit
+      script:
+        - ./mvnw clean install -Pwindows32,!64bit,32bit,!linux,install4j
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
+      deploy:
+        - provider: script
+          script: scripte/deploy/deploy.sh release win32
+          on:
+            tags: true

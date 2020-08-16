@@ -18,6 +18,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -40,11 +41,11 @@ public class MemoryMonitor extends Stage {
 
     private void initComponents() {
         setTitle("Speicherverbrauch");
+        initOwner(JFXHiddenApplication.getPrimaryStage());
+        getIcons().add(JFXHiddenApplication.getApplicationImage());
         setAlwaysOnTop(true);
         if (SystemUtils.IS_OS_MAC_OSX)
             initStyle(StageStyle.UTILITY);
-        else
-            initStyle(StageStyle.UNIFIED);
 
         createPropertiesAndBindings();
 

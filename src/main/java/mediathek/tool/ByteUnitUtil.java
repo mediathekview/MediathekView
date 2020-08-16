@@ -18,7 +18,7 @@ import static org.apache.commons.io.FileUtils.*;
  * If anyone sees a serious issue, please give me a call.
  * <p>
  * --
- * Well, what Sammy Trojette did, is not actually exactly what e.g. Windows does. // TODO- test other OS.
+ * Well, what Sammy Trojette did, is not actually exactly what e.g. Windows does.
  * 1) Windows will round down, at least in displaying free space and when displaying file properties.
  * Rounding mode half up is not used here.
  * e.g. 2^30 B is displayed as 1 TB,
@@ -193,9 +193,8 @@ public class ByteUnitUtil {
             // Bytes                 , KibiBytes          , MebiBytes          , GibiBytes
             int ordinalRaw = Math.max(bitLength - 1, 0) / 10; // BigInteger.ZERO has bitLength 0. map 0 bits to bucket 0 ("BYTE")
             int ordinal = Math.min(ordinalRaw, values().length - 1); // logarithm can be infinite. stop at the largest defined prefix.
-            final ByteUnit byteUnit = values()[ordinal];
             // System.out.println("fromBitLength ordinal: " + ordinal + " -> " + byteUnit.name());
-            return byteUnit;
+            return values()[ordinal];
         }
 
         ByteUnit previous() {

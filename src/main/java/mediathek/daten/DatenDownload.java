@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,12 +94,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
     public Datum datumFilm = new Datum(0);
-    public DatenFilm film = null;
+    public DatenFilm film;
     public MVFilmSize mVFilmSize = new MVFilmSize();
-    public Start start = null;
-    public DatenPset pSet = null;
-    public DatenAbo abo = null;
-    public int nr = 0;
+    public Start start;
+    public DatenPset pSet;
+    public DatenAbo abo;
+    public int nr;
     public byte quelle = QUELLE_ALLE;
     public byte art = ART_DOWNLOAD;
 
@@ -135,7 +136,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
 
         // und jetzt noch die Dateigröße für die entsp. URL
-        setSizeFromUrl();
+        setGroesse("");
 
         aufrufBauen(pSet, film, abo, name, pfad);
         init();
@@ -192,16 +193,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             try {
                 if (datum.length() == 10) {
                     switch (s) {
-                        case "%1":
-                            ret = datum.substring(0, 2); // Tag
-                            break;
-                        case "%2":
-                            ret = datum.substring(3, 5); // Monat
-                            break;
-                        case "%3":
-                            ret = datum.substring(6); // Jahr
-                            break;
-
+                        case DMYHMSTags.DAY -> ret = datum.substring(0, 2);
+                        case DMYHMSTags.MONTH -> ret = datum.substring(3, 5);
+                        case DMYHMSTags.YEAR -> ret = datum.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -221,16 +215,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             try {
                 if (zeit.length() == 8) {
                     switch (s) {
-                        case "%4":
-                            ret = zeit.substring(0, 2); // Stunde
-                            break;
-                        case "%5":
-                            ret = zeit.substring(3, 5); // Minute
-                            break;
-                        case "%6":
-                            ret = zeit.substring(6); // Sekunde
-                            break;
-
+                        case DMYHMSTags.HOUR -> ret = zeit.substring(0, 2);
+                        case DMYHMSTags.MINUTE -> ret = zeit.substring(3, 5);
+                        case DMYHMSTags.SECOND -> ret = zeit.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -273,11 +260,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public void setSizeFromUrl() {
-        setGroesse("");
-    }
-
-    public void setGroesse(String groesse) {
+    public void setGroesse(@NotNull String groesse) {
         if (film != null) {
             if (!groesse.isEmpty()) {
                 mVFilmSize.setSize(groesse);
@@ -505,13 +488,14 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             if (art == ART_DOWNLOAD) {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM] = ART_DOWNLOAD_TXT;
             } else {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm.arr[DatenProg.PROGRAMM_NAME];
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm != null ? programm.arr[DatenProg.PROGRAMM_NAME] : "Unknown";
             }
-
-            arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());
-            arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER] = String.valueOf(programm.isDownloadManager());
-            dateinamePfadBauen(pSet, film, abo, nname, ppfad);
-            programmaufrufBauen(programm);
+            if (programm != null) {
+                arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());
+                arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER] = String.valueOf(programm.isDownloadManager());
+                dateinamePfadBauen(pSet, film, abo, nname, ppfad);
+                programmaufrufBauen(programm);
+            }
         } catch (Exception ex) {
             logger.error("aufrufBauen", ex);
         }
@@ -535,6 +519,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     private String replaceExec(String befehlsString) {
         befehlsString = StringUtils.replace(befehlsString, "**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         befehlsString = StringUtils.replace(befehlsString, "%f", arr[DOWNLOAD_URL]);
+        //FIXME %F needs to be removed as we no longer use flvstreamer
         befehlsString = StringUtils.replace(befehlsString, "%F", arr[DOWNLOAD_URL_RTMP]);
         befehlsString = StringUtils.replace(befehlsString, "%a", arr[DOWNLOAD_ZIEL_PFAD]);
         befehlsString = StringUtils.replace(befehlsString, "%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
@@ -803,5 +788,18 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
         }
         return ret;
+    }
+
+    /**
+     * Tags for getDMY() and getHMS() functions.
+     */
+    private static class DMYHMSTags {
+        public static final String DAY = "%1";
+        public static final String MONTH = "%2";
+        public static final String YEAR = "%3";
+
+        public static final String HOUR = "%4";
+        public static final String MINUTE = "%5";
+        public static final String SECOND = "%6";
     }
 }
