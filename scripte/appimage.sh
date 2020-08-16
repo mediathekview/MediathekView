@@ -79,7 +79,7 @@ cat > usr/bin/$LOWERAPP <<'EOF'
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
-MediathekView -Xmx1G -jar MediathekView.jar "$@"
+MediathekView -Xmx2G --enable-preview -jar MediathekView.jar "$@"
 cd $OLDPWD
 EOF
 
