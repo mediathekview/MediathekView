@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.7" transformSequenceNumber="8">
   <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target"
+               mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" convertDotsToUnderscores="false"
+               shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" 
+               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
     <languages>
       <principalLanguage id="de" />
     </languages>
@@ -615,7 +618,7 @@ if (context.isUnattended()) {
 }
  args.add("-dir");
  args.add(installationDirectory);
- 
+
  return args.toArray(new String[args.size()]);
 </property>
                                 </object>

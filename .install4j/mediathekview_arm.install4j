@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.7" transformSequenceNumber="8">
   <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" 
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target"
                mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-armhf" convertDotsToUnderscores="false"
                shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
                macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
     <languages>
-      <principalLanguage id="de"/>
+      <principalLanguage id="de" />
     </languages>
     <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.2+13">
       <modules>
@@ -607,7 +607,7 @@ if (context.isUnattended()) {
 }
  args.add("-dir");
  args.add(installationDirectory);
- 
+
  return args.toArray(new String[args.size()]);
 </property>
                                 </object>
@@ -988,14 +988,14 @@ return true;</property>
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer ARM32" id="161" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}">
+    <unixInstaller name="Unix Installer ARM32" id="161">
       <jreBundle jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
         <modules>
           <defaultModules set="all" />
         </modules>
       </jreBundle>
     </unixInstaller>
-    <linuxDeb name="Linux Deb Archive ARM32" id="164" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}-armhf_${compiler:sys.version}" maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="armhf">
+    <linuxDeb name="Linux Deb Archive ARM32" id="164" maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="armhf">
       <jreBundle jreBundleSource="generated" platform="linux-arm32-vfp-hflt">
         <modules>
           <defaultModules set="all" />
