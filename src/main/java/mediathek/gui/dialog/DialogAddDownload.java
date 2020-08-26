@@ -272,12 +272,22 @@ public class DialogAddDownload extends JDialog {
         if (!strPath.isEmpty()) {
             try {
                 Path path = Paths.get(strPath);
-                if (!Files.exists(path)) {
-                    path = path.getParent();
+                if (Files.notExists(path)) {
+                    //getParent() may return null...therefore we need to bail out this loop at some point.
+                    while (Files.notExists(path) && (path != null)) {
+                        path = path.getParent();
+                    }
                 }
-                final FileStore fileStore = Files.getFileStore(path);
-                usableSpace = fileStore.getUsableSpace();
+
+                if (path == null) {
+                    //there is no way to determine usable space...
+                    usableSpace = 0;
+                } else {
+                    final FileStore fileStore = Files.getFileStore(path);
+                    usableSpace = fileStore.getUsableSpace();
+                }
             } catch (Exception ignore) {
+                ignore.printStackTrace();
             }
         }
         return usableSpace;
