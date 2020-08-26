@@ -10,6 +10,8 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -43,6 +45,7 @@ public class DialogAddDownload extends JDialog {
     private boolean stopBeob;
     private final JTextComponent cbPathTextComponent;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
+    private static final Logger logger = LogManager.getLogger();
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -286,8 +289,8 @@ public class DialogAddDownload extends JDialog {
                     final FileStore fileStore = Files.getFileStore(path);
                     usableSpace = fileStore.getUsableSpace();
                 }
-            } catch (Exception ignore) {
-                ignore.printStackTrace();
+            } catch (Exception ex) {
+                logger.error("getFreeDiskSpace Failed",ex);
             }
         }
         return usableSpace;
