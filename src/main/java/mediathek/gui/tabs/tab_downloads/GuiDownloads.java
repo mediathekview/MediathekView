@@ -208,7 +208,7 @@ public class GuiDownloads extends AGuiTabPanel {
             am.put("einstellungen", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    mediathekGui.showSettingsDialog();
+                    mediathekGui.getSettingsDialog().setVisible(true);
                 }
             });
         }
