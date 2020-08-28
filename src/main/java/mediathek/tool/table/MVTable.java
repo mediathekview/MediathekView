@@ -119,7 +119,7 @@ public abstract class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
-    protected int getSizeArea() {
+    private int getSizeArea() {
         int sizeArea = 0;
 
         if (lineBreak)
