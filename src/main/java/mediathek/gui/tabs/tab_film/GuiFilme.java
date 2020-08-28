@@ -46,13 +46,11 @@ import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
-import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
-import net.miginfocom.layout.LC;
-import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,14 +206,7 @@ public class GuiFilme extends AGuiTabPanel {
   }
 
   private void createExtensionArea() {
-    extensionArea.setLayout(
-        new MigLayout(
-            new LC().insets("0").hideMode(3).gridGap("0", "0"), // NON-NLS
-            // columns
-            new AC().grow().fill(),
-            // rows
-            new AC().grow().fill().gap().grow().fill()));
-
+    extensionArea.setLayout(new VerticalLayout());
     add(extensionArea, BorderLayout.SOUTH);
   }
 
