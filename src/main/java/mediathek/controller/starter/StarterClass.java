@@ -10,10 +10,10 @@ import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.ByteUnitUtil;
 import mediathek.tool.Datum;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -154,7 +154,7 @@ public class StarterClass {
         }
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
-                text.add("Bytes gelesen: " + ByteUnitUtil.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
+                text.add("Bytes gelesen: " + FileUtils.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
                 text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
@@ -180,7 +180,7 @@ public class StarterClass {
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + ByteUnitUtil.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
+                "Größe:  " + FileUtils.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
         };
 
         StringBuilder meldung = new StringBuilder();
