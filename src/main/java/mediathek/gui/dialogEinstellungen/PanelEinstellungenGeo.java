@@ -29,20 +29,11 @@ public class PanelEinstellungenGeo extends JPanel {
         final Configuration config = ApplicationConfiguration.getConfiguration();
 
         switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
-            case GeoblockingField.GEO_CH:
-                jRadioButtonCH.setSelected(true);
-                break;
-            case GeoblockingField.GEO_AT:
-                jRadioButtonAt.setSelected(true);
-                break;
-            case GeoblockingField.GEO_EU:
-                jRadioButtonEu.setSelected(true);
-                break;
-            case GeoblockingField.GEO_WELT:
-                jRadioButtonSonst.setSelected(true);
-                break;
-            default:
-                jRadioButtonDe.setSelected(true);
+            case GeoblockingField.GEO_CH -> jRadioButtonCH.setSelected(true);
+            case GeoblockingField.GEO_AT -> jRadioButtonAt.setSelected(true);
+            case GeoblockingField.GEO_EU -> jRadioButtonEu.setSelected(true);
+            case GeoblockingField.GEO_WELT -> jRadioButtonSonst.setSelected(true);
+            default -> jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_DE);
