@@ -133,37 +133,47 @@ public abstract class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
+    /**
+     * Return a fictious size of a multi-line text area.
+     * @return The fictious size of a multi-line label.
+     */
     private int getSizeArea() {
-        int sizeArea = 0;
+        final int sizeArea;
+        var fm = getFontMetrics(getDefaultFont());
+        final var height = fm.getHeight();
 
-        if (lineBreak)
-            sizeArea = defaultFont.getSize() * 4;
+        if (lineBreak) {
+            sizeArea = 4 * height;
+        }
+        else {
+            sizeArea = height;
+        }
 
         return sizeArea;
     }
 
+    /**
+     * Calculate the row height in a table based on icon display,etc.
+     */
     public void setHeight() {
         final int sizeArea = getSizeArea();
-        final int defaultFontSize = defaultFont.getSize();
-        final int internalDefaultSize = defaultFontSize + defaultFontSize / 3;
-
+        var fm = getFontMetrics(getDefaultFont());
         int size;
-        if (!showSenderIcon) {
-            if (defaultFontSize < 15) {
-                size = 18;
-            } else {
-                size = internalDefaultSize;
+
+        size = fm.getHeight() + 5; // add some extra spacing for the height
+
+        // check some minimum height requirements
+        if (showSenderIcon) {
+            if (useSmallSenderIcons) {
+                // small icons
+                if (size < 18)
+                    size = 20;
             }
-        } else if (useSmallSenderIcons) {
-            if (defaultFontSize < 18) {
-                size = 20;
-            } else {
-                size = internalDefaultSize;
+            else {
+                //large icons
+                if (size < 30)
+                    size = 36;
             }
-        } else if (defaultFontSize < 30) {
-            size = 36;
-        } else {
-            size = internalDefaultSize;
         }
 
         setRowHeight(Math.max(size, sizeArea));
