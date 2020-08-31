@@ -66,6 +66,10 @@ public abstract class MVTable extends JTable {
 
     public Font getDefaultFont() { return defaultFont;}
 
+    public void setDefaultFont(Font newFont) {
+        defaultFont = newFont;
+    }
+
     private SortKey sortKeyLesen(String s, String strSortOrder) {
         SortKey sk;
 

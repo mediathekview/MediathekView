@@ -429,6 +429,7 @@ public class GuiFilme extends AGuiTabPanel {
             BUTTON_COLUMNS,
             true,
             MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
+    headerListener.setFontSizeChangeCapable(true);
     tabelle.getTableHeader().addMouseListener(headerListener);
   }
 
