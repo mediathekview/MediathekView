@@ -46,7 +46,6 @@ import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
-import net.miginfocom.layout.CC;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,7 +115,7 @@ public class GuiFilme extends AGuiTabPanel {
     createFilmActionPanel();
 
     // add film description panel
-    extensionArea.add(fxDescriptionPanel, new CC().cell(0, 0));
+    extensionArea.add(fxDescriptionPanel);
 
     setupFilmListTable();
 

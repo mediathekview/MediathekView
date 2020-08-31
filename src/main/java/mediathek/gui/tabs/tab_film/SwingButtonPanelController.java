@@ -95,7 +95,7 @@ public final class SwingButtonPanelController {
                 // rows
                 new AC()
                         .grow().fill()));
-        parent.add(contentPanel, new CC().cell(0, 1));
+        parent.add(contentPanel);
     }
 
     private void createButtonsPanel() {
