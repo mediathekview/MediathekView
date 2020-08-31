@@ -61,13 +61,29 @@ public abstract class MVTable extends JTable {
             useSmallSenderIcons = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
 
+        loadDefaultFontSize();
         setHeight();
+    }
+
+    /**
+     * Load font size from settings and replace default font.
+     */
+    protected void loadDefaultFontSize() {
+        //unused here
+    }
+
+    /**
+     * Store default font size in settings
+     */
+    protected void saveDefaultFontSize() {
+        //unused here
     }
 
     public Font getDefaultFont() { return defaultFont;}
 
     public void setDefaultFont(Font newFont) {
         defaultFont = newFont;
+        saveDefaultFontSize();
     }
 
     private SortKey sortKeyLesen(String s, String strSortOrder) {
