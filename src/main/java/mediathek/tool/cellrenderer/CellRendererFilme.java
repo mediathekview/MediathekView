@@ -73,7 +73,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
     }
 
-    private JTextArea createTextArea(String content, MVTable table) {
+    private JTextArea createTextArea(String content) {
         var textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -81,8 +81,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         textArea.setForeground(getForeground());
         textArea.setBackground(getBackground());
 
-        //use the same font as the table but increase font size
-        textArea.setFont(table.getFont().deriveFont(textArea.getFont().getSize2D()));
+        var fontSize = textArea.getFont().getSize2D();
+        var labelFont = UIManager.getFont("Label.font");
+        textArea.setFont(labelFont.deriveFont(fontSize));
 
         return textArea;
     }
@@ -110,7 +111,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (mvTable.isLineBreak()) {
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
-                        var textArea = createTextArea(value.toString(), mvTable);
+                        var textArea = createTextArea(value.toString());
                         setSelectionFont(textArea, isSelected);
                         applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
                         return textArea;
