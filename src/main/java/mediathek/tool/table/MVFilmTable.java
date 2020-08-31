@@ -3,6 +3,7 @@ package mediathek.tool.table;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmSize;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,24 @@ public class MVFilmTable extends ASelectableMVTable {
     private static final long serialVersionUID = -5362792359176783146L;
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
+
+    @Override
+    protected void loadDefaultFontSize() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            final var fontSize = config.getFloat(ApplicationConfiguration.TAB_FILM_FONT_SIZE);
+            var newFont = getDefaultFont().deriveFont(fontSize);
+            setDefaultFont(newFont);
+        }
+        catch (Exception ignored) {}
+    }
+
+    @Override
+    protected void saveDefaultFontSize() {
+        var config = ApplicationConfiguration.getConfiguration();
+        final var fontSize = getDefaultFont().getSize2D();
+        config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
+    }
 
     public MVFilmTable() {
         super();

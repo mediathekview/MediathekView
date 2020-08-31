@@ -109,6 +109,8 @@ public class ApplicationConfiguration {
 
   public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
 
+  public static final String TAB_FILM_FONT_SIZE = "tab.film.font_size";
+
   /** logger for {@link TimerTaskListener} inner class. */
   private static final Logger logger = LogManager.getLogger(ApplicationConfiguration.class);
 
