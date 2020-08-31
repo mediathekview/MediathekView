@@ -18,12 +18,9 @@ public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
     private static final String SORT_DESCENDING = "DESCENDING";
+    private static final Logger logger = LogManager.getLogger();
     protected final int[] breite;
     protected final int[] reihe;
-    /**
-     * This is the UI provided default font used for calculating the size area
-     */
-    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
     public boolean useSmallSenderIcons;
     protected int maxSpalten;
     protected int indexSpalte;
@@ -34,9 +31,13 @@ public abstract class MVTable extends JTable {
     protected MVConfig.Configs nrDatenSystem;
     protected MVConfig.Configs iconAnzeigenStr;
     protected MVConfig.Configs iconKleinStr;
+    protected List<? extends RowSorter.SortKey> listeSortKeys;
+    /**
+     * This is the UI provided default font used for calculating the size area
+     */
+    private Font defaultFont = UIManager.getDefaults().getFont("Table.font");
     private boolean showSenderIcon;
     private boolean lineBreak = true;
-    protected List<? extends RowSorter.SortKey> listeSortKeys;
 
     public MVTable() {
         setAutoCreateRowSorter(true);
@@ -63,31 +64,24 @@ public abstract class MVTable extends JTable {
         setHeight();
     }
 
+    public Font getDefaultFont() { return defaultFont;}
+
     private SortKey sortKeyLesen(String s, String strSortOrder) {
         SortKey sk;
 
         try {
             final int column = Integer.parseInt(s);
-            SortOrder order;
-            switch (strSortOrder) {
-                case SORT_ASCENDING:
-                    order = SortOrder.ASCENDING;
-                    break;
-                case SORT_DESCENDING:
-                    order = SortOrder.DESCENDING;
-                    break;
-                default:
-                    throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
-                    //break;
-            }
+            SortOrder order = switch (strSortOrder) {
+                case SORT_ASCENDING -> SortOrder.ASCENDING;
+                case SORT_DESCENDING -> SortOrder.DESCENDING;
+                default -> throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
+            };
             sk = new SortKey(column,order);
         } catch (Exception ex) {
             return null;
         }
         return sk;
     }
-
-    private static final Logger logger = LogManager.getLogger();
 
     public boolean showSenderIcons() {
         return showSenderIcon;
