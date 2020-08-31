@@ -16,7 +16,7 @@ public class BeobTableHeader extends MouseAdapter {
     /**
      * Size factor to increase/decrease the current font size.
      */
-    private static final float FONT_SIZE_FACTOR = 22f;
+    private static final float FONT_SIZE_FACTOR = 2f;
     protected final MVTable tabelle;
     private final String[] columns;
     private final boolean[] spaltenAnzeigen;
