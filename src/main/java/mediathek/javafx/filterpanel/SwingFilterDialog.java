@@ -39,18 +39,16 @@ public class SwingFilterDialog extends JDialog {
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                setEnabled(false);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    fxPanel.setEnabled(false);
-                });
+                final boolean enabled = false;
+                setEnabled(enabled);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                setEnabled(true);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    fxPanel.setEnabled(false);
-                });
+                final boolean enabled = true;
+                setEnabled(enabled);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
             }
         });
     }
