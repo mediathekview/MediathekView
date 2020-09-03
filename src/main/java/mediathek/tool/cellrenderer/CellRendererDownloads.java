@@ -94,17 +94,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             if (((MVTable) table).isLineBreak()) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
-                    case DatenDownload.DOWNLOAD_TITEL:
-                    case DatenDownload.DOWNLOAD_THEMA:
-                    case DatenDownload.DOWNLOAD_URL:
-                    case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF:
-                    case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY:
-                    case DatenDownload.DOWNLOAD_FILM_URL:
-                    case DatenDownload.DOWNLOAD_URL_SUBTITLE:
-                    case DatenDownload.DOWNLOAD_ZIEL_DATEINAME:
-                    case DatenDownload.DOWNLOAD_ZIEL_PFAD:
-                    case DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME:
-                    case DatenDownload.DOWNLOAD_ABO:
+                    case DatenDownload.DOWNLOAD_TITEL, DatenDownload.DOWNLOAD_THEMA, DatenDownload.DOWNLOAD_URL, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DatenDownload.DOWNLOAD_FILM_URL, DatenDownload.DOWNLOAD_URL_SUBTITLE, DatenDownload.DOWNLOAD_ZIEL_DATEINAME, DatenDownload.DOWNLOAD_ZIEL_PFAD, DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME, DatenDownload.DOWNLOAD_ABO -> {
                         textArea = new JTextArea();
                         textArea.setLineWrap(true);
                         textArea.setWrapStyleWord(true);
@@ -116,12 +106,10 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                         }
                         setBackgroundColor(textArea, datenDownload.start, isSelected);
                         handleGeoBlocking(textArea, datenDownload, isSelected);
-                        setSelectionFont(textArea, isSelected);
                         return textArea;
+                    }
                 }
             }
-
-            setSelectionFont(this, isSelected);
 
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
@@ -167,28 +155,16 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 case DatenDownload.DOWNLOAD_ART:
                     switch (datenDownload.art) {
-                        case DatenDownload.ART_DOWNLOAD:
-                            setText(DatenDownload.ART_DOWNLOAD_TXT);
-                            break;
-                        case DatenDownload.ART_PROGRAMM:
-                            setText(DatenDownload.ART_PROGRAMM_TXT);
-                            break;
+                        case DatenDownload.ART_DOWNLOAD -> setText(DatenDownload.ART_DOWNLOAD_TXT);
+                        case DatenDownload.ART_PROGRAMM -> setText(DatenDownload.ART_PROGRAMM_TXT);
                     }
                     break;
                 case DatenDownload.DOWNLOAD_QUELLE:
                     switch (datenDownload.quelle) {
-                        case DatenDownload.QUELLE_ALLE:
-                            setText(DatenDownload.QUELLE_ALLE_TXT);
-                            break;
-                        case DatenDownload.QUELLE_ABO:
-                            setText(DatenDownload.QUELLE_ABO_TXT);
-                            break;
-                        case DatenDownload.QUELLE_BUTTON:
-                            setText(DatenDownload.QUELLE_BUTTON_TXT);
-                            break;
-                        case DatenDownload.QUELLE_DOWNLOAD:
-                            setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
-                            break;
+                        case DatenDownload.QUELLE_ALLE -> setText(DatenDownload.QUELLE_ALLE_TXT);
+                        case DatenDownload.QUELLE_ABO -> setText(DatenDownload.QUELLE_ABO_TXT);
+                        case DatenDownload.QUELLE_BUTTON -> setText(DatenDownload.QUELLE_BUTTON_TXT);
+                        case DatenDownload.QUELLE_DOWNLOAD -> setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                     }
                     break;
 
@@ -235,20 +211,18 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                                      Icon downloadStartIcon, Icon downloadStopIcon) {
         if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
             switch (datenDownload.start.status) {
-                case Start.STATUS_FERTIG:
+                case Start.STATUS_FERTIG -> {
                     setIcon(filmIcon);
                     setToolTipText(PLAY_DOWNLOADED_FILM);
-                    break;
-
-                case Start.STATUS_ERR:
+                }
+                case Start.STATUS_ERR -> {
                     setIcon(downloadStartIcon);
                     setToolTipText(DOWNLOAD_STARTEN);
-                    break;
-
-                default:
+                }
+                default -> {
                     setIcon(downloadStopIcon);
                     setToolTipText(DOWNLOAD_STOPPEN);
-                    break;
+                }
             }
         } else {
             setIcon(downloadStartIcon);

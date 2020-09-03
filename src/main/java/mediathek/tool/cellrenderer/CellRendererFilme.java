@@ -11,7 +11,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,31 +45,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.BLUE);
         selectedBookmarkIconHighlighted = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.yellow);
         normalBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16);
-    }
-
-    /**
-     * Apply (modified) selection font only to cells where text is actually used.
-     * @param columnModelIndex the column index
-     * @param isSelected is the cell selected?
-     */
-    private void applySelectionFont(@NotNull MVTable table, final int columnModelIndex, final boolean isSelected) {
-        switch (columnModelIndex) {
-            case DatenFilm.FILM_SENDER:
-                //only set selection font when no icons are shown...
-                if (!table.showSenderIcons()) {
-                    setSelectionFont(this,isSelected);
-                }
-                break;
-            case DatenFilm.FILM_AUFZEICHNEN:
-            case DatenFilm.FILM_MERKEN:
-            case DatenFilm.FILM_ABSPIELEN:
-                // do nothing
-                break;
-
-            default:
-                setSelectionFont(this, isSelected);
-                break;
-        }
     }
 
     private JTextArea createTextArea(String content) {
@@ -114,15 +88,11 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
-                        setSelectionFont(textArea, isSelected);
                         applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
                         return textArea;
                     }
                 }
             }
-
-            //only set font size where it is necessary...
-            applySelectionFont(mvTable, columnModelIndex, isSelected);
 
             applyHorizontalAlignment(columnModelIndex);
 
