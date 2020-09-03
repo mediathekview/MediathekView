@@ -73,22 +73,12 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private InputStream selectDecompressor(String source, InputStream in) throws Exception {
-        final InputStream is;
 
-        switch (source.substring(source.lastIndexOf('.'))) {
-            case Konstanten.FORMAT_XZ:
-                is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
-                break;
-
-            case ".json":
-                is = in;
-                break;
-
-            default:
-                throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
-        }
-
-        return is;
+        return switch (source.substring(source.lastIndexOf('.'))) {
+            case Konstanten.FORMAT_XZ -> new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
+            case ".json" -> in;
+            default -> throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
+        };
     }
 
     private void parseNeu(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -327,6 +317,7 @@ public class FilmListReader implements AutoCloseable {
 
                 //this will check after all data has been read
                 parseLivestream(datenFilm);
+                checkPlayList(datenFilm);
 
                 if (!loadTrailer) {
                     if (datenFilm.isTrailerTeaser())
@@ -362,6 +353,15 @@ public class FilmListReader implements AutoCloseable {
 
         stopwatch.stop();
         logger.debug("Reading filmlist took {}", stopwatch);
+    }
+
+    /**
+     * Check if this film entry is a playlist entry, ends with .m3u8
+     * @param datenFilm the film to check.
+     */
+    private void checkPlayList(@NotNull DatenFilm datenFilm) {
+        if (datenFilm.getUrl().endsWith(".m3u8"))
+            datenFilm.setPlayList(true);
     }
 
     private void checkDays(long days) {

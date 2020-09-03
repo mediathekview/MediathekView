@@ -189,6 +189,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
     }
 
+    public boolean isPlayList() {
+        return flags.contains(DatenFilmFlags.PLAYLIST);
+    }
+
+    public void setPlayList(boolean val) {
+        if (val) {
+            flags.add(DatenFilmFlags.PLAYLIST);
+        } else {
+            flags.remove(DatenFilmFlags.PLAYLIST);
+        }
+    }
+
     public boolean isSignLanguage() {
         return flags.contains(DatenFilmFlags.SIGN_LANGUAGE);
     }
