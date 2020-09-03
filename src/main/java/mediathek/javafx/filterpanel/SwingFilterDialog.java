@@ -3,7 +3,6 @@ package mediathek.javafx.filterpanel;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -20,7 +19,7 @@ import java.util.NoSuchElementException;
 public class SwingFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
 
-    public SwingFilterDialog(Frame owner, VBox content) {
+    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content) {
         super(owner);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setTitle("Filter");
