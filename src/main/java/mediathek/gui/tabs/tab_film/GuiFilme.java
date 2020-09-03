@@ -395,7 +395,7 @@ public class GuiFilme extends AGuiTabPanel {
     setupKeyMapping();
 
     tabelle.setModel(new TModelFilm());
-    tabelle.addMouseListener(new BeobMausTabelle());
+    tabelle.addMouseListener(new TableContextMenuHandler());
     tabelle
         .getSelectionModel()
         .addListSelectionListener(
@@ -915,12 +915,14 @@ public class GuiFilme extends AGuiTabPanel {
     }
   }
 
-    public class BeobMausTabelle extends MouseAdapter {
-        // rechhte Maustaste in der Tabelle
-
+  /**
+   * Implements the context menu for tab film.
+   */
+    class TableContextMenuHandler extends MouseAdapter {
+        private static final String COPY_URL_STR = "URL kopieren";
         private final BeobPrint beobPrint = new BeobPrint();
-        private final BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
-        private final BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
+        private final BeobAbo beobAbo = new BeobAbo(false);
+        private final BeobAbo beobAboMitTitel = new BeobAbo(true);
         private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
@@ -932,12 +934,11 @@ public class GuiFilme extends AGuiTabPanel {
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private Point p;
+        private JMenuItem miPrintTable;
 
-        BeobMausTabelle() {
+        TableContextMenuHandler() {
             createStaticMenuEntries();
         }
-
-        private JMenuItem miPrintTable;
 
         private void createStaticMenuEntries() {
             miPrintTable = new JMenuItem("Tabelle drucken");
@@ -1130,7 +1131,7 @@ public class GuiFilme extends AGuiTabPanel {
             res.ifPresent(
                     film -> {
                         if (film.isPlayList()) {
-                            var miCopyPlayListUrl = new JMenuItem("PlayList URL kopieren");
+                            var miCopyPlayListUrl = new JMenuItem(COPY_URL_STR);
                             miCopyPlayListUrl.addActionListener(l -> GuiFunktionen.copyToClipboard(film.getUrl()));
                             jPopupMenu.addSeparator();
                             jPopupMenu.add(miCopyPlayListUrl);
@@ -1150,7 +1151,7 @@ public class GuiFilme extends AGuiTabPanel {
 
                                 final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(uNormal);
                                 if (!uHd.isEmpty() || !uLow.isEmpty()) {
-                                    JMenu submenueURL = new JMenu("Film-URL kopieren");
+                                    JMenu submenueURL = new JMenu(COPY_URL_STR);
                                     // HD
                                     if (!uHd.isEmpty()) {
                                         item = new JMenuItem("in höchster/hoher Qualität");
