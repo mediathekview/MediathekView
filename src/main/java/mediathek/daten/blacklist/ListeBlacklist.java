@@ -5,11 +5,11 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
-import mediathek.tool.Listener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -218,7 +218,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      */
     public synchronized void filterListAndNotifyListeners() {
         filterListe();
-        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        Daten.getInstance().getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /**
