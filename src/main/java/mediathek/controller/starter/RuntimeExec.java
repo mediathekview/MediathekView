@@ -21,7 +21,6 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
-import mediathek.tool.Log;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.SysMsg;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +41,7 @@ public class RuntimeExec {
     private static final int ERROR = 2;
     private Process process = null;
     private Start start;
-    private static int procnr = 0; //TH
+    private static int procnr = 0;
     private static final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
     private static final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
     private static final Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
@@ -52,7 +51,6 @@ public class RuntimeExec {
     private double totalSecs = 0;
     private long oldSize = 0;
     private long oldSecs = 0;
-//    private DatenDownload datenDownload = null;
     private MVFilmSize mVFilmSize = null;
     private final String strProgCall;
     private String[] arrProgCallArray = null;
@@ -101,14 +99,11 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.errorLog(450028932, ex, "Fehler beim Starten");
+            logger.error("Fehler beim Starten", ex);
         }
         return process;
     }
 
-    //===================================
-    // Private
-    //===================================
     private class ClearInOut implements Runnable {
 
         private final int art;
@@ -128,17 +123,16 @@ public class RuntimeExec {
             String titel = "";
             try {
                 switch (art) {
-                    case INPUT:
+                    case INPUT -> {
                         in = process.getInputStream();
                         titel = "INPUTSTREAM";
-                        break;
-                    case ERROR:
+                    }
+                    case ERROR -> {
                         in = process.getErrorStream();
-                        //TH
                         synchronized (this) {
                             titel = "ERRORSTREAM [" + (++procnr) + ']';
                         }
-                        break;
+                    }
                 }
                 buff = new BufferedReader(new InputStreamReader(in));
                 String inStr;
@@ -156,7 +150,6 @@ public class RuntimeExec {
         }
 
         private void GetPercentageFromErrorStream(String input) {
-            // by: siedlerchr für den flvstreamer und rtmpdump
             Matcher matcher;
             matcher = patternFlvstreamer.matcher(input);
             if (matcher.find()) {
@@ -167,7 +160,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
-                    Log.errorLog(912036780, input);
+                    logger.error("GetPercentageFromErrorStream(): {}", input);
                 }
                 return;
             }
@@ -231,7 +224,7 @@ public class RuntimeExec {
                 }
             } catch (Exception ex) {
                 Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
-                Log.errorLog(912036780, input);
+                logger.error("GetPercentageFromErrorStream(): {}", input);
             }
         }
 
