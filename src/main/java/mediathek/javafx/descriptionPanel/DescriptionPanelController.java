@@ -32,7 +32,6 @@ public class DescriptionPanelController {
     @FXML
     private ScrollPane scrollPane;
 
-    private EventHandler<Event> closeHandler;
     private DatenFilm currentFilm;
     private ContextMenu contextMenu;
     private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
@@ -121,8 +120,7 @@ public class DescriptionPanelController {
     }
 
     public void setOnCloseRequest(EventHandler<Event> e) {
-        closeHandler = e;
-        descriptionTab.setOnCloseRequest(evt -> closeHandler.handle(evt));
+        descriptionTab.setOnCloseRequest(e);
     }
 
     public void initialize() {
