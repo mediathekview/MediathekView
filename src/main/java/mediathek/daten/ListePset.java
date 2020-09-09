@@ -6,7 +6,6 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +22,6 @@ public class ListePset extends LinkedList<DatenPset> {
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG";
-    public static final String MUSTER_PFAD_SCRIPT = "PFAD_SCRIPT";
     public String version = "";
 
     public DatenPset getPsetAbspielen() {
@@ -157,7 +155,7 @@ public class ListePset extends LinkedList<DatenPset> {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String vlc = "";
         String ffmpeg = "";
-        String skript = GuiFunktionenProgramme.getPfadScript();
+
         // damit nur die Variablen abgefragt werden, die auch verwendet werden
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
@@ -174,6 +172,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 break;
             }
         }
+
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             // VLC
@@ -186,11 +185,6 @@ public class ListePset extends LinkedList<DatenPset> {
                     = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
             prog.arr[DatenProg.PROGRAMM_SCHALTER]
                     = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
-            // script
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
         }
     }
 
