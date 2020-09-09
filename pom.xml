@@ -416,6 +416,28 @@
     <build>
         <finalName>MediathekView</finalName>
         <plugins>
+			<plugin>
+				<groupId>com.github.ekryd.sortpom</groupId>
+				<artifactId>sortpom-maven-plugin</artifactId>
+				<version>2.11.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>sort</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<lineSeparator>\n</lineSeparator>
+					<keepTimestamp>true</keepTimestamp>
+					<createBackupFile>false</createBackupFile>
+					<keepBlankLines>true</keepBlankLines>
+					<verifyFail>warn</verifyFail>
+					<nrOfIndentSpace>-1</nrOfIndentSpace>
+					<lineLength>120</lineLength>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
