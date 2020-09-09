@@ -38,14 +38,17 @@ public class BandwidthMonitorController {
     private static final int DEFAULT_HEIGHT = 150;
     private final ListeDownloads listeDownloads;
     private JDialog hudDialog = null;
-    private Timeline updateMemoryTimer;
+    private Timeline updateMemoryTimer = null;
     private Tile bandwidthTile;
     private JFXPanel fxPanel;
 
     public BandwidthMonitorController(JFrame parent) {
         listeDownloads = Daten.getInstance().getListeDownloads();
         createDialog(parent);
-        Platform.runLater(() -> fxPanel.setScene(new Scene(createTile())));
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            fxPanel.setScene(new Scene(createTile()));
+            createUpdateTimer();
+        });
 
         if (!GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, hudDialog, null)) {
             hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -124,10 +127,8 @@ public class BandwidthMonitorController {
     }
 
     private void createUpdateTimer() {
-        Platform.runLater(() -> {
-            updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> bandwidthTile.setValue(calculateBandwidthUsage())));
-            updateMemoryTimer.setCycleCount(Animation.INDEFINITE);
-        });
+        updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> bandwidthTile.setValue(calculateBandwidthUsage())));
+        updateMemoryTimer.setCycleCount(Animation.INDEFINITE);
     }
 
     private Tile createTile() {
@@ -158,8 +159,6 @@ public class BandwidthMonitorController {
                 .build();
 
         bandwidthTile.setValue(0d);
-
-        createUpdateTimer();
 
         return bandwidthTile;
     }
