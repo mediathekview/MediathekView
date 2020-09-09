@@ -12,6 +12,7 @@ import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
@@ -20,6 +21,7 @@ import mediathek.tool.models.TModel;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -50,6 +52,15 @@ public class PanelPsetLang extends PanelVorlage {
         init();
     }
 
+    @Handler
+    private void handleProgramSetChanged(ProgramSetChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (!stopBeob) {
+                tabellePset();
+            }
+        });
+    }
+
     private void init() {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -67,16 +78,11 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
 
+        Daten.getInstance().getMessageBus().subscribe(this);
+
         //Programme
         tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (!stopBeob) {
-                    tabellePset();
-                }
-            }
-        });
+
         BeobProgDoc beobDoc = new BeobProgDoc();
         jTextFieldProgPfad.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSchalter.getDocument().addDocumentListener(beobDoc);
@@ -139,7 +145,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (pset != null) {
                 pset.setAbspielen();
                 nurtabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         });
         jCheckBoxSpeichern.addActionListener(e -> {
@@ -147,7 +153,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (pset != null) {
                 pset.setSpeichern(jCheckBoxSpeichern.isSelected());
                 nurtabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         });
         jCheckBoxButton.addActionListener(e -> {
@@ -155,7 +161,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (pset != null) {
                 pset.setButton(jCheckBoxButton.isSelected());
                 nurtabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         });
         jCheckBoxAbo.addActionListener(e -> {
@@ -163,7 +169,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (pset != null) {
                 pset.setAbo(jCheckBoxAbo.isSelected());
                 nurtabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         });
         jCheckBoxLaenge.addActionListener(e -> {
@@ -230,7 +236,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (pSet != null) {
                 pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
                 tabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         });
 
@@ -462,8 +468,11 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-    private void notifyPset() {
-        Listener.notify(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName());
+    /**
+     * Send message that changes to the Pset were performed.
+     */
+    private void notifyProgramSetChanged() {
+        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
     }
 
     private void fillTextProgramme() {
@@ -546,7 +555,7 @@ public class PanelPsetLang extends PanelVorlage {
             neu = tabellePset.convertRowIndexToView(neu);
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
-            notifyPset();
+            notifyProgramSetChanged();
         } else {
             NoSelectionErrorDialog.show();
         }
@@ -555,7 +564,7 @@ public class PanelPsetLang extends PanelVorlage {
     private void setNeu() {
         listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
         tabellePset();
-        notifyPset();
+        notifyProgramSetChanged();
     }
 
     private void setLoeschen() {
@@ -577,7 +586,7 @@ public class PanelPsetLang extends PanelVorlage {
                     listePset.remove(delRow);
                 }
                 tabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             }
         } else {
             NoSelectionErrorDialog.show();
@@ -778,7 +787,7 @@ public class PanelPsetLang extends PanelVorlage {
                         tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
                         jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
                     }
-                    notifyPset();
+                    notifyProgramSetChanged();
                     stopBeob = false;
                 } else {
                     NoSelectionErrorDialog.show();
@@ -798,7 +807,7 @@ public class PanelPsetLang extends PanelVorlage {
                 gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
                 listePset.addPset(gruppe.copy());
                 tabellePset();
-                notifyPset();
+                notifyProgramSetChanged();
             } else {
                 NoSelectionErrorDialog.show();
             }
@@ -895,7 +904,7 @@ public class PanelPsetLang extends PanelVorlage {
                 if (selectedColor != null) {
                     pSet.setFarbe(selectedColor);
                     tabellePset();
-                    notifyPset();
+                    notifyProgramSetChanged();
                 }
             }
 
