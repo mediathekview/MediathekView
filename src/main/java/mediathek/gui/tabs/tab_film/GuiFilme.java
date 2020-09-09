@@ -129,7 +129,8 @@ public class GuiFilme extends AGuiTabPanel {
     setupFilmActionPanel();
 
     start_init();
-    start_addListener();
+    // register message bus handler
+    daten.getMessageBus().subscribe(this);
 
     setupActionListeners();
 
@@ -458,17 +459,9 @@ public class GuiFilme extends AGuiTabPanel {
     SwingUtilities.invokeLater(this::loadTable);
   }
 
-  private void start_addListener() {
-    // register message bus handler
-    daten.getMessageBus().subscribe(this);
-
-    Listener.addListener(
-        new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
-          @Override
-          public void ping() {
-            loadTable();
-          }
-        });
+  @Handler
+  private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
+    SwingUtilities.invokeLater(this::loadTable);
   }
 
   @Handler
