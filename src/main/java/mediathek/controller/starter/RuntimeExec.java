@@ -39,20 +39,18 @@ public class RuntimeExec {
     public static final String TRENNER_PROG_ARRAY = "<>";
     private static final int INPUT = 1;
     private static final int ERROR = 2;
-    private Process process = null;
-    private Start start;
-    private static int procnr = 0;
-    private static final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
-    private static final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
     private static final Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
     private static final Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
     private static final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
-
+    private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
+    private static int procnr = 0;
+    private final String strProgCall;
+    private Process process = null;
+    private Start start;
     private double totalSecs = 0;
     private long oldSize = 0;
     private long oldSecs = 0;
     private MVFilmSize mVFilmSize = null;
-    private final String strProgCall;
     private String[] arrProgCallArray = null;
     private String strProgCallArray = "";
 
@@ -71,8 +69,6 @@ public class RuntimeExec {
     public RuntimeExec(String p) {
         strProgCall = p;
     }
-
-    private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
 
     public Process exec(boolean log) {
         try {
@@ -107,9 +103,9 @@ public class RuntimeExec {
     private class ClearInOut implements Runnable {
 
         private final int art;
+        private final Process process;
         private BufferedReader buff;
         private InputStream in;
-        private final Process process;
         private int percent = 0;
         private int percent_start = -1;
 
@@ -151,25 +147,6 @@ public class RuntimeExec {
 
         private void GetPercentageFromErrorStream(String input) {
             Matcher matcher;
-            matcher = patternFlvstreamer.matcher(input);
-            if (matcher.find()) {
-                try {
-                    String prozent = matcher.group();
-                    prozent = prozent.substring(0, prozent.length() - 1);
-                    double d = Double.parseDouble(prozent);
-                    meldenDouble(d);
-                } catch (Exception ex) {
-                    Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
-                    logger.error("GetPercentageFromErrorStream(): {}", input);
-                }
-                return;
-            }
-            matcher = patternFlvstreamerComplete.matcher(input);
-            if (matcher.find()) {
-                // dann ist der Download fertig, zur sicheren Erkennung von 100%
-                meldenDouble(100);
-                return;
-            }
 
             // für ffmpeg
             // ffmpeg muss dazu mit dem Parameter -i gestartet werden:
