@@ -6,8 +6,8 @@ before_install:
 install:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
-  - wget https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
-  - tar zxvf install4j_unix_8_0_7.tar.gz
+  - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
+  - tar -zxf install4j_unix_8_0_7.tar.gz
   - mvn clean
   - mvn install4j:install-license -Pinstall4j
 notifications:
@@ -66,7 +66,7 @@ jobs:
           - $HOME/.m2
     - stage: Build and Deploy Linux
       script:
-        - ./mvnw clean install -Plinux,install4j
+        - ./mvnw clean install -Plinux,install4j -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
         - echo "Baue AppImage"
         - scripte/appimage.sh
       before_deploy:
@@ -74,35 +74,39 @@ jobs:
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release linux
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Linux ARM
       script:
-        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
+        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release linux-armhf
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Windows
       script:
-        - ./mvnw clean install -Pwindows,!linux,install4j
+        - ./mvnw clean install -Pwindows,!linux,install4j -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win
+          skip_cleanup: true
           on:
             tags: true
     - stage: Build and Deploy Windows 32bit
       script:
-        - ./mvnw clean install -Pwindows32,!64bit,32bit,!linux,install4j
+        - ./mvnw clean install -Pwindows32,!64bit,32bit,!linux,install4j -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
       deploy:
         - provider: script
           script: scripte/deploy/deploy.sh release win32
+          skip_cleanup: true
           on:
             tags: true
