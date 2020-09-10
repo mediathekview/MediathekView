@@ -127,10 +127,13 @@ public class MVFilmTable extends ASelectableMVTable {
         }
     }
 
+    /**
+     * Setzt die gemerkte Position der Spalten in der Tabelle wieder.
+     * Ziemlich ineffizient!
+     */
     @Override
     public void setSpalten() {
         //logger.debug("setSpalten()");
-        // gemerkte Einstellungen der Tabelle wieder setzen
         try {
             changeColumnWidth();
 
@@ -138,7 +141,9 @@ public class MVFilmTable extends ASelectableMVTable {
             changeColumnWidth2();
 
             for (int i = 0; i < reihe.length && i < getColumnCount(); ++i) {
-                model.moveColumn(convertColumnIndexToView(reihe[i]), i);
+                //move only when there are changes...
+                if (reihe[i] != i)
+                    model.moveColumn(convertColumnIndexToView(reihe[i]), i);
             }
 
             // restore sort keys
