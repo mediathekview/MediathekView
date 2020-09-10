@@ -3,10 +3,10 @@ package mediathek.javafx.filterpanel;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.sync.LockMode;
 
@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 public class SwingFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
 
-    public SwingFilterDialog(Frame owner, VBox content) {
+    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content) {
         super(owner);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setTitle("Filter");
@@ -38,12 +38,16 @@ public class SwingFilterDialog extends JDialog {
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                setEnabled(false);
+                final boolean enabled = false;
+                setEnabled(enabled);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                setEnabled(true);
+                final boolean enabled = true;
+                setEnabled(enabled);
+                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
             }
         });
     }

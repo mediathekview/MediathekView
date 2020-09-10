@@ -76,7 +76,7 @@ public class FileSize {
      * @param url URL as String to query.
      * @return size in bytes or -1.
      */
-    private static long getFileSizeFromUrl(@NotNull HttpUrl url) {
+    public static long getFileSizeFromUrl(@NotNull HttpUrl url) {
         if (!url.scheme().startsWith("http") || url.encodedPath().endsWith(".m3u8")) {
             return -1;
         }

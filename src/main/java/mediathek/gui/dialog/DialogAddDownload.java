@@ -9,7 +9,10 @@ import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -43,6 +46,7 @@ public class DialogAddDownload extends JDialog {
     private boolean stopBeob;
     private final JTextComponent cbPathTextComponent;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
+    private static final Logger logger = LogManager.getLogger();
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -272,12 +276,22 @@ public class DialogAddDownload extends JDialog {
         if (!strPath.isEmpty()) {
             try {
                 Path path = Paths.get(strPath);
-                if (!Files.exists(path)) {
-                    path = path.getParent();
+                if (Files.notExists(path)) {
+                    //getParent() may return null...therefore we need to bail out this loop at some point.
+                    while (Files.notExists(path) && (path != null)) {
+                        path = path.getParent();
+                    }
                 }
-                final FileStore fileStore = Files.getFileStore(path);
-                usableSpace = fileStore.getUsableSpace();
-            } catch (Exception ignore) {
+
+                if (path == null) {
+                    //there is no way to determine usable space...
+                    usableSpace = 0;
+                } else {
+                    final FileStore fileStore = Files.getFileStore(path);
+                    usableSpace = fileStore.getUsableSpace();
+                }
+            } catch (Exception ex) {
+                logger.error("getFreeDiskSpace Failed",ex);
             }
         }
         return usableSpace;
@@ -297,7 +311,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + ByteUnitUtil.byteCountToDisplaySize(usableSpace) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }

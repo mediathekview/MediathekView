@@ -8,11 +8,7 @@ import javax.swing.event.EventListenerList;
 import java.util.EventListener;
 
 public abstract class Listener implements EventListener {
-
-    public static final int EREIGNIS_LISTE_PSET = 2;
-
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 27;
-    public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
     public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;
 
     private static final EventListenerList listeners = new EventListenerList();
@@ -22,11 +18,6 @@ public abstract class Listener implements EventListener {
 
     public Listener(int eereignis, String kklasse) {
         mvEreignis = new int[]{eereignis};
-        klasse = kklasse;
-    }
-
-    public Listener(int[] eereignis, String kklasse) {
-        mvEreignis = eereignis;
         klasse = kklasse;
     }
 

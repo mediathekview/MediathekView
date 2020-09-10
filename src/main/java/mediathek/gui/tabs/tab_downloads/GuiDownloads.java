@@ -208,7 +208,7 @@ public class GuiDownloads extends AGuiTabPanel {
             am.put("einstellungen", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    mediathekGui.showSettingsDialog();
+                    mediathekGui.getSettingsDialog().setVisible(true);
                 }
             });
         }
@@ -781,20 +781,20 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
+    @Handler
+    private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))
+                    && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO))) {
+                // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
+                updateDownloads();
+            }
+        });
+    }
+
     private void addListenerMediathekView() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))
-                        && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO))) {
-                    // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
-                    updateDownloads();
-                }
-            }
-        });
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override

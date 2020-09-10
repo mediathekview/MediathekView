@@ -197,7 +197,7 @@ public class MediathekGuiMac extends MediathekGui {
             }
         });
         desktop.setAboutHandler(e -> showAboutDialog());
-        desktop.setPreferencesHandler(e -> showSettingsDialog());
+        desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
     }
 
     /**

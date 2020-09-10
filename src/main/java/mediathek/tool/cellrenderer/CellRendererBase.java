@@ -1,11 +1,9 @@
 package mediathek.tool.cellrenderer;
 
 import mediathek.tool.MVSenderIconCache;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
 import java.util.Optional;
 
 /**
@@ -32,24 +30,5 @@ public class CellRendererBase extends DefaultTableCellRenderer {
             setText("");
             setIcon(icon);
         });
-    }
-
-    /**
-     * Set the font for highlighting a selection based on operating system.
-     * Disabled for OS X as it violates HIG...
-     *
-     * @param c          component where font needs to be changed.
-     * @param isSelected is the component selected
-     */
-    protected void setSelectionFont(final Component c, final boolean isSelected) {
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            final Font font;
-            if (isSelected)
-                font = c.getFont().deriveFont(Font.BOLD);
-            else
-                font = c.getFont().deriveFont(Font.PLAIN);
-
-            c.setFont(font);
-        }
     }
 }

@@ -7,8 +7,8 @@ import mediathek.config.Konstanten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
+import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.Listener;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -56,14 +56,6 @@ public final class SwingButtonPanelController {
         //register message bus handler
         Daten.getInstance().getMessageBus().subscribe(this);
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, SwingButtonPanelController.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // psets have changed and we need to update the columns
-                setupButtons();
-            }
-        });
-
         contentPanel.setVisible(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
 
         SwingUtilities.invokeLater(() -> contentPanel.addComponentListener(new ComponentAdapter() {
@@ -77,6 +69,11 @@ public final class SwingButtonPanelController {
                 config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
             }
         }));
+    }
+
+    @Handler
+    private void handleProgramSetChangedEvent(ProgramSetChangedEvent e) {
+        SwingUtilities.invokeLater(this::setupButtons);
     }
 
     @Handler
@@ -95,7 +92,7 @@ public final class SwingButtonPanelController {
                 // rows
                 new AC()
                         .grow().fill()));
-        parent.add(contentPanel, new CC().cell(0, 1));
+        parent.add(contentPanel);
     }
 
     private void createButtonsPanel() {

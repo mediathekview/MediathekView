@@ -189,6 +189,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
     }
 
+    public boolean isPlayList() {
+        return flags.contains(DatenFilmFlags.PLAYLIST);
+    }
+
+    public void setPlayList(boolean val) {
+        if (val) {
+            flags.add(DatenFilmFlags.PLAYLIST);
+        } else {
+            flags.remove(DatenFilmFlags.PLAYLIST);
+        }
+    }
+
     public boolean isSignLanguage() {
         return flags.contains(DatenFilmFlags.SIGN_LANGUAGE);
     }
@@ -440,6 +452,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     /**
      * Convert HH:MM:SS string into seconds.
+     * Or set to 0 in case of error.
      *
      * @return result in seconds or 0.
      */
@@ -456,14 +469,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
 
         return seconds;
-    }
-
-    /**
-     * Set the film length.
-     * Convert dauer string from format HH:MM:SS into seconds.
-     */
-    private void calculateFilmLength() {
-        filmLength = parseTimeToSeconds();
     }
 
     private void setDatum() {
@@ -483,8 +488,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public void init() {
         filmSize = new FilmSize(this);
-
-        calculateFilmLength();
+        filmLength = parseTimeToSeconds();
 
         setDatum();
     }

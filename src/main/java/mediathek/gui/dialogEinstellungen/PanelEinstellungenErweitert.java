@@ -4,7 +4,6 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
@@ -30,7 +29,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 @SuppressWarnings("serial")
-public class PanelEinstellungenErweitert extends PanelVorlage {
+public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
 
     @Handler
@@ -38,10 +37,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         SwingUtilities.invokeLater(this::init);
     }
 
-    public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
-        super(d, pparentComponent);
+    public PanelEinstellungenErweitert() {
         initComponents();
-        daten = d;
 
         init();
         setIcon();
@@ -85,7 +82,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             jButtonProgrammShutdown.setEnabled(false);
         }
 
-        daten.getMessageBus().subscribe(this);
+        Daten.getInstance().getMessageBus().subscribe(this);
     }
 
     private String getWebBrowserLocation() {

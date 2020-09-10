@@ -5,9 +5,9 @@ import mediathek.config.Icons;
 import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.Listener;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -29,57 +29,52 @@ public class PanelEinstellungenGeo extends JPanel {
         final Configuration config = ApplicationConfiguration.getConfiguration();
 
         switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
-            case GeoblockingField.GEO_CH:
-                jRadioButtonCH.setSelected(true);
-                break;
-            case GeoblockingField.GEO_AT:
-                jRadioButtonAt.setSelected(true);
-                break;
-            case GeoblockingField.GEO_EU:
-                jRadioButtonEu.setSelected(true);
-                break;
-            case GeoblockingField.GEO_WELT:
-                jRadioButtonSonst.setSelected(true);
-                break;
-            default:
-                jRadioButtonDe.setSelected(true);
+            case GeoblockingField.GEO_CH -> jRadioButtonCH.setSelected(true);
+            case GeoblockingField.GEO_AT -> jRadioButtonAt.setSelected(true);
+            case GeoblockingField.GEO_EU -> jRadioButtonEu.setSelected(true);
+            case GeoblockingField.GEO_WELT -> jRadioButtonSonst.setSelected(true);
+            default -> jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_DE);
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
         jRadioButtonCH.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_CH);
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
         jRadioButtonAt.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_AT);
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
         jRadioButtonEu.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_EU);
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
         jRadioButtonSonst.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_WELT);
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
 
         jCheckBoxMarkieren.setSelected(config.getBoolean(ApplicationConfiguration.GEO_REPORT));
         jCheckBoxMarkieren.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.GEO_REPORT, jCheckBoxMarkieren.isSelected());
-            melden();
+            filterBlacklistAndNotifyChanges();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 
-    private void melden() {
-        var daten = Daten.getInstance();
-        daten.getListeBlacklist().filterListe();
-        daten.getMessageBus().publishAsync(new GeoStateChangedEvent());
-        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, PanelEinstellungenGeo.class.getSimpleName());
+    /**
+     * Filter blacklist and notify other components that changes were made.
+     */
+    private void filterBlacklistAndNotifyChanges() {
+        final var daten = Daten.getInstance();
+        final var messageBus = daten.getMessageBus();
 
+        daten.getListeBlacklist().filterListe();
+        messageBus.publishAsync(new GeoStateChangedEvent());
+        messageBus.publishAsync(new BlacklistChangedEvent());
     }
 
     /** This method is called from within the constructor to

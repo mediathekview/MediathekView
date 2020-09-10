@@ -128,23 +128,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfad;
     }
 
-    public static String getPfadScript() {
-        // liefert den Standardpfad zum Script "Ansehen" für das entsprechende BS 
-        // liegt im Ordner "bin" der mit dem Programm mitgeliefert wird
-        String pfadScript;
-        final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
-        final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
-        switch (getOs()) {
-            case LINUX:
-            case MAC:
-                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
-                break;
-            default:
-                pfadScript = PFAD_WINDOWS_SCRIPT;
-        }
-        return pfadScript;
-    }
-
     public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean setVersion) {
         if (pSet == null) {
             MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",

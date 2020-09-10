@@ -18,12 +18,9 @@ public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
     private static final String SORT_DESCENDING = "DESCENDING";
+    private static final Logger logger = LogManager.getLogger();
     protected final int[] breite;
     protected final int[] reihe;
-    /**
-     * This is the UI provided default font used for calculating the size area
-     */
-    private final Font defaultFont = UIManager.getDefaults().getFont("Table.font");
     public boolean useSmallSenderIcons;
     protected int maxSpalten;
     protected int indexSpalte;
@@ -34,9 +31,13 @@ public abstract class MVTable extends JTable {
     protected MVConfig.Configs nrDatenSystem;
     protected MVConfig.Configs iconAnzeigenStr;
     protected MVConfig.Configs iconKleinStr;
+    protected List<? extends RowSorter.SortKey> listeSortKeys;
+    /**
+     * This is the UI provided default font used for calculating the size area
+     */
+    private Font defaultFont = UIManager.getDefaults().getFont("Table.font");
     private boolean showSenderIcon;
     private boolean lineBreak = true;
-    protected List<? extends RowSorter.SortKey> listeSortKeys;
 
     public MVTable() {
         setAutoCreateRowSorter(true);
@@ -60,7 +61,29 @@ public abstract class MVTable extends JTable {
             useSmallSenderIcons = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
 
+        loadDefaultFontSize();
         setHeight();
+    }
+
+    /**
+     * Load font size from settings and replace default font.
+     */
+    protected void loadDefaultFontSize() {
+        //unused here
+    }
+
+    /**
+     * Store default font size in settings
+     */
+    protected void saveDefaultFontSize() {
+        //unused here
+    }
+
+    public Font getDefaultFont() { return defaultFont;}
+
+    public void setDefaultFont(Font newFont) {
+        defaultFont = newFont;
+        saveDefaultFontSize();
     }
 
     private SortKey sortKeyLesen(String s, String strSortOrder) {
@@ -68,26 +91,17 @@ public abstract class MVTable extends JTable {
 
         try {
             final int column = Integer.parseInt(s);
-            SortOrder order;
-            switch (strSortOrder) {
-                case SORT_ASCENDING:
-                    order = SortOrder.ASCENDING;
-                    break;
-                case SORT_DESCENDING:
-                    order = SortOrder.DESCENDING;
-                    break;
-                default:
-                    throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
-                    //break;
-            }
+            SortOrder order = switch (strSortOrder) {
+                case SORT_ASCENDING -> SortOrder.ASCENDING;
+                case SORT_DESCENDING -> SortOrder.DESCENDING;
+                default -> throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
+            };
             sk = new SortKey(column,order);
         } catch (Exception ex) {
             return null;
         }
         return sk;
     }
-
-    private static final Logger logger = LogManager.getLogger();
 
     public boolean showSenderIcons() {
         return showSenderIcon;
@@ -119,37 +133,47 @@ public abstract class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
-    protected int getSizeArea() {
-        int sizeArea = 0;
+    /**
+     * Return a fictious size of a multi-line text area.
+     * @return The fictious size of a multi-line label.
+     */
+    private int getSizeArea() {
+        final int sizeArea;
+        var fm = getFontMetrics(getDefaultFont());
+        final var height = fm.getHeight();
 
-        if (lineBreak)
-            sizeArea = defaultFont.getSize() * 4;
+        if (lineBreak) {
+            sizeArea = 4 * height;
+        }
+        else {
+            sizeArea = height;
+        }
 
         return sizeArea;
     }
 
+    /**
+     * Calculate the row height in a table based on icon display,etc.
+     */
     public void setHeight() {
         final int sizeArea = getSizeArea();
-        final int defaultFontSize = defaultFont.getSize();
-        final int internalDefaultSize = defaultFontSize + defaultFontSize / 3;
-
+        var fm = getFontMetrics(getDefaultFont());
         int size;
-        if (!showSenderIcon) {
-            if (defaultFontSize < 15) {
-                size = 18;
-            } else {
-                size = internalDefaultSize;
+
+        size = fm.getHeight() + 5; // add some extra spacing for the height
+
+        // check some minimum height requirements
+        if (showSenderIcon) {
+            if (useSmallSenderIcons) {
+                // small icons
+                if (size < 18)
+                    size = 20;
             }
-        } else if (useSmallSenderIcons) {
-            if (defaultFontSize < 18) {
-                size = 20;
-            } else {
-                size = internalDefaultSize;
+            else {
+                //large icons
+                if (size < 30)
+                    size = 36;
             }
-        } else if (defaultFontSize < 30) {
-            size = 36;
-        } else {
-            size = internalDefaultSize;
         }
 
         setRowHeight(Math.max(size, sizeArea));
