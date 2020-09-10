@@ -31,7 +31,7 @@ public class Config {
     /**
      * For development use parameter to enable TRACE output to log env.
      */
-    @CommandLine.Option(names = {"-e", "--enhanced-logging"}, hidden = true, description = "Erweiterten Log-Modus aktivieren (FÜR ENTWICKLER)")
+    @CommandLine.Option(names = {"-e", "--enhanced-logging"}, description = "Erweiterten Log-Modus aktivieren")
     private static boolean enhancedLogging;
     /**
      * Log HTTP traffic to console. By default HttpLoggingInterceptor.Level.BASIC will be used.

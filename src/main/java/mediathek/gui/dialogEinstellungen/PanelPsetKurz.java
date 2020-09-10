@@ -6,11 +6,12 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Listener;
 import mediathek.tool.Log;
 import mediathek.tool.TextCopyPasteHandler;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
@@ -44,21 +45,25 @@ public class PanelPsetKurz extends PanelVorlage {
                 }
             });
         }
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetKurz.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (!stopBeob) {
-                    stopBeob = true;
-                    jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
-                    if (!listePset.isEmpty()) {
-                        jListPset.setSelectedIndex(0);
-                    }
-                    init();
-                    stopBeob = false;
+
+        Daten.getInstance().getMessageBus().subscribe(this);
+
+        initBeob();
+    }
+
+    @Handler
+    private void handleProgramSetChanged(ProgramSetChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (!stopBeob) {
+                stopBeob = true;
+                jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
+                if (!listePset.isEmpty()) {
+                    jListPset.setSelectedIndex(0);
                 }
+                init();
+                stopBeob = false;
             }
         });
-        initBeob();
     }
 
     private void initBeob() {
@@ -144,8 +149,9 @@ public class PanelPsetKurz extends PanelVorlage {
         c.insets = new Insets(4, 10, 4, 10);
         c.weightx = 1;
         c.weighty = 0;
-        c.gridx = 0;
+ //       c.gridx = 0;
         c.gridy = 0;
+
         // Label
         c.gridx = 0;
         c.weightx = 0;
@@ -153,6 +159,7 @@ public class PanelPsetKurz extends PanelVorlage {
         JLabel label = new JLabel(name + ": ");
         gridbag.setConstraints(label, c);
         panel.add(label);
+
         // Textfeld
         c.gridx = 1;
         c.weightx = 10;

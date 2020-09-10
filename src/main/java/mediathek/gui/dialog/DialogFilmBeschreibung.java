@@ -18,6 +18,7 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +89,8 @@ public class DialogFilmBeschreibung extends JDialog {
                 final Path path = destFile.toPath();
                 try {
                     MVInfoFile file = new MVInfoFile();
-                    file.writeInfoFile(datenFilm, path);
+                    var url = HttpUrl.parse(datenFilm.getUrl());
+                    file.writeInfoFile(datenFilm, path, url);
 
                     JavaFxUtils.invokeInFxThreadAndWait(() -> {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);

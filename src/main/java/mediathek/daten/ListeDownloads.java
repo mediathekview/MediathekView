@@ -348,10 +348,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         final var sdf = new SimpleDateFormat("dd.MM.yyyy");
         final var todayDateStr = sdf.format(new Date());
 
-        var listeAbo = daten.getListeAbo();
-        var listeBlacklist = daten.getListeBlacklist();
-        var aboHistoryController = daten.getAboHistoryController();
-        for (DatenFilm film : daten.getListeFilme()) {
+        final var listeAbo = daten.getListeAbo();
+        final var listeBlacklist = daten.getListeBlacklist();
+        final var aboHistoryController = daten.getAboHistoryController();
+        final var listeFilme = daten.getListeFilme();
+
+        for (DatenFilm film : listeFilme) {
             DatenAbo abo = listeAbo.getAboFuerFilm_schnell(film, true);
             if (abo == null) {
                 // dann gibts dafür kein Abo
@@ -424,21 +426,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (download.start != null) {
                 if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD) {
                     switch (download.start.status) {
-                        case Start.STATUS_INIT:
-                            info.initialized++;
-                            break;
-
-                        case Start.STATUS_RUN:
-                            info.running++;
-                            break;
-
-                        case Start.STATUS_FERTIG:
-                            info.finished++;
-                            break;
-
-                        case Start.STATUS_ERR:
-                            info.error++;
-                            break;
+                        case Start.STATUS_INIT -> info.initialized++;
+                        case Start.STATUS_RUN -> info.running++;
+                        case Start.STATUS_FERTIG -> info.finished++;
+                        case Start.STATUS_ERR -> info.error++;
                     }
                 }
             }

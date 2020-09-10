@@ -130,8 +130,11 @@ public class GuiFilmeModelHelper {
             }
 
             final long filmLength = film.getFilmLength();
-            if (filmLength < minLengthInSeconds)
-                continue;
+            //film entries without length have internal length 0...
+            if (filmLength != 0) {
+                if (filmLength < minLengthInSeconds)
+                    continue;
+            }
 
             if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
                 if (filmLength > maxLengthInSeconds)
