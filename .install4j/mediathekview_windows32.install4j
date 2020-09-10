@@ -1044,14 +1044,14 @@
     </styles>
   </installerGui>
   <mediaSets>
-    <windows name="Windows 32" id="63" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" jreBitType="32">
+    <windows name="Windows 32" id="63" jreBitType="32">
       <jreBundle usePack200="false" jreBundleSource="generated">
         <modules>
           <defaultModules set="all" />
         </modules>
       </jreBundle>
     </windows>
-    <windowsArchive name="Windows Archive" id="65" mediaFileName="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" jreBitType="32">
+    <windowsArchive name="Windows Archive" id="65" jreBitType="32">
       <jreBundle jdkProviderId="Liberica" jreBundleSource="generated">
         <modules>
           <defaultModules set="all" />
