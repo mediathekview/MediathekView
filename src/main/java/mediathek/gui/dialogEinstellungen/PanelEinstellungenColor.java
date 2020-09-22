@@ -103,7 +103,7 @@ public class PanelEinstellungenColor extends JPanel {
                 .fill(),
             // rows
             new AC()
-                .fill().gap()
+                .grow().fill().gap()
                 .fill()));
 
         //======== jScrollPane1 ========
