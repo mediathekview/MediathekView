@@ -53,18 +53,15 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_power_management = "Power Management";
 
     // ######## Einstellungen ############
-    private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
     private final DefaultMutableTreeNode treeNodeNotifications = new DefaultMutableTreeNode(NAME_notifications);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
     // ######## Filme ###############
-    private final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
     private final DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
     // ########### Programme ##############
-    private final DefaultMutableTreeNode treeNodeDownload = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
     private final DefaultMutableTreeNode treeNodeBandwidth = new DefaultMutableTreeNode(NAME_bandwidth);
     private final DefaultMutableTreeNode treeNodeMediaDB = new DefaultMutableTreeNode(NAME_mediaDB);
 
@@ -76,7 +73,6 @@ public class DialogEinstellungen extends JFrame {
 
     public DialogEinstellungen() {
         initComponents();
-        setTitle("Einstellungen");
         daten = Daten.getInstance();
 
         initPanels();
@@ -144,7 +140,8 @@ public class DialogEinstellungen extends JFrame {
 
     private void initTree() {
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
-        // ######## Einstellulngen ############
+        // ######## Einstellungen ############
+        final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
         treeNodeEinstellungen.add(treeNodeNotifications);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
@@ -155,11 +152,13 @@ public class DialogEinstellungen extends JFrame {
         treeNodeStart.add(treeNodeEinstellungen);
 
         // ######## Filme ###############
+        final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
         treeNodeFilme.add(treeNodeFilmliste);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
 
         // ########### Programme ##############
+        final DefaultMutableTreeNode treeNodeDownload = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
         treeNodeDownload.add(treeNodeDateinamen);
         treeNodeDownload.add(treeNodeBandwidth);
         treeNodeDownload.add(treeNodeProgramme);
@@ -180,79 +179,66 @@ public class DialogEinstellungen extends JFrame {
                 String name1 = node.getUserObject().toString();
                 setTitle(name1);
                 switch (name1) {
-                    //Einstellungen
-                    case NAME_einstellungen:
-                        jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
-                        break;
-
-                    case NAME_notifications:
+                    case NAME_einstellungen -> jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
+                    case NAME_notifications -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelNotifications);
-                        break;
-
-                    case NAME_bandwidth:
+                    }
+                    case NAME_bandwidth -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDownload);
-                        break;
-                    case NAME_mediaDB:
+                    }
+                    case NAME_mediaDB -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelMediaDB);
-                        break;
-                    case NAME_allgemeineEinstellungen:
+                    }
+                    case NAME_allgemeineEinstellungen -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungen);
-                        break;
-                    case NAME_allgemeineEinstellungenErweitert:
+                    }
+                    case NAME_allgemeineEinstellungenErweitert -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenErweitert);
-                        break;
-                    case NAME_allgemeineEinstellungenGeo:
+                    }
+                    case NAME_allgemeineEinstellungenGeo -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenGeo);
-                        break;
-                    case NAME_allgemeineEinstellungenColor:
+                    }
+                    case NAME_allgemeineEinstellungenColor -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenColor);
-                        break;
-
-                    case NAME_power_management:
+                    }
+                    case NAME_power_management -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPowerManagement);
-                        break;
-                    //Filmliste
-                    case NAME_filmListe:
-                        jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
-                        break;
-                    case NAME_filmListeLaden:
+                    }
+                    case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
+                    case NAME_filmListeLaden -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);
-                        break;
-                    case NAME_blacklist:
+                    }
+                    case NAME_blacklist -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelBlacklist);
-                        break;
-                    //Aufzeichnen, Abspielen
-                    case NAME_aufzeichnen:
-                        jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
-                        break;
-                    case NAME_dateiname:
+                    }
+                    case NAME_aufzeichnen -> jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
+                    case NAME_dateiname -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDateinamen);
-                        break;
-                    case NAME_programmset:
+                    }
+                    case NAME_programmset -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPset);
-                        break;
-                    case NAME_programmsetImportieren:
+                    }
+                    case NAME_programmsetImportieren -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelPsetVorlagen);
-                        break;
-
-                    default:
+                    }
+                    default -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);
                         setTitle("Programmeinstellungen");
-                        break;
+                    }
                 }
             }
             jPanelExtra.updateUI();
@@ -285,6 +271,7 @@ public class DialogEinstellungen extends JFrame {
         jTree1 = new javax.swing.JTree();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Einstellungen");
 
         jButtonBeenden.setText("Schließen");
 
