@@ -229,13 +229,14 @@ public class FilmeLaden {
     }
 
     public void updateFilmlist(String dateiUrl) {
+        final var listeFilme = daten.getListeFilme();
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().metaData().getGenerationDateTimeAsString());
-        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
-        logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
+        logger.info("Alte Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -247,7 +248,12 @@ public class FilmeLaden {
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
             final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
-            importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
+            if (dateiUrl.isEmpty()) {
+                importFilmliste.importFromUrl(listeFilme, diffListe, num_days);
+            }
+            else {
+                importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
+            }
         }
     }
 
