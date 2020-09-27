@@ -23,8 +23,6 @@ import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
 
-    private final static int WIN_MAX_PATH_LENGTH = 250;
-    private final static int X_MAX_NAME_LENGTH = 255;
     /**
      * legacy constant, used internally only
      */
@@ -168,27 +166,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    public static String[] checkLengthPath(String[] pathName) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-            if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
-                // es sollen für den Dateinamen mind. 10 Zeichen bleiben
-                logger.error("Pfad zu lang: {}", pathName[0]);
-                pathName[0] = GuiFunktionen.getHomePath();
-            }
-            if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
-                logger.error("Name zu lang: {}", pathName[0]);
-                int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
-                pathName[1] = cutName(pathName[1], maxNameL);
-            }
-        } else // für X-Systeme
-            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
-                logger.error("Name zu lang: {}", pathName[1]);
-                pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
-            }
-        return pathName;
-    }
-
     public static String cutName(String name, int length) {
         if (name.length() > length) {
             name = name.substring(0, length - 4) + name.substring(name.length() - 4);
@@ -197,7 +174,6 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     public static boolean istUrl(String dateiUrl) {
-        //return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
         return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
     }
 
