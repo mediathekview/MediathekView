@@ -247,6 +247,9 @@ public class FilmeLaden {
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
             final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            if (dateiUrl.isEmpty()) {
+                dateiUrl = GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL);
+            }
             importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
         }
     }
