@@ -52,17 +52,9 @@ class FilmeImportierenAutoThread extends Thread {
     }
 
     private String getFilmListUrl(FilmListDownloadType state) {
-        String urlStr = null;
-
-        switch (state) {
-            case FULL:
-                urlStr = Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
-                break;
-            case DIFF_ONLY:
-                urlStr = Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
-                break;
-        }
-
-        return urlStr;
+        return switch (state) {
+            case FULL -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
+            case DIFF_ONLY -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
+        };
     }
 }
