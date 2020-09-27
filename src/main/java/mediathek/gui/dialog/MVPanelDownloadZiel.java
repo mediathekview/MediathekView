@@ -4,8 +4,13 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.*;
+import mediathek.tool.FileSpecifier;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,10 +26,11 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class MVPanelDownloadZiel extends JPanel {
-    public boolean nameGeaendert = false;
+    public boolean nameGeaendert;
     private final DatenDownload datenDownload;
     private final JFrame parent;
-    boolean letztenPfadAnzeigen;
+    private final boolean letztenPfadAnzeigen;
+    private static final Logger logger = LogManager.getLogger();
 
     public MVPanelDownloadZiel(JFrame p, DatenDownload download, boolean letzterPfad) {
         initComponents();
@@ -203,7 +209,7 @@ public class MVPanelDownloadZiel extends JPanel {
                         jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -221,7 +227,7 @@ public class MVPanelDownloadZiel extends JPanel {
                         jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
+                        logger.error("actionPerformed", ex);
                     }
                 }
             }
