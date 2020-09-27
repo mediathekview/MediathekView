@@ -173,10 +173,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return name;
     }
 
-    public static boolean istUrl(String dateiUrl) {
-        return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
-    }
-
     public static String getDateiName(String pfad) {
         //Dateinamen einer URL extrahieren
         String ret = "";

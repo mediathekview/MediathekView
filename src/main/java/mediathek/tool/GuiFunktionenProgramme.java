@@ -175,7 +175,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         int n;
 
         try {
-            if (!GuiFunktionen.istUrl(datei)) {
+            if (!NetUtils.isUrl(datei)) {
                 zipFile = new File(datei);
                 if (!zipFile.exists()) {
                     // und Tschüss
