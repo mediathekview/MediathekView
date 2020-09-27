@@ -633,13 +633,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
 
-        // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-        String[] pathName = {path, name};
-        GuiFunktionen.checkLengthPath(pathName);
+        FileSpecifier fileSpecifier = new FileSpecifier(path,name);
+        fileSpecifier.checkLength();
 
-        arr[DOWNLOAD_ZIEL_DATEINAME] = pathName[1];
-        arr[DOWNLOAD_ZIEL_PFAD] = pathName[0];
-        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
+        arr[DOWNLOAD_ZIEL_DATEINAME] = fileSpecifier.getFileName();
+        arr[DOWNLOAD_ZIEL_PFAD] = fileSpecifier.getPath();
+        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(fileSpecifier.getPath(), fileSpecifier.getFileName());
     }
 
     private String replaceString(String replStr, DatenFilm film) {
