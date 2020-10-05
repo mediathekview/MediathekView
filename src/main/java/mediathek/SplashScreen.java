@@ -77,7 +77,6 @@ public class SplashScreen {
                 progressBar.prefWidthProperty().bind(scene.widthProperty());
 
                 window.setScene(scene);
-                window.setAlwaysOnTop(true);
                 window.show();
                 window.centerOnScreen();
             } catch (IOException ioException) {
