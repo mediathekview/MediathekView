@@ -60,7 +60,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     /**
      * film date stored IN SECONDS!!!
      */
-    private DatumFilm datumFilm = new DatumFilm(0);
+    private DatumFilm datumFilm = DatumFilm.UNDEFINED_FILM_DATE;
     /**
      * File size in MByte
      */
