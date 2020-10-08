@@ -258,9 +258,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 abo.titel,
                 abo.thema,
                 abo.irgendwo,
-                abo.mindestdauerMinuten,
-                abo.min,
-                film, false))
+                film))
                 .findFirst().
                 ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
     }

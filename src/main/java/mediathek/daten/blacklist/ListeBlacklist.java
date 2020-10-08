@@ -293,7 +293,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
         for (BlacklistRule rule : this) {
-            if (Filter.filterAufFilmPruefen(rule.arr[BlacklistRule.BLACKLIST_SENDER],
+            if (Filter.filterAufFilmPruefenWithLength(rule.arr[BlacklistRule.BLACKLIST_SENDER],
                     rule.arr[BlacklistRule.BLACKLIST_THEMA],
                     makePattern(rule.arr[BlacklistRule.BLACKLIST_TITEL]),
                     makePattern(rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]),

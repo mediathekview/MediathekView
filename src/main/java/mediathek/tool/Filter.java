@@ -66,30 +66,24 @@ public class Filter {
         return false;
     }
 
-    public static boolean filterAufFilmPruefen(final String senderSuchen, final String themaSuchen,
-                                               final String[] titelSuchen, final String[] themaTitelSuchen,
-                                               final String[] irgendwoSuchen,
-                                               final int laengeMinutenSuchen, final boolean min,
-                                               final DatenFilm film, final boolean checkLength) {
+    public static boolean filterAufFilmPruefenWithLength(final String senderSuchen, final String themaSuchen,
+                                                         final String[] titelSuchen, final String[] themaTitelSuchen,
+                                                         final String[] irgendwoSuchen,
+                                                         final int laengeMinutenSuchen, final boolean min,
+                                                         final DatenFilm film, final boolean checkLength) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
         boolean result = false;
-        String thema = film.getThema();
-        String title = film.getTitle();
+        final var thema = film.getThema();
+        final var title = film.getTitle();
 
         if (senderConditionExists(senderSuchen, film)) {
             if (themaConditionExists(themaSuchen, thema)) {
                 if (titleConditionExists(titelSuchen,title)) {
-                    if (themaTitelSuchen.length == 0
-                            || pruefen(themaTitelSuchen, thema)
-                            || pruefen(themaTitelSuchen, title)) {
-
-                        if (irgendwoSuchen.length == 0
-                                || pruefen(irgendwoSuchen, film.getDescription())
-                                || pruefen(irgendwoSuchen, thema)
-                                || pruefen(irgendwoSuchen, title)) {
+                    if (themaTitelConditionExists(themaTitelSuchen, thema, title)) {
+                        if (irgendwoConditionExists(film, irgendwoSuchen, thema, title)) {
                             if (checkLength) {
                                 result = laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min);
                             } else {
@@ -104,15 +98,55 @@ public class Filter {
         return result;
     }
 
-    private static boolean titleConditionExists(String[] titelSuchen, String title) {
+    public static boolean filterAufFilmPruefen(@NotNull final String senderSuchen, @NotNull final String themaSuchen,
+                                               @NotNull final String[] titelSuchen, @NotNull final String[] themaTitelSuchen,
+                                               @NotNull final String[] irgendwoSuchen,
+                                               @NotNull final DatenFilm film) {
+        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
+        // senderSuchen exakt mit sender
+        // themaSuchen exakt mit thema
+        // titelSuchen muss im Titel nur enthalten sein
+        boolean result = false;
+        final var thema = film.getThema();
+        final var title = film.getTitle();
+
+        if (senderConditionExists(senderSuchen, film)) {
+            if (themaConditionExists(themaSuchen, thema)) {
+                if (titleConditionExists(titelSuchen, title)) {
+                    if (themaTitelConditionExists(themaTitelSuchen, thema, title)) {
+                        if (irgendwoConditionExists(film, irgendwoSuchen, thema, title)) {
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static boolean irgendwoConditionExists(@NotNull DatenFilm film, @NotNull String[] irgendwoSuchen, @NotNull String thema, @NotNull String title) {
+        return irgendwoSuchen.length == 0
+                || pruefen(irgendwoSuchen, film.getDescription())
+                || pruefen(irgendwoSuchen, thema)
+                || pruefen(irgendwoSuchen, title);
+    }
+
+    private static boolean themaTitelConditionExists(@NotNull String[] themaTitelSuchen, @NotNull String thema, @NotNull String title) {
+        return themaTitelSuchen.length == 0
+                || pruefen(themaTitelSuchen, thema)
+                || pruefen(themaTitelSuchen, title);
+    }
+
+    private static boolean titleConditionExists(@NotNull String[] titelSuchen, @NotNull String title) {
         return titelSuchen.length == 0 || pruefen(titelSuchen, title);
     }
 
-    private static boolean themaConditionExists(String themaSuchen, String thema) {
+    private static boolean themaConditionExists(@NotNull String themaSuchen, @NotNull String thema) {
         return themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen);
     }
 
-    private static boolean senderConditionExists(String senderSuchen, DatenFilm film) {
+    private static boolean senderConditionExists(@NotNull String senderSuchen, @NotNull DatenFilm film) {
         return senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0;
     }
 
