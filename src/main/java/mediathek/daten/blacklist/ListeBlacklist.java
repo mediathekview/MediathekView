@@ -292,17 +292,21 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
         }
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
-        for (BlacklistRule blacklistEntry : this) {
-            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[BlacklistRule.BLACKLIST_SENDER], blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA],
-                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL])
-                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL].toLowerCase().split(","),
-                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL])
-                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
-                    new String[]{""}, 0, true, film, true)) {
+        for (BlacklistRule rule : this) {
+            if (Filter.filterAufFilmPruefen(rule.arr[BlacklistRule.BLACKLIST_SENDER],
+                    rule.arr[BlacklistRule.BLACKLIST_THEMA],
+                    makePattern(rule.arr[BlacklistRule.BLACKLIST_TITEL]),
+                    makePattern(rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]),
+                    EMPTY_STRING_ARRAY, 0, true, film, true)) {
                 return bl_is_whitelist;
             }
         }
         return !bl_is_whitelist;
+    }
+    final static private String[] EMPTY_STRING_ARRAY = new String[]{""};
+
+    private String[] makePattern(String input) {
+        return Filter.isPattern(input) ? new String[]{input} : input.toLowerCase().split(",");
     }
 
     /**
