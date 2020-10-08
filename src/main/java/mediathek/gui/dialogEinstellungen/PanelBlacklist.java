@@ -187,8 +187,8 @@ public class PanelBlacklist extends JPanel {
             }
 
             private void tus() {
-                Filter.checkPattern1(jTextFieldThemaTitel);
-                Filter.checkPattern1(jTextFieldTitel);
+                Filter.validatePatternInput(jTextFieldThemaTitel);
+                Filter.validatePatternInput(jTextFieldTitel);
             }
         };
         jTextFieldTitel.getDocument().addDocumentListener(documentListener);

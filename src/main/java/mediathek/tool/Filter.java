@@ -194,8 +194,12 @@ public class Filter {
         return p;
     }
 
-    public static void checkPattern1(JTextField tf) {
-        // Hintergrund ändern wenn eine RegEx
+    /**
+     * Check if entry in JTextField is a regexp pattern and its validity.
+     * If a recognized pattern is invalid, change the background color of the JTextField.
+     * @param tf The control that will be validated
+     */
+    public static void validatePatternInput(JTextField tf) {
         String text = tf.getText();
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
