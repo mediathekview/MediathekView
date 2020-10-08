@@ -70,7 +70,7 @@ public class Filter {
                                                final String[] titelSuchen, final String[] themaTitelSuchen,
                                                final String[] irgendwoSuchen,
                                                final int laengeMinutenSuchen, final boolean min,
-                                               final DatenFilm film, final boolean mitLaenge) {
+                                               final DatenFilm film, final boolean checkLength) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
@@ -79,11 +79,9 @@ public class Filter {
         String thema = film.getThema();
         String title = film.getTitle();
 
-        if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
-            if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
-
-                if (titelSuchen.length == 0 || pruefen(titelSuchen, title)) {
-
+        if (senderConditionExists(senderSuchen, film)) {
+            if (themaConditionExists(themaSuchen, thema)) {
+                if (titleConditionExists(titelSuchen,title)) {
                     if (themaTitelSuchen.length == 0
                             || pruefen(themaTitelSuchen, thema)
                             || pruefen(themaTitelSuchen, title)) {
@@ -92,11 +90,8 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.getDescription())
                                 || pruefen(irgendwoSuchen, thema)
                                 || pruefen(irgendwoSuchen, title)) {
-                            if (mitLaenge) {
-                                // die Länge soll mit geprüft werden
-                                if (laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min)) {
-                                    result = true;
-                                }
+                            if (checkLength) {
+                                result = laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min);
                             } else {
                                 result = true;
                             }
@@ -107,6 +102,18 @@ public class Filter {
         }
 
         return result;
+    }
+
+    private static boolean titleConditionExists(String[] titelSuchen, String title) {
+        return titelSuchen.length == 0 || pruefen(titelSuchen, title);
+    }
+
+    private static boolean themaConditionExists(String themaSuchen, String thema) {
+        return themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen);
+    }
+
+    private static boolean senderConditionExists(String senderSuchen, DatenFilm film) {
+        return senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0;
     }
 
     public static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
