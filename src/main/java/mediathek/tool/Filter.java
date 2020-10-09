@@ -53,10 +53,7 @@ public class Filter {
             if (conditionExists(themaExistiert, themaPruefen)) {
                 if (titleConditionExists(titelExistiert, titelPruefen)) {
                     if (themaTitelConditionExists(themaTitelExistiert, themaPruefen, titelPruefen)) {
-                        if (irgendwoExistiert.length == 0
-                                || pruefen(irgendwoExistiert, themaPruefen)
-                                || pruefen(irgendwoExistiert, titelPruefen)
-                                || pruefen(irgendwoExistiert, irgendwoPruefen)) {
+                        if (aboIrgendwoConditionExists(irgendwoExistiert, themaPruefen, titelPruefen, irgendwoPruefen)) {
                             return true;
                         }
                     }
@@ -64,6 +61,13 @@ public class Filter {
             }
         }
         return false;
+    }
+
+    private static boolean aboIrgendwoConditionExists(String[] irgendwoExistiert, String themaPruefen, String titelPruefen, String irgendwoPruefen) {
+        return irgendwoExistiert.length == 0
+                || pruefen(irgendwoExistiert, themaPruefen)
+                || pruefen(irgendwoExistiert, titelPruefen)
+                || pruefen(irgendwoExistiert, irgendwoPruefen);
     }
 
     public static boolean filterAufFilmPruefenWithLength(final String senderSuchen, final String themaSuchen,
