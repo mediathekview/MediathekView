@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.ExecutionException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class Filter {
     /**
@@ -26,6 +28,10 @@ public class Filter {
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(new PatternCacheLoader());
     private static final Logger logger = LogManager.getLogger(Filter.class);
+    /**
+     * Stores the regexp strings that were rejected as invalid.
+     */
+    public static Set<String> regExpErrorList = new HashSet<>();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -75,7 +81,7 @@ public class Filter {
 
         if (senderConditionExists(senderSuchen, film)) {
             if (conditionExists(themaSuchen, thema)) {
-                if (titleConditionExists(titelSuchen,title)) {
+                if (titleConditionExists(titelSuchen, title)) {
                     if (themaTitelConditionExists(themaTitelSuchen, thema, title)) {
                         if (irgendwoConditionExists(film, irgendwoSuchen, thema, title)) {
                             if (checkLength) {
@@ -214,15 +220,20 @@ public class Filter {
     /**
      * Compile a regexp pattern if it doesn´t exist in the pattern cache.
      *
-     * @param textSuchen regexp to be compiled
-     * @return the compiled regexp
+     * @param regExpStr regexp to be compiled
+     * @return the compiled regexp or null on error.
      */
-    public static Pattern makePattern(final String textSuchen) {
+    public static Pattern makePattern(final String regExpStr) {
         Pattern p;
-        if (isPattern(textSuchen)) {
+        if (isPattern(regExpStr)) {
             try {
-                p = CACHE.get(textSuchen);
-            } catch (ExecutionException ex) {
+                p = CACHE.get(regExpStr);
+            } catch (Exception ex) {
+                logger.error("!!!!");
+                logger.error("INVALID REGEX PATTERN DETECTED: {}", regExpStr);
+                logger.error("!!! Please review your config files !!!");
+                logger.error("!!!!");
+                regExpErrorList.add(regExpStr);
                 p = null;
             }
         } else
@@ -232,8 +243,18 @@ public class Filter {
     }
 
     /**
+     * Check if we have errors
+     *
+     * @return true if there are errors, false otherwise
+     */
+    public static boolean regExpErrorsOccured() {
+        return !regExpErrorList.isEmpty();
+    }
+
+    /**
      * Check if entry in JTextField is a regexp pattern and its validity.
      * If a recognized pattern is invalid, change the background color of the JTextField.
+     *
      * @param tf The control that will be validated
      */
     public static void validatePatternInput(JTextField tf) {
@@ -256,10 +277,11 @@ public class Filter {
     static class PatternCacheLoader extends CacheLoader<String, Pattern> {
 
         @Override
-        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException, PatternSyntaxException {
             logger.trace("COMPILING PATTERN: " + pattern);
+            final String regexPattern = pattern.substring(2);
             Pattern p;
-            p = Pattern.compile(pattern.substring(2),
+            p = Pattern.compile(regexPattern,
                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
 
             return p;

@@ -11,6 +11,8 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
@@ -221,6 +223,39 @@ public class MediathekGui extends JFrame {
         showVlcHintForAustrianUsers();
 
         setupShutdownHook();
+
+        checkInvalidRegularExpressions();
+    }
+
+    /**
+     * Check if we encountered invalid regexps and warn user if necessary.
+     * This needs to be delayed unfortunately as we can see result only after table has been filled.
+     * So we simply wait 30 seconds until we check.
+     */
+    private void checkInvalidRegularExpressions() {
+        Daten.getInstance().getTimerPool().schedule(() -> {
+            if (Filter.regExpErrorsOccured()) {
+                final var regexStr = Filter.regExpErrorList.stream()
+                        .reduce("", (p, e) ->
+                                p + "\n" + e);
+                final var message = String.format("""
+                        Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.
+                        Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!
+                                                
+                        Nachfolgende Ausdrücke sind fehlerbehaftet: %s
+                        """, regexStr);
+                Filter.regExpErrorList.clear();
+
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Ungültige reguläre Ausdrücke gefunden");
+                    alert.setContentText(message);
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.show();
+                });
+            }
+        }, 30, TimeUnit.SECONDS);
     }
 
     /**
