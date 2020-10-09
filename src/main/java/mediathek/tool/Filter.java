@@ -46,10 +46,7 @@ public class Filter {
         if (conditionExists(senderExistiert, aboPruefen.arr[DatenAbo.ABO_SENDER])) {
             if (conditionExists(themaExistiert, themaPruefen)) {
                 if (titleConditionExists(titelExistiert, titelPruefen)) {
-                    if (themaTitelExistiert.length == 0
-                            || pruefen(themaTitelExistiert, themaPruefen)
-                            || pruefen(themaTitelExistiert, titelPruefen)) {
-
+                    if (themaTitelConditionExists(themaTitelExistiert, themaPruefen, titelPruefen)) {
                         if (irgendwoExistiert.length == 0
                                 || pruefen(irgendwoExistiert, themaPruefen)
                                 || pruefen(irgendwoExistiert, titelPruefen)
