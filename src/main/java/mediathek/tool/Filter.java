@@ -45,8 +45,7 @@ public class Filter {
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
 
         if (senderExistiert.isEmpty() || senderPruefen.equalsIgnoreCase(senderExistiert)) {
-            if (themaExistiert.isEmpty() || themaPruefen.equalsIgnoreCase(themaExistiert)) {
-
+            if (themaConditionExists(themaExistiert, themaPruefen)) {
                 if (titelExistiert.length == 0 || pruefen(titelExistiert, titelPruefen)) {
 
                     if (themaTitelExistiert.length == 0
@@ -139,6 +138,7 @@ public class Filter {
     }
 
     private static boolean titleConditionExists(@NotNull String[] titelSuchen, @NotNull String title) {
+        //performance bottleneck
         return titelSuchen.length == 0 || pruefen(titelSuchen, title);
     }
 
@@ -147,6 +147,7 @@ public class Filter {
     }
 
     private static boolean senderConditionExists(@NotNull String senderSuchen, @NotNull DatenFilm film) {
+        //performance bottleneck
         return senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0;
     }
 
@@ -177,15 +178,15 @@ public class Filter {
         return result;
     }
 
-    public static boolean pruefen(String[] filter, final String im) {
+    public static boolean pruefen(@NotNull String[] filter, @NotNull final String im) {
         // wenn einer passt, dann ists gut
-
+        final var strFilter = filter[0];
         if (filter.length == 1) {
-            if (filter[0].isEmpty()) {
+            if (strFilter.isEmpty()) {
                 return true; // Filter ist leer, das wars
             } else {
                 final Pattern p;
-                if ((p = makePattern(filter[0])) != null) {
+                if ((p = makePattern(strFilter)) != null) {
                     // dann ists eine RegEx
                     return p.matcher(im).matches();
                 }
@@ -200,7 +201,7 @@ public class Filter {
      * @param im     checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    public static boolean checkLowercase(String[] filter, String im) {
+    public static boolean checkLowercase(@NotNull String[] filter, @NotNull String im) {
         for (String s : filter) {
             // dann jeden Suchbegriff checken
             if (im.contains(s)) {
@@ -211,7 +212,7 @@ public class Filter {
         return false;
     }
 
-    public static boolean isPattern(final String textSuchen) {
+    public static boolean isPattern(@NotNull final String textSuchen) {
         return textSuchen.startsWith("#:");
     }
 
