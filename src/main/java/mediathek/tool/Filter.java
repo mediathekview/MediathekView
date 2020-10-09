@@ -39,15 +39,13 @@ public class Filter {
         String[] irgendwoExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase(), ",");
 
         // Abos sollen sich nicht nur in der Länge unterscheiden
-        String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER];
         String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA];
         String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL];
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
 
-        if (senderExistiert.isEmpty() || senderPruefen.equalsIgnoreCase(senderExistiert)) {
-            if (themaConditionExists(themaExistiert, themaPruefen)) {
-                if (titelExistiert.length == 0 || pruefen(titelExistiert, titelPruefen)) {
-
+        if (conditionExists(senderExistiert, aboPruefen.arr[DatenAbo.ABO_SENDER])) {
+            if (conditionExists(themaExistiert, themaPruefen)) {
+                if (titleConditionExists(titelExistiert, titelPruefen)) {
                     if (themaTitelExistiert.length == 0
                             || pruefen(themaTitelExistiert, themaPruefen)
                             || pruefen(themaTitelExistiert, titelPruefen)) {
@@ -79,7 +77,7 @@ public class Filter {
         final var title = film.getTitle();
 
         if (senderConditionExists(senderSuchen, film)) {
-            if (themaConditionExists(themaSuchen, thema)) {
+            if (conditionExists(themaSuchen, thema)) {
                 if (titleConditionExists(titelSuchen,title)) {
                     if (themaTitelConditionExists(themaTitelSuchen, thema, title)) {
                         if (irgendwoConditionExists(film, irgendwoSuchen, thema, title)) {
@@ -110,7 +108,7 @@ public class Filter {
         final var title = film.getTitle();
 
         if (senderConditionExists(senderSuchen, film)) {
-            if (themaConditionExists(themaSuchen, thema)) {
+            if (conditionExists(themaSuchen, thema)) {
                 if (titleConditionExists(titelSuchen, title)) {
                     if (themaTitelConditionExists(themaTitelSuchen, thema, title)) {
                         if (irgendwoConditionExists(film, irgendwoSuchen, thema, title)) {
@@ -142,8 +140,8 @@ public class Filter {
         return titelSuchen.length == 0 || pruefen(titelSuchen, title);
     }
 
-    private static boolean themaConditionExists(@NotNull String themaSuchen, @NotNull String thema) {
-        return themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen);
+    private static boolean conditionExists(@NotNull String obj1, @NotNull String obj2) {
+        return obj1.isEmpty() || obj2.equalsIgnoreCase(obj1);
     }
 
     private static boolean senderConditionExists(@NotNull String senderSuchen, @NotNull DatenFilm film) {
