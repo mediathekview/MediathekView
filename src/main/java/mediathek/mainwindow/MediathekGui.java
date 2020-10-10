@@ -871,6 +871,7 @@ public class MediathekGui extends JFrame {
         });
 
         JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
+        showFilmFilterDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         showFilmFilterDialog.addActionListener(l -> {
             var dlg = tabFilme.fap.filterDialog;
             if (dlg != null) {
