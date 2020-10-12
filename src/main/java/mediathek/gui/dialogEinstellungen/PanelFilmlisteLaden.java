@@ -43,6 +43,9 @@ public class PanelFilmlisteLaden extends JPanel {
 
         cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true));
         cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
+
+        jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_EXTEND_OLD_LIST, false));
+        jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_EXTEND_OLD_LIST, jCheckBoxUpdate.isSelected()));
     }
 
     private void init() {
