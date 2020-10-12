@@ -157,7 +157,7 @@ public class PanelFilmlisteLaden extends JPanel {
         setMinimumSize(new Dimension(746, 400));
         setPreferredSize(new Dimension(746, 400));
         setLayout(new MigLayout(
-            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+            new LC().insets("5").hideMode(3).gridGap("5", "5"),
             // columns
             new AC()
                 .fill().gap()
@@ -170,9 +170,9 @@ public class PanelFilmlisteLaden extends JPanel {
 
         //======== jPanelAuto ========
         {
-            jPanelAuto.setBorder(new TitledBorder("Die Filmliste automatisch laden")); //NON-NLS
+            jPanelAuto.setBorder(new TitledBorder("Die Filmliste automatisch laden"));
             jPanelAuto.setLayout(new MigLayout(
-                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
                     .grow().fill().gap()
@@ -186,7 +186,7 @@ public class PanelFilmlisteLaden extends JPanel {
             jTextAreaAuto.setEditable(false);
             jTextAreaAuto.setColumns(20);
             jTextAreaAuto.setRows(3);
-            jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."); //NON-NLS
+            jTextAreaAuto.setText("Die Filmliste wird beim Programmstart automatisch geladen (wenn sie \u00e4lter als 3h ist). Zus\u00e4tzlich kann sie \u00fcber den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme).");
             jTextAreaAuto.setMargin(new Insets(4, 4, 4, 4));
             jTextAreaAuto.setWrapStyleWord(true);
             jTextAreaAuto.setLineWrap(true);
@@ -194,16 +194,16 @@ public class PanelFilmlisteLaden extends JPanel {
             jPanelAuto.add(jTextAreaAuto, new CC().cell(0, 0, 2, 1));
 
             //---- jButtonLoad ----
-            jButtonLoad.setText("Filme jetzt laden"); //NON-NLS
-            jPanelAuto.add(jButtonLoad, new CC().cell(1, 1).alignX("trailing").growX(0)); //NON-NLS
+            jButtonLoad.setText("Filme jetzt laden");
+            jPanelAuto.add(jButtonLoad, new CC().cell(1, 1).alignX("trailing").growX(0));
         }
         add(jPanelAuto, new CC().cell(1, 0));
 
         //======== jPanelManuel ========
         {
-            jPanelManuel.setBorder(new TitledBorder("Filmliste nur manuell laden")); //NON-NLS
+            jPanelManuel.setBorder(new TitledBorder("Filmliste nur manuell laden"));
             jPanelManuel.setLayout(new MigLayout(
-                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
                     .fill().gap()
@@ -217,24 +217,24 @@ public class PanelFilmlisteLaden extends JPanel {
                     .fill()));
 
             //---- jLabel1 ----
-            jLabel1.setText("URL/Datei:"); //NON-NLS
+            jLabel1.setText("URL/Datei:");
             jPanelManuel.add(jLabel1, new CC().cell(0, 1));
             jPanelManuel.add(jTextFieldUrl, new CC().cell(1, 1, 2, 1));
 
             //---- jButtonDateiAuswaehlen ----
-            jButtonDateiAuswaehlen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
-            jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste ausw\u00e4hlen"); //NON-NLS
-            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1).alignX("left").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
+            jButtonDateiAuswaehlen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
+            jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste ausw\u00e4hlen");
+            jPanelManuel.add(jButtonDateiAuswaehlen, new CC().cell(3, 1).alignX("left").growX(0).width("32:32:32").height("32:32:32"));
 
             //---- jButtonFilmeLaden ----
-            jButtonFilmeLaden.setText("Filme jetzt laden"); //NON-NLS
+            jButtonFilmeLaden.setText("Filme jetzt laden");
             jPanelManuel.add(jButtonFilmeLaden, new CC().cell(2, 2, 2, 1));
 
             //---- jTextAreaManuell ----
             jTextAreaManuell.setEditable(false);
             jTextAreaManuell.setColumns(20);
             jTextAreaManuell.setRows(2);
-            jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."); //NON-NLS
+            jTextAreaManuell.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden.");
             jTextAreaManuell.setMargin(new Insets(4, 4, 4, 4));
             jTextAreaManuell.setWrapStyleWord(true);
             jTextAreaManuell.setLineWrap(true);
@@ -242,19 +242,19 @@ public class PanelFilmlisteLaden extends JPanel {
             jPanelManuel.add(jTextAreaManuell, new CC().cell(0, 0, 4, 1));
 
             //---- jCheckBoxUpdate ----
-            jCheckBoxUpdate.setText("alte Filmliste nicht l\u00f6schen, nur erweitern"); //NON-NLS
+            jCheckBoxUpdate.setText("Alte Filmliste nicht l\u00f6schen, nur erweitern");
             jPanelManuel.add(jCheckBoxUpdate, new CC().cell(0, 2, 2, 1));
         }
         add(jPanelManuel, new CC().cell(1, 1));
-        add(jRadioButtonAuto, new CC().cell(0, 0).alignY("top").growY(0)); //NON-NLS
-        add(jRadioButtonManuell, new CC().cell(0, 1).alignY("top").growY(0)); //NON-NLS
+        add(jRadioButtonAuto, new CC().cell(0, 0).alignY("top").growY(0));
+        add(jRadioButtonManuell, new CC().cell(0, 1).alignY("top").growY(0));
 
         //======== jPanel1 ========
         {
-            jPanel1.setBorder(new TitledBorder("Zus\u00e4tzliche Filmdaten laden")); //NON-NLS
-            jPanel1.setToolTipText("<html>Alle nicht angew\u00e4hlten Eintr\u00e4ge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Eintr\u00e4ge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugef\u00fcgt wenn die Einstellungen entsprechend angepasst wurden.</html>"); //NON-NLS
+            jPanel1.setBorder(new TitledBorder("Zus\u00e4tzliche Filmdaten laden"));
+            jPanel1.setToolTipText("<html>Alle nicht angew\u00e4hlten Eintr\u00e4ge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Eintr\u00e4ge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugef\u00fcgt wenn die Einstellungen entsprechend angepasst wurden.</html>");
             jPanel1.setLayout(new MigLayout(
-                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
                     .fill().gap()
@@ -266,19 +266,19 @@ public class PanelFilmlisteLaden extends JPanel {
                     .fill()));
 
             //---- cbSign ----
-            cbSign.setText("Geb\u00e4rdensprache"); //NON-NLS
+            cbSign.setText("Geb\u00e4rdensprache");
             jPanel1.add(cbSign, new CC().cell(2, 0));
 
             //---- cbTrailer ----
-            cbTrailer.setText("Trailer/Teaser/Vorschau"); //NON-NLS
+            cbTrailer.setText("Trailer/Teaser/Vorschau");
             jPanel1.add(cbTrailer, new CC().cell(0, 0));
 
             //---- cbAudio ----
-            cbAudio.setText("H\u00f6rfassungen"); //NON-NLS
+            cbAudio.setText("H\u00f6rfassungen");
             jPanel1.add(cbAudio, new CC().cell(1, 0));
 
             //---- cbLivestreams ----
-            cbLivestreams.setText("Livestreams"); //NON-NLS
+            cbLivestreams.setText("Livestreams");
             jPanel1.add(cbLivestreams, new CC().cell(3, 0));
         }
         add(jPanel1, new CC().cell(1, 2));
