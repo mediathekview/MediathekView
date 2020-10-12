@@ -7,7 +7,6 @@ import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
 import mediathek.filmlisten.FilmListDownloadType;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Functions.OperatingSystemType;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,8 +17,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
 import java.util.Objects;
-
-import static mediathek.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
 
@@ -270,7 +267,7 @@ public class GuiFunktionen extends MVFunctionSys {
     public static int getPlatformControlKey() {
         int result;
 
-        if (getOs() == OperatingSystemType.MAC) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             result = InputEvent.META_DOWN_MASK;
         } else {
             result = InputEvent.CTRL_DOWN_MASK;
