@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PooledDatabaseConnection {
-    private static PooledDatabaseConnection INSTANCE;
     private final HikariDataSource dataSource;
 
     private PooledDatabaseConnection() {
@@ -21,10 +20,7 @@ public class PooledDatabaseConnection {
     }
 
     public static PooledDatabaseConnection getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new PooledDatabaseConnection();
-        }
-        return INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     public static String getDatabaseCacheDirectory() {
@@ -73,5 +69,9 @@ public class PooledDatabaseConnection {
         config.setMaximumPoolSize(Runtime.getRuntime().availableProcessors());
 
         return new HikariDataSource(config);
+    }
+
+    private static class LazyHolder {
+        static final PooledDatabaseConnection INSTANCE = new PooledDatabaseConnection();
     }
 }
