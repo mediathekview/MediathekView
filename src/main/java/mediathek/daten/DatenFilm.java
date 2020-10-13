@@ -387,13 +387,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     /**
-     * Liefert einen eindeutigen Index für die Filmliste, da sich die URLs bei KiKa und ORF ständig ändern.
+     * Return a unique index for comparison during updating the filmlist from diff.
      *
-     * @return Index-String aus Sender, Thema und URL.
+     * @return a unique "hash" string
      */
-    public String getIndex() {
-        //TODO analysieren ob das immer noch der Fall ist.
-        return (getSender() + getThema()).toLowerCase() + getUrl();
+    public String getUniqueHash() {
+        return (getSender() + getThema()).toLowerCase() + getUrl() + getWebsiteLink();
     }
 
     /**
