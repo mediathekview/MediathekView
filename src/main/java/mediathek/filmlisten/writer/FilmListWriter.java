@@ -117,7 +117,7 @@ public class FilmListWriter {
                 long end = System.nanoTime();
 
                 logger.info("   --> geschrieben!");
-                logger.info("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+                logger.trace("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
             }
         } catch (Exception ex) {
             logger.error("nach: {}", datei, ex);
