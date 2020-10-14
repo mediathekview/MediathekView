@@ -91,7 +91,7 @@
         <install4j.home>./install4j8.0.7</install4j.home>
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
         <kotlin.version>1.4.10</kotlin.version>
-        <kotlin.language.target>14</kotlin.language.target>
+        <kotlin.language.target>${jdk.language.version}</kotlin.language.target>
     </properties>
 
     <dependencies>
@@ -220,27 +220,15 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.11.0</version>
+            <version>2.11.1</version>
         </dependency>
-
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-            <version>2.11.0</version>
-        </dependency>-->
 
         <!-- for Bookmark JSON reading and writing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.0</version>
+            <version>2.11.1</version>
         </dependency>
-
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-cbor</artifactId>
-            <version>2.11.0</version>
-        </dependency>-->
 
         <!-- Gui-Elemente -->
         <dependency>
@@ -515,8 +503,8 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>14</source>
-                    <target>14</target>
+                    <source>${jdk.language.version}</source>
+                    <target>${jdk.language.version}</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
