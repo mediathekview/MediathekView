@@ -165,8 +165,7 @@ public class FilmeLaden {
         //always perform update when list is empty
         if (listeFilme.isEmpty()) {
             return true;
-        }
-        else {
+        } else {
             //remote download is using an empty file name!...
             //or somebody put a web adress into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
@@ -213,7 +212,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
 
-            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (Netzwerk)");
@@ -246,7 +245,7 @@ public class FilmeLaden {
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
-            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 dateiUrl = GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL);
             }
@@ -295,14 +294,14 @@ public class FilmeLaden {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText("Fehler");
                 alert.setContentText("Das Laden der Filmliste hat nicht geklappt!");
-                JFXHiddenApplication.showAlert(alert,ui);
+                JFXHiddenApplication.showAlert(alert, ui);
             });
 
             // dann die alte Liste wieder laden
             listeFilme.clear();
 
             try (FilmListReader reader = new FilmListReader()) {
-                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
                 reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
             }
             logger.info("");
@@ -399,23 +398,20 @@ public class FilmeLaden {
 
     public void notifyFertig(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
+        final var listListeners = listeners.getListeners(ListenerFilmeLaden.class);
+
         try {
-            SwingUtilities.invokeLater(()
-                    -> {
-                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                    l.fertig(e);
+            SwingUtilities.invokeLater(() -> {
+                for (ListenerFilmeLaden lst : listListeners) {
+                    lst.fertig(e);
                 }
             });
-        } catch (Exception ex) {
-            logger.error(ex);
-        }
-        try {
+
             if (!onlyOne) {
                 onlyOne = true;
-                SwingUtilities.invokeLater(()
-                        -> {
-                    for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-                        l.fertigOnlyOne(e);
+                SwingUtilities.invokeLater(() -> {
+                    for (ListenerFilmeLaden lst : listListeners) {
+                        lst.fertigOnlyOne(e);
                     }
                 });
             }
