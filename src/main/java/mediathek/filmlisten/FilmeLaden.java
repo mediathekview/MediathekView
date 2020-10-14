@@ -357,8 +357,7 @@ public class FilmeLaden {
         listeFilme.parallelStream()
                 .peek(film -> film.setNew(false))
                 .filter(film -> !hashSet.contains(film.getUrl()))
-                .forEach(film
-                        -> {
+                .forEach(film -> {
                     film.setNew(true);
                     listeFilme.neueFilme = true;
                 });
@@ -368,11 +367,9 @@ public class FilmeLaden {
         hashSet.clear();
     }
 
-    public void notifyStart(ListenerFilmeLadenEvent event) {
-        final ListenerFilmeLadenEvent e = event;
+    public void notifyStart(ListenerFilmeLadenEvent e) {
         try {
-            SwingUtilities.invokeLater(()
-                    -> {
+            SwingUtilities.invokeLater(() -> {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.start(e);
                 }
@@ -382,11 +379,9 @@ public class FilmeLaden {
         }
     }
 
-    public void notifyProgress(ListenerFilmeLadenEvent event) {
-        final ListenerFilmeLadenEvent e = event;
+    public void notifyProgress(ListenerFilmeLadenEvent e) {
         try {
-            SwingUtilities.invokeLater(()
-                    -> {
+            SwingUtilities.invokeLater(() -> {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.progress(e);
                 }
@@ -396,8 +391,7 @@ public class FilmeLaden {
         }
     }
 
-    public void notifyFertig(ListenerFilmeLadenEvent event) {
-        final ListenerFilmeLadenEvent e = event;
+    public void notifyFertig(ListenerFilmeLadenEvent e) {
         final var listListeners = listeners.getListeners(ListenerFilmeLaden.class);
 
         try {
