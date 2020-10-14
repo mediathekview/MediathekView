@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.sync.LockMode;
 
@@ -40,14 +39,14 @@ public class SwingFilterDialog extends JDialog {
             public void start(ListenerFilmeLadenEvent event) {
                 final boolean enabled = false;
                 setEnabled(enabled);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
+                fxPanel.setEnabled(enabled);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 final boolean enabled = true;
                 setEnabled(enabled);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> fxPanel.setEnabled(enabled));
+                fxPanel.setEnabled(enabled);
             }
         });
     }
