@@ -84,7 +84,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_REF = 39;
     public static final String TAG = "Downlad";
     public static final int MAX_ELEM = 40;
-    public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
+    private static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
             "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
             "Datum", "Zeit", "Dauer", "HD", "UT",
             "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
