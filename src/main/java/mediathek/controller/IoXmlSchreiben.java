@@ -114,18 +114,16 @@ public class IoXmlSchreiben {
     }
 
     private void writeDownloads(XMLStreamWriter writer) throws XMLStreamException {
-        final boolean useNewLines = true;
-
         writer.writeCharacters("\n\n");
         writeNewLine(writer);
 
         for (DatenDownload download : Daten.getInstance().getListeDownloads()) {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
-                download.writeConfigEntry(writer, useNewLines);
+                download.writeConfigEntry(writer);
             } else if (!download.isFromAbo() && !download.isFinished()) {
                 //Download, (Abo müssen neu angelegt werden)
-                download.writeConfigEntry(writer, useNewLines);
+                download.writeConfigEntry(writer);
             }
         }
     }

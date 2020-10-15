@@ -179,12 +179,13 @@ public class IoXmlLesen {
         }
     }
 
-    private void readDownloads(XMLStreamReader parser) {
-        // Downloads
-        DatenDownload d = new DatenDownload();
-        if (get(parser, DatenDownload.TAG, DatenDownload.XML_NAMES, d.arr)) {
-            d.init();
-            daten.getListeDownloads().add(d);
+    private void readDownloadEntry(XMLStreamReader parser) {
+        try {
+            var dl = DatenDownload.getFromConfig(parser);
+            daten.getListeDownloads().add(dl);
+        }
+        catch (Exception e) {
+            logger.error("readDownloadEntry", e);
         }
     }
 
@@ -247,7 +248,7 @@ public class IoXmlLesen {
                                 break;
 
                             case DatenDownload.TAG:
-                                readDownloads(parser);
+                                readDownloadEntry(parser);
                                 break;
 
                             case BlacklistRule.TAG:
