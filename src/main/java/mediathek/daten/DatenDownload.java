@@ -15,6 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.File;
 import java.util.ArrayList;
@@ -144,27 +147,66 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     /**
+     * Read the download data from config.
+     * @param parser The parser for the config file
+     * @return A valid DatenDownload object when everything went smooth.
+     * @throws XMLStreamException
+     */
+    public static DatenDownload getFromConfig(XMLStreamReader parser) throws XMLStreamException {
+        DatenDownload dl = new DatenDownload();
+
+        final int maxElem = dl.arr.length;
+        for (int i = 0; i < maxElem; ++i) {
+            if (dl.arr[i] == null) {
+                // damit Vorgaben nicht verschwinden!
+                dl.arr[i] = "";
+            }
+        }
+
+        while (parser.hasNext()) {
+            final int event = parser.next();
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                if (parser.getLocalName().equals(TAG)) {
+                    break;
+                }
+            }
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                for (int i = 0; i < maxElem; ++i) {
+                    if (parser.getLocalName().equals(XML_NAMES[i])) {
+                        dl.arr[i] = parser.getElementText();
+                        break;
+                    }
+                }
+            }
+        }
+
+        //everything went fine so initialize and return
+        dl.init();
+        return dl;
+    }
+
+    /**
      * Store the download data in config file.
      *
      * @param writer  the writer to the config file.
-     * @param newLine Use newLines or not.
      */
-    public void writeConfigEntry(XMLStreamWriter writer, boolean newLine) {
+    public void writeConfigEntry(XMLStreamWriter writer) {
+        final boolean useNewLine = true;
         final int xmlMax = arr.length;
         try {
             writer.writeStartElement(TAG);
-            if (newLine) {
+            if (useNewLine) {
                 writer.writeCharacters("\n");
             }
             for (int i = 0; i < xmlMax; ++i) {
                 if (!arr[i].isEmpty()) {
-                    if (newLine) {
+                    if (useNewLine) {
                         writer.writeCharacters("\t"); //Tab
                     }
                     writer.writeStartElement(XML_NAMES[i]);
                     writer.writeCharacters(arr[i]);
                     writer.writeEndElement();
-                    if (newLine) {
+                    if (useNewLine) {
                         writer.writeCharacters("\n");
                     }
                 }
