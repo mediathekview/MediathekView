@@ -58,7 +58,7 @@ public class StarterClass {
         } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
             logger.error("Download fehlgeschlagen, Datei zu klein:{}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else {
-            if (datenDownload.istAbo()) {
+            if (datenDownload.isFromAbo()) {
                 daten.getAboHistoryController().zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                         datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                         datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);

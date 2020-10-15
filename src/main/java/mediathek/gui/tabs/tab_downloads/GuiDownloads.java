@@ -1044,7 +1044,7 @@ public class GuiDownloads extends AGuiTabPanel {
             for (DatenDownload datenDownload : arrayDownloads) {
                 if (dauerhaft) {
                     arrayDownloadsLoeschen.add(datenDownload);
-                    if (datenDownload.istAbo()) {
+                    if (datenDownload.isFromAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
                         urlAboList.add(new MVUsedUrl(zeit,
                                 datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
@@ -1107,7 +1107,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         continue;
                     }
                     listeUrlsDownloadsAbbrechen.add(download);
-                    if (download.istAbo()) {
+                    if (download.isFromAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
@@ -1213,7 +1213,7 @@ public class GuiDownloads extends AGuiTabPanel {
                             continue;
                         }
                         listeDownloadsLoeschen.add(download);
-                        if (download.istAbo()) {
+                        if (download.isFromAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
