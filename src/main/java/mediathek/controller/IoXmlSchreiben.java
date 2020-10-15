@@ -122,7 +122,7 @@ public class IoXmlSchreiben {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
                 xmlSchreibenDaten(writer, DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
-            } else if (!download.istAbo() && !download.isFinished()) {
+            } else if (!download.isFromAbo() && !download.isFinished()) {
                 //Download, (Abo müssen neu angelegt werden)
                 xmlSchreibenDaten(writer, DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
             }

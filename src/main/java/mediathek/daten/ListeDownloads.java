@@ -122,7 +122,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 d.setGroesseFromFilm();//bei den Abgebrochenen wird die tatsächliche Dateigröße angezeigt
                 continue;
             }
-            if (!d.istAbo()) {
+            if (!d.isFromAbo()) {
                 continue;
             }
             if (d.start == null) {
@@ -231,7 +231,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            final boolean istAbo = download.istAbo();
+            final boolean istAbo = download.isFromAbo();
             if (onlyAbos && !istAbo) {
                 continue;
             }
@@ -418,7 +418,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (!download.istZurueckgestellt()) {
                 info.total_starts++;
             }
-            if (download.istAbo()) {
+            if (download.isFromAbo()) {
                 info.num_abos++;
             } else {
                 info.num_downloads++;
