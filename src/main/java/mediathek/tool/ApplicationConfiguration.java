@@ -112,6 +112,8 @@ public class ApplicationConfiguration {
 
   public static final String TAB_FILM_FONT_SIZE = "tab.film.font_size";
 
+  public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+
   /** logger for {@link TimerTaskListener} inner class. */
   private static final Logger logger = LogManager.getLogger(ApplicationConfiguration.class);
 
