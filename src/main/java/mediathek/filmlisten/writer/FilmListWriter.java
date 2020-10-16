@@ -68,15 +68,6 @@ public class FilmListWriter {
     public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener listener) {
         Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
 
-        /*
-        There is some REALLY STRANGE behaviour on windows if we have no memory limit.
-        In this case filmlist may still be blocked by old objects not GCed yet.
-        Only workaround so far is to trigger GC manually and everything will be fine...
-         */
-        if (SystemUtils.IS_OS_WINDOWS) {
-            System.gc();
-        }
-
         try {
             logger.info("Filme schreiben ({} Filme) :", listeFilme.size());
             logger.info("   --> Start Schreiben nach: {}", datei);
