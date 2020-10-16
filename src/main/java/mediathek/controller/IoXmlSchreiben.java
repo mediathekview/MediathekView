@@ -24,6 +24,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.BlacklistRule;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,7 +114,19 @@ public class IoXmlSchreiben {
         }
     }
 
+    /**
+     * Write all abo entries into XML config file.
+     * @param writer the writer for the config file
+     * @throws XMLStreamException caller must handle errors.
+     */
     private void writeDownloads(XMLStreamWriter writer) throws XMLStreamException {
+        /*
+            CLI client must rely on specific format as this is some strange dialect.
+            Here we set what version we save.
+         */
+        final int dl_list_version = 1;
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CLI_CLIENT_DOWNLOAD_LIST_FORMAT, dl_list_version);
+
         writer.writeCharacters("\n\n");
         writeNewLine(writer);
 
