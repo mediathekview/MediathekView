@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.RejectedExecutionException;
 
 public class IoXmlSchreiben {
     private static final Logger logger = LogManager.getLogger(IoXmlSchreiben.class);
@@ -125,7 +126,15 @@ public class IoXmlSchreiben {
             Here we set what version we save.
          */
         final int dl_list_version = 1;
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CLI_CLIENT_DOWNLOAD_LIST_FORMAT, dl_list_version);
+        try {
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CLI_CLIENT_DOWNLOAD_LIST_FORMAT, dl_list_version);
+        }
+        catch (RejectedExecutionException ignore) {
+            //this may occur during shutdown
+        }
+        catch (Exception e) {
+            logger.error("writeDownloads error!", e);
+        }
 
         writer.writeCharacters("\n\n");
         writeNewLine(writer);
