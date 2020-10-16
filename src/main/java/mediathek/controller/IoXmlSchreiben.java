@@ -143,7 +143,7 @@ public class IoXmlSchreiben {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
                 download.writeConfigEntry(writer);
-            } else if (!download.isFromAbo() && !download.isFinished()) {
+            } else if (!download.isFinished()) {
                 //Download, (Abo müssen neu angelegt werden)
                 download.writeConfigEntry(writer);
             }
