@@ -86,7 +86,9 @@ public class FilmListWriter {
                 Files.deleteIfExists(filePath);
             }
             catch (Exception e) {
-                logger.error("writeFilmList", e);
+                logger.warn("error trying to delete file", e);
+                logger.trace("Waiting two seconds...");
+                TimeUnit.SECONDS.sleep(2);
             }
             long start = System.nanoTime();
 

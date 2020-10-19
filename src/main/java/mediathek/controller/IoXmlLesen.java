@@ -219,47 +219,26 @@ public class IoXmlLesen {
                     final int event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
                         switch (parser.getLocalName()) {
-                            case MVConfig.SYSTEM:
-                                // System
-                                readSystemConfiguration(parser);
-                                break;
-
-                            case DatenPset.TAG:
-                                // Programmgruppen
+                            case MVConfig.SYSTEM -> readSystemConfiguration(parser);
+                            case DatenPset.TAG -> {
                                 datenPset = new DatenPset();
                                 if (get(parser, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr)) {
                                     Daten.listePset.add(datenPset);
                                 }
-                                break;
-                            case DatenProg.TAG:
+                            }
+                            case DatenProg.TAG -> {
                                 DatenProg datenProg = new DatenProg();
                                 if (get(parser, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr)) {
                                     if (datenPset != null) {
                                         datenPset.addProg(datenProg);
                                     }
                                 }
-                                // ende Programgruppen
-                                break;
-
-                            case ReplaceList.REPLACELIST:
-                                readReplacementList(parser);
-                                break;
-
-                            case DatenAbo.TAG:
-                                readAbos(parser);
-                                break;
-
-                            case DatenDownload.TAG:
-                                readDownloadEntry(parser);
-                                break;
-
-                            case BlacklistRule.TAG:
-                                readBlacklist(parser);
-                                break;
-
-                            case DatenMediaPath.TAG:
-                                readMediaPath(parser);
-                                break;
+                            }
+                            case ReplaceList.REPLACELIST -> readReplacementList(parser);
+                            case DatenAbo.TAG -> readAbos(parser);
+                            case DatenDownload.TAG -> readDownloadEntry(parser);
+                            case BlacklistRule.TAG -> readBlacklist(parser);
+                            case DatenMediaPath.TAG -> readMediaPath(parser);
                         }
                     }
                 }
