@@ -47,7 +47,10 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
             List<DatenFilm> neueFilme = arrayFilms.stream()
                     .filter(film -> !urlPruefen(film.getUrl()))
                     .collect(Collectors.toList());
-            zeileSchreiben(neueFilme);
+
+            if (!neueFilme.isEmpty())
+                zeileSchreiben(neueFilme);
+
             neueFilme.clear();
         }
         // Update bookmarks with seen information 
