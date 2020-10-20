@@ -191,24 +191,17 @@ public final class DatenDownload implements Comparable<DatenDownload> {
      * @param writer  the writer to the config file.
      */
     public void writeConfigEntry(XMLStreamWriter writer) {
-        final boolean useNewLine = true;
         final int xmlMax = arr.length;
         try {
             writer.writeStartElement(TAG);
-            if (useNewLine) {
-                writer.writeCharacters("\n");
-            }
+            writer.writeCharacters("\n");
             for (int i = 0; i < xmlMax; ++i) {
                 if (!arr[i].isEmpty()) {
-                    if (useNewLine) {
-                        writer.writeCharacters("\t"); //Tab
-                    }
+                    writer.writeCharacters("\t"); //Tab
                     writer.writeStartElement(XML_NAMES[i]);
                     writer.writeCharacters(arr[i]);
                     writer.writeEndElement();
-                    if (useNewLine) {
-                        writer.writeCharacters("\n");
-                    }
+                    writer.writeCharacters("\n");
                 }
             }
             writer.writeEndElement();

@@ -68,7 +68,7 @@ public class IoXmlSchreiben {
         writeNewLine(writer);
 
         for (DatenAbo datenAbo : Daten.getInstance().getListeAbo()) {
-            xmlSchreibenDaten(writer, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
+            xmlSchreibenDaten(writer, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, true);
         }
     }
 
