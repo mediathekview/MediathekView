@@ -46,6 +46,7 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
         } else {
             List<DatenFilm> neueFilme = arrayFilms.stream()
                     .filter(film -> !urlPruefen(film.getUrl()))
+                    .filter(film -> !film.isLivestream())
                     .collect(Collectors.toList());
 
             if (!neueFilme.isEmpty())
