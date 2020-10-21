@@ -21,10 +21,16 @@ import java.util.List;
  */
 public class NewSeenHistoryController implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger();
-    private static final String INSERT_STMT = "INSERT INTO seen_history(thema,titel,url) values (?,?,?)";
+    private static final String INSERT_SQL = "INSERT INTO seen_history(thema,titel,url) values (?,?,?)";
+    private static final String DELETE_SQL = "DELETE FROM seen_history WHERE url = ?";
+    private static final String SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE url = ?";
+    private static final String MANUAL_INSERT_SQL = "INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)";
     private Connection connection;
     private PreparedStatement INSERT_STATEMENT;
     private SQLiteDataSource dataSource;
+    private PreparedStatement DELETE_STATEMENT;
+    private PreparedStatement SEEN_STATEMENT;
+    private PreparedStatement MANUAL_INSERT_STATEMENT;
 
     public NewSeenHistoryController(boolean readOnly) {
         try {
@@ -39,7 +45,10 @@ public class NewSeenHistoryController implements AutoCloseable {
             connection = dataSource.getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
-            INSERT_STATEMENT = connection.prepareStatement(INSERT_STMT);
+            INSERT_STATEMENT = connection.prepareStatement(INSERT_SQL);
+            DELETE_STATEMENT = connection.prepareStatement(DELETE_SQL);
+            SEEN_STATEMENT = connection.prepareStatement(SEEN_SQL);
+            MANUAL_INSERT_STATEMENT = connection.prepareStatement(MANUAL_INSERT_SQL);
         } catch (SQLException ex) {
             logger.error("ctor", ex);
             System.exit(99);
@@ -48,8 +57,9 @@ public class NewSeenHistoryController implements AutoCloseable {
 
     /**
      * Setup the SQLite data source.
+     *
      * @param readOnly True for read-only, false for R/W
-     * @param dbPath Path to database location
+     * @param dbPath   Path to database location
      */
     private void setupDataSource(boolean readOnly, @NotNull Path dbPath) {
         SQLiteConfig conf = new SQLiteConfig();
@@ -77,10 +87,10 @@ public class NewSeenHistoryController implements AutoCloseable {
     }
 
     public synchronized void markUnseen(List<DatenFilm> list) {
-        try (var statement = connection.prepareStatement("DELETE FROM seen_history WHERE url = ?")) {
+        try {
             for (var film : list) {
-                statement.setString(1, film.getUrl());
-                statement.executeUpdate();
+                DELETE_STATEMENT.setString(1, film.getUrl());
+                DELETE_STATEMENT.executeUpdate();
             }
         } catch (SQLException ex) {
             logger.error("markUnseen", ex);
@@ -112,11 +122,11 @@ public class NewSeenHistoryController implements AutoCloseable {
     }
 
     public synchronized void writeManualEntry(String thema, String title, String url) {
-        try (var statement = connection.prepareStatement("INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)")) {
-            statement.setString(1, thema);
-            statement.setString(2, title);
-            statement.setString(3, url);
-            statement.executeUpdate();
+        try {
+            MANUAL_INSERT_STATEMENT.setString(1, thema);
+            MANUAL_INSERT_STATEMENT.setString(2, title);
+            MANUAL_INSERT_STATEMENT.setString(3, url);
+            MANUAL_INSERT_STATEMENT.executeUpdate();
 
             sendChangeMessage();
         } catch (SQLException ex) {
@@ -127,11 +137,9 @@ public class NewSeenHistoryController implements AutoCloseable {
     public synchronized boolean hasBeenSeen(@NotNull DatenFilm film) {
         boolean result;
         ResultSet rs = null;
-        try (var stmt = connection.prepareStatement("SELECT COUNT(url) AS total FROM seen_history WHERE url = ?")) {
-            stmt.setString(1, film.getUrl());
-            stmt.execute();
-            //success
-            rs = stmt.getResultSet();
+        try {
+            SEEN_STATEMENT.setString(1, film.getUrl());
+            rs = SEEN_STATEMENT.executeQuery();
             rs.next();
             final int total = rs.getInt("total");
             result = total != 0;
@@ -196,6 +204,15 @@ public class NewSeenHistoryController implements AutoCloseable {
     public void close() throws Exception {
         if (INSERT_STATEMENT != null)
             INSERT_STATEMENT.close();
+
+        if (DELETE_STATEMENT != null)
+            DELETE_STATEMENT.close();
+
+        if (SEEN_STATEMENT != null)
+            SEEN_STATEMENT.close();
+
+        if (MANUAL_INSERT_STATEMENT != null)
+            MANUAL_INSERT_STATEMENT.close();
 
         if (connection != null)
             connection.close();
