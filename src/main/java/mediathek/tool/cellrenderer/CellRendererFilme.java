@@ -4,10 +4,10 @@ import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final SeenHistoryController history;
+    private final NewSeenHistoryController history = new NewSeenHistoryController(true);
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;
@@ -38,7 +38,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
         normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
-        history = d.getSeenHistoryController();
         selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
 
@@ -152,7 +151,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
-            } else if (history.urlPruefen(datenFilm.getUrl())) {
+            } else if (history.hasBeenSeen(datenFilm)) {
                 if (!isSelected) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }

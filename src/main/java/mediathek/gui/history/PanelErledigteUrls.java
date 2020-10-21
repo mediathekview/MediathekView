@@ -1,7 +1,10 @@
 package mediathek.gui.history;
 
 import mediathek.config.Daten;
-import mediathek.controller.history.*;
+import mediathek.controller.history.AboHistoryController;
+import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.MVUsedUrlModelHelper;
+import mediathek.controller.history.MVUsedUrls;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -91,9 +94,7 @@ public abstract class PanelErledigteUrls extends JPanel {
         if (workList instanceof AboHistoryController) {
             title = "Abo-Historie speichern";
         }
-        if (workList instanceof SeenHistoryController) {
-            title = "Download-Historie speichern";
-        }
+
         var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),title,GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt");
         if (destFile != null) {
             new HistoryWriterThread(destFile.getAbsolutePath(), getExportableList()).start();

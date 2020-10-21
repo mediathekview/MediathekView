@@ -527,7 +527,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
           // und evtl. auch gleich starten
-          datenDownload.startDownload(daten);
+          datenDownload.startDownload();
         }
       } else {
         // dann alle Downloads im Dialog abfragen
@@ -896,7 +896,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      daten.getSeenHistoryController().markAsSeen(getSelFilme());
+      daten.getSeenHistoryController().markSeen(getSelFilme());
     }
   }
 
@@ -904,7 +904,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      daten.getSeenHistoryController().markAsUnseen(getSelFilme());
+      daten.getSeenHistoryController().markUnseen(getSelFilme());
     }
   }
 
@@ -1199,7 +1199,7 @@ public class GuiFilme extends AGuiTabPanel {
             res.ifPresent(
                     film -> {
                         JMenuItem miHistory;
-                        if (daten.getSeenHistoryController().urlPruefen(film.getUrl())) {
+                        if (daten.getSeenHistoryController().hasBeenSeen(film)) {
                             miHistory = new JMenuItem("Film als ungesehen markieren");
                             miHistory.addActionListener(unseenActionListener);
                         } else {
@@ -1224,9 +1224,9 @@ public class GuiFilme extends AGuiTabPanel {
                 final var list = Lists.newArrayList(film);
                 final var history = daten.getSeenHistoryController();
                 if (eintragen) {
-                    history.markAsSeen(list);
+                    history.markSeen(list);
                 } else {
-                    history.markAsUnseen(list);
+                    history.markUnseen(list);
                 }
                 list.clear();
             }
