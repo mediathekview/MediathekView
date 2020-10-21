@@ -1,11 +1,13 @@
 package mediathek.tool;
 
+import com.sun.jna.platform.FileUtils;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -87,12 +89,13 @@ public class SeenHistoryMigrator implements AutoCloseable {
                     // write each entry into database
                     insertStmt.executeUpdate();
                 }
-/*
-                if (true)
-                    throw new IndexOutOfBoundsException();
-*/
                 connection.commit();
-                //Files.deleteIfExists(historyFilePath);
+
+                final var fileUtils = FileUtils.getInstance();
+                if (fileUtils.hasTrash())
+                    fileUtils.moveToTrash(new File[]{historyFilePath.toFile()});
+                else
+                    Files.deleteIfExists(historyFilePath);
                 logger.info("Finished old history migration.");
             } catch (Exception ex) {
                 try {
