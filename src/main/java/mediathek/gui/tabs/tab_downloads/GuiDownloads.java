@@ -26,8 +26,6 @@ import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.dialog.StandardCloseDialog;
-import mediathek.gui.history.DownloadHistoryPanel;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.toolbar.FXDownloadToolBar;
@@ -475,9 +473,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         });
 
-        JMenuItem miShowDownloadHistory = new JMenuItem("Download-Historie anzeigen...");
-        miShowDownloadHistory.addActionListener(e -> showDownloadHistory());
-
         menu.add(miDownloadsStartAll);
         menu.add(miDownloadStartTimed);
         menu.add(miStopAllDownloads);
@@ -500,17 +495,9 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.addSeparator();
         menu.add(miSearchMediaDb);
         menu.addSeparator();
-        menu.add(miShowDownloadHistory);
-        menu.addSeparator();
         menu.add(miInvertSelection);
         menu.addSeparator();
         menu.add(miShutdownAfterDownload);
-    }
-
-    private void showDownloadHistory() {
-        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(mediathekGui);
-        dialog.pack();
-        dialog.setVisible(true);
     }
 
     private void setupDescriptionPanel() {
@@ -1306,17 +1293,6 @@ public class GuiDownloads extends AGuiTabPanel {
         return arrayFilme;
     }
 
-    class ShowDownloadHistoryDialog extends StandardCloseDialog {
-        public ShowDownloadHistoryDialog(Frame owner) {
-            super(owner, "Download-Historie", true);
-        }
-
-        @Override
-        public JComponent createContentPanel() {
-            return new DownloadHistoryPanel(daten);
-        }
-    }
-
     private class SearchInMediaDbAction extends AbstractAction {
 
         @Override
@@ -1616,53 +1592,48 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_VIEW_ALL:
+                case INDEX_COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_NOT_STARTED:
+                }
+                case INDEX_COMBO_VIEW_NOT_STARTED -> {
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_STARTED:
+                }
+                case INDEX_COMBO_VIEW_STARTED -> {
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_WAITING:
+                }
+                case INDEX_COMBO_VIEW_WAITING -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_FINISHED_ONLY:
+                }
+                case INDEX_COMBO_VIEW_FINISHED_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_RUN_ONLY:
+                }
+                case INDEX_COMBO_VIEW_RUN_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = true;
-                    break;
+                }
             }
 
             reloadTable();
@@ -1678,20 +1649,18 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_DISPLAY_ALL:
+                case INDEX_COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY -> {
                     onlyAbos = false;
                     onlyDownloads = true;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_ABOS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_ABOS_ONLY -> {
                     onlyAbos = true;
                     onlyDownloads = false;
-                    break;
+                }
             }
 
             reloadTable();
