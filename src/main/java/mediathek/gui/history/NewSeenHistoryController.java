@@ -11,6 +11,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteDataSource;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.List;
@@ -23,43 +24,52 @@ public class NewSeenHistoryController implements AutoCloseable {
     private static final String INSERT_STMT = "INSERT INTO seen_history(thema,titel,url) values (?,?,?)";
     private Connection connection;
     private PreparedStatement INSERT_STATEMENT;
+    private SQLiteDataSource dataSource;
 
     public NewSeenHistoryController(boolean readOnly) {
         try {
             var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
-            final var dbPathStr = historyDbPath.toAbsolutePath().toString();
-
             if (!Files.exists(historyDbPath)) {
                 // create new empty database
-                createEmptyDatabase(dbPathStr);
+                createEmptyDatabase();
             }
 
-            var conf = new SQLiteConfig();
-            if (readOnly)
-                conf.setReadOnly(true);
-            conf.setEncoding(SQLiteConfig.Encoding.UTF8);
-            conf.setLockingMode(SQLiteConfig.LockingMode.NORMAL);
-            conf.setSharedCache(true);
-
-            var ds = new SQLiteDataSource(conf);
-            ds.setUrl("jdbc:sqlite:" + dbPathStr);
+            setupDataSource(readOnly, historyDbPath);
             // open and use database
-            connection = ds.getConnection();
+            connection = dataSource.getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
             INSERT_STATEMENT = connection.prepareStatement(INSERT_STMT);
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("ctor", ex);
             System.exit(99);
         }
     }
 
+    /**
+     * Setup the SQLite data source.
+     * @param readOnly True for read-only, false for R/W
+     * @param dbPath Path to database location
+     */
+    private void setupDataSource(boolean readOnly, @NotNull Path dbPath) {
+        SQLiteConfig conf = new SQLiteConfig();
+        if (readOnly)
+            conf.setReadOnly(true);
+        conf.setEncoding(SQLiteConfig.Encoding.UTF8);
+        conf.setLockingMode(SQLiteConfig.LockingMode.NORMAL);
+        conf.setSharedCache(true);
+
+        dataSource = new SQLiteDataSource(conf);
+        dataSource.setUrl("jdbc:sqlite:" + dbPath.toAbsolutePath().toString());
+    }
+
+    /**
+     * Remove all entries from the database.
+     */
     public void removeAll() {
         try (var stmt = connection.createStatement()) {
             stmt.executeUpdate("DELETE FROM seen_history");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("removeAll", ex);
         }
 
@@ -72,8 +82,7 @@ public class NewSeenHistoryController implements AutoCloseable {
                 statement.setString(1, film.getUrl());
                 statement.executeUpdate();
             }
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("markUnseen", ex);
         }
 
@@ -97,36 +106,45 @@ public class NewSeenHistoryController implements AutoCloseable {
 
             //send one change for all...
             sendChangeMessage();
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             logger.error("markSeen", ex);
         }
     }
 
     public synchronized void writeManualEntry(String thema, String title, String url) {
-        //FIXME not implemented!
-        throw new UnsupportedOperationException("not yet implemented!");
+        try (var statement = connection.prepareStatement("INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)")) {
+            statement.setString(1, thema);
+            statement.setString(2, title);
+            statement.setString(3, url);
+            statement.executeUpdate();
+
+            sendChangeMessage();
+        } catch (SQLException ex) {
+            logger.error("writeManualEntry", ex);
+        }
     }
 
     public synchronized boolean hasBeenSeen(@NotNull DatenFilm film) {
         boolean result;
-        try (var stmt = connection.prepareStatement("SELECT COUNT(url) AS total FROM seen_history WHERE url = ?")){
+        ResultSet rs = null;
+        try (var stmt = connection.prepareStatement("SELECT COUNT(url) AS total FROM seen_history WHERE url = ?")) {
             stmt.setString(1, film.getUrl());
-            if (!stmt.execute()) {
-                //error occured
-                result = false;
-            }
-            else {
-                //success
-                var rs = stmt.getResultSet();
-                rs.next();
-                final int total = rs.getInt("total");
-                result = total != 0;
-            }
-        }
-        catch (SQLException e) {
+            stmt.execute();
+            //success
+            rs = stmt.getResultSet();
+            rs.next();
+            final int total = rs.getInt("total");
+            result = total != 0;
+        } catch (SQLException e) {
             logger.error("SQL error:", e);
             result = false;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ignore) {
+                }
+            }
         }
 
         return result;
@@ -136,11 +154,10 @@ public class NewSeenHistoryController implements AutoCloseable {
     /**
      * Creates a empty database and all table, indices necessary for use.
      *
-     * @param dbPathStr The local file system path for storage
      * @throws SQLException Let the caller handle all errors
      */
-    private void createEmptyDatabase(@NotNull String dbPathStr) throws SQLException {
-        try (Connection tempConnection = DriverManager.getConnection("jdbc:sqlite:" + dbPathStr);
+    private void createEmptyDatabase() throws SQLException {
+        try (Connection tempConnection = dataSource.getConnection();
              Statement statement = tempConnection.createStatement()) {
             tempConnection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
@@ -156,6 +173,7 @@ public class NewSeenHistoryController implements AutoCloseable {
 
     /**
      * Write an entry to the database.
+     *
      * @param film the film data to be written.
      * @throws SQLException .
      */
