@@ -86,7 +86,7 @@ public class NewSeenHistoryController implements AutoCloseable {
         sendChangeMessage();
     }
 
-    public synchronized void markUnseen(List<DatenFilm> list) {
+    public void markUnseen(List<DatenFilm> list) {
         try {
             for (var film : list) {
                 DELETE_STATEMENT.setString(1, film.getUrl());
@@ -99,7 +99,7 @@ public class NewSeenHistoryController implements AutoCloseable {
         sendChangeMessage();
     }
 
-    public synchronized void markSeen(List<DatenFilm> list) {
+    public void markSeen(List<DatenFilm> list) {
         try {
             for (var film : list) {
                 //skip livestreams
@@ -121,7 +121,7 @@ public class NewSeenHistoryController implements AutoCloseable {
         }
     }
 
-    public synchronized void writeManualEntry(String thema, String title, String url) {
+    public void writeManualEntry(String thema, String title, String url) {
         try {
             MANUAL_INSERT_STATEMENT.setString(1, thema);
             MANUAL_INSERT_STATEMENT.setString(2, title);
@@ -134,7 +134,7 @@ public class NewSeenHistoryController implements AutoCloseable {
         }
     }
 
-    public synchronized boolean hasBeenSeen(@NotNull DatenFilm film) {
+    public boolean hasBeenSeen(@NotNull DatenFilm film) {
         boolean result;
         ResultSet rs = null;
         try {
