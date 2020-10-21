@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,20 +23,23 @@ import java.util.List;
  * Migrates the old history.txt into a sqlite database.
  */
 public class SeenHistoryMigrator implements AutoCloseable {
+    public static final String PRAGMA_ENCODING_STMT = "PRAGMA encoding='UTF-8'";
+    public static final String CREATE_TABLE_STMT = "CREATE TABLE IF NOT EXISTS seen_history (id INTEGER PRIMARY KEY ASC, datum DATE NOT NULL DEFAULT (date('now')), thema TEXT, titel TEXT, url TEXT NOT NULL)";
+    public static final String DROP_TABLE_STMT = "DROP TABLE IF EXISTS seen_history";
+    public static final String INSERT_STMT = "INSERT INTO seen_history(datum,thema,titel,url) values (?,?,?,?)";
     private static final Logger logger = LogManager.getLogger();
     private static final String fileName = "history.txt";
     private final Path historyFilePath;
     private final List<MVUsedUrl> historyEntries = new ArrayList<>();
 
-
     public SeenHistoryMigrator() throws InvalidPathException {
-        final var settingsDir = Daten.getSettingsDirectory_String();
-        historyFilePath = Paths.get(settingsDir).resolve(fileName);
+        historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve(fileName);
         System.out.println("HISTORY MIGRATOR CTOR");
     }
 
     /**
      * Do we need history migration?
+     *
      * @return true if old text file exists, false otherwise
      */
     public boolean needsMigration() {
@@ -43,26 +49,76 @@ public class SeenHistoryMigrator implements AutoCloseable {
     /**
      * Migrate from old text format to database.
      */
-    public void migrate() {
-        try {
-            logger.info("Start old history migration.");
-            readOldEntries();
-            if (!historyEntries.isEmpty()) {
-                // create database connection
-                // drop old tables if existent
-                // create tables
+    public void migrate() throws Exception {
+        logger.info("Start old history migration.");
+        readOldEntries();
+        if (!historyEntries.isEmpty()) {
+            // create database connection
+            var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+            final var dbPathStr = historyDbPath.toAbsolutePath().toString();
+            PreparedStatement insertStmt = null;
+            Statement statement = null;
+            Connection connection = null;
+            try {
+                connection = DriverManager.getConnection("jdbc:sqlite:" + dbPathStr);
+                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                connection.setAutoCommit(false);
 
+                statement = connection.createStatement();
+                statement.setQueryTimeout(30);  // set timeout to 30 sec.
+                statement.executeUpdate(PRAGMA_ENCODING_STMT);
+                // drop old tables if existent
+                statement.executeUpdate(DROP_TABLE_STMT);
+                // create tables
+                statement.executeUpdate(CREATE_TABLE_STMT);
                 //create entries in database
+                insertStmt = connection.prepareStatement(INSERT_STMT);
+                final var formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
                 for (var entry : historyEntries) {
+                    LocalDate locDate = LocalDate.parse(entry.getDatum(), formatter);
+                    insertStmt.setObject(1, locDate);
+                    insertStmt.setString(2, entry.getThema());
+                    insertStmt.setString(3, entry.getTitel());
+                    insertStmt.setString(4, entry.getUrl());
                     // write each entry into database
+                    insertStmt.executeUpdate();
+                }
+/*
+                if (true)
+                    throw new IndexOutOfBoundsException();
+*/
+                connection.commit();
+                //Files.deleteIfExists(historyFilePath);
+                logger.info("Finished old history migration.");
+            } catch (Exception ex) {
+                try {
+                    if (connection != null) {
+                        connection.rollback();
+                    }
+                } catch (SQLException ignored) {
+                }
+
+                //rethrow so we can handle it at caller site
+                throw ex;
+            } finally {
+                System.out.println("CALLING finally");
+                try {
+                    if (insertStmt != null) {
+                            insertStmt.close();
+                    }
+
+                    if (statement != null) {
+                        statement.close();
+                    }
+
+                    if (connection != null)
+                        connection.close();
+                }
+                catch (Exception e) {
+                    logger.error("cleanup failed", e);
                 }
             }
 
-            //Files.deleteIfExists(historyFilePath);
-            logger.info("Finished old history migration.");
-        }
-        catch (Exception e) {
-            logger.error("Error occured during history migration", e);
         }
     }
 
@@ -83,6 +139,10 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 if (okHttpUrl == null) {
                     continue;
                 }
+
+                // we cannot convert entries without date
+                if (oldHistoryEntry.getDatum().isBlank())
+                    continue;
 
                 // so far so good, add to lists
                 historyEntries.add(oldHistoryEntry);

@@ -19,6 +19,7 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -413,6 +414,16 @@ public class Main {
         }
         catch (Exception e) {
             logger.error("migrateSeenHistory", e);
+            splashScreen.ifPresent(SplashScreen::close);
+            FXErrorDialog.showErrorDialogWithoutParent(Konstanten.PROGRAMMNAME,
+                            "Migration fehlgeschlagen",
+                            """
+                                    Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
+                                    Das Programm kann nicht fortfahren und wird beendet.
+                                    
+                                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
+                                    """, e);
+            System.exit(99);
         }
     }
 
