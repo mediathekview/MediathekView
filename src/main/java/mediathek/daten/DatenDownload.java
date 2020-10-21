@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
@@ -219,15 +220,14 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        final var daten = Daten.getInstance();
-        final var historyController = daten.getSeenHistoryController();
-        for (DatenDownload d : downloads) {
-            d.start = new Start();
-            historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
-                    d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        try (var historyController = new NewSeenHistoryController(false)){
+            for (DatenDownload d : downloads) {
+                d.start = new Start();
+                historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
+                        d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            }
         }
-
-        daten.getMessageBus().publishAsync(new StartEvent());
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
     }
 
     public static String getTextBandbreite(long b) {
@@ -407,9 +407,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public void startDownload() {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
-        final var daten = Daten.getInstance();
-        daten.getSeenHistoryController().writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-        daten.getMessageBus().publishAsync(new StartEvent());
+
+        try (var historyController = new NewSeenHistoryController(false)){
+            historyController.writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA],
+                    arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        }
+
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
