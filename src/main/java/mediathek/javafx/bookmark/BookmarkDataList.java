@@ -9,11 +9,11 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mediathek.config.Daten;
-import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.history.NewSeenHistoryController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,14 +30,13 @@ import java.util.List;
 public class BookmarkDataList 
 {
   private final ObservableList<BookmarkData> olist;
-  private static SeenHistoryController history;
   private static BookmarkDataList instance;
   
   private BookmarkDataList(Daten daten) {
     olist = FXCollections.observableArrayList((BookmarkData data) -> new Observable[]{
       data.getSeenProperty()
     });
-    history = null;
+
     if (daten != null) {
       // Wait until film liste is ready and update references
       daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -122,15 +121,17 @@ public class BookmarkDataList
     
     if (add) {
       // Check if history list is known
-      if (history == null) {
-        history = Daten.getInstance().getSeenHistoryController();  
+      try (var history = new NewSeenHistoryController(true)){
+        for (DatenFilm movie: addlist) {
+          BookmarkData bdata = new BookmarkData(movie);
+          movie.setBookmark(bdata); // Link backwards
+          // Set seen marker if in history and not livestream
+          bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
+          olist.add(bdata);
+        }
       }
-      for (DatenFilm movie: addlist) {
-        BookmarkData bdata = new BookmarkData(movie);
-        movie.setBookmark(bdata); // Link backwards
-        // Set seen marker if in history and not livestream
-        bdata.setSeen(!bdata.isLiveStream() && history.urlPruefen(movie.getUrl()));
-        olist.add(bdata);
+      catch (Exception ex) {
+        logger.error("history produced error", ex);
       }
     }
     else { // delete existing bookmarks
@@ -143,7 +144,7 @@ public class BookmarkDataList
   
   /**
    * Delete given bookmarks from list and remove reference in film list)
-   * @param bookmarks 
+   * @param bookmarks The list of bookmarks.
    */
   public void deleteEntries(ObservableList<BookmarkData> bookmarks) {
     for (BookmarkData bookmark: bookmarks) {  // delete references

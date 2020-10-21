@@ -478,7 +478,7 @@ public class DialogAddDownload extends JDialog {
             daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
-                datenDownload.startDownload(daten);
+                datenDownload.startDownload();
             }
         }
         saveComboPfad(jComboBoxPfad, orgPfad);

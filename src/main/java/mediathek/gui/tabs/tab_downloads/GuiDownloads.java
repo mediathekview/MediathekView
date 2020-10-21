@@ -542,11 +542,11 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     protected void markFilmAsSeen() {
-        daten.getSeenHistoryController().markAsSeen(getSelFilme());
+        daten.getSeenHistoryController().markSeen(getSelFilme());
     }
 
     protected void markFilmAsUnseen() {
-        daten.getSeenHistoryController().markAsUnseen(getSelFilme());
+        daten.getSeenHistoryController().markUnseen(getSelFilme());
     }
 
     private void searchInMediaDb(DatenDownload datenDownload) {
@@ -1223,7 +1223,7 @@ public class GuiDownloads extends AGuiTabPanel {
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
-            DatenDownload.startenDownloads(daten, listeDownloadsStarten);
+            DatenDownload.startenDownloads(listeDownloadsStarten);
         }
         reloadTable();
     }

@@ -276,7 +276,7 @@ public class StarterClass {
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            daten.getSeenHistoryController().writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
             if (ersterFilm.isBookmarked()) {
               ersterFilm.getBookmark().setSeen(true);
