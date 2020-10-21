@@ -97,7 +97,7 @@ public class Daten {
     /**
      * alle angesehenen Filme.
      */
-    private final NewSeenHistoryController history = new NewSeenHistoryController(false);
+    private NewSeenHistoryController history;
     /**
      * erfolgreich geladene Abos.
      */
@@ -362,6 +362,7 @@ public class Daten {
     public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
         aboHistoryFuture.get();
         aboHistoryFuture = null;
+        history  = new NewSeenHistoryController(false);
     }
 
     private void clearKonfig() {
