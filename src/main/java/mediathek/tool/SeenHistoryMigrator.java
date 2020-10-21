@@ -90,13 +90,6 @@ public class SeenHistoryMigrator implements AutoCloseable {
                     insertStmt.executeUpdate();
                 }
                 connection.commit();
-
-                final var fileUtils = FileUtils.getInstance();
-                if (fileUtils.hasTrash())
-                    fileUtils.moveToTrash(new File[]{historyFilePath.toFile()});
-                else
-                    Files.deleteIfExists(historyFilePath);
-                logger.info("Finished old history migration.");
             } catch (Exception ex) {
                 try {
                     if (connection != null) {
@@ -124,8 +117,14 @@ public class SeenHistoryMigrator implements AutoCloseable {
                     logger.error("cleanup failed", e);
                 }
             }
-
         }
+
+        final var fileUtils = FileUtils.getInstance();
+        if (fileUtils.hasTrash())
+            fileUtils.moveToTrash(new File[]{historyFilePath.toFile()});
+        else
+            Files.deleteIfExists(historyFilePath);
+        logger.info("Finished old history migration.");
     }
 
     private void readOldEntries() {
