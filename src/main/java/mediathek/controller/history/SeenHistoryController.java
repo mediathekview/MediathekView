@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEvent> {
-    private static final Logger logger = LogManager.getLogger(SeenHistoryController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public SeenHistoryController() {
         super("history.txt", DownloadHistoryChangedEvent.class);
