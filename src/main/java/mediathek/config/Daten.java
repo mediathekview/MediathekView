@@ -97,7 +97,7 @@ public class Daten {
     /**
      * alle angesehenen Filme.
      */
-    private final NewSeenHistoryController history = new NewSeenHistoryController(true);
+    private final NewSeenHistoryController history = new NewSeenHistoryController(false);
     /**
      * erfolgreich geladene Abos.
      */
