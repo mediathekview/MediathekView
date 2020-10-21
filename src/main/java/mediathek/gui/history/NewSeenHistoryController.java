@@ -201,20 +201,25 @@ public class NewSeenHistoryController implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-        if (INSERT_STATEMENT != null)
-            INSERT_STATEMENT.close();
+    public void close() {
+        try {
+            if (INSERT_STATEMENT != null)
+                INSERT_STATEMENT.close();
 
-        if (DELETE_STATEMENT != null)
-            DELETE_STATEMENT.close();
+            if (DELETE_STATEMENT != null)
+                DELETE_STATEMENT.close();
 
-        if (SEEN_STATEMENT != null)
-            SEEN_STATEMENT.close();
+            if (SEEN_STATEMENT != null)
+                SEEN_STATEMENT.close();
 
-        if (MANUAL_INSERT_STATEMENT != null)
-            MANUAL_INSERT_STATEMENT.close();
+            if (MANUAL_INSERT_STATEMENT != null)
+                MANUAL_INSERT_STATEMENT.close();
 
-        if (connection != null)
-            connection.close();
+            if (connection != null)
+                connection.close();
+        }
+        catch (SQLException ex) {
+            logger.error("close", ex);
+        }
     }
 }
