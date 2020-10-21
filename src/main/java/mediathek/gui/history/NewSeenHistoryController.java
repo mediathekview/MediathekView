@@ -13,7 +13,6 @@ import org.sqlite.SQLiteDataSource;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,13 +56,28 @@ public class NewSeenHistoryController implements AutoCloseable {
     }
 
     public void removeAll() {
-        //FIXME not implemented!
-        throw new UnsupportedOperationException("not yet implemented!");
+        try (var stmt = connection.createStatement()) {
+            stmt.executeUpdate("DELETE FROM seen_history");
+        }
+        catch (SQLException ex) {
+            logger.error("removeAll", ex);
+        }
+
+        sendChangeMessage();
     }
 
     public synchronized void markUnseen(List<DatenFilm> list) {
-        //FIXME not implemented!
-        throw new UnsupportedOperationException("not yet implemented!");
+        try (var statement = connection.prepareStatement("DELETE FROM seen_history WHERE url = ?")) {
+            for (var film : list) {
+                statement.setString(1, film.getUrl());
+                statement.executeUpdate();
+            }
+        }
+        catch (SQLException ex) {
+            logger.error("markUnseen", ex);
+        }
+
+        sendChangeMessage();
     }
 
     public synchronized void markSeen(List<DatenFilm> list) {
@@ -87,27 +101,6 @@ public class NewSeenHistoryController implements AutoCloseable {
         catch (SQLException ex) {
             logger.error("markSeen", ex);
         }
-    }
-
-    public synchronized void markSeen(@NotNull DatenFilm film) {
-        if (film.isLivestream())
-            return;
-        if (hasBeenSeen(film))
-            return;
-
-        try {
-            writeToDatabase(film);
-        }
-        catch (SQLException ex) {
-            logger.error("markSeen", ex);
-        }
-        // Update bookmarks with seen information
-        //FIXME update bookmark for single update
-        List<DatenFilm> list = new ArrayList<>();
-        list.add(film);
-        Daten.getInstance().getListeBookmarkList().updateSeen(true, list);
-
-        sendChangeMessage();
     }
 
     public synchronized void writeManualEntry(String thema, String title, String url) {
