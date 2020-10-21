@@ -27,6 +27,8 @@ public class SeenHistoryMigrator implements AutoCloseable {
     public static final String CREATE_TABLE_STMT = "CREATE TABLE IF NOT EXISTS seen_history (id INTEGER PRIMARY KEY ASC, datum DATE NOT NULL DEFAULT (date('now')), thema TEXT, titel TEXT, url TEXT NOT NULL)";
     public static final String DROP_TABLE_STMT = "DROP TABLE IF EXISTS seen_history";
     public static final String INSERT_STMT = "INSERT INTO seen_history(datum,thema,titel,url) values (?,?,?,?)";
+    public static final String CREATE_INDEX_STMT = "CREATE INDEX IF NOT EXISTS IDX_SEEN_HISTORY_URL ON seen_history(url)";
+    public static final String DROP_INDEX_STMT = "DROP INDEX IF EXISTS IDX_SEEN_HISTORY_URL";
     private static final Logger logger = LogManager.getLogger();
     private static final String fileName = "history.txt";
     private final Path historyFilePath;
@@ -66,10 +68,13 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 statement = connection.createStatement();
                 statement.setQueryTimeout(30);  // set timeout to 30 sec.
                 statement.executeUpdate(PRAGMA_ENCODING_STMT);
-                // drop old tables if existent
+                // drop old tables and indices if existent
+                statement.executeUpdate(DROP_INDEX_STMT);
                 statement.executeUpdate(DROP_TABLE_STMT);
-                // create tables
+                // create tables and indices
                 statement.executeUpdate(CREATE_TABLE_STMT);
+                statement.executeUpdate(CREATE_INDEX_STMT);
+
                 //create entries in database
                 insertStmt = connection.prepareStatement(INSERT_STMT);
                 final var formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
