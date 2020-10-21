@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +39,10 @@ public class NewSeenHistoryController implements AutoCloseable {
         INSERT_STATEMENT = connection.prepareStatement(INSERT_STMT);
     }
 
+    public void removeAll() {
+        throw new UnsupportedOperationException("not yet implemented!");
+    }
+
     public void markSeen(List<DatenFilm> list) throws SQLException {
         for (var film : list) {
             //skip livestreams
@@ -48,6 +53,9 @@ public class NewSeenHistoryController implements AutoCloseable {
 
             writeToDatabase(film);
         }
+
+        // Update bookmarks with seen information
+        Daten.getInstance().getListeBookmarkList().updateSeen(true, list);
 
         //send one change for all...
         sendChangeMessage();
@@ -61,16 +69,16 @@ public class NewSeenHistoryController implements AutoCloseable {
 
         writeToDatabase(film);
 
+        // Update bookmarks with seen information
+        //FIXME update bookmark for single update
+        List<DatenFilm> list = new ArrayList<>();
+        list.add(film);
+        Daten.getInstance().getListeBookmarkList().updateSeen(true, list);
+
         sendChangeMessage();
     }
 
-    public void markUnseen(@NotNull DatenFilm film) {
-        throw new IllegalArgumentException("not yet implemented.");
-
-//        sendChangeMessage();
-    }
-
-    public boolean hasBeenSeen(@NotNull DatenFilm film) throws SQLException {
+    public boolean hasBeenSeen(@NotNull DatenFilm film) {
         boolean result;
         try (var stmt = connection.prepareStatement("SELECT COUNT(url) FROM seen_history WHERE url = ?")){
             stmt.setString(1, "hello");
@@ -83,8 +91,13 @@ public class NewSeenHistoryController implements AutoCloseable {
                 var rs = stmt.getResultSet();
                 rs.first();
                 //FIXME has been seen is incorrect!!!
+
                 result = true;
             }
+        }
+        catch (SQLException e) {
+            logger.error("SQL error:", e);
+            result = false;
         }
 
         return result;
