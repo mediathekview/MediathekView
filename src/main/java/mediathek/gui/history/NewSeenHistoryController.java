@@ -44,7 +44,6 @@ public class NewSeenHistoryController implements AutoCloseable {
 
             // open and use database
             connection = dataSource.getConnection();
-            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
             INSERT_STATEMENT = connection.prepareStatement(INSERT_SQL);
             DELETE_STATEMENT = connection.prepareStatement(DELETE_SQL);
