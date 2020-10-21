@@ -13,7 +13,7 @@ public class SeenHistoryController extends MVUsedUrls<DownloadHistoryChangedEven
     private static final Logger logger = LogManager.getLogger(SeenHistoryController.class);
 
     public SeenHistoryController() {
-        super("history.txt", Daten.getSettingsDirectory_String(), DownloadHistoryChangedEvent.class);
+        super("history.txt", DownloadHistoryChangedEvent.class);
     }
 
     @Override

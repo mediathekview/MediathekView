@@ -25,6 +25,7 @@ import mediathek.gui.messages.history.HistoryChangedEvent;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -50,9 +51,10 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
     private final Class<T> clazz;
     private Path urlPath;
 
-    protected MVUsedUrls(String fileName, String settingsDir, Class<T> clazz) {
+    protected MVUsedUrls(@NotNull String fileName, @NotNull Class<T> clazz) {
         this.clazz = clazz;
 
+        final var settingsDir = Daten.getSettingsDirectory_String();
         try {
             urlPath = Paths.get(settingsDir).resolve(fileName);
         } catch (InvalidPathException e) {
