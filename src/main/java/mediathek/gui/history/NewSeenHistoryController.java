@@ -35,12 +35,13 @@ public class NewSeenHistoryController implements AutoCloseable {
     public NewSeenHistoryController(boolean readOnly) {
         try {
             var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+            setupDataSource(readOnly, historyDbPath);
+
             if (!Files.exists(historyDbPath)) {
                 // create new empty database
                 createEmptyDatabase();
             }
 
-            setupDataSource(readOnly, historyDbPath);
             // open and use database
             connection = dataSource.getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
