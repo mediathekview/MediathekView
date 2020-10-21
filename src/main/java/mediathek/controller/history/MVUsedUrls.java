@@ -19,6 +19,7 @@
  */
 package mediathek.controller.history;
 
+import com.sun.jna.platform.FileUtils;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
@@ -78,12 +79,20 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         }
     }
 
-    public synchronized void alleLoeschen() {
+    /**
+     * Remove all stored entries.
+     * Also deletes the used text file. When supported it will be moved to trash, otherwise deleted.
+     */
+    public synchronized void removeAll() {
         listeUrls.clear();
         listeUrlsSortDate.clear();
 
         try {
-            Files.deleteIfExists(urlPath);
+            var fileUtils = FileUtils.getInstance();
+            if (fileUtils.hasTrash())
+                fileUtils.moveToTrash(new File[]{urlPath.toFile()});
+            else
+                Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
         }
 
