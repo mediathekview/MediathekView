@@ -385,6 +385,7 @@ public class Main {
 
         loadConfigurationData();
 
+        migrateSeenHistory();
         Daten.getInstance().launchHistoryDataLoading();
         
         Daten.getInstance().loadBookMarkData();
@@ -399,6 +400,20 @@ public class Main {
         copyUserAgentDatabase();
 
         startGuiMode();
+    }
+
+    /**
+     * Migrate the old text file history to new database format
+     */
+    private static void migrateSeenHistory() {
+        try (SeenHistoryMigrator migrator = new SeenHistoryMigrator()) {
+            if (migrator.needsMigration()) {
+                migrator.migrate();
+            }
+        }
+        catch (Exception e) {
+            logger.error("migrateSeenHistory", e);
+        }
     }
 
     @SuppressWarnings("unused")
