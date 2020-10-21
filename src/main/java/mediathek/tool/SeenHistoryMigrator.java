@@ -34,7 +34,6 @@ public class SeenHistoryMigrator implements AutoCloseable {
 
     public SeenHistoryMigrator() throws InvalidPathException {
         historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve(fileName);
-        System.out.println("HISTORY MIGRATOR CTOR");
     }
 
     /**
@@ -53,13 +52,13 @@ public class SeenHistoryMigrator implements AutoCloseable {
         logger.info("Start old history migration.");
         readOldEntries();
         if (!historyEntries.isEmpty()) {
-            // create database connection
-            var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
-            final var dbPathStr = historyDbPath.toAbsolutePath().toString();
             PreparedStatement insertStmt = null;
             Statement statement = null;
             Connection connection = null;
             try {
+                // create database connection
+                var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+                final var dbPathStr = historyDbPath.toAbsolutePath().toString();
                 connection = DriverManager.getConnection("jdbc:sqlite:" + dbPathStr);
                 connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                 connection.setAutoCommit(false);
@@ -101,7 +100,6 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 //rethrow so we can handle it at caller site
                 throw ex;
             } finally {
-                System.out.println("CALLING finally");
                 try {
                     if (insertStmt != null) {
                             insertStmt.close();
@@ -157,6 +155,5 @@ public class SeenHistoryMigrator implements AutoCloseable {
     @Override
     public void close() {
         historyEntries.clear();
-        System.out.println("CLOSING HISTORY MIGRATOR");
     }
 }
