@@ -792,6 +792,8 @@ public class GuiFilme extends AGuiTabPanel {
         .addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
   }
 
+  private final SeenHistoryController historyController = new SeenHistoryController(true);
+
   private synchronized void loadTable() {
     final var messageBus = Daten.getInstance().getMessageBus();
     messageBus.publishAsync(new TableModelChangeEvent(true));
@@ -799,7 +801,7 @@ public class GuiFilme extends AGuiTabPanel {
       stopBeob = true;
       tabelle.getSpalten();
 
-      GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), tabelle);
+      GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), tabelle, historyController);
       helper.prepareTableModel();
 
       setInfoStatusbar();

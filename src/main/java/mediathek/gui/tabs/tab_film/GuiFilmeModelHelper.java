@@ -18,6 +18,7 @@ public class GuiFilmeModelHelper {
     private final JTable tabelle;
     private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
+    private SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
     private boolean onlyBookMarked;
@@ -34,9 +35,11 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList, @NotNull JTable tabelle) {
+    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList, @NotNull JTable tabelle,
+                               @NotNull SeenHistoryController historyController) {
         this.fap = fap;
         this.tabelle = tabelle;
+        this.historyController = historyController;
 
         filmModel = new TModelFilm();
         listeFilme = filteredList;
@@ -122,7 +125,6 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        try (var historyController = new SeenHistoryController()) {
             for (DatenFilm film : listeFilme) {
                 if (!selectedSenders.isEmpty()) {
                     if (!selectedSenders.contains(film.getSender()))
@@ -208,7 +210,6 @@ public class GuiFilmeModelHelper {
                     }
                 }
             }
-        }
     }
 
     /**
