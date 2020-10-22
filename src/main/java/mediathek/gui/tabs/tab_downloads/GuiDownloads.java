@@ -233,7 +233,8 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
-    private void installTabInfoStatusBarControl() {
+    @Override
+    protected void installTabInfoStatusBarControl() {
         final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
 
         Platform.runLater(() -> {
@@ -381,6 +382,7 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
+    @Override
     public void installMenuEntries(JMenu menu) {
         JMenuItem miDownloadsStartAll = new JMenuItem("Alle Downloads starten");
         miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
