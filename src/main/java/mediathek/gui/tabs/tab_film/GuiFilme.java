@@ -799,7 +799,7 @@ public class GuiFilme extends AGuiTabPanel {
       stopBeob = true;
       tabelle.getSpalten();
 
-      GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten, tabelle);
+      GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), tabelle);
       helper.prepareTableModel();
 
       setInfoStatusbar();
