@@ -47,10 +47,10 @@ class NewSeenHistoryController : AutoCloseable {
     fun removeAll() {
         try {
             connection!!.createStatement().use { stmt -> stmt.executeUpdate("DELETE FROM seen_history") }
+            sendChangeMessage()
         } catch (ex: SQLException) {
             logger.error("removeAll", ex)
         }
-        sendChangeMessage()
     }
 
     fun markUnseen(film: DatenFilm) {
@@ -138,11 +138,9 @@ class NewSeenHistoryController : AutoCloseable {
             logger.error("SQL error:", e)
             result = false
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close()
-                } catch (ignore: SQLException) {
-                }
+            try {
+                rs?.close()
+            } catch (ignore: SQLException) {
             }
         }
         return result
