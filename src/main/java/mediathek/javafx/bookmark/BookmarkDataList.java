@@ -121,7 +121,7 @@ public class BookmarkDataList
     
     if (add) {
       // Check if history list is known
-      try (var history = new NewSeenHistoryController(true)){
+      try (var history = new NewSeenHistoryController()){
         for (DatenFilm movie: addlist) {
           BookmarkData bdata = new BookmarkData(movie);
           movie.setBookmark(bdata); // Link backwards

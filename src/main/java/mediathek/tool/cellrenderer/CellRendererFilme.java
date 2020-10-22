@@ -20,7 +20,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final NewSeenHistoryController history = new NewSeenHistoryController(true);
+    private final NewSeenHistoryController history = new NewSeenHistoryController();
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;

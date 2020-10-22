@@ -13,7 +13,6 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
@@ -94,10 +93,6 @@ public class Daten {
     private final MVSenderIconCache senderIconCache;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private INotificationCenter notificationCenter;
-    /**
-     * alle angesehenen Filme.
-     */
-    private NewSeenHistoryController history;
     /**
      * erfolgreich geladene Abos.
      */
@@ -299,10 +294,6 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
-    public NewSeenHistoryController getSeenHistoryController() {
-        return history;
-    }
-
     public void setAboHistoryList(AboHistoryController controller) {
         erledigteAbos = controller;
     }
@@ -362,7 +353,6 @@ public class Daten {
     public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
         aboHistoryFuture.get();
         aboHistoryFuture = null;
-        history  = new NewSeenHistoryController(false);
     }
 
     private void clearKonfig() {

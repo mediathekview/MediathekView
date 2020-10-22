@@ -82,7 +82,7 @@ public class BookmarkWindowController implements Initializable {
   private Color ColorLive;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
-  private final NewSeenHistoryController history = new NewSeenHistoryController(false);
+  private final NewSeenHistoryController history = new NewSeenHistoryController();
   private MenuItem playitem;
   private MenuItem loaditem;
   private MenuItem deleteitem;

@@ -220,7 +220,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        try (var historyController = new NewSeenHistoryController(false)){
+        try (var historyController = new NewSeenHistoryController()){
             for (DatenDownload d : downloads) {
                 d.start = new Start();
                 historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
@@ -408,7 +408,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
 
-        try (var historyController = new NewSeenHistoryController(false)){
+        try (var historyController = new NewSeenHistoryController()){
             historyController.writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA],
                     arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         }

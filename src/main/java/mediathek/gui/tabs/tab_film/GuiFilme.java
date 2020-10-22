@@ -1181,17 +1181,18 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(showFilmInformationAction);
 
             // History
-            res.ifPresent(
-                    film -> {
+            res.ifPresent(film -> {
                         JMenuItem miHistory;
-                        if (daten.getSeenHistoryController().hasBeenSeen(film)) {
+                        try (var history = new NewSeenHistoryController()) {
+                          if (history.hasBeenSeen(film)) {
                             miHistory = new JMenuItem("Film als ungesehen markieren");
                             miHistory.addActionListener(unseenActionListener);
-                        } else {
+                          } else {
                             miHistory = new JMenuItem("Film als gesehen markieren");
                             miHistory.addActionListener(seenActionListener);
+                          }
+                          jPopupMenu.add(miHistory);
                         }
-                        jPopupMenu.add(miHistory);
                     });
             // anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -1206,7 +1207,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
 
             private void updateHistory(DatenFilm film) {
-                try (var history = new NewSeenHistoryController(false)) {
+                try (var history = new NewSeenHistoryController()) {
                   if (seen) {
                     history.markSeen(film);
                   } else {
