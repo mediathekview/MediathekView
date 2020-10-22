@@ -31,7 +31,6 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -889,28 +888,6 @@ public class GuiFilme extends AGuiTabPanel {
             mediaDB.setVis();
             mediaDB.setFilter(film.getTitle());
           });
-    }
-  }
-
-  private class MarkFilmAsSeenAction extends AbstractAction {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      var listFilms = getSelFilme();
-      try (var controller = new NewSeenHistoryController(false)) {
-        controller.markSeen(listFilms);
-      }
-    }
-  }
-
-  private class MarkFilmAsUnseenAction extends AbstractAction {
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      var listFilms = getSelFilme();
-      try (var controller = new NewSeenHistoryController(false)) {
-        controller.markUnseen(listFilms);
-      }
     }
   }
 

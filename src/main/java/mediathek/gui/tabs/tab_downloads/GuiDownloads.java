@@ -26,7 +26,6 @@ import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.toolbar.FXDownloadToolBar;
@@ -544,28 +543,9 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
-    private class MarkFilmAsSeenAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController(false)) {
-                controller.markSeen(listFilms);
-            }
-        }
-    }
 
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
-    private class MarkFilmAsUnseenAction extends AbstractAction {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController(false)) {
-                controller.markUnseen(listFilms);
-            }
-        }
-    }
 
     private void searchInMediaDb(DatenDownload datenDownload) {
         final var mediaDB = mediathekGui.getMediaDatabaseDialog();
