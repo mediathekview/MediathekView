@@ -19,10 +19,9 @@
  */
 package mediathek.controller.history;
 
-import com.sun.jna.platform.FileUtils;
 import mediathek.config.Daten;
-import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.history.HistoryChangedEvent;
+import mediathek.tool.FileUtils;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,11 +87,7 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         listeUrlsSortDate.clear();
 
         try {
-            var fileUtils = FileUtils.getInstance();
-            if (fileUtils.hasTrash())
-                fileUtils.moveToTrash(new File[]{urlPath.toFile()});
-            else
-                Files.deleteIfExists(urlPath);
+            FileUtils.moveToTrash(urlPath);
         } catch (IOException ignored) {
         }
 
@@ -147,59 +142,6 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
         sendChangeMessage();
     }
 
-    public synchronized void urlAusLogfileLoeschen(List<DatenFilm> filme) {
-        //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
-        //wenn die URL im Logfiel ist, dann true zurück
-        String zeile;
-        boolean gefunden = false, gef;
-
-        checkUrlFilePath();
-
-        List<String> newListe = new ArrayList<>();
-        try (InputStream is = Files.newInputStream(urlPath);
-             InputStreamReader isr = new InputStreamReader(is);
-             LineNumberReader in = new LineNumberReader(isr)) {
-            while ((zeile = in.readLine()) != null) {
-                gef = false;
-                String url = MVUsedUrl.getUrlAusZeile(zeile).getUrl();
-
-                for (DatenFilm film : filme) {
-                    if (url.equals(film.getUrl())) {
-                        gefunden = true; //nur dann muss das Logfile auch geschrieben werden
-                        gef = true; // und die Zeile wird verworfen
-                        break;
-                    }
-                }
-                if (!gef) {
-                    newListe.add(zeile);
-                }
-
-            }
-        } catch (Exception ex) {
-            logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
-        }
-
-        //und jetzt wieder schreiben, wenn nötig
-        if (gefunden) {
-            try (OutputStream os = Files.newOutputStream(urlPath);
-                 OutputStreamWriter osw = new OutputStreamWriter(os);
-                 BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-                for (String entry : newListe) {
-                    bufferedWriter.write(entry + '\n');
-                }
-            } catch (Exception ex) {
-                logger.error("urlAusLogfileLoeschen(ArrayList)", ex);
-            }
-        }
-
-        listeUrls.clear();
-        listeUrlsSortDate.clear();
-
-        listeBauen();
-
-        sendChangeMessage();
-    }
-
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
         var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
         listeUrls.add(url);
@@ -214,30 +156,6 @@ public abstract class MVUsedUrls<T extends HistoryChangedEvent> {
             bufferedWriter.write(usedUrl.getUsedUrl());
         } catch (Exception ex) {
             logger.error("zeileSchreiben(...)", ex);
-        }
-
-        sendChangeMessage();
-    }
-
-    public synchronized void zeileSchreiben(List<DatenFilm> arrayFilms) {
-        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
-
-        checkUrlFilePath();
-
-        try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
-             OutputStreamWriter osw = new OutputStreamWriter(os);
-             BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-
-            for (DatenFilm film : arrayFilms) {
-                listeUrls.add(film.getUrl());
-
-                final MVUsedUrl usedUrl = new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrl());
-                listeUrlsSortDate.add(usedUrl);
-
-                bufferedWriter.write(usedUrl.getUsedUrl());
-            }
-        } catch (Exception ex) {
-            logger.error("zeileSchreiben(ArrayList)", ex);
         }
 
         sendChangeMessage();

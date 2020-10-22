@@ -1,13 +1,15 @@
 package mediathek.tool;
 
-import com.sun.jna.platform.FileUtils;
 import mediathek.config.Daten;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.tool.sql.SqlAutoRollback;
+import mediathek.tool.sql.SqlAutoSetAutoCommit;
+import mediathek.tool.sql.SqlDatabaseConfig;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.sqlite.SQLiteDataSource;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -15,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,18 +58,22 @@ public class SeenHistoryMigrator implements AutoCloseable {
         logger.info("Start old history migration.");
         readOldEntries();
         if (!historyEntries.isEmpty()) {
-            PreparedStatement insertStmt = null;
-            Statement statement = null;
-            Connection connection = null;
-            try {
-                // create database connection
-                var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
-                final var dbPathStr = historyDbPath.toAbsolutePath().toString();
-                connection = DriverManager.getConnection("jdbc:sqlite:" + dbPathStr);
-                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                connection.setAutoCommit(false);
+            // create database connection
+            var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+            final var dbPathStr = historyDbPath.toAbsolutePath().toString();
 
-                statement = connection.createStatement();
+            SQLiteDataSource dataSource = new SQLiteDataSource(SqlDatabaseConfig.getConfig());
+            dataSource.setUrl("jdbc:sqlite:" + dbPathStr);
+
+            final var formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
+
+            try (var connection = dataSource.getConnection();
+                 SqlAutoSetAutoCommit ignored = new SqlAutoSetAutoCommit(connection, false);
+                 SqlAutoRollback tm = new SqlAutoRollback(connection);
+                 var statement = connection.createStatement();
+                 var insertStmt = connection.prepareStatement(INSERT_STMT)) {
+                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+
                 statement.setQueryTimeout(30);  // set timeout to 30 sec.
                 statement.executeUpdate(PRAGMA_ENCODING_STMT);
                 // drop old tables and indices if existent
@@ -78,8 +84,6 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 statement.executeUpdate(CREATE_INDEX_STMT);
 
                 //create entries in database
-                insertStmt = connection.prepareStatement(INSERT_STMT);
-                final var formatter = DateTimeFormatter.ofPattern("d.MM.yyyy");
                 for (var entry : historyEntries) {
                     LocalDate locDate = LocalDate.parse(entry.getDatum(), formatter);
                     insertStmt.setObject(1, locDate);
@@ -89,41 +93,12 @@ public class SeenHistoryMigrator implements AutoCloseable {
                     // write each entry into database
                     insertStmt.executeUpdate();
                 }
-                connection.commit();
-            } catch (Exception ex) {
-                try {
-                    if (connection != null) {
-                        connection.rollback();
-                    }
-                } catch (SQLException ignored) {
-                }
 
-                //rethrow so we can handle it at caller site
-                throw ex;
-            } finally {
-                try {
-                    if (insertStmt != null) {
-                            insertStmt.close();
-                    }
-
-                    if (statement != null) {
-                        statement.close();
-                    }
-
-                    if (connection != null)
-                        connection.close();
-                }
-                catch (Exception e) {
-                    logger.error("cleanup failed", e);
-                }
+                tm.commit();
             }
         }
 
-        final var fileUtils = FileUtils.getInstance();
-        if (fileUtils.hasTrash())
-            fileUtils.moveToTrash(new File[]{historyFilePath.toFile()});
-        else
-            Files.deleteIfExists(historyFilePath);
+        FileUtils.moveToTrash(historyFilePath);
         logger.info("Finished old history migration.");
     }
 
@@ -163,4 +138,5 @@ public class SeenHistoryMigrator implements AutoCloseable {
     public void close() {
         historyEntries.clear();
     }
+
 }
