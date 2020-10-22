@@ -1,20 +1,20 @@
 package mediathek.gui.tabs.tab_film;
 
 import javafx.collections.ObservableList;
-import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
-    private final Daten daten;
     private final JTable tabelle;
     private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
@@ -34,13 +34,12 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, JTable tabelle) {
+    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList, @NotNull JTable tabelle) {
         this.fap = fap;
-        this.daten = daten;
         this.tabelle = tabelle;
 
         filmModel = new TModelFilm();
-        listeFilme = daten.getListeFilmeNachBlackList();
+        listeFilme = filteredList;
 
     }
 
@@ -123,88 +122,90 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        for (DatenFilm film : listeFilme) {
-            if (!selectedSenders.isEmpty()) {
-                if (!selectedSenders.contains(film.getSender()))
-                    continue;
-            }
-
-            final long filmLength = film.getFilmLength();
-            //film entries without length have internal length 0...
-            if (filmLength != 0) {
-                if (filmLength < minLengthInSeconds)
-                    continue;
-            }
-
-            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-                if (filmLength > maxLengthInSeconds)
-                    continue;
-
-            }
-            if (nurNeue) {
-                if (!film.isNew()) {
-                    continue;
-                }
-            }
-            
-            if (onlyBookMarked) {
-              if (!film.isBookmarked()) {
-                continue;
-              }
-            }
-            if (showOnlyLivestreams) {
-                if (!film.isLivestream()) {
-                    continue;
-                }
-            }
-            if (showOnlyHd) {
-                if (!film.isHighQuality()) {
-                    continue;
-                }
-            }
-            if (nurUt) {
-                if (!film.hasSubtitle()) {
-                    if (!film.hasBurnedInSubtitles())
+        try (var historyController = new NewSeenHistoryController(true)) {
+            for (DatenFilm film : listeFilme) {
+                if (!selectedSenders.isEmpty()) {
+                    if (!selectedSenders.contains(film.getSender()))
                         continue;
                 }
-            }
-            if (keineAbos) {
-                if (!film.getAboName().isEmpty()) {
-                    continue;
+
+                final long filmLength = film.getFilmLength();
+                //film entries without length have internal length 0...
+                if (filmLength != 0) {
+                    if (filmLength < minLengthInSeconds)
+                        continue;
                 }
-            }
-            if (kGesehen) {
-                if (daten.getSeenHistoryController().hasBeenSeen(film)) {
-                    continue;
+
+                if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+                    if (filmLength > maxLengthInSeconds)
+                        continue;
+
                 }
-            }
+                if (nurNeue) {
+                    if (!film.isNew()) {
+                        continue;
+                    }
+                }
 
-            if (dontShowTrailers) {
-                if (film.isTrailerTeaser())
-                    continue;
-            }
+                if (onlyBookMarked) {
+                    if (!film.isBookmarked()) {
+                        continue;
+                    }
+                }
+                if (showOnlyLivestreams) {
+                    if (!film.isLivestream()) {
+                        continue;
+                    }
+                }
+                if (showOnlyHd) {
+                    if (!film.isHighQuality()) {
+                        continue;
+                    }
+                }
+                if (nurUt) {
+                    if (!film.hasSubtitle()) {
+                        if (!film.hasBurnedInSubtitles())
+                            continue;
+                    }
+                }
+                if (keineAbos) {
+                    if (!film.getAboName().isEmpty()) {
+                        continue;
+                    }
+                }
+                if (kGesehen) {
+                    if (historyController.hasBeenSeen(film)) {
+                        continue;
+                    }
+                }
 
-            if (dontShowGebaerdensprache) {
-                if (film.isSignLanguage())
-                    continue;
-            }
+                if (dontShowTrailers) {
+                    if (film.isTrailerTeaser())
+                        continue;
+                }
 
-            if (dontShowAudioVersions) {
-                if (film.isAudioVersion())
-                    continue;
-            }
+                if (dontShowGebaerdensprache) {
+                    if (film.isSignLanguage())
+                        continue;
+                }
 
-            if (!filterThema.isEmpty()) {
-                if (!film.getThema().equalsIgnoreCase(filterThema))
-                    continue;
-            }
+                if (dontShowAudioVersions) {
+                    if (film.isAudioVersion())
+                        continue;
+                }
 
-            //minor speedup in case we don´t have search field entries...
-            if (searchFieldEmpty)
-                addFilmToTableModel(film);
-            else {
-                if (finalStageFiltering(film)) {
+                if (!filterThema.isEmpty()) {
+                    if (!film.getThema().equalsIgnoreCase(filterThema))
+                        continue;
+                }
+
+                //minor speedup in case we don´t have search field entries...
+                if (searchFieldEmpty)
                     addFilmToTableModel(film);
+                else {
+                    if (finalStageFiltering(film)) {
+                        addFilmToTableModel(film);
+                    }
                 }
             }
         }
