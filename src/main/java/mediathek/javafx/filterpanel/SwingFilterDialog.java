@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.ApplicationConfiguration;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
@@ -34,6 +36,8 @@ public class SwingFilterDialog extends JDialog {
             });
         });
 
+        Daten.getInstance().getMessageBus().subscribe(this);
+
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -51,6 +55,17 @@ public class SwingFilterDialog extends JDialog {
         });
     }
 
+    @Handler
+    private void handleTableModelChangeEvent(TableModelChangeEvent e) {
+        if (e.active) {
+            //disable dialog
+            this.setEnabled(false);
+        }
+        else {
+            //enable dialog
+            this.setEnabled(true);
+        }
+    }
     private void restoreDialogVisibility() {
         var config = ApplicationConfiguration.getConfiguration();
         final boolean visible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, false);
