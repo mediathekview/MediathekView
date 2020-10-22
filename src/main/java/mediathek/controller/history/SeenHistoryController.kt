@@ -4,8 +4,8 @@ import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.tool.SeenHistoryMigrator
+import mediathek.tool.sql.SqlDatabaseConfig
 import org.apache.logging.log4j.LogManager
-import org.sqlite.SQLiteConfig
 import org.sqlite.SQLiteDataSource
 import java.nio.file.Files
 import java.nio.file.Path
@@ -33,11 +33,7 @@ class SeenHistoryController : AutoCloseable {
      * @param dbPath   Path to database location
      */
     private fun setupDataSource(dbPath: Path) {
-        val conf = SQLiteConfig()
-        conf.setEncoding(SQLiteConfig.Encoding.UTF8)
-        conf.setLockingMode(SQLiteConfig.LockingMode.NORMAL)
-        conf.setSharedCache(true)
-        dataSource = SQLiteDataSource(conf)
+        dataSource = SQLiteDataSource(SqlDatabaseConfig.getConfig())
         dataSource!!.url = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
     }
 
