@@ -26,6 +26,7 @@ import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.toolbar.FXDownloadToolBar;
@@ -59,6 +60,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -439,11 +441,11 @@ public class GuiDownloads extends AGuiTabPanel {
 
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.addActionListener(e -> markFilmAsSeen());
+        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
 
         JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
         miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.addActionListener(e -> markFilmAsUnseen());
+        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
         JMenuItem miPlayDownload = new JMenuItem("Gespeicherten Film abspielen");
         miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
@@ -541,12 +543,28 @@ public class GuiDownloads extends AGuiTabPanel {
         filmStartenWiederholenStoppen(alle, false);
     }
 
-    protected void markFilmAsSeen() {
-        daten.getSeenHistoryController().markSeen(getSelFilme());
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
+    private class MarkFilmAsSeenAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            var listFilms = getSelFilme();
+            try (var controller = new NewSeenHistoryController(false)) {
+                controller.markSeen(listFilms);
+            }
+        }
     }
 
-    protected void markFilmAsUnseen() {
-        daten.getSeenHistoryController().markUnseen(getSelFilme());
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private class MarkFilmAsUnseenAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            var listFilms = getSelFilme();
+            try (var controller = new NewSeenHistoryController(false)) {
+                controller.markUnseen(listFilms);
+            }
+        }
     }
 
     private void searchInMediaDb(DatenDownload datenDownload) {
@@ -578,18 +596,8 @@ public class GuiDownloads extends AGuiTabPanel {
                 downloadLoeschen(true);
             }
         });
-        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                markFilmAsSeen();
-            }
-        });
-        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                markFilmAsUnseen();
-            }
-        });
+        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, markFilmAsSeenAction);
+        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, markFilmAsUnseenAction);
         am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1277,7 +1285,8 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private ArrayList<DatenFilm> getSelFilme() {
+    @Override
+    protected List<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
         final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
