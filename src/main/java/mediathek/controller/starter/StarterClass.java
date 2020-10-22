@@ -2,10 +2,10 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.gui.history.SeenHistoryController;
 import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;

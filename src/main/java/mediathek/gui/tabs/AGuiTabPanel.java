@@ -1,8 +1,8 @@
 package mediathek.gui.tabs;
 
 import mediathek.config.Daten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.history.SeenHistoryController;
 import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.table.MVTable;
