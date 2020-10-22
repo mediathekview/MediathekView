@@ -218,7 +218,12 @@ public class BookmarkDataList
   public void updateSeen(boolean seen, List<DatenFilm> list) {
     list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> movie.getBookmark().setSeen(seen));
   }
-  
+
+  public void updateSeen(boolean seen, DatenFilm film) {
+    if (film.isBookmarked())
+      film.getBookmark().setSeen(seen);
+  }
+
   /**
    * Find Movie in list
    */
