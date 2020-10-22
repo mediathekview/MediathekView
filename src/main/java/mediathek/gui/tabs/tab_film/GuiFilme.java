@@ -171,7 +171,8 @@ public class GuiFilme extends AGuiTabPanel {
         });
   }
 
-  private void installTabInfoStatusBarControl() {
+  @Override
+  protected void installTabInfoStatusBarControl() {
     final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
 
     Platform.runLater(
@@ -211,6 +212,7 @@ public class GuiFilme extends AGuiTabPanel {
     add(extensionArea, BorderLayout.SOUTH);
   }
 
+  @Override
   public void installMenuEntries(JMenu menu) {
     JMenuItem miPlayFilm = new JMenuItem("Film abspielen");
     if (SystemUtils.IS_OS_MAC_OSX)

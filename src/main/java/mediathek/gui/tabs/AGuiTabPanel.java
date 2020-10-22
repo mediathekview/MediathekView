@@ -37,6 +37,9 @@ public abstract class AGuiTabPanel extends JPanel {
 
     protected abstract Optional<DatenFilm> getCurrentlySelectedFilm();
 
+    public abstract void installMenuEntries(JMenu menu);
+    protected abstract void installTabInfoStatusBarControl();
+
     protected void initializeTouchBar() {
         if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
             setupTouchBar();
