@@ -16,7 +16,7 @@ import kotlin.system.exitProcess
 /**
  * Database based seen history controller.
  */
-class SeenHistoryController : AutoCloseable {
+class SeenHistoryController() : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null
     private var dataSource: SQLiteDataSource? = null
@@ -29,11 +29,9 @@ class SeenHistoryController : AutoCloseable {
      *
      * @param dbPath   Path to database location
      */
-    private fun setupDataSource(readOnly: Boolean, dbPath: Path) {
+    private fun setupDataSource(dbPath: Path) {
         dataSource = SQLiteDataSource(SqlDatabaseConfig.getConfig())
         dataSource!!.url = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
-        if (readOnly)
-            dataSource!!.setReadOnly(true)
     }
 
     /**
@@ -206,10 +204,10 @@ class SeenHistoryController : AutoCloseable {
         private const val MANUAL_INSERT_SQL = "INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)"
     }
 
-    private fun initialize(readOnly: Boolean = false) {
+    private fun initialize() {
         try {
             val historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db")
-            setupDataSource(readOnly, historyDbPath)
+            setupDataSource(historyDbPath)
             if (!Files.exists(historyDbPath)) {
                 // create new empty database
                 createEmptyDatabase(historyDbPath)
@@ -227,11 +225,7 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    constructor() {
+    init {
         initialize()
-    }
-
-    constructor(readOnly : Boolean = false){
-        initialize(readOnly)
     }
 }

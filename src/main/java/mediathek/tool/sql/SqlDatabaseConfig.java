@@ -10,6 +10,8 @@ public class SqlDatabaseConfig {
         conf.setSharedCache(true);
         conf.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
         conf.enableLoadExtension(false);
+        conf.setJournalMode(SQLiteConfig.JournalMode.WAL);
+        conf.setPageSize(4096);
         return conf;
     }
 }
