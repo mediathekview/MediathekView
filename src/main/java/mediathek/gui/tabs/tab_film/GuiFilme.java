@@ -792,7 +792,7 @@ public class GuiFilme extends AGuiTabPanel {
         .addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
   }
 
-  private final SeenHistoryController historyController = new SeenHistoryController(true);
+  private final SeenHistoryController historyController = new SeenHistoryController();
 
   private synchronized void loadTable() {
     final var messageBus = Daten.getInstance().getMessageBus();
