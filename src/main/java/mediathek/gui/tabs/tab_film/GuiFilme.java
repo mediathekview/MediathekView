@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film;
 
-import com.google.common.collect.Lists;
 import com.thizzer.jtouchbar.JTouchBar;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -31,6 +30,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -1199,21 +1199,20 @@ public class GuiFilme extends AGuiTabPanel {
 
         private class BeobHistory implements ActionListener {
 
-            private final boolean eintragen;
+            private final boolean seen;
 
-            BeobHistory(boolean eeintragen) {
-                eintragen = eeintragen;
+            BeobHistory(boolean seen) {
+                this.seen = seen;
             }
 
             private void updateHistory(DatenFilm film) {
-                final var list = Lists.newArrayList(film);
-                final var history = daten.getSeenHistoryController();
-                if (eintragen) {
-                    history.markSeen(list);
-                } else {
-                    history.markUnseen(list);
+                try (var history = new NewSeenHistoryController(false)) {
+                  if (seen) {
+                    history.markSeen(film);
+                  } else {
+                    history.markUnseen(film);
+                  }
                 }
-                list.clear();
             }
 
             @Override

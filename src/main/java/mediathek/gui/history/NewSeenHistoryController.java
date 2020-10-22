@@ -86,20 +86,44 @@ public class NewSeenHistoryController implements AutoCloseable {
         sendChangeMessage();
     }
 
-    public void markUnseen(List<DatenFilm> list) {
+    public void markUnseen(@NotNull DatenFilm film) {
+        try {
+            DELETE_STATEMENT.setString(1, film.getUrl());
+            DELETE_STATEMENT.executeUpdate();
+            sendChangeMessage();
+        }
+        catch (SQLException ex) {
+            logger.error("markUnseen", ex);
+        }}
+
+    public void markUnseen(@NotNull List<DatenFilm> list) {
         try {
             for (var film : list) {
                 DELETE_STATEMENT.setString(1, film.getUrl());
                 DELETE_STATEMENT.executeUpdate();
             }
+            sendChangeMessage();
         } catch (SQLException ex) {
             logger.error("markUnseen", ex);
         }
-
-        sendChangeMessage();
     }
 
-    public void markSeen(List<DatenFilm> list) {
+    public void markSeen(@NotNull DatenFilm film) {
+        if (film.isLivestream())
+            return;
+        if (hasBeenSeen(film))
+            return;
+
+        try {
+            writeToDatabase(film);
+            sendChangeMessage();
+        }
+        catch (SQLException ex) {
+            logger.error("markSeen single", ex);
+        }
+    }
+
+    public void markSeen(@NotNull List<DatenFilm> list) {
         try {
             for (var film : list) {
                 //skip livestreams
