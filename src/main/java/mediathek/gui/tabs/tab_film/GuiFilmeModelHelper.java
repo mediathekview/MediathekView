@@ -122,7 +122,7 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        try (var historyController = new NewSeenHistoryController(true)) {
+        try (var historyController = new NewSeenHistoryController()) {
             for (DatenFilm film : listeFilme) {
                 if (!selectedSenders.isEmpty()) {
                     if (!selectedSenders.contains(film.getSender()))

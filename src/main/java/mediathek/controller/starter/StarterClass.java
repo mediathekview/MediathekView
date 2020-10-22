@@ -277,7 +277,7 @@ public class StarterClass {
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            try (var historyController = new NewSeenHistoryController(false)){
+            try (var historyController = new NewSeenHistoryController()){
                 historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             }
 

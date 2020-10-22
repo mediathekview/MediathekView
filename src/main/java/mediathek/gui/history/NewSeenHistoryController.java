@@ -32,10 +32,10 @@ public class NewSeenHistoryController implements AutoCloseable {
     private PreparedStatement SEEN_STATEMENT;
     private PreparedStatement MANUAL_INSERT_STATEMENT;
 
-    public NewSeenHistoryController(boolean readOnly) {
+    public NewSeenHistoryController() {
         try {
             var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
-            setupDataSource(readOnly, historyDbPath);
+            setupDataSource(historyDbPath);
 
             if (!Files.exists(historyDbPath)) {
                 // create new empty database
@@ -58,13 +58,10 @@ public class NewSeenHistoryController implements AutoCloseable {
     /**
      * Setup the SQLite data source.
      *
-     * @param readOnly True for read-only, false for R/W
      * @param dbPath   Path to database location
      */
-    private void setupDataSource(boolean readOnly, @NotNull Path dbPath) {
+    private void setupDataSource(@NotNull Path dbPath) {
         SQLiteConfig conf = new SQLiteConfig();
-        if (readOnly)
-            conf.setReadOnly(true);
         conf.setEncoding(SQLiteConfig.Encoding.UTF8);
         conf.setLockingMode(SQLiteConfig.LockingMode.NORMAL);
         conf.setSharedCache(true);

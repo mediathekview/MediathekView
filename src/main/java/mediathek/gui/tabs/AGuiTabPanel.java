@@ -51,7 +51,7 @@ public abstract class AGuiTabPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController(false)) {
+            try (var controller = new NewSeenHistoryController()) {
                 controller.markSeen(listFilms);
             }
         }
@@ -62,7 +62,7 @@ public abstract class AGuiTabPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController(false)) {
+            try (var controller = new NewSeenHistoryController()) {
                 controller.markUnseen(listFilms);
             }
         }
