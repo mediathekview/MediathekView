@@ -37,7 +37,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAddMoreDownload;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -82,7 +82,7 @@ public class BookmarkWindowController implements Initializable {
   private Color ColorLive;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
-  private final NewSeenHistoryController history = new NewSeenHistoryController();
+  private final SeenHistoryController history = new SeenHistoryController();
   private MenuItem playitem;
   private MenuItem loaditem;
   private MenuItem deleteitem;

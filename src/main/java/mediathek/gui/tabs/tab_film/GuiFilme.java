@@ -30,7 +30,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -1183,7 +1183,7 @@ public class GuiFilme extends AGuiTabPanel {
             // History
             res.ifPresent(film -> {
                         JMenuItem miHistory;
-                        try (var history = new NewSeenHistoryController()) {
+                        try (var history = new SeenHistoryController()) {
                           if (history.hasBeenSeen(film)) {
                             miHistory = new JMenuItem("Film als ungesehen markieren");
                             miHistory.addActionListener(unseenActionListener);
@@ -1207,7 +1207,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
 
             private void updateHistory(DatenFilm film) {
-                try (var history = new NewSeenHistoryController()) {
+                try (var history = new SeenHistoryController()) {
                   if (seen) {
                     history.markSeen(film);
                   } else {

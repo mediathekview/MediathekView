@@ -3,7 +3,7 @@ package mediathek.gui.tabs.tab_film;
 import javafx.collections.ObservableList;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
@@ -122,7 +122,7 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        try (var historyController = new NewSeenHistoryController()) {
+        try (var historyController = new SeenHistoryController()) {
             for (DatenFilm film : listeFilme) {
                 if (!selectedSenders.isEmpty()) {
                     if (!selectedSenders.contains(film.getSender()))

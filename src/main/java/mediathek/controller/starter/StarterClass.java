@@ -5,7 +5,7 @@ import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
@@ -277,7 +277,7 @@ public class StarterClass {
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            try (var historyController = new NewSeenHistoryController()){
+            try (var historyController = new SeenHistoryController()){
                 historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             }
 
