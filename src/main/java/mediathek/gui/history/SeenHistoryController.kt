@@ -19,7 +19,7 @@ import kotlin.system.exitProcess
 /**
  * Database based seen history controller.
  */
-class NewSeenHistoryController : AutoCloseable {
+class SeenHistoryController : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null
     private var dataSource: SQLiteDataSource? = null

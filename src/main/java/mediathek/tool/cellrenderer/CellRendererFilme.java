@@ -7,7 +7,7 @@ import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final NewSeenHistoryController history = new NewSeenHistoryController();
+    private final SeenHistoryController history = new SeenHistoryController();
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;

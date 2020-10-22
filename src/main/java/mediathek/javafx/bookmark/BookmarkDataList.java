@@ -13,7 +13,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -121,7 +121,7 @@ public class BookmarkDataList
     
     if (add) {
       // Check if history list is known
-      try (var history = new NewSeenHistoryController()){
+      try (var history = new SeenHistoryController()){
         for (DatenFilm movie: addlist) {
           BookmarkData bdata = new BookmarkData(movie);
           movie.setBookmark(bdata); // Link backwards

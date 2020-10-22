@@ -2,7 +2,7 @@ package mediathek.gui.tabs;
 
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.history.NewSeenHistoryController;
+import mediathek.gui.history.SeenHistoryController;
 import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.table.MVTable;
@@ -51,7 +51,7 @@ public abstract class AGuiTabPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController()) {
+            try (var controller = new SeenHistoryController()) {
                 controller.markSeen(listFilms);
             }
         }
@@ -62,7 +62,7 @@ public abstract class AGuiTabPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             var listFilms = getSelFilme();
-            try (var controller = new NewSeenHistoryController()) {
+            try (var controller = new SeenHistoryController()) {
                 controller.markUnseen(listFilms);
             }
         }
