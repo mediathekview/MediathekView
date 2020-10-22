@@ -1,4 +1,4 @@
-package mediathek.gui.history
+package mediathek.controller.history
 
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm

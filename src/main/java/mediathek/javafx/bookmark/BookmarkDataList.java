@@ -9,11 +9,11 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mediathek.config.Daten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.history.SeenHistoryController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
