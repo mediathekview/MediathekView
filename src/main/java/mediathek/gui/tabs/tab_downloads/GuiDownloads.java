@@ -914,12 +914,13 @@ public class GuiDownloads extends AGuiTabPanel {
         return arrayDownloads;
     }
 
-    private Optional<DatenFilm> getCurrentlySelectedFilm() {
+    @Override
+    protected Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
-
         if (selectedTableRow != -1) {
             Optional<DatenFilm> optRet;
-            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
+            final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
             if (download.film == null)
                 optRet = Optional.empty();
             else

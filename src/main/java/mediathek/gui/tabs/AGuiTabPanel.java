@@ -9,6 +9,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AGuiTabPanel extends JPanel {
     protected MVTable tabelle;
@@ -31,6 +32,8 @@ public abstract class AGuiTabPanel extends JPanel {
      * @return List of Films
      */
     protected abstract List<DatenFilm> getSelFilme();
+
+    protected abstract Optional<DatenFilm> getCurrentlySelectedFilm();
 
     protected void initializeTouchBar() {
         if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {

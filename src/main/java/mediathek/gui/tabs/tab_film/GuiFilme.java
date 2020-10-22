@@ -632,15 +632,12 @@ public class GuiFilme extends AGuiTabPanel {
     }
   }
 
-  private Optional<DatenFilm> getCurrentlySelectedFilm() {
+  @Override
+  protected Optional<DatenFilm> getCurrentlySelectedFilm() {
     final int selectedTableRow = tabelle.getSelectedRow();
-    if (selectedTableRow >= 0) {
-      return Optional.of(
-          (DatenFilm)
-              tabelle
-                  .getModel()
-                  .getValueAt(
-                      tabelle.convertRowIndexToModel(selectedTableRow), DatenFilm.FILM_REF));
+    if (selectedTableRow != -1) {
+      final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+      return Optional.of((DatenFilm) tabelle.getModel().getValueAt(modelIndex, DatenFilm.FILM_REF));
     } else {
       return Optional.empty();
     }
