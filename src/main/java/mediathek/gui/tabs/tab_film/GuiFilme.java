@@ -31,6 +31,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.history.NewSeenHistoryController;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -56,6 +57,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("serial")
@@ -476,7 +478,7 @@ public class GuiFilme extends AGuiTabPanel {
       return;
     }
 
-    ArrayList<DatenFilm> liste = getSelFilme();
+    List<DatenFilm> liste = getSelFilme();
     boolean standard = false;
     String pfad = "";
     boolean info = false;
@@ -644,7 +646,8 @@ public class GuiFilme extends AGuiTabPanel {
     }
   }
 
-  private ArrayList<DatenFilm> getSelFilme() {
+  @Override
+  protected List<DatenFilm> getSelFilme() {
     ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
     int[] rows = tabelle.getSelectedRows();
     if (rows.length > 0) {
@@ -896,7 +899,10 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      daten.getSeenHistoryController().markSeen(getSelFilme());
+      var listFilms = getSelFilme();
+      try (var controller = new NewSeenHistoryController(false)) {
+        controller.markSeen(listFilms);
+      }
     }
   }
 
@@ -904,7 +910,10 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      daten.getSeenHistoryController().markUnseen(getSelFilme());
+      var listFilms = getSelFilme();
+      try (var controller = new NewSeenHistoryController(false)) {
+        controller.markUnseen(listFilms);
+      }
     }
   }
 
