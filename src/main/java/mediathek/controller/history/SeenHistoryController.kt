@@ -10,10 +10,7 @@ import org.sqlite.SQLiteDataSource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.sql.Connection
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
+import java.sql.*
 import kotlin.system.exitProcess
 
 /**
@@ -150,11 +147,13 @@ class SeenHistoryController : AutoCloseable {
      * @throws SQLException Let the caller handle all errors
      */
     @Throws(SQLException::class)
-    private fun createEmptyDatabase() {
-        dataSource!!.connection.use { tempConnection ->
-            tempConnection.createStatement().use { statement ->
-                tempConnection.transactionIsolation = Connection.TRANSACTION_SERIALIZABLE
+    private fun createEmptyDatabase(dbPath : Path) {
+        val dbUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
+        DriverManager.getConnection(dbUrl,SqlDatabaseConfig.getConfig().toProperties()).use { conn ->
+            conn.transactionIsolation = Connection.TRANSACTION_SERIALIZABLE
+            conn.createStatement().use { statement ->
                 statement.executeUpdate(SeenHistoryMigrator.PRAGMA_ENCODING_STMT)
+                statement.executeUpdate("PRAGMA page_size = 4096")
                 // drop old tables and indices if existent
                 statement.executeUpdate(SeenHistoryMigrator.DROP_INDEX_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.DROP_TABLE_STMT)
@@ -213,7 +212,7 @@ class SeenHistoryController : AutoCloseable {
             setupDataSource(readOnly, historyDbPath)
             if (!Files.exists(historyDbPath)) {
                 // create new empty database
-                createEmptyDatabase()
+                createEmptyDatabase(historyDbPath)
             }
 
             // open and use database

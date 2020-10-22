@@ -800,10 +800,12 @@ public class GuiFilme extends AGuiTabPanel {
     try {
       stopBeob = true;
       tabelle.getSpalten();
+      tabelle.setEnabled(false);
 
       GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), tabelle, historyController);
       helper.prepareTableModel();
 
+      tabelle.setEnabled(true);
       setInfoStatusbar();
       tabelle.setSpalten();
       updateFilmData();
