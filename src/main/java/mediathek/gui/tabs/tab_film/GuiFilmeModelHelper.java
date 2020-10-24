@@ -127,6 +127,9 @@ public class GuiFilmeModelHelper {
         historyController.prepareMemoryCache();
 
         var stream = listeFilme.parallelStream();
+        if (!selectedSenders.isEmpty()) {
+            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
+        }
         if (nurNeue)
             stream = stream.filter(DatenFilm::isNew);
         if (onlyBookMarked)
@@ -146,6 +149,9 @@ public class GuiFilmeModelHelper {
         if (nurUt) {
             stream = stream.filter(film -> film.hasSubtitle() || film.hasBurnedInSubtitles());
         }
+        if (!filterThema.isEmpty()) {
+            stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
+        }
         if (kGesehen) {
             stream = stream.filter(film -> !historyController.hasBeenSeenFromCache(film));
         }
@@ -153,11 +159,6 @@ public class GuiFilmeModelHelper {
         var filteredList = stream.collect(Collectors.toList());
 
         for (DatenFilm film : filteredList) {
-            if (!selectedSenders.isEmpty()) {
-                if (!selectedSenders.contains(film.getSender()))
-                    continue;
-            }
-
             final long filmLength = film.getFilmLength();
             //film entries without length have internal length 0...
             if (filmLength != 0) {
@@ -169,11 +170,6 @@ public class GuiFilmeModelHelper {
                 if (filmLength > maxLengthInSeconds)
                     continue;
 
-            }
-
-            if (!filterThema.isEmpty()) {
-                if (!film.getThema().equalsIgnoreCase(filterThema))
-                    continue;
             }
 
             //minor speedup in case we don´t have search field entries...
