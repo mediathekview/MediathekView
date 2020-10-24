@@ -158,10 +158,10 @@ class SeenHistoryController : AutoCloseable {
      * Check if film has been seen by using a in-memory cache.
      */
     fun hasBeenSeenFromCache(film: DatenFilm): Boolean {
-        if (memCachePrepared) {
-            return urlCache.contains(film.url)
-        } else
-            throw IllegalStateException("Memory cache must be prepared to use this function!")
+        if (!memCachePrepared)
+            prepareMemoryCache()
+
+        return urlCache.contains(film.url)
     }
 
     fun hasBeenSeen(film: DatenFilm): Boolean {
