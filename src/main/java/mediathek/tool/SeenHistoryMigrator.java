@@ -76,6 +76,8 @@ public class SeenHistoryMigrator implements AutoCloseable {
 
                 statement.setQueryTimeout(30);  // set timeout to 30 sec.
                 statement.executeUpdate(PRAGMA_ENCODING_STMT);
+                statement.executeUpdate("PRAGMA page_size = 4096");
+
                 // drop old tables and indices if existent
                 statement.executeUpdate(DROP_INDEX_STMT);
                 statement.executeUpdate(DROP_TABLE_STMT);
