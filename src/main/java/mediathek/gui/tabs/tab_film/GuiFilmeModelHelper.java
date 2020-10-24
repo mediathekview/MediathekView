@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
@@ -160,28 +159,16 @@ public class GuiFilmeModelHelper {
         //perform min length filtering after all others may have reduced the available entries...
         stream = stream.filter(this::minLengthCheck);
 
-        stream.forEachOrdered(chooseAddOperation());
+        //final stage filtering...
+        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
+        if (!searchFieldEmpty) {
+            stream = stream.filter(this::finalStageFiltering);
+        }
+        
+        stream.forEachOrdered(this::addFilmToTableModel);
         stream.close();
 
         historyController.emptyMemoryCache();
-    }
-
-    private Consumer<DatenFilm> chooseAddOperation() {
-        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
-        Consumer<DatenFilm> addOperation;
-
-        if (searchFieldEmpty)
-            addOperation = this::addFilmToTableModel;
-        else
-            addOperation = this::addAfterFinalStageFiltering;
-
-        return addOperation;
-    }
-
-    private void addAfterFinalStageFiltering(DatenFilm film) {
-        if (finalStageFiltering(film)) {
-            addFilmToTableModel(film);
-        }
     }
 
     private boolean subtitleCheck(DatenFilm film) {
