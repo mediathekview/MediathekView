@@ -237,6 +237,8 @@ class SeenHistoryController : AutoCloseable {
     }
 
     override fun close() {
+        urlCache.clear()
+
         try {
             insertStatement?.close()
             deleteStatement?.close()
