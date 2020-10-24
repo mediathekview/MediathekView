@@ -147,16 +147,16 @@ public class GuiFilmeModelHelper {
         if (keineAbos)
             stream = stream.filter(film -> film.getAboName().isEmpty());
         if (nurUt) {
-            stream = stream.filter(film -> film.hasSubtitle() || film.hasBurnedInSubtitles());
+            stream = stream.filter(this::subtitleCheck);
         }
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
         if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-            stream = stream.filter(film -> film.getFilmLength() < maxLengthInSeconds);
+            stream = stream.filter(this::maxLengthCheck);
         }
         if (kGesehen) {
-            stream = stream.filter(film -> !historyController.hasBeenSeenFromCache(film));
+            stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
         stream = stream.filter(this::minLengthCheck);
@@ -175,6 +175,17 @@ public class GuiFilmeModelHelper {
 
         filteredList.clear();
         historyController.emptyMemoryCache();
+    }
+
+    private boolean subtitleCheck(DatenFilm film) {
+        return film.hasSubtitle() || film.hasBurnedInSubtitles();
+    }
+    private boolean maxLengthCheck(DatenFilm film) {
+        return film.getFilmLength() < maxLengthInSeconds;
+    }
+
+    private boolean seenCheck(DatenFilm film) {
+        return !historyController.hasBeenSeenFromCache(film);
     }
 
     private boolean minLengthCheck(DatenFilm film) {
