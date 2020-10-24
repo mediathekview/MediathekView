@@ -152,6 +152,9 @@ public class GuiFilmeModelHelper {
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
+        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+            stream = stream.filter(film -> film.getFilmLength() < maxLengthInSeconds);
+        }
         if (kGesehen) {
             stream = stream.filter(film -> !historyController.hasBeenSeenFromCache(film));
         }
@@ -164,12 +167,6 @@ public class GuiFilmeModelHelper {
             if (filmLength != 0) {
                 if (filmLength < minLengthInSeconds)
                     continue;
-            }
-
-            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-                if (filmLength > maxLengthInSeconds)
-                    continue;
-
             }
 
             //minor speedup in case we don´t have search field entries...
