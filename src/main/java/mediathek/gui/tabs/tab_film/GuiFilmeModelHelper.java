@@ -121,7 +121,6 @@ public class GuiFilmeModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
         historyController.prepareMemoryCache();
@@ -161,15 +160,22 @@ public class GuiFilmeModelHelper {
         //perform min length filtering after all others may have reduced the available entries...
         stream = stream.filter(this::minLengthCheck);
 
+        stream.forEachOrdered(chooseAddOperation());
+        stream.close();
+
+        historyController.emptyMemoryCache();
+    }
+
+    private Consumer<DatenFilm> chooseAddOperation() {
+        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         Consumer<DatenFilm> addOperation;
+
         if (searchFieldEmpty)
             addOperation = this::addFilmToTableModel;
         else
             addOperation = this::addAfterFinalStageFiltering;
-        stream.forEachOrdered(addOperation);
-        stream.close();
 
-        historyController.emptyMemoryCache();
+        return addOperation;
     }
 
     private void addAfterFinalStageFiltering(DatenFilm film) {
