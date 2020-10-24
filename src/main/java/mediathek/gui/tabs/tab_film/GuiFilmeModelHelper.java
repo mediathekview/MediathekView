@@ -19,13 +19,13 @@ public class GuiFilmeModelHelper {
     private final ListeFilme listeFilme;
     private final SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
-    private boolean nurNeue;
-    private boolean onlyBookMarked;
-    private boolean nurUt;
-    private boolean showOnlyHd;
-    private boolean kGesehen;
-    private boolean keineAbos;
-    private boolean showOnlyLivestreams;
+    private boolean showNewOnly;
+    private boolean showBookmarkedOnly;
+    private boolean showSubtitlesOnly;
+    private boolean showHqOnly;
+    private boolean dontShowSeen;
+    private boolean dontShowAbos;
+    private boolean showLivestreamsOnly;
     private boolean dontShowTrailers;
     private boolean dontShowGebaerdensprache;
     private boolean dontShowAudioVersions;
@@ -93,13 +93,13 @@ public class GuiFilmeModelHelper {
     }
 
     private void updateFilterVars() {
-        nurNeue = fap.showNewOnly.getValue();
-        onlyBookMarked = fap.showBookMarkedOnly.getValue();
-        nurUt = fap.showSubtitlesOnly.getValue();
-        showOnlyHd = fap.showOnlyHd.getValue();
-        kGesehen = fap.showUnseenOnly.getValue();
-        keineAbos = fap.dontShowAbos.getValue();
-        showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
+        showNewOnly = fap.showNewOnly.getValue();
+        showBookmarkedOnly = fap.showBookMarkedOnly.getValue();
+        showSubtitlesOnly = fap.showSubtitlesOnly.getValue();
+        showHqOnly = fap.showOnlyHd.getValue();
+        dontShowSeen = fap.showUnseenOnly.getValue();
+        dontShowAbos = fap.dontShowAbos.getValue();
+        showLivestreamsOnly = fap.showLivestreamsOnly.getValue();
         dontShowTrailers = fap.dontShowTrailers.getValue();
         dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
         dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
@@ -128,13 +128,13 @@ public class GuiFilmeModelHelper {
         if (!selectedSenders.isEmpty()) {
             stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
         }
-        if (nurNeue)
+        if (showNewOnly)
             stream = stream.filter(DatenFilm::isNew);
-        if (onlyBookMarked)
+        if (showBookmarkedOnly)
             stream = stream.filter(DatenFilm::isBookmarked);
-        if (showOnlyLivestreams)
+        if (showLivestreamsOnly)
             stream = stream.filter(DatenFilm::isLivestream);
-        if (showOnlyHd)
+        if (showHqOnly)
             stream = stream.filter(DatenFilm::isHighQuality);
         if (dontShowTrailers)
             stream = stream.filter(film -> !film.isTrailerTeaser());
@@ -142,9 +142,9 @@ public class GuiFilmeModelHelper {
             stream = stream.filter(film -> !film.isSignLanguage());
         if (dontShowAudioVersions)
             stream = stream.filter(film -> !film.isAudioVersion());
-        if (keineAbos)
+        if (dontShowAbos)
             stream = stream.filter(film -> film.getAboName().isEmpty());
-        if (nurUt) {
+        if (showSubtitlesOnly) {
             stream = stream.filter(this::subtitleCheck);
         }
         if (!filterThema.isEmpty()) {
@@ -153,7 +153,7 @@ public class GuiFilmeModelHelper {
         if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
             stream = stream.filter(this::maxLengthCheck);
         }
-        if (kGesehen) {
+        if (dontShowSeen) {
             stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
