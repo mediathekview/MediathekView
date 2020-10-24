@@ -1,5 +1,6 @@
 package mediathek.controller.history
 
+import com.google.common.collect.Sets
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
@@ -16,7 +17,7 @@ import kotlin.system.exitProcess
 /**
  * Database based seen history controller.
  */
-class SeenHistoryController() : AutoCloseable {
+class SeenHistoryController : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null
     private lateinit var dataSource: SQLiteDataSource
@@ -118,8 +119,54 @@ class SeenHistoryController() : AutoCloseable {
         }
     }
 
+    /**
+     * Load all URLs from database and store in memory.
+     */
+    fun prepareMemoryCache() {
+        connection!!.createStatement().use { st ->
+            st.executeQuery("SELECT url as url FROM seen_history").use { rs ->
+                while (rs.next()) {
+                    val url = rs.getString(1)
+                    urlCache.add(url)
+                }
+            }
+        }
+
+        logger.trace("cache size: {}", urlCache.size)
+        memCachePrepared = true
+    }
+
+    /**
+     * thread-safe store for all database contained URLs.
+     */
+    private val urlCache = Sets.newConcurrentHashSet<String>()
+
+    /**
+     * Indicate whether the mem cache is ready or not
+     */
+    private var memCachePrepared: Boolean = false
+
+    /**
+     * Delete all data in memory cache
+     */
+    fun emptyMemoryCache() {
+        urlCache.clear()
+        memCachePrepared = false
+    }
+
+    /**
+     * Check if film has been seen by using a in-memory cache.
+     */
+    fun hasBeenSeenFromCache(film: DatenFilm): Boolean {
+        if (memCachePrepared) {
+            return urlCache.contains(film.url)
+        } else
+            throw IllegalStateException("Memory cache must be prepared to use this function!")
+    }
+
     fun hasBeenSeen(film: DatenFilm): Boolean {
         var result: Boolean
+
         var rs: ResultSet? = null
         try {
             seenStatement!!.setString(1, film.url)
@@ -136,6 +183,7 @@ class SeenHistoryController() : AutoCloseable {
             } catch (ignore: SQLException) {
             }
         }
+
         return result
     }
 

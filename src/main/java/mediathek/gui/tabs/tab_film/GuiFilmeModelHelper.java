@@ -124,6 +124,8 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
+        historyController.prepareMemoryCache();
+
         var stream = listeFilme.parallelStream();
         if (nurNeue)
             stream = stream.filter(DatenFilm::isNew);
@@ -143,6 +145,9 @@ public class GuiFilmeModelHelper {
             stream = stream.filter(film -> film.getAboName().isEmpty());
         if (nurUt) {
             stream = stream.filter(film -> film.hasSubtitle() || film.hasBurnedInSubtitles());
+        }
+        if (kGesehen) {
+            stream = stream.filter(film -> !historyController.hasBeenSeenFromCache(film));
         }
 
         var filteredList = stream.collect(Collectors.toList());
@@ -166,12 +171,6 @@ public class GuiFilmeModelHelper {
 
             }
 
-            if (kGesehen) {
-                if (historyController.hasBeenSeen(film)) {
-                    continue;
-                }
-            }
-
             if (!filterThema.isEmpty()) {
                 if (!film.getThema().equalsIgnoreCase(filterThema))
                     continue;
@@ -188,6 +187,7 @@ public class GuiFilmeModelHelper {
         }
 
         filteredList.clear();
+        historyController.emptyMemoryCache();
     }
 
     /**
