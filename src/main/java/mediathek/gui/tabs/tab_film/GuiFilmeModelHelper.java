@@ -122,7 +122,8 @@ public class GuiFilmeModelHelper {
         final String filterThema = getFilterThema();
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        historyController.prepareMemoryCache();
+        if (dontShowSeen)
+            historyController.prepareMemoryCache();
 
         var stream = listeFilme.parallelStream();
         if (!selectedSenders.isEmpty()) {
@@ -168,7 +169,8 @@ public class GuiFilmeModelHelper {
         stream.forEachOrdered(this::addFilmToTableModel);
         stream.close();
 
-        historyController.emptyMemoryCache();
+        if (dontShowSeen)
+            historyController.emptyMemoryCache();
     }
 
     private boolean subtitleCheck(DatenFilm film) {
