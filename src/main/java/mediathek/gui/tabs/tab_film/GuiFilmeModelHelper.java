@@ -158,17 +158,11 @@ public class GuiFilmeModelHelper {
         if (kGesehen) {
             stream = stream.filter(film -> !historyController.hasBeenSeenFromCache(film));
         }
-
+        //perform min length filtering after all others may have reduced the available entries...
+        stream = stream.filter(this::minLengthCheck);
         var filteredList = stream.collect(Collectors.toList());
 
         for (DatenFilm film : filteredList) {
-            final long filmLength = film.getFilmLength();
-            //film entries without length have internal length 0...
-            if (filmLength != 0) {
-                if (filmLength < minLengthInSeconds)
-                    continue;
-            }
-
             //minor speedup in case we don´t have search field entries...
             if (searchFieldEmpty)
                 addFilmToTableModel(film);
@@ -181,6 +175,14 @@ public class GuiFilmeModelHelper {
 
         filteredList.clear();
         historyController.emptyMemoryCache();
+    }
+
+    private boolean minLengthCheck(DatenFilm film) {
+        final long filmLength = film.getFilmLength();
+        if (filmLength == 0)
+            return true; // always show entries with length 0, which are internally "no length"
+        else
+            return filmLength >= minLengthInSeconds;
     }
 
     /**
