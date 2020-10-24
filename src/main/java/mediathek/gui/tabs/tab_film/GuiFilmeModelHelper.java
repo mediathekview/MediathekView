@@ -10,15 +10,14 @@ import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
-    private final JTable tabelle;
     private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
-    private SeenHistoryController historyController;
+    private final SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
     private boolean onlyBookMarked;
@@ -35,10 +34,9 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList, @NotNull JTable tabelle,
+    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList,
                                @NotNull SeenHistoryController historyController) {
         this.fap = fap;
-        this.tabelle = tabelle;
         this.historyController = historyController;
 
         filmModel = new TModelFilm();
@@ -255,15 +253,16 @@ public class GuiFilmeModelHelper {
         } else {
             performTableFiltering();
         }
-        tabelle.setModel(filmModel);
     }
 
-    public void prepareTableModel() {
+    /**
+     * Filter the filmlist.
+     * @return the filtered table model.
+     */
+    public TableModel getFilteredTableModel() {
         if (!listeFilme.isEmpty())
             fillTableModel();
-
-        //use empty model
-        tabelle.setModel(filmModel);
+        return filmModel;
     }
 
     private void addAllFilmsToTableModel() {
