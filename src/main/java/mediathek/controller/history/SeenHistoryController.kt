@@ -19,7 +19,7 @@ import kotlin.system.exitProcess
 class SeenHistoryController() : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null
-    private var dataSource: SQLiteDataSource? = null
+    private lateinit var dataSource: SQLiteDataSource
     private var deleteStatement: PreparedStatement? = null
     private var seenStatement: PreparedStatement? = null
     private var manualInsertStatement: PreparedStatement? = null
@@ -31,7 +31,7 @@ class SeenHistoryController() : AutoCloseable {
      */
     private fun setupDataSource(dbPath: Path) {
         dataSource = SQLiteDataSource(SqlDatabaseConfig.getConfig())
-        dataSource!!.url = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
+        dataSource.url = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
     }
 
     /**
@@ -145,13 +145,12 @@ class SeenHistoryController() : AutoCloseable {
      * @throws SQLException Let the caller handle all errors
      */
     @Throws(SQLException::class)
-    private fun createEmptyDatabase(dbPath : Path) {
+    private fun createEmptyDatabase(dbPath: Path) {
         val dbUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
-        DriverManager.getConnection(dbUrl,SqlDatabaseConfig.getConfig().toProperties()).use { conn ->
+        DriverManager.getConnection(dbUrl, SqlDatabaseConfig.getConfig().toProperties()).use { conn ->
             conn.transactionIsolation = Connection.TRANSACTION_SERIALIZABLE
             conn.createStatement().use { statement ->
-                statement.executeUpdate(SeenHistoryMigrator.PRAGMA_ENCODING_STMT)
-                statement.executeUpdate("PRAGMA page_size = 4096")
+                basicSqliteSettings(statement)
                 // drop old tables and indices if existent
                 statement.executeUpdate(SeenHistoryMigrator.DROP_INDEX_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.DROP_TABLE_STMT)
@@ -160,6 +159,11 @@ class SeenHistoryController() : AutoCloseable {
                 statement.executeUpdate(SeenHistoryMigrator.CREATE_INDEX_STMT)
             }
         }
+    }
+
+    private fun basicSqliteSettings(statement: Statement) {
+        statement.executeUpdate(SeenHistoryMigrator.PRAGMA_ENCODING_STMT)
+        statement.executeUpdate("PRAGMA page_size = 4096")
     }
 
     /**
@@ -204,6 +208,14 @@ class SeenHistoryController() : AutoCloseable {
         private const val MANUAL_INSERT_SQL = "INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)"
     }
 
+    private fun performSqliteSetup() {
+        connection!!.createStatement().use { statement ->
+            basicSqliteSettings(statement)
+            val cpus = Runtime.getRuntime().availableProcessors() / 2
+            statement.executeUpdate("PRAGMA threads=$cpus")
+        }
+    }
+
     private fun initialize() {
         try {
             val historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db")
@@ -214,7 +226,10 @@ class SeenHistoryController() : AutoCloseable {
             }
 
             // open and use database
-            connection = dataSource!!.connection
+            connection = dataSource.connection
+
+            performSqliteSetup()
+
             insertStatement = connection?.prepareStatement(INSERT_SQL)
             deleteStatement = connection?.prepareStatement(DELETE_SQL)
             seenStatement = connection?.prepareStatement(SEEN_SQL)
