@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
@@ -123,91 +124,70 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-            for (DatenFilm film : listeFilme) {
-                if (!selectedSenders.isEmpty()) {
-                    if (!selectedSenders.contains(film.getSender()))
-                        continue;
-                }
+        var stream = listeFilme.parallelStream();
+        if (nurNeue)
+            stream = stream.filter(DatenFilm::isNew);
+        if (onlyBookMarked)
+            stream = stream.filter(DatenFilm::isBookmarked);
+        if (showOnlyLivestreams)
+            stream = stream.filter(DatenFilm::isLivestream);
+        if (showOnlyHd)
+            stream = stream.filter(DatenFilm::isHighQuality);
+        if (dontShowTrailers)
+            stream = stream.filter(film -> !film.isTrailerTeaser());
+        if (dontShowGebaerdensprache)
+            stream = stream.filter(film -> !film.isSignLanguage());
+        if (dontShowAudioVersions)
+            stream = stream.filter(film -> !film.isAudioVersion());
+        if (keineAbos)
+            stream = stream.filter(film -> film.getAboName().isEmpty());
+        if (nurUt) {
+            stream = stream.filter(film -> film.hasSubtitle() || film.hasBurnedInSubtitles());
+        }
 
-                final long filmLength = film.getFilmLength();
-                //film entries without length have internal length 0...
-                if (filmLength != 0) {
-                    if (filmLength < minLengthInSeconds)
-                        continue;
-                }
+        var filteredList = stream.collect(Collectors.toList());
 
-                if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-                    if (filmLength > maxLengthInSeconds)
-                        continue;
+        for (DatenFilm film : filteredList) {
+            if (!selectedSenders.isEmpty()) {
+                if (!selectedSenders.contains(film.getSender()))
+                    continue;
+            }
 
-                }
-                if (nurNeue) {
-                    if (!film.isNew()) {
-                        continue;
-                    }
-                }
+            final long filmLength = film.getFilmLength();
+            //film entries without length have internal length 0...
+            if (filmLength != 0) {
+                if (filmLength < minLengthInSeconds)
+                    continue;
+            }
 
-                if (onlyBookMarked) {
-                    if (!film.isBookmarked()) {
-                        continue;
-                    }
-                }
-                if (showOnlyLivestreams) {
-                    if (!film.isLivestream()) {
-                        continue;
-                    }
-                }
-                if (showOnlyHd) {
-                    if (!film.isHighQuality()) {
-                        continue;
-                    }
-                }
-                if (nurUt) {
-                    if (!film.hasSubtitle()) {
-                        if (!film.hasBurnedInSubtitles())
-                            continue;
-                    }
-                }
-                if (keineAbos) {
-                    if (!film.getAboName().isEmpty()) {
-                        continue;
-                    }
-                }
-                if (kGesehen) {
-                    if (historyController.hasBeenSeen(film)) {
-                        continue;
-                    }
-                }
+            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+                if (filmLength > maxLengthInSeconds)
+                    continue;
 
-                if (dontShowTrailers) {
-                    if (film.isTrailerTeaser())
-                        continue;
-                }
+            }
 
-                if (dontShowGebaerdensprache) {
-                    if (film.isSignLanguage())
-                        continue;
-                }
-
-                if (dontShowAudioVersions) {
-                    if (film.isAudioVersion())
-                        continue;
-                }
-
-                if (!filterThema.isEmpty()) {
-                    if (!film.getThema().equalsIgnoreCase(filterThema))
-                        continue;
-                }
-
-                //minor speedup in case we don´t have search field entries...
-                if (searchFieldEmpty)
-                    addFilmToTableModel(film);
-                else {
-                    if (finalStageFiltering(film)) {
-                        addFilmToTableModel(film);
-                    }
+            if (kGesehen) {
+                if (historyController.hasBeenSeen(film)) {
+                    continue;
                 }
             }
+
+            if (!filterThema.isEmpty()) {
+                if (!film.getThema().equalsIgnoreCase(filterThema))
+                    continue;
+            }
+
+            //minor speedup in case we don´t have search field entries...
+            if (searchFieldEmpty)
+                addFilmToTableModel(film);
+            else {
+                if (finalStageFiltering(film)) {
+                    addFilmToTableModel(film);
+                }
+            }
+        }
+
+        filteredList.clear();
     }
 
     /**
@@ -257,6 +237,7 @@ public class GuiFilmeModelHelper {
 
     /**
      * Filter the filmlist.
+     *
      * @return the filtered table model.
      */
     public TableModel getFilteredTableModel() {
