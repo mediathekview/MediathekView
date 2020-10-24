@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film;
 
-import com.google.common.base.Stopwatch;
 import com.thizzer.jtouchbar.JTouchBar;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -803,11 +802,8 @@ public class GuiFilme extends AGuiTabPanel {
       tabelle.getSpalten();
       tabelle.setEnabled(false);
 
-      var watch = Stopwatch.createStarted();
-      GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), historyController);
-      var model = helper.getFilteredTableModel();
-      watch.stop();
-      System.out.println("WATCH TOOK: " + watch);
+      final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), historyController);
+      final var model = helper.getFilteredTableModel();
       tabelle.setModel(model);
 
       tabelle.setEnabled(true);
