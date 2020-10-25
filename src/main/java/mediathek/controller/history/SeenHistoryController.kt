@@ -171,7 +171,7 @@ class SeenHistoryController : AutoCloseable {
             seenStatement!!.setString(1, film.url)
             seenStatement!!.executeQuery().use {
                 it.next()
-                val total = it.getInt("total")
+                val total = it.getInt(1)
                 result = total != 0
             }
         } catch (e: SQLException) {
@@ -261,7 +261,7 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    private fun initialize() {
+    init {
         try {
             val historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db")
             setupDataSource(historyDbPath)
@@ -283,9 +283,5 @@ class SeenHistoryController : AutoCloseable {
             logger.error("ctor", ex)
             exitProcess(99)
         }
-    }
-
-    init {
-        initialize()
     }
 }
