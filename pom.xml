@@ -222,6 +222,12 @@
             <version>2.11.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>affinity</artifactId>
+            <version>3.20.0</version>
+        </dependency>
+
         <!-- for Bookmark JSON reading and writing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
