@@ -11,8 +11,6 @@ public class Affinity {
     static {
         if (SystemUtils.IS_OS_WINDOWS)
             AFFINITY_IMPL = new WindowsAffinity();
-        else if (SystemUtils.IS_OS_LINUX)
-            AFFINITY_IMPL = new LinuxAffinity();
         else
             AFFINITY_IMPL = new NullAffinity();
     }
