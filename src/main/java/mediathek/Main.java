@@ -19,11 +19,11 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.affinity.Affinity;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
-import net.openhft.affinity.Affinity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
@@ -52,7 +52,6 @@ import java.security.Security;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.BitSet;
 import java.util.Optional;
 
 public class Main {
@@ -349,10 +348,8 @@ public class Main {
 
             final int numCpus = Config.getNumCpus();
             if (numCpus != 0) {
-                BitSet cpuBitset = new BitSet();
-                cpuBitset.set(0,numCpus);
-                Affinity.setAffinity(cpuBitset);
-                logger.trace("CPU affinity set to {} processors", Runtime.getRuntime().availableProcessors());
+                var affinity = Affinity.getAffinityImpl();
+                affinity.setDesiredCpuAffinity(numCpus);
             }
 
             initializeJavaFX();
