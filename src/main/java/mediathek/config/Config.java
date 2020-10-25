@@ -24,10 +24,15 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "MediathekView")
 public class Config {
 
-    @CommandLine.Parameters(index="0", paramLabel = "<Pfad zum Verzeichnis>",description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
+    @CommandLine.Parameters(index = "0", paramLabel = "<Pfad zum Verzeichnis>", description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
     public static String baseFilePath;
     @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
+    /**
+     * Limit the number of used CPUs on Windows.
+     */
+    @CommandLine.Option(names = {"-n", "--num-cpus"}, hidden = true, description = "Anzahl der genutzen CPU-Kerne festlegen (FÜR ENTWICKLER)")
+    private static int numCpus;
     /**
      * For development use parameter to enable TRACE output to log env.
      */
@@ -43,11 +48,20 @@ public class Config {
 
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
-    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Hilfe anzeigen")
+
+    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
 
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
     private static boolean fileLoggingDisabled;
+
+    public static int getNumCpus() {
+        return numCpus;
+    }
+
+    public static void setNumCpus(int num) {
+        numCpus = num;
+    }
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -65,7 +79,9 @@ public class Config {
         return debug;
     }
 
-    public static boolean isFileLoggingDisabled() { return fileLoggingDisabled;}
+    public static boolean isFileLoggingDisabled() {
+        return fileLoggingDisabled;
+    }
 
     public static boolean isStartMaximized() {
         return startMaximized;
