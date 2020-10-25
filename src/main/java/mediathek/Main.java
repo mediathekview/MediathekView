@@ -2,6 +2,9 @@ package mediathek;
 
 import com.google.common.base.Stopwatch;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinNT;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -21,6 +24,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
+import mediathek.windows.AffinityKernel;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
@@ -51,6 +55,7 @@ import java.security.Security;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.BitSet;
 import java.util.Optional;
 
 public class Main {
@@ -322,6 +327,28 @@ public class Main {
         }
     }
 
+    private static void setDesiredCpuAffinity(final int numCpus) {
+        final int pid = -1; // -1 means current process
+
+        var bitSet = new BitSet();
+        bitSet.set(0,numCpus);
+        final long affinity = bitSet.stream()
+                .takeWhile(i -> i < Long.SIZE)
+                .mapToLong(i -> 1L << i)
+                .reduce(0, (a, b) -> a | b);
+        final var affinityMask = (int) affinity;
+
+        AffinityKernel instance = Native.loadLibrary("Kernel32", AffinityKernel.class);
+        var result = instance.SetProcessAffinityMask(new WinNT.HANDLE(new Pointer(pid)), affinityMask);
+        if (result) {
+            logger.trace("CPU affinity was set successfully.");
+            logger.trace("Available processors: {}", Runtime.getRuntime().availableProcessors());
+        }
+        else
+            logger.trace("Failed to set CPU affinity.");
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -344,6 +371,11 @@ public class Main {
 
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
+
+            final int numCpus = Config.getNumCpus();
+            if (SystemUtils.IS_OS_WINDOWS && numCpus != 0) {
+                setDesiredCpuAffinity(numCpus);
+            }
 
             initializeJavaFX();
 
