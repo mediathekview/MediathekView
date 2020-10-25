@@ -136,6 +136,16 @@ class SeenHistoryController : AutoCloseable {
         memCachePrepared = true
     }
 
+    fun performMaintenance() {
+        logger.trace("Start maintenance")
+
+        connection!!.createStatement().use {
+            it.executeUpdate("REINDEX seen_history");
+            it.executeUpdate("VACUUM")
+        }
+        logger.trace("Finished maintenance")
+    }
+
     /**
      * thread-safe store for all database contained URLs.
      */
