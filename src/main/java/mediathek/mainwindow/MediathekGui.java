@@ -18,6 +18,7 @@ import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.Main;
 import mediathek.config.*;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -1012,6 +1013,11 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
+
+        dialog.setStatusText(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
+        try (SeenHistoryController history = new SeenHistoryController()) {
+            history.performMaintenance();
+        }
 
         // Tabelleneinstellungen merken
         dialog.setStatusText(ShutdownState.SAVE_FILM_DATA);

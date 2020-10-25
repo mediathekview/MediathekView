@@ -3,6 +3,7 @@ package mediathek.tool;
 public enum ShutdownState {
     SHUTDOWN_NOTIFICATION_CENTER("Native Benachrichtigungen beenden..."),
     SHUTDOWN_THREAD_POOL("Beende Threadpools..."),
+    PERFORM_SEEN_HISTORY_MAINTENANCE("Führe Wartung an der Download-Historie durch..."),
     SAVE_FILM_DATA("Film-Daten sichern"),
     SAVE_DOWNLOAD_DATA("Download-Daten sichern"),
     SAVE_MEDIA_DB("MediaDB sichern"),
