@@ -167,21 +167,16 @@ class SeenHistoryController : AutoCloseable {
     fun hasBeenSeen(film: DatenFilm): Boolean {
         var result: Boolean
 
-        var rs: ResultSet? = null
         try {
             seenStatement!!.setString(1, film.url)
-            rs = seenStatement!!.executeQuery()
-            rs.next()
-            val total = rs.getInt("total")
-            result = total != 0
+            seenStatement!!.executeQuery().use {
+                it.next()
+                val total = it.getInt("total")
+                result = total != 0
+            }
         } catch (e: SQLException) {
             logger.error("SQL error:", e)
             result = false
-        } finally {
-            try {
-                rs?.close()
-            } catch (ignore: SQLException) {
-            }
         }
 
         return result
