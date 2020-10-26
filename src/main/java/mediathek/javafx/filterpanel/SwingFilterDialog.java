@@ -57,15 +57,9 @@ public class SwingFilterDialog extends JDialog {
 
     @Handler
     private void handleTableModelChangeEvent(TableModelChangeEvent e) {
-        if (e.active) {
-            //disable dialog
-            this.setEnabled(false);
-        }
-        else {
-            //enable dialog
-            this.setEnabled(true);
-        }
+        SwingUtilities.invokeLater(() -> setEnabled(!e.active));
     }
+
     private void restoreDialogVisibility() {
         var config = ApplicationConfiguration.getConfiguration();
         final boolean visible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, false);
