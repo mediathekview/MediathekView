@@ -862,6 +862,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final ActionListener seenActionListener = new BeobHistory(true);
         private Point p;
         private JMenuItem miPrintTable;
+        private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
 
         TableContextMenuHandler() {
             createStaticMenuEntries();
@@ -963,6 +964,7 @@ public class GuiFilme extends AGuiTabPanel {
             return item;
         }
 
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1052,6 +1054,7 @@ public class GuiFilme extends AGuiTabPanel {
             submenueBlack.add(itemBlackThema);
             submenueBlack.add(itemBlackSenderThema);
 
+            res.ifPresent(film -> jDownloadHelper.installContextMenu(film, jPopupMenu));
             // Url
             res.ifPresent(film -> {
                 if (film.isPlayList()) {
@@ -1289,4 +1292,5 @@ public class GuiFilme extends AGuiTabPanel {
             }
         }
     }
+
 }
