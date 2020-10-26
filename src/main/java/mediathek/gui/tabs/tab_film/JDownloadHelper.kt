@@ -10,7 +10,6 @@ import mediathek.tool.javafx.FXErrorDialog
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.logging.log4j.LogManager
-import java.awt.event.ActionEvent
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
@@ -77,15 +76,15 @@ class JDownloadHelper {
             val uLow = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN).toHttpUrl()
             if (uHq !== uNormal) {
                 val miHq = JMenuItem("in bester Qualität")
-                miHq.addActionListener { l: ActionEvent? -> downloadUrl(uHq, film) }
+                miHq.addActionListener { downloadUrl(uHq, film) }
                 mJD.add(miHq)
             }
             val miNormal = JMenuItem("in normaler Qualität")
-            miNormal.addActionListener { l: ActionEvent? -> downloadUrl(uNormal, film) }
+            miNormal.addActionListener { downloadUrl(uNormal, film) }
             mJD.add(miNormal)
             if (uLow !== uNormal) {
                 val miLow = JMenuItem("in niedriger Qualität")
-                miLow.addActionListener { l: ActionEvent? -> downloadUrl(uLow, film) }
+                miLow.addActionListener { downloadUrl(uLow, film) }
                 mJD.add(miLow)
             }
             jPopupMenu.add(mJD)
