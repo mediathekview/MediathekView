@@ -6,17 +6,13 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TabPane;
 import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -287,35 +283,18 @@ public class GuiFilme extends AGuiTabPanel {
   }
 
   private void setupDescriptionPanel() {
-    JavaFxUtils.invokeInFxThreadAndWait(
-        () -> {
-          try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
-
-            TabPane descriptionPane = loader.load();
-            final DescriptionPanelController descriptionPanelController = loader.getController();
-            descriptionPanelController.setOnCloseRequest(
-                e -> {
-                  SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
-                  e.consume();
-                });
-
-            fxDescriptionPanel.setScene(new Scene(descriptionPane));
-            SwingUtilities.invokeLater(
-                () ->
-                    tabelle
-                        .getSelectionModel()
-                        .addListSelectionListener(
-                            e -> {
-                              Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
-                              Platform.runLater(
-                                  () -> descriptionPanelController.showFilmDescription(optFilm));
-                            }));
-          } catch (Exception ex) {
-            ex.printStackTrace();
-          }
-        });
+    JavaFxUtils.invokeInFxThreadAndWait(() -> {
+      try {
+        var descriptionPanelController = DescriptionPanelController.install(fxDescriptionPanel);
+        SwingUtilities.invokeLater(() ->
+                tabelle.getSelectionModel().addListSelectionListener(e -> {
+                  Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
+                  Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
+                }));
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    });
   }
 
   /** Show description panel based on settings. */
