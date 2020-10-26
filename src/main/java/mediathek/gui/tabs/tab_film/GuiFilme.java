@@ -87,7 +87,7 @@ public class GuiFilme extends AGuiTabPanel {
             new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     private final JFXPanel fxDescriptionPanel = new JFXPanel();
-    private final SwingButtonPanelController buttonPanelController;
+    private SwingButtonPanelController buttonPanelController;
     private final SeenHistoryController historyController = new SeenHistoryController();
     /**
      * The JavaFx Film action popup panel.
@@ -125,8 +125,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
-        buttonPanelController = new SwingButtonPanelController(this, extensionArea);
-
+        setupButtonPanel();
         setupDescriptionPanel();
         setupFilmActionPanel();
 
@@ -137,6 +136,10 @@ public class GuiFilme extends AGuiTabPanel {
         setupActionListeners();
 
         initializeTouchBar();
+    }
+
+    private void setupButtonPanel() {
+        buttonPanelController = new SwingButtonPanelController(this, extensionArea);
     }
 
     private void setupFilmListTable() {
