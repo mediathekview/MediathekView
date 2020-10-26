@@ -9,10 +9,11 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -27,6 +28,7 @@ public class PanelPsetKurz extends PanelVorlage {
     public boolean ok = false;
     private DatenPset pSet = null;
     private final ListePset listePset;
+    private static final Logger logger = LogManager.getLogger();
 
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
@@ -130,7 +132,7 @@ public class PanelPsetKurz extends PanelVorlage {
             name = "Programmpfad";
             JPanel panel = new JPanel();
             panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME]));
-            setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD);
+            setFeld(panel, name, prog.arr);
             gridbag.setConstraints(panel, c);
             jPanelExtra.add(panel);
             ++c.gridy;
@@ -141,7 +143,7 @@ public class PanelPsetKurz extends PanelVorlage {
         jPanelExtra.add(label);
     }
 
-    private void setFeld(JPanel panel, String name, String[] arr, int idx) {
+    private void setFeld(JPanel panel, String name, String[] arr) {
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         panel.setLayout(gridbag);
@@ -163,8 +165,8 @@ public class PanelPsetKurz extends PanelVorlage {
         // Textfeld
         c.gridx = 1;
         c.weightx = 10;
-        JTextField textField = new JTextField(arr[idx]);
-        textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, idx));
+        JTextField textField = new JTextField(arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
+        textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
         var handler = new TextCopyPasteHandler<>(textField);
         textField.setComponentPopupMenu(handler.getPopupMenu());
         gridbag.setConstraints(textField, c);
@@ -174,7 +176,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weightx = 0;
         JButton button = new JButton();
         button.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        button.addActionListener(new ZielBeobachter(textField, arr, idx));
+        button.addActionListener(new ZielBeobachter(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
         button.setToolTipText("Programm auswählen");
         gridbag.setConstraints(button, c);
         panel.add(button);
@@ -182,6 +184,160 @@ public class PanelPsetKurz extends PanelVorlage {
         int h = button.getPreferredSize().height;
         int w = textField.getPreferredSize().width;
         textField.setPreferredSize(new Dimension(w, h));
+    }
+
+    private class ZielBeobachter implements ActionListener {
+
+        JTextField textField;
+        String[] arr = null;
+        int idx;
+        boolean file;
+
+        public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
+            textField = tt;
+            arr = aarr; // Programmarray
+            idx = iidx;
+            file = true;
+        }
+
+        public ZielBeobachter(JTextField tt, int iidx) {
+            // für den Zielpfad
+            textField = tt;
+            idx = iidx;
+            file = false;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (pSet == null) {
+                return;
+            }
+            //we can use native directory chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //we want to select a directory only, so temporarily change properties
+                if (!file) {
+                    System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                }
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        textField.setText(chooser.getDirectory() + chooser.getFile());
+                        if (arr == null) {
+                            pSet.arr[idx] = textField.getText();
+                        } else {
+                            arr[idx] = textField.getText();
+                        }
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+                if (!file) {
+                    System.setProperty("apple.awt.fileDialogForDirectories", "false");
+                }
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new File(textField.getText()));
+                chooser.setFileSelectionMode(file ? JFileChooser.FILES_ONLY : JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                        if (arr == null) {
+                            pSet.arr[idx] = textField.getText();
+                        } else {
+                            arr[idx] = textField.getText();
+                        }
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        private final JTextField textField;
+        private final int idx;
+        private String[] arr = null; // das Programmarray
+
+        public BeobDoc(JTextField tt, String[] aarr, int iidx) {
+            textField = tt;
+            arr = aarr;
+            idx = iidx;
+        }
+
+        public BeobDoc(JTextField tt, int iidx) {
+            // für den Zielpfad
+            textField = tt;
+            idx = iidx;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            set();
+        }
+
+        private void set() {
+            if (pSet == null) {
+                return;
+            }
+            if (!stopBeob) {
+                stopBeob = true;
+                if (arr == null) {
+                    pSet.arr[idx] = textField.getText();
+                } else {
+                    arr[idx] = textField.getText();
+                }
+                stopBeob = false;
+            }
+        }
+    }
+
+    private class BeobDocName implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            set();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            set();
+        }
+
+        private void set() {
+            if (pSet == null) {
+                return;
+            }
+            if (!stopBeob) {
+                stopBeob = true;
+                pSet.arr[DatenPset.PROGRAMMSET_NAME] = jTextFieldName.getText();
+                int i = jListPset.getSelectedIndex();
+                jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
+                jListPset.setSelectedIndex(i);
+                stopBeob = false;
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -341,158 +497,4 @@ public class PanelPsetKurz extends PanelVorlage {
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldZiel;
     // End of variables declaration//GEN-END:variables
-
-    private class ZielBeobachter implements ActionListener {
-
-        JTextField textField;
-        String[] arr = null;
-        int idx;
-        boolean file;
-
-        public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
-            textField = tt;
-            arr = aarr; // Programmarray
-            idx = iidx;
-            file = true;
-        }
-
-        public ZielBeobachter(JTextField tt, int iidx) {
-            // für den Zielpfad
-            textField = tt;
-            idx = iidx;
-            file = false;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (pSet == null) {
-                return;
-            }
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                if (!file) {
-                    System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                }
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        textField.setText(chooser.getDirectory() + chooser.getFile());
-                        if (arr == null) {
-                            pSet.arr[idx] = textField.getText();
-                        } else {
-                            arr[idx] = textField.getText();
-                        }
-                    } catch (Exception ex) {
-                        Log.errorLog(392847589, ex);
-                    }
-                }
-                if (!file) {
-                    System.setProperty("apple.awt.fileDialogForDirectories", "false");
-                }
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new File(textField.getText()));
-                chooser.setFileSelectionMode(file ? JFileChooser.FILES_ONLY : JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                        if (arr == null) {
-                            pSet.arr[idx] = textField.getText();
-                        } else {
-                            arr[idx] = textField.getText();
-                        }
-                    } catch (Exception ex) {
-                        Log.errorLog(613986500, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobDoc implements DocumentListener {
-
-        JTextField textField;
-        int idx;
-        String[] arr = null; // das Programmarray
-
-        public BeobDoc(JTextField tt, String[] aarr, int iidx) {
-            textField = tt;
-            arr = aarr;
-            idx = iidx;
-        }
-
-        public BeobDoc(JTextField tt, int iidx) {
-            // für den Zielpfad            
-            textField = tt;
-            idx = iidx;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            set();
-        }
-
-        private void set() {
-            if (pSet == null) {
-                return;
-            }
-            if (!stopBeob) {
-                stopBeob = true;
-                if (arr == null) {
-                    pSet.arr[idx] = textField.getText();
-                } else {
-                    arr[idx] = textField.getText();
-                }
-                stopBeob = false;
-            }
-        }
-    }
-
-    private class BeobDocName implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            set();
-        }
-
-        private void set() {
-            if (pSet == null) {
-                return;
-            }
-            if (!stopBeob) {
-                stopBeob = true;
-                pSet.arr[DatenPset.PROGRAMMSET_NAME] = jTextFieldName.getText();
-                int i = jListPset.getSelectedIndex();
-                jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
-                jListPset.setSelectedIndex(i);
-                stopBeob = false;
-            }
-        }
-    }
 }
