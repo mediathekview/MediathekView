@@ -11,7 +11,10 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
+import mediathek.tool.CellRendererMediaDB;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
@@ -324,7 +327,7 @@ public class PanelMediaDB extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldExportPath.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(679890147, ex);
+                        logger.error(ex);
                     }
                 }
             } else {
