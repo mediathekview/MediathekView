@@ -214,7 +214,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Handler
-    private void handleButtonsPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+    private void handleButtonsPanelVisibilityChanged(ButtonsPanelVisibilityChangedEvent evt) {
         SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
     }
 
@@ -223,7 +223,7 @@ public class GuiFilme extends AGuiTabPanel {
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
         cbShowButtons.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
-        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
+        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
 
         jMenuAnsicht.add(cbShowButtons,0);
     }
