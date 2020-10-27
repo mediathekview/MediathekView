@@ -87,7 +87,6 @@ public class GuiFilme extends AGuiTabPanel {
             new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     private final JFXPanel fxDescriptionPanel = new JFXPanel();
-    private SwingButtonPanelController buttonPanelController;
     private final SeenHistoryController historyController = new SeenHistoryController();
     /**
      * The JavaFx Film action popup panel.
@@ -97,6 +96,7 @@ public class GuiFilme extends AGuiTabPanel {
      * macOS touch bar support
      */
     public JTouchBar touchBar;
+    private SwingButtonPanelController buttonPanelController;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     /**
      * The swing helper panel FilmAction bar.
@@ -104,6 +104,7 @@ public class GuiFilme extends AGuiTabPanel {
     private JFXPanel fxFilmActionPanel;
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
+    private JCheckBoxMenuItem cbShowButtons;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -210,6 +211,21 @@ public class GuiFilme extends AGuiTabPanel {
     private void createExtensionArea() {
         extensionArea.setLayout(new VerticalLayout());
         add(extensionArea, BorderLayout.SOUTH);
+    }
+
+    @Handler
+    private void handleButtonsPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+        SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
+    }
+
+    public void installViewMenuEntry(JMenu jMenuAnsicht) {
+        cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+        cbShowButtons.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
+        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
+
+        jMenuAnsicht.add(cbShowButtons,0);
     }
 
     @Override
@@ -860,9 +876,9 @@ public class GuiFilme extends AGuiTabPanel {
                 new ShowFilmInformationAction(false);
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
+        private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
         private Point p;
         private JMenuItem miPrintTable;
-        private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
 
         TableContextMenuHandler() {
             createStaticMenuEntries();
