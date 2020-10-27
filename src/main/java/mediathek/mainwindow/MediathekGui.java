@@ -841,24 +841,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    @Handler
-    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
-        SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
-    }
-
-    private JCheckBoxMenuItem cbShowButtons;
-
-    private void createButtonPanelMenuItem() {
-        cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-        cbShowButtons.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
-        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
-    }
-
     private void createViewMenu() {
-        createButtonPanelMenuItem();
-
         cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false));
         cbBandwidthDisplay.addActionListener(e -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, cbBandwidthDisplay.isSelected());
@@ -886,7 +869,6 @@ public class MediathekGui extends JFrame {
         JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
         showBookmarkList.addActionListener(l -> JavaFxUtils.invokeInFxThreadAndWait(() -> tabFilme.showBookmarkWindow()));
 
-        jMenuAnsicht.add(cbShowButtons);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
@@ -925,6 +907,8 @@ public class MediathekGui extends JFrame {
         tabDownloads.installMenuEntries(jMenuDownload);
 
         createViewMenu();
+        tabFilme.installViewMenuEntry(jMenuAnsicht);
+
         createAboMenu();
         createHelpMenu();
     }
