@@ -250,6 +250,10 @@ class SeenHistoryController : AutoCloseable {
             seenStatement?.close()
             manualInsertStatement?.close()
             connection?.close()
+
+            // at this stage we have closed everything and we don´t need the shutdown hook to cleanup
+            if (shutdownThread != null)
+                Runtime.getRuntime().removeShutdownHook(shutdownThread)
         } catch (ex: SQLException) {
             logger.error("close", ex)
         }
@@ -271,23 +275,28 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
+    class ShutdownHook(private val connection: Connection?) : Thread() {
+        override fun run() {
+            if (connection == null)
+                return
+            else {
+                if (!connection.isClosed) {
+                    logger.trace("Closing seen history database connection.")
+                    connection.close()
+                }
+            }
+        }
+    }
+
+    private var shutdownThread: ShutdownHook? = null
+
     /**
      * Close all database connections if they haven´t been closed already.
      * This allows SQLite to perform additional file cleanup like deletion of WAL and shared-memory files.
      */
     private fun installShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(object : Thread() {
-            override fun run() {
-                if (connection == null)
-                    return
-                else {
-                    if (!connection!!.isClosed) {
-                        logger.trace("Closing seen history database connection.")
-                        close()
-                    }
-                }
-            }
-        })
+        shutdownThread = ShutdownHook(connection)
+        Runtime.getRuntime().addShutdownHook(shutdownThread)
     }
 
     init {
