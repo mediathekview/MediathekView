@@ -275,27 +275,14 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    class ShutdownHook(private val connection: Connection?) : Thread() {
-        override fun run() {
-            if (connection == null)
-                return
-            else {
-                if (!connection.isClosed) {
-                    logger.trace("Closing seen history database connection.")
-                    connection.close()
-                }
-            }
-        }
-    }
-
-    private var shutdownThread: ShutdownHook? = null
+    private var shutdownThread: SeenHistoryShutdownHook? = null
 
     /**
      * Close all database connections if they haven´t been closed already.
      * This allows SQLite to perform additional file cleanup like deletion of WAL and shared-memory files.
      */
     private fun installShutdownHook() {
-        shutdownThread = ShutdownHook(connection)
+        shutdownThread = SeenHistoryShutdownHook(connection)
         Runtime.getRuntime().addShutdownHook(shutdownThread)
     }
 
