@@ -271,6 +271,25 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
+    /**
+     * Close all database connections if they haven´t been closed already.
+     * This allows SQLite to perform additional file cleanup like deletion of WAL and shared-memory files.
+     */
+    private fun installShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(object : Thread() {
+            override fun run() {
+                if (connection == null)
+                    return
+                else {
+                    if (!connection!!.isClosed) {
+                        logger.trace("Closing seen history database connection.")
+                        close()
+                    }
+                }
+            }
+        })
+    }
+
     init {
         try {
             val historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db")
@@ -289,6 +308,8 @@ class SeenHistoryController : AutoCloseable {
             deleteStatement = connection?.prepareStatement(DELETE_SQL)
             seenStatement = connection?.prepareStatement(SEEN_SQL)
             manualInsertStatement = connection?.prepareStatement(MANUAL_INSERT_SQL)
+
+            installShutdownHook()
         } catch (ex: SQLException) {
             logger.error("ctor", ex)
             exitProcess(99)
