@@ -1,6 +1,5 @@
 package mediathek.controller.history
 
-import org.apache.logging.log4j.LogManager
 import java.sql.Connection
 
 /**
@@ -12,13 +11,9 @@ class SeenHistoryShutdownHook(private val connection: Connection?) : Thread() {
             return
         else {
             if (!connection.isClosed) {
-                logger.trace("Closing seen history database connection.")
+                println("Closing seen history database connection.")
                 connection.close()
             }
         }
-    }
-
-    companion object {
-        private val logger = LogManager.getLogger()
     }
 }
