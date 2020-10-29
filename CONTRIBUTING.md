@@ -11,7 +11,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 > - Refer this project in your project's readme
 > - Mention the project at local meetups and tell your friends/colleagues
 
-**Hint:** As MediathekView is a german software for the DACH tv stations ["Öffentlich-Rechtliche"](https://de.wikipedia.org/wiki/%C3%96ffentlich-rechtlicher_Rundfunk), many things like issue descriptions, UI text and so on are in geman. If you don't understand something feel free to ask one of us. Also, feel free to create issues in english.
+**Hint:** As MediathekView is a german software for the DACH tv stations ["Öffentlich-Rechtliche"](https://de.wikipedia.org/wiki/%C3%96ffentlich-rechtlicher_Rundfunk), many things like issue descriptions, UI text and so on are in german. If you don't understand something feel free to ask one of us. Also, feel free to create issues in english.
 <!-- omit in toc -->
 ## Table of Contents
 
