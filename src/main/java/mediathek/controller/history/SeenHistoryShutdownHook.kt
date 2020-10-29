@@ -11,7 +11,6 @@ class SeenHistoryShutdownHook(private val connection: Connection?) : Thread() {
             return
         else {
             if (!connection.isClosed) {
-                println("Closing seen history database connection.")
                 connection.close()
             }
         }
