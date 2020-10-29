@@ -45,8 +45,6 @@ See / Siehe [Contribution Guide](https://github.com/mediathekview/MediathekView/
 # [Lizenz / License]((https://github.com/mediathekview/MediathekView/blob/master/LICENSE.md))
 [GPL v3](https://github.com/mediathekview/MediathekView/blob/master/LICENSE.md)
 
-# [Verhaltenskodex / Code of conduct](https://github.com/mediathekview/MediathekView/blob/master/CODE_OF_CONDUCT.md)
-Unser [Verhaltenskodex / Code of conduct](https://github.com/mediathekview/MediathekView/blob/master/CODE_OF_CONDUCT.md)
 # Links
 - [Webseite](https://mediathekview.de)
 - [Download](https://mediathekview.de/download/)
