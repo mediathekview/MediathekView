@@ -1,17 +1,16 @@
 package mediathek.gui.history;
 
 import mediathek.config.Daten;
-import mediathek.controller.history.MVUsedUrl;
-import mediathek.controller.history.MVUsedUrlModelHelper;
-import mediathek.controller.history.MVUsedUrls;
+import mediathek.controller.history.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FileDialogs;
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -19,12 +18,14 @@ import net.miginfocom.swing.MigLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -37,7 +38,6 @@ public abstract class PanelErledigteUrls extends JPanel {
 
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
-        jButtonLoeschen.setEnabled(false);
         jButtonExport.addActionListener((ActionEvent e) -> export());
         initListeners();
     }
@@ -50,30 +50,21 @@ public abstract class PanelErledigteUrls extends JPanel {
     private void initListeners() {
         jToggleButtonLaden.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLaden.isSelected()) {
-                jButtonLoeschen.setEnabled(true);
                 updateModelAndRecalculate(createDataModel());
             } else {
-                jButtonLoeschen.setEnabled(false);
-                updateModelAndRecalculate(new TModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
-            }
-        });
-
-        jButtonLoeschen.addActionListener((ActionEvent e) -> {
-            final int ret = JOptionPane.showConfirmDialog(this, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                workList.alleLoeschen();
+                updateModelAndRecalculate(new NonEditableTableModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
             }
         });
     }
 
-    private void updateModelAndRecalculate(@NotNull TModel model) {
+    private void updateModelAndRecalculate(@NotNull TableModel model) {
         jTable1.setModel(model);
         setsum();
     }
 
-    protected TModel createDataModel() {
+    protected TableModel createDataModel() {
         final var data = MVUsedUrlModelHelper.getObjectData(workList.getListeUrlsSortDate());
-        return new TModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
+        return new NonEditableTableModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
     }
 
     private void setsum() {
@@ -84,28 +75,29 @@ public abstract class PanelErledigteUrls extends JPanel {
         }
     }
 
-    protected String getExportFileLocation() {
-        DialogZiel dialog = new DialogZiel(null, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt", "Filmtitel speichern");
-        dialog.setVisible(true);
-        if (!dialog.ok)
-            return "";
-        else
-            return dialog.ziel;
-
-    }
-
     protected List<MVUsedUrl> getExportableList() {
-        return workList.getSortedList();
+        ArrayList<MVUsedUrl> ret = new ArrayList<>(workList.getListeUrlsSortDate());
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        ret.sort((o1, o2) -> sorter.compare(o1.getTitel(), o2.getTitel()));
+
+        return ret;
     }
 
     private void export() {
         if (jTable1.getModel().getRowCount() <= 0)
             return;
 
-        final String ziel = getExportFileLocation();
-        if (!ziel.isEmpty())
-            new HistoryWriterThread(ziel, getExportableList()).start();
-
+        var title = "Filmtitel speichern";
+        if (workList instanceof AboHistoryController) {
+            title = "Abo-Historie speichern";
+        }
+        if (workList instanceof SeenHistoryController) {
+            title = "Download-Historie speichern";
+        }
+        var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),title,GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt");
+        if (destFile != null) {
+            new HistoryWriterThread(destFile.getAbsolutePath(), getExportableList()).start();
+        }
     }
 
     class BeobMausTabelle extends MouseAdapter {
@@ -222,8 +214,7 @@ public abstract class PanelErledigteUrls extends JPanel {
     private void initComponents() {
         var jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
-        panel1 = new JPanel();
-        jButtonLoeschen = new JButton();
+        var panel1 = new JPanel();
         jToggleButtonLaden = new JToggleButton();
         jButtonExport = new JButton();
         jLabelSum = new JLabel();
@@ -253,15 +244,10 @@ public abstract class PanelErledigteUrls extends JPanel {
                 new AC()
                     .fill().gap()
                     .grow().fill().gap()
-                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
                     .fill()));
-
-            //---- jButtonLoeschen ----
-            jButtonLoeschen.setText("Liste l\u00f6schen"); //NON-NLS
-            panel1.add(jButtonLoeschen, new CC().cell(3, 0));
 
             //---- jToggleButtonLaden ----
             jToggleButtonLaden.setText("Laden"); //NON-NLS
@@ -277,8 +263,6 @@ public abstract class PanelErledigteUrls extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     protected JTable jTable1;
-    private JPanel panel1;
-    protected JButton jButtonLoeschen;
     protected JToggleButton jToggleButtonLaden;
     private JButton jButtonExport;
     private JLabel jLabelSum;

@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
  * Rechte Maustaste in der Tabelle (Kontextmenü)
  */
 public class BeobTableHeader extends MouseAdapter {
-    private final MVTable tabelle;
+    protected final MVTable tabelle;
     private final String[] columns;
     private final boolean[] spaltenAnzeigen;
     private final int[] ausblenden;
@@ -60,6 +60,17 @@ public class BeobTableHeader extends MouseAdapter {
         return false;
     }
 
+    protected void toggleButtonVisibility(boolean isSelected) {
+        for (int i : button) {
+            setSpalten(i, isSelected);
+        }
+    }
+
+    protected void toggleSenderIconDisplay(boolean isSelected) {
+        tabelle.setShowIcon(isSelected);
+        setSpalten();
+    }
+
     private void showMenu(MouseEvent evt) {
         JPopupMenu jPopupMenu = new JPopupMenu();
         // Spalten ein-ausschalten
@@ -75,16 +86,11 @@ public class BeobTableHeader extends MouseAdapter {
         }
         // jetzt evtl. noch die Button
         if (button.length > 0) {
-            //##Trenner##
             jPopupMenu.addSeparator();
-            //##Trenner##
-            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Button anzeigen");
+
+            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Buttons anzeigen");
             item2.setSelected(anzeigen(button[0])); //entweder alle oder keiner!
-            item2.addActionListener(e -> {
-                for (int i : button) {
-                    setSpalten(i, item2.isSelected());
-                }
-            });
+            item2.addActionListener(e -> toggleButtonVisibility(item2.isSelected()));
             jPopupMenu.add(item2);
         }
         if (icon) {
@@ -92,10 +98,7 @@ public class BeobTableHeader extends MouseAdapter {
 
             final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Sendericons anzeigen");
             item3.setSelected(tabelle.showSenderIcons());
-            item3.addActionListener(e -> {
-                tabelle.setShowIcon(item3.isSelected());
-                setSpalten();
-            });
+            item3.addActionListener(e -> toggleSenderIconDisplay(item3.isSelected()));
             jPopupMenu.add(item3);
 
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Sendericons anzeigen");
@@ -146,7 +149,7 @@ public class BeobTableHeader extends MouseAdapter {
         tabelle.setHeight();
     }
 
-    private void setSpalten(int k, boolean anz) {
+    protected void setSpalten(int k, boolean anz) {
         spaltenAnzeigen[k] = anz;
         tabelle.spaltenEinAus();
     }

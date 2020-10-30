@@ -1,20 +1,15 @@
 package mediathek.tool.models;
 
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class TModel extends DefaultTableModel {
+public class TModel extends NonEditableTableModel {
     public TModel() {
+        super();
     }
 
     public TModel(Object[][] data, Object[] columnNames) {
         super(data, columnNames);
-    }
-
-    @Override
-    public boolean isCellEditable(int i, int j) {
-        return false;
     }
 
     @SuppressWarnings("unchecked")

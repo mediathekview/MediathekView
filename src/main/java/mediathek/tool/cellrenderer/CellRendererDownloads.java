@@ -5,10 +5,11 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Log;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -22,6 +23,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
+    private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
     private final Icon film_start_tab;
     private final Icon film_start_sw_tab;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
@@ -82,12 +84,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
         try {
-            setBackground(null);
-            setForeground(null);
-            setIcon(null);
-            setToolTipText(null);
-            setHorizontalAlignment(SwingConstants.LEADING);
-
+            resetComponent();
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
@@ -229,55 +226,42 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             setBackgroundColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
-            Log.errorLog(758200166, ex);
+            logger.error(ex);
         }
         return this;
+    }
+
+    private void setIconsAndToolTips(DatenDownload datenDownload, Icon filmIcon,
+                                     Icon downloadStartIcon, Icon downloadStopIcon) {
+        if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
+            switch (datenDownload.start.status) {
+                case Start.STATUS_FERTIG:
+                    setIcon(filmIcon);
+                    setToolTipText(PLAY_DOWNLOADED_FILM);
+                    break;
+
+                case Start.STATUS_ERR:
+                    setIcon(downloadStartIcon);
+                    setToolTipText(DOWNLOAD_STARTEN);
+                    break;
+
+                default:
+                    setIcon(downloadStopIcon);
+                    setToolTipText(DOWNLOAD_STOPPEN);
+                    break;
+            }
+        } else {
+            setIcon(downloadStartIcon);
+            setToolTipText(DOWNLOAD_STARTEN);
+        }
     }
 
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (isSelected) {
-            if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
-                switch (datenDownload.start.status) {
-                    case Start.STATUS_FERTIG:
-                        setIcon(film_start_tab);
-                        setToolTipText(PLAY_DOWNLOADED_FILM);
-                        break;
-
-                    case Start.STATUS_ERR:
-                        setIcon(download_start_tab);
-                        setToolTipText(DOWNLOAD_STARTEN);
-                        break;
-
-                    default:
-                        setIcon(download_stop_tab);
-                        setToolTipText(DOWNLOAD_STOPPEN);
-                        break;
-                }
-            } else {
-                setIcon(download_start_tab);
-                setToolTipText(DOWNLOAD_STARTEN);
-            }
-        } else if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
-            switch (datenDownload.start.status) {
-                case Start.STATUS_FERTIG:
-                    setIcon(film_start_sw_tab);
-                    setToolTipText(PLAY_DOWNLOADED_FILM);
-                    break;
-
-                case Start.STATUS_ERR:
-                    setIcon(download_start_sw_tab);
-                    setToolTipText(DOWNLOAD_STARTEN);
-                    break;
-
-                default:
-                    setIcon(download_stop_sw_tab);
-                    setToolTipText(DOWNLOAD_STOPPEN);
-                    break;
-            }
+            setIconsAndToolTips(datenDownload, film_start_tab, download_start_tab, download_stop_tab);
         } else {
-            setIcon(download_start_sw_tab);
-            setToolTipText(DOWNLOAD_STARTEN);
+            setIconsAndToolTips(datenDownload, film_start_sw_tab, download_start_sw_tab, download_stop_sw_tab);
         }
     }
 

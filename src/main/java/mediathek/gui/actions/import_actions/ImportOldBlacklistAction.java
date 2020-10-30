@@ -31,11 +31,11 @@ public class ImportOldBlacklistAction extends AbstractAction {
                     alert.setContentText(text);
                     alert.showAndWait();
                 } catch (Exception ex) {
-                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
+                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
                             "Fehler beim Importieren der Blacklist",
                             "Es trat ein Fehler beim Import der Blacklist auf.\n" +
                                     "Sollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                            ex);
+                            ex));
                 }
             } else {
                 var alert = new ImportSettingsAlert(Alert.AlertType.WARNING);

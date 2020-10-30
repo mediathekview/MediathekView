@@ -38,12 +38,7 @@ public class JFXSearchPanel extends CustomTextField {
         rightNode.setVisible(false);
 
         final StringProperty textProperty = textProperty();
-        textProperty.addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty())
-                rightNode.setVisible(false);
-            else
-                rightNode.setVisible(true);
-        });
+        textProperty.addListener((observable, oldValue, newValue) -> rightNode.setVisible(!newValue.isEmpty()));
 
     }
 }

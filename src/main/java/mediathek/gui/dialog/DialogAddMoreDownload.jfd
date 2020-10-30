@@ -1,0 +1,92 @@
+JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {par l {comp jPanelExtra::t:::x, seq t {space :0:0:x, comp btnOk:::p::p, space :::p, comp btnCancel:::p::p, space s:::p, comp btnChange:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanelExtra:::p::p, space :::p, par b {comp btnChange::b:p::p, comp btnCancel::b:p::p, comp btnOk::b:p::p}, space ::2:x}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Alle Downloads starten"
+			"modal": true
+			"resizable": false
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par l {seq {comp jComboBoxPath:::p:450:p, space :::p, comp jButtonPath:::p::p, space :::x, comp jButtonDelPath:::p::p}, comp jPanel1:::::x}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel1::b:p::p, comp jComboBoxPath::b:p::p, comp jButtonDelPath::b:p::p, comp jButtonPath::b:p::p}, space u:::p, comp jPanel1:::p::p, space :::x}}"
+			} ) {
+				name: "jPanelExtra"
+				"border": new javax.swing.border.EtchedBorder( 1, null, null )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "Speicherpfad:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "jComboBoxPath"
+					"editable": true
+					"model": new javax.swing.DefaultComboBoxModel
+					auxiliary() {
+						"JavaCodeGenerator.typeParameters": "String"
+					}
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonDelPath"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
+					"toolTipText": "History löschen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonPath"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Zielpfad auswählen"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+					"gap": 5
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "chkInfo"
+						"text": "Infodatei anlegen: \"Filmname.txt\""
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxPfadSpeichern"
+						"text": "Zielpfad speichern"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "chkSubtitle"
+						"text": "Untertitel speichern: \"Filmname.xxx\""
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "chkStart"
+						"text": "Download sofort starten"
+					} )
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnChange"
+				"text": "Einzeln anlegen"
+				"toolTipText": "Die Sammelaktion wird abgebrochen und Sie können im Anschluß die Einstellungen für jeden Download einzeln festlegen."
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCancel"
+				"text": "Abbrechen"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnOk"
+				"text": "Speichern"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 730, 230 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

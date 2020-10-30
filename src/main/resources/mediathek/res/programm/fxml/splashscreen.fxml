@@ -10,19 +10,13 @@
       minWidth="-Infinity"
       prefWidth="600.0" stylesheets="mediathek/res/css/splashscreen.css"
       xmlns="http://javafx.com/javafx/11.0.1">
-    <children>
-        <Label fx:id="appName" id="appName"/>
-        <Label fx:id="appVersion" id="appVersion"/>
-        <Pane nodeOrientation="RIGHT_TO_LEFT">
-            <children>
-                <ImageView id="image" fitHeight="200.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="/splash.png"/>
-                    </image>
-                </ImageView>
-            </children>
-        </Pane>
-        <Label fx:id="progressText" id="progressText"/>
-        <ProgressBar fx:id="progressBar" id="progressBar"/>
-    </children>
+    <Label fx:id="appName" id="appName"/>
+    <Label fx:id="appVersion" id="appVersion"/>
+    <Pane nodeOrientation="RIGHT_TO_LEFT">
+        <ImageView id="image" fitHeight="200.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="/splash.png"/>
+        </ImageView>
+    </Pane>
+    <Label fx:id="progressText" id="progressText"/>
+    <ProgressBar fx:id="progressBar" id="progressBar"/>
 </VBox>

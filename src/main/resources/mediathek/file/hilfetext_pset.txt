@@ -109,7 +109,6 @@ zum Start braucht. Mögliche Parameter sind:
 
 Diese Angaben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
-%F ist die URL des Films für den flvstreamer vorbereitet
 
 Zwei Sterne "**" werden durch den Zieldateinamen mit Pfad ersetzt.
 

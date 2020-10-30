@@ -22,11 +22,7 @@ import static mediathek.config.MVColor.*;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungenColor extends JPanel {
-    private final JFrame parentComponent;
-
-    public PanelEinstellungenColor(JFrame pparentComponent) {
-        parentComponent = pparentComponent;
-
+    public PanelEinstellungenColor() {
         initComponents();
         init();
     }
@@ -43,11 +39,10 @@ public class PanelEinstellungenColor extends JPanel {
     }
 
     private void getColor(MVC mvc) {
-        DialogFarbe dialog = new DialogFarbe(parentComponent, true, mvc.color);
-        dialog.setVisible(true);
-        if (dialog.farbe != null) {
-            if (!dialog.farbe.equals(mvc.color)) {
-                mvc.set(dialog.farbe);
+        var selectedColor = JColorChooser.showDialog(this,"Farbe auswählen", mvc.color);
+        if (selectedColor != null) {
+            if (!selectedColor.equals(mvc.color)) {
+                mvc.set(selectedColor);
                 jTable1.setModel(getModel());
                 GuiFunktionen.updateGui(MediathekGui.ui());
                 Daten.mVColor.save();

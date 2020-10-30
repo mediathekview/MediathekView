@@ -25,18 +25,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    public static final ImageIcon ICON_DIALOG_PLUS = GetIcon.getProgramIcon("dialog-plus.png", 16, 16);
-    public static final ImageIcon ICON_DIALOG_MINUS = GetIcon.getProgramIcon("dialog-minus.png", 16, 16);
-    public static final ImageIcon ICON_DIALOG_ADD = GetIcon.getProgramIcon("dialog-add.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_EIN_SW = GetIcon.getProgramIcon("dialog-ein-sw.png", 16, 16);
 
-    public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
-    public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_DOWNLOAD_ALLE_STARTEN = GetIcon.getProgramIcon("menue-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_LOESCHEN = GetIcon.getProgramIcon("menue-download-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_HISTORY_ADD = GetIcon.getProgramIcon("menue-history-add.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_HISTORY_REMOVE = GetIcon.getProgramIcon("menue-history-remove.png", 16, 16);
     public static final ImageIcon ICON_MENUE_VORZIEHEN = GetIcon.getProgramIcon("menue-vorziehen.png", 16, 16);
 
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
@@ -44,7 +36,6 @@ public class Icons {
 
     public static final ImageIcon ICON_BUTTON_REMOVE = GetIcon.getProgramIcon("button-remove.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_ADD = GetIcon.getProgramIcon("button-add.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_AKTUALISIEREN = GetIcon.getProgramIcon("button-aktualisieren.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_DOWN = GetIcon.getProgramIcon("button-move-down.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_HELP = GetIcon.getProgramIcon("button-help.png", 16, 16);

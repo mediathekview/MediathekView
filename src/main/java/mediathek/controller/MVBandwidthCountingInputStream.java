@@ -15,7 +15,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
 
     private final InputStream iStream;
     private final BandwidthCalculationTask calculationTask = new BandwidthCalculationTask();
-    private final ScheduledFuture calculationTaskFuture;
+    private final ScheduledFuture<?> calculationTaskFuture;
 
     public MVBandwidthCountingInputStream(InputStream in) {
         iStream = in;

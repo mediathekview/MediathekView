@@ -8,28 +8,33 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ShutdownState;
 import org.tbee.javafx.scene.layout.MigPane;
+
+import java.util.EnumSet;
 
 /**
  * Display a wait dialog with some status message to inform user what is happening currently.
  */
 public class ShutdownDialog {
+    private static final double MAXIMUM_STEPS = EnumSet.allOf(ShutdownState.class).size();
+    private final MediathekGui gui;
     private Label lblStatusText;
     private Stage stage;
     private ProgressBar progress;
-    private final double maxTasks;
-    private final MediathekGui gui;
-    private boolean hidden = false;
+    private boolean hidden;
+    private double curSteps;
 
-    public ShutdownDialog(MediathekGui gui, int maxTasks) {
-        this.maxTasks = maxTasks;
+    public ShutdownDialog(MediathekGui gui) {
         this.gui = gui;
 
         Platform.runLater(() -> {
             stage = new Stage();
             stage.setOnHidden(e -> hidden = true);
             stage.setAlwaysOnTop(true);
+            stage.initOwner(JFXHiddenApplication.getPrimaryStage());
             stage.setResizable(false);
             stage.setOnCloseRequest(Event::consume);
             stage.initStyle(StageStyle.UNDECORATED);
@@ -55,19 +60,20 @@ public class ShutdownDialog {
         gui.setEnabled(true);
     }
 
-    public void setStatusText(int task, String text) {
+    public void setStatusText(ShutdownState state) {
         Platform.runLater(() -> {
-            final double percent = task / maxTasks;
-            progress.setProgress(percent);
-            String message = "(" + task + "/" + (int) maxTasks + ") "
-                    + text;
-            lblStatusText.setText(message);
+            curSteps++;
+            final double p = (curSteps / MAXIMUM_STEPS);
+            progress.setProgress(p);
+            lblStatusText.setText(state.toString());
         });
-        //give the user some time to read the messages
+/*
         try {
-            Thread.sleep(125);
-        } catch (InterruptedException ignored) {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+*/
     }
 
     private Scene createScene() {

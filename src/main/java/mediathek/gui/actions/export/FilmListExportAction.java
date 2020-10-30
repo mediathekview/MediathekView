@@ -1,12 +1,12 @@
 package mediathek.gui.actions.export;
 
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import mediathek.config.Konstanten;
 import mediathek.javafx.tool.FXProgressPane;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FileDialogs;
 import org.controlsfx.control.StatusBar;
 
 import javax.swing.*;
@@ -25,14 +25,14 @@ public class FilmListExportAction extends AbstractAction {
         super();
         this.gui = gui;
 
-        putValue(NAME, "Filmliste...");
+        putValue(NAME, "Lesbare Filmliste...");
     }
 
     private void export(File selectedFile) {
         StatusBar bar = gui.getStatusBarController().getStatusBar();
         FXProgressPane hb = new FXProgressPane();
 
-        FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile);
+        FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile, true);
         task.setOnSucceeded(e -> {
             bar.getRightItems().remove(hb);
             showSuccess();
@@ -70,19 +70,10 @@ public class FilmListExportAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         setEnabled(false);
 
-        Platform.runLater(() -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Filmliste sichern");
-            fileChooser.setInitialFileName("filme");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Unkomprimiert", "*.json"),
-                    new FileChooser.ExtensionFilter("XZ Komprimiert (Standard)", "*.xz")
-            );
-            File selectedFile = fileChooser.showSaveDialog(null);
-            if (selectedFile != null) {
-                export(selectedFile);
-            }
-        });
+        var selectedFile = FileDialogs.chooseSaveFileLocation(gui,"Lesbare Filmliste sichern","");
+        if (selectedFile != null) {
+            JavaFxUtils.invokeInFxThreadAndWait(() -> export(selectedFile));
+        }
 
         setEnabled(true);
     }

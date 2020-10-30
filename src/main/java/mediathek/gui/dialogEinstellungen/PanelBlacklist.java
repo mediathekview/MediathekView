@@ -3,34 +3,28 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.daten.DatenBlacklist;
+import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.Filter;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Listener;
-import mediathek.tool.TextCopyPasteHandler;
-import mediathek.tool.models.TModel;
+import mediathek.tool.*;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class PanelBlacklist extends JPanel {
-    public boolean ok = false;
+    public boolean ok;
     public String ziel;
     private final String name;
     private final Daten daten;
@@ -78,7 +72,14 @@ public class PanelBlacklist extends JPanel {
         jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
-        jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
+
+        var config = ApplicationConfiguration.getConfiguration();
+        jCheckBoxGeo.setSelected(config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false));
+        jCheckBoxGeo.addActionListener(e -> {
+            config.setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
+            notifyBlacklistChanged();
+        });
+
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
@@ -90,7 +91,12 @@ public class PanelBlacklist extends JPanel {
 
     private void init() {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
-        jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        jTableBlacklist.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                tableSelect();
+            }
+        });
+
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
@@ -102,10 +108,6 @@ public class PanelBlacklist extends JPanel {
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
-            notifyBlacklistChanged();
-        });
-        jCheckBoxGeo.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
             notifyBlacklistChanged();
         });
         jCheckBoxAbo.addActionListener(e -> {
@@ -128,7 +130,7 @@ public class PanelBlacklist extends JPanel {
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
-                daten.getListeBlacklist().add(new DatenBlacklist(se, th, ti, thti));
+                daten.getListeBlacklist().add(new BlacklistRule(se, th, ti, thti));
                 tabelleLaden();
             }
         });
@@ -141,12 +143,12 @@ public class PanelBlacklist extends JPanel {
                 int selectedTableRow = jTableBlacklist.getSelectedRow();
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-                    String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR).toString();
-                    DatenBlacklist bl = daten.getListeBlacklist().get(delNr);
-                    bl.arr[DatenBlacklist.BLACKLIST_SENDER] = se;
-                    bl.arr[DatenBlacklist.BLACKLIST_THEMA] = th;
-                    bl.arr[DatenBlacklist.BLACKLIST_TITEL] = ti;
-                    bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL] = thti;
+                    String delNr = jTableBlacklist.getModel().getValueAt(row, BlacklistRule.BLACKLIST_NR).toString();
+                    BlacklistRule bl = daten.getListeBlacklist().getRuleByNr(delNr);
+                    bl.arr[BlacklistRule.BLACKLIST_SENDER] = se;
+                    bl.arr[BlacklistRule.BLACKLIST_THEMA] = th;
+                    bl.arr[BlacklistRule.BLACKLIST_TITEL] = ti;
+                    bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = thti;
                     tabelleLaden();
                     jTableBlacklist.addRowSelectionInterval(row, row);
                     notifyBlacklistChanged();
@@ -163,8 +165,31 @@ public class PanelBlacklist extends JPanel {
             }
         });
         jComboBoxSender.addActionListener(e -> comboThemaLaden());
-        jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        jTextFieldThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
+
+        var documentListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                tus();
+            }
+
+            private void tus() {
+                Filter.checkPattern1(jTextFieldThemaTitel);
+                Filter.checkPattern1(jTextFieldTitel);
+            }
+        };
+        jTextFieldTitel.getDocument().addDocumentListener(documentListener);
+        jTextFieldThemaTitel.getDocument().addDocumentListener(documentListener);
+
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
@@ -219,49 +244,37 @@ public class PanelBlacklist extends JPanel {
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES));
+        var model = new DefaultTableModel(daten.getListeBlacklist().getObjectData(), BlacklistRule.COLUMN_NAMES);
+        jTableBlacklist.setModel(model);
     }
 
     private void tableSelect() {
-        DatenBlacklist bl = null;
+        BlacklistRule bl = null;
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            bl = daten.getListeBlacklist().get(delNr);
+            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
+            bl = daten.getListeBlacklist().getRuleByNr(delNr);
         }
         if (bl != null) {
-            jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER]);
-            jComboBoxThema.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_THEMA]);
-            jTextFieldTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_TITEL]);
-            jTextFieldThemaTitel.setText(bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]);
+            jComboBoxSender.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_SENDER]);
+            jComboBoxThema.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_THEMA]);
+            jTextFieldTitel.setText(bl.arr[BlacklistRule.BLACKLIST_TITEL]);
+            jTextFieldThemaTitel.setText(bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
         }
     }
 
-    private void tabelleZeileLoeschen() {
+    private void removeTableRow() {
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            daten.getListeBlacklist().remove(delNr);
+            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
+            daten.getListeBlacklist().remove(Integer.parseInt(delNr));
             tabelleLaden();
         }
     }
 
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                tableSelect();
-            }
-        }
-    }
-
     private class BeobMausTabelle extends MouseAdapter {
-
-        //rechhte Maustaste in der Tabelle
-        private final BeobLoeschen beobLoeschen = new BeobLoeschen();
 
         @Override
         public void mousePressed(MouseEvent arg0) {
@@ -287,41 +300,10 @@ public class PanelBlacklist extends JPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
             JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(beobLoeschen);
+            item.addActionListener(l -> removeTableRow());
             jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobLoeschen implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelleZeileLoeschen();
-            }
-        }
-    }
-
-    private class BeobFilterTitelDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(jTextFieldThemaTitel);
-            Filter.checkPattern1(jTextFieldTitel);
         }
     }
 
@@ -335,18 +317,13 @@ public class PanelBlacklist extends JPanel {
     private void initComponents() {
         var jTabbedPaneBlacklist = new JTabbedPane();
         var jPanel3 = new JPanel();
-        var jPanel5 = new JPanel();
-        var jLabel3 = new JLabel();
         jCheckBoxZukunftNichtAnzeigen = new JCheckBox();
+        jCheckBoxGeo = new JCheckBox();
         var jPanel6 = new JPanel();
         jSliderMinuten = new JSlider();
         var jLabel1 = new JLabel();
         jTextFieldMinuten = new JTextField();
         var jLabel13 = new JLabel();
-        var jPanel7 = new JPanel();
-        var jLabel4 = new JLabel();
-        jCheckBoxGeo = new JCheckBox();
-        var jLabel9 = new JLabel();
         var jPanel1 = new JPanel();
         var jScrollPane1 = new JScrollPane();
         jTableBlacklist = new JTable();
@@ -371,7 +348,6 @@ public class PanelBlacklist extends JPanel {
         jCheckBoxStart = new JCheckBox();
         jCheckBoxBlacklistEingeschaltet = new JCheckBox();
         jCheckBoxAbo = new JCheckBox();
-        var jPanel2 = new JPanel();
 
         //======== this ========
 
@@ -380,38 +356,16 @@ public class PanelBlacklist extends JPanel {
 
             //======== jPanel3 ========
             {
+                jPanel3.setLayout(new VerticalLayout(5));
 
-                //======== jPanel5 ========
-                {
-                    jPanel5.setBorder(new EtchedBorder());
+                //---- jCheckBoxZukunftNichtAnzeigen ----
+                jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen"); //NON-NLS
+                jPanel3.add(jCheckBoxZukunftNichtAnzeigen);
 
-                    //---- jLabel3 ----
-                    jLabel3.setText("Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"); //NON-NLS
-
-                    //---- jCheckBoxZukunftNichtAnzeigen ----
-                    jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen"); //NON-NLS
-
-                    GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
-                    jPanel5.setLayout(jPanel5Layout);
-                    jPanel5Layout.setHorizontalGroup(
-                        jPanel5Layout.createParallelGroup()
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel5Layout.createParallelGroup()
-                                    .addComponent(jLabel3)
-                                    .addComponent(jCheckBoxZukunftNichtAnzeigen))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                    jPanel5Layout.setVerticalGroup(
-                        jPanel5Layout.createParallelGroup()
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBoxZukunftNichtAnzeigen)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                }
+                //---- jCheckBoxGeo ----
+                jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen"); //NON-NLS
+                jCheckBoxGeo.setToolTipText("<html>Geogeblockte Filme k\u00f6nnen im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>"); //NON-NLS
+                jPanel3.add(jCheckBoxGeo);
 
                 //======== jPanel6 ========
                 {
@@ -461,70 +415,7 @@ public class PanelBlacklist extends JPanel {
                                 .addContainerGap())
                     );
                 }
-
-                //======== jPanel7 ========
-                {
-                    jPanel7.setBorder(new EtchedBorder());
-
-                    //---- jLabel4 ----
-                    jLabel4.setText("Geogeblockte Filme k\u00f6nnen im jeweiligen \"Ausland\" nicht abgerufen werden."); //NON-NLS
-
-                    //---- jCheckBoxGeo ----
-                    jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen"); //NON-NLS
-
-                    //---- jLabel9 ----
-                    jLabel9.setText("(Dazu muss die eigene Position in den Einstellungen angegeben werden)"); //NON-NLS
-
-                    GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
-                    jPanel7.setLayout(jPanel7Layout);
-                    jPanel7Layout.setHorizontalGroup(
-                        jPanel7Layout.createParallelGroup()
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel7Layout.createParallelGroup()
-                                    .addGroup(jPanel7Layout.createSequentialGroup()
-                                        .addGap(12, 12, 12)
-                                        .addComponent(jLabel9))
-                                    .addComponent(jLabel4)
-                                    .addComponent(jCheckBoxGeo))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                    jPanel7Layout.setVerticalGroup(
-                        jPanel7Layout.createParallelGroup()
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBoxGeo)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    );
-                }
-
-                GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-                jPanel3.setLayout(jPanel3Layout);
-                jPanel3Layout.setHorizontalGroup(
-                    jPanel3Layout.createParallelGroup()
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(jPanel3Layout.createParallelGroup()
-                                .addComponent(jPanel6, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel5, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addContainerGap())
-                );
-                jPanel3Layout.setVerticalGroup(
-                    jPanel3Layout.createParallelGroup()
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jPanel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(205, Short.MAX_VALUE))
-                );
+                jPanel3.add(jPanel6);
             }
             jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3); //NON-NLS
 
@@ -654,10 +545,11 @@ public class PanelBlacklist extends JPanel {
                 jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
                 //---- jLabel10 ----
-                jLabel10.setText("alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
+                jLabel10.setText("Alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
 
                 //---- jButtonTabelleLoeschen ----
                 jButtonTabelleLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); //NON-NLS
+                jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
 
                 GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -672,7 +564,7 @@ public class PanelBlacklist extends JPanel {
                                     .addGroup(jPanel1Layout.createParallelGroup()
                                         .addComponent(jRadioButtonWhitelist)
                                         .addComponent(jRadioButtonBlacklist))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 386, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 373, Short.MAX_VALUE)
                                     .addComponent(jButtonHilfe))
                                 .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                     .addGap(0, 0, Short.MAX_VALUE)
@@ -692,7 +584,7 @@ public class PanelBlacklist extends JPanel {
                                     .addComponent(jRadioButtonWhitelist))
                                 .addComponent(jButtonHilfe))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                 .addComponent(jLabel10)
@@ -745,21 +637,6 @@ public class PanelBlacklist extends JPanel {
                     .addContainerGap())
         );
 
-        //======== jPanel2 ========
-        {
-
-            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGap(0, 100, Short.MAX_VALUE)
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGap(0, 100, Short.MAX_VALUE)
-            );
-        }
-
         //---- buttonGroup1 ----
         var buttonGroup1 = new ButtonGroup();
         buttonGroup1.add(jRadioButtonBlacklist);
@@ -769,9 +646,9 @@ public class PanelBlacklist extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JCheckBox jCheckBoxZukunftNichtAnzeigen;
+    private JCheckBox jCheckBoxGeo;
     private JSlider jSliderMinuten;
     private JTextField jTextFieldMinuten;
-    private JCheckBox jCheckBoxGeo;
     private JTable jTableBlacklist;
     private JComboBox<String> jComboBoxSender;
     private JComboBox<String> jComboBoxThema;

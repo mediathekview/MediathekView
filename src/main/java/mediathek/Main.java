@@ -14,15 +14,16 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import oshi.SystemInfo;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -42,14 +44,23 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
-
     private static final Logger logger = LogManager.getLogger(Main.class);
+    public static Optional<SplashScreen> splashScreen = Optional.empty();
+
+    static {
+        // set up log4j callback registry
+        System.setProperty("log4j.shutdownCallbackRegistry", Log4jShutdownCallbackRegistry.class.getName());
+    }
 
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
@@ -90,7 +101,7 @@ public class Main {
         if (!Config.isPortableMode())
             path = Daten.getSettingsDirectory_String() + "/mediathekview.log";
         else
-            path = Config.baseFilePath + "/mediathekview.log"; //TODO maybe resolve is better in this case
+            path = Config.baseFilePath + "/mediathekview.log";
 
 
         final PatternLayout consolePattern;
@@ -228,12 +239,26 @@ public class Main {
         Security.setProperty("crypto.policy", "unlimited");
     }
 
+    private static void printEnvironmentInformation() {
+        SystemInfo si = new SystemInfo();
+        var hal = si.getHardware();
+        var cpu = hal.getProcessor();
+        logger.debug("=== Hardware Information ===");
+        logger.debug(cpu);
+        logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
+        logger.debug("=== Memory Information ===");
+        var mi = hal.getMemory();
+        logger.debug(mi);
+        logger.debug("=== Operating System ===");
+        var os = si.getOperatingSystem();
+        logger.debug(os);
+    }
+
     private static void printVersionInformation() {
-        final var formatter = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
         logger.debug("=== Java Information ===");
-        logger.info("Programmstart: {}", formatter.format(Log.startZeit));
-        //Version
+        logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         final long maxMem = Runtime.getRuntime().maxMemory();
@@ -244,13 +269,63 @@ public class Main {
         for (String ja : java) {
             logger.debug(ja);
         }
+        var arch = System.getProperty("os.arch");
+        if (arch != null) {
+            logger.debug("Architecture: {}", arch);
+        }
         logger.debug("===");
+    }
+
+    /**
+     * Copy user agent database to cache directory.
+     * Unfortunately we cannot work from within jar :(
+     */
+    private static void copyUserAgentDatabase() {
+        var strDatabase = PooledDatabaseConnection.getDatabaseCacheDirectory();
+
+        Path p = Paths.get(strDatabase + Konstanten.USER_AGENT_DATABASE);
+        logger.trace("deleting user agent database");
+        try {
+            Files.deleteIfExists(p);
+            logger.trace("copy user agent database to cache directory");
+            FileUtils.copyToFile(Main.class.getResourceAsStream("/database/" + Konstanten.USER_AGENT_DATABASE), p.toFile());
+        } catch (IOException e) {
+            logger.error("copyUserAgentDatabase failed:", e);
+        }
+    }
+
+    /**
+     * Migrate old settings stored in mediathek.xml to new app config
+     */
+    private static void migrateOldConfigSettings() {
+        var settingsDir = Daten.getSettingsDirectory_String();
+        if (settingsDir != null && !settingsDir.isEmpty()) {
+            Path pSettingsDir = Paths.get(settingsDir);
+            if (Files.exists(pSettingsDir)) {
+                //convert existing settings
+                Path settingsFile = pSettingsDir.resolve(Konstanten.CONFIG_FILE);
+                if (Files.exists(settingsFile)) {
+                    logger.trace("{} exists", Konstanten.CONFIG_FILE);
+                    logger.trace("migrating old config settings");
+                    try {
+                        SettingsMigrator migrator = new SettingsMigrator(settingsFile);
+                        migrator.migrate();
+                    }
+                    catch (Exception e) {
+                        logger.error("settings migration error", e);
+                    }
+                }
+            }
+            else
+                logger.trace("nothing to migrate");
+        }
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        Functions.disableAccessWarnings();
         setupEnvironmentProperties();
 
         if (GraphicsEnvironment.isHeadless()) {
@@ -268,17 +343,27 @@ public class Main {
 
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
+
+            initializeJavaFX();
+
+            JFXHiddenApplication.launchApplication();
+            checkMemoryRequirements();
+            installSingleInstanceHandler();
+
             setupPortableMode();
 
             printVersionInformation();
+            printEnvironmentInformation();
             printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
-            cmd.getErr().println(ex.getMessage());
-            if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, cmd.getErr())) {
-                ex.getCommandLine().usage(cmd.getErr());
+            try (var err = cmd.getErr()) {
+                err.println(ex.getMessage());
+                if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
+                    ex.getCommandLine().usage(err);
+                }
+                System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
             }
-            System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
         } catch (Exception ex) {
             logger.error("Command line parse error:", ex);
             System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
@@ -286,20 +371,23 @@ public class Main {
 
         printDirectoryPaths();
 
-        initializeJavaFX();
-
-        checkMemoryRequirements();
-
-        installSingleInstanceHandler();
-
         setSystemLookAndFeel();
 
-        splashScreen = Optional.of(new SplashScreen());
-        splashScreen.ifPresent(SplashScreen::show);
+        if (!Functions.isDebuggerAttached()) {
+            splashScreen = Optional.of(new SplashScreen());
+            splashScreen.ifPresent(SplashScreen::show);
+        }
+        else {
+            logger.warn("Debugger detected -> Splash screen disabled...");
+        }
+
+        migrateOldConfigSettings();
 
         loadConfigurationData();
 
         Daten.getInstance().launchHistoryDataLoading();
+        
+        Daten.getInstance().loadBookMarkData();
 
         deleteDatabase();
 
@@ -307,6 +395,8 @@ public class Main {
             setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
+
+        copyUserAgentDatabase();
 
         startGuiMode();
     }
@@ -386,8 +476,6 @@ public class Main {
         }
     }
 
-    public static Optional<SplashScreen> splashScreen = Optional.empty();
-
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
         logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
@@ -397,7 +485,7 @@ public class Main {
         if (!MemoryUtils.isLowMemoryEnvironment()) {
             //we can delete the database as it is not needed.
             try {
-                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "mediathekview.mv.db";
+                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "/mediathekview.mv.db";
                 Files.deleteIfExists(Paths.get(dbLocation));
             } catch (IOException e) {
                 logger.error("deleteDatabase()", e);
@@ -436,21 +524,17 @@ public class Main {
 
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
-        // more than 450MB avail...
-        if (maxMem < 450 * FileUtils.ONE_MB) {
-            if (SystemUtils.isJavaAwtHeadless()) {
-                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen bekommen.");
-                System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
-            } else {
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Speicherwarnung");
-                    alert.setContentText("MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.\n" +
-                            "Es werden mindestens 512MB RAM benötigt.");
-                    alert.showAndWait();
-                });
-            }
+        if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
+            JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Nicht genügend Arbeitsspeicher");
+                alert.setContentText("""
+                        Es werden mindestens 640MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
+
+                        Das Programm wird nun beendet.""");
+                alert.showAndWait();
+            });
 
             System.exit(3);
         }

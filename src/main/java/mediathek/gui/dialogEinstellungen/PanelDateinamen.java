@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -8,22 +10,23 @@ import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.TextCopyPasteHandler;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 @SuppressWarnings("serial")
 public class PanelDateinamen extends PanelVorlage {
-    public boolean ok = false;
+    public boolean ok;
     public String ziel = "";
-    private static final Color cGruen = new Color(0, 153, 51);
-    private static final Color cRot = new Color(255, 0, 0);
 
     @Handler
     private void handleReplaceListChange(ReplaceListChangedEvent e) {
@@ -36,13 +39,11 @@ public class PanelDateinamen extends PanelVorlage {
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
-        daten = d;
-
         daten.getMessageBus().subscribe(this);
 
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
-        jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
+        jLabelAlert.setIcon(IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 32));
         jButtonPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
@@ -112,23 +113,11 @@ public class PanelDateinamen extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
-            setColor(jCheckBoxTable);
-        });
+        jCheckBoxTable.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
         jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
-        setColor(jCheckBoxTable);
 
-        jCheckBoxAscii.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
-            setColor(jCheckBoxAscii);
-        });
+        jCheckBoxAscii.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
         jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-        setColor(jCheckBoxAscii);
-    }
-
-    private void setColor(final JCheckBox cb) {
-        cb.setForeground(cb.isSelected() ? cGruen : cRot);
     }
 
     private void setVon() {
@@ -171,7 +160,7 @@ public class PanelDateinamen extends PanelVorlage {
         if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
 
-        TModel model = new TModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
+        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
         model.setRowCount(0);
         Object[] object = new Object[ReplaceList.MAX_ELEM];
         for (String[] s : ReplaceList.list) {
@@ -216,265 +205,264 @@ public class PanelDateinamen extends PanelVorlage {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jTabbedPane1 = new JTabbedPane();
+        var jPanel1 = new JPanel();
+        var jScrollPane5 = new JScrollPane();
+        var jTextArea3 = new JTextArea();
+        var jPanel2 = new JPanel();
+        jCheckBoxTable = new JCheckBox();
+        var jPanel3 = new JPanel();
+        jButtonReset = new JButton();
+        var jScrollPane3 = new JScrollPane();
+        var jTextArea2 = new JTextArea();
+        var jScrollPane4 = new JScrollPane();
+        tabelle = new JTable();
+        jLabelAlert = new JLabel();
+        jLabelVon = new JLabel();
+        jTextFieldVon = new JTextField();
+        jLabelNach = new JLabel();
+        jTextFieldNach = new JTextField();
+        jButtonMinus = new JButton();
+        jButtonPlus = new JButton();
+        jButtonDown = new JButton();
+        jButtonUp = new JButton();
+        jCheckBoxAscii = new JCheckBox();
 
-        javax.swing.JTabbedPane jTabbedPane1 = new javax.swing.JTabbedPane();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JScrollPane jScrollPane5 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea3 = new javax.swing.JTextArea();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jCheckBoxTable = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jButtonReset = new javax.swing.JButton();
-        javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea2 = new javax.swing.JTextArea();
-        javax.swing.JScrollPane jScrollPane4 = new javax.swing.JScrollPane();
-        tabelle = new javax.swing.JTable();
-        jLabelAlert = new javax.swing.JLabel();
-        jLabelVon = new javax.swing.JLabel();
-        jTextFieldVon = new javax.swing.JTextField();
-        jLabelNach = new javax.swing.JLabel();
-        jTextFieldNach = new javax.swing.JTextField();
-        jButtonMinus = new javax.swing.JButton();
-        jButtonPlus = new javax.swing.JButton();
-        jButtonDown = new javax.swing.JButton();
-        jButtonUp = new javax.swing.JButton();
-        jCheckBoxAscii = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
+        //======== this ========
 
-        jTextArea3.setEditable(false);
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will, kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n");
-        jTextArea3.setMargin(new java.awt.Insets(3, 3, 3, 3));
-        jScrollPane5.setViewportView(jTextArea3);
+        //======== jTabbedPane1 ========
+        {
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
-                                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(472, Short.MAX_VALUE))
-        );
+            //======== jPanel1 ========
+            {
 
-        jTabbedPane1.addTab("Dateinamen", jPanel1);
+                //======== jScrollPane5 ========
+                {
 
-        jCheckBoxTable.setText("Ersetzungstabelle");
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jButtonReset.setText("Tabelle zurücksetzen");
-
-        jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        jTextArea2.setEditable(false);
-        jTextArea2.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(4);
-        jTextArea2.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!");
-        jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane3.setViewportView(jTextArea2);
-
-        tabelle.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
+                    //---- jTextArea3 ----
+                    jTextArea3.setEditable(false);
+                    jTextArea3.setColumns(20);
+                    jTextArea3.setRows(5);
+                    jTextArea3.setText("\nDie Dateinamen werden f\u00fcr jedes Betriebssystem passend aufbereitet.\n\nWer will, kann dar\u00fcber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"\u00df\" durch \"ss\" ersetzen.\n"); //NON-NLS
+                    jTextArea3.setMargin(new Insets(3, 3, 3, 3));
+                    jScrollPane5.setViewportView(jTextArea3);
                 }
-        ));
-        jScrollPane4.setViewportView(tabelle);
 
-        jLabelAlert.setText("Achtung");
+                GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+                jPanel1.setLayout(jPanel1Layout);
+                jPanel1Layout.setHorizontalGroup(
+                    jPanel1Layout.createParallelGroup()
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
+                            .addContainerGap())
+                );
+                jPanel1Layout.setVerticalGroup(
+                    jPanel1Layout.createParallelGroup()
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jScrollPane5, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(459, Short.MAX_VALUE))
+                );
+            }
+            jTabbedPane1.addTab("Dateinamen", jPanel1); //NON-NLS
 
-        jLabelVon.setText("von:");
+            //======== jPanel2 ========
+            {
 
-        jLabelNach.setText("nach:");
+                //---- jCheckBoxTable ----
+                jCheckBoxTable.setText("Ersetzungstabelle anwenden"); //NON-NLS
 
-        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
+                //======== jPanel3 ========
+                {
+                    jPanel3.setBorder(new EtchedBorder());
 
-        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
+                    //---- jButtonReset ----
+                    jButtonReset.setText("Tabelle zur\u00fccksetzen"); //NON-NLS
 
-        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png"))); // NOI18N
+                    //======== jScrollPane3 ========
+                    {
+                        jScrollPane3.setBorder(new EmptyBorder(1, 1, 1, 1));
 
-        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png"))); // NOI18N
+                        //---- jTextArea2 ----
+                        jTextArea2.setEditable(false);
+                        jTextArea2.setBackground(UIManager.getColor("Label.background")); //NON-NLS
+                        jTextArea2.setColumns(20);
+                        jTextArea2.setRows(4);
+                        jTextArea2.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also m\u00f6glich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!"); //NON-NLS
+                        jTextArea2.setBorder(new EmptyBorder(1, 1, 1, 1));
+                        jScrollPane3.setViewportView(jTextArea2);
+                    }
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
+                    //======== jScrollPane4 ========
+                    {
+
+                        //---- tabelle ----
+                        tabelle.setModel(new DefaultTableModel(
+                            new Object[][] {
+                                {null, null, null, null},
+                                {null, null, null, null},
+                                {null, null, null, null},
+                                {null, null, null, null},
+                            },
+                            new String[] {
+                                "Title 1", "Title 2", "Title 3", "Title 4" //NON-NLS
+                            }
+                        ));
+                        jScrollPane4.setViewportView(tabelle);
+                    }
+
+                    //---- jLabelAlert ----
+                    jLabelAlert.setText("Achtung"); //NON-NLS
+
+                    //---- jLabelVon ----
+                    jLabelVon.setText("von:"); //NON-NLS
+
+                    //---- jLabelNach ----
+                    jLabelNach.setText("nach:"); //NON-NLS
+
+                    //---- jButtonMinus ----
+                    jButtonMinus.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); //NON-NLS
+
+                    //---- jButtonPlus ----
+                    jButtonPlus.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); //NON-NLS
+
+                    //---- jButtonDown ----
+                    jButtonDown.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png"))); //NON-NLS
+
+                    //---- jButtonUp ----
+                    jButtonUp.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png"))); //NON-NLS
+
+                    GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
+                    jPanel3.setLayout(jPanel3Layout);
+                    jPanel3Layout.setHorizontalGroup(
+                        jPanel3Layout.createParallelGroup()
+                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane4)
-                                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addComponent(jScrollPane3)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jLabelAlert))
-                                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addComponent(jButtonReset)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addComponent(jLabelVon)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jLabelNach)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButtonUp)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonDown)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonPlus)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonMinus)))
-                                .addGap(15, 15, 15))
-        );
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(jLabelVon)
-                                        .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabelNach)
-                                        .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButtonUp)
-                                        .addComponent(jButtonDown)
-                                        .addComponent(jButtonPlus)
-                                        .addComponent(jButtonMinus))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel3Layout.createParallelGroup()
+                                    .addComponent(jScrollPane4)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jScrollPane3)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabelAlert))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jButtonReset)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabelVon)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldVon, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabelNach)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldNach, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                                        .addComponent(jButtonUp)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonDown)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonPlus)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonMinus)))
+                                .addGap(15, 15, 15))
+                    );
+                    jPanel3Layout.setVerticalGroup(
+                        jPanel3Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                    .addComponent(jLabelVon)
+                                    .addComponent(jTextFieldVon, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelNach)
+                                    .addComponent(jTextFieldNach, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButtonUp)
+                                    .addComponent(jButtonDown)
+                                    .addComponent(jButtonPlus)
+                                    .addComponent(jButtonMinus))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                    .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelAlert))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonReset)
                                 .addContainerGap())
-        );
+                    );
+                    jPanel3Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonDown, jButtonMinus, jButtonPlus, jButtonUp, jLabelNach, jLabelVon, jTextFieldNach, jTextFieldVon});
+                }
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDown, jButtonMinus, jButtonPlus, jButtonUp, jLabelNach, jLabelVon, jTextFieldNach, jTextFieldVon});
+                //---- jCheckBoxAscii ----
+                jCheckBoxAscii.setText("Nur ASCII-Zeichen erlauben"); //NON-NLS
+                jCheckBoxAscii.setToolTipText("<html>Es werden alle Zeichen \"\u00fcber 127\" ersetzt.  Auch Umlaute wie \"\u00f6 -> oe\" werden ersetzt.<br>Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.</html>"); //NON-NLS
 
-        jCheckBoxAscii.setText("nur ASCII-Zeichen erlauben");
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        jTextArea1.setEditable(false);
-        jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(3);
-        jTextArea1.setText("Es werden alle Zeichen \"über 127\" ersetzt. \nAuch Umlaute wie \"ö -> oe\" werden ersetzt.\nWenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.");
-        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane1.setViewportView(jTextArea1);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1)
-                                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(13, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
+                jPanel2.setLayout(jPanel2Layout);
+                jPanel2Layout.setHorizontalGroup(
+                    jPanel2Layout.createParallelGroup()
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGap(29, 29, 29)
-                                                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jCheckBoxAscii)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addGap(21, 21, 21)
-                                                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addComponent(jCheckBoxTable)
-                                                                .addGap(0, 0, Short.MAX_VALUE)))))
-                                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addContainerGap()
+                            .addGroup(jPanel2Layout.createParallelGroup()
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(21, 21, 21)
+                                    .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup()
+                                        .addComponent(jCheckBoxAscii)
+                                        .addComponent(jCheckBoxTable))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
+                            .addContainerGap())
+                );
+                jPanel2Layout.setVerticalGroup(
+                    jPanel2Layout.createParallelGroup()
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jCheckBoxTable)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCheckBoxAscii)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-        );
+                            .addContainerGap()
+                            .addComponent(jCheckBoxTable)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jCheckBoxAscii)
+                            .addContainerGap())
+                );
+            }
+            jTabbedPane1.addTab("Eigene Einstellungen", jPanel2); //NON-NLS
+        }
 
-        jTabbedPane1.addTab("Eigene Einstellungen", jPanel2);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTabbedPane1)
-                                .addContainerGap())
+            layout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jTabbedPane1)
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jTabbedPane1)
-                                .addContainerGap())
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jTabbedPane1)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonDown;
-    private javax.swing.JButton jButtonMinus;
-    private javax.swing.JButton jButtonPlus;
-    private javax.swing.JButton jButtonReset;
-    private javax.swing.JButton jButtonUp;
-    private javax.swing.JCheckBox jCheckBoxAscii;
-    private javax.swing.JCheckBox jCheckBoxTable;
-    private javax.swing.JLabel jLabelAlert;
-    private javax.swing.JLabel jLabelNach;
-    private javax.swing.JLabel jLabelVon;
-    private javax.swing.JTextField jTextFieldNach;
-    private javax.swing.JTextField jTextFieldVon;
-    private javax.swing.JTable tabelle;
+    // Generated using JFormDesigner non-commercial license
+    private JCheckBox jCheckBoxTable;
+    private JButton jButtonReset;
+    private JTable tabelle;
+    private JLabel jLabelAlert;
+    private JLabel jLabelVon;
+    private JTextField jTextFieldVon;
+    private JLabel jLabelNach;
+    private JTextField jTextFieldNach;
+    private JButton jButtonMinus;
+    private JButton jButtonPlus;
+    private JButton jButtonDown;
+    private JButton jButtonUp;
+    private JCheckBox jCheckBoxAscii;
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterTableSelect implements ListSelectionListener {

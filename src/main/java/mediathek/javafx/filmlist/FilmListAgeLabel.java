@@ -35,11 +35,18 @@ public class FilmListAgeLabel extends ComputedLabel {
     }
 
     private void setAgeToLabel() {
-      setComputedText(computeAge(Daten.getInstance().getListeFilme().getAge()));
+      setComputedText(computeAge(Daten.getInstance().getListeFilme().metaData().getAgeInSeconds()));
     }
 
     private String computeAge(long seconds) {
-      var duration = java.time.Duration.ofSeconds(seconds);
-      return String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
+        String result;
+        try {
+            var duration = java.time.Duration.ofSeconds(seconds);
+            result = String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
+        }
+        catch (IllegalArgumentException ex) {
+            result = "Ungültiges Alter in der Filmliste";
+        }
+      return result;
     }
 }

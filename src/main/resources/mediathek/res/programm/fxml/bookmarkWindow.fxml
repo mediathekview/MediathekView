@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.glyphfont.*?>
+<AnchorPane fx:id="BookmarkListDialog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="200" minWidth="200"
+            prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1">
+    <ToolBar prefHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Button fx:id="btnDeleteEntry" disable="true" mnemonicParsing="false" onAction="#btnDeleteEntry">
+            <tooltip>
+                <Tooltip text="Aus der Merkliste löschen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Button fx:id="btnMarkViewed" disable="true" mnemonicParsing="false" onAction="#btnMarkEntryAsViewed">
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="EYE" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Button fx:id="btnEditNote" disable="true" mnemonicParsing="false" onAction="#btnEditNote">
+            <tooltip>
+                <Tooltip text="Anmerkungen bearbeiten"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="PENCIL" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnSaveList" disable="true" mnemonicParsing="false" onAction="#btnSaveBookMarkList">
+            <tooltip>
+                <Tooltip text="Geänderte Merkliste abspeichern"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Separator orientation="VERTICAL"/>
+        <ToggleButton fx:id="btnShowDetails" mnemonicParsing="false" onAction="#btnShowDetailsAction">
+            <tooltip>
+                <Tooltip text="Erweiterte Film Informationen anzeigen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
+            </graphic>
+        </ToggleButton>
+        <Button fx:id="btnFilter" mnemonicParsing="false" onAction="#btnFilterAction">
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="FILTER" fontSize="16"/>
+            </graphic>
+        </Button>
+    </ToolBar>
+    <SplitPane fx:id="spSplitPane" dividerPositions="0.75" orientation="VERTICAL" AnchorPane.bottomAnchor="30.0"
+               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+        <AnchorPane>
+            <TableView fx:id="tbBookmarks" onContextMenuRequested="#tbviewOnContextRequested"
+                       onMouseClicked="#tbviewMouseClick" AnchorPane.bottomAnchor="0.0"
+                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <placeholder>
+                    <Label text="Keine Einträge vorhanden!"/>
+                </placeholder>
+                <columns>
+                    <TableColumn fx:id="colSender" editable="false" prefWidth="60" text="Sender"/>
+                    <TableColumn fx:id="colTheme" editable="false" prefWidth="200" text="Thema"/>
+                    <TableColumn fx:id="colTitle" editable="false" prefWidth="300" text="Titel"/>
+                    <TableColumn fx:id="colDuration" editable="false" prefWidth="60" text="Dauer"/>
+                    <TableColumn fx:id="colRunDate" editable="false" text="Sendedatum"/>
+                    <TableColumn fx:id="colBtnPlay" editable="false" prefWidth="25" sortable="false"/>
+                    <TableColumn fx:id="colBtnDownload" editable="false" prefWidth="25" sortable="false"/>
+                    <TableColumn fx:id="colUrl" editable="false" prefWidth="450" text="Url"/>
+                    <TableColumn fx:id="colExpiry" editable="false" text="Verfügbar bis"/>
+                    <TableColumn fx:id="colNote" prefWidth="400" text="Notiz"/>
+                </columns>
+            </TableView>
+        </AnchorPane>
+        <AnchorPane fx:id="pnLabel" minHeight="0.0" SplitPane.resizableWithParent="false">
+            <TextArea fx:id="taDescription" editable="false" prefHeight="60.0" wrapText="true"
+                      AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                      AnchorPane.topAnchor="0.0"/>
+            <Hyperlink fx:id="hyperLink" onAction="#hyperLinkSelected" prefHeight="20.0"
+                       text="Link zur Webseite" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"/>
+        </AnchorPane>
+    </SplitPane>
+    <HBox alignment="CENTER_LEFT" layoutY="574.0" prefHeight="30.0" spacing="20.0"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="100.0">
+        <padding>
+            <Insets left="10.0"/>
+        </padding>
+        <Label fx:id="lblCount" text="Label"/>
+        <Label fx:id="lblSeen" text="Label"/>
+        <Label fx:id="lblFilter" text="Label"/>
+        <Label fx:id="lblMessage" text="Label"/>
+    </HBox>
+</AnchorPane>

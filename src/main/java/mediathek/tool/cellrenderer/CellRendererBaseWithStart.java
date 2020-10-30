@@ -33,6 +33,14 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         SwingUtilities.invokeLater(() -> geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false));
     }
 
+    protected void resetComponent() {
+        setBackground(null);
+        setForeground(null);
+        setIcon(null);
+        setToolTipText(null);
+        setHorizontalAlignment(SwingConstants.LEADING);
+    }
+
     protected void setBackgroundColor(final Component c, final Start s, final boolean isSelected) {
         if (s != null) {
             Color color = null;

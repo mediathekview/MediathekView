@@ -11,7 +11,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 public class DialogNewSet extends JDialog {
-    public boolean ok = false;
+    public boolean ok;
     public boolean morgen = true;
     private final JFrame parent;
 
@@ -23,24 +23,29 @@ public class DialogNewSet extends JDialog {
             setLocationRelativeTo(parent);
         }
         setTitle("Das Standardset wurde aktualisiert");
-        jTextArea3.setText('\n'
-                + "   Es gibt ein neues Standardset der Videoplayer\n"
-                + "   für den Download und das Abspielen der Filme.\n");
+        jTextArea3.setText("""
+
+                   Es gibt ein neues Standardset der Videoplayer
+                   für den Download und das Abspielen der Filme.
+                """);
         jCheckBoxMorgen.setSelected(true);
         jCheckBoxMorgen.addActionListener(e -> morgen = jCheckBoxMorgen.isSelected());
 
-        jTextArea1.setText('\n'
-                + "   Die bestehenden Einstellungen werden nicht verändert.\n"
-                + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"
-                + "   \"Datei->Einstellungen->Set bearbeiten\"\n"
-                + "   aktiviert werden.\n");
+        jTextArea1.setText("""
 
-        jTextArea2.setText('\n'
-                + "   Es werden alle Programmsets (auch eigene) \n"
-                + "   gelöscht und die neuen Standardsets wieder angelegt.\n"
-                + '\n'
-                + "   (Wenn Sie die Einstellungen nicht verändert haben\n"
-                + "    ist das die Empfehlung)");
+                   Die bestehenden Einstellungen werden nicht verändert.
+                   Das neue Set wird nur angefügt und muss dann erst noch in den
+                   "Datei->Einstellungen->Set bearbeiten"
+                   aktiviert werden.
+                """);
+
+        jTextArea2.setText("""
+
+                Es werden alle Programmsets (auch eigene)\s
+                gelöscht und die neuen Standardsets wieder angelegt.
+
+                (Wenn Sie die Einstellungen nicht verändert haben
+                 ist das die Empfehlung)""".indent(3));
 
         jButtonAdd.addActionListener(e -> {
             ok = true;

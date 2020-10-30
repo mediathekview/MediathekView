@@ -28,6 +28,7 @@ import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,7 +63,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .forEach(d ->
                 {
                     d.film = listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
-                    d.setSizeFromUrl();
+                    d.setGroesse("");
                 });
     }
 
@@ -318,7 +319,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void setModelProgress(TModelDownload tModel) {
         int row = 0;
 
-        for (Vector item : tModel.getDataVector()) {
+        for (var item : tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) item.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
@@ -340,12 +341,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.forEach((download) -> listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]));
 
         boolean gefunden = false;
-        DatenAbo abo;
+
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
+        final var sdf = new SimpleDateFormat("dd.MM.yyyy");
+        final var todayDateStr = sdf.format(new Date());
+
+        var listeAbo = daten.getListeAbo();
+        var listeBlacklist = daten.getListeBlacklist();
+        var aboHistoryController = daten.getAboHistoryController();
         for (DatenFilm film : daten.getListeFilme()) {
-            abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
+            DatenAbo abo = listeAbo.getAboFuerFilm_schnell(film, true);
             if (abo == null) {
                 // dann gibts dafür kein Abo
                 continue;
@@ -355,44 +362,40 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
             if (checkWithBlackList) {
                 //Blacklist auch bei Abos anwenden
-                if (!daten.getListeBlacklist().checkBlackOkFilme_Downloads(film)) {
+                if (!listeBlacklist.checkBlackOkFilme_Downloads(film)) {
                     continue;
                 }
             }
-            if (daten.getAboHistoryController().urlPruefen(film.getUrl())) {
+            if (aboHistoryController.urlPruefen(film.getUrl())) {
                 // ist schon mal geladen worden
                 continue;
             }
-            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
-            //DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
-            if (pSet != null) {
 
+            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
                 if (listeUrls.contains(urlDownload)) {
                     continue;
                 }
                 listeUrls.add(urlDownload);
-                //                if (checkUrlExists(urlDownload)) {
-                //                    // haben wir schon in der Downloadliste
-                //                    continue;
-                //                }
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                abo.arr[DatenAbo.ABO_DOWN_DATUM] = todayDateStr;
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
                 }
+
                 //dann in die Liste schreiben
                 add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
-            } else if (parent != null) {
-                // sonst sind wir evtl. nur in einer Konsole ohne X
+            } else {
                 new DialogAboNoSet(parent).setVisible(true);
                 break;
             }
         }
+
         if (gefunden) {
             listeNummerieren();
         }
@@ -486,9 +489,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         final DatenDownload[] ret = new DatenDownload[1];
 
-        if (this.size() > 0 &&
-                getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
-            naechsterStart().ifPresent(datenDownload -> {
+        final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+        if (this.size() > 0 && getDown(maxNumDownloads)) {
+            nextPossibleDownload().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
                     if (datenDownload.start.status == Start.STATUS_INIT)
                         ret[0] = datenDownload;
@@ -525,9 +528,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    // ################################################################
-    // private
-    // ################################################################
     private boolean getDown(int max) {
         int count = 0;
         for (DatenDownload datenDownload : this) {
@@ -544,7 +544,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return true;
     }
 
-    private Optional<DatenDownload> naechsterStart() {
+    private Optional<DatenDownload> nextPossibleDownload() {
         //erster Versuch, Start mit einem anderen Sender
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
@@ -556,17 +556,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
 
-        int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
-            // dann darf nur ein Download pro Server gestartet werden
-            maxProSender = 1;
-        }
-
         //zweiter Versuch, Start mit einem passenden Sender
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
-                    if (!maxSenderLaufen(datenDownload, maxProSender)) {
+                    if (!maxSenderLaufen(datenDownload, Konstanten.MAX_SENDER_FILME_LADEN)) {
                         return Optional.of(datenDownload);
                     }
                 }

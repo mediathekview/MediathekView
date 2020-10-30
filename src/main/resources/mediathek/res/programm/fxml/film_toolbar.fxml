@@ -8,7 +8,7 @@
 <?import mediathek.javafx.filterpanel.JFXSearchPanel?>
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
-<fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+<fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
     <Button mnemonicParsing="false" fx:id="btnDownloadFilmList">
         <tooltip>
             <Tooltip text="Neue Filmliste laden"/>
@@ -48,8 +48,17 @@
             <Glyph fontFamily="FontAwesome" icon="DOWNLOAD" fontSize="16"/>
         </graphic>
     </Button>
+    
+    <Button mnemonicParsing="false" fx:id="btnBookmark">
+        <tooltip>
+            <Tooltip text="Film merken"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="BOOKMARK_ALT" fontSize="16"/>
+        </graphic>
+    </Button>
 
-    <VerticalSeparator/>
+    <Separator orientation="VERTICAL" />
 
     <BlacklistButton mnemonicParsing="false"/>
     <EditBlacklistButton mnemonicParsing="false" />
@@ -65,7 +74,35 @@
         </graphic>
     </Button>
     
+   <Separator orientation="VERTICAL" /> 
+    
+    <ToggleButton mnemonicParsing="false" fx:id="btnShowBookmarkedMovies">
+        <tooltip>
+            <Tooltip text="gemerkte Filme"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="INBOX" fontSize="16"/>
+        </graphic>
+    </ToggleButton>
+    
+    <Button mnemonicParsing="false" fx:id="btnManageBookMarks">
+        <tooltip>
+            <Tooltip text="Merkliste verwalten"/>
+        </tooltip>
+        <graphic>
+            <Glyph fontFamily="FontAwesome" icon="FILE_TEXT" fontSize="16"/>
+        </graphic>
+    </Button>
+    
+    <Separator orientation="VERTICAL" />
+    
     <Region HBox.hgrow="ALWAYS"/>
+
+    <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">
+        <tooltip>
+            <Tooltip text="Aktiver Filter"/>
+        </tooltip>
+    </ComboBox>
 
     <Button mnemonicParsing="false" fx:id="btnShowFilter">
         <tooltip>
@@ -75,6 +112,8 @@
             <Glyph fontFamily="FontAwesome" icon="FILTER"/>
         </graphic>
     </Button>
+
+    <VerticalSeparator/>
 
     <JFXSearchPanel fx:id="jfxSearchField"/>
 

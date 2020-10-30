@@ -29,6 +29,7 @@ public class MVColor {
     public static final MVC FILM_LIVESTREAM = new MVC(MVConfig.Configs.FARBE__FILM_LIVESTREAM, new Color(130, 0, 0), "Filme, Livestreams");
     public static final MVC FILM_HISTORY = new MVC(MVConfig.Configs.FARBE__FILM_HISTORY, new Color(225, 225, 225), "Filme, gesehen");
     public static final MVC FILM_NEU = new MVC(MVConfig.Configs.FARBE__FILM_NEU, new Color(0, 0, 240), "Filme, neue");
+    public static final MVC FILM_BOOKMARKED = new MVC(MVConfig.Configs.FARBE__FILM_BOOKMARKED, new Color(204, 238, 255), "Filme, gemerkt");
     public static final MVC FILM_GEOBLOCK_BACKGROUND = new MVC(MVConfig.Configs.FARBE__FILM_GEOBLOCK_BACKGROUND, new Color(255, 254, 230), "Film, geogeblockt");
     public static final MVC FILM_GEOBLOCK_BACKGROUND_SEL = new MVC(MVConfig.Configs.FARBE__FILM_GEOBLOCK_BACKGROUND_SEL, new Color(255, 251, 179), "Film, geogeblockt, selektiert");
 
@@ -72,6 +73,7 @@ public class MVColor {
         liste.add(FILM_LIVESTREAM);
         liste.add(FILM_HISTORY);
         liste.add(FILM_NEU);
+        liste.add(FILM_BOOKMARKED);
         liste.add(FILM_GEOBLOCK_BACKGROUND);
         liste.add(FILM_GEOBLOCK_BACKGROUND_SEL);
         liste.add(DOWNLOAD_IST_ABO);

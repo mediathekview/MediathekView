@@ -85,14 +85,13 @@ public class StatusBarController {
 
             if (event.max == 0 || event.progress == event.max) {
                 progressBar.setProgress(-1d);
-                progressLabel.setText(event.text);
             } else {
                 final double max = event.max;
                 final double progress = event.progress;
 
                 progressBar.setProgress(progress / max);
-                progressLabel.setText(event.text);
             }
+            progressLabel.setText(event.text);
         });
     }
 

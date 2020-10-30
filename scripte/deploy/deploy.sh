@@ -8,7 +8,7 @@ STATUSDATEI="target/upload.status"
 PLATTFORMDATEI="target/plattform.txt"
 COMMITDATEI="target/gitcommithash.txt"
 
-PORT="22"
+PORT="52150"
 ADRESSE="deploy@mediathekview.de"
 KEYFILE="scripte/deploy/deploy.key"
 
@@ -33,10 +33,15 @@ fi
 
 echo $2 > $PLATTFORMDATEI
 
+#Update xml für platform umbenennen
+for file in $(find $LOCAL/ -type f \( -name 'updates*.xml' \)); do
+  mv $file "target/media/updates-$2.xml"
+done
+
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
-for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' \)); do
+for file in $(find $LOCAL/ -type f \( -name '*.zip' -o -name '*.gz' -o -name '*.AppImage' -o -name 'MediathekView*.exe' -o -name '*.deb' -o -name '*.rpm' -o -name 'MediathekView*.sh' -o -name 'updates-*.xml' \)); do
   # einzelne fertige Dateien hochladen
   echo "put $file" >> $BATCHDATEI
 done

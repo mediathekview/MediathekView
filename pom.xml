@@ -7,7 +7,7 @@
 
 	<groupId>de.mediathekview</groupId>
 	<artifactId>MediathekView</artifactId>
-	<version>13.5.1</version>
+	<version>13.6.0</version>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -66,23 +66,47 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<jdk.language.version>14</jdk.language.version>
+		<maven.compiler.source>${jdk.language.version}</maven.compiler.source>
+		<maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
-		<junit.jupiter.version>5.3.1</junit.jupiter.version>
-		<javafx.version>14-ea+6</javafx.version>
-		<picocli.version>4.1.2</picocli.version>
+		<junit.jupiter.version>5.6.2</junit.jupiter.version>
+		<javafx.version>14.0.2</javafx.version>
+		<picocli.version>4.3.2</picocli.version>
+		<miglayout.version>5.3-SNAPSHOT</miglayout.version>
+		<log4j2.version>2.13.3</log4j2.version>
+		<mockito.version>3.3.3</mockito.version>
+		<okhttp.version>4.8.0</okhttp.version>
 
 		<mainclass>mediathek.Main</mainclass>
-		<install4j.home>/home/travis/build/mediathekview/MediathekView/install4j8.0.1</install4j.home>
+		<install4j.home>./install4j8.0.7</install4j.home>
 		<install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
-	</properties>
+        <kotlin.version>1.3.72</kotlin.version>
+		<kotlin.language.target>13</kotlin.language.target>
+    </properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.posicks.mdnsjava</groupId>
+			<artifactId>mdnsjava</artifactId>
+			<version>16eafb3765</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.derreisende77</groupId>
+			<artifactId>jlibnotify</artifactId>
+			<version>master</version>
+		</dependency>
+
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
@@ -90,9 +114,21 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.thizzer.jtouchbar</groupId>
+			<artifactId>jtouchbar-javafx</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>4.7.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>eu.hansolo</groupId>
 			<artifactId>tilesfx</artifactId>
-			<version>11.28</version>
+			<version>11.31</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.openjfx</groupId>
@@ -105,12 +141,6 @@
 			<groupId>org.apache.thrift</groupId>
 			<artifactId>libthrift</artifactId>
 			<version>0.13.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jmdns</groupId>
-			<artifactId>jmdns</artifactId>
-			<version>3.5.5</version>
 		</dependency>
 
 		<dependency>
@@ -148,19 +178,19 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<version>3.10</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
-			<version>1.6</version>
+			<version>1.8</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-configuration2</artifactId>
-			<version>2.5</version>
+			<version>2.7</version>
 		</dependency>
 
 		<dependency>
@@ -172,7 +202,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.19</version>
+			<version>1.20</version>
 		</dependency>
 		<!-- Apache Commons Compress needs this for xz Format -->
 		<dependency>
@@ -184,20 +214,39 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>28.1-jre</version>
+			<version>29.0-jre</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.10.1</version>
+			<version>2.11.0</version>
 		</dependency>
+
+		<!--<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-afterburner</artifactId>
+			<version>2.11.0</version>
+		</dependency>-->
+
+		<!-- for Bookmark JSON reading and writing -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
+		<!--<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
+			<version>2.11.0</version>
+		</dependency>-->
 
 		<!-- Gui-Elemente -->
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
-			<version>11.0.0</version>
+			<version>11.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.openjfx</groupId>
@@ -205,21 +254,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-core</artifactId>
-			<version>5.2</version>
+			<version>${miglayout.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
-			<version>5.2</version>
+			<version>${miglayout.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-javafx</artifactId>
-			<version>5.2</version>
+			<version>${miglayout.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.github.jiconfont</groupId>
 			<artifactId>jiconfont-swing</artifactId>
@@ -227,9 +278,15 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.jiconfont</groupId>
+			<artifactId>jiconfont-javafx</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jiconfont</groupId>
 			<artifactId>jiconfont-font_awesome</artifactId>
 			<version>4.7.0.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.bidib.com.jidesoft</groupId>
 			<artifactId>jide-common</artifactId>
@@ -266,7 +323,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>4.2.2</version>
+			<version>${okhttp.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.jetbrains</groupId>
@@ -277,13 +334,13 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>logging-interceptor</artifactId>
-			<version>4.2.2</version>
+			<version>${okhttp.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>16.0.2</version>
+			<version>19.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -296,12 +353,12 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.12.1</version>
+			<version>${log4j2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.12.1</version>
+			<version>${log4j2.version}</version>
 		</dependency>
 
 		<!-- JUnit 5 Jupiter -->
@@ -323,25 +380,38 @@
 			<version>${junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.11.1</version>
+			<version>3.15.0</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.23.0</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>2.23.0</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<finalName>MediathekView</finalName>
@@ -352,17 +422,17 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>3.0.0-M4</version>
 				<configuration>
 					<argLine>
-						--illegal-access=deny
+						--illegal-access=deny --enable-preview
 					</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -373,11 +443,51 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/main/kotlin</source>
+								<source>src/main/java</source>
+								<source>target/generated-sources/annotations</source>
+							</sourceDirs>
+							<jvmTarget>${kotlin.language.target}</jvmTarget>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmTarget>${jdk.language.version}</jvmTarget>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<release>11</release>
+					<release>${jdk.language.version}</release>
+					<forceJavacCompilerUse>true</forceJavacCompilerUse>
+					<compilerArgs>
+						<arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+						<arg>--enable-preview</arg>
+					</compilerArgs>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>info.picocli</groupId>
@@ -385,11 +495,37 @@
 							<version>${picocli.version}</version>
 						</path>
 					</annotationProcessorPaths>
-					<compilerArgs>
-						<arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
-					</compilerArgs>
-				</configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
+				<executions>
+					<!-- Replacing default-compile as it is treated specially by maven -->
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<!-- Replacing default-testCompile as it is treated specially by maven -->
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>java-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>java-test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -399,7 +535,7 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 			</plugin>
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
@@ -450,20 +586,17 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+        </plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>windows</id>
+			<id>64bit</id>
 			<activation>
-				<os>
-					<family>windows</family>
-				</os>
+				<property>
+					<name>!use32bit</name>
+				</property>
 			</activation>
-			<properties>
-				<javafx.platform>win</javafx.platform>
-			</properties>
 			<dependencies>
 				<!-- JavaFX -->
 				<dependency>
@@ -509,6 +642,73 @@
 					<classifier>${javafx.platform}</classifier>
 				</dependency>
 			</dependencies>
+		</profile>
+		<profile>
+			<id>32bit</id>
+			<dependencies>
+				<!-- JavaFX -->
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-base</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-media</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-swing</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-web</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-fxml</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.platform}</classifier>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+				<javafx.platform>win</javafx.platform>
+				<install4j.platform>windows</install4j.platform>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -540,9 +740,51 @@
 										</transformer>
 										<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>windows32</id>
+			<properties>
+				<javafx.platform>win</javafx.platform>
+				<install4j.platform>windows32</install4j.platform>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:linux</exclude>
+											<exclude>*:*:*:mac</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+											<manifestEntries>
+												<Multi-Release>true</Multi-Release>
+											</manifestEntries>
+										</transformer>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+									</transformers>
 								</configuration>
 							</execution>
 						</executions>
@@ -559,52 +801,8 @@
 			</activation>
 			<properties>
 				<javafx.platform>linux</javafx.platform>
+				<install4j.platform>linux</install4j.platform>
 			</properties>
-			<dependencies>
-				<!-- JavaFX -->
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-swing</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -632,9 +830,46 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>arm</id>
+			<properties>
+				<javafx.platform>linux</javafx.platform>
+				<install4j.platform>arm</install4j.platform>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.0</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<artifactSet>
+										<excludes>
+											<exclude>res/*</exclude>
+											<exclude>*:*:*:win</exclude>
+											<exclude>*:*:*:mac</exclude>
+										</excludes>
+									</artifactSet>
+									<shadedArtifactAttached>false</shadedArtifactAttached>
+									<transformers>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainclass}</mainClass>
+										</transformer>
+									</transformers>
 								</configuration>
 							</execution>
 						</executions>
@@ -652,51 +887,6 @@
 			<properties>
 				<javafx.platform>mac</javafx.platform>
 			</properties>
-			<dependencies>
-				<!-- JavaFX -->
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-base</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-controls</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-media</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-swing</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-web</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-fxml</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-				<dependency>
-					<groupId>org.openjfx</groupId>
-					<artifactId>javafx-graphics</artifactId>
-					<version>${javafx.version}</version>
-					<classifier>${javafx.platform}</classifier>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -724,9 +914,6 @@
 											<mainClass>${mainclass}</mainClass>
 										</transformer>
 									</transformers>
-									<excludes>
-										<exclude>res/*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -753,7 +940,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>install4j-win</id>
+			<id>install4j</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -768,36 +955,7 @@
 									<goal>compile</goal>
 								</goals>
 								<configuration>
-									<projectFile>${project.build.directory}/mediathekview_windows.install4j</projectFile>
-									<installDir>${install4j.home}</installDir>
-									<jvmArguments>
-										<arg>-Xmx2G</arg>
-									</jvmArguments>
-									<attach>true</attach>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>install4j-linux</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.sonatype.install4j</groupId>
-						<artifactId>install4j-maven-plugin</artifactId>
-						<version>1.1.1</version>
-						<executions>
-							<execution>
-								<id>compile-installers</id>
-								<phase>package</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<projectFile>${project.build.directory}/mediathekview_linux.install4j</projectFile>
+									<projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
 									<installDir>${install4j.home}</installDir>
 									<jvmArguments>
 										<arg>-Xmx2G</arg>

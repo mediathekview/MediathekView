@@ -1,7 +1,11 @@
 package mediathek.tool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Version {
 
+    private static final Logger logger = LogManager.getLogger();
     private int major;
     private int minor;
     private int patch;
@@ -20,7 +24,7 @@ public class Version {
                 minor = Integer.parseInt(versions[1]);
                 patch = Integer.parseInt(versions[2]);
             } catch (NumberFormatException ex) {
-                Log.errorLog(12344564, ex, "Fehler beim Parsen der Version '" + versionsstring + "'.");
+                logger.error("Fehler beim Parsen der Version: {}", versionsstring, ex);
                 major = 0;
                 minor = 0;
                 patch = 0;
@@ -32,30 +36,6 @@ public class Version {
         major = 0;
         minor = 0;
         patch = 0;
-    }
-
-    public int getMajor() {
-        return major;
-    }
-
-    public void setMajor(int major) {
-        this.major = major;
-    }
-
-    public int getMinor() {
-        return minor;
-    }
-
-    public void setMinor(int minor) {
-        this.minor = minor;
-    }
-
-    public int getPatch() {
-        return patch;
-    }
-
-    public void setPatch(int patch) {
-        this.patch = patch;
     }
 
     /**

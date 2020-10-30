@@ -257,7 +257,7 @@ public class GuiFunktionen extends MVFunctionSys {
      * @return Standardpfad zu den Downloads.
      */
     public static String getStandardDownloadPath() {
-        if (getOs() == OperatingSystemType.MAC) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             return addsPfad(getHomePath(), "Downloads");
         } else {
             return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);

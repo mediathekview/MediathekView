@@ -2,6 +2,9 @@
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO">
     <Loggers>
         <Logger name="hsqldb.db" level="warn"/>
+        <Logger name="javax.jmdns.impl" level="warn"/>
+        <Logger name="oshi" level="warn"/>
+        <Logger name="com.zaxxer.hikari" level="warn"/>
         <Root level="trace">
         </Root>
     </Loggers>

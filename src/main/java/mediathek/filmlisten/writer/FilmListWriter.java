@@ -8,7 +8,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
-import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +27,15 @@ public class FilmListWriter {
     private static final String TAG_JSON_LIST = "X";
     private String sender = "";
     private String thema = "";
+    private final boolean readable;
+
+    public FilmListWriter(boolean readable) {
+        this.readable = readable;
+    }
 
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
         JsonGenerator jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
-
-        final boolean readable = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false);
         if (readable)
             jg = jg.useDefaultPrettyPrinter();
 
@@ -80,7 +82,12 @@ public class FilmListWriter {
 
 
             Path filePath = Paths.get(datei);
-            Files.deleteIfExists(filePath);
+            try {
+                Files.deleteIfExists(filePath);
+            }
+            catch (Exception e) {
+                logger.error("writeFilmList", e);
+            }
             long start = System.nanoTime();
 
             try (OutputStream fos = Files.newOutputStream(filePath);
@@ -93,7 +100,7 @@ public class FilmListWriter {
                 writeFormatDescription(jg);
 
                 final long filmEntries = listeFilme.size();
-                double curEntry = 0d;
+                float curEntry = 0f;
 
                 for (DatenFilm datenFilm : listeFilme) {
                     writeEntry(datenFilm, jg);
