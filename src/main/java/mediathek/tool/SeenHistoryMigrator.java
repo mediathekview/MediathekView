@@ -70,8 +70,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
             try (var connection = dataSource.getConnection();
                  SqlAutoSetAutoCommit ignored = new SqlAutoSetAutoCommit(connection, false);
                  SqlAutoRollback tm = new SqlAutoRollback(connection);
-                 var statement = connection.createStatement();
-                 var insertStmt = connection.prepareStatement(INSERT_STMT)) {
+                 var statement = connection.createStatement()) {
                 connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
                 statement.setQueryTimeout(30);  // set timeout to 30 sec.
@@ -85,17 +84,19 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 statement.executeUpdate(CREATE_TABLE_STMT);
                 statement.executeUpdate(CREATE_INDEX_STMT);
 
-                //create entries in database
-                for (var entry : historyEntries) {
-                    LocalDate locDate = LocalDate.parse(entry.getDatum(), formatter);
-                    insertStmt.setObject(1, locDate);
-                    insertStmt.setString(2, entry.getThema());
-                    insertStmt.setString(3, entry.getTitel());
-                    insertStmt.setString(4, entry.getUrl());
-                    // write each entry into database
-                    insertStmt.executeUpdate();
-                }
 
+                try (var insertStmt = connection.prepareStatement(INSERT_STMT)) {
+                    //create entries in database
+                    for (var entry : historyEntries) {
+                        LocalDate locDate = LocalDate.parse(entry.getDatum(), formatter);
+                        insertStmt.setObject(1, locDate);
+                        insertStmt.setString(2, entry.getThema());
+                        insertStmt.setString(3, entry.getTitel());
+                        insertStmt.setString(4, entry.getUrl());
+                        // write each entry into database
+                        insertStmt.executeUpdate();
+                    }
+                }
                 tm.commit();
             }
         }
