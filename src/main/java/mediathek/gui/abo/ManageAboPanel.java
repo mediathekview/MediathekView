@@ -28,6 +28,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public class ManageAboPanel extends JPanel {
@@ -46,6 +48,44 @@ public class ManageAboPanel extends JPanel {
      */
     private AboInformationController infoController;
 
+    public void addObjectData(TModelAbo model, String sender) {
+        model.setRowCount(0);
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
+        for (DatenAbo abo : daten.getListeAbo()) {
+            if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
+                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
+                    if (m == DatenAbo.ABO_NR) {
+                        object[m] = abo.nr;
+                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
+                        object[m] = abo.mindestdauerMinuten;
+                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
+                        object[m] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
+                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                    } else if (m == DatenAbo.ABO_MIN) {
+                        object[m] = abo.min ? "min" : "max";
+                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
+                        // Name immer füllen, egal ob angezeigt
+                        object[m] = "";
+                    } else {
+                        object[m] = abo.arr[m];
+                    }
+                }
+                model.addRow(object);
+            }
+        }
+    }
+
+    private Datum getDatumForObject(String datum) {
+        Datum tmp = new Datum(0);
+        if (!datum.isEmpty()) {
+            try {
+                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
+            } catch (ParseException ignore) {
+            }
+        }
+        return tmp;
+    }
 
     public ManageAboPanel() {
         super();
@@ -201,7 +241,7 @@ public class ManageAboPanel extends JPanel {
             final String selectedItem = toolBar.cbSender.getValue();
             if (selectedItem != null) {
                 SwingUtilities.invokeLater(() -> {
-                    daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
+                    addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
                     tabelle.setSpalten();
                 });
             }
