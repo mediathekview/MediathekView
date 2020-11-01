@@ -286,6 +286,15 @@ public class ManageAboPanel extends JPanel {
         }
     }
 
+    /**
+     * Get the abo number from the selected entry.
+     * @param modelRow the model index in the list.
+     * @return the number of the selected abo.
+     */
+    private int getAboNr(int modelRow) {
+        return (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
+    }
+
     public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
@@ -296,8 +305,7 @@ public class ManageAboPanel extends JPanel {
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
 
-        var akt = daten.getListeAbo()
-                .findByNr((Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR));
+        var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
 
         //DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
@@ -315,8 +323,7 @@ public class ManageAboPanel extends JPanel {
                         continue;
                     }
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    final var selectedAboNr = (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
-                    var sel = daten.getListeAbo().findByNr(selectedAboNr);
+                    var sel = daten.getListeAbo().findByNr(getAboNr(modelRow));
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
                         sel.setMindestDauerMinuten();
@@ -338,8 +345,7 @@ public class ManageAboPanel extends JPanel {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                final var selectedAboNr = (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
-                var akt = daten.getListeAbo().findByNr(selectedAboNr);
+                var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
                 akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();
