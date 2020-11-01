@@ -216,7 +216,7 @@ class SeenHistoryController : AutoCloseable {
 
     private fun basicSqliteSettings(statement: Statement) {
         statement.executeUpdate(SeenHistoryMigrator.PRAGMA_ENCODING_STMT)
-        statement.executeUpdate("PRAGMA page_size = 4096")
+        statement.executeUpdate(SeenHistoryMigrator.PRAGMA_PAGE_SIZE)
     }
 
     /**
