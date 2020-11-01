@@ -28,6 +28,7 @@ import java.util.List;
  */
 public class SeenHistoryMigrator implements AutoCloseable {
     public static final String PRAGMA_ENCODING_STMT = "PRAGMA encoding='UTF-8'";
+    public static final String PRAGMA_PAGE_SIZE = "PRAGMA page_size = 4096";
     public static final String CREATE_TABLE_STMT = "CREATE TABLE IF NOT EXISTS seen_history (id INTEGER PRIMARY KEY ASC, datum DATE NOT NULL DEFAULT (date('now')), thema TEXT, titel TEXT, url TEXT NOT NULL)";
     public static final String DROP_TABLE_STMT = "DROP TABLE IF EXISTS seen_history";
     public static final String INSERT_STMT = "INSERT INTO seen_history(datum,thema,titel,url) values (?,?,?,?)";
@@ -75,7 +76,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
 
                 statement.setQueryTimeout(30);  // set timeout to 30 sec.
                 statement.executeUpdate(PRAGMA_ENCODING_STMT);
-                statement.executeUpdate("PRAGMA page_size = 4096");
+                statement.executeUpdate(PRAGMA_PAGE_SIZE);
 
                 // drop old tables and indices if existent
                 statement.executeUpdate(DROP_INDEX_STMT);
