@@ -134,7 +134,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     @Deprecated
-    /**
+    /*
      * Dangerous code, returns abo by list index not by number.
      * Needs to be checked and recoded!!
      */
@@ -142,6 +142,12 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         return this.get(i);
     }
 
+    /**
+     * Find an abo by its assigned number within the list.
+     * @param nr the formerly assigned abo number.
+     * @return the found abo.
+     * @throws NoSuchElementException when no abo was found.
+     */
     public DatenAbo findByNr(int nr) throws NoSuchElementException {
         return this.stream()
                 .filter(abo -> abo.nr == nr)
