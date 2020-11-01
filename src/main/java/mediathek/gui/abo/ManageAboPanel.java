@@ -48,6 +48,23 @@ public class ManageAboPanel extends JPanel {
      */
     private AboInformationController infoController;
 
+    public ManageAboPanel() {
+        super();
+        daten = Daten.getInstance();
+
+        initComponents();
+        jScrollPane1.setViewportView(tabelle);
+
+        setupToolBar();
+        setupInfoPanel();
+
+        daten.getMessageBus().subscribe(this);
+
+        initListeners();
+
+        initializeTable();
+    }
+
     public void addObjectData(TModelAbo model, String sender) {
         model.setRowCount(0);
         Object[] object = new Object[DatenAbo.MAX_ELEM];
@@ -85,23 +102,6 @@ public class ManageAboPanel extends JPanel {
             }
         }
         return tmp;
-    }
-
-    public ManageAboPanel() {
-        super();
-        daten = Daten.getInstance();
-
-        initComponents();
-        jScrollPane1.setViewportView(tabelle);
-
-        setupToolBar();
-        setupInfoPanel();
-
-        daten.getMessageBus().subscribe(this);
-
-        initListeners();
-
-        initializeTable();
     }
 
     private void setupInfoPanel() {
@@ -296,7 +296,10 @@ public class ManageAboPanel extends JPanel {
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
 
-        DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+        var akt = daten.getListeAbo()
+                .findByNr((Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR));
+
+        //DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
         dialog.setVisible(true);
@@ -312,7 +315,8 @@ public class ManageAboPanel extends JPanel {
                         continue;
                     }
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    DatenAbo sel = daten.getListeAbo().getAboNr(modelRow);
+                    final var selectedAboNr = (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
+                    var sel = daten.getListeAbo().findByNr(selectedAboNr);
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
                         sel.setMindestDauerMinuten();
@@ -334,7 +338,8 @@ public class ManageAboPanel extends JPanel {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+                final var selectedAboNr = (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
+                var akt = daten.getListeAbo().findByNr(selectedAboNr);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();
