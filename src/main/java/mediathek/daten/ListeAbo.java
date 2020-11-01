@@ -25,15 +25,15 @@ import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
-import mediathek.tool.models.TModelAbo;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.Filter;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.MVMessageDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -138,45 +138,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     public void sort() {
         Collections.sort(this);
-    }
-
-    public void addObjectData(TModelAbo model, String sender) {
-        model.setRowCount(0);
-        Object[] object = new Object[DatenAbo.MAX_ELEM];
-        for (DatenAbo datenAbo : this) {
-            if (sender.isEmpty() || sender.equals(datenAbo.arr[DatenAbo.ABO_SENDER])) {
-                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                    if (m == DatenAbo.ABO_NR) {
-                        object[m] = datenAbo.nr;
-                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
-                        object[m] = datenAbo.mindestdauerMinuten;
-                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
-                        object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM]);
-                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
-                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                    } else if (m == DatenAbo.ABO_MIN) {
-                        object[m] = datenAbo.min ? "min" : "max";
-                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
-                        // Name immer füllen, egal ob angezeigt
-                        object[m] = "";
-                    } else {
-                        object[m] = datenAbo.arr[m];
-                    }
-                }
-                model.addRow(object);
-            }
-        }
-    }
-
-    public Datum getDatumForObject(String datum) {
-        Datum tmp = new Datum(0);
-        if (!datum.isEmpty()) {
-            try {
-                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
-            } catch (ParseException ignore) {
-            }
-        }
-        return tmp;
     }
 
     public ArrayList<String> getPfade() {
