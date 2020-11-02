@@ -1,0 +1,28 @@
+<u>13.6.1</u>
+
+- JavaFX auf Version 15 aktualisiert. 
+- Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
+- **BUGFIX:** Einige Filme wurden nicht korrekt als Hörfassung klassifiziert.
+- **BUGFIX:** Fehler bei der Darstellung des freien Speicherplatzes im Download-Dialog behoben.
+- **BUGFIX:** In die Infodatei wird nun die wirklich genutzte Film-URL und die reale Größe geschrieben.
+- **BUGFIX:** Darstellungsfehler in der Filmliste behoben.
+- **BUGFIX:** Berechnung der Zeilenhöhe berücksichtigt nun die jeweiligen Font Metrics.
+- **BUGFIX:** Im Kontextmenü des Tab Film wurde der Eintrag "Film-URL kopieren" in "URL kopieren" umbenannt. Gleichzeitig wird nun geprüft ob es sich um einen regulären Film mit mehreren URLs handelt oder um eine PlayList. Dementsprechend wird die Auswahl nun korrekt angeboten.
+- **BUGFIX:** Selektierte Einträge werden nun - konform zu den Betriebssystemen - nicht mehr fett hervorgehoben.
+- **BUGFIX:** Filme ohne Längenangabe werden nicht mehr durch Minimal-Längen Filter herausgefiltert.
+- **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
+- **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
+- **BUGFIX:** Minimal- und Maximallänge des Filmlängenfilters beeinflussen sich nun nicht mehr.
+- **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
+- **BUGFIX:** Tabelle der Farbeinstellungen ist nun nicht mehr zu klein.
+- **BUGFIX:** Liste erweitern beim manuellem Filmliste laden funktioniert nun auch, wenn das Adressfeld leer ist.
+- **BUGFIX:** Einträge ohne Datum werden nun nicht mehr mit fiktivem Datum 1.1.1970 in die Filmliste sortiert.
+- **BUGFIX:** Splash screen wird nun nicht mehr über allen Fenstern dauerhaft dargestellt.
+- **BUGFIX:** Livestreams werden nicht mehr in der Historie aufgezeichnet.
+- **BUGFIX:** "Abos verwalten"-Dialog wählt nun bei gesetztem Filter nicht mehr die falschen Abos aus.
+- **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
+- ==**FEATURE:**== Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
+- **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.
+- **FEATURE:** F12-Taste zeigt nun den Filterdialog an.
+- **FEATURE:** Einstellung der CheckBox *"Alte Filmliste nicht löschen, nur erweitern"* wird nun gespeichert und wiederhergestellt.
+- **FEATURE:** Film können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muß hierzu im Hintergrund laufen.
