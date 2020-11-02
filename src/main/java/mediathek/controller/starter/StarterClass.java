@@ -2,6 +2,7 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -276,7 +277,10 @@ public class StarterClass {
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            try (var historyController = new SeenHistoryController()){
+                historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            }
+
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
             if (ersterFilm.isBookmarked()) {
               ersterFilm.getBookmark().setSeen(true);
@@ -361,17 +365,15 @@ public class StarterClass {
             Thread downloadThread;
 
             switch (datenDownload.art) {
-                case DatenDownload.ART_PROGRAMM:
+                case DatenDownload.ART_PROGRAMM -> {
                     downloadThread = new ExternalProgramDownload(daten, datenDownload);
                     downloadThread.start();
-                    break;
-                case DatenDownload.ART_DOWNLOAD:
+                }
+                case DatenDownload.ART_DOWNLOAD -> {
                     downloadThread = new DirectHttpDownload(daten, datenDownload);
                     downloadThread.start();
-                    break;
-                default:
-                    logger.error("StarterClass.Starten - Switch-default");
-                    break;
+                }
+                default -> logger.error("StarterClass.Starten - Switch-default");
             }
         }
     }

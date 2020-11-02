@@ -83,6 +83,16 @@ public class FilmeLaden {
         });
     }
 
+    private void showNoUpdateAvailableDialog() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Konstanten.PROGRAMMNAME);
+            alert.setHeaderText(DIALOG_TITLE);
+            alert.setContentText(NO_UPDATE_AVAILABLE);
+            alert.showAndWait();
+        });
+    }
+
     /**
      * Check if a newer filmlist id is available on the remote server in order to prevent unnecessary filmlist downloads...
      *
@@ -117,13 +127,7 @@ public class FilmeLaden {
 
             if (!result) {
                 if (showDialogs) {
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle(Konstanten.PROGRAMMNAME);
-                        alert.setHeaderText(DIALOG_TITLE);
-                        alert.setContentText(NO_UPDATE_AVAILABLE);
-                        alert.showAndWait();
-                    });
+                    showNoUpdateAvailableDialog();
                 } else
                     logger.info(NO_UPDATE_AVAILABLE);
             }
@@ -138,7 +142,8 @@ public class FilmeLaden {
         } catch (IOException ex) {
             logger.error("IOxception:", ex);
             Platform.runLater(() ->
-                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE, "Netzwerkfehler aufgetreten!", ex));
+                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE,
+                            "Netzwerkfehler aufgetreten!", ex));
         } catch (Exception ex) {
             logger.error("check for filmliste.id failed", ex);
             if (showDialogs)

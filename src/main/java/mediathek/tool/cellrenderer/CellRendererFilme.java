@@ -20,7 +20,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
     private final Icon normalStopIcon;
-    private final SeenHistoryController history;
+    private final SeenHistoryController history = new SeenHistoryController();
     private final Icon selectedDownloadIcon;
     private final Icon normalDownloadIcon;
     private final Icon selectedPlayIcon;
@@ -38,7 +38,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
         normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
 
-        history = d.getSeenHistoryController();
         selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
 
@@ -152,7 +151,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
-            } else if (history.urlPruefen(datenFilm.getUrl())) {
+            } else if (history.hasBeenSeen(datenFilm)) {
                 if (!isSelected) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }
