@@ -11,6 +11,7 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;

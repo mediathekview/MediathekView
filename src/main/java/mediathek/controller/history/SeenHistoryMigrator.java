@@ -1,7 +1,7 @@
-package mediathek.tool;
+package mediathek.controller.history;
 
 import mediathek.config.Daten;
-import mediathek.controller.history.MVUsedUrl;
+import mediathek.tool.FileUtils;
 import mediathek.tool.sql.SqlAutoRollback;
 import mediathek.tool.sql.SqlAutoSetAutoCommit;
 import mediathek.tool.sql.SqlDatabaseConfig;
@@ -36,13 +36,12 @@ public class SeenHistoryMigrator implements AutoCloseable {
     public static final String CREATE_INDEX_STMT = "CREATE INDEX IF NOT EXISTS IDX_SEEN_HISTORY_URL ON seen_history(url)";
     public static final String DROP_INDEX_STMT = "DROP INDEX IF EXISTS IDX_SEEN_HISTORY_URL";
     private static final Logger logger = LogManager.getLogger();
-    private static final String fileName = "history.txt";
     private final Path historyFilePath;
     private final Path historyDbPath;
     private final List<MVUsedUrl> historyEntries = new ArrayList<>();
 
     public SeenHistoryMigrator() throws InvalidPathException {
-        historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve(fileName);
+        historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.txt");
         historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
     }
 

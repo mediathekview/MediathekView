@@ -4,7 +4,6 @@ import com.google.common.collect.Sets
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
-import mediathek.tool.SeenHistoryMigrator
 import mediathek.tool.sql.SqlDatabaseConfig
 import org.apache.logging.log4j.LogManager
 import org.sqlite.SQLiteDataSource
