@@ -8,6 +8,7 @@ import mediathek.tool.sql.SqlDatabaseConfig;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.InputStream;
@@ -37,10 +38,17 @@ public class SeenHistoryMigrator implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger();
     private static final String fileName = "history.txt";
     private final Path historyFilePath;
+    private final Path historyDbPath;
     private final List<MVUsedUrl> historyEntries = new ArrayList<>();
 
     public SeenHistoryMigrator() throws InvalidPathException {
         historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve(fileName);
+        historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+    }
+
+    public SeenHistoryMigrator(@NotNull Path txtFilePath, @NotNull Path historyDbPath) {
+        historyFilePath = txtFilePath;
+        this.historyDbPath = historyDbPath;
     }
 
     /**
@@ -60,9 +68,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
         readOldEntries();
         if (!historyEntries.isEmpty()) {
             // create database connection
-            var historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
             final var dbPathStr = historyDbPath.toAbsolutePath().toString();
-
             SQLiteDataSource dataSource = new SQLiteDataSource(SqlDatabaseConfig.getConfig());
             dataSource.setUrl("jdbc:sqlite:" + dbPathStr);
 
