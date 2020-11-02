@@ -24,6 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Legacy class used to read entries from old history text files.
+ * Should NOT be used in further developments.
+ */
 public class MVUsedUrl {
     public static final int MAX_TITLE_LENGTH = 40;
     public static final int MAX_THEMA_LENGTH = 25;

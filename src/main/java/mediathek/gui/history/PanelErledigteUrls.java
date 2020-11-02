@@ -4,7 +4,6 @@ import mediathek.config.Daten;
 import mediathek.controller.history.AboHistoryController;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.history.MVUsedUrlModelHelper;
-import mediathek.controller.history.MVUsedUrls;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -34,7 +33,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public abstract class PanelErledigteUrls extends JPanel {
     protected final Daten daten;
-    protected MVUsedUrls<?> workList;
+    protected AboHistoryController workList;
 
     public PanelErledigteUrls(Daten d) {
         this.daten = d;
