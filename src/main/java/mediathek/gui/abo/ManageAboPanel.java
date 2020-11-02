@@ -22,6 +22,8 @@ import mediathek.tool.models.TModelAbo;
 import mediathek.tool.table.MVAbosTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +37,7 @@ import java.text.SimpleDateFormat;
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
     private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
+    private static final Logger logger = LogManager.getLogger();
     private final MVTable tabelle = new MVAbosTable();
     private final Daten daten;
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
@@ -249,21 +252,27 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void aboLoeschen() {
-        int[] rows = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             String text;
             if (rows.length == 1) {
-                int delRow = tabelle.convertRowIndexToModel(rows[0]);
+                final int delRow = tabelle.convertRowIndexToModel(rows[0]);
                 text = '"' + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
             } else {
-                text = rows.length + " Abos löschen?";
+                text = "Möchten Sie wirklich " + rows.length + " Abos löschen?";
             }
-            final int ret = JOptionPane.showConfirmDialog(this, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+
+            final int ret = JOptionPane.showConfirmDialog(this, text, "Abo löschen", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = tabelle.convertRowIndexToModel(rows[i]);
-                    ((TModelAbo) tabelle.getModel()).removeRow(delRow);
-                    daten.getListeAbo().remove(delRow);
+                try {
+                    final var listeAbo = daten.getListeAbo();
+                    for (var row : rows) {
+                        final int modelRow = tabelle.convertRowIndexToModel(row);
+                        var abo = listeAbo.findByNr(getAboNr(modelRow));
+                        listeAbo.remove(abo);
+                    }
+                } catch (Exception e) {
+                    logger.error("aboLoeschen", e);
                 }
             }
             tabelleLaden();
@@ -288,6 +297,7 @@ public class ManageAboPanel extends JPanel {
 
     /**
      * Get the abo number from the selected entry.
+     *
      * @param modelRow the model index in the list.
      * @return the number of the selected abo.
      */
