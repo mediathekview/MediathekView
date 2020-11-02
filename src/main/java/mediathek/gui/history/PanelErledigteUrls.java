@@ -90,9 +90,7 @@ public abstract class PanelErledigteUrls extends JPanel {
             return;
 
         var title = "Filmtitel speichern";
-        if (workList instanceof AboHistoryController) {
             title = "Abo-Historie speichern";
-        }
 
         var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),title,GuiFunktionen.getHomePath() + File.separator + "Mediathek-Filme.txt");
         if (destFile != null) {
