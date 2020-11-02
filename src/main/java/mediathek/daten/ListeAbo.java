@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
@@ -133,19 +132,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         daten.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
-    @Deprecated
-    /**
-     * Dangerous code, returns abo by list index not by number.
-     * Needs to be checked and recoded!!
-     */
     public DatenAbo getAboNr(int i) {
         return this.get(i);
-    }
-
-    public DatenAbo findByNr(int nr) throws NoSuchElementException {
-        return this.stream()
-                .filter(abo -> abo.nr == nr)
-                .findAny().orElseThrow();
     }
 
     public void sort() {
