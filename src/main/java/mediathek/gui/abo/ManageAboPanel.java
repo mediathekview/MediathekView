@@ -28,6 +28,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public class ManageAboPanel extends JPanel {
@@ -46,7 +48,6 @@ public class ManageAboPanel extends JPanel {
      */
     private AboInformationController infoController;
 
-
     public ManageAboPanel() {
         super();
         daten = Daten.getInstance();
@@ -62,6 +63,45 @@ public class ManageAboPanel extends JPanel {
         initListeners();
 
         initializeTable();
+    }
+
+    public void addObjectData(TModelAbo model, String sender) {
+        model.setRowCount(0);
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
+        for (DatenAbo abo : daten.getListeAbo()) {
+            if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
+                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
+                    if (m == DatenAbo.ABO_NR) {
+                        object[m] = abo.nr;
+                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
+                        object[m] = abo.mindestdauerMinuten;
+                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
+                        object[m] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
+                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                    } else if (m == DatenAbo.ABO_MIN) {
+                        object[m] = abo.min ? "min" : "max";
+                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
+                        // Name immer füllen, egal ob angezeigt
+                        object[m] = "";
+                    } else {
+                        object[m] = abo.arr[m];
+                    }
+                }
+                model.addRow(object);
+            }
+        }
+    }
+
+    private Datum getDatumForObject(String datum) {
+        Datum tmp = new Datum(0);
+        if (!datum.isEmpty()) {
+            try {
+                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
+            } catch (ParseException ignore) {
+            }
+        }
+        return tmp;
     }
 
     private void setupInfoPanel() {
@@ -201,7 +241,7 @@ public class ManageAboPanel extends JPanel {
             final String selectedItem = toolBar.cbSender.getValue();
             if (selectedItem != null) {
                 SwingUtilities.invokeLater(() -> {
-                    daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
+                    addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
                     tabelle.setSpalten();
                 });
             }
@@ -246,6 +286,15 @@ public class ManageAboPanel extends JPanel {
         }
     }
 
+    /**
+     * Get the abo number from the selected entry.
+     * @param modelRow the model index in the list.
+     * @return the number of the selected abo.
+     */
+    private int getAboNr(int modelRow) {
+        return (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
+    }
+
     public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
@@ -256,7 +305,9 @@ public class ManageAboPanel extends JPanel {
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
 
-        DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+        var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
+
+        //DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
         dialog.setVisible(true);
@@ -272,7 +323,7 @@ public class ManageAboPanel extends JPanel {
                         continue;
                     }
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    DatenAbo sel = daten.getListeAbo().getAboNr(modelRow);
+                    var sel = daten.getListeAbo().findByNr(getAboNr(modelRow));
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
                         sel.setMindestDauerMinuten();
@@ -294,7 +345,7 @@ public class ManageAboPanel extends JPanel {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+                var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
                 akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();

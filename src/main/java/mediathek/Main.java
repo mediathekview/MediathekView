@@ -19,6 +19,8 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.affinity.Affinity;
+import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -344,6 +346,12 @@ public class Main {
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
 
+            final int numCpus = Config.getNumCpus();
+            if (numCpus != 0) {
+                var affinity = Affinity.getAffinityImpl();
+                affinity.setDesiredCpuAffinity(numCpus);
+            }
+
             initializeJavaFX();
 
             JFXHiddenApplication.launchApplication();
@@ -385,6 +393,7 @@ public class Main {
 
         loadConfigurationData();
 
+        migrateSeenHistory();
         Daten.getInstance().launchHistoryDataLoading();
         
         Daten.getInstance().loadBookMarkData();
@@ -399,6 +408,30 @@ public class Main {
         copyUserAgentDatabase();
 
         startGuiMode();
+    }
+
+    /**
+     * Migrate the old text file history to new database format
+     */
+    private static void migrateSeenHistory() {
+        try (SeenHistoryMigrator migrator = new SeenHistoryMigrator()) {
+            if (migrator.needsMigration()) {
+                migrator.migrate();
+            }
+        }
+        catch (Exception e) {
+            logger.error("migrateSeenHistory", e);
+            splashScreen.ifPresent(SplashScreen::close);
+            FXErrorDialog.showErrorDialogWithoutParent(Konstanten.PROGRAMMNAME,
+                            "Migration fehlgeschlagen",
+                            """
+                                    Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
+                                    Das Programm kann nicht fortfahren und wird beendet.
+                                    
+                                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
+                                    """, e);
+            System.exit(99);
+        }
     }
 
     @SuppressWarnings("unused")

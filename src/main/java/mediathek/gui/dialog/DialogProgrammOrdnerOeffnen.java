@@ -3,9 +3,10 @@ package mediathek.gui.dialog;
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
     public boolean ok = false;
     public String ziel;
     private final Frame parentComponent;
+    private static final Logger logger = LogManager.getLogger();
 
     public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);
@@ -26,8 +28,16 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
          setTitle(titel);
         jTextArea1.setText(text);
-        jButtonOk.addActionListener(new OkBeobachter());
-        jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
+        jButtonOk.addActionListener(l -> {
+            if (check()) {
+                ok = true;
+                beenden();
+            }
+        });
+        jButtonAbbrechen.addActionListener(l -> {
+            ok = false;
+            beenden();
+        });
         jButtonZiel.addActionListener(new ZielBeobachter());
         jTextFieldProgramm.setText(zziel);
         ziel = zziel;
@@ -62,6 +72,44 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
 
     private void beenden() {
         this.dispose();
+    }
+
+    private class ZielBeobachter implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(parentComponent, "Dateimanager suchen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldProgramm.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldProgramm.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -169,61 +217,4 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
     private javax.swing.JTextField jTextFieldProgramm;
     // End of variables declaration//GEN-END:variables
 
-    private class OkBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (check()) {
-                ok = true;
-                beenden();
-            }
-        }
-    }
-
-    private class AbbrechenBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ok = false;
-            beenden();
-        }
-    }
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(parentComponent, "Dateimanager suchen");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldProgramm.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(398762109, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldProgramm.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
-                } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(107458930, ex);
-                    }
-                }
-            }
-        }
-    }
 }

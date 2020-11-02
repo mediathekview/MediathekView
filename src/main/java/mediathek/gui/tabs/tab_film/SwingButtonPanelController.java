@@ -6,7 +6,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.gui.messages.ButtonPanelVisibilityChangedEvent;
+import mediathek.gui.messages.ButtonsPanelVisibilityChangedEvent;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import net.engio.mbassy.listener.Handler;
@@ -77,7 +77,7 @@ public final class SwingButtonPanelController {
     }
 
     @Handler
-    private void handleButtonPanelVisibilityChanged(ButtonPanelVisibilityChangedEvent evt) {
+    private void handleButtonPanelVisibilityChanged(ButtonsPanelVisibilityChangedEvent evt) {
         SwingUtilities.invokeLater(() -> contentPanel.setVisible(evt.visible));
     }
 
@@ -111,7 +111,7 @@ public final class SwingButtonPanelController {
         btnClose.addActionListener(e -> {
             final boolean visibility = false;
             config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, visibility);
-            Daten.getInstance().getMessageBus().publishAsync(new ButtonPanelVisibilityChangedEvent(visibility));
+            Daten.getInstance().getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(visibility));
         });
 
         contentPanel.add(btnClose, new CC().pad("5 5 3 3").cell(0, 0).alignX("left").alignY("top").grow(0, 0).width("20:20:20").height("20:20:20")); //NON-NLS

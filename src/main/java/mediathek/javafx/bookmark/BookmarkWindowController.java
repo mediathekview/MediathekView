@@ -82,7 +82,7 @@ public class BookmarkWindowController implements Initializable {
   private Color ColorLive;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
-  private final SeenHistoryController history;
+  private final SeenHistoryController history = new SeenHistoryController();
   private MenuItem playitem;
   private MenuItem loaditem;
   private MenuItem deleteitem;
@@ -147,7 +147,6 @@ public class BookmarkWindowController implements Initializable {
   private Hyperlink hyperLink;
 
   public BookmarkWindowController() {
-    history = Daten.getInstance().getSeenHistoryController();
     listeBookmarkList = Daten.getInstance().getListeBookmarkList();
     listUpdated = false;
   }
@@ -171,10 +170,10 @@ public class BookmarkWindowController implements Initializable {
         }
       });
       if (hasUnSeen) {
-        history.markAsSeen(filmlist);
+        history.markSeen(filmlist);
       }
       else {
-        history.markAsUnseen(filmlist);
+        history.markUnseen(filmlist);
       }
       setSeenButtonState(hasUnSeen, selections.size() > 1);
        // reselect to trigger updates:
@@ -736,7 +735,7 @@ public class BookmarkWindowController implements Initializable {
         daten.getListeDownloads().addMitNummer(datenDownload);
         daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-          datenDownload.startDownload(daten);  // und evtl. auch gleich starten
+          datenDownload.startDownload();  // und evtl. auch gleich starten
         }
       }
       showStage();

@@ -3,7 +3,7 @@ package mediathek.daten;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
 
 public final class DatenDownload implements Comparable<DatenDownload> {
 
@@ -219,21 +218,16 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
+    public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        final String zeit = sdf_datum.format(new Date());
-        LinkedList<MVUsedUrl> urlList = new LinkedList<>();
-        for (DatenDownload d : downloads) {
-            d.start = new Start();
-            urlList.add(new MVUsedUrl(zeit,
-                    d.arr[DatenDownload.DOWNLOAD_THEMA],
-                    d.arr[DatenDownload.DOWNLOAD_TITEL],
-                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
+        try (var historyController = new SeenHistoryController()){
+            for (DatenDownload d : downloads) {
+                d.start = new Start();
+                historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
+                        d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            }
         }
-        if (!urlList.isEmpty()) {
-            ddaten.getSeenHistoryController().createLineWriterThread(urlList);
-        }
-        ddaten.getMessageBus().publishAsync(new StartEvent());
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
     }
 
     public static String getTextBandbreite(long b) {
@@ -410,11 +404,16 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         start = null;
     }
 
-    public void startDownload(Daten aDaten) {
+    public void startDownload() {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
-        aDaten.getSeenHistoryController().zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-        aDaten.getMessageBus().publishAsync(new StartEvent());
+
+        try (var historyController = new SeenHistoryController()){
+            historyController.writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA],
+                    arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        }
+
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {

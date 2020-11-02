@@ -6,8 +6,9 @@ import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Log;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -22,6 +23,7 @@ public class PanelProgrammPfade extends JPanel {
     public JDialog dialog = null;
     private final boolean vlc, ffmpeg;
     private final JFrame parentComponent;
+    private static final Logger logger = LogManager.getLogger();
 
     public PanelProgrammPfade(JFrame parentFrame, boolean vvlc, boolean fffmpeg) {
         initComponents();
@@ -133,7 +135,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(306087945, ex);
+                        logger.error(ex);
                     }
                 }
             } else {
@@ -151,7 +153,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.errorLog(643289561, ex);
+                        logger.error(ex);
                     }
                 }
             }

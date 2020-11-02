@@ -11,10 +11,11 @@ import mediathek.gui.PanelVorlage;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Log;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -29,6 +30,7 @@ import java.io.File;
 @SuppressWarnings("serial")
 public class PanelPsetImport extends PanelVorlage {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
+    private static final Logger logger = LogManager.getLogger();
 
     public PanelPsetImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -122,6 +124,117 @@ public class PanelPsetImport extends PanelVorlage {
         jTextFieldBs.setText(vorlage[ListePsetVorlagen.PGR_BS_NR]);
         jTextFieldUrl.setText(vorlage[ListePsetVorlagen.PGR_URL_NR]);
         jTextAreaBeschreibung.setText(vorlage[ListePsetVorlagen.PGR_BESCHREIBUNG_NR]);
+    }
+
+    private class BeobPfadDoc implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        private void eingabe() {
+            jButtonImportDatei.setEnabled(!jTextFieldDatei.getText().equals(""));
+            if (jTextFieldDatei.getText().equals("")) {
+                jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+            } else {
+                if (ListePsetVorlagen.importPsetFile(jTextFieldDatei.getText(), false) != null) {
+                    jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+                } else {
+                    jTextFieldDatei.setBackground(new Color(255, 200, 200));
+                }
+            }
+        }
+    }
+
+    private class BeobTextArea implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        private void eingabe() {
+            jButtonImportText.setEnabled(!jTextAreaImport.getText().equals(""));
+            if (jTextAreaImport.getText().equals("")) {
+                jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
+            } else {
+                if (ListePsetVorlagen.importPsetText(jTextAreaImport.getText(), false) != null) {
+                    jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
+                    jButtonImportText.setEnabled(true);
+                } else {
+                    jTextAreaImport.setBackground(new Color(255, 200, 200));
+                    jButtonImportText.setEnabled(false);
+                }
+            }
+        }
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programmset auswählen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                if (jTextFieldDatei.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                } else {
+                    chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobTableSelect implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                table1Select();
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -456,114 +569,4 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobPfadDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        private void eingabe() {
-            jButtonImportDatei.setEnabled(!jTextFieldDatei.getText().equals(""));
-            if (jTextFieldDatei.getText().equals("")) {
-                jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
-            } else {
-                if (ListePsetVorlagen.importPsetFile(jTextFieldDatei.getText(), false) != null) {
-                    jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
-                } else {
-                    jTextFieldDatei.setBackground(new Color(255, 200, 200));
-                }
-            }
-        }
-    }
-
-    private class BeobTextArea implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        private void eingabe() {
-            jButtonImportText.setEnabled(!jTextAreaImport.getText().equals(""));
-            if (jTextAreaImport.getText().equals("")) {
-                jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
-            } else {
-                if (ListePsetVorlagen.importPsetText(jTextAreaImport.getText(), false) != null) {
-                    jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
-                    jButtonImportText.setEnabled(true);
-                } else {
-                    jTextAreaImport.setBackground(new Color(255, 200, 200));
-                    jButtonImportText.setEnabled(false);
-                }
-            }
-        }
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programmset auswählen");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(989563047, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                if (jTextFieldDatei.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                } else {
-                    chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(925004992, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobTableSelect implements ListSelectionListener {
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                table1Select();
-            }
-        }
-    }
 }
