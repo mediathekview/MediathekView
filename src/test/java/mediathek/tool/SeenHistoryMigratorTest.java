@@ -72,6 +72,7 @@ public class SeenHistoryMigratorTest {
             var rs = statement.executeQuery(testSql);
             rs.next();
             var count = rs.getInt(1);
+            //we must have one return
             assertEquals(count, 1);
             rs.close();
 
@@ -79,6 +80,7 @@ public class SeenHistoryMigratorTest {
             rs = statement.executeQuery(testSql);
             rs.next();
             count = rs.getInt(1);
+            // there must be 8 entries in db
             assertEquals(count, 8);
             rs.close();
         }
@@ -86,6 +88,7 @@ public class SeenHistoryMigratorTest {
 
     @Test
     void migrationTest() throws Exception {
+        //db must not exist
         assertTrue(Files.notExists(dbPath));
 
         try (var migrator = new SeenHistoryMigrator(histTxtPath,dbPath)) {
@@ -93,6 +96,7 @@ public class SeenHistoryMigratorTest {
             migrator.migrate();
         }
 
+        //now db must exist, history.txt must have been deleted
         assertTrue(Files.exists(dbPath));
         assertFalse(Files.exists(histTxtPath));
 
