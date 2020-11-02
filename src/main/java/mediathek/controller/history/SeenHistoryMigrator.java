@@ -137,7 +137,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
                 historyEntries.add(oldHistoryEntry);
             }
         } catch (Exception ex) {
-            logger.error("listeBauen()", ex);
+            logger.error("readOldEntries()", ex);
         }
 
         logger.trace("historyEntries size: {}", historyEntries.size());
