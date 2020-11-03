@@ -20,6 +20,7 @@
 - **BUGFIX:** Splash screen wird nun nicht mehr über allen Fenstern dauerhaft dargestellt.
 - **BUGFIX:** Livestreams werden nicht mehr in der Historie aufgezeichnet.
 - **BUGFIX:** "Abos verwalten"-Dialog wählt nun bei gesetztem Filter nicht mehr die falschen Abos aus.
+- **BUGFIX:** Farbauswahl bei Psets für Buttons werden nun angewendet auf allen Plattformen.
 - **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
 - ==**FEATURE:**== Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
 - **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.

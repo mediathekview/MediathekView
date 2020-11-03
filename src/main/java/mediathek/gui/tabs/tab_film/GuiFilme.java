@@ -31,6 +31,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.bookmark.BookmarkWindowController;
+import mediathek.javafx.buttonsPanel.ButtonsPanelController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
@@ -87,6 +88,7 @@ public class GuiFilme extends AGuiTabPanel {
             new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     private final JFXPanel fxDescriptionPanel = new JFXPanel();
+    private final JFXPanel fxPsetButtonsPanel = new JFXPanel();
     private final SeenHistoryController historyController = new SeenHistoryController();
     /**
      * The JavaFx Film action popup panel.
@@ -96,7 +98,6 @@ public class GuiFilme extends AGuiTabPanel {
      * macOS touch bar support
      */
     public JTouchBar touchBar;
-    private SwingButtonPanelController buttonPanelController;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     /**
      * The swing helper panel FilmAction bar.
@@ -105,6 +106,11 @@ public class GuiFilme extends AGuiTabPanel {
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
     private JCheckBoxMenuItem cbShowButtons;
+    /**
+     * We need a strong reference here for message bus to work properly. Otherwise the buttons
+     * panel controller will not receive change messages.
+     */
+    private ButtonsPanelController psetController;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -119,6 +125,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         // add film description panel
         extensionArea.add(fxDescriptionPanel);
+        extensionArea.add(fxPsetButtonsPanel);
 
         setupFilmListTable();
 
@@ -126,8 +133,8 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
-        setupButtonPanel();
         setupDescriptionPanel();
+        setupPsetButtonsPanel();
         setupFilmActionPanel();
 
         start_init();
@@ -137,10 +144,6 @@ public class GuiFilme extends AGuiTabPanel {
         setupActionListeners();
 
         initializeTouchBar();
-    }
-
-    private void setupButtonPanel() {
-        buttonPanelController = new SwingButtonPanelController(this, extensionArea);
     }
 
     private void setupFilmListTable() {
@@ -216,6 +219,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleButtonsPanelVisibilityChanged(ButtonsPanelVisibilityChangedEvent evt) {
         SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
+        SwingUtilities.invokeLater(() -> fxPsetButtonsPanel.setVisible(evt.visible));
     }
 
     public void installViewMenuEntry(JMenu jMenuAnsicht) {
@@ -225,7 +229,7 @@ public class GuiFilme extends AGuiTabPanel {
         cbShowButtons.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
         cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
 
-        jMenuAnsicht.add(cbShowButtons,0);
+        jMenuAnsicht.add(cbShowButtons, 0);
     }
 
     @Override
@@ -302,6 +306,37 @@ public class GuiFilme extends AGuiTabPanel {
                 () -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
     }
 
+    private void setupPsetButtonsPanel() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> {
+            try {
+                psetController = ButtonsPanelController.install(fxPsetButtonsPanel,this);
+                psetController.setOnCloseRequest(e -> {
+                    daten.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(false));
+                    e.consume();
+                });
+                psetController.setupButtonLayout();
+            } catch (Exception ex) {
+                logger.error("setupPsetButtonsPanel", ex);
+            }
+        });
+
+        var config = ApplicationConfiguration.getConfiguration();
+        SwingUtilities.invokeLater(() -> fxPsetButtonsPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
+            }
+        }));
+
+        final var visible = config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
+        fxPsetButtonsPanel.setVisible(visible);
+    }
+
     private void setupDescriptionPanel() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             try {
@@ -311,7 +346,7 @@ public class GuiFilme extends AGuiTabPanel {
                     Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
                 }));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("setupDescriptionPanel", ex);
             }
         });
     }
@@ -1047,7 +1082,7 @@ public class GuiFilme extends AGuiTabPanel {
                         item.setForeground(col);
                     }
                 } else {
-                    item.addActionListener(new BeobOpenPlayer(GuiFilme.this, pset));
+                    item.addActionListener(l -> playerStarten(pset));
                     if (col != null) {
                         item.setBackground(col);
                     }

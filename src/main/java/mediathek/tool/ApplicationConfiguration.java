@@ -70,8 +70,6 @@ public class ApplicationConfiguration {
       "application.debug.http_traffic_trace_level";
 
   public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
-  public static final String APPLICATION_BUTTONS_PANEL_MAX_VISIBLE =
-      "application.buttons_panel.max_visible";
   public static final String APPLICATION_BUTTONS_PANEL_VISIBLE =
       "application.buttons_panel.visible";
 
