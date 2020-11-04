@@ -19,9 +19,10 @@
  */
 package mediathek.config;
 
-import java.awt.Color;
-import java.util.LinkedList;
 import mediathek.tool.MVC;
+
+import java.awt.*;
+import java.util.LinkedList;
 
 public class MVColor {
 
@@ -57,7 +58,6 @@ public class MVColor {
 
     // ProgrammGui
     public static final MVC BUTTON_SET_ABSPIELEN = new MVC(MVConfig.Configs.FARBE__BUTTON_SET_ABSPIELEN, new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
-    public static final MVC FILMLISTE_LADEN_AKTIV = new MVC(MVConfig.Configs.FARBE__FILMLISTE_LADEN_AKTIV, new Color(205, 255, 191), "Einstellungen Filmliste, Auto-Manuell");
 
     // DialogDownload
     public static final MVC DOWNLOAD_DATEINAME_EXISTIERT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_EXISTIERT, new Color(190, 0, 0), "Download, Dateiname existiert schon");
@@ -92,7 +92,6 @@ public class MVColor {
         liste.add(FILTER_REGEX);
         liste.add(FILTER_REGEX_FEHLER);
         liste.add(BUTTON_SET_ABSPIELEN);
-        liste.add(FILMLISTE_LADEN_AKTIV);
         liste.add(DOWNLOAD_DATEINAME_EXISTIERT);
         liste.add(DOWNLOAD_DATEINAME_NEU);
         liste.add(DOWNLOAD_DATEINAME_ALT);
