@@ -138,7 +138,7 @@ public class Daten {
         return reset;
     }
 
-    public static void setRestConfigurationData(final boolean aIsReset) {
+    public static void setResetConfigurationData(final boolean aIsReset) {
         reset = aIsReset;
     }
 
