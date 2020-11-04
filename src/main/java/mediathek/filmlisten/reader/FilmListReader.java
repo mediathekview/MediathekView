@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -45,6 +46,7 @@ public class FilmListReader implements AutoCloseable {
     private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
+    private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
@@ -319,6 +321,10 @@ public class FilmListReader implements AutoCloseable {
                 parseLivestream(datenFilm);
                 checkPlayList(datenFilm);
 
+                //if user specified he doesn´t want to load this sender, skip...
+                if (!senderApprover.isApproved(datenFilm.getSender()))
+                    continue;
+
                 if (!loadTrailer) {
                     if (datenFilm.isTrailerTeaser())
                         continue;
@@ -405,6 +411,7 @@ public class FilmListReader implements AutoCloseable {
      */
     private void processFromFile(String source, ListeFilme listeFilme) {
         FileChannel fc = null;
+        MappedByteBuffer mbb = null;
         try {
             final Path filePath = Paths.get(source);
             final long fileSize = Files.size(filePath);
@@ -414,7 +421,7 @@ public class FilmListReader implements AutoCloseable {
             final ProgressMonitor monitor = new ProgressMonitor(source);
 
             fc = (FileChannel) Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
-            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+            mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 
             try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
                  InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
@@ -429,6 +436,8 @@ public class FilmListReader implements AutoCloseable {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
         } finally {
+            if (mbb != null)
+                mbb.clear();
             if (fc != null) {
                 try {
                     fc.close();
