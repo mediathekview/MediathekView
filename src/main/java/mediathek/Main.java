@@ -511,7 +511,7 @@ public class Main {
     }
 
     private static void printDirectoryPaths() {
-        logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
+        logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
         logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
     }
 

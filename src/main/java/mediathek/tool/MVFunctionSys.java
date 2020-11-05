@@ -1,7 +1,6 @@
 package mediathek.tool;
 
 import mediathek.Main;
-import mediathek.config.Konstanten;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -13,7 +12,7 @@ public class MVFunctionSys {
      *
      * @return The program jar file path with a separator added.
      */
-    public static String getPathJar() {
+    public static String getPathToApplicationJar() {
         // macht Probleme bei Win und Netzwerkpfaden, liefert dann Absolute Pfade zB. \\VBOXSVR\share\Mediathek\...
         String pFilePath = "pFile";
         File propFile = new File(pFilePath);
@@ -31,9 +30,5 @@ public class MVFunctionSys {
             s += File.separator;
         }
         return s;
-    }
-
-    public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
     }
 }

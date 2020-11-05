@@ -170,7 +170,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     private static boolean addOnZip(String datei) {
-        String zielPfad = addsPfad(getPathJar(), "bin");
+        String zielPfad = addsPfad(getPathToApplicationJar(), "bin");
         File zipFile;
         int n;
 
