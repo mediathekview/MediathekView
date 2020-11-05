@@ -7,28 +7,12 @@ import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.GuiFunktionen
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.awt.Frame
 import javax.swing.JButton
 import javax.swing.JDialog
-import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
 
 class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true) {
     private val contentPanel: PanelFilmlisteLaden
-
-    private class ButtonPanel : JPanel() {
-        init {
-            layout = BorderLayout()
-            border = EmptyBorder(0, 10, 10, 10)
-        }
-    }
-
-    private class ButtonFlowPanel : JPanel() {
-        init {
-            layout = FlowLayout()
-        }
-    }
 
     private val btnContentPanel = ButtonPanel()
 
