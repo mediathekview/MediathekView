@@ -39,21 +39,27 @@ public class Config {
     @CommandLine.Option(names = {"-e", "--enhanced-logging"}, description = "Erweiterten Log-Modus aktivieren")
     private static boolean enhancedLogging;
     /**
+     * This will install a repaint manager which monitors Swing EDT violations.
+     */
+    @CommandLine.Option(names = {"-s", "--swing-thread-checker"}, description = "Swing EDT Thread Repaint Manager installieren (FÜR ENTWICKLER)", hidden = true)
+    private static boolean installThreadCheckingRepaintManager;
+    /**
      * Log HTTP traffic to console. By default HttpLoggingInterceptor.Level.BASIC will be used.
      * Configuration can be changed by ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL
      */
     @CommandLine.Option(names = {"-t", "--debug-http-traffic"}, hidden = true, description = "Logging für HTTP Traffic aktivieren (FÜR ENTWICKLER)")
     private static boolean debugHttpTraffic;
     private static boolean portableMode;
-
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
-
     @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
-
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
     private static boolean fileLoggingDisabled;
+
+    public static boolean isInstallThreadCheckingRepaintManager() {
+        return installThreadCheckingRepaintManager;
+    }
 
     public static int getNumCpus() {
         return numCpus;
