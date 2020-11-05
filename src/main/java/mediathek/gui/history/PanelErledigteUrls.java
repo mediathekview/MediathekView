@@ -35,8 +35,8 @@ public abstract class PanelErledigteUrls extends JPanel {
     protected final Daten daten;
     protected AboHistoryController workList;
 
-    public PanelErledigteUrls(Daten d) {
-        this.daten = d;
+    public PanelErledigteUrls() {
+        this.daten = Daten.getInstance();
 
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());

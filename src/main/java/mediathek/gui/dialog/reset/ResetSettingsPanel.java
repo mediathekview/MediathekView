@@ -18,14 +18,14 @@ public class ResetSettingsPanel extends JPanel {
     private static final String RESET_MESSAGE = "<html>Es werden <b>ALLE</b> von Ihnen erzeugten Änderungen gelöscht.<br>" +
             "Möchten Sie wirklich alle Einstellungen zurücksetzen?<br></html>";
 
-    public ResetSettingsPanel(JFrame parent, Daten daten) {
+    public ResetSettingsPanel(JFrame parent) {
         initComponents();
 
         jButtonHilfeReset.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
-            GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, true), true);
+            GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), ListePsetVorlagen.getStandarset(parent, true), true);
             Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
         });
         jButtonResetAll.addActionListener(e -> {
