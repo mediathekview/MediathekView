@@ -33,9 +33,10 @@ new FormModel {
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
 					"toolTipText": "Hilfe anzeigen"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
 					name: "jLabel7"
-					"text": "<html>Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gelöscht und die Standardsets wieder angelegt.<br>Abos und Blacklist bleiben erhalten.</html>"
+					"text": "Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gelöscht und die Standardsets wieder angelegt.\nAbos und Blacklist bleiben erhalten."
+					"rows": 3
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}

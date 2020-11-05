@@ -8,6 +8,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.swing.MultilineLabel;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -49,7 +50,7 @@ public class ResetSettingsPanel extends JPanel {
         var jPanel2 = new JPanel();
         jButtonResetSets = new JButton();
         jButtonHilfeReset = new JButton();
-        var jLabel7 = new JLabel();
+        var jLabel7 = new MultilineLabel();
         var jSeparator1 = new JSeparator();
         jButtonResetAll = new JButton();
         var jLabel10 = new JLabel();
@@ -74,7 +75,8 @@ public class ResetSettingsPanel extends JPanel {
             jButtonHilfeReset.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
             //---- jLabel7 ----
-            jLabel7.setText("<html>Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gel\u00f6scht und die Standardsets wieder angelegt.<br>Abos und Blacklist bleiben erhalten.</html>"); //NON-NLS
+            jLabel7.setText("Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gel\u00f6scht und die Standardsets wieder angelegt.\nAbos und Blacklist bleiben erhalten."); //NON-NLS
+            jLabel7.setRows(3);
 
             //---- jButtonResetAll ----
             jButtonResetAll.setText("Alle Einstellungen zur\u00fccksetzen!"); //NON-NLS
