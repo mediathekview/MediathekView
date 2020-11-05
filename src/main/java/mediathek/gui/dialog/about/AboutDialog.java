@@ -10,10 +10,7 @@ import java.awt.*;
 public class AboutDialog extends StandardDialog {
     public AboutDialog(Frame owner) {
         super(owner,"Über dieses Programm", true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         EscapeKeyHandler.installHandler(this, this::dispose);
-
-        //setResizable(false);
         pack();
     }
 
