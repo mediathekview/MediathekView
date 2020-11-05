@@ -889,7 +889,11 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
         jMenuHilfe.add(new ResetAboHistoryAction(this));
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(searchProgramUpdateAction);
+        //do not show menu entry if we have external update support
+        var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
+        if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
+            jMenuHilfe.add(searchProgramUpdateAction);
+        }
         jMenuHilfe.add(new ShowProgramInfosAction(this));
         if (!SystemUtils.IS_OS_MAC_OSX) {
             jMenuHilfe.addSeparator();
