@@ -16,19 +16,31 @@ import javax.swing.border.EmptyBorder
 
 class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true) {
     private val contentPanel: PanelFilmlisteLaden
-    private fun createButtonPanel(): JPanel {
-        val btnContentPanel = JPanel()
-        btnContentPanel.border = EmptyBorder(0, 10, 10, 10)
-        btnContentPanel.layout = BorderLayout()
 
-        val buttonPanel = JPanel()
-        buttonPanel.layout = FlowLayout()
+    private class ButtonPanel : JPanel() {
+        init {
+            layout = BorderLayout()
+            border = EmptyBorder(0, 10, 10, 10)
+        }
+    }
 
-        var btn = JButton(DisposeDialogAction(this,"Schließen", "Dialog schließen"))
-        buttonPanel.add(btn)
-        getRootPane().defaultButton = btn
+    private class ButtonFlowPanel : JPanel() {
+        init {
+            layout = FlowLayout()
+        }
+    }
 
-        btn = JButton("Filmliste laden")
+    private val btnContentPanel = ButtonPanel()
+
+    private fun createButtonPanel() {
+        val buttonFlowPanel = ButtonFlowPanel()
+        btnContentPanel.add(buttonFlowPanel, BorderLayout.EAST)
+
+        val closeBtn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
+        buttonFlowPanel.add(closeBtn)
+        getRootPane().defaultButton = closeBtn
+
+        val btn = JButton("Filmliste laden")
         btn.addActionListener {
             val filmeLaden = Daten.getInstance().filmeLaden
             if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
@@ -45,17 +57,16 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
             dispose()
         }
 
-        buttonPanel.add(btn)
-        btnContentPanel.add(buttonPanel, BorderLayout.EAST)
-        return btnContentPanel
+        buttonFlowPanel.add(btn)
     }
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
-        contentPanel = PanelFilmlisteLaden(false)
         contentPane.layout = BorderLayout()
+        contentPanel = PanelFilmlisteLaden(false)
         contentPane.add(contentPanel, BorderLayout.CENTER)
-        contentPane.add(createButtonPanel(), BorderLayout.SOUTH)
+        createButtonPanel()
+        contentPane.add(btnContentPanel, BorderLayout.SOUTH)
         pack()
 
         isResizable = false
