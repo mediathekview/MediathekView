@@ -15,6 +15,7 @@ import mediathek.tool.*;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.Okio;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -363,6 +364,7 @@ public class FilmListReader implements AutoCloseable {
 
     /**
      * Check if this film entry is a playlist entry, ends with .m3u8
+     *
      * @param datenFilm the film to check.
      */
     private void checkPlayList(@NotNull DatenFilm datenFilm) {
@@ -420,14 +422,26 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
 
-            fc = (FileChannel) Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
-            mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-            try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
-                 InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
-                 InputStream in = selectDecompressor(source, input);
-                 JsonParser jp = new JsonFactory().createParser(in)) {
-                readData(jp, listeFilme);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                //windows doesn´t like mem-mapped files...causes FileSystemExceptions :(
+                try (var sourceFile = Okio.source(filePath);
+                     var bufferedSource = Okio.buffer(sourceFile);
+                     var is = bufferedSource.inputStream();
+                     InputStream input = new ProgressMonitorInputStream(is, fileSize, monitor);
+                     InputStream in = selectDecompressor(source, input);
+                     JsonParser jp = new JsonFactory().createParser(in)) {
+                    readData(jp, listeFilme);
+                }
+            } else {
+                //on "good" OS we can use high speed
+                fc = (FileChannel) Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
+                mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+                try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
+                     InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
+                     InputStream in = selectDecompressor(source, input);
+                     JsonParser jp = new JsonFactory().createParser(in)) {
+                    readData(jp, listeFilme);
+                }
             }
         } catch (FileNotFoundException | NoSuchFileException ex) {
             logger.debug("FilmListe existiert nicht: {}", source);
@@ -514,7 +528,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void notifyFertig(String url, ListeFilme liste) {
-        logger.info("Liste Filme gelesen am: {}",DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
+        logger.info("Liste Filme gelesen am: {}", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
                 .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
         logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());
