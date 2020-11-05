@@ -4,11 +4,9 @@
 
 package mediathek.gui.dialog.about;
 
-import com.jidesoft.swing.JideButton;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.swing.HyperlinkDecorator;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -17,12 +15,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 
-/**
- * @author Christian Franzke
- */
 public class AboutDialogPanel extends JPanel {
     public AboutDialogPanel() {
         initComponents();
@@ -33,54 +27,13 @@ public class AboutDialogPanel extends JPanel {
     }
 
     private void setupHyperlinks() {
-        btnWebsite.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), Konstanten.ADRESSE_WEBSITE);
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnDonation.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), Konstanten.ADRESSE_DONATION);
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnSupportClientDev.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://paypal.me/ChristianFranzke?locale.x=de_DE");
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnForum.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), Konstanten.ADRESSE_FORUM);
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnInstructions.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), Konstanten.ADRESSE_ANLEITUNG);
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnJetbrainsLink.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.jetbrains.com");
-            } catch (URISyntaxException ignored) {
-            }
-        });
-
-        btnEjTechLink.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.ej-technologies.com");
-            } catch (URISyntaxException ignored) {
-            }
-        });
+        HyperlinkDecorator.makeLinkable(lblWebsite,Konstanten.ADRESSE_WEBSITE);
+        HyperlinkDecorator.makeLinkable(lblDonation,Konstanten.ADRESSE_DONATION);
+        HyperlinkDecorator.makeLinkable(lblSupportClientDev,"https://paypal.me/ChristianFranzke");
+        HyperlinkDecorator.makeLinkable(lblForum, Konstanten.ADRESSE_FORUM);
+        HyperlinkDecorator.makeLinkable(lblInstructions, Konstanten.ADRESSE_ANLEITUNG);
+        HyperlinkDecorator.makeLinkable(lblJetbrainsLink, "https://www.jetbrains.com");
+        HyperlinkDecorator.makeLinkable(lblEjTechLink,"https://www.ej-technologies.com");
     }
 
     private void setupProgramPaths() {
@@ -117,15 +70,15 @@ public class AboutDialogPanel extends JPanel {
         var label14 = new JLabel();
         lblSettingsDirectory = new JLabel();
         var pnlHyperlinks = new JPanel();
-        btnWebsite = new JideButton();
-        btnDonation = new JideButton();
-        btnSupportClientDev = new JideButton();
-        btnForum = new JideButton();
-        btnInstructions = new JideButton();
+        lblWebsite = new JLabel();
+        lblDonation = new JLabel();
+        lblSupportClientDev = new JLabel();
+        lblForum = new JLabel();
+        lblInstructions = new JLabel();
         var panel2 = new JPanel();
         var label7 = new JLabel();
-        btnJetbrainsLink = new JideButton();
-        btnEjTechLink = new JideButton();
+        lblJetbrainsLink = new JLabel();
+        lblEjTechLink = new JLabel();
 
         //======== this ========
         setLayout(new MigLayout(
@@ -268,36 +221,31 @@ public class AboutDialogPanel extends JPanel {
                     .gap()
                     ));
 
-            //---- btnWebsite ----
-            btnWebsite.setText("Website"); //NON-NLS
-            btnWebsite.setHorizontalAlignment(SwingConstants.LEFT);
-            btnWebsite.setButtonStyle(3);
-            btnWebsite.setForeground(new Color(88, 157, 246));
-            pnlHyperlinks.add(btnWebsite, new CC().cell(0, 0).alignX("left").growX(0)); //NON-NLS
+            //---- lblWebsite ----
+            lblWebsite.setText("Website"); //NON-NLS
+            lblWebsite.setHorizontalAlignment(SwingConstants.LEFT);
+            lblWebsite.setForeground(new Color(88, 157, 246));
+            pnlHyperlinks.add(lblWebsite, new CC().cell(0, 0).alignX("left").growX(0)); //NON-NLS
 
-            //---- btnDonation ----
-            btnDonation.setText("Spende f\u00fcr den Betrieb"); //NON-NLS
-            btnDonation.setButtonStyle(3);
-            btnDonation.setForeground(new Color(88, 157, 246));
-            pnlHyperlinks.add(btnDonation, new CC().cell(0, 1).alignX("left").growX(0)); //NON-NLS
+            //---- lblDonation ----
+            lblDonation.setText("Spende f\u00fcr den Betrieb"); //NON-NLS
+            lblDonation.setForeground(new Color(88, 157, 246));
+            pnlHyperlinks.add(lblDonation, new CC().cell(0, 1).alignX("left").growX(0)); //NON-NLS
 
-            //---- btnSupportClientDev ----
-            btnSupportClientDev.setText("Spende an den Client-Entwickler"); //NON-NLS
-            btnSupportClientDev.setButtonStyle(3);
-            btnSupportClientDev.setForeground(new Color(88, 157, 246));
-            pnlHyperlinks.add(btnSupportClientDev, new CC().cell(0, 2).alignX("left").growX(0)); //NON-NLS
+            //---- lblSupportClientDev ----
+            lblSupportClientDev.setText("Spende an den Client-Entwickler"); //NON-NLS
+            lblSupportClientDev.setForeground(new Color(88, 157, 246));
+            pnlHyperlinks.add(lblSupportClientDev, new CC().cell(0, 2).alignX("left").growX(0)); //NON-NLS
 
-            //---- btnForum ----
-            btnForum.setText("Forum"); //NON-NLS
-            btnForum.setButtonStyle(3);
-            btnForum.setForeground(new Color(88, 157, 246));
-            pnlHyperlinks.add(btnForum, new CC().cell(0, 3).alignX("left").growX(0)); //NON-NLS
+            //---- lblForum ----
+            lblForum.setText("Forum"); //NON-NLS
+            lblForum.setForeground(new Color(88, 157, 246));
+            pnlHyperlinks.add(lblForum, new CC().cell(0, 3).alignX("left").growX(0)); //NON-NLS
 
-            //---- btnInstructions ----
-            btnInstructions.setText("Anleitung"); //NON-NLS
-            btnInstructions.setButtonStyle(3);
-            btnInstructions.setForeground(new Color(88, 157, 246));
-            pnlHyperlinks.add(btnInstructions, new CC().cell(0, 4).alignX("left").growX(0)); //NON-NLS
+            //---- lblInstructions ----
+            lblInstructions.setText("Anleitung"); //NON-NLS
+            lblInstructions.setForeground(new Color(88, 157, 246));
+            pnlHyperlinks.add(lblInstructions, new CC().cell(0, 4).alignX("left").growX(0)); //NON-NLS
         }
         add(pnlHyperlinks, new CC().cell(0, 1).alignY("top").growY(0)); //NON-NLS
 
@@ -316,22 +264,17 @@ public class AboutDialogPanel extends JPanel {
 
             //---- label7 ----
             label7.setText("Development supported by:"); //NON-NLS
-            label7.setFont(label7.getFont().deriveFont(label7.getFont().getSize() - 2f));
             panel2.add(label7, new CC().cell(0, 0));
 
-            //---- btnJetbrainsLink ----
-            btnJetbrainsLink.setText("JetBrains IntelliJ"); //NON-NLS
-            btnJetbrainsLink.setButtonStyle(3);
-            btnJetbrainsLink.setFont(btnJetbrainsLink.getFont().deriveFont(btnJetbrainsLink.getFont().getSize() - 2f));
-            btnJetbrainsLink.setForeground(new Color(88, 157, 246));
-            panel2.add(btnJetbrainsLink, new CC().cell(1, 0).alignX("left").growX(0)); //NON-NLS
+            //---- lblJetbrainsLink ----
+            lblJetbrainsLink.setText("JetBrains IntelliJ"); //NON-NLS
+            lblJetbrainsLink.setForeground(new Color(88, 157, 246));
+            panel2.add(lblJetbrainsLink, new CC().cell(1, 0).alignX("left").growX(0)); //NON-NLS
 
-            //---- btnEjTechLink ----
-            btnEjTechLink.setText("ej-technologies JProfiler and install4j"); //NON-NLS
-            btnEjTechLink.setButtonStyle(3);
-            btnEjTechLink.setFont(btnEjTechLink.getFont().deriveFont(btnEjTechLink.getFont().getSize() - 2f));
-            btnEjTechLink.setForeground(new Color(88, 157, 246));
-            panel2.add(btnEjTechLink, new CC().cell(1, 1).alignX("left").growX(0)); //NON-NLS
+            //---- lblEjTechLink ----
+            lblEjTechLink.setText("ej-technologies JProfiler and install4j"); //NON-NLS
+            lblEjTechLink.setForeground(new Color(88, 157, 246));
+            panel2.add(lblEjTechLink, new CC().cell(1, 1).alignX("left").growX(0)); //NON-NLS
         }
         add(panel2, new CC().cell(0, 2, 2, 1));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -342,12 +285,12 @@ public class AboutDialogPanel extends JPanel {
     private JLabel lblVersion;
     private JLabel lblFilmListPath;
     private JLabel lblSettingsDirectory;
-    private JideButton btnWebsite;
-    private JideButton btnDonation;
-    private JideButton btnSupportClientDev;
-    private JideButton btnForum;
-    private JideButton btnInstructions;
-    private JideButton btnJetbrainsLink;
-    private JideButton btnEjTechLink;
+    private JLabel lblWebsite;
+    private JLabel lblDonation;
+    private JLabel lblSupportClientDev;
+    private JLabel lblForum;
+    private JLabel lblInstructions;
+    private JLabel lblJetbrainsLink;
+    private JLabel lblEjTechLink;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

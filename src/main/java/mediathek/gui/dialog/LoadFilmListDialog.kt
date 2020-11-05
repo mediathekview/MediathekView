@@ -1,6 +1,7 @@
 package mediathek.gui.dialog
 
 import mediathek.config.Daten
+import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FilmListUpdateType
@@ -23,8 +24,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
         val buttonPanel = JPanel()
         buttonPanel.layout = FlowLayout()
 
-        var btn = JButton("Schließen")
-        btn.addActionListener { dispose() }
+        var btn = JButton(DisposeDialogAction(this,"Schließen", "Dialog schließen"))
         buttonPanel.add(btn)
         getRootPane().defaultButton = btn
 
