@@ -586,7 +586,7 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Config.isDebugModeEnabled()) {
+            if (Config.isDebugModeEnabled() || Config.isEnhancedLoggingEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                 logger.info("Swing Thread checking repaint manager installed.");
