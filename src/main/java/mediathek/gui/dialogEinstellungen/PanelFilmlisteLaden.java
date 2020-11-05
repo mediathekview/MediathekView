@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.swing.MultilineLabel;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -8,6 +7,7 @@ import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.swing.MultilineLabel;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
