@@ -98,9 +98,9 @@ public class IoXmlSchreiben {
         writeNewLine(writer);
         //Proggruppen schreiben, bei Konfig-Datei
         for (DatenPset datenPset : Daten.listePset) {
-            xmlSchreibenDaten(writer, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, false);
+            xmlSchreibenDaten(writer, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, true);
             for (DatenProg datenProg : datenPset.getListeProg()) {
-                xmlSchreibenDaten(writer, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, false);
+                xmlSchreibenDaten(writer, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, true);
             }
         }
     }
