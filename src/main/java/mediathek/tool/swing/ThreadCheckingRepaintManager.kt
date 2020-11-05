@@ -1,8 +1,3 @@
-/*
- * @(#)ThreadCheckingRepaintManager.java 4/18/2006
- *
- * Copyright 2002 - 2006 JIDE Software Inc. All rights reserved.
- */
 package mediathek.tool.swing
 
 import java.io.ByteArrayOutputStream

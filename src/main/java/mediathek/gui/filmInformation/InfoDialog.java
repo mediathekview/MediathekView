@@ -1,6 +1,5 @@
 package mediathek.gui.filmInformation;
 
-import com.jidesoft.swing.MultilineLabel;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
@@ -19,6 +18,7 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.swing.MultilineLabel;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
