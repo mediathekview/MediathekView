@@ -1,7 +1,6 @@
 package mediathek;
 
 import com.google.common.base.Stopwatch;
-import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
