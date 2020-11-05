@@ -33,6 +33,7 @@ object HyperlinkDecorator {
     fun makeLinkable(c: JLabel, link: String) {
         try {
             makeLinkable(c, LinkMouseListener(link))
+            c.toolTipText = link
         } catch (e: URISyntaxException) {
             logger.error(e)
         }
