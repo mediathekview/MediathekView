@@ -60,7 +60,7 @@ public class ResetSettingsPanel extends JPanel {
         setLayout(new VerticalLayout(5));
 
         //---- jLabel1 ----
-        jLabel1.setText("<html>Bei Problemen sollten die Anleitung oder die FAQ die erste Anlaufstelle sein.<br>F\u00fchrt das zu keiner L\u00f6sung, kann auch eine Suche im Forum weiterhelfen.<br><br> Wenn auch das nicht weiterhilft, sollte man eine Anfrage im Forum stellen. Damit diese auch beantwortet  werden kann, sind ein paar Infos wichtig:<br>  * M\u00f6glichst <b>genaue Beschreibung</b> des Problems (was geht nicht, welcher Film, ..)<br>  * Infos \u00fcber das Betriebssystem und die Programmversion</html>"); //NON-NLS
+        jLabel1.setText("<html>Bei Problemen sollten die Anleitung oder die FAQ die erste Anlaufstelle sein.<br>F\u00fchrt das zu keiner L\u00f6sung, kann auch eine Suche im Forum weiterhelfen.<br><br> Wenn auch das nicht weiterhilft, sollte man eine Anfrage im Forum stellen. Damit diese auch beantwortet  werden kann,<br>sind ein paar Infos wichtig:<br>  * M\u00f6glichst <b>genaue Beschreibung</b> des Problems (was geht nicht, welcher Film, ..)<br>  * Infos \u00fcber das Betriebssystem und die Programmversion</html>"); //NON-NLS
         add(jLabel1);
 
         //======== jPanel2 ========
@@ -103,7 +103,7 @@ public class ResetSettingsPanel extends JPanel {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(jPanel2Layout.createParallelGroup()
-                                    .addComponent(jLabel10, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+                                    .addComponent(jLabel10)
                                     .addComponent(jLabel7, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))))
                         .addContainerGap())
             );
