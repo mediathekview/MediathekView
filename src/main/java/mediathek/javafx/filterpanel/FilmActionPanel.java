@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import static mediathek.javafx.bookmark.BookmarkWindowController.FILTER_ACTIVE_CLASS;
+import static mediathek.javafx.bookmark.BookmarkWindowController.setConditionalButtonStyle;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar. search is exposed via a readonly
@@ -507,4 +509,12 @@ public class FilmActionPanel {
 
     return new Scene(toolBar);
   }
+
+  /**
+   * Assign button style depending on filter state
+   **/
+  public void SetFilterButtonColor(boolean filtered) {
+    setConditionalButtonStyle(toolBar.btnShowFilter, FILTER_ACTIVE_CLASS, filtered); 
+  }
+
 }

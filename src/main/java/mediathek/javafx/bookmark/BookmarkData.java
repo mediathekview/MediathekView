@@ -26,6 +26,8 @@ public class BookmarkData {
   private String note;
   private String expiry;
   private boolean willExpire;
+  private boolean newlyAdded;
+  private String category;
   
   public BookmarkData() {
     seen = new SimpleBooleanProperty(false);
@@ -41,6 +43,12 @@ public class BookmarkData {
     this.urlKlein = filmdata.getUrlKlein();
     this.filmdata = filmdata; 
     this.willExpire = false;
+    this.newlyAdded = true;
+  }
+    
+  public BookmarkData(DatenFilm filmdata, String category) {  
+    this(filmdata);
+    this.category = category;
   }
 
   // getter/setter used for Jackson
@@ -84,6 +92,9 @@ public class BookmarkData {
   public String getUrlKlein() { return urlKlein; }
   public void setUrlKlein(String urlKlein) { this.urlKlein = urlKlein; }
   
+  public String getCategory(){ return this.category; }
+  public void   setCategory(String category){ this.category = category; }
+  
   // property access:
   @JsonIgnore
   public BooleanProperty getSeenProperty() { return seen; }
@@ -119,6 +130,11 @@ public class BookmarkData {
   public boolean isLiveStream() {
     return (this.filmdata != null) ? this.filmdata.isLivestream() : false;
   }
+  
+  @JsonIgnore
+  public boolean isNew() {
+    return this.newlyAdded;
+  }
     
   @JsonIgnore
   public void setDatenFilm(DatenFilm filmdata) {
@@ -142,13 +158,39 @@ public class BookmarkData {
   
   @JsonIgnore
   public String getExtendedDescription() {
-    if (expiry != null && !expiry.isEmpty()) {
-      return String.format("%s - %s (Verfügbar bis %s)\n\n%s%s", sender, titel, expiry, getDescription(), getFormattedNote());
+    StringBuilder sb = new StringBuilder(sender);
+    boolean ex = expiry != null && !expiry.isEmpty();
+    sb.append(" - ");
+    sb.append(getThema());
+    sb.append(" - ");
+    sb.append(titel);
+    if (ex) {
+      sb.append("     (Verfügbar bis ");
+      sb.append(expiry);
     }
-    else {
-      return String.format("%s - %s\n\n%s%s", sender, titel, getDescription(), getFormattedNote());
+    if (this.filmdata != null) {
+      if (ex) {
+        sb.append(", ");
+      } else {
+        sb.append("     (");
+        ex = true;
+      } 
+      sb.append("gesendet am ");
+      sb.append(filmdata.getSendeDatum());
+      sb.append(" ");
+      sb.append(filmdata.getSendeZeit().subSequence(0, 5));
+      sb.append(" -  Dauer ");
+      sb.append(this.getDauer());
     }
+    if (ex) {
+      sb.append(")");
+    }
+    sb.append("\n\n");
+    sb.append(getDescription());
+    sb.append(getFormattedNote());
+    return sb.toString();
   }
+  
   
   /**
    * Get either the stored DatenFilm object or a new created from the internal data
@@ -179,5 +221,15 @@ public class BookmarkData {
   @JsonIgnore
   public boolean willExpire() {
     return this.willExpire;
+  }
+  
+  @JsonIgnore
+  public boolean hasCategory(String category) {
+    return this.category != null && this.category.equals(category);
+  }
+  
+  @JsonIgnore
+  public boolean hasNoCategory() {
+    return this.category == null;
   }
 }

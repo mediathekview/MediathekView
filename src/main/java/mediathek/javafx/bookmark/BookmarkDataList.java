@@ -15,57 +15,64 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MVHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
- * Stores a full list of bookmarked movies. 
+ * Stores a full list of bookmarked movies.
  * @author K. Wich
  */
-public class BookmarkDataList 
+public class BookmarkDataList
 {
   private final ObservableList<BookmarkData> olist;
   private static BookmarkDataList instance;
-  
+  private static boolean linked;  // Indicates if list is linked with movie list
+  private List <BookmarkCollectionData> pendingAddList;
+
   private BookmarkDataList(Daten daten) {
     olist = FXCollections.observableArrayList((BookmarkData data) -> new Observable[]{
       data.getSeenProperty()
     });
+
+    linked = false;
 
     if (daten != null) {
       // Wait until film liste is ready and update references
       daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
         @Override
         public void fertig(ListenerFilmeLadenEvent event) {
-          Runnable r = () -> updateBookMarksFromFilmList();
-          new Thread(r).start();
+          new Thread(() -> updateBookMarksFromFilmList(), "BookmarkUpdate").start();
         }
       });
     }
   }
-  
+
   /**
    * Return singleton
    * @param daten Reference to Daten object used by list
-   * @return exisitng or new instance
+   * @return existing or new instance
    */
   public static BookmarkDataList getInstance(Daten daten) {
     return instance == null ? instance = new BookmarkDataList(daten) : instance;
   }
-  
+
   /**
    * Return data list for Bookmark window
-   * @return observable List 
+   * @return observable List
    */
   public ObservableList<BookmarkData> getObervableList() {
     return olist;
   }
-  
+
   /**
    * Get size of bookmark list
    * @return number of stored movies
@@ -73,14 +80,14 @@ public class BookmarkDataList
   public int getNbOfEntries() {
     return olist.size();
   }
-  
+
   /**
    * Delete Bookmarklist
    */
   public void clear() {
     olist.clear();
   }
-    
+
   /**
    * Get number of Films marked as seen
    * @return number
@@ -94,12 +101,12 @@ public class BookmarkDataList
     }
     return count;
   }
-  
+
   /**
    * Add given film(s) to List if not yet in list
    * otherwise remove them from list
-   * Note: if one of the given films is not bookmarked all are bookmarked 
-   * 
+   * Note: if one of the given films is not bookmarked all are bookmarked
+   *
    * @param movies: list of movies to be added
    */
   public void checkAndBookmarkMovies(List <DatenFilm> movies) {
@@ -112,15 +119,18 @@ public class BookmarkDataList
         addlist.add(data);
       }
       else {
-        BookmarkData movie = findMovieInList(data);
-        if (movie != null) {
-          dellist.add(movie);
+        if (!add) { // not necessary to store movie for add operation
+          BookmarkData movie = findMovieInList(data);
+          if (movie != null) {
+            dellist.add(movie);
+          }
         }
       }
     }
-    
+
     if (add) {
       // Check if history list is known
+
       try (var history = new SeenHistoryController()){
         for (DatenFilm movie: addlist) {
           BookmarkData bdata = new BookmarkData(movie);
@@ -129,9 +139,11 @@ public class BookmarkDataList
           bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
           olist.add(bdata);
         }
+        //if (history == null) {
+        //  history = Daten.getInstance().getSeenHistoryController();
       }
       catch (Exception ex) {
-        logger.error("history produced error", ex);
+        LogManager.getLogger().error("history produced error", ex);
       }
     }
     else { // delete existing bookmarks
@@ -141,7 +153,78 @@ public class BookmarkDataList
       olist.removeAll(dellist);
     }
   }
-  
+
+  /**
+   * Add movies into bookmarks as backgrund task
+   * @param movies: list of movies to be added
+   * @param categories: optoinal categories to be assigned to movie in bookmarklist (used for abo)
+   * Note: Block processing to improve speed
+   */
+  private static final int BLOCKSIZE = 250;
+  public void bookmarkMoviesInBackground(List <BookmarkCollectionData> movies) {
+    if (linked) {
+      /*if (history == null) { // ensure that reference exists
+        history = Daten.getInstance().getSeenHistoryController();
+      }*/
+      try (var history = new SeenHistoryController()){
+        new Thread(() -> {
+          ArrayList<BookmarkData> templist = null;
+          int i = 0;
+          for (int k = 0; k < movies.size(); k++) {
+            if (i == 0) {
+              templist = new ArrayList<>(BLOCKSIZE < movies.size()- k ? BLOCKSIZE : movies.size()- k);
+            }
+            DatenFilm movie = movies.get(k).movie;
+            if (!movie.isBookmarked()) {
+              BookmarkData bdata = new BookmarkData(movie, movies.get(k).category);
+              movie.setBookmark(bdata); // Link backwards
+              // Set seen marker if in history and not livestream
+              //bdata.setSeen(!bdata.isLiveStream() && history.urlPruefen(movie.getUrl()));
+              bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
+              templist.add(bdata);
+              i++;
+            }
+            if (i > BLOCKSIZE) {
+              olist.addAll(templist);
+              i = 0;
+            }
+          }
+          if (i > 0) {
+            olist.addAll(templist);
+          }
+        }, "BookmarkAddMovies").start();
+      }
+      catch (Exception ex) {
+        LogManager.getLogger().error("history produced error", ex);
+      }
+    }
+    else {
+      pendingAddList = movies;
+    }
+  }
+
+   /**
+   * Delete categories in background
+   * @param categoryNames: list of categorie names to be deleted
+   */
+  public void deleteCategoriesInBackground(ArrayList<String> categoryNames) {
+    new Thread(() -> {
+      deleteCategories(categoryNames);
+    }, "BookmarkDeleteCategories").start();
+  }
+
+  /**
+   * Delete categories
+   * @param categoryNames: list of categorie names to be deleted
+   */
+  public void deleteCategories(ArrayList<String> categoryNames) {
+    categoryNames.forEach((category) -> {
+      olist.stream().filter((data) -> (data.hasCategory(category))).forEachOrdered((data) -> {
+        data.setCategory(null);
+      });
+    });
+  }
+
   /**
    * Delete given bookmarks from list and remove reference in film list)
    * @param bookmarks The list of bookmarks.
@@ -155,18 +238,18 @@ public class BookmarkDataList
     }
     olist.removeAll(bookmarks);
   }
-  
-  
+
+
   /**
    * Load Bookmarklist from backup medium
    * @param filePath: File to read from
-   * 
-   * TODO: Add File checks 
+   *
+   * TODO: Add File checks
    */
   public void loadFromFile(Path filePath) {
     try (JsonParser parser = new MappingJsonFactory().createParser(filePath.toFile()))
     {
-      JsonToken jToken;      
+      JsonToken jToken;
       while((jToken = parser.nextToken()) != null){
         if (jToken == JsonToken.START_ARRAY) {
           while (parser.nextToken() != JsonToken.END_ARRAY) {
@@ -182,11 +265,10 @@ public class BookmarkDataList
     }
 
     //sanity check if someone added way too many bookmarks
-    if (olist.size() > 1000)
-      logger.warn("Bookmark entries exceed threshold: {}", olist.size());
+    if (olist.size() > 2000) {
+      LogManager.getLogger().warn("Bookmark entries exceed threshold: {}", olist.size());
+    }
   }
-
-  private static final Logger logger = LogManager.getLogger();
 
   /**
    * Save Bookmarklist to backup medium
@@ -196,22 +278,22 @@ public class BookmarkDataList
     try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8).useDefaultPrettyPrinter())
     {
       jGenerator.writeStartObject();
-      jGenerator.writeFieldName("bookmarks"); 
+      jGenerator.writeFieldName("bookmarks");
       jGenerator.writeStartArray();
       for (BookmarkData bookmarkData : olist) {
         jGenerator.writeObject(bookmarkData);
-      } 
+      }
       jGenerator.writeEndArray();
-      jGenerator.writeEndObject(); 
+      jGenerator.writeEndObject();
     }
     catch (IOException e)
     {
       LogManager.getLogger(Daten.class).warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
     }
   }
-  
+
   /**
-   * Updates the seen state 
+   * Updates the seen state
    * @param seen: True if movies are seen
    * @param list: List of movies
    */
@@ -219,10 +301,12 @@ public class BookmarkDataList
     list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> movie.getBookmark().setSeen(seen));
   }
 
+
   public void updateSeen(boolean seen, DatenFilm film) {
     if (film.isBookmarked())
       film.getBookmark().setSeen(seen);
   }
+
 
   /**
    * Find Movie in list
@@ -237,13 +321,13 @@ public class BookmarkDataList
     }
     return result;
   }
-  
+
   /**
    * Updates the stored bookmark data reference with actual film list
    * and links the entries
    * Executed in background
    */
-  public void updateBookMarksFromFilmList() {
+  synchronized private void updateBookMarksFromFilmList() {
     Iterator<BookmarkData> iterator = olist.iterator();
     ListeFilme listefilme = Daten.getInstance().getListeFilme();
     DatenFilm filmdata;
@@ -255,10 +339,50 @@ public class BookmarkDataList
         filmdata.setBookmark(data);   // Link backwards
       }
       else {
-        //data.setExpired();
         data.setDatenFilm(null);
       }
-    }      
+    }
+    linked = true;
+
+    if (pendingAddList != null) {
+      bookmarkMoviesInBackground(pendingAddList);
+      pendingAddList = null;
+    }
+  }
+
+
+ /**
+   * Try to retrieve the expiry date from the associated webpage
+   */
+  private static final Pattern[] DATE_PATTERNS = {null, null};
+  private static final String[] DATE_PATTERN_STRINGS = {"verfügbar.+?bis.+?([0-9]{2}\\.[0-9]{2}\\.[0-9]{4})", "verfügbar.+?bis.+?([0-9]{2}/[0-9]{2}/[0-9]{4})"};
+  public static  String searchExpiryDate(BookmarkData data) {
+    String result = "";
+    if (data.hasWebURL()) {
+      final Request request = new Request.Builder().url(data.getWebUrl())
+                .header("User-Agent", ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT))
+                .build();
+      try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+        if (response.isSuccessful()) {
+          String responsedata = response.body().string();
+          if (responsedata.length() > 0) {
+            // 2.) use regex to extract date
+            for (int k = 0; k < DATE_PATTERNS.length; k++) {
+              if (DATE_PATTERNS[k] == null) {   // compile pattern only once!
+                DATE_PATTERNS[k] = Pattern.compile(DATE_PATTERN_STRINGS[k], Pattern.CASE_INSENSITIVE );
+              }
+              Matcher matcher = DATE_PATTERNS[k].matcher(responsedata);
+              if (matcher.find()) {
+                result = matcher.group(1).replaceAll("/", "\\.");
+                break;
+              }
+            }
+          }
+        }
+      }
+      catch (Exception UNUSED) {}
+    }
+    return result;
   }
 
 }

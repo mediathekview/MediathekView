@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -21,7 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -50,21 +48,28 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Menu;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
+import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
+import javax.swing.SwingUtilities;
 import static mediathek.config.MVColor.*;
+import mediathek.tool.javafx.FXDialogControl;
 
 
 /**
@@ -73,13 +78,14 @@ import static mediathek.config.MVColor.*;
  *
  * @author Klaus Wich <klaus.wich@aim.com>
  */
-public class BookmarkWindowController implements Initializable {
+public class BookmarkWindowController {
 
   private Stage stage;
   private final BookmarkDataList listeBookmarkList;
   private FilteredList<BookmarkData> filteredBookmarkList;
   private Color ColorExpired;
   private Color ColorLive;
+  private Color ColorNew;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
   private final SeenHistoryController history = new SeenHistoryController();
@@ -90,12 +96,19 @@ public class BookmarkWindowController implements Initializable {
   private MenuItem webitem;
   private MenuItem ccopyitem;
   private MenuItem edititem;
+  private Menu categorymenu;
   private ContextMenu cellContextMenu;
   private GuiFilme infotab;  // used for update information
   private double divposition;
   private boolean listUpdated; // indicates new updates to bookmarklist
   private ScheduledFuture<?> SaveBookmarkTask; // Future task to save
   private int FilterState;
+  private String FilterCategoryName;
+  private ListView<BookmarkCategory> categorylistview;
+  private boolean noComboFilterAction;
+  private MediathekGui mediathekGui;
+
+  private static final KeyCombination K_CTRL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_ANY);
 
   @FXML
   private Button btnSaveList;
@@ -104,9 +117,15 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private Button btnMarkViewed;
   @FXML
+  private Button btnAllExpiry;
+  @FXML
+  private Button btnCategory;
+  @FXML
   private ToggleButton btnShowDetails;
   @FXML
   private Button btnFilter;
+  @FXML
+  private ComboBox<BookmarkCategory> cbCategoryFilter;
   @FXML
   private Button btnEditNote;
   @FXML
@@ -132,6 +151,8 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private TableColumn<BookmarkData, String> colExpiry;
   @FXML
+  private TableColumn<BookmarkData, String> colCategory;
+  @FXML
   private Label lblCount;
   @FXML
   private Label lblSeen;
@@ -146,9 +167,11 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private Hyperlink hyperLink;
 
-  public BookmarkWindowController() {
+
+  public BookmarkWindowController(MediathekGui mediathekGui) {
     listeBookmarkList = Daten.getInstance().getListeBookmarkList();
     listUpdated = false;
+    this.mediathekGui = mediathekGui;
   }
 
   /**
@@ -182,8 +205,6 @@ public class BookmarkWindowController implements Initializable {
     }
   }
 
-
-
   @FXML
   private void btnSaveBookMarkList(Event e) {
     cancelBookmarkSave();
@@ -203,26 +224,16 @@ public class BookmarkWindowController implements Initializable {
 
   @FXML
   private void btnEditNote(Event e) {
-
-    Stage dlgstage = new Stage();
-    dlgstage.initModality(Modality.WINDOW_MODAL);
-    dlgstage.initOwner(this.stage);
-    try {
-      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml"));
-      BookmarkNoteDialog bdialog = new BookmarkNoteDialog();
-      fxmlLoader.setController(bdialog);
-      Scene scene = new Scene(fxmlLoader.load());
-      scene.getStylesheets().add(getClass().getResource("/mediathek/res/css/bookmarkNoteDialog.css").toExternalForm());
-      dlgstage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
-      dlgstage.setScene(scene);
-      if (bdialog.SetandShow(dlgstage, tbBookmarks.getSelectionModel().getSelectedItem())) {
-        listUpdated = true;
+    FXDialogControl ctrl = new FXDialogControl("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml", null);
+    ctrl.addStylesheet("/mediathek/res/css/bookmarkNoteDialog.css");
+    if (ctrl.SetAndShow(tbBookmarks.getSelectionModel().getSelectedItem())) {
+      listUpdated = true;
+      if (FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY)) {
         refresh();
+      } else {
+        setTableFilter();
+        updateDisplay();
       }
-    }
-    catch (IOException ex) {
-      LogManager.getLogger(BookmarkWindowController.class).error("{} Can't find/load the FXML description! Exception - {}",
-                                                                  getClass(), ex.toString());
     }
   }
 
@@ -247,8 +258,8 @@ public class BookmarkWindowController implements Initializable {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
   }
 
-  @Override
-  public void initialize(URL arg0, ResourceBundle arg1) {
+  @FXML
+  private void initialize() {
     restoreTableStateAndContextMenu();
     // connect columns with underlying data
     colSender.setCellValueFactory(new PropertyValueFactory<>("sender"));
@@ -261,6 +272,7 @@ public class BookmarkWindowController implements Initializable {
     colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
     colExpiry.setCellValueFactory(new PropertyValueFactory<>("expiry"));
     colExpiry.setComparator(new BookmarkDateComparator());
+    colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
 
     // add button to play URL:
     colBtnPlay.setCellFactory((final var UNUSED) -> new TableCell<>() {
@@ -271,7 +283,11 @@ public class BookmarkWindowController implements Initializable {
           setGraphic(null);
         } else {
           setGraphic(new IconNode(FontAwesome.PLAY));
-          this.setOnMouseClicked(UNUSED -> playAction(getTableView().getItems().get(getIndex())));
+          this.setOnMouseClicked((MouseEvent me) -> { // only play on left button press
+            if (me.getButton() == PRIMARY) {
+              playAction(getTableView().getItems().get(getIndex()));
+            }
+          });
         }
       }
     });
@@ -285,7 +301,11 @@ public class BookmarkWindowController implements Initializable {
           setGraphic(null);
         } else {
           setGraphic(new IconNode(FontAwesome.DOWNLOAD));
-          this.setOnMouseClicked(UNUSED -> loadAction(getTableView().getItems().get(getIndex())));
+          this.setOnMouseClicked((MouseEvent me) -> { // only act on left button press
+            if (me.getButton() == PRIMARY) {
+              loadAction(getTableView().getItems().get(getIndex()));
+            }
+          });
         }
       }
     });
@@ -304,26 +324,56 @@ public class BookmarkWindowController implements Initializable {
           }
         } else {
           this.setText(null);
+          this.getStyleClass().removeAll("Expiry");
+        }
+      }
+    });
+
+    colCategory.setCellFactory((final var UNUSED) -> new TableCell<>() {
+      @Override
+      public void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        BookmarkData data = null;
+        boolean setdefault = true;
+        if (!empty) {
+          data = getTableView().getItems().get(getIndex());
+          this.setText(data.getCategory());
+          if (data.getCategory() != null) {
+            BookmarkCategory category = BookmarkCategoryList.getInstance().findCategory(data.getCategory());
+            if (category != null) {
+              this.setTextFill(category.getColor());
+              this.setBackground(new Background(new BackgroundFill(category.getBackgroundColor(), new CornerRadii(8.0), new Insets(2,10,2,10))));
+              setdefault = false;
+            }
+          }
+        }
+        if (setdefault) {
+          this.setText(null);
+          setBackground(isSelected() ? BackgroundSelected : (data != null && data.getSeen()) ? BackgroundSeen : Background.EMPTY);
         }
       }
     });
 
     // add row renderer to set colors
-    tbBookmarks.setRowFactory((var UNUSED) -> new TableRow<>() {
-      @Override
-      protected void updateItem(BookmarkData data, boolean empty) {
-        super.updateItem(data, empty);
-        if (empty || data == null) {
-          setBackground(Background.EMPTY);
-        } else {
-          setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
-          // set foreground color:
-          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null;
-          if (fillcolor != null) {
-            this.getChildren().forEach((n) -> ((Labeled) n).setTextFill(fillcolor));
+    tbBookmarks.setRowFactory((var UNUSED) -> {
+      return new TableRow<>() {
+        @Override
+        protected void updateItem(BookmarkData data, boolean empty) {
+          super.updateItem(data, empty);
+          if (empty || data == null) {
+            setBackground(Background.EMPTY);
+          } else {
+            setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
+            // set foreground color:
+            Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : data.isNew()? ColorNew: Color.BLACK;
+            getChildren().forEach((n) -> {
+              if (!n.getId().equals("colCategory")) { // exclude Category, special color is set in column Factory
+                ((Labeled) n).setTextFill(fillcolor);
+              }
+            });
           }
         }
-      }
+      };
     });
 
     // create filtered and sortable list
@@ -345,41 +395,99 @@ public class BookmarkWindowController implements Initializable {
     tbBookmarks.setItems(slisteBookmarkList);
     tbBookmarks.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    // Add listener to set button and context item state depending on selection
-    tbBookmarks.getSelectionModel().selectedIndexProperty().addListener((obs, oldSelection, newSelection) -> {
-       boolean disable = newSelection == null || newSelection.intValue() == -1;
-       btnDeleteEntry.setDisable(disable);
-       btnMarkViewed.setDisable(disable || onlyLifeStreamSelected());
-       boolean multipleSelected = tbBookmarks.getSelectionModel().getSelectedItems().size() > 1;
-       disable = disable || multipleSelected; // allow only for single selection
-       btnEditNote.setDisable(disable);
-       playitem.setDisable(disable);
-       edititem.setDisable(disable);
-       loaditem.setDisable(disable);
-       viewitem.setDisable(onlyLifeStreamSelected());
-       webitem.setDisable(disable || tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl() == null);
-       ccopyitem.setDisable(disable);
-
-       // Update buttons: Check if not seen in selection and adapt button text
-       boolean setViewed = isUnSeenSelected();
-       setSeenButtonState(setViewed, multipleSelected);
-       deleteitem.setText(String.format("Film%s aus der Merkliste entfernen",(multipleSelected ? "e" : "")));
-       // change description
-       updateDescriptionArea();
+    // Add listeners to set button and context item state depending on selection
+    tbBookmarks.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+      setButtonAndMenuState();
+    });
+    
+    tbBookmarks.setOnKeyReleased((KeyEvent ke) -> { // handle Strg-A
+      if (K_CTRL_A.match(ke)) {
+        setButtonAndMenuState();
+      } 
+      else {
+        onKeyReleased(ke);
+      }
     });
 
     tbBookmarks.getSortOrder().addListener((ListChangeListener.Change<? extends TableColumn<BookmarkData,?>> pc) -> {
       tbBookmarks.getSelectionModel().clearSelection(); // clear selection after sort
     });
 
+    cbCategoryFilter.setCellFactory((ListView<BookmarkCategory> param) -> {
+        return new BookmarkCategoryListCell(true);
+    });
+    cbCategoryFilter.setConverter(new StringConverter<BookmarkCategory>() {
+      @Override
+      public String toString(BookmarkCategory bc) {
+        return bc != null ? bc.getName() : null;
+      }
+
+      @Override
+      public BookmarkCategory fromString(String string) { // not needed
+        return null;
+      }
+    });
+    cbCategoryFilter.setButtonCell(new BookmarkCategoryListCell(false));
+    updateCategoryFilterList();
+    cbCategoryFilter.getSelectionModel().select(0);
+    cbCategoryFilter.setOnShowing((Event t) -> {
+      noComboFilterAction = true; // prevent filtering on opening of combobox
+      cbCategoryFilter.getSelectionModel().clearSelection();
+    });
+    cbCategoryFilter.setOnHiding((Event t) -> {
+      noComboFilterAction = true; // prevent filtering on closing of combobox
+      if (cbCategoryFilter.getSelectionModel().isEmpty()) { // restore old category when no selection
+        for (BookmarkCategory category: cbCategoryFilter.getItems()) {
+          if (category.getName().equals(FilterCategoryName)) {
+            cbCategoryFilter.getSelectionModel().select(category);
+            break;
+          }
+        }
+      }
+    });
+
     FilterState = -1;
+    FilterCategoryName = cbCategoryFilter.getSelectionModel().getSelectedItem().getName();
     btnFilterAction (null);
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
-    btnShowDetailsAction(null);
     updateDescriptionArea();
 
     setupColumnContextMenu();
+  }
+
+  @FXML
+  private void onKeyReleased(KeyEvent ke) {
+    if (ke.getCode() == KeyCode.F4) {
+      SwingUtilities.invokeLater(() -> {
+        mediathekGui.showSettingsDialog();
+      });    
+    }
+  }
+  /**
+   * Enable/Disable buttons and menues depending on selection state
+   */
+  private void setButtonAndMenuState() {
+    boolean disable = tbBookmarks.getSelectionModel().getSelectedItems().isEmpty();
+    btnDeleteEntry.setDisable(disable);
+    btnMarkViewed.setDisable(disable || onlyLifeStreamSelected());
+    categorymenu.setDisable(disable);
+    boolean multipleSelected = tbBookmarks.getSelectionModel().getSelectedItems().size() > 1;
+    disable = disable || multipleSelected; // allow only for single selection
+    btnEditNote.setDisable(disable);
+    playitem.setDisable(disable);
+    edititem.setDisable(disable);
+    loaditem.setDisable(disable);
+    viewitem.setDisable(onlyLifeStreamSelected());
+    webitem.setDisable(disable || tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl() == null);
+    ccopyitem.setDisable(disable);
+
+    // Update buttons: Check if not seen in selection and adapt button text
+    boolean setViewed = isUnSeenSelected();
+    setSeenButtonState(setViewed, multipleSelected);
+    deleteitem.setText(String.format("Film%s aus der Merkliste entfernen",(multipleSelected ? "e" : "")));
+    // change description
+    updateDescriptionArea();
   }
 
   private void setupColumnContextMenu() {
@@ -483,8 +591,11 @@ public class BookmarkWindowController implements Initializable {
     ccopyitem = new MenuItem("Zellinhalt in die Ablage kopieren");
     ccopyitem.setOnAction(this::copy2Clipboard);
 
+    categorymenu = new Menu("Kategorie festlegen");
+    categorymenu.getItems().add(new CustomMenuItem(getBookmarkCategorieListView()));
+
     // - add menue items to Cell ContextMenu
-    cellContextMenu.getItems().addAll(playitem, loaditem, viewitem, new SeparatorMenuItem(), edititem, deleteitem,
+    cellContextMenu.getItems().addAll(playitem, loaditem, viewitem, new SeparatorMenuItem(), edititem, categorymenu, deleteitem,
                                       new SeparatorMenuItem(), webitem, ccopyitem);
 
     // Restore column width, state and sequence
@@ -507,6 +618,21 @@ public class BookmarkWindowController implements Initializable {
               column.setVisible(colvisible);
               tbBookmarks.getColumns().add(column);
               break;
+            }
+          }
+        }
+        if (collist.size() > tbBookmarks.getColumns().size()) { // Only happens after code changes, ensure that all columns are available
+          for (var column : collist) {
+            boolean inlist = false;
+            for (TableColumn<BookmarkData, ?> bcol: tbBookmarks.getColumns()) {
+              if (bcol.getId().equals(column.getId())) {
+                inlist = true;
+                break;
+              }
+            }
+            if (!inlist) {
+              column.setVisible(true);
+              tbBookmarks.getColumns().add(column);
             }
           }
         }
@@ -539,29 +665,19 @@ public class BookmarkWindowController implements Initializable {
   private static final String[] BTNFILTER_TOOLTIPTEXT = {"Nur ungesehene Filme anzeigen", "Nur gesehene Filme anzeigen", "Alle Filme anzeigen"};
   private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
   private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
+  public final static String FILTER_ACTIVE_CLASS =  "filterActive";
   @FXML
   private void btnFilterAction(ActionEvent e) {
     if (++FilterState > 2) {
       FilterState = 0;
     }
-    switch (FilterState) {
-      case 0:
-        filteredBookmarkList.setPredicate(f -> true);  // show all
-        break;
-      case 1:
-        filteredBookmarkList.setPredicate(film -> { // show only unseen
-          return !film.getSeen();
-        });
-        break;
-      case 2:
-        // show only seen
-        filteredBookmarkList.setPredicate(BookmarkData::getSeen);
-        break;
-    }
     btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
     lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
     lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
-    refresh();
+    setConditionalButtonStyle(btnFilter, FILTER_ACTIVE_CLASS, FilterState > 0);
+    setTableFilter();
+    updateDisplay();
+//    refresh();
   }
 
   @FXML
@@ -571,10 +687,11 @@ public class BookmarkWindowController implements Initializable {
       if (!ccopyitem.isDisable()) { // adapt copy content to column
         TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
         BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
-        String sdata = pos.getTableColumn() != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
+        String sdata = pos.getTableColumn() != null && pos.getTableColumn().getCellObservableValue(item) != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
         ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
         ccopyitem.setText((pos.getTableColumn() != null ? pos.getTableColumn().getText(): "Text" ) +  " kopieren");
       }
+      categorylistview.getSelectionModel().clearSelection();
       cellContextMenu.show(tbBookmarks, event.getScreenX(), event.getScreenY());
     }
   }
@@ -582,9 +699,9 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private void tbviewMouseClick(MouseEvent e) {
     if (e.getButton() == PRIMARY) {
-      if (cellContextMenu.isShowing())
+      if (cellContextMenu.isShowing()) {
         cellContextMenu.hide();
-
+      }
       if (e.getClickCount() > 1 && tbBookmarks.getSelectionModel().getSelectedItems().size() == 1) {
         btnEditNote(null);
       }
@@ -627,17 +744,82 @@ public class BookmarkWindowController implements Initializable {
 
       if (stage != null) {
         stage.show();
+        btnShowDetailsAction(null);
         refresh();
       }
     });
   }
 
   /**
+   * Ablaufdatum zu allen Filmen hinzufügen
+   * @param e
+   */
+  @FXML
+  private void btnAllExpiryAction(ActionEvent e) {
+    btnAllExpiry.setDisable(true);
+    if (new FXDialogControl("/mediathek/res/programm/fxml/bookmarkDialogSetExpiry.fxml",
+            "\"Verfügbar bis\" Datum finden", Modality.NONE).SetAndShow(this)) {
+      refresh();
+    }
+    btnAllExpiry.setDisable(false);
+  }
+
+  /**
+   * Kategorien bearbeiten
+   * @param e
+   */
+  @FXML
+  private void btnCategoryAction(ActionEvent e) {
+    btnCategory.setDisable(true);
+    FXDialogControl ctrldlg = new FXDialogControl("/mediathek/res/programm/fxml/bookmarkDialogCategory.fxml",
+            "Kategorien bearbeiten", Modality.NONE);
+    boolean result = ctrldlg.SetAndShow(this);   
+    if (result) {  // has to excuted after filter list update
+      updateCategoryViewList();
+      updateCategoryFilterList();
+      // reselect old value in category filter or all if old value no longer exists
+      boolean wasdeleted = true;
+      for (BookmarkCategory category: cbCategoryFilter.getItems()) {
+        if (category.getName().equals(FilterCategoryName)) {
+          cbCategoryFilter.getSelectionModel().select(category);
+          wasdeleted = false;
+          break;
+        }
+      }
+      if (wasdeleted) {
+        cbCategoryFilter.getSelectionModel().select(0);
+      }
+      // remove deleted categorie from bookmarks in background
+      new Thread(() -> {
+        Daten.getInstance().getListeBookmarkList().deleteCategories((ArrayList<String>) ctrldlg.getResult());
+        JavaFxUtils.invokeInFxThreadAndWait(() -> refresh());
+      }, "BookmarkDeleteCategories").start();
+    }
+    btnCategory.setDisable(false);
+    refresh();
+  }
+
+  @FXML
+  private void cbCategoryFilterAction(ActionEvent e) {
+    if (!noComboFilterAction) {
+      setTableFilter();
+      updateDisplay();
+    } else {
+      noComboFilterAction = false;
+    }
+  }
+
+  /**
    * Store reference used to inform about changes
+   * @param partner
    */
   public void setPartner(GuiFilme partner) { this.infotab = partner;}
 
-  private void refresh() {
+
+  /**
+   * Update Bookmarkwindow display
+   */
+  public void refresh() {
     if (stage.isShowing()) {
       tbBookmarks.refresh();
       updateDisplay();
@@ -676,8 +858,8 @@ public class BookmarkWindowController implements Initializable {
 
   private void playAction(BookmarkData data) {
     Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
-    tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
-    tbBookmarks.getSelectionModel().select(data);
+    data.setSeen(true);
+    refresh();
   }
 
   /**
@@ -690,15 +872,13 @@ public class BookmarkWindowController implements Initializable {
   private void loadAction(@NotNull BookmarkData data) {
     Optional<DatenFilm> datenFilm = Optional.ofNullable(data.getDatenFilm());
     final var daten = Daten.getInstance();
-
     refresh();
     datenFilm.ifPresent(film -> {
       DatenDownload previouslyCreatedDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrl());
       if (previouslyCreatedDownload == null) {
         createDownload(film);
       }
-      else
-      {
+      else {
         ButtonType yes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
         ButtonType no = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
         Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -838,7 +1018,7 @@ public class BookmarkWindowController implements Initializable {
   private boolean onlyLifeStreamSelected() {
     boolean lifestream = true;
     for (BookmarkData data: tbBookmarks.getSelectionModel().getSelectedItems()) {
-      if (!data.isLiveStream()) {
+      if (data != null && !data.isLiveStream()) {
         lifestream = false;
         break;
       }
@@ -855,6 +1035,7 @@ public class BookmarkWindowController implements Initializable {
     Color colorNew = convertMVCAWTColor(FILM_NEU);
     ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
     ColorLive = convertMVCAWTColor(FILM_LIVESTREAM);
+    ColorNew = convertMVCAWTColor(FILM_NEU);
     BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
     BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));
   }
@@ -868,4 +1049,106 @@ public class BookmarkWindowController implements Initializable {
       SaveBookmarkTask = null;
     }
   }
+
+  private ListView<BookmarkCategory> getBookmarkCategorieListView() {
+    categorylistview = new ListView<>();
+    updateCategoryViewList();
+    categorylistview.setCellFactory((ListView<BookmarkCategory> param) -> {
+        return new BookmarkCategoryListCell(true);
+    });
+    categorylistview.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends BookmarkCategory> ov, BookmarkCategory t, BookmarkCategory bc) -> {
+      tbBookmarks.getSelectionModel().getSelectedItems().forEach((data) -> {
+        if (bc != null) {
+          data.setCategory(bc.getName());
+        }
+      });
+      if (FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY)) {
+        refresh();
+      } else {
+        setTableFilter();
+        updateDisplay();
+      }
+    });
+    return categorylistview;
+  }
+
+  private void updateCategoryViewList() {
+    if (categorylistview != null) {
+      categorylistview.getItems().clear();
+      categorylistview.getItems().add(new BookmarkCategory(BookmarkCategoryList.NOCATEGORY));
+      categorylistview.getItems().addAll(BookmarkCategoryList.getInstance().getObervableList());
+    }
+  }
+
+  private void updateCategoryFilterList() {
+    cbCategoryFilter.getItems().clear();
+    cbCategoryFilter.getItems().add(new BookmarkCategory(BookmarkCategoryList.ALLCATEGORY));
+    cbCategoryFilter.getItems().addAll(BookmarkCategoryList.getInstance().getObervableList());
+    cbCategoryFilter.getItems().add(new BookmarkCategory(BookmarkCategoryList.WITHOUTCATEGORY));
+  }
+
+  private void setTableFilter() {
+    FilterCategoryName = cbCategoryFilter.getSelectionModel().isEmpty() ? BookmarkCategoryList.ALLCATEGORY : cbCategoryFilter.getSelectionModel().getSelectedItem().getName();
+    int filterCategoryState = FilterCategoryName.equals(BookmarkCategoryList.ALLCATEGORY) ? 0 : FilterCategoryName.equals(BookmarkCategoryList.WITHOUTCATEGORY) ? 1 : 2;
+    switch (FilterState) {
+      case 0:
+        switch (filterCategoryState) {
+          case 0:
+            filteredBookmarkList.setPredicate(f -> true);  // show all
+            break;
+          case 1:
+            filteredBookmarkList.setPredicate(film -> {return film.hasNoCategory();});  // show all without category
+            break;
+          case 2:
+            filteredBookmarkList.setPredicate(film -> {return film.hasCategory(FilterCategoryName);});  // show all with requested category
+            break;
+        }
+        break;
+      case 1:
+        switch (filterCategoryState) {
+          case 0:
+            filteredBookmarkList.setPredicate(film -> !film.getSeen());  // show all
+            break;
+          case 1:
+            filteredBookmarkList.setPredicate(film -> {return !film.getSeen() && film.hasNoCategory();});  // show all unseen  without category
+            break;
+          case 2:
+            filteredBookmarkList.setPredicate(film -> {return !film.getSeen() && film.hasCategory(FilterCategoryName);});  // show all unseen with requested category
+            break;
+        }
+        break;
+      case 2:
+        // show only seen
+        switch (filterCategoryState) {
+          case 0:
+            filteredBookmarkList.setPredicate(BookmarkData::getSeen);  // show all seen
+            break;
+          case 1:
+            filteredBookmarkList.setPredicate(film -> {return film.getSeen() && film.hasNoCategory();});  // show all seen without category
+            break;
+          case 2:
+            filteredBookmarkList.setPredicate(film -> {return film.getSeen() && film.hasCategory(FilterCategoryName);});  // show all seen with requested category
+            break;
+        }
+        break;
+    }
+  }
+  
+  /**
+   * Convenience routine to style button depending on state
+   * @param button: Button to be styled
+   * @param styleclass: Style class to be added or removes
+   * @param condition : condition
+   */
+  public static void setConditionalButtonStyle(Button button, String styleclass, boolean condition) {
+    if (condition) {
+      button.getGraphic().getStyleClass().add(styleclass);
+      button.getStyleClass().add(styleclass);
+    }
+    else {
+      button.getGraphic().getStyleClass().removeAll(styleclass);
+      button.getStyleClass().removeAll(styleclass);
+    }
+  }
+
 }

@@ -3,9 +3,9 @@
   Author     :  K. Wich
 */
 
-.table-column {
+/*.table-column {
   -fx-text-fill: black;
-}
+}*/
 
 .column-header .label {
   -fx-alignment: center-left;
@@ -43,9 +43,17 @@
   -fx-text-fill: darkgrey;
 }
 
+#colCategory {
+  -fx-alignment: center; 
+}
+
 .Expiry {
   -fx-text-fill: red;
   -fx-font-weight: bold;
   -fx-background-color: lightyellow;
+}
+
+.filterActive {
+  -fx-background-color: lightgreen;
 }
 

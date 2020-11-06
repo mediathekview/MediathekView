@@ -35,6 +35,7 @@ public class TModelAbo extends TModel {
             case DatenAbo.ABO_ZIELPFAD -> "Zielpfad";
             case DatenAbo.ABO_DOWN_DATUM -> "letztes Abo";
             case DatenAbo.ABO_PSET -> "Programmset";
+            case DatenAbo.ABO_CATEGORY -> "Kategorie";
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
         };
     }
