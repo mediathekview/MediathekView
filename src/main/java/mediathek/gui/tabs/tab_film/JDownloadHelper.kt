@@ -72,8 +72,8 @@ class JDownloadHelper {
         } else {
             val mJD = JMenu(miText)
             val uNormal = film.url.toHttpUrl()
-            val uHq = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD).toHttpUrl()
-            val uLow = film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN).toHttpUrl()
+            val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
+            val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
             if (uHq !== uNormal) {
                 val miHq = JMenuItem("in bester Qualität")
                 miHq.addActionListener { downloadUrl(uHq, film) }

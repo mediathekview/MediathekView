@@ -120,10 +120,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             if (f.getUrl().equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(FilmResolution.Enum.LOW).equals(url)) {
                 ret = f;
                 break;
             }

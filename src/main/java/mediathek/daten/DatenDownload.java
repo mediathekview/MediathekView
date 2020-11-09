@@ -129,9 +129,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
         arr[DOWNLOAD_HISTORY_URL] = film.getUrl();
         if (aufloesung.isEmpty()) {
-            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
+            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]));
         } else {
-            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(aufloesung));
         }
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
@@ -766,11 +766,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
         String res = "";
-        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_NORMAL))) {
+        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL))) {
             res = "H";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY))) {
             res = "HD";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.LOW))) {
             res = "L";
         }
         replStr = StringUtils.replace(replStr, "%q", res);

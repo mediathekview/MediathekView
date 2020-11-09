@@ -327,19 +327,19 @@ public class PanelPsetLang extends PanelVorlage {
         if (jRadioButtonAufloesungNormal.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_NORMAL;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.Enum.NORMAL.toString();
             }
         }
         if (jRadioButtonAufloesungHD.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_HD;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.Enum.HIGH_QUALITY.toString();
             }
         }
         if (jRadioButtonAufloesungKlein.isSelected()) {
             DatenPset pset = getPset();
             if (pset != null) {
-                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.AUFLOESUNG_KLEIN;
+                pset.arr[DatenPset.PROGRAMMSET_AUFLOESUNG] = FilmResolution.Enum.LOW.toString();
             }
         }
     }
@@ -420,8 +420,8 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxAbo.setSelected(pSet.istAbo());
             jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]) {
-                case FilmResolution.AUFLOESUNG_HD -> jRadioButtonAufloesungHD.setSelected(true);
-                case FilmResolution.AUFLOESUNG_KLEIN -> jRadioButtonAufloesungKlein.setSelected(true);
+                case FilmResolution.HIGH_QUALITY -> jRadioButtonAufloesungHD.setSelected(true);
+                case FilmResolution.LOW -> jRadioButtonAufloesungKlein.setSelected(true);
                 default -> jRadioButtonAufloesungNormal.setSelected(true);
             }
             tabelleProgramme.setModel(pSet.getListeProg().getModel());
