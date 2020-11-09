@@ -1,7 +1,6 @@
 package mediathek;
 
 import com.google.common.base.Stopwatch;
-import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
@@ -402,7 +401,6 @@ public class Main {
         deleteDatabase();
 
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
 
@@ -525,11 +523,6 @@ public class Main {
                 logger.error("deleteDatabase()", e);
             }
         }
-    }
-
-    private static void setupDatabase() {
-        logger.trace("setupDatabase()");
-        SansOrm.initializeTxSimple(PooledDatabaseConnection.getInstance().getDataSource());
     }
 
     private static void installSingleInstanceHandler() {

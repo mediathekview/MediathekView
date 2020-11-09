@@ -1,19 +1,17 @@
 package mediathek.daten;
 
-import com.zaxxer.hikari.HikariDataSource;
-import com.zaxxer.sansorm.SqlClosure;
 import mediathek.config.Daten;
 import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.tool.*;
+import mediathek.tool.sql.SqlAutoRollback;
+import mediathek.tool.sql.SqlAutoSetAutoCommit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Cleaner;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -258,12 +256,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     public String getDescription() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            return SqlClosure.sqlExecute(connection -> {
-                var statement = connection.createStatement();
-                ResultSet rs = statement.executeQuery("SELECT desc FROM mediathekview.description WHERE id = " + databaseFilmNumber);
-
+            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                 var statement = connection.createStatement();
+                 var rs = statement.executeQuery("SELECT desc FROM mediathekview.description WHERE id = " + databaseFilmNumber)) {
                 return (rs.next() ? rs.getString(1) : "");
-            });
+            } catch (SQLException ex) {
+                logger.error(ex);
+                return "";
+            }
         } else {
             return StringUtils.defaultString(description);
         }
@@ -278,14 +278,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setDescription(final String desc) {
         if (desc != null && !desc.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment()) {
-                SqlClosure.sqlExecute(connection -> {
-                    PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)");
+                try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                     var ignored = new SqlAutoSetAutoCommit(connection, false);
+                     var tm = new SqlAutoRollback(connection);
+                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")) {
                     mergeStatement.setInt(1, databaseFilmNumber);
                     mergeStatement.setString(2, desc);
                     mergeStatement.executeUpdate();
-
-                    return null;
-                });
+                    tm.commit();
+                } catch (SQLException ex) {
+                    logger.error(ex);
+                }
             } else
                 description = desc;
         }
@@ -293,11 +296,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public String getWebsiteLink() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            return SqlClosure.sqlExecute(connection -> {
-                var statement = connection.createStatement();
-                ResultSet rs = statement.executeQuery("SELECT link FROM mediathekview.website_links WHERE id = " + databaseFilmNumber);
+            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                 var statement = connection.createStatement();
+                 var rs = statement.executeQuery("SELECT link FROM mediathekview.website_links WHERE id = " + databaseFilmNumber)) {
                 return (rs.next() ? rs.getString(1) : "");
-            });
+            } catch (SQLException ex) {
+                logger.error(ex);
+                return "";
+            }
         } else
             return websiteLink != null ? websiteLink : "";
     }
@@ -305,14 +311,19 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setWebsiteLink(String link) {
         if (link != null && !link.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment()) {
-                SqlClosure.sqlExecute(connection -> {
-                    PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
+                try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                     var ignored = new SqlAutoSetAutoCommit(connection, false);
+                     var tm = new SqlAutoRollback(connection);
+                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
+                ){
                     mergeStatement.setInt(1, databaseFilmNumber);
                     mergeStatement.setString(2, link);
                     mergeStatement.executeUpdate();
-
-                    return null;
-                });
+                    tm.commit();
+                }
+                catch (SQLException ex) {
+                    logger.error(ex);
+                }
             } else {
                 websiteLink = link;
             }
@@ -358,6 +369,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     /**
      * Indicate if the film has encoded aka. "burned in" subtitles"
+     *
      * @return true if they are burned in, false othewise.
      */
     public boolean hasBurnedInSubtitles() {
@@ -666,26 +678,31 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
 
         public static void closeDatabase() {
-            HikariDataSource ds = PooledDatabaseConnection.getInstance().getDataSource();
+            var ds = PooledDatabaseConnection.getInstance().getDataSource();
             ds.close();
         }
 
         public static void createIndices() {
             logger.trace("Creating SQL indices");
-            SqlClosure.sqlExecute(connection -> {
-                Statement statement = connection.createStatement();
+            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                 var ignored = new SqlAutoSetAutoCommit(connection, false);
+                 var tm = new SqlAutoRollback(connection);
+                 var statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
                 statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
-
-                return null;
-            });
+                tm.commit();
+            } catch (SQLException ex) {
+                logger.error(ex);
+            }
             logger.trace("Finished creating SQL indices");
         }
 
         public static void initializeDatabase() {
             logger.debug("initializeDatabase()");
-            SqlClosure.sqlExecute(connection -> {
-                Statement statement = connection.createStatement();
+            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                 var ignored = new SqlAutoSetAutoCommit(connection, false);
+                 var tm = new SqlAutoRollback(connection);
+                 var statement = connection.createStatement()) {
                 statement.executeUpdate("SET WRITE_DELAY 5000");
 
                 statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS mediathekview");
@@ -699,9 +716,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY, desc VARCHAR(1024))");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY, link VARCHAR(2048))");
-
-                return null;
-            });
+                tm.commit();
+            }
+            catch (SQLException ex) {
+                logger.error(ex);
+            }
             logger.debug("initializeDatabase() done.");
         }
     }
