@@ -6,12 +6,13 @@ import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.tool.GuiFunktionen
+import mediathek.tool.MemoryUtils
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 import java.nio.file.Paths
 
 object PooledDatabaseConnection {
-    val dataSource: HikariDataSource
+    val dataSource: HikariDataSource?
 
     /**
      * Get the location of the filmlist database
@@ -42,17 +43,17 @@ object PooledDatabaseConnection {
             }
         }
 
-    private fun setupDataSource(): HikariDataSource {
-        val driverCommand = "jdbc:h2:file:$databaseLocation/mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE"
-        val config = HikariConfig()
-        config.dataSourceClassName = "org.h2.jdbcx.JdbcDataSource"
-        config.isAutoCommit = false
-        config.addDataSourceProperty("URL", driverCommand)
-        config.maximumPoolSize = Runtime.getRuntime().availableProcessors()
-        return HikariDataSource(config)
-    }
-
     init {
-        dataSource = setupDataSource()
+        if (MemoryUtils.isLowMemoryEnvironment()) {
+            val driverCommand = "jdbc:h2:file:$databaseLocation/mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE"
+            val config = HikariConfig()
+            config.dataSourceClassName = "org.h2.jdbcx.JdbcDataSource"
+            config.isAutoCommit = false
+            config.addDataSourceProperty("URL", driverCommand)
+            config.maximumPoolSize = Runtime.getRuntime().availableProcessors()
+            dataSource = HikariDataSource(config)
+        }
+        else
+            dataSource = null
     }
 }

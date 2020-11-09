@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager
 import org.sqlite.SQLiteDataSource
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.sql.*
 import kotlin.system.exitProcess
 
@@ -19,20 +18,10 @@ import kotlin.system.exitProcess
 class SeenHistoryController : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null
-    private lateinit var dataSource: SQLiteDataSource
+    private val dataSource: SQLiteDataSource = SqlDatabaseConfig.dataSource
     private var deleteStatement: PreparedStatement? = null
     private var seenStatement: PreparedStatement? = null
     private var manualInsertStatement: PreparedStatement? = null
-
-    /**
-     * Setup the SQLite data source.
-     *
-     * @param dbPath   Path to database location
-     */
-    private fun setupDataSource(dbPath: Path) {
-        dataSource = SQLiteDataSource(SqlDatabaseConfig.getConfig())
-        dataSource.url = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
-    }
 
     /**
      * Remove all entries from the database.
@@ -199,7 +188,7 @@ class SeenHistoryController : AutoCloseable {
     @Throws(SQLException::class)
     private fun createEmptyDatabase(dbPath: Path) {
         val dbUrl = "jdbc:sqlite:" + dbPath.toAbsolutePath().toString()
-        DriverManager.getConnection(dbUrl, SqlDatabaseConfig.getConfig().toProperties()).use { conn ->
+        DriverManager.getConnection(dbUrl, SqlDatabaseConfig.config.toProperties()).use { conn ->
             conn.transactionIsolation = Connection.TRANSACTION_SERIALIZABLE
             conn.createStatement().use { statement ->
                 basicSqliteSettings(statement)
@@ -287,11 +276,9 @@ class SeenHistoryController : AutoCloseable {
 
     init {
         try {
-            val historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db")
-            setupDataSource(historyDbPath)
-            if (!Files.exists(historyDbPath)) {
+            if (!Files.exists(SqlDatabaseConfig.historyDbPath)) {
                 // create new empty database
-                createEmptyDatabase(historyDbPath)
+                createEmptyDatabase(SqlDatabaseConfig.historyDbPath)
             }
 
             // open and use database
