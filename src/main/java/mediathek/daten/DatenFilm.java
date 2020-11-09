@@ -256,7 +256,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     public String getDescription() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                  var statement = connection.createStatement();
                  var rs = statement.executeQuery("SELECT desc FROM mediathekview.description WHERE id = " + databaseFilmNumber)) {
                 return (rs.next() ? rs.getString(1) : "");
@@ -278,7 +278,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setDescription(final String desc) {
         if (desc != null && !desc.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment()) {
-                try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                      var ignored = new SqlAutoSetAutoCommit(connection, false);
                      var tm = new SqlAutoRollback(connection);
                      var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")) {
@@ -296,7 +296,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
     public String getWebsiteLink() {
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                  var statement = connection.createStatement();
                  var rs = statement.executeQuery("SELECT link FROM mediathekview.website_links WHERE id = " + databaseFilmNumber)) {
                 return (rs.next() ? rs.getString(1) : "");
@@ -311,7 +311,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public void setWebsiteLink(String link) {
         if (link != null && !link.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment()) {
-                try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+                try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                      var ignored = new SqlAutoSetAutoCommit(connection, false);
                      var tm = new SqlAutoRollback(connection);
                      var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
@@ -678,13 +678,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         }
 
         public static void closeDatabase() {
-            var ds = PooledDatabaseConnection.getInstance().getDataSource();
+            var ds = PooledDatabaseConnection.INSTANCE.getDataSource();
             ds.close();
         }
 
         public static void createIndices() {
             logger.trace("Creating SQL indices");
-            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                  var ignored = new SqlAutoSetAutoCommit(connection, false);
                  var tm = new SqlAutoRollback(connection);
                  var statement = connection.createStatement()) {
@@ -699,7 +699,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
 
         public static void initializeDatabase() {
             logger.debug("initializeDatabase()");
-            try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                  var ignored = new SqlAutoSetAutoCommit(connection, false);
                  var tm = new SqlAutoRollback(connection);
                  var statement = connection.createStatement()) {
