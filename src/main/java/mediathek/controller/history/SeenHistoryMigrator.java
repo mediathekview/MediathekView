@@ -42,9 +42,14 @@ public class SeenHistoryMigrator implements AutoCloseable {
 
     public SeenHistoryMigrator() throws InvalidPathException {
         historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.txt");
-        historyDbPath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.db");
+        historyDbPath = SqlDatabaseConfig.getHistoryDbPath();
     }
 
+    /**
+     * Mainly used for testing...
+     * @param txtFilePath path to old file.
+     * @param historyDbPath path to new db.
+     */
     public SeenHistoryMigrator(@NotNull Path txtFilePath, @NotNull Path historyDbPath) {
         historyFilePath = txtFilePath;
         this.historyDbPath = historyDbPath;
