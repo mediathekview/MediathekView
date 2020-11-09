@@ -15,3 +15,7 @@
 .button:hover {
     -fx-background-color: #87cefa;
 }
+
+.filterActive {
+  -fx-background-color: lightgreen;
+}

@@ -956,6 +956,18 @@ public class MediathekGui extends JFrame {
         return dialogEinstellungen;
     }
 
+    public void showSettingsDialog() {
+        if (dialogEinstellungen == null) {
+          dialogEinstellungen = new DialogEinstellungen();
+        }  
+        else {
+          if (dialogEinstellungen.getExtendedState() != NORMAL) {
+            dialogEinstellungen.setExtendedState(NORMAL);
+          }
+        }
+        dialogEinstellungen.setVisible(true);
+    }
+
     private void writeOldConfiguration() {
         // Infodialog/Bandwidth
         if (bandwidthMonitor != null)
@@ -1034,6 +1046,10 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
+
+        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
+        daten.getListeBookmarkCategoryList().saveToFile(Daten.getBookmarkCategoryFilePath());
 
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();

@@ -279,7 +279,7 @@ public class ManageAboPanel extends JPanel {
 
             selectFirstRow();
 
-            daten.getListeAbo().aenderungMelden();
+            daten.getListeAbo().aenderungMelden(false);
         } else {
             NoSelectionErrorDialog.show();
         }
@@ -347,7 +347,8 @@ public class ManageAboPanel extends JPanel {
         }
 
         tabelleLaden();
-        daten.getListeAbo().aenderungMelden();
+        this.revalidate();
+        daten.getListeAbo().aenderungMelden(akt.aboIstEingeschaltet());
     }
 
     private void aboEinAus(boolean ein) {
@@ -365,7 +366,7 @@ public class ManageAboPanel extends JPanel {
                 tabelle.addRowSelectionInterval(row, row);
             }
 
-            daten.getListeAbo().aenderungMelden();
+            daten.getListeAbo().aenderungMelden(ein);
         } else {
             NoSelectionErrorDialog.show();
         }

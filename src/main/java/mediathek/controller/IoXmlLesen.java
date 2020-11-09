@@ -99,7 +99,7 @@ public class IoXmlLesen {
             }
         }
         if (foundAbos > 0) {
-            daten.getListeAbo().aenderungMelden();
+            daten.getListeAbo().aenderungMelden(true); 
         }
 
         if (foundBlacklistEntries > 0)

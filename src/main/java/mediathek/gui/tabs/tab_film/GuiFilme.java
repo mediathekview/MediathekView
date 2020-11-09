@@ -600,7 +600,7 @@ public class GuiFilme extends AGuiTabPanel {
      */
     public void showBookmarkWindow() {
         if (bookmarkWindowController.isEmpty()) {
-            bookmarkWindowController = Optional.of(new BookmarkWindowController());
+            bookmarkWindowController = Optional.of(new BookmarkWindowController(mediathekGui));
             bookmarkWindowController.get().setPartner(this);
         }
         bookmarkWindowController.get().show();
@@ -1258,7 +1258,7 @@ public class GuiFilme extends AGuiTabPanel {
                                         new DialogEditAbo(mediathekGui, true, daten, datenAbo, false /*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
-                                    daten.getListeAbo().aenderungMelden();
+                                    daten.getListeAbo().aenderungMelden(datenAbo.aboIstEingeschaltet());
                                 }
                             }
                         });

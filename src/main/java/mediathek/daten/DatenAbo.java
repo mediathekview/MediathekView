@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class DatenAbo implements Comparable<DatenAbo> {
 
@@ -22,15 +23,17 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
+    public static final int ABO_CATEGORY = 13;  // for target Bookmarklist
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset", "Kategorie"};
     public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
+            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset", "Kategorie"};
 
-    public static final int MAX_ELEM = 13;
+    public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
+    public static final String ABO_TARGET_BOOKMARK = "Merken";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private final GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -38,13 +41,15 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public boolean min = true;
     public String[] arr;
     public int nr;
+    private Date lastCheckDate;
     public String[] titel, thema, irgendwo;
-
+    
     public DatenAbo() {
         initialize();
     }
 
-    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
+    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, 
+                    String ziel, String pset, String category) {
         initialize();
         arr[ABO_NAME] = name;
         arr[ABO_SENDER] = sender;
@@ -57,6 +62,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+        arr[ABO_CATEGORY] = category;
     }
 
     public static boolean anzeigen(int i) {
@@ -108,6 +114,25 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
     }
+    
+    public void setNewAboState(boolean newstate) {
+      arr[ABO_EINGESCHALTET] = String.valueOf(newstate);
+      if (!newstate && isAboTargetBookmark()) { // if deactivated reset download date to force new scan after activation 
+        arr[ABO_DOWN_DATUM] = "";
+      }
+    }
+    
+    public boolean isAboTargetBookmark() {
+      return this.arr[ABO_PSET].equals(ABO_TARGET_BOOKMARK);
+    }
+    
+    public boolean isAboCategory(String category) {
+      return this.arr[ABO_CATEGORY].equals(category);
+    }
+    
+    public String getAboCategory() {
+      return this.arr[ABO_CATEGORY];
+    }
 
     private void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
@@ -123,5 +148,16 @@ public class DatenAbo implements Comparable<DatenAbo> {
     @Override
     public int compareTo(@NotNull DatenAbo arg0) {
         return sorter.compare(arr[ABO_NAME], arg0.arr[ABO_NAME]);
+    }
+    
+    /**
+     * Init variable from array field ABO_DOWN_DATUM, needed for bookmark abo operation
+     */
+    public void setLastCheckdate(Date lcd) {
+      lastCheckDate = lcd;
+    }
+    
+    public Date getLastCheckDate() {
+      return lastCheckDate;
     }
 }
