@@ -1,4 +1,4 @@
-<u>13.6.1</u>
+<u>**13.6.1**</u>
 
 - JavaFX auf Version 15 aktualisiert. 
 - Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
@@ -22,9 +22,10 @@
 - **BUGFIX:** "Abos verwalten"-Dialog wählt nun bei gesetztem Filter nicht mehr die falschen Abos aus.
 - **BUGFIX:** Farbauswahl bei Psets für Buttons werden nun angewendet auf allen Plattformen.
 - **BUGFIX:** Unter Windows konnte es vorkommen dass ein Speichern nach dem Laden der Filmliste nicht möglich war.
+- **FEATURE:** Die Speicherzuweisung für das Programm kann nun über den Menüeintrag *"Hilfe/Speicherzuweisung ändern..."* angepasst werden.
 - **FEATURE:** Sender können nun direkt beim Laden der Filmliste ausgeschlossen werden. **Bitte entfernt ggf. Eure entsprechenden Einträge in der Blacklist mit der ihr bisher Sender ausgeblendet habt!** Dies erhöht dann auch zusätzlich etwas die Geschwindigkeit des Programms.
 - **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
-- ==**FEATURE:**== Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
+- **FEATURE:** Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
 - **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.
 - **FEATURE:** F12-Taste zeigt nun den Filterdialog an.
 - **FEATURE:** Einstellung der CheckBox *"Alte Filmliste nicht löschen, nur erweitern"* wird nun gespeichert und wiederhergestellt.

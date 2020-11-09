@@ -83,7 +83,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     private Optional<String> highQuality_url = Optional.empty();
     private String aboName = "";
     private String datumLong = "";
-    private String film_nr = "";
     private String sender = "";
     private String thema = "";
     private String titel = "";
@@ -138,11 +137,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         this.urlKlein = urlKlein;
     }
 
-    public String getHighQualityUrl() {
+    public String getUrlHighQuality() {
         return highQuality_url.orElse("");
     }
 
-    public void setHighQualityUrl(String urlHd) {
+    public void setUrlHighQuality(String urlHd) {
         if (!urlHd.isEmpty())
             highQuality_url = Optional.of(urlHd);
         else
@@ -370,10 +369,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     }
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
-    public String getUrlFuerAufloesung(String aufloesung) {
-        return switch (aufloesung) {
-            case FilmResolution.AUFLOESUNG_KLEIN, FilmResolution.AUFLOESUNG_HD -> getUrlNormalOrRequested(aufloesung);
-            //AUFLOESUNG_NORMAL
+    public String getUrlFuerAufloesung(FilmResolution.Enum resolution) {
+        return switch (resolution) {
+            case LOW, HIGH_QUALITY -> getUrlNormalOrRequested(resolution);
             default -> getUrl();
         };
     }
@@ -416,7 +414,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         ret.urlKlein = this.urlKlein;
         ret.aboName = this.aboName;
         ret.datumLong = this.datumLong;
-        ret.film_nr = this.film_nr;
         ret.sender = this.sender;
         ret.thema = this.thema;
         ret.titel = this.titel;
@@ -496,10 +493,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * Return unpacked url as string.
      * High quality URLs may be "compressed" in the filmlist and need to be unpacked before use.
      *
-     * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
+     * @param aufloesung One of FilmResolution.HIGH_QUALITY,FilmResolution.LOW,FilmResolution.NORMAL.
      * @return A unpacked version of the film url as string.
      */
-    private String getUrlNormalOrRequested(@NotNull String aufloesung) {
+    private String getUrlNormalOrRequested(@NotNull FilmResolution.Enum aufloesung) {
         String ret;
         // liefert die kleine normale URL oder die HD URL
         final String requestedUrl = getUrlByAufloesung(aufloesung);
@@ -534,20 +531,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
      * @return url as String.
      */
-    private String getUrlByAufloesung(@NotNull final String aufloesung) {
+    private String getUrlByAufloesung(@NotNull final FilmResolution.Enum aufloesung) {
         return switch (aufloesung) {
-            case FilmResolution.AUFLOESUNG_HD -> getHighQualityUrl();
-            case FilmResolution.AUFLOESUNG_KLEIN -> getUrlKlein();
+            case HIGH_QUALITY -> getUrlHighQuality();
+            case LOW -> getUrlKlein();
             default -> getUrl();
         };
-    }
-
-    public String getNr() {
-        return film_nr;
-    }
-
-    public void setNr(final String nr) {
-        film_nr = nr;
     }
 
     public String getSender() {

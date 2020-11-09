@@ -895,6 +895,8 @@ public class MediathekGui extends JFrame {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
         jMenuHilfe.add(new ShowProgramInfosAction(this));
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(new SetAppMemoryAction());
         if (!SystemUtils.IS_OS_MAC_OSX) {
             jMenuHilfe.addSeparator();
             jMenuHilfe.add(new ShowAboutAction(this));
