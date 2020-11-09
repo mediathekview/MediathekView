@@ -1,6 +1,6 @@
 package mediathek.daten;
 
-import com.zaxxer.sansorm.SqlClosure;
+import java.sql.SQLException;
 
 public class DatenFilmCleanupTask implements Runnable {
     private final long filmNr;
@@ -11,12 +11,12 @@ public class DatenFilmCleanupTask implements Runnable {
 
     @Override
     public void run() {
-        SqlClosure.sqlExecute(connection -> {
-            var stmt = connection.createStatement();
+        try (var connection = PooledDatabaseConnection.getInstance().getDataSource().getConnection();
+             var stmt = connection.createStatement()) {
             stmt.executeUpdate("DELETE FROM mediathekview.description WHERE id = " + filmNr);
             stmt.executeUpdate("DELETE FROM mediathekview.website_links WHERE id = " + filmNr);
 
-            return null;
-        });
+        } catch (SQLException ignored) {
+        }
     }
 }
