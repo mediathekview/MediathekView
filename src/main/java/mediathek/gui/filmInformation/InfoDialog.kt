@@ -35,19 +35,19 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     private val config = ApplicationConfiguration.getConfiguration()
     private val senderIconCache: MVSenderIconCache = Daten.getInstance().senderIconCache
     private var currentFilm: DatenFilm? = null
-    private lateinit var lblSender: Label
-    private lateinit var lblThema: Label
-    private lateinit var lblTitle: Label
-    private lateinit var lblDate: Label
-    private lateinit var lblUhrzeit: Label
-    private lateinit var lblDuration: Label
-    private lateinit var lblSize: Label
-    private lateinit var cbHq: CheckBox
-    private lateinit var cbSubtitle: CheckBox
-    private lateinit var lblGeo: Label
-    private lateinit var lblAbo: Label
-    private lateinit var hyperlink: Hyperlink
-    private lateinit var lblDescription: TextArea
+    private val lblSender = Label()
+    private val lblThema = Label()
+    private val lblTitle = Label()
+    private val lblDate = Label()
+    private val lblUhrzeit = Label()
+    private val lblDuration = Label()
+    private val lblSize = Label()
+    private val cbHq = DisabledCheckBox()
+    private val cbSubtitle = DisabledCheckBox()
+    private val lblGeo = Label()
+    private val lblAbo = Label()
+    private val hyperlink = Hyperlink("Hier klicken")
+    private val lblDescription = TextArea()
 
     private fun installContextMenu(component: Label) {
         val ctMenu = ContextMenu()
@@ -181,62 +181,38 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                             "[]" +
                             "[fill,grow]")
             migPane.add(RightOrientedLabel("Sender:"), CC().cell(0, 0))
-            migPane.add(RightOrientedLabel("Thema:"), CC().cell(0, 1))
-            migPane.add(RightOrientedLabel("Titel:"), CC().cell(0, 2))
-            migPane.add(RightOrientedLabel("Datum:"), CC().cell(0, 3))
-            migPane.add(RightOrientedLabel("Uhrzeit:"), CC().cell(0, 4))
-            migPane.add(RightOrientedLabel("Dauer:"), CC().cell(0, 5))
-            migPane.add(RightOrientedLabel("Größe (MB):"), CC().cell(0, 6))
-            migPane.add(RightOrientedLabel("HQ:"), CC().cell(0, 7))
-            migPane.add(RightOrientedLabel("Untertitel:"), CC().cell(0, 8))
-            migPane.add(RightOrientedLabel("Geo:"), CC().cell(0, 9))
-            migPane.add(RightOrientedLabel("Abo:"), CC().cell(0, 10))
-            migPane.add(RightOrientedLabel("Website:"), CC().cell(0, 11))
-            migPane.add(RightOrientedLabel("Beschreibung:"), CC().cell(0, 12))
-
-            lblSender = Label()
-            lblGeo = Label()
-            lblSize = Label()
-            lblAbo = Label()
-            lblThema = Label()
-            lblTitle = Label()
-            lblDate = Label()
-            lblUhrzeit = Label()
-            lblDuration = Label()
-            cbHq = CheckBox()
-            cbSubtitle = CheckBox()
-            hyperlink = Hyperlink("Hier klicken")
-            lblDescription = TextArea()
-
             migPane.add(lblSender, CC().cell(1, 0).maxWidth("250"))
-            migPane.add(lblGeo, CC().cell(1, 9).maxWidth("250"))
-            migPane.add(lblSize, CC().cell(1, 6).maxWidth("250"))
-            migPane.add(lblAbo, CC().cell(1, 10).maxWidth("250"))
 
+            migPane.add(RightOrientedLabel("Thema:"), CC().cell(0, 1))
             lblThema.isWrapText = true
             installContextMenu(lblThema)
             migPane.add(lblThema, CC().cell(1, 1).maxWidth("250").growY())
 
+            migPane.add(RightOrientedLabel("Titel:"), CC().cell(0, 2))
             lblTitle.isWrapText = true
             installContextMenu(lblTitle)
             migPane.add(lblTitle, CC().cell(1, 2).maxWidth("250").growY())
 
+            migPane.add(RightOrientedLabel("Datum:"), CC().cell(0, 3))
             migPane.add(lblDate, CC().cell(1, 3).maxWidth("250"))
+            migPane.add(RightOrientedLabel("Uhrzeit:"), CC().cell(0, 4))
             migPane.add(lblUhrzeit, CC().cell(1, 4).maxWidth("250"))
+            migPane.add(RightOrientedLabel("Dauer:"), CC().cell(0, 5))
             migPane.add(lblDuration, CC().cell(1, 5).maxWidth("250"))
-
-            cbHq.isDisable = true
+            migPane.add(RightOrientedLabel("Größe (MB):"), CC().cell(0, 6))
+            migPane.add(lblSize, CC().cell(1, 6).maxWidth("250"))
+            migPane.add(RightOrientedLabel("HQ:"), CC().cell(0, 7))
             migPane.add(cbHq, CC().cell(1, 7).maxWidth("250"))
-
-            cbSubtitle.isDisable = true
+            migPane.add(RightOrientedLabel("Untertitel:"), CC().cell(0, 8))
             migPane.add(cbSubtitle, CC().cell(1, 8).maxWidth("250"))
+            migPane.add(RightOrientedLabel("Geo:"), CC().cell(0, 9))
+            migPane.add(lblGeo, CC().cell(1, 9).maxWidth("250"))
+            migPane.add(RightOrientedLabel("Abo:"), CC().cell(0, 10))
+            migPane.add(lblAbo, CC().cell(1, 10).maxWidth("250"))
+            migPane.add(RightOrientedLabel("Website:"), CC().cell(0, 11))
+            migPane.add(RightOrientedLabel("Beschreibung:"), CC().cell(0, 12))
 
-            val contextMenu = ContextMenu()
-            val mi = MenuItem("URL kopieren")
-            mi.onAction = EventHandler { SwingUtilities.invokeLater { GuiFunktionen.copyToClipboard(currentFilm!!.websiteLink) } }
-            contextMenu.items.add(mi)
-
-            hyperlink.contextMenu = contextMenu
+            hyperlink.contextMenu = createCopyUrlContextMenu()
             hyperlink.isUnderline = true
             hyperlink.onAction = EventHandler {
                 SwingUtilities.invokeLater {
@@ -259,9 +235,23 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         }
     }
 
+    private fun createCopyUrlContextMenu() : ContextMenu {
+        val contextMenu = ContextMenu()
+        val mi = MenuItem("URL kopieren")
+        mi.onAction = EventHandler { SwingUtilities.invokeLater { GuiFunktionen.copyToClipboard(currentFilm!!.websiteLink) } }
+        contextMenu.items.add(mi)
+        return contextMenu
+    }
+    
     internal class RightOrientedLabel(label: String?) : Label(label) {
         init {
             alignment = Pos.BASELINE_RIGHT
+        }
+    }
+    
+    internal class DisabledCheckBox : CheckBox() {
+        init {
+            isDisable = true
         }
     }
 
