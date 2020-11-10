@@ -1,6 +1,7 @@
 <u>**13.6.1**</u>
 
 - JavaFX auf Version 15 aktualisiert. 
+- Dialog "Filminformation" nach JavaFX portiert
 - Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
 - **BUGFIX:** Einige Filme wurden nicht korrekt als Hörfassung klassifiziert.
 - **BUGFIX:** Fehler bei der Darstellung des freien Speicherplatzes im Download-Dialog behoben.
