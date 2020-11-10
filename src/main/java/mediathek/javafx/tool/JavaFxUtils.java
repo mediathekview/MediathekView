@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -71,5 +73,19 @@ public class JavaFxUtils {
         int a = awtColor.getAlpha();
         double opacity = a / 255.0;
         return javafx.scene.paint.Color.rgb(r, g, b, opacity);
+    }
+
+    /**
+     * Convert ImageIcon to BufferedImage.
+     * This can be used in a JavaFX ImageView.
+     * @param icon the ImageIcon from Swing.
+     * @return the BufferedImage for JavaFX use.
+     */
+    public static BufferedImage toBufferedImage(ImageIcon icon) {
+        var bi = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        var g = bi.createGraphics();
+        icon.paintIcon(null, g, 0, 0);
+        g.dispose();
+        return bi;
     }
 }

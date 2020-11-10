@@ -75,7 +75,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>14</jdk.language.version>
+        <jdk.language.version>15</jdk.language.version>
+        <kotlin.language.target>14</kotlin.language.target>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -91,7 +92,6 @@
         <install4j.home>./install4j8.0.7</install4j.home>
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
         <kotlin.version>1.4.10</kotlin.version>
-        <kotlin.language.target>${jdk.language.version}</kotlin.language.target>
     </properties>
 
     <dependencies>
