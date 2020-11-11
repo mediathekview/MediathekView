@@ -318,7 +318,7 @@ public class ManageAboPanel extends JPanel {
         var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
 
         //DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
+        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, akt, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
         dialog.setVisible(true);
         if (!dialog.ok) {
