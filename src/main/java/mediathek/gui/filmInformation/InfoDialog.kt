@@ -161,7 +161,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         contentPane.layout = BorderLayout()
         val newFxPanel = JFXPanel()
         contentPane.add(newFxPanel, BorderLayout.CENTER)
-        JavaFxUtils.invokeInFxThreadAndWait {
+        Platform.runLater {
             val migPane = MigPane(
                     "hidemode 3",  //columns
                     "[fill,shrink 0]" +
