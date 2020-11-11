@@ -17,7 +17,7 @@ class WindowsAffinity : IAffinity {
                 .mapToLong { i: Int -> 1L shl i }
                 .reduce(0) { a: Long, b: Long -> a or b }
         val affinityMask = affinity.toInt()
-        val instance = Native.loadLibrary("Kernel32", AffinityKernel::class.java)
+        val instance = Native.load("Kernel32", AffinityKernel::class.java)
         val result = instance.SetProcessAffinityMask(HANDLE(Pointer(pid.toLong())), affinityMask)
         if (result) {
             logger.info("CPU affinity was set successfully.")
