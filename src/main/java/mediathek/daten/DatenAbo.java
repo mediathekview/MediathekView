@@ -32,18 +32,17 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
+    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    private final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public int mindestdauerMinuten;
     public boolean min = true;
     public String[] arr;
-    public int nr;
     public String[] titel, thema, irgendwo;
+    private int nr;
 
     public DatenAbo() {
         initialize();
     }
-
     public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
         initialize();
         arr[ABO_NAME] = name;
@@ -61,6 +60,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public int getNr() {
+        return nr;
+    }
+
+    public void setNr(int nr) {
+        this.nr = nr;
     }
 
     public DatenAbo getCopy() {

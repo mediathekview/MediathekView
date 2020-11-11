@@ -91,7 +91,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // die Änderung an der Liste wird nicht gemeldet!!
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
-        datenAbo.nr = nr;
+        datenAbo.setNr(nr);
         if (datenAbo.arr[DatenAbo.ABO_NAME].isEmpty()) {
             // Downloads ohne "Aboname" sind manuelle Downloads
             datenAbo.arr[DatenAbo.ABO_NAME] = "Abo_" + nr;
@@ -150,7 +150,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      */
     public DatenAbo findByNr(int nr) throws NoSuchElementException {
         return this.stream()
-                .filter(abo -> abo.nr == nr)
+                .filter(abo -> abo.getNr() == nr)
                 .findAny().orElseThrow();
     }
 

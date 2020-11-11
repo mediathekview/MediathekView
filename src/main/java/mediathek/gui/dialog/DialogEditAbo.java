@@ -181,7 +181,7 @@ public class DialogEditAbo extends JDialog {
                 textfeld = new JTextField();
                 textfeldListe[i] = textfeld;
                 textfeld.setEditable(false);
-                textfeld.setText(aktAbo.nr + "");
+                textfeld.setText(aktAbo.getNr() + "");
                 gridbag.setConstraints(textfeld, c);
                 panel.add(textfeld);
                 break;

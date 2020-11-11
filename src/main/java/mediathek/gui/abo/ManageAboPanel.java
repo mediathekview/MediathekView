@@ -75,7 +75,7 @@ public class ManageAboPanel extends JPanel {
             if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
                 for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                     if (m == DatenAbo.ABO_NR) {
-                        object[m] = abo.nr;
+                        object[m] = abo.getNr();
                     } else if (m == DatenAbo.ABO_MINDESTDAUER) {
                         object[m] = abo.mindestdauerMinuten;
                     } else if (m == DatenAbo.ABO_DOWN_DATUM) {
