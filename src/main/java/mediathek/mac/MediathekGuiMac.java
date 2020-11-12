@@ -26,15 +26,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
     private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
-    private final OsxPowerManager powerManager = new OsxPowerManager();
     protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
+    private final OsxPowerManager powerManager = new OsxPowerManager();
 
     public MediathekGuiMac() {
         super();
@@ -79,7 +78,7 @@ public class MediathekGuiMac extends MediathekGui {
             logger.error("error closing notification center", e);
         }
 
-        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
         // we need to figure if we have native support available
         config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
 
@@ -106,20 +105,9 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void shutdownComputer() {
         try {
-            var result = Spotlight.find("kMDItemCFBundleIdentifier == org.mediathekview.MediathekView-Shutdown-Helper");
-            if (result.isEmpty())
-                logger.error("could not locate mediathekview shutdown helper app");
-            else {
-                File appLocation = result.get(0);
-                logger.debug("Shutdown Helper location: {}", appLocation.toString());
-                logger.info("Executing shutdown helper");
-                final ProcessBuilder builder = new ProcessBuilder(appLocation.toString() + SHUTDOWN_HELPER_APP_BINARY_PATH);
-                builder.command().add("-shutdown");
-                builder.start();
-                logger.debug("shutdown helper app was launched");
-            }
-        } catch (Exception e) {
-            logger.error("unexpected error occured", e);
+            Runtime.getRuntime().exec("nohup bin/mv_shutdown_helper");
+        } catch (IOException e) {
+            logger.error(e);
         }
     }
 

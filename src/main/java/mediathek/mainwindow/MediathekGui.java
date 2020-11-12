@@ -1045,10 +1045,6 @@ public class MediathekGui extends JFrame {
 
         Log.printRuntimeStatistics();
 
-        if (shutDown) {
-            shutdownComputer();
-        }
-
         dispose();
 
         JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
@@ -1058,6 +1054,10 @@ public class MediathekGui extends JFrame {
 
         //shutdown JavaFX
         Platform.exit();
+
+        if (shutDown) {
+            shutdownComputer();
+        }
 
         System.exit(0);
 
