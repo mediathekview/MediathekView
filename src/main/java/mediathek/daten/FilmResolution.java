@@ -19,9 +19,9 @@ public class FilmResolution {
 
         public static Enum fromLegacyString(String in) {
             return switch (in) {
-                case FilmResolution.NORMAL -> LOW;
-                case FilmResolution.HIGH_QUALITY -> HIGH_QUALITY;
                 case FilmResolution.LOW -> LOW;
+                case FilmResolution.NORMAL -> NORMAL;
+                case FilmResolution.HIGH_QUALITY -> HIGH_QUALITY;
                 default -> throw new IndexOutOfBoundsException("Illegal string to enum op!");
             };
         }
