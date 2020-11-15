@@ -6,12 +6,12 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public abstract class PanelVorlage extends JPanel {
-    public Daten daten;
-    public boolean stopBeob = false;
-    public JFrame parentComponent;
+    protected Daten daten;
+    protected boolean stopBeob;
+    protected JFrame parentComponent;
 
-    public PanelVorlage(Daten d, JFrame pparentComponent) {
-        daten = d;
+    public PanelVorlage(Daten daten, JFrame pparentComponent) {
+        this.daten = daten;
         parentComponent = pparentComponent;
     }
 }
