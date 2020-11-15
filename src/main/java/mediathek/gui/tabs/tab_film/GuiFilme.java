@@ -563,7 +563,7 @@ public class GuiFilme extends AGuiTabPanel {
                     aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
                 }
                 DialogAddDownload dialog =
-                        new DialogAddDownload(mediathekGui, daten, datenFilm, pSet, aufloesung);
+                        new DialogAddDownload(mediathekGui, datenFilm, pSet, aufloesung);
                 dialog.setVisible(true);
             }
         }

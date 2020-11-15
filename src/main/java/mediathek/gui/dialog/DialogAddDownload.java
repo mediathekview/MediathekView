@@ -35,7 +35,6 @@ public class DialogAddDownload extends JDialog {
     private DatenPset pSet;
     private boolean ok;
     private DatenDownload datenDownload;
-    private final Daten daten;
     private final DatenFilm datenFilm;
     private String orgPfad = "";
     private final String aufloesung;
@@ -48,7 +47,7 @@ public class DialogAddDownload extends JDialog {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private static final Logger logger = LogManager.getLogger();
 
-    public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
+    public DialogAddDownload(Frame parent, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
         initComponents();
 
@@ -56,7 +55,6 @@ public class DialogAddDownload extends JDialog {
         cbPathTextComponent = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent());
 
         this.aufloesung = aufloesung;
-        this.daten = daten;
         datenFilm = film;
         this.pSet = pSet;
 
@@ -474,6 +472,8 @@ public class DialogAddDownload extends JDialog {
             datenDownload.setGroesse(getFilmSize());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+
+            final var daten = Daten.getInstance();
             daten.getListeDownloads().addMitNummer(datenDownload);
             daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
             if (jCheckBoxStarten.isSelected()) {
