@@ -166,7 +166,7 @@ public abstract class PanelErledigteUrls extends JPanel {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, film, null, "");
+                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), film, null, "");
                 dialog.setVisible(true);
             }
 
