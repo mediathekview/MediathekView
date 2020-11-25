@@ -41,7 +41,7 @@ jobs:
     - stage: Test
       script:
         - ./mvnw -v
-        - ./mvnw --no-transfer-progress clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView
+        - ./mvnw --no-transfer-progress clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView
       cache:
         directories:
           - .autoconf
@@ -49,17 +49,17 @@ jobs:
     - stage: Build and Deploy Snapshots
       script:
         - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-        - ./mvnw clean install -Plinux,install4j
+        - ./mvnw clean package -Plinux,install4j
         - echo "Baue AppImage"
         - scripte/appimage.sh
         - scripte/deploy/deploy.sh nightly linux $TRAVIS_COMMIT
-        - ./mvnw clean install -Parm,!64bit,32bit,install4j,!linux
+        - ./mvnw clean package -Parm,!64bit,32bit,install4j,!linux
         - scripte/deploy/deploy.sh nightly linux-armhf $TRAVIS_COMMIT
-        - ./mvnw clean install -Pwindows,install4j,!linux
+        - ./mvnw clean package -Pwindows,install4j,!linux
         - scripte/deploy/deploy.sh nightly win $TRAVIS_COMMIT
-        - ./mvnw clean install -Pwindows32,!64bit,32bit,install4j,!linux
+        - ./mvnw clean package -Pwindows32,!64bit,32bit,install4j,!linux
         - scripte/deploy/deploy.sh nightly win32 $TRAVIS_COMMIT
-        - ./mvnw clean install -Pmac,!linux
+        - ./mvnw clean package -Pmac,!linux
         - scripte/deploy/deploy.sh nightly mac $TRAVIS_COMMIT
       cache:
         directories:
