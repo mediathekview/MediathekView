@@ -40,6 +40,8 @@ jobs:
   include:
     - stage: Test
       script:
+        - ./mvnw -v
+        - ./mvnw --help
         - ./mvnw --no-transfer-progress clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView
       cache:
         directories:
