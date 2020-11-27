@@ -1,9 +1,5 @@
 package mediathek.mac;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
@@ -31,7 +27,6 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-    private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
     protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     private final OsxPowerManager powerManager = new OsxPowerManager();
 
@@ -203,22 +198,6 @@ public class MediathekGuiMac extends MediathekGui {
             }
         } catch (IOException ex) {
             logger.error("OS X Application image could not be loaded", ex);
-        }
-    }
-
-    static class WorkaroundStage extends Stage {
-        public WorkaroundStage() {
-            initStyle(StageStyle.UTILITY);
-            var root = new StackPane();
-            root.setStyle("-fx-background-color: TRANSPARENT");
-
-            var scene = new Scene(root, 1, 1);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-
-            setScene(scene);
-            setWidth(1d);
-            setHeight(1d);
-            setOpacity(0d);
         }
     }
 }
