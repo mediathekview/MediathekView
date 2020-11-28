@@ -18,6 +18,6 @@ public class SenderBoxNode extends VBox {
                 new Label("Sender:"),
                 senderBox);
         senderBox.getCheckModel().getCheckedItems().
-                addListener((ListChangeListener<String>) c -> pauseTransition.playFromStart());
+                addListener((ListChangeListener<String>) changeListener -> pauseTransition.playFromStart());
     }
 }

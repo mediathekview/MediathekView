@@ -7,7 +7,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -197,9 +196,11 @@ public class FilmActionPanel {
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
     senderList = viewSettingsPane.senderBoxNode.senderBox;
-    senderList
+    Daten.getInstance().getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) changeListener -> loadSavedSenderChecks());
+    senderList.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) changeListener -> loadSavedSenderChecks());
+    /*senderList
         .itemsProperty()
-        .addListener((ChangeListener) (observable, oldValue, newValue) -> loadSavedSenderChecks());
+        .addListener(invalidationListener -> loadSavedSenderChecks());*/
 
     viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
 
