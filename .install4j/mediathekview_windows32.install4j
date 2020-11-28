@@ -4,11 +4,11 @@
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView"
                mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-win32" convertDotsToUnderscores="false"
                publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
-               macVolumeId="d594baf3c2b3424d" javaMinVersion="14">
+               macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.2+13">
+    <jreBundles jdkProviderId="Liberica" release="${install4j.liberica.jdk.version}">
       <modules>
         <defaultModules set="all" />
       </modules>
