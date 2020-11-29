@@ -220,6 +220,7 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration setSender(List<String> sender) {
+    LOG.info("!##++ Setting the sender filter to {}",Arrays.toString(sender.toArray()));
     configuration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SENDER.getKey()),
         sender);
@@ -233,6 +234,7 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration setThema(String thema) {
+    LOG.info("!##++ Setting the thema filter to {}",thema);
     configuration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
         thema);

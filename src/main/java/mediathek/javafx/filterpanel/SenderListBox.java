@@ -17,7 +17,7 @@ public class SenderListBox extends CheckListView<String> {
                 .getListeFilmeNachBlackList().
                 getSenders()
                 .addListener((ListChangeListener<String>) change -> {
-                    getCheckModel().clearChecks();
+                    //getCheckModel().clearChecks();
                 });
     }
 }
