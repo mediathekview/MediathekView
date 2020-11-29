@@ -57,8 +57,8 @@ public class TabFilmeMac extends GuiFilme
         TouchBarButton btnManageAbo = new TouchBarButton();
         btnManageAbo.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.DATABASE));
         btnManageAbo.setAction(f -> SwingUtilities.invokeLater(() -> {
-            if (fap.manageAboAction.isEnabled())
-                fap.manageAboAction.actionPerformed(null);
+            if (filmActionPanel.manageAboAction.isEnabled())
+                filmActionPanel.manageAboAction.actionPerformed(null);
         }));
 
         touchBar.addItem(new TouchBarItem("btnLoadFilmList", btnLoadFilmlist, false));

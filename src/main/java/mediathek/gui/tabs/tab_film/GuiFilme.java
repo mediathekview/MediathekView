@@ -97,7 +97,7 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * The JavaFx Film action popup panel.
      */
-    public FilmActionPanel fap;
+    public FilmActionPanel filmActionPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     /**
      * The swing helper panel FilmAction bar.
@@ -300,9 +300,9 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        fap = new FilmActionPanel();
+        filmActionPanel = new FilmActionPanel();
         JavaFxUtils.invokeInFxThreadAndWait(
-                () -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
+                () -> fxFilmActionPanel.setScene(filmActionPanel.getFilmActionPanelScene()));
     }
 
     private void setupPsetButtonsPanel() {
@@ -415,7 +415,7 @@ public class GuiFilme extends AGuiTabPanel {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
-                Platform.runLater(() -> fap.updateThemaBox());
+                Platform.runLater(() -> filmActionPanel.filmlisteLadenFertigCallback());
             }
         });
 
@@ -459,7 +459,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (fap.showUnseenOnly.getValue()) {
+            if (filmActionPanel.showUnseenOnly.getValue()) {
                 loadTable();
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -565,7 +565,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         // dann alle Downloads im Dialog abfragen
         Optional<FilmResolution.Enum> res =
-                fap.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                        filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
         DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
         dialog.setVisible(true);
     }
@@ -618,7 +618,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (fap.showOnlyHd.getValue()) {
+            if (filmActionPanel.showOnlyHd.getValue()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -718,28 +718,28 @@ public class GuiFilme extends AGuiTabPanel {
         Platform.runLater(() -> {
             final ChangeListener<Boolean> reloadTableListener =
                     (observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable);
-            fap.showOnlyHd.addListener(reloadTableListener);
-            fap.showSubtitlesOnly.addListener(reloadTableListener);
-            fap.showNewOnly.addListener(reloadTableListener);
-            fap.showBookMarkedOnly.addListener(reloadTableListener);
-            fap.showUnseenOnly.addListener(reloadTableListener);
-            fap.dontShowAbos.addListener(reloadTableListener);
-            fap.dontShowTrailers.addListener(reloadTableListener);
-            fap.dontShowSignLanguage.addListener(reloadTableListener);
-            fap.dontShowAudioVersions.addListener(reloadTableListener);
-            fap.showLivestreamsOnly.addListener(reloadTableListener);
-            fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            filmActionPanel.showOnlyHd.addListener(reloadTableListener);
+            filmActionPanel.showSubtitlesOnly.addListener(reloadTableListener);
+            filmActionPanel.showNewOnly.addListener(reloadTableListener);
+            filmActionPanel.showBookMarkedOnly.addListener(reloadTableListener);
+            filmActionPanel.showUnseenOnly.addListener(reloadTableListener);
+            filmActionPanel.dontShowAbos.addListener(reloadTableListener);
+            filmActionPanel.dontShowTrailers.addListener(reloadTableListener);
+            filmActionPanel.dontShowSignLanguage.addListener(reloadTableListener);
+            filmActionPanel.dontShowAudioVersions.addListener(reloadTableListener);
+            filmActionPanel.showLivestreamsOnly.addListener(reloadTableListener);
+            filmActionPanel.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     SwingUtilities.invokeLater(this::reloadTable);
                 }
             });
-            fap.filmLengthSlider.highValueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            filmActionPanel.filmLengthSlider.highValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
                     SwingUtilities.invokeLater(this::reloadTable);
                 }
             });
-            fap.searchThroughDescription.addListener((os, o, n) -> {
-                if (!fap.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
+            filmActionPanel.searchThroughDescription.addListener((os, o, n) -> {
+                if (!filmActionPanel.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
                     SwingUtilities.invokeLater(this::reloadTable);
             });
 
@@ -747,8 +747,8 @@ public class GuiFilme extends AGuiTabPanel {
 
             setupZeitraumListener();
 
-            fap.themaBox.setOnAction(evt -> {
-                if (!fap.themaBox.getItems().isEmpty()) {
+            filmActionPanel.themaBox.setOnAction(evt -> {
+                if (!filmActionPanel.themaBox.getItems().isEmpty()) {
                     SwingUtilities.invokeLater(this::reloadTable);
                 }
             });
@@ -787,19 +787,19 @@ public class GuiFilme extends AGuiTabPanel {
         PauseTransition trans = new PauseTransition(Duration.millis(250));
         trans.setOnFinished(evt -> {
             // reset sender filter first
-            fap.senderList.getCheckModel().clearChecks();
+            filmActionPanel.senderList.getCheckModel().clearChecks();
             SwingUtilities.invokeLater(() -> {
                 daten.getListeBlacklist().filterListe();
                 loadTable();
             });
         });
-        fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+        filmActionPanel.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
     }
 
     private void setupSenderListListeners() {
         PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
         filterSenderDelay.setOnFinished(e -> SwingUtilities.invokeLater(this::reloadTable));
-        fap.senderList.getCheckModel().getCheckedItems()
+        filmActionPanel.senderList.getCheckModel().getCheckedItems()
                 .addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
     }
 
@@ -811,7 +811,7 @@ public class GuiFilme extends AGuiTabPanel {
             tabelle.getSpalten();
             tabelle.setEnabled(false);
 
-            final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten.getListeFilmeNachBlackList(), historyController);
+            final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(filmActionPanel, daten.getListeFilmeNachBlackList(), historyController);
             final var model = helper.getFilteredTableModel();
             tabelle.setModel(model);
 
