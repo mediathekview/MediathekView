@@ -67,10 +67,14 @@ public class IoXmlLesen {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (abo && parser.getLocalName().equals(DatenAbo.TAG)) {
                         // Abo
-                        DatenAbo datenAbo = new DatenAbo();
-                        if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
+                        try {
+                            DatenAbo datenAbo = new DatenAbo();
+                            datenAbo.readFromConfig(parser);
                             foundAbos++;
                             daten.getListeAbo().addAbo(datenAbo);
+                        }
+                        catch (Exception e) {
+                            logger.error("Error importing abo entry");
                         }
                     } else if (black && parser.getLocalName().equals(BlacklistRule.TAG)) {
                         // Blacklist
