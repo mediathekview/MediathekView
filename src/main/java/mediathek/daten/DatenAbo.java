@@ -30,7 +30,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
-    public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
+    private static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
