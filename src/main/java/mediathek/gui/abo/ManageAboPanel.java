@@ -72,24 +72,19 @@ public class ManageAboPanel extends JPanel {
         Object[] object = new Object[DatenAbo.MAX_ELEM];
         for (DatenAbo abo : daten.getListeAbo()) {
             if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
-                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                    if (m == DatenAbo.ABO_NR) {
-                        object[m] = abo.getNr();
-                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
-                        object[m] = abo.mindestdauerMinuten;
-                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
-                        object[m] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
-                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
-                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                    } else if (m == DatenAbo.ABO_MIN) {
-                        object[m] = abo.min ? "min" : "max";
-                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
-                        // Name immer füllen, egal ob angezeigt
-                        object[m] = "";
-                    } else {
-                        object[m] = abo.arr[m];
-                    }
-                }
+                object[DatenAbo.ABO_NR] = abo.getNr();
+                object[DatenAbo.ABO_EINGESCHALTET] = "";//Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                object[DatenAbo.ABO_NAME] = abo.arr[DatenAbo.ABO_NAME];
+                object[DatenAbo.ABO_SENDER] = abo.arr[DatenAbo.ABO_SENDER];
+                object[DatenAbo.ABO_THEMA] = abo.arr[DatenAbo.ABO_THEMA];
+                object[DatenAbo.ABO_TITEL] = abo.arr[DatenAbo.ABO_TITEL];
+                object[DatenAbo.ABO_THEMA_TITEL] = abo.arr[DatenAbo.ABO_THEMA_TITEL];
+                object[DatenAbo.ABO_IRGENDWO] = abo.arr[DatenAbo.ABO_IRGENDWO];
+                object[DatenAbo.ABO_MINDESTDAUER] = abo.mindestdauerMinuten;
+                object[DatenAbo.ABO_MIN] = abo.min ? "min" : "max";
+                object[DatenAbo.ABO_ZIELPFAD] = abo.arr[DatenAbo.ABO_ZIELPFAD];
+                object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                object[DatenAbo.ABO_PSET] = abo.arr[DatenAbo.ABO_PSET];
                 model.addRow(object);
             }
         }
