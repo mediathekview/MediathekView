@@ -225,7 +225,7 @@ public class ManageAboPanel extends JPanel {
 
         setCellRenderer();
 
-        tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
+        tabelle.setModel(new TModelAbo(new Object[][]{}));
         tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenAbo.spaltenAnzeigen,

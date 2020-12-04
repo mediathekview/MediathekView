@@ -3,10 +3,9 @@ package mediathek.tool.models;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.Datum;
 
-@SuppressWarnings("serial")
-public class TModelAbo extends TModel {
-    public TModelAbo(Object[][] data, Object[] columnNames) {
-        super(data, columnNames);
+public class TModelAbo extends NonEditableTableModel {
+    public TModelAbo(Object[][] data) {
+        super(data, DatenAbo.COLUMN_NAMES);
     }
 
     @Override
