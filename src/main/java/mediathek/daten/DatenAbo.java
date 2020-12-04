@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
 
@@ -138,18 +139,37 @@ public class DatenAbo implements Comparable<DatenAbo> {
      * @param writer the writer used.
      */
     public void writeToConfig(@NotNull XMLStreamWriter writer) {
-        try {
-            writer.writeStartElement(DatenAbo.TAG);
-            writer.writeCharacters("\n");
-            for (int i = 0; i < arr.length; ++i) {
-                if (!arr[i].isEmpty()) {
-                    writer.writeCharacters("\t");
-                    writer.writeStartElement(DatenAbo.XML_NAMES[i]);
-                    writer.writeCharacters(arr[i]);
-                    writer.writeEndElement();
-                    writer.writeCharacters("\n");
-                }
+        final BiConsumer<String, String> writeElement = (tagName, content) -> {
+            try {
+                writer.writeCharacters("\t");
+                writer.writeStartElement(tagName);
+                writer.writeCharacters(content);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
             }
+            catch (XMLStreamException e) {
+                logger.error("writeElement failed", e);
+            }
+        };
+
+        try {
+            writer.writeStartElement(TAG);
+            writer.writeCharacters("\n");
+
+            //never write ABO_NR
+            writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
+            writeElement.accept(XML_NAMES[ABO_NAME], arr[ABO_NAME]);
+            writeElement.accept(XML_NAMES[ABO_SENDER], arr[ABO_SENDER]);
+            writeElement.accept(XML_NAMES[ABO_THEMA], arr[ABO_THEMA]);
+            writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_IRGENDWO], arr[ABO_IRGENDWO]);
+            writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], arr[ABO_MINDESTDAUER]);
+            writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
+            writeElement.accept(XML_NAMES[ABO_ZIELPFAD], arr[ABO_ZIELPFAD]);
+            writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], arr[ABO_DOWN_DATUM]);
+            writeElement.accept(XML_NAMES[ABO_PSET], arr[ABO_PSET]);
+
             writer.writeEndElement();
             writer.writeCharacters("\n");
         } catch (Exception ex) {
