@@ -51,6 +51,19 @@ public class IoXmlLesen {
         daten = Daten.getInstance();
     }
 
+    private boolean importAboEntry(XMLStreamReader parser) {
+        try {
+            DatenAbo datenAbo = new DatenAbo();
+            datenAbo.readFromConfig(parser);
+            daten.getListeAbo().addAbo(datenAbo);
+            return true;
+        } catch (Exception e) {
+            logger.error("Error importing abo entry");
+            return false;
+        }
+    }
+
+    //TODO Extract this code to import action
     public ImmutableTriple<Integer, Integer, Integer> importAboBlacklist(String datei, boolean abo, boolean black,
                                                                          boolean replace) throws IOException, XMLStreamException {
         int foundAbos = 0;
@@ -66,16 +79,9 @@ public class IoXmlLesen {
                 final int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     if (abo && parser.getLocalName().equals(DatenAbo.TAG)) {
-                        // Abo
-                        try {
-                            DatenAbo datenAbo = new DatenAbo();
-                            datenAbo.readFromConfig(parser);
+                        boolean success = importAboEntry(parser);
+                        if (success)
                             foundAbos++;
-                            daten.getListeAbo().addAbo(datenAbo);
-                        }
-                        catch (Exception e) {
-                            logger.error("Error importing abo entry");
-                        }
                     } else if (black && parser.getLocalName().equals(BlacklistRule.TAG)) {
                         // Blacklist
                         ListeBlacklist blacklist = daten.getListeBlacklist();
@@ -181,8 +187,7 @@ public class IoXmlLesen {
             DatenAbo datenAbo = new DatenAbo();
             datenAbo.readFromConfig(parser);
             daten.getListeAbo().addAbo(datenAbo);
-        }
-        catch (XMLStreamException e) {
+        } catch (XMLStreamException e) {
             logger.error("Failed to read abo entry", e);
         }
     }
@@ -193,8 +198,7 @@ public class IoXmlLesen {
             // abo entries will be generated...but we need this for CLI so far
             if (!dl.isFromAbo())
                 daten.getListeDownloads().add(dl);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("readDownloadEntry", e);
         }
     }
