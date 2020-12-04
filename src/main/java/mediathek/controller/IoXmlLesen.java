@@ -172,10 +172,14 @@ public class IoXmlLesen {
         }
     }
 
-    private void readAbos(XMLStreamReader parser) {
-        DatenAbo datenAbo = new DatenAbo();
-        if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
+    private void readAboEntry(XMLStreamReader parser) {
+        try {
+            DatenAbo datenAbo = new DatenAbo();
+            datenAbo.readFromConfig(parser);
             daten.getListeAbo().addAbo(datenAbo);
+        }
+        catch (XMLStreamException e) {
+            logger.error("Failed to read abo entry", e);
         }
     }
 
@@ -235,7 +239,7 @@ public class IoXmlLesen {
                                 }
                             }
                             case ReplaceList.REPLACELIST -> readReplacementList(parser);
-                            case DatenAbo.TAG -> readAbos(parser);
+                            case DatenAbo.TAG -> readAboEntry(parser);
                             case DatenDownload.TAG -> readDownloadEntry(parser);
                             case BlacklistRule.TAG -> readBlacklist(parser);
                             case DatenMediaPath.TAG -> readMediaPath(parser);

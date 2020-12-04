@@ -5,6 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
 
@@ -151,6 +154,25 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writer.writeCharacters("\n");
         } catch (Exception ex) {
             logger.error("writeToConfig", ex);
+        }
+    }
+
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
+        while (parser.hasNext()) {
+            final int event = parser.next();
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                if (parser.getLocalName().equals(TAG)) {
+                    break;
+                }
+            }
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                for (int i = 0; i < arr.length; ++i) {
+                    if (parser.getLocalName().equals(XML_NAMES[i])) {
+                        arr[i] = parser.getElementText();
+                        break;
+                    }
+                }
+            }
         }
     }
 
