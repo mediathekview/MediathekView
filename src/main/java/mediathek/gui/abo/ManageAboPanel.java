@@ -33,7 +33,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-@SuppressWarnings("serial")
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
     private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
