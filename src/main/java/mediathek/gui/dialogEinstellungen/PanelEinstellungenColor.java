@@ -6,7 +6,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CellRendererColor;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVC;
-import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelColor;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -14,13 +13,13 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static mediathek.config.MVColor.*;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungenColor extends JPanel {
     public PanelEinstellungenColor() {
         initComponents();
@@ -50,9 +49,9 @@ public class PanelEinstellungenColor extends JPanel {
         }
     }
 
-    private TModel getModel() {
+    private TableModel getModel() {
         Object[] object;
-        TModelColor tModel = new TModelColor(new Object[][]{}, new String[]{"Beschreibung", "Farbe"});
+        TModelColor tModel = new TModelColor(new Object[][]{});
         tModel.setRowCount(0);
         for (MVC mvc : Daten.mVColor.liste) {
             object = new Object[MVC_MAX];

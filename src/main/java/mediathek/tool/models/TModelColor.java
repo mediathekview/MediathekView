@@ -3,10 +3,9 @@ package mediathek.tool.models;
 import mediathek.config.MVColor;
 import mediathek.tool.MVC;
 
-@SuppressWarnings("serial")
-public class TModelColor extends TModel {
-    public TModelColor(Object[][] data, Object[] columnNames) {
-        super(data, columnNames);
+public class TModelColor extends NonEditableTableModel {
+    public TModelColor(Object[][] data) {
+        super(data, new String[]{"Beschreibung", "Farbe"});
     }
 
     @Override
