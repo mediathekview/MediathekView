@@ -135,6 +135,7 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setupToolBar() {
+        CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             toolBar = new FXAboToolBar();
             toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(true)));
@@ -142,7 +143,6 @@ public class ManageAboPanel extends JPanel {
             toolBar.btnDelete.setOnAction(e -> SwingUtilities.invokeLater(this::aboLoeschen));
             toolBar.btnEdit.setOnAction(e -> SwingUtilities.invokeLater(this::editAbo));
 
-            CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
             toolBar.btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
 
             toolBar.cbSender.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
