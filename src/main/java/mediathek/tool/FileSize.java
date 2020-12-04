@@ -81,7 +81,7 @@ public class FileSize {
             return -1;
         }
 
-        logger.trace("getFileSizeFromUrl for: {}", url);
+        logger.info("Requesting file size for: {}", url);
         final Request request = new Request.Builder().url(url).head().build();
         long respLength = -1;
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
