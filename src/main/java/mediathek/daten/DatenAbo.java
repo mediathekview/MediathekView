@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
 
 public class DatenAbo implements Comparable<DatenAbo> {
@@ -43,6 +44,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public DatenAbo() {
         initialize();
     }
+
     public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
         initialize();
         arr[ABO_NAME] = name;
@@ -125,6 +127,31 @@ public class DatenAbo implements Comparable<DatenAbo> {
         Arrays.fill(arr, "");
         // neue Abos sind immer ein
         aboEin();
+    }
+
+    /**
+     * Write all data to config.
+     *
+     * @param writer the writer used.
+     */
+    public void writeToConfig(@NotNull XMLStreamWriter writer) {
+        try {
+            writer.writeStartElement(DatenAbo.TAG);
+            writer.writeCharacters("\n");
+            for (int i = 0; i < arr.length; ++i) {
+                if (!arr[i].isEmpty()) {
+                    writer.writeCharacters("\t");
+                    writer.writeStartElement(DatenAbo.XML_NAMES[i]);
+                    writer.writeCharacters(arr[i]);
+                    writer.writeEndElement();
+                    writer.writeCharacters("\n");
+                }
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        } catch (Exception ex) {
+            logger.error("writeToConfig", ex);
+        }
     }
 
     @Override

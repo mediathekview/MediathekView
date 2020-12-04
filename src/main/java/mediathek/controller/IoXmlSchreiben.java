@@ -64,11 +64,10 @@ public class IoXmlSchreiben {
 
     private void writeAbos(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Abos");
         writeNewLine(writer);
 
         for (DatenAbo datenAbo : Daten.getInstance().getListeAbo()) {
-            xmlSchreibenDaten(writer, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, true);
+            datenAbo.writeToConfig(writer);
         }
     }
 
