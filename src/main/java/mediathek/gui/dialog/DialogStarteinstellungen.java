@@ -1,7 +1,5 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.ListePset;
@@ -17,13 +15,12 @@ import java.awt.*;
 
 import static mediathek.tool.Functions.getOs;
 
-@SuppressWarnings("serial")
 public class DialogStarteinstellungen extends JDialog {
     private enum State { START, PFAD, PSET, FERTIG}
     private final Daten daten;
     private State status = State.START;
     private final JFrame parentComponent;
-    private boolean anpassen = false;
+    private boolean anpassen;
 
     public DialogStarteinstellungen(JFrame parent, Daten dd) {
         super(parent, true);
@@ -31,7 +28,7 @@ public class DialogStarteinstellungen extends JDialog {
         initComponents();
         daten = dd;
         this.setTitle("Erster Start");
-        IconFontSwing.register(FontAwesome.getIconFont());
+
         jButtonStandard.addActionListener(e -> weiter());
         jButtonAnpassen.addActionListener(e -> {
             anpassen = true;
@@ -66,18 +63,10 @@ public class DialogStarteinstellungen extends JDialog {
     private void weiter() {
         jButtonStandard.setEnabled(true);
         switch (status) {
-            case START:
-                statusStart();
-                break;
-            case PFAD:
-                statusPfade();
-                break;
-            case PSET:
-                statusPset();
-                break;
-            default:
-                beenden();
-                break;
+            case START -> statusStart();
+            case PFAD -> statusPfade();
+            case PSET -> statusPset();
+            default -> beenden();
         }
     }
 
@@ -91,7 +80,7 @@ public class DialogStarteinstellungen extends JDialog {
             // der Benutzer wills verstellen
             status = State.PFAD;
         } else // nur dann automatisch Standardprogramme einrichten, sonst fragen
-         if (addStandarSet(parentComponent, daten)) {
+         if (addStandarSet(parentComponent)) {
                 status = State.FERTIG;
             } else {
                 status = State.PSET;
@@ -104,15 +93,8 @@ public class DialogStarteinstellungen extends JDialog {
         jButtonAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
         switch (getOs()) {
-            case MAC:
-            case WIN32:
-            case WIN64:
-                // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /*ffmpeg*/));
-                break;
-            default:
-                // da brauchs alles
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /*ffmpeg*/));
+            case MAC, WIN32, WIN64 -> jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /*ffmpeg*/));
+            default -> jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /*ffmpeg*/));
         }
         status = State.PSET;
         jButtonStandard.setText("Weiter");
@@ -124,7 +106,7 @@ public class DialogStarteinstellungen extends JDialog {
         jCheckBoxAlleEinstellungen.setVisible(true);
         if (Daten.listePset.isEmpty()) {
             // Standardset hinzufügen
-            addStandarSet(parentComponent, daten);
+            addStandarSet(parentComponent);
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jScrollPane1.setViewportView(new PanelPsetLang(daten, parentComponent, Daten.listePset));
@@ -135,7 +117,7 @@ public class DialogStarteinstellungen extends JDialog {
         jButtonStandard.setText("Weiter");
     }
 
-    private boolean addStandarSet(JFrame parent, Daten daten) {
+    private boolean addStandarSet(JFrame parent) {
         boolean ret = false;
         ListePset pSet = ListePsetVorlagen.getStandarset(parent, true);
         if (pSet != null) {

@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -390,6 +392,9 @@ public class Main {
         }
 
         migrateOldConfigSettings();
+
+        //register FontAwesome font here as it may already be used at first start dialog..
+        IconFontSwing.register(FontAwesome.getIconFont());
 
         loadConfigurationData();
 
