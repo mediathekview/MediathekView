@@ -1,5 +1,7 @@
 package mediathek.gui.dialog;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.ListePset;
@@ -29,6 +31,7 @@ public class DialogStarteinstellungen extends JDialog {
         initComponents();
         daten = dd;
         this.setTitle("Erster Start");
+        IconFontSwing.register(FontAwesome.getIconFont());
         jButtonStandard.addActionListener(e -> weiter());
         jButtonAnpassen.addActionListener(e -> {
             anpassen = true;
