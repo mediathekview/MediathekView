@@ -14,8 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.Main;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
@@ -81,7 +79,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
-@SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
     private static final String ICON_NAME = "MediathekView.png";
@@ -151,8 +148,6 @@ public class MediathekGui extends JFrame {
     public MediathekGui() {
         ui = this;
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-        IconFontSwing.register(FontAwesome.getIconFont());
 
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
