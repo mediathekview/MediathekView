@@ -1,8 +1,12 @@
-<u>**13.6.1**</u>
+<u>**13.7**</u>
 
 - JavaFX auf Version 15 aktualisiert. 
 - Dialog "Filminformation" nach JavaFX portiert
 - Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
+- **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
+- **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
+- **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
+- **BUGFIX (32bit):** Absturz des Programms beim ersten Start auf 32bit System behoben.
 - **BUGFIX:** Einige Filme wurden nicht korrekt als Hörfassung klassifiziert.
 - **BUGFIX:** Fehler bei der Darstellung des freien Speicherplatzes im Download-Dialog behoben.
 - **BUGFIX:** In die Infodatei wird nun die wirklich genutzte Film-URL und die reale Größe geschrieben.
@@ -11,10 +15,8 @@
 - **BUGFIX:** Im Kontextmenü des Tab Film wurde der Eintrag "Film-URL kopieren" in "URL kopieren" umbenannt. Gleichzeitig wird nun geprüft ob es sich um einen regulären Film mit mehreren URLs handelt oder um eine PlayList. Dementsprechend wird die Auswahl nun korrekt angeboten.
 - **BUGFIX:** Selektierte Einträge werden nun - konform zu den Betriebssystemen - nicht mehr fett hervorgehoben.
 - **BUGFIX:** Filme ohne Längenangabe werden nicht mehr durch Minimal-Längen Filter herausgefiltert.
-- **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
-- **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
+- **BUGFIX:** Feheler behoben, dass manchmal keine Daten in der Abo-Tabelle dargestellt werden.  
 - **BUGFIX:** Minimal- und Maximallänge des Filmlängenfilters beeinflussen sich nun nicht mehr.
-- **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
 - **BUGFIX:** Tabelle der Farbeinstellungen ist nun nicht mehr zu klein.
 - **BUGFIX:** Liste erweitern beim manuellem Filmliste laden funktioniert nun auch, wenn das Adressfeld leer ist.
 - **BUGFIX:** Einträge ohne Datum werden nun nicht mehr mit fiktivem Datum 1.1.1970 in die Filmliste sortiert.
