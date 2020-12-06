@@ -1,8 +1,7 @@
 package mediathek.tool;
 
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
-import org.apache.commons.configuration2.BaseConfiguration;
-import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
 import org.apache.commons.configuration2.event.EventListener;
 
@@ -10,42 +9,29 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CachedFilterConfiguration extends FilterConfiguration {
-  private final BaseConfiguration cachedConfiguration;
+  private final XMLConfiguration cachedConfiguration;
 
   public CachedFilterConfiguration() {
     this(ApplicationConfiguration.getConfiguration());
   }
 
-  public CachedFilterConfiguration(Configuration configuration) {
+  public CachedFilterConfiguration(XMLConfiguration configuration) {
     super(configuration);
-    this.cachedConfiguration = copyConfiguration(configuration);
-  }
-
-  private BaseConfiguration copyConfiguration(Configuration sourceConfiguration) {
-    BaseConfiguration copiedConfiguration = new BaseConfiguration();
-    copyConfigurationValues(sourceConfiguration, copiedConfiguration);
-    return copiedConfiguration;
-  }
-
-  private void copyConfigurationValues(
-      Configuration sourceConfiguration, Configuration targetConfiguration) {
-    sourceConfiguration
-        .getKeys()
-        .forEachRemaining(
-            key -> targetConfiguration.setProperty(key, sourceConfiguration.getProperty(key)));
+    this.cachedConfiguration = new XMLConfiguration();
+    this.cachedConfiguration.setConversionHandler(new CustomConversionHandler());
+    this.cachedConfiguration.copy(configuration);
   }
 
   public void save() {
-    copyConfigurationValues(cachedConfiguration, configuration);
+    configuration.copy(cachedConfiguration);
   }
 
   public void restore() {
-    copyConfigurationValues(configuration, cachedConfiguration);
+    cachedConfiguration.copy(configuration);
   }
 
-  public void registerEventListener(EventListener<ConfigurationEvent> eventListener)
-  {
-    cachedConfiguration.addEventListener(ConfigurationEvent.ANY,eventListener);
+  public void registerEventListener(EventListener<ConfigurationEvent> eventListener) {
+    cachedConfiguration.addEventListener(ConfigurationEvent.ANY, eventListener);
   }
 
   public boolean isShowHdOnly() {

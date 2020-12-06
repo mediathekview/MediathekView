@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,13 +22,13 @@ public class FilterConfiguration {
       new CopyOnWriteArraySet<>();
   protected static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks =
       new CopyOnWriteArraySet<>();
-  protected final Configuration configuration;
+  protected final XMLConfiguration configuration;
 
   public FilterConfiguration() {
     this(ApplicationConfiguration.getConfiguration());
   }
 
-  public FilterConfiguration(Configuration configuration) {
+  public FilterConfiguration(XMLConfiguration configuration) {
     super();
     this.configuration = configuration;
     migrateOldFilterConfigurations();
