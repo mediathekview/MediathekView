@@ -44,9 +44,13 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   @FXML private Label themaLabel;
   @FXML private ComboBox<FilterDTO> filterSelect;
   @FXML private Button btnAddNewFilter;
+  @FXML private Button btnSaveFilterSettings;
+  @FXML private Button btnRestoreFilterSettings;
   private boolean deleteCurrentFilterButtonDisabled;
+  private boolean saveButtonDisabled = false;
+    private boolean restoreButtonDisabled;
 
-  public CommonViewSettingsPane() {
+    public CommonViewSettingsPane() {
     super();
 
     try {
@@ -59,6 +63,32 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
       logger.error("Failed to load FXML!", e);
     }
   }
+
+  public void setSaveButtonVisibility(boolean visible) {
+        btnSaveFilterSettings.setVisible(visible);
+  }
+
+    public void setRestoreButtonVisibility(boolean visible) {
+        btnRestoreFilterSettings.setVisible(visible);
+    }
+
+  public void setSaveButtonDisabled(boolean saveButtonDisabled) {
+      btnSaveFilterSettings.setDisable(saveButtonDisabled);
+    this.saveButtonDisabled = saveButtonDisabled;
+  }
+
+  public void registerSaveButtonListener(EventHandler<ActionEvent> eventHandler) {
+      btnSaveFilterSettings.setOnAction(eventHandler);
+  }
+
+    public void setRestoreButtonDisabled(boolean restoreButtonDisabled) {
+        btnRestoreFilterSettings.setDisable(restoreButtonDisabled);
+        this.restoreButtonDisabled = restoreButtonDisabled;
+    }
+
+    public void registerRestoreButtonListener(EventHandler<ActionEvent> eventHandler) {
+        btnRestoreFilterSettings.setOnAction(eventHandler);
+    }
 
   /**
    * Prevent user from changing filter settings while the swing table model gets updated.
@@ -88,6 +118,8 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
           filterSelect.setDisable(disable);
           btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
           btnAddNewFilter.setDisable(disable);
+          btnSaveFilterSettings.setDisable(disable || saveButtonDisabled);
+          btnRestoreFilterSettings.setDisable(disable || restoreButtonDisabled);
         });
   }
 
@@ -119,8 +151,8 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   }
 
   public void selectFilter(FilterDTO filter) {
-      SingleSelectionModel<FilterDTO> selectionModel = filterSelect.getSelectionModel();
-      if (!filter.equals(selectionModel.getSelectedItem())) {
+    SingleSelectionModel<FilterDTO> selectionModel = filterSelect.getSelectionModel();
+    if (!filter.equals(selectionModel.getSelectedItem())) {
       selectionModel.select(filter);
     }
   }

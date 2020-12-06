@@ -4,8 +4,8 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {par l:::p {comp jPanel4::l:::x, comp jPanel2::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp cbAutomaticUpdateChecks::l:p::p}, space :0:0:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space :::p, comp cbAutomaticUpdateChecks:::p::p, space ::16:x}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {par l:::p {comp jPanel4::l:::x, comp jPanel2::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp cbAutomaticUpdateChecks::l:p::p, comp livePersistFilters::l:p::p}, space :0:0:x}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space :::p, comp cbAutomaticUpdateChecks:::p::p, comp livePersistFilters:::p::p, space ::16:x}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
@@ -166,6 +166,11 @@ new FormModel {
 				name: "cbAutomaticUpdateChecks"
 				"text": "Programmupdates täglich suchen"
 			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+                name: "livePersistFilters"
+                "text": "Filter sofort speichern"
+                "toolTipText": "<html>Wenn aktiviert werden Änderungen an den Filtern sofort gespeichert.</html>"
+            } )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 645, 390 )
 			"location": new java.awt.Point( 0, 0 )

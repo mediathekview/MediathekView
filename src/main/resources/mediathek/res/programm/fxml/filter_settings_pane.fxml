@@ -9,7 +9,7 @@
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import mediathek.javafx.filterpanel.ZeitraumSpinner?>
 <?import mediathek.javafx.VerticalSeparator?>
-<?import org.controlsfx.glyphfont.Glyph?>
+<?import org.controlsfx.glyphfont.*?>
 <fx:root type="VBox" spacing="4.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -39,6 +39,22 @@
             </tooltip>
             <graphic>
                 <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Button mnemonicParsing="false" fx:id="btnSaveFilterSettings" disable="true">
+            <tooltip>
+                <Tooltip text="Alle Filter Änderungen speichern"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
+            </graphic>
+        </Button>
+        <Button mnemonicParsing="false" fx:id="btnRestoreFilterSettings" disable="true">
+            <tooltip>
+                <Tooltip text="Alle Filter Änderungen zurücksetzen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="UNDO" fontSize="16"/>
             </graphic>
         </Button>
     </HBox>

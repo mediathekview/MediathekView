@@ -6,7 +6,9 @@ import mediathek.daten.GeoblockingField;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
+import org.apache.commons.configuration2.event.Event;
 import org.apache.commons.configuration2.event.EventListener;
+import org.apache.commons.configuration2.event.EventType;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.sync.LockMode;
@@ -70,6 +72,9 @@ public class ApplicationConfiguration {
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String TAB_FILM_FONT_SIZE = "tab.film.font_size";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+
+  public static final String CONFIG_LIVE_PERSIST_FILTERS = "filter.persistence.live";
+
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
@@ -120,6 +125,11 @@ public class ApplicationConfiguration {
         config.setRootElementName("settings");
         config.setThrowExceptionOnMissing(true);
     }
+
+  public void addEventListener(
+          EventType<ConfigurationEvent> eventType, EventListener<? super Event> eventListener) {
+    config.addEventListener(eventType, eventListener);
+  }
 
     private void createFileHandler() {
         handler = new FileHandler(config);

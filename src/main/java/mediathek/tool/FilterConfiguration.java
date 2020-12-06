@@ -11,21 +11,20 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static mediathek.tool.ApplicationConfiguration.getConfiguration;
 
 public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
-  private static final String KEY_UUID_SPLITERATOR = "_";
+  protected static final String KEY_UUID_SPLITERATOR = "_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
-  private static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks =
+  protected static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks =
       new CopyOnWriteArraySet<>();
-  private static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks =
+  protected static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks =
       new CopyOnWriteArraySet<>();
-  private final Configuration configuration;
+  protected final Configuration configuration;
 
   public FilterConfiguration() {
-    this(getConfiguration());
+    this(ApplicationConfiguration.getConfiguration());
   }
 
   public FilterConfiguration(Configuration configuration) {
@@ -220,7 +219,6 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration setSender(List<String> sender) {
-    LOG.info("!##++ Setting the sender filter to {}",Arrays.toString(sender.toArray()));
     configuration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SENDER.getKey()),
         sender);
@@ -234,7 +232,6 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration setThema(String thema) {
-    LOG.info("!##++ Setting the thema filter to {}",thema);
     configuration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
         thema);
