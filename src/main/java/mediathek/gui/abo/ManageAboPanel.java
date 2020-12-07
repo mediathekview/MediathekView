@@ -7,7 +7,6 @@ import javafx.scene.layout.HBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -220,13 +219,13 @@ public class ManageAboPanel extends JPanel {
         setCellRenderer();
 
         tabelle.setModel(new TModelAbo(new Object[][]{}));
-        tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
+        tabelle.setLineBreak(false);
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenAbo.spaltenAnzeigen,
                 new int[]{DatenAbo.ABO_EINGESCHALTET},
                 new int[]{},
                 true,
-                MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
+                null));
 
         setupKeyMap();
     }
