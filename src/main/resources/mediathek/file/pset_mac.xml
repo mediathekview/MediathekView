@@ -17,7 +17,7 @@
     <Programm>
         <Programmname>ffmpeg</Programmname>
         <Zieldateiname>%t-%T-%Z.mp4</Zieldateiname>
-        <Programmpfad>/Applications/MediathekView/MediathekView.app/Contents/Resources/ffmpeg</Programmpfad>
+        <Programmpfad>bin/ffmpeg</Programmpfad>
         <Programmschalter>-i %f -c copy -bsf:a aac_adtstoasc **</Programmschalter>
         <Praefix>http</Praefix>
         <Suffix>m3u8</Suffix>
