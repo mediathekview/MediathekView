@@ -1,5 +1,6 @@
 <u>**13.7**</u>
 
+- **(macOS): Minimum Version des Betriebssystem für das signierte App-Bundle: 10.11 El Capitan**
 - JavaFX auf Version 15 aktualisiert.
 - Java JVM Version 15 ist nun Voraussetzung fü das Programm.  
 - Dialog "Filminformation" nach JavaFX portiert
