@@ -2,9 +2,8 @@ package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
-public record Version(int major, int minor, int patch) implements Comparable<Version>{
+public record Version(int major, int minor, int patch) {
     private static final Version INVALID_VERSION = new Version(0,0,0);
     private static final Logger logger = LogManager.getLogger();
 
@@ -34,6 +33,15 @@ public record Version(int major, int minor, int patch) implements Comparable<Ver
     }
 
     /**
+     * Check if other version is newer than we are.
+     * @param other the other version to check.
+     * @return true if other is newer, otherwise false.
+     */
+    public boolean isOlderThan(Version other) {
+        return other.toNumber() > this.toNumber();
+    }
+
+    /**
      * Gibt die Version als gewichtete Zahl zurück.
      *
      * @return gewichtete Zahl als Integer
@@ -50,10 +58,5 @@ public record Version(int major, int minor, int patch) implements Comparable<Ver
     @Override
     public String toString() {
         return String.format("%d.%d.%d", major, minor, patch);
-    }
-
-    @Override
-    public int compareTo(@NotNull Version other) {
-        return Integer.compare(other.toNumber(), this.toNumber());
     }
 }
