@@ -29,7 +29,7 @@ public record Version(int major, int minor, int patch) {
      *
      * @return gewichtete Zahl als Integer
      */
-    public int toNumber() {
+    private int toNumber() {
         return major * 100 + minor * 10 + patch;
     }
 

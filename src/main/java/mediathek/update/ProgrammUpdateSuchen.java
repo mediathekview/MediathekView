@@ -41,7 +41,7 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.version().toNumber() == 0) {
+                if (progInfo.version().equals(new Version(0, 0, 0))) {
                     Exception ex = new RuntimeException("progInfo.getVersion() == 0");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("getVersion().toNumber() == 0");
