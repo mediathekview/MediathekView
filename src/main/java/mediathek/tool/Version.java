@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 public class Version {
 
     private static final Logger logger = LogManager.getLogger();
-    private int major;
-    private int minor;
-    private int patch;
+    private final int major;
+    private final int minor;
+    private final int patch;
 
     public Version(int major, int minor, int patch) {
         this.major = major;
@@ -16,26 +16,22 @@ public class Version {
         this.patch = patch;
     }
 
-    public Version(String versionsstring) {
-        String[] versions = versionsstring.replaceAll("-SNAPSHOT", "").split("\\.");
+    public static Version fromString(String versionsstring) {
+        Version result;
+
+        final String[] versions = versionsstring.replaceAll("-SNAPSHOT", "").split("\\.");
         if (versions.length == 3) {
             try {
-                major = Integer.parseInt(versions[0]);
-                minor = Integer.parseInt(versions[1]);
-                patch = Integer.parseInt(versions[2]);
+                result = new Version(Integer.parseInt(versions[0]), Integer.parseInt(versions[1]), Integer.parseInt(versions[2]));
             } catch (NumberFormatException ex) {
                 logger.error("Fehler beim Parsen der Version: {}", versionsstring, ex);
-                major = 0;
-                minor = 0;
-                patch = 0;
+                result = new Version(0,0,0);
             }
         }
-    }
+        else
+            result = new Version(0,0,0);
 
-    public Version() {
-        major = 0;
-        minor = 0;
-        patch = 0;
+        return result;
     }
 
     /**
