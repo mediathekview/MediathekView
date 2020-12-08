@@ -88,7 +88,7 @@ public class ProgrammUpdateSuchen {
                     text.append('\n');
                 }
             }
-            if (text.length() > 0) {
+            if (!text.isEmpty()) {
                 //TODO add new dialog with web view here!
                 JDialog dlg = new DialogHinweisUpdate(null, text.toString());
                 dlg.setVisible(true);
@@ -175,7 +175,7 @@ public class ProgrammUpdateSuchen {
                         }
                     }
 
-                    return Optional.of(new ServerProgramInformation(new Version(version)));
+                    return Optional.of(new ServerProgramInformation(Version.fromString(version)));
                 } finally {
                     if (parser != null) {
                         try {
