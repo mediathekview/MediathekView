@@ -507,8 +507,9 @@ public class Main {
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             Main.splashScreen.ifPresent(SplashScreen::close);
             //TODO replace with JavaFX dialog!!
-            var dialog = new DialogStarteinstellungen(null, daten);
+            var dialog = new DialogStarteinstellungen(null);
             dialog.setVisible(true);
+            dialog.toFront();
             MVConfig.loadSystemParameter();
         }
     }
