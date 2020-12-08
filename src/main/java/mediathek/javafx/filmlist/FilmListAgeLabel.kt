@@ -1,52 +1,62 @@
-package mediathek.javafx.filmlist;
+package mediathek.javafx.filmlist
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-import mediathek.config.Daten;
-import mediathek.javafx.tool.ComputedLabel;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
+import javafx.animation.Animation
+import javafx.animation.KeyFrame
+import javafx.animation.Timeline
+import javafx.scene.control.Tooltip
+import javafx.util.Duration
+import mediathek.config.Daten
+import mediathek.javafx.tool.ComputedLabel
 
 /**
  * Label which will compute the age of the filmlist when updated.
  * Update cycle one second.
  */
-public class FilmListAgeLabel extends ComputedLabel {
-    private Timeline timeline;
+class FilmListAgeLabel internal constructor() : ComputedLabel() {
+    private val timeline = Timeline(KeyFrame(Duration.millis(1_000.0), { setAgeToLabel() }))
+    private var oldAge = FilmListAge(0, 0)
 
-    FilmListAgeLabel() {
-        setupTimer();
+    fun enableTimer() {
+        timeline.play()
     }
 
-    public void enableTimer() {
-        timeline.play();
+    fun disableTimer() {
+        timeline.pause()
     }
 
-    public void disableTimer() {
-        timeline.pause();
+    private fun setupTimer() {
+        timeline.cycleCount = Animation.INDEFINITE
+        timeline.play()
     }
 
-    private void setupTimer() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(1000d), ae -> setAgeToLabel()));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
-    private void setAgeToLabel() {
-      setComputedText(computeAge(Daten.getInstance().getListeFilme().metaData().getAgeInSeconds()));
-    }
-
-    private String computeAge(long seconds) {
-        String result;
-        try {
-            var duration = java.time.Duration.ofSeconds(seconds);
-            result = String.format("Alter: %s", DurationFormatUtils.formatDuration(duration.toMillis(), "HH:mm:ss"));
+    private fun setAgeToLabel() {
+        val listAge = calculateAge()
+        if (listAge != oldAge) {
+            setComputedText(computeAgeString(listAge))
+            oldAge = listAge
         }
-        catch (IllegalArgumentException ex) {
-            result = "Ungültiges Alter in der Filmliste";
+    }
+
+    private data class FilmListAge(val hours: Long, val minutes: Long)
+
+    private fun calculateAge(): FilmListAge {
+        val duration = java.time.Duration.ofSeconds(Daten.getInstance().listeFilme.metaData().ageInSeconds)
+        var minutes = duration.toMinutes()
+        val hours = minutes / 60
+        minutes -= hours * 60
+        return FilmListAge(hours, minutes)
+    }
+
+    private fun computeAgeString(age: FilmListAge): String {
+        return try {
+            String.format("Alter: %dh %dm", age.hours, age.minutes)
+        } catch (ex: IllegalArgumentException) {
+            "Ungültiges Alter"
         }
-      return result;
+    }
+
+    init {
+        setupTimer()
+        tooltip = Tooltip("Alter der Filmliste")
     }
 }
