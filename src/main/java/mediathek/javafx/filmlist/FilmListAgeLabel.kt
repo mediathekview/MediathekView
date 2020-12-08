@@ -16,19 +16,6 @@ class FilmListAgeLabel internal constructor() : ComputedLabel() {
     private val timeline = Timeline(KeyFrame(Duration.millis(1_000.0), { setAgeToLabel() }))
     private var oldAge = FilmListAge(0, 0)
 
-    fun enableTimer() {
-        timeline.play()
-    }
-
-    fun disableTimer() {
-        timeline.pause()
-    }
-
-    private fun setupTimer() {
-        timeline.cycleCount = Animation.INDEFINITE
-        timeline.play()
-    }
-
     private fun setAgeToLabel() {
         val listAge = calculateAge()
         if (listAge != oldAge) {
@@ -56,7 +43,8 @@ class FilmListAgeLabel internal constructor() : ComputedLabel() {
     }
 
     init {
-        setupTimer()
+        timeline.cycleCount = Animation.INDEFINITE
+        timeline.play()
         tooltip = Tooltip("Alter der Filmliste")
     }
 }
