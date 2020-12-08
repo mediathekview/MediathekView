@@ -17,16 +17,14 @@ import static mediathek.tool.Functions.getOs;
 
 public class DialogStarteinstellungen extends JDialog {
     private enum State { START, PFAD, PSET, FERTIG}
-    private final Daten daten;
     private State status = State.START;
     private final JFrame parentComponent;
     private boolean anpassen;
 
-    public DialogStarteinstellungen(JFrame parent, Daten dd) {
+    public DialogStarteinstellungen(JFrame parent) {
         super(parent, true);
         parentComponent = parent;
         initComponents();
-        daten = dd;
         this.setTitle("Erster Start");
 
         jButtonStandard.addActionListener(e -> weiter());
@@ -108,6 +106,8 @@ public class DialogStarteinstellungen extends JDialog {
             // Standardset hinzufügen
             addStandarSet(parentComponent);
         }
+
+        var daten = Daten.getInstance();
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jScrollPane1.setViewportView(new PanelPsetLang(daten, parentComponent, Daten.listePset));
         } else {
