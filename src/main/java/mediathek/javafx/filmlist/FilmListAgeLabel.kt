@@ -36,7 +36,10 @@ class FilmListAgeLabel internal constructor() : ComputedLabel() {
 
     private fun computeAgeString(age: FilmListAge): String {
         return try {
-            String.format("Alter: %dh %dm", age.hours, age.minutes)
+            if (age.hours == 0L)
+                String.format("Alter: %dm", age.minutes);
+            else
+                String.format("Alter: %dh %dm", age.hours, age.minutes)
         } catch (ex: IllegalArgumentException) {
             "Ungültiges Alter"
         }
