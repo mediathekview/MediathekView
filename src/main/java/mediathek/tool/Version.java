@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public record Version(int major, int minor, int patch) implements Comparable<Version>{
-    public static final Version INVALID_VERSION = new Version(0,0,0);
+    private static final Version INVALID_VERSION = new Version(0,0,0);
     private static final Logger logger = LogManager.getLogger();
 
     public static Version fromString(String versionsstring) {
@@ -23,6 +23,14 @@ public record Version(int major, int minor, int patch) implements Comparable<Ver
             result = INVALID_VERSION;
 
         return result;
+    }
+
+    /**
+     * Check if this version is invalid.
+     * @return true if invalid, false otherwise.
+     */
+    public boolean isInvalid() {
+        return equals(INVALID_VERSION);
     }
 
     /**
