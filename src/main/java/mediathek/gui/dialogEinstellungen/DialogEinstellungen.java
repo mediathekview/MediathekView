@@ -16,7 +16,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-@SuppressWarnings("serial")
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
     public boolean ok;
@@ -33,7 +32,6 @@ public class DialogEinstellungen extends JFrame {
     private PanelPsetImport panelPsetVorlagen;
     private JPanel panelNotifications;
     private final JPanel panelLeer = new JPanel();
-    private JPanel panelPowerManagement;
 
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
@@ -50,7 +48,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_dateiname = "Datei- und Pfadnamen";
     private static final String NAME_programmset = "Set bearbeiten";
     private static final String NAME_programmsetImportieren = "Set importieren";
-    private static final String NAME_power_management = "Power Management";
 
     // ######## Einstellungen ############
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
@@ -68,8 +65,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
-
-    private final DefaultMutableTreeNode treeNodePowerManagement = new DefaultMutableTreeNode(NAME_power_management);
 
     public DialogEinstellungen() {
         initComponents();
@@ -134,8 +129,6 @@ public class DialogEinstellungen extends JFrame {
         panelPsetVorlagen = new PanelPsetImport(daten, this);
 
         panelNotifications = new PanelNotifications();
-
-        panelPowerManagement = new PanelPowerManagement();
     }
 
     private void initTree() {
@@ -148,7 +141,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
         treeNodeEinstellungen.add(treeNodeMediaDB);
-        treeNodeEinstellungen.add(treeNodePowerManagement);
         treeNodeStart.add(treeNodeEinstellungen);
 
         // ######## Filme ###############
@@ -207,10 +199,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_allgemeineEinstellungenColor -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelEinstellungenColor);
-                    }
-                    case NAME_power_management -> {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPowerManagement);
                     }
                     case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
                     case NAME_filmListeLaden -> {

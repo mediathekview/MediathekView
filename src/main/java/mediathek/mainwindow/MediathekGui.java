@@ -470,21 +470,6 @@ public class MediathekGui extends JFrame {
             statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
             installSelectedItemsLabel();
         });
-
-        final boolean enablePowerManagement = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.UI_FILMLIST_LABEL_ENABLE_POWERMANAGEMENT, false);
-        if (enablePowerManagement) {
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowActivated(WindowEvent e) {
-                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().enableTimer());
-                }
-
-                @Override
-                public void windowDeactivated(WindowEvent e) {
-                    Platform.runLater(() -> statusBarController.getFilmlistAgeLabel().disableTimer());
-                }
-            });
-        }
     }
 
     private void installSelectedItemsLabel() {
@@ -1063,7 +1048,8 @@ public class MediathekGui extends JFrame {
         var timerPool = daten.getTimerPool();
         timerPool.shutdown();
         try {
-            timerPool.awaitTermination(1, TimeUnit.SECONDS);
+            if (!timerPool.awaitTermination(1, TimeUnit.SECONDS))
+                logger.warn("Time out occured before pool final termination");
         } catch (InterruptedException e) {
             logger.warn("timerPool shutdown exception", e);
         }
