@@ -3,18 +3,9 @@ package mediathek.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Version {
+public record Version(int major, int minor, int patch) {
 
     private static final Logger logger = LogManager.getLogger();
-    private final int major;
-    private final int minor;
-    private final int patch;
-
-    public Version(int major, int minor, int patch) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
-    }
 
     public static Version fromString(String versionsstring) {
         Version result;
@@ -25,11 +16,10 @@ public class Version {
                 result = new Version(Integer.parseInt(versions[0]), Integer.parseInt(versions[1]), Integer.parseInt(versions[2]));
             } catch (NumberFormatException ex) {
                 logger.error("Fehler beim Parsen der Version: {}", versionsstring, ex);
-                result = new Version(0,0,0);
+                result = new Version(0, 0, 0);
             }
-        }
-        else
-            result = new Version(0,0,0);
+        } else
+            result = new Version(0, 0, 0);
 
         return result;
     }
