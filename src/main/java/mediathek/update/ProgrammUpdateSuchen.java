@@ -41,12 +41,12 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.version().equals(new Version(0, 0, 0))) {
+                if (progInfo.version().equals(Version.INVALID_VERSION)) {
                     Exception ex = new RuntimeException("progInfo.getVersion() == 0");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("getVersion().toNumber() == 0");
                 } else {
-                    if (checkForNewerVersion(progInfo.version())) {
+                    if (remoteVersionIsNewer(progInfo.version())) {
                         UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo.version());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
@@ -118,13 +118,13 @@ public class ProgrammUpdateSuchen {
     }
 
     /**
-     * Check if a newer version exists.
+     * Check if a newer remote version exists.
      *
      * @param info the remote version number.
      * @return true if there is a newer version
      */
-    private boolean checkForNewerVersion(Version info) {
-        return (Konstanten.MVVERSION.compare(info) == 1);
+    private boolean remoteVersionIsNewer(Version info) {
+        return Konstanten.MVVERSION.compareTo(info) > 0;
     }
 
     /**

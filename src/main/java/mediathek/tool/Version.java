@@ -2,9 +2,10 @@ package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
-public record Version(int major, int minor, int patch) {
-
+public record Version(int major, int minor, int patch) implements Comparable<Version>{
+    public static final Version INVALID_VERSION = new Version(0,0,0);
     private static final Logger logger = LogManager.getLogger();
 
     public static Version fromString(String versionsstring) {
@@ -16,10 +17,10 @@ public record Version(int major, int minor, int patch) {
                 result = new Version(Integer.parseInt(versions[0]), Integer.parseInt(versions[1]), Integer.parseInt(versions[2]));
             } catch (NumberFormatException ex) {
                 logger.error("Fehler beim Parsen der Version: {}", versionsstring, ex);
-                result = new Version(0, 0, 0);
+                result = INVALID_VERSION;
             }
         } else
-            result = new Version(0, 0, 0);
+            result = INVALID_VERSION;
 
         return result;
     }
@@ -43,14 +44,8 @@ public record Version(int major, int minor, int patch) {
         return String.format("%d.%d.%d", major, minor, patch);
     }
 
-    /**
-     * Nimmt ein Objekt vom Typ Version an und vergleicht ihn mit sich selbst
-     *
-     * @param versionzwei Versionsobjekt welches zum vergleich rangezogen werden soll
-     * @return 1 Version a ist größer, 0 Versionen sind gleich oder -1 Version a ist kleiner
-     */
-    public int compare(Version versionzwei) {
-        return Integer.compare(versionzwei.toNumber(), this.toNumber());
+    @Override
+    public int compareTo(@NotNull Version other) {
+        return Integer.compare(other.toNumber(), this.toNumber());
     }
-
 }
