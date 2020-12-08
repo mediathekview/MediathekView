@@ -1048,7 +1048,7 @@ public class MediathekGui extends JFrame {
         var timerPool = daten.getTimerPool();
         timerPool.shutdown();
         try {
-            if (!timerPool.awaitTermination(1, TimeUnit.SECONDS))
+            if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))
                 logger.warn("Time out occured before pool final termination");
         } catch (InterruptedException e) {
             logger.warn("timerPool shutdown exception", e);
