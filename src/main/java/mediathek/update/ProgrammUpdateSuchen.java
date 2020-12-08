@@ -35,19 +35,19 @@ public class ProgrammUpdateSuchen {
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        opt.ifPresentOrElse(progInfo -> {
+        opt.ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.version().isInvalid()) {
+                if (remoteProgramInfo.version().isInvalid()) {
                     Exception ex = new RuntimeException("progInfo.version() is invalid");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("progInfo.version() is invalid");
                 } else {
-                    if (remoteVersionIsNewer(progInfo.version())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo.version());
+                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.version())) {
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.version());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {
@@ -115,16 +115,6 @@ public class ProgrammUpdateSuchen {
                 displayNoNewInfoMessage();
         } else
             displayInfoMessages(showAll);
-    }
-
-    /**
-     * Check if a newer remote version exists.
-     *
-     * @param info the remote version number.
-     * @return true if there is a newer version
-     */
-    private boolean remoteVersionIsNewer(Version info) {
-        return Konstanten.MVVERSION.compareTo(info) > 0;
     }
 
     /**
