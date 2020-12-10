@@ -23,6 +23,7 @@ import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
+import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -411,7 +412,22 @@ public class Main {
 
         copyUserAgentDatabase();
 
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            changeGlobalFontSize();
+
         startGuiMode();
+    }
+
+    private static void changeGlobalFontSize() {
+        try {
+            var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
+            logger.info("Custom font size found, changing global UI settings");
+            SwingUIFontChanger fc = new SwingUIFontChanger();
+            fc.changeFontSize(size);
+        }
+        catch (Exception e) {
+            logger.info("No custom font size found.");
+        }
     }
 
     /**
