@@ -96,6 +96,7 @@ public class ChangeGlobalFontSetting extends AbstractAction {
 
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
         Button btnReset = new Button("", fontAwesome.create(FontAwesome.Glyph.TRASH_ALT));
+        btnReset.setTooltip(new Tooltip("Schriftgröße zurücksetzen"));
 
         btnReset.setOnAction(evt -> resetAction());
         root.getChildren().addAll(label, spinner, btnReset);
