@@ -17,7 +17,7 @@
 - **BUGFIX:** Im Kontextmenü des Tab Film wurde der Eintrag "Film-URL kopieren" in "URL kopieren" umbenannt. Gleichzeitig wird nun geprüft ob es sich um einen regulären Film mit mehreren URLs handelt oder um eine PlayList. Dementsprechend wird die Auswahl nun korrekt angeboten.
 - **BUGFIX:** Selektierte Einträge werden nun - konform zu den Betriebssystemen - nicht mehr fett hervorgehoben.
 - **BUGFIX:** Filme ohne Längenangabe werden nicht mehr durch Minimal-Längen Filter herausgefiltert.
-- **BUGFIX:** Feheler behoben, dass manchmal keine Daten in der Abo-Tabelle dargestellt werden.  
+- **BUGFIX:** Fehler behoben, dass manchmal keine Daten in der Abo-Tabelle dargestellt werden.  
 - **BUGFIX:** Minimal- und Maximallänge des Filmlängenfilters beeinflussen sich nun nicht mehr.
 - **BUGFIX:** Tabelle der Farbeinstellungen ist nun nicht mehr zu klein.
 - **BUGFIX:** Liste erweitern beim manuellem Filmliste laden funktioniert nun auch, wenn das Adressfeld leer ist.
@@ -30,9 +30,11 @@
 - **FEATURE:** Die Speicherzuweisung für das Programm kann nun über den Menüeintrag *"Hilfe/Speicherzuweisung ändern..."* angepasst werden.
 - **FEATURE:** Sender können nun direkt beim Laden der Filmliste ausgeschlossen werden. **Bitte entfernt ggf. Eure entsprechenden Einträge in der Blacklist mit der ihr bisher Sender ausgeblendet habt!** Dies erhöht dann auch zusätzlich etwas die Geschwindigkeit des Programms.
 - **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
+- **FEATURE (Windows/Linux):** Die Schriftgröße der gesamten Applikation (Anteile ohne JavaFX) lässt sich nun anpassen. Ggf. ist ein Neustart erforderlich. Es kann zu Darstellungsproblemen in Dialogen kommen wenn die Schrift zu groß ist. Dies verbessert die Lesbarkeit mit HighDPI-Bildschirmen.
 - **FEATURE:** Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
 - **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.
 - **FEATURE:** F12-Taste zeigt nun den Filterdialog an.
 - **FEATURE:** Einstellung der CheckBox *"Alte Filmliste nicht löschen, nur erweitern"* wird nun gespeichert und wiederhergestellt.
 - **FEATURE:** Film können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muß hierzu im Hintergrund laufen.
+- **FEATURE:** "Filmliste laden"-Dialog kann in Position und Größe angepasst werden. Die Änderungen werden beim erneuten Öffnen des Dialogs wieder angewendet.  
 - **FEATURE (macOS):** Es wird nun statt *MediathekView Shutdown Helper* ein neues integriertes Programm genutzt um nach Downloads den Rechner herunter zu fahren. Dies kann nun auch über das **Terminal konfiguriert** werden. Der Benutzer kann nachfolgend angeben, ob der Rechner immer heruntergefahren werden oder nur schlafen soll: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "shutdown"` für Ausschalten des Rechner, oder zum Schlafen: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "sleep"`. Die Eingaben müssen jeweils nur einmal im Terminal durchgeführt werden und haben dauerhaft Bestand. Sie werden jeweils angewendet wenn man auf Downloads beim Beenden wartet und "Rechner herunterfahren" aktiviert hat. Standardverhalten ist das Ausschalten des Rechners.

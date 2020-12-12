@@ -37,8 +37,8 @@ public class MVHttpClient {
             } else {
                 //environment variables were not set, use application settings...
                 try {
-                    proxyHost = config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME);
-                    proxyPort = config.getString(ApplicationConfiguration.HTTP_PROXY_PORT);
+                    proxyHost = config.getString(ApplicationConfiguration.HttpProxy.HOST);
+                    proxyPort = config.getString(ApplicationConfiguration.HttpProxy.PORT);
                     if (!proxyHost.isEmpty() && !proxyPort.isEmpty()) {
                         final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort)));
                         setupProxyClients(proxy);
@@ -117,8 +117,8 @@ public class MVHttpClient {
         } else {
             //try to create proxy auth from settings
             try {
-                prxUser = config.getString(ApplicationConfiguration.HTTP_PROXY_USERNAME);
-                prxPassword = config.getString(ApplicationConfiguration.HTTP_PROXY_PASSWORD);
+                prxUser = config.getString(ApplicationConfiguration.HttpProxy.USER);
+                prxPassword = config.getString(ApplicationConfiguration.HttpProxy.PASSWORD);
                 if (!prxUser.isEmpty() && !prxPassword.isEmpty()) {
                     proxyAuthenticator = createAuthenticator(prxUser, prxPassword);
                     logger.info("Proxy Authentication from application settings: ({})", prxUser);

@@ -286,10 +286,10 @@ public class FilmListReader implements AutoCloseable {
         skipFieldDescriptions(jp);
 
         final var config = ApplicationConfiguration.getConfiguration();
-        final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER, true);
-        final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION, true);
-        final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE, true);
-        final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true);
+        final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true);
+        final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true);
+        final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true);
+        final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true);
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {

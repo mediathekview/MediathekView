@@ -116,7 +116,7 @@ public class SettingsMigrator {
             catch (NumberFormatException ex) {
                 anzahl = 0;
             }
-            config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, anzahl);
+            config.setProperty(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, anzahl);
             logger.debug("migrateFilmListAnzTage");
         }
     }

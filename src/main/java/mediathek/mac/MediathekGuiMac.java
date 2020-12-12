@@ -37,6 +37,11 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
+    protected void installAdditionalHelpEntries() {
+        //unused on macOS
+    }
+
+    @Override
     public void initializeSystemTray() {
         //we don´t use it on macOS
     }

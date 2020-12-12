@@ -21,7 +21,7 @@ public class FilmListReaderTask extends Task<Void> {
         updateProgress(-1, 4);
         updateMessage("Lese lokale Filmliste");
         try (FilmListReader reader = new FilmListReader()) {
-            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS,0);
             reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), num_days);
         }
 

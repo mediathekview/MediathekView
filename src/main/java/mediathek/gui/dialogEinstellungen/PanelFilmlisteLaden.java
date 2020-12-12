@@ -39,20 +39,20 @@ public class PanelFilmlisteLaden extends JPanel {
         init();
 
         final var config = ApplicationConfiguration.getConfiguration();
-        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE,true));
-        cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE,cbSign.isSelected()));
+        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,true));
+        cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
 
-        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION,true));
-        cbAudio.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION,cbAudio.isSelected()));
+        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,true));
+        cbAudio.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,cbAudio.isSelected()));
 
-        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,true));
-        cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_TRAILER,cbTrailer.isSelected()));
+        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER,true));
+        cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER,cbTrailer.isSelected()));
 
-        cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true));
-        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
+        cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true));
+        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
 
-        jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FILMLIST_EXTEND_OLD_LIST, false));
-        jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILMLIST_EXTEND_OLD_LIST, jCheckBoxUpdate.isSelected()));
+        jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false));
+        jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
 
         //in settings we cannot load a list, therefore these controls make no sense
         if (inSettingsDialog) {
