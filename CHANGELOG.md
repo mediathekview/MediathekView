@@ -1,10 +1,21 @@
 <u>**13.7**</u>
 
-- **(macOS): Minimum Version des Betriebssystem für das signierte App-Bundle: 10.11 El Capitan**
 - JavaFX auf Version 15 aktualisiert.
-- Java JVM Version 15 ist nun Voraussetzung fü das Programm.  
+- Java JVM Version 15 ist nun Voraussetzung fü das Programm.
 - Dialog "Filminformation" nach JavaFX portiert
 - Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
+- **(macOS): Minimum Version des Betriebssystems für das signierte App-Bundle: 10.11 El Capitan**
+- **FEATURE (Windows/Linux):** Die Schriftgröße der gesamten Applikation (Anteile ohne JavaFX) lässt sich nun anpassen. Ggf. ist ein Neustart erforderlich. Es kann zu Darstellungsproblemen in Dialogen kommen wenn die Schrift zu groß ist. Dies verbessert die Lesbarkeit mit HighDPI-Bildschirmen.
+- **FEATURE:** Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
+- **FEATURE:** Die Speicherzuweisung für das Programm kann nun über den Menüeintrag *"Hilfe/Speicherzuweisung ändern..."* angepasst werden.
+- **FEATURE:** Sender können nun direkt beim Laden der Filmliste ausgeschlossen werden. **Bitte entfernt ggf. Eure entsprechenden Einträge in der Blacklist mit der ihr bisher Sender ausgeblendet habt!** Dies erhöht dann auch zusätzlich etwas die Geschwindigkeit des Programms.
+- **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
+- **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.
+- **FEATURE:** F12-Taste zeigt nun den Filterdialog an.
+- **FEATURE:** Einstellung der CheckBox *"Alte Filmliste nicht löschen, nur erweitern"* wird nun gespeichert und wiederhergestellt.
+- **FEATURE:** Film können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muß hierzu im Hintergrund laufen.
+- **FEATURE:** "Filmliste laden"-Dialog kann in Position und Größe angepasst werden. Die Änderungen werden beim erneuten Öffnen des Dialogs wieder angewendet.
+- **FEATURE (macOS):** Es wird nun statt *MediathekView Shutdown Helper* ein neues integriertes Programm genutzt um nach Downloads den Rechner herunter zu fahren. Dies kann nun auch über das **Terminal konfiguriert** werden. Der Benutzer kann nachfolgend angeben, ob der Rechner immer heruntergefahren werden oder nur schlafen soll: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "shutdown"` für Ausschalten des Rechner, oder zum Schlafen: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "sleep"`. Die Eingaben müssen jeweils nur einmal im Terminal durchgeführt werden und haben dauerhaft Bestand. Sie werden jeweils angewendet wenn man auf Downloads beim Beenden wartet und "Rechner herunterfahren" aktiviert hat. Standardverhalten ist das Ausschalten des Rechners.
 - **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
 - **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
 - **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
@@ -27,14 +38,3 @@
 - **BUGFIX:** "Abos verwalten"-Dialog wählt nun bei gesetztem Filter nicht mehr die falschen Abos aus.
 - **BUGFIX:** Farbauswahl bei Psets für Buttons werden nun angewendet auf allen Plattformen.
 - **BUGFIX:** Unter Windows konnte es vorkommen dass ein Speichern nach dem Laden der Filmliste nicht möglich war.
-- **FEATURE:** Die Speicherzuweisung für das Programm kann nun über den Menüeintrag *"Hilfe/Speicherzuweisung ändern..."* angepasst werden.
-- **FEATURE:** Sender können nun direkt beim Laden der Filmliste ausgeschlossen werden. **Bitte entfernt ggf. Eure entsprechenden Einträge in der Blacklist mit der ihr bisher Sender ausgeblendet habt!** Dies erhöht dann auch zusätzlich etwas die Geschwindigkeit des Programms.
-- **FEATURE:** MediathekView meldet beim Programmstart ob fehlerhafte RegEx vorhanden sind. **Es ist die Aufgabe des Nutzers diese zu beseitigen, eine Automatismus hierfür ist nicht vorhanden.**
-- **FEATURE (Windows/Linux):** Die Schriftgröße der gesamten Applikation (Anteile ohne JavaFX) lässt sich nun anpassen. Ggf. ist ein Neustart erforderlich. Es kann zu Darstellungsproblemen in Dialogen kommen wenn die Schrift zu groß ist. Dies verbessert die Lesbarkeit mit HighDPI-Bildschirmen.
-- **FEATURE:** Schriftgröße der Tabelle im <u>Tab "Filme"</u> lässt sich nun wieder vergrößern/verkleinern und zurücksetzen (über das Kontextmenü des Tabellenheader). Anpassungen erfolgen jeweils in 2er Schritten.
-- **FEATURE:** Erweitere Log-Ausgaben können aktiviert werden mit dem Parameter '-e' bzw. '--enhanced-logging'.
-- **FEATURE:** F12-Taste zeigt nun den Filterdialog an.
-- **FEATURE:** Einstellung der CheckBox *"Alte Filmliste nicht löschen, nur erweitern"* wird nun gespeichert und wiederhergestellt.
-- **FEATURE:** Film können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muß hierzu im Hintergrund laufen.
-- **FEATURE:** "Filmliste laden"-Dialog kann in Position und Größe angepasst werden. Die Änderungen werden beim erneuten Öffnen des Dialogs wieder angewendet.  
-- **FEATURE (macOS):** Es wird nun statt *MediathekView Shutdown Helper* ein neues integriertes Programm genutzt um nach Downloads den Rechner herunter zu fahren. Dies kann nun auch über das **Terminal konfiguriert** werden. Der Benutzer kann nachfolgend angeben, ob der Rechner immer heruntergefahren werden oder nur schlafen soll: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "shutdown"` für Ausschalten des Rechner, oder zum Schlafen: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "sleep"`. Die Eingaben müssen jeweils nur einmal im Terminal durchgeführt werden und haben dauerhaft Bestand. Sie werden jeweils angewendet wenn man auf Downloads beim Beenden wartet und "Rechner herunterfahren" aktiviert hat. Standardverhalten ist das Ausschalten des Rechners.
