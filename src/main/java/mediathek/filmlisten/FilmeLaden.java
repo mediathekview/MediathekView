@@ -217,7 +217,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
 
-            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
+            final int days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (Netzwerk)");
@@ -250,7 +250,7 @@ public class FilmeLaden {
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
-            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 dateiUrl = GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL);
             }
@@ -306,7 +306,7 @@ public class FilmeLaden {
             listeFilme.clear();
 
             try (FilmListReader reader = new FilmListReader()) {
-                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, 0);
+                final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
                 reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
             }
             logger.info("");

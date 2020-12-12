@@ -877,10 +877,18 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ShowProgramInfosAction(this));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new SetAppMemoryAction());
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            jMenuHilfe.addSeparator();
-            jMenuHilfe.add(new ShowAboutAction(this));
-        }
+
+        installAdditionalHelpEntries();
+    }
+
+    protected void installAdditionalHelpEntries() {
+        jMenuHilfe.addSeparator();
+        var action = new ChangeGlobalFontSetting();
+        var item = jMenuHilfe.add(action);
+        action.setMenuItem(item);
+
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(new ShowAboutAction(this));
     }
 
     protected void initMenus() {

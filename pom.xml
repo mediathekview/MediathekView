@@ -498,8 +498,8 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>${jdk.language.version}</source>
-                    <target>${jdk.language.version}</target>
+                    <source>15</source>
+                    <target>15</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
