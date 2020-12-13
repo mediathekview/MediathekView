@@ -887,10 +887,10 @@ public class MediathekGui extends JFrame {
      * @return true if official binary is used, false otherwise.
      */
     protected boolean officialLauncherInUse() {
-        boolean winBinaryInUse = false;
+        boolean winBinaryInUse = true;
         final var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
         if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
-            winBinaryInUse = true;
+            winBinaryInUse = false;
         }
 
         return winBinaryInUse;
