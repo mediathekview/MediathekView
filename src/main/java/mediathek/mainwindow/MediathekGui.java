@@ -875,10 +875,25 @@ public class MediathekGui extends JFrame {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
         jMenuHilfe.add(new ShowProgramInfosAction(this));
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new SetAppMemoryAction());
-
+        if (officialLauncherInUse()) {
+            jMenuHilfe.addSeparator();
+            jMenuHilfe.add(new SetAppMemoryAction());
+        }
         installAdditionalHelpEntries();
+    }
+
+    /**
+     * Test if MediathekView is launched by our official downloads.
+     * @return true if official binary is used, false otherwise.
+     */
+    protected boolean officialLauncherInUse() {
+        boolean winBinaryInUse = false;
+        final var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
+        if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
+            winBinaryInUse = true;
+        }
+
+        return winBinaryInUse;
     }
 
     protected void installAdditionalHelpEntries() {

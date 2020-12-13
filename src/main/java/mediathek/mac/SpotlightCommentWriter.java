@@ -1,6 +1,7 @@
 package mediathek.mac;
 
 import javafx.application.Platform;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.javafx.FXErrorDialog;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,7 @@ public class SpotlightCommentWriter {
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
                     try {
-                        if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
+                        if (!System.getProperty(Konstanten.MACOS_OFFICIAL_APP).equalsIgnoreCase("true")) {
                             logUnofficialMacAppUse();
                         }
                     } catch (NullPointerException ignored) {
