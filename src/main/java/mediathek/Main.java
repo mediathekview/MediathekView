@@ -565,7 +565,7 @@ public class Main {
     }
 
     private static void checkForOfficialOSXAppUse() {
-        final var osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        final var osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP);
         if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
             logger.warn("WARN: macOS app NOT launched from official launcher!");
         }

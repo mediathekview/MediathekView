@@ -1,6 +1,7 @@
 package mediathek.mac;
 
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
@@ -34,6 +35,16 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
+    }
+
+    @Override
+    protected boolean officialLauncherInUse() {
+        boolean macOSBinaryInuse = true;
+        final var osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP);
+        if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
+            macOSBinaryInuse = false;
+        }
+        return macOSBinaryInuse;
     }
 
     @Override
