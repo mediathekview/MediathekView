@@ -7,9 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.swing.LookAndFeelType;
@@ -55,19 +53,6 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         return result;
     }
 
-    private void showAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(Konstanten.PROGRAMMNAME);
-        alert.setHeaderText("Globale Schriftgröße ändern");
-        alert.setContentText("""
-                Die Schriftgröße wurde zurückgesetzt. 
-                Das Programm muss beendet werden damit die Änderung
-                vollständig aktiv wird.
-                """);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.showAndWait();
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         var initialSize = getCurrentSize();
@@ -85,7 +70,7 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         final Spinner<Integer> spinner = new Spinner<>();
         spinner.setEditable(true);
 
-        var valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(6, 72, initialSize);
+        var valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(12, 48, initialSize);
         spinner.setValueFactory(valueFactory);
         spinner.valueProperty().addListener((observableValue, oldValue, newValue) -> SwingUtilities.invokeLater(() -> spinnerUpdate(newValue)));
 
@@ -111,17 +96,26 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE, (float) newValue);
 
         SwingUtilities.updateComponentTreeUI(MediathekGui.ui());
-        Platform.runLater(this::showAlert);
         sizeChanged = true;
-
     }
 
     private void resetAction() {
         logger.info("Resetting Swing UI to default font size");
         ApplicationConfiguration.getConfiguration().clearProperty(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
-        showAlert();
         sizeChanged = true;
         window.close();
+    }
+
+    private void showAppTerminationAlert() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, """
+        Die Änderung der Schriftgröße erfordert einen Neustart.
+        Möchten Sie MediathekView nun beenden?
+        """, ButtonType.YES, ButtonType.NO);
+        alert.setHeaderText("Schriftgröße wurde geändert");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false));
+        }
     }
 
     private void createWindow() {
@@ -132,14 +126,7 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         window.setOnHidden(evt -> SwingUtilities.invokeLater(() -> {
             menuItem.setEnabled(true);
             if (sizeChanged) {
-                Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Möchten Sie MediathekView nun beenden?", ButtonType.YES, ButtonType.NO);
-                    alert.setHeaderText(Konstanten.PROGRAMMNAME + " beenden");
-                    alert.showAndWait();
-                    if (alert.getResult() == ButtonType.YES) {
-                        SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false));
-                    }
-                });
+                Platform.runLater(this::showAppTerminationAlert);
             }
         }));
     }
