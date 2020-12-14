@@ -127,9 +127,15 @@ class SeenHistoryController : AutoCloseable {
     fun performMaintenance() {
         logger.trace("Start maintenance")
 
-        connection!!.createStatement().use {
-            it.executeUpdate("REINDEX seen_history")
-            it.executeUpdate("VACUUM")
+        try {
+            connection!!.createStatement().use {
+                it.executeUpdate("DELETE FROM seen_history WHERE thema = 'Livestream'")
+                it.executeUpdate("REINDEX seen_history")
+                it.executeUpdate("VACUUM")
+            }
+        }
+        catch (e: SQLException) {
+            logger.error("Failed to execute maintenance script", e)
         }
         logger.trace("Finished maintenance")
     }
