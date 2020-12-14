@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -21,7 +21,7 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "com.jidesoft.swing.MultilineLabel" ) {
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
 					name: "multilineLabel1"
 					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn älter als 3h). Zusätzlich kann sie über den Button \"Filmliste laden\" aktualisiert werden."
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
@@ -44,9 +44,9 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "com.jidesoft.swing.MultilineLabel" ) {
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
 					name: "multilineLabel2"
-					"text": "Die Filmliste wird nur manuell über den Button \"Filmliste laden\" aus dem Internet geladen. Es kann auch eine Alternativ-URL oder Datei zum Laden angegeben werden."
+					"text": "Die Filmliste wird nur manuell über den Button \"Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -56,7 +56,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "URL/Datei:"
+					"text": "Datei:"
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "lblUrl"
 					}
@@ -154,7 +154,7 @@ new FormModel {
 				"$rowConstraints": "[][][][]"
 			} ) {
 				name: "panel1"
-				"border": new javax.swing.border.TitledBorder( "Diese Sender laden (Neustart erforderlich)" )
+				"border": new javax.swing.border.TitledBorder( "Diese Sender laden (Neustart ggf. erforderlich)" )
 				"toolTipText": "<html>Die Einstellung bezieht sich auf den nächsten <b>vollständigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms sichtbar wird.</html>"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true

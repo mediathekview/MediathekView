@@ -25,7 +25,6 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("serial")
 public class PanelFilmlisteLaden extends JPanel {
     private final List<JCheckBox> senderCbList = new ArrayList<>();
     private final SenderFilmlistLoadApprover approver = SenderFilmlistLoadApprover.INSTANCE;
@@ -38,6 +37,38 @@ public class PanelFilmlisteLaden extends JPanel {
         initComponents();
         init();
 
+        setupCheckBoxes();
+
+        //in settings we cannot load a list, therefore these controls make no sense
+        if (inSettingsDialog) {
+            prepareSettingsLayout();
+        }
+
+        setupSenderList();
+        //load initial settings
+        senderCbList.forEach(cb -> cb.setSelected(approver.isApproved(cb.getText())));
+        //now add the item listeners for update
+        senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
+
+        jRadioButtonManuell.addChangeListener(l -> {
+            final var selected = jRadioButtonManuell.isSelected();
+            System.out.println("ACTIVE: " + selected);
+            jTextFieldUrl.setEnabled(selected);
+            jButtonDateiAuswaehlen.setEnabled(selected);
+            jCheckBoxUpdate.setEnabled(selected);
+        });
+    }
+
+    /**
+     * Deactivate controls which are useless in the settings dialog.
+     */
+    private void prepareSettingsLayout() {
+        lblUrl.setVisible(false);
+        jTextFieldUrl.setVisible(false);
+        jButtonDateiAuswaehlen.setVisible(false);
+    }
+
+    private void setupCheckBoxes() {
         final var config = ApplicationConfiguration.getConfiguration();
         cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,true));
         cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
@@ -53,26 +84,6 @@ public class PanelFilmlisteLaden extends JPanel {
 
         jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false));
         jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
-
-        //in settings we cannot load a list, therefore these controls make no sense
-        if (inSettingsDialog) {
-            lblUrl.setVisible(false);
-            jTextFieldUrl.setVisible(false);
-            jButtonDateiAuswaehlen.setVisible(false);
-        }
-        setupSenderList();
-        //load initial settings
-        senderCbList.forEach(cb -> cb.setSelected(approver.isApproved(cb.getText())));
-        //now add the item listeners for update
-        senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
-
-        jRadioButtonManuell.addChangeListener(l -> {
-            final var selected = jRadioButtonManuell.isSelected();
-            System.out.println("ACTIVE: " + selected);
-            jTextFieldUrl.setEnabled(selected);
-            jButtonDateiAuswaehlen.setEnabled(selected);
-            jCheckBoxUpdate.setEnabled(selected);
-        });
     }
 
     /**
@@ -285,12 +296,12 @@ public class PanelFilmlisteLaden extends JPanel {
                     .fill()));
 
             //---- multilineLabel2 ----
-            multilineLabel2.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Filmliste laden\" aus dem Internet geladen. Es kann auch eine Alternativ-URL oder Datei zum Laden angegeben werden."); //NON-NLS
+            multilineLabel2.setText("Die Filmliste wird nur manuell \u00fcber den Button \"Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."); //NON-NLS
             multilineLabel2.setFont(multilineLabel2.getFont().deriveFont(multilineLabel2.getFont().getSize() - 1f));
             jPanelManuel.add(multilineLabel2, new CC().cell(0, 0, 4, 1));
 
             //---- lblUrl ----
-            lblUrl.setText("URL/Datei:"); //NON-NLS
+            lblUrl.setText("Datei:"); //NON-NLS
             jPanelManuel.add(lblUrl, new CC().cell(0, 1));
             jPanelManuel.add(jTextFieldUrl, new CC().cell(1, 1, 2, 1));
 
@@ -344,7 +355,7 @@ public class PanelFilmlisteLaden extends JPanel {
 
         //======== panel1 ========
         {
-            panel1.setBorder(new TitledBorder("Diese Sender laden (Neustart erforderlich)")); //NON-NLS
+            panel1.setBorder(new TitledBorder("Diese Sender laden (Neustart ggf. erforderlich)")); //NON-NLS
             panel1.setToolTipText("<html>Die Einstellung bezieht sich auf den n\u00e4chsten <b>vollst\u00e4ndigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms sichtbar wird.</html>"); //NON-NLS
             panel1.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).alignX("left").gridGapX("10"), //NON-NLS
