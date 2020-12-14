@@ -20,6 +20,7 @@
 - **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
 - **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
 - **BUGFIX (32bit):** Absturz des Programms beim ersten Start auf 32bit System behoben.
+- **BUGFIX:** Livestreams können nicht mehr als gesehen markiert werden.  
 - **BUGFIX:** Einige Filme wurden nicht korrekt als Hörfassung klassifiziert.
 - **BUGFIX:** Fehler bei der Darstellung des freien Speicherplatzes im Download-Dialog behoben.
 - **BUGFIX:** In die Infodatei wird nun die wirklich genutzte Film-URL und die reale Größe geschrieben.
