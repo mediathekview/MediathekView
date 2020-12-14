@@ -1181,16 +1181,18 @@ public class GuiFilme extends AGuiTabPanel {
 
             // History
             res.ifPresent(film -> {
-                JMenuItem miHistory;
-                try (var history = new SeenHistoryController()) {
-                    if (history.hasBeenSeen(film)) {
-                        miHistory = new JMenuItem("Film als ungesehen markieren");
-                        miHistory.addActionListener(unseenActionListener);
-                    } else {
-                        miHistory = new JMenuItem("Film als gesehen markieren");
-                        miHistory.addActionListener(seenActionListener);
+                if (!film.isLivestream()) {
+                    JMenuItem miHistory;
+                    try (var history = new SeenHistoryController()) {
+                        if (history.hasBeenSeen(film)) {
+                            miHistory = new JMenuItem("Film als ungesehen markieren");
+                            miHistory.addActionListener(unseenActionListener);
+                        } else {
+                            miHistory = new JMenuItem("Film als gesehen markieren");
+                            miHistory.addActionListener(seenActionListener);
+                        }
+                        jPopupMenu.add(miHistory);
                     }
-                    jPopupMenu.add(miHistory);
                 }
             });
             // anzeigen
