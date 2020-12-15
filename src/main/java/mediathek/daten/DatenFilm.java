@@ -314,7 +314,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
                 try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
                      var ignored = new SqlAutoSetAutoCommit(connection, false);
                      var tm = new SqlAutoRollback(connection);
-                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)");
+                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)")
                 ){
                     mergeStatement.setInt(1, databaseFilmNumber);
                     mergeStatement.setString(2, link);
