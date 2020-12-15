@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
-@SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
     protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     private final OsxPowerManager powerManager = new OsxPowerManager();
@@ -35,6 +34,20 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        if (TouchBarUtils.isTouchBarSupported()) {
+            var comp = tabbedPane.getSelectedComponent();
+            if (comp.equals(tabFilme)) {
+                // bugfix for macOS 11.1 Big Sur which otherwise wouldn´t show the touchbar on startup...
+                // window must be visible to activate touchbar
+                tabFilme.touchBar.show(MediathekGuiMac.this);
+            }
+        }
     }
 
     @Override
@@ -61,9 +74,6 @@ public class MediathekGuiMac extends MediathekGui {
     protected void installTouchBarSupport() {
         logger.trace("install touch bar support");
         if (TouchBarUtils.isTouchBarSupported()) {
-            //make filme tab touchbar visible by default, otherwise it will not appear...
-            tabFilme.touchBar.show(MediathekGuiMac.this);
-            final var tabbedPane = getTabbedPane();
             tabbedPane.addChangeListener(e -> {
                 var comp = tabbedPane.getSelectedComponent();
                 if (comp.equals(tabFilme)) {
