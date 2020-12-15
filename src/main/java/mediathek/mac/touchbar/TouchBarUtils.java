@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class TouchBarUtils {
     private static final float TOUCHBAR_BUTTON_SIZE = 64.0f;
@@ -56,8 +57,10 @@ public class TouchBarUtils {
         boolean supported = false;
         try {
             var process = Runtime.getRuntime().exec("bin/mv_touchbar_support");
-            var exitVal = process.waitFor();
-            supported = exitVal == 0;
+            if (process.waitFor(2, TimeUnit.SECONDS)) {
+                // no timeout
+                supported = process.exitValue() == 0;
+            }
         } catch (Exception e) {
             logger.error("Failed to check touchbar support", e);
         }
