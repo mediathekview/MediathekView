@@ -45,7 +45,7 @@ public class MediathekGuiMac extends MediathekGui {
             if (comp.equals(tabFilme)) {
                 // bugfix for macOS 11.1 Big Sur which otherwise wouldn´t show the touchbar on startup...
                 // window must be visible to activate touchbar
-                tabFilme.touchBar.show(MediathekGuiMac.this);
+                tabFilme.showTouchBar();
             }
         }
     }
@@ -77,11 +77,11 @@ public class MediathekGuiMac extends MediathekGui {
             tabbedPane.addChangeListener(e -> {
                 var comp = tabbedPane.getSelectedComponent();
                 if (comp.equals(tabFilme)) {
-                    tabDownloads.touchBar.hide(MediathekGuiMac.this);
-                    tabFilme.touchBar.show(MediathekGuiMac.this);
+                    tabDownloads.hideTouchBar();
+                    tabFilme.showTouchBar();
                 } else if (comp.equals(tabDownloads)) {
-                    tabFilme.touchBar.hide(MediathekGuiMac.this);
-                    tabDownloads.touchBar.show(MediathekGuiMac.this);
+                    tabFilme.hideTouchBar();
+                    tabDownloads.showTouchBar();
                 }
             });
         }

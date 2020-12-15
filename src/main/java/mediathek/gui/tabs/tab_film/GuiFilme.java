@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film;
 
-import com.thizzer.jtouchbar.JTouchBar;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -56,7 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("serial")
 public class GuiFilme extends AGuiTabPanel {
 
     public static final String NAME = "Filme";
@@ -94,10 +92,6 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     public FilmActionPanel fap;
-    /**
-     * macOS touch bar support
-     */
-    public JTouchBar touchBar;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     /**
      * The swing helper panel FilmAction bar.
@@ -659,6 +653,16 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void showTouchBar() {
+        touchBar.show(MediathekGui.ui());
+    }
+
+    @Override
+    public void hideTouchBar() {
+        touchBar.hide(MediathekGui.ui());
     }
 
     @Override
