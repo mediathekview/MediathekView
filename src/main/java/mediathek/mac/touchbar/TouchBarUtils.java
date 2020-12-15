@@ -54,13 +54,14 @@ public class TouchBarUtils {
         boolean supported = false;
 
         var osv = new SystemInfo().getOperatingSystem().getVersionInfo();
-        switch (osv.getCodeName()) {
-            case "Catalina":
-            case "Mojave":
-            case "High Sierra":
-                supported = true;
-                break;
-        }
+        var codeName = osv.getCodeName();
+        if (codeName == null)
+            return true;
+
+        supported = switch (codeName) {
+            case "Catalina", "Mojave", "High Sierra", "Big Sur" -> true;
+            default -> false;
+        };
 
         return supported;
     }
