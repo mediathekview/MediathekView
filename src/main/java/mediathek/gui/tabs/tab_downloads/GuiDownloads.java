@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_downloads;
 
-import com.thizzer.jtouchbar.JTouchBar;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -64,7 +63,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-@SuppressWarnings("serial")
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
     private static final String COMBO_DISPLAY_ALL = "alle";
@@ -123,11 +121,6 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
-
-    /**
-     * macOS touch bar support.
-     */
-    public JTouchBar touchBar;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -1266,6 +1259,16 @@ public class GuiDownloads extends AGuiTabPanel {
             }
             mediathekGui.getFilmInfoDialog().updateCurrentFilm(aktFilm);
         }
+    }
+
+    @Override
+    public void showTouchBar() {
+        touchBar.show(MediathekGui.ui());
+    }
+
+    @Override
+    public void hideTouchBar() {
+        touchBar.hide(MediathekGui.ui());
     }
 
     @Override
