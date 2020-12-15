@@ -16,6 +16,7 @@
 - **FEATURE:** Film können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muß hierzu im Hintergrund laufen.
 - **FEATURE:** "Filmliste laden"-Dialog kann in Position und Größe angepasst werden. Die Änderungen werden beim erneuten Öffnen des Dialogs wieder angewendet.
 - **FEATURE (macOS):** Es wird nun statt *MediathekView Shutdown Helper* ein neues integriertes Programm genutzt um nach Downloads den Rechner herunter zu fahren. Dies kann nun auch über das **Terminal konfiguriert** werden. Der Benutzer kann nachfolgend angeben, ob der Rechner immer heruntergefahren werden oder nur schlafen soll: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "shutdown"` für Ausschalten des Rechner, oder zum Schlafen: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "sleep"`. Die Eingaben müssen jeweils nur einmal im Terminal durchgeführt werden und haben dauerhaft Bestand. Sie werden jeweils angewendet wenn man auf Downloads beim Beenden wartet und "Rechner herunterfahren" aktiviert hat. Standardverhalten ist das Ausschalten des Rechners.
+- **BUGFIX (macOS):** Programm blieb nach Installation macOS 11.1 Update beim Start hängen.  
 - **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
 - **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
 - **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
