@@ -14,7 +14,7 @@ import java.nio.file.Paths
 import java.util.*
 
 open class MVInfoFile {
-    protected fun formatFilmAsString(film: DatenFilm?, url: HttpUrl?): String {
+    private fun formatFilmAsString(film: DatenFilm?, url: HttpUrl?): String {
         if (null == film || url == null)
             return ""
 
