@@ -245,18 +245,23 @@ public class Main {
     }
 
     private static void printEnvironmentInformation() {
-        SystemInfo si = new SystemInfo();
-        var hal = si.getHardware();
-        var cpu = hal.getProcessor();
-        logger.debug("=== Hardware Information ===");
-        logger.debug(cpu);
-        logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
-        logger.debug("=== Memory Information ===");
-        var mi = hal.getMemory();
-        logger.debug(mi);
-        logger.debug("=== Operating System ===");
-        var os = si.getOperatingSystem();
-        logger.debug(os);
+        try {
+            SystemInfo si = new SystemInfo();
+            var hal = si.getHardware();
+            var cpu = hal.getProcessor();
+            logger.debug("=== Hardware Information ===");
+            logger.debug(cpu);
+            logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
+            logger.debug("=== Memory Information ===");
+            var mi = hal.getMemory();
+            logger.debug(mi);
+            logger.debug("=== Operating System ===");
+            var os = si.getOperatingSystem();
+            logger.debug(os);
+        }
+        catch (Exception e) {
+            logger.error("Failed to retrieve System Info", e);
+        }
     }
 
     private static void printVersionInformation() {
