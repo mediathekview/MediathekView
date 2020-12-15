@@ -99,6 +99,7 @@ public class MediathekGui extends JFrame {
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
     protected final Daten daten = Daten.getInstance();
+    protected final JTabbedPane tabbedPane = new JTabbedPane();
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -114,7 +115,6 @@ public class MediathekGui extends JFrame {
      * Helper to determine what tab is currently active
      */
     private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
-    private final JTabbedPane tabbedPane = new JTabbedPane();
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
@@ -224,6 +224,15 @@ public class MediathekGui extends JFrame {
     }
 
     /**
+     * Return the user interface instance
+     *
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
+    }
+
+    /**
      * Check if we encountered invalid regexps and warn user if necessary.
      * This needs to be delayed unfortunately as we can see result only after table has been filled.
      * So we simply wait 30 seconds until we check.
@@ -252,15 +261,6 @@ public class MediathekGui extends JFrame {
                 });
             }
         }, 30, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     /**
