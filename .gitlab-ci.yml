@@ -14,7 +14,8 @@ default:
     - mvrunner1
   before_script:
     - source /private/ENVS
-    - echo $LICENSE_KEY_8
+    - whoami
+    - mkdir ~/.ssh
     - ssh-keyscan -p 52150 mediathekview.de:52150 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
     - sudo apt-get update
