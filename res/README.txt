@@ -27,7 +27,7 @@ MediathekView startet nicht:
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* MediathekView benötigt mindestens Java 14 welches mit geliefert wird.
+* MediathekView benötigt mindestens Java 15 welches mit geliefert wird.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -76,7 +76,7 @@ Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann.
 Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-jre/bin/java -Xmx1G -jar MediathekView.jar
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar
 
 Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
@@ -86,9 +86,9 @@ Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
 
 
-jre/bin/java -Xmx1G -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -Xmx1G -jar MediathekView.jar c:\temp
-jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar c:\temp
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
@@ -103,7 +103,7 @@ Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
 Linux: MediathekView_Portable
-Java: jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
+Java: jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
 
 
 ---------------------------------------------------------------------------
