@@ -8,9 +8,9 @@ STATUSDATEI="target/upload.status"
 PLATTFORMDATEI="target/plattform.txt"
 COMMITDATEI="target/gitcommithash.txt"
 
-PORT="52150"
-ADRESSE="deploy@mediathekview.de"
-KEYFILE="scripte/deploy/deploy.key"
+#PORT="52150"
+#ADRESSE="deploy@mediathekview.de"
+#KEYFILE="scripte/deploy/deploy.key"
 
 echo "Deploy zu Hauptserver";
 # Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
@@ -60,7 +60,7 @@ echo "put $STATUSDATEI" >> $BATCHDATEI
 echo "exit" >> $BATCHDATEI
 
 # SFTP Batchdatei ausführen
-sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port=$PORT $ADRESSE
+echo sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port=$PORT $ADRESSE
 
 # Aufräumen
 rm $BATCHDATEI $STATUSDATEI
