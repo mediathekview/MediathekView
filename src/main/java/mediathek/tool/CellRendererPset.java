@@ -2,6 +2,8 @@ package mediathek.tool;
 
 import mediathek.config.Icons;
 import mediathek.daten.DatenPset;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -11,6 +13,7 @@ import java.awt.*;
 public class CellRendererPset extends DefaultTableCellRenderer {
     private static final ImageIcon ja_16 = Icons.ICON_TABELLE_EIN;
     private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
+    private static final Logger logger = LogManager.getLogger();
 
     public CellRendererPset() {
     }
@@ -59,7 +62,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(962380071, ex);
+            logger.error("getTableCellRendererComponent", ex);
         }
         return this;
     }

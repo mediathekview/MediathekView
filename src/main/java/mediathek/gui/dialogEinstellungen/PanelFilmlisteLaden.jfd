@@ -1,44 +1,35 @@
-JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
-			"$columnConstraints": "[fill][grow,fill]"
-			"$rowConstraints": "[fill][fill][fill]"
+			"$columnConstraints": "[label][640,grow,fill]"
+			"$rowConstraints": "[][][][][]"
 		} ) {
 			name: "this"
-			"minimumSize": new java.awt.Dimension( 746, 400 )
-			"preferredSize": new java.awt.Dimension( 746, 400 )
+			"minimumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+			"preferredSize": new java.awt.Dimension( 740, 450 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 				"$columnConstraints": "[grow,fill][grow,fill]"
-				"$rowConstraints": "[fill][fill]"
+				"$rowConstraints": "[fill]"
 			} ) {
 				name: "jPanelAuto"
 				"border": new javax.swing.border.TitledBorder( "Die Filmliste automatisch laden" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "javax.swing.JTextArea" ) {
-					name: "jTextAreaAuto"
-					"editable": false
-					"columns": 20
-					"rows": 3
-					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn sie älter als 3h ist). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden. Zum Update werden dann nur noch die Differenzlisten geladen (enthalten nur die neuen Filme)."
-					"margin": new java.awt.Insets( 4, 4, 4, 4 )
-					"wrapStyleWord": true
-					"lineWrap": true
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
+					name: "multilineLabel1"
+					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn älter als 3h). Zusätzlich kann sie über den Button \"Filmliste laden\" aktualisiert werden."
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0 2 1"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonLoad"
-					"text": "Filme jetzt laden"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 1,alignx trailing,growx 0"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 0"
@@ -53,17 +44,30 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "jLabel1"
-					"text": "URL/Datei:"
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
+					name: "multilineLabel2"
+					"text": "Die Filmliste wird nur manuell über den Button \"Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0 4 1"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "Datei:"
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "lblUrl"
 					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldUrl"
+					auxiliary() {
+						"JavaCodeGenerator.variableGetter": true
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 1 2 1"
 				} )
@@ -74,28 +78,12 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 3 1,alignx left,growx 0,width 32:32:32,height 32:32:32"
 				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "jButtonFilmeLaden"
-					"text": "Filme jetzt laden"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 2 2 2 1"
-				} )
-				add( new FormComponent( "javax.swing.JTextArea" ) {
-					name: "jTextAreaManuell"
-					"editable": false
-					"columns": 20
-					"rows": 2
-					"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum Laden angegeben werden."
-					"margin": new java.awt.Insets( 4, 4, 4, 4 )
-					"wrapStyleWord": true
-					"lineWrap": true
-					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0 4 1"
-				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxUpdate"
-					"text": "alte Filmliste nicht löschen, nur erweitern"
+					"text": "Alte Filmliste nicht löschen, nur erweitern"
+					auxiliary() {
+						"JavaCodeGenerator.variableGetter": true
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2 2 1"
 				} )
@@ -113,6 +101,14 @@ new FormModel {
 				"$buttonGroup": new FormReference( "buttonGroup1" )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1,aligny top,growy 0"
+			} )
+			add( new FormComponent( "javax.swing.JSeparator" ) {
+				name: "separator1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 2 2 1,growx"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
@@ -150,10 +146,156 @@ new FormModel {
 					"value": "cell 3 0"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 1 2"
+				"value": "cell 0 3 2 1,growx"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 5,hidemode 3,alignx left,gapx 10"
+				"$columnConstraints": "[fill][fill][fill][fill][fill][fill]"
+				"$rowConstraints": "[][][][]"
+			} ) {
+				name: "panel1"
+				"border": new javax.swing.border.TitledBorder( "Diese Sender laden (Neustart ggf. erforderlich)" )
+				"toolTipText": "<html>Die Einstellung bezieht sich auf den nächsten <b>vollständigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms sichtbar wird.</html>"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox1"
+					"text": "3Sat"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox2"
+					"text": "BR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox3"
+					"text": "MDR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox4"
+					"text": "Radio Bremen TV"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox5"
+					"text": "SRF.Podcast"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 4 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox6"
+					"text": "ZDF-tivi"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 5 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox8"
+					"text": "ARD"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox11"
+					"text": "DW"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox14"
+					"text": "NDR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox17"
+					"text": "RBB"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox20"
+					"text": "SWR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 4 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox7"
+					"text": "Funk.net"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 5 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox9"
+					"text": "ARTE.DE"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox12"
+					"text": "HR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 2"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox15"
+					"text": "ORF"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 2"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox18"
+					"text": "SR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 2"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox21"
+					"text": "WDR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 4 2"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox10"
+					"text": "ARTE.FR"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 3"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox13"
+					"text": "KiKA"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 3"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox16"
+					"text": "PHOENIX"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 3"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox19"
+					"text": "SRF"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 3"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox22"
+					"text": "ZDF"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 4 3"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 4 2 1,growx"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 735, 380 )
+			"size": new java.awt.Dimension( 740, 435 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {

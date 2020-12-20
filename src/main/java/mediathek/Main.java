@@ -1,16 +1,17 @@
 package mediathek;
 
 import com.google.common.base.Stopwatch;
-import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import com.zaxxer.sansorm.SansOrm;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
@@ -19,7 +20,11 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.affinity.Affinity;
+import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
+import mediathek.tool.swing.SwingUIFontChanger;
+import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.io.FileUtils;
@@ -240,18 +245,23 @@ public class Main {
     }
 
     private static void printEnvironmentInformation() {
-        SystemInfo si = new SystemInfo();
-        var hal = si.getHardware();
-        var cpu = hal.getProcessor();
-        logger.debug("=== Hardware Information ===");
-        logger.debug(cpu);
-        logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
-        logger.debug("=== Memory Information ===");
-        var mi = hal.getMemory();
-        logger.debug(mi);
-        logger.debug("=== Operating System ===");
-        var os = si.getOperatingSystem();
-        logger.debug(os);
+        try {
+            SystemInfo si = new SystemInfo();
+            var hal = si.getHardware();
+            var cpu = hal.getProcessor();
+            logger.debug("=== Hardware Information ===");
+            logger.debug(cpu);
+            logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
+            logger.debug("=== Memory Information ===");
+            var mi = hal.getMemory();
+            logger.debug(mi);
+            logger.debug("=== Operating System ===");
+            var os = si.getOperatingSystem();
+            logger.debug(os);
+        }
+        catch (Exception e) {
+            logger.error("Failed to retrieve System Info", e);
+        }
     }
 
     private static void printVersionInformation() {
@@ -344,6 +354,12 @@ public class Main {
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
             setupLogging();
 
+            final int numCpus = Config.getNumCpus();
+            if (numCpus != 0) {
+                var affinity = Affinity.getAffinityImpl();
+                affinity.setDesiredCpuAffinity(numCpus);
+            }
+
             initializeJavaFX();
 
             JFXHiddenApplication.launchApplication();
@@ -383,8 +399,12 @@ public class Main {
 
         migrateOldConfigSettings();
 
+        //register FontAwesome font here as it may already be used at first start dialog..
+        IconFontSwing.register(FontAwesome.getIconFont());
+
         loadConfigurationData();
 
+        migrateSeenHistory();
         Daten.getInstance().launchHistoryDataLoading();
         
         Daten.getInstance().loadBookMarkData();
@@ -392,13 +412,51 @@ public class Main {
         deleteDatabase();
 
         if (MemoryUtils.isLowMemoryEnvironment()) {
-            setupDatabase();
             DatenFilm.Database.initializeDatabase();
         }
 
         copyUserAgentDatabase();
 
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            changeGlobalFontSize();
+
         startGuiMode();
+    }
+
+    private static void changeGlobalFontSize() {
+        try {
+            var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
+            logger.info("Custom font size found, changing global UI settings");
+            SwingUIFontChanger fc = new SwingUIFontChanger();
+            fc.changeFontSize(size);
+        }
+        catch (Exception e) {
+            logger.info("No custom font size found.");
+        }
+    }
+
+    /**
+     * Migrate the old text file history to new database format
+     */
+    private static void migrateSeenHistory() {
+        try (SeenHistoryMigrator migrator = new SeenHistoryMigrator()) {
+            if (migrator.needsMigration()) {
+                migrator.migrate();
+            }
+        }
+        catch (Exception e) {
+            logger.error("migrateSeenHistory", e);
+            splashScreen.ifPresent(SplashScreen::close);
+            FXErrorDialog.showErrorDialogWithoutParent(Konstanten.PROGRAMMNAME,
+                            "Migration fehlgeschlagen",
+                            """
+                                    Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
+                                    Das Programm kann nicht fortfahren und wird beendet.
+                                    
+                                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
+                                    """, e);
+            System.exit(99);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -470,14 +528,15 @@ public class Main {
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             Main.splashScreen.ifPresent(SplashScreen::close);
             //TODO replace with JavaFX dialog!!
-            var dialog = new DialogStarteinstellungen(null, daten);
+            var dialog = new DialogStarteinstellungen(null);
             dialog.setVisible(true);
+            dialog.toFront();
             MVConfig.loadSystemParameter();
         }
     }
 
     private static void printDirectoryPaths() {
-        logger.trace("Programmpfad: " + MVFunctionSys.getPathJar());
+        logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
         logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
     }
 
@@ -491,11 +550,6 @@ public class Main {
                 logger.error("deleteDatabase()", e);
             }
         }
-    }
-
-    private static void setupDatabase() {
-        logger.trace("setupDatabase()");
-        SansOrm.initializeTxSimple(PooledDatabaseConnection.getInstance().getDataSource());
     }
 
     private static void installSingleInstanceHandler() {
@@ -516,7 +570,7 @@ public class Main {
     }
 
     private static void checkForOfficialOSXAppUse() {
-        final var osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        final var osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP);
         if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
             logger.warn("WARN: macOS app NOT launched from official launcher!");
         }
@@ -552,7 +606,7 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Config.isDebugModeEnabled()) {
+            if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
                 logger.info("Swing Thread checking repaint manager installed.");

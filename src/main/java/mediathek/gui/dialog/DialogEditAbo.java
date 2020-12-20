@@ -36,7 +36,7 @@ public class DialogEditAbo extends JDialog {
     public boolean ok = false;
     public boolean[] ch = new boolean[DatenAbo.MAX_ELEM];
 
-    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
+    public DialogEditAbo(final JFrame parent, boolean modal, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
 
@@ -163,20 +163,12 @@ public class DialogEditAbo extends JDialog {
         c.weightx = 0;
         JLabel label;
         switch (i) {
-            case DatenAbo.ABO_SENDER:
-            case DatenAbo.ABO_THEMA:
-            case DatenAbo.ABO_TITEL:
-            case DatenAbo.ABO_THEMA_TITEL:
-            case DatenAbo.ABO_IRGENDWO:
+            case DatenAbo.ABO_SENDER, DatenAbo.ABO_THEMA, DatenAbo.ABO_TITEL, DatenAbo.ABO_THEMA_TITEL, DatenAbo.ABO_IRGENDWO -> {
                 label = new JLabel("  " + DatenAbo.COLUMN_NAMES[i] + ": ");
                 label.setForeground(Color.BLUE);
-                break;
-            case DatenAbo.ABO_MINDESTDAUER:
-                label = new JLabel("Dauer [min]: ");
-                break;
-            default:
-                label = new JLabel(DatenAbo.COLUMN_NAMES[i] + ": ");
-                break;
+            }
+            case DatenAbo.ABO_MINDESTDAUER -> label = new JLabel("Dauer [min]: ");
+            default -> label = new JLabel(DatenAbo.COLUMN_NAMES[i] + ": ");
         }
         gridbag.setConstraints(label, c);
         panel.add(label);
@@ -189,7 +181,7 @@ public class DialogEditAbo extends JDialog {
                 textfeld = new JTextField();
                 textfeldListe[i] = textfeld;
                 textfeld.setEditable(false);
-                textfeld.setText(aktAbo.nr + "");
+                textfeld.setText(aktAbo.getNr() + "");
                 gridbag.setConstraints(textfeld, c);
                 panel.add(textfeld);
                 break;
@@ -271,11 +263,7 @@ public class DialogEditAbo extends JDialog {
             c.weightx = 0;
             JCheckBox jcb;
             switch (i) {
-                case DatenAbo.ABO_EINGESCHALTET:
-                case DatenAbo.ABO_MIN:
-                case DatenAbo.ABO_MINDESTDAUER:
-                case DatenAbo.ABO_PSET:
-                case DatenAbo.ABO_ZIELPFAD:
+                case DatenAbo.ABO_EINGESCHALTET, DatenAbo.ABO_MIN, DatenAbo.ABO_MINDESTDAUER, DatenAbo.ABO_PSET, DatenAbo.ABO_ZIELPFAD -> {
                     c.fill = GridBagConstraints.NONE;
                     c.anchor = GridBagConstraints.CENTER;
                     jcb = new JCheckBox();
@@ -285,7 +273,7 @@ public class DialogEditAbo extends JDialog {
                     jcb.setBackground(new Color(204, 204, 255));
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
-                    break;
+                }
             }
         }
     }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.TilePane?>
+<TabPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="110"
+         xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="mediathek.javafx.buttonsPanel.ButtonsPanelController">
+    <Tab fx:id="buttonsTab" text="Buttons">
+        <ScrollPane maxWidth="Infinity" fitToWidth="true" fitToHeight="true">
+            <TilePane fx:id="tilePane" hgap="5" vgap="5" orientation="VERTICAL">
+                <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            </TilePane>
+        </ScrollPane>
+    </Tab>
+</TabPane>

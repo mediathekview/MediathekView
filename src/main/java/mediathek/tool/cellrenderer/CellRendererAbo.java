@@ -49,29 +49,6 @@ public class CellRendererAbo extends CellRendererBase {
             DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
             final boolean aboIstEingeschaltet = abo.aboIstEingeschaltet();
 
-            if (((MVTable) table).isLineBreak()) {
-                switch (c) {
-                    case DatenAbo.ABO_IRGENDWO:
-                    case DatenAbo.ABO_NAME:
-                    case DatenAbo.ABO_THEMA:
-                    case DatenAbo.ABO_THEMA_TITEL:
-                    case DatenAbo.ABO_TITEL:
-                    case DatenAbo.ABO_ZIELPFAD:
-                        JTextArea textArea = new JTextArea();
-                        textArea.setLineWrap(true);
-                        textArea.setWrapStyleWord(true);
-                        textArea.setText(value.toString());
-                        textArea.setForeground(getForeground());
-                        textArea.setBackground(getBackground());
-                        setSelectionFont(textArea, isSelected);
-                        if (!aboIstEingeschaltet)
-                            setBackgroundColor(textArea, isSelected);
-                        return textArea;
-                }
-            }
-
-            setSelectionFont(this, isSelected);
-
             switch (c) {
                 case DatenAbo.ABO_NR:
                 case DatenAbo.ABO_MINDESTDAUER:

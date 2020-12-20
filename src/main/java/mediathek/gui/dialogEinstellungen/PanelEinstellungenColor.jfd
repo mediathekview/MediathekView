@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.0.4.245" Java: "11.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
 			"$columnConstraints": "[fill][grow,fill][fill]"
-			"$rowConstraints": "[fill][fill]"
+			"$rowConstraints": "[grow,fill][fill]"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -35,7 +35,7 @@ new FormModel {
 				"value": "cell 2 1"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 400, 300 )
+			"size": new java.awt.Dimension( 505, 390 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

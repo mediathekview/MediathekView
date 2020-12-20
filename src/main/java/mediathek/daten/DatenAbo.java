@@ -5,7 +5,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
 
@@ -25,20 +30,20 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
-    public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
+    private static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
+    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    private final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public int mindestdauerMinuten;
     public boolean min = true;
     public String[] arr;
-    public int nr;
     public String[] titel, thema, irgendwo;
+    private int nr;
 
     public DatenAbo() {
         initialize();
@@ -61,6 +66,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public int getNr() {
+        return nr;
+    }
+
+    public void setNr(int nr) {
+        this.nr = nr;
     }
 
     public DatenAbo getCopy() {
@@ -118,6 +131,69 @@ public class DatenAbo implements Comparable<DatenAbo> {
         Arrays.fill(arr, "");
         // neue Abos sind immer ein
         aboEin();
+    }
+
+    /**
+     * Write all data to config.
+     *
+     * @param writer the writer used.
+     */
+    public void writeToConfig(@NotNull XMLStreamWriter writer) {
+        final BiConsumer<String, String> writeElement = (tagName, content) -> {
+            try {
+                writer.writeCharacters("\t");
+                writer.writeStartElement(tagName);
+                writer.writeCharacters(content);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+            }
+            catch (XMLStreamException e) {
+                logger.error("writeElement failed", e);
+            }
+        };
+
+        try {
+            writer.writeStartElement(TAG);
+            writer.writeCharacters("\n");
+
+            //never write ABO_NR
+            writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
+            writeElement.accept(XML_NAMES[ABO_NAME], arr[ABO_NAME]);
+            writeElement.accept(XML_NAMES[ABO_SENDER], arr[ABO_SENDER]);
+            writeElement.accept(XML_NAMES[ABO_THEMA], arr[ABO_THEMA]);
+            writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_IRGENDWO], arr[ABO_IRGENDWO]);
+            writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], arr[ABO_MINDESTDAUER]);
+            writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
+            writeElement.accept(XML_NAMES[ABO_ZIELPFAD], arr[ABO_ZIELPFAD]);
+            writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], arr[ABO_DOWN_DATUM]);
+            writeElement.accept(XML_NAMES[ABO_PSET], arr[ABO_PSET]);
+
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        } catch (Exception ex) {
+            logger.error("writeToConfig", ex);
+        }
+    }
+
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
+        while (parser.hasNext()) {
+            final int event = parser.next();
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                if (parser.getLocalName().equals(TAG)) {
+                    break;
+                }
+            }
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                for (int i = 0; i < arr.length; ++i) {
+                    if (parser.getLocalName().equals(XML_NAMES[i])) {
+                        arr[i] = parser.getElementText();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override

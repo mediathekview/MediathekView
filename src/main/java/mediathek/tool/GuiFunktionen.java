@@ -5,22 +5,21 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
+import mediathek.filmlisten.FilmListDownloadType;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.Functions.OperatingSystemType;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
-
-import static mediathek.tool.Functions.getOs;
+import java.util.Objects;
 
 public class GuiFunktionen extends MVFunctionSys {
 
-    private final static int WIN_MAX_PATH_LENGTH = 250;
-    private final static int X_MAX_NAME_LENGTH = 255;
     /**
      * legacy constant, used internally only
      */
@@ -29,6 +28,21 @@ public class GuiFunktionen extends MVFunctionSys {
      * legacy constant, used internally only
      */
     private static final int UPDATE_FILME_AUTO = 2;
+
+    private static final Logger logger = LogManager.getLogger();
+
+    /**
+     * Get the address of the used film list type as string.
+     *
+     * @param type which list to use.
+     * @return URL of filmlist as String.
+     */
+    public static String getFilmListUrl(FilmListDownloadType type) {
+        return switch (type) {
+            case FULL -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
+            case DIFF_ONLY -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
+        };
+    }
 
     public static void updateGui(MediathekGui mediathekGui) {
         try {
@@ -121,7 +135,7 @@ public class GuiFunktionen extends MVFunctionSys {
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
         if (ret.isEmpty()) {
-            Log.errorLog(283946015, pfad1 + " - " + pfad2);
+            logger.error("addsPfad({},{}):", pfad1, pfad2);
         }
         return ret;
     }
@@ -149,37 +163,11 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    public static String[] checkLengthPath(String[] pathName) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-            if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
-                // es sollen für den Dateinamen mind. 10 Zeichen bleiben
-                Log.errorLog(102036598, "Pfad zu lang: " + pathName[0]);
-                pathName[0] = GuiFunktionen.getHomePath();
-            }
-            if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
-                Log.errorLog(902367369, "Name zu lang: " + pathName[0]);
-                int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
-                pathName[1] = cutName(pathName[1], maxNameL);
-            }
-        } else // für X-Systeme
-            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
-                Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
-                pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
-            }
-        return pathName;
-    }
-
     public static String cutName(String name, int length) {
         if (name.length() > length) {
             name = name.substring(0, length - 4) + name.substring(name.length() - 4);
         }
         return name;
-    }
-
-    public static boolean istUrl(String dateiUrl) {
-        //return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
-        return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
     }
 
     public static String getDateiName(String pfad) {
@@ -197,7 +185,7 @@ public class GuiFunktionen extends MVFunctionSys {
             ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.isEmpty()) {
-            Log.errorLog(395019631, pfad);
+            logger.error("getDateiName({})", pfad);
         }
         return ret;
     }
@@ -212,7 +200,7 @@ public class GuiFunktionen extends MVFunctionSys {
             }
         }
         if (ret.isEmpty()) {
-            Log.errorLog(969871236, pfad);
+            logger.error("getSuffixFromUrl({})", pfad);
         }
         if (ret.contains("?")) {
             ret = ret.substring(0, ret.indexOf('?'));
@@ -220,7 +208,7 @@ public class GuiFunktionen extends MVFunctionSys {
         if (ret.length() > 5) {
             // dann ist was faul
             ret = "---";
-            Log.errorLog(821397046, pfad);
+            logger.error("getSuffixFromUrl({})", pfad);
         }
         return ret;
     }
@@ -237,7 +225,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         if (ret.isEmpty()) {
             ret = pfad;
-            Log.errorLog(945123647, pfad);
+            logger.error("getFileNameWithoutSuffix({})", pfad);
         }
         return ret;
     }
@@ -279,7 +267,7 @@ public class GuiFunktionen extends MVFunctionSys {
     public static int getPlatformControlKey() {
         int result;
 
-        if (getOs() == OperatingSystemType.MAC) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             result = InputEvent.META_DOWN_MASK;
         } else {
             result = InputEvent.CTRL_DOWN_MASK;

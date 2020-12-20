@@ -24,5 +24,9 @@ public enum DatenFilmFlags {
     /**
      * Indicates that a film has "burned in" subtitles.
      */
-    BURNED_IN_SUBTITLES
+    BURNED_IN_SUBTITLES,
+    /**
+     * Indicates that film contains a .m3u8 URL.
+     */
+    PLAYLIST
 }

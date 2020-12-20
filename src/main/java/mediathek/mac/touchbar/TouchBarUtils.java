@@ -2,8 +2,9 @@ package mediathek.mac.touchbar;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import oshi.SystemInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,9 +12,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class TouchBarUtils {
     private static final float TOUCHBAR_BUTTON_SIZE = 64.0f;
+    private static final Logger logger = LogManager.getLogger();
+    private static boolean TOUCHBAR_SUPPORTED;
+
+    static {
+        checkTouchBarSupport();
+    }
 
     public static byte[] getImgBytes(@NotNull BufferedImage image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -50,18 +58,25 @@ public class TouchBarUtils {
         return image;
     }
 
-    public static boolean isTouchBarSupported() {
-        boolean supported = false;
-
-        var osv = new SystemInfo().getOperatingSystem().getVersionInfo();
-        switch (osv.getCodeName()) {
-            case "Catalina":
-            case "Mojave":
-            case "High Sierra":
-                supported = true;
-                break;
+    /**
+     * Check if touch bar support is available in macOS.
+     * Needs to use external helper for verification.
+     */
+    private static void checkTouchBarSupport() {
+        logger.trace("checkTouchBarSupport");
+        TOUCHBAR_SUPPORTED = false;
+        try {
+            var process = Runtime.getRuntime().exec("bin/mv_touchbar_support");
+            if (process.waitFor(2, TimeUnit.SECONDS)) {
+                // no timeout
+                TOUCHBAR_SUPPORTED = process.exitValue() == 0;
+            }
+        } catch (Exception e) {
+            logger.error("Failed to check touchbar support", e);
         }
+    }
 
-        return supported;
+    public static boolean isTouchBarSupported() {
+        return TOUCHBAR_SUPPORTED;
     }
 }

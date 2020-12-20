@@ -41,7 +41,7 @@ public class Logfile {
             bw.newLine();
             bw.write("=====================================================");
             bw.newLine();
-            bw.write("Programmpfad: " + MVFunctionSys.getPathJar());
+            bw.write("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
             bw.newLine();
             bw.write("Verzeichnis Einstellungen: " + settingsDir);
             bw.newLine();

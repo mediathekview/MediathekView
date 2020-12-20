@@ -19,10 +19,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.BlacklistRule;
-import mediathek.daten.blacklist.ListeBlacklist;
-import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.ReplaceList;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,8 +27,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -49,66 +44,6 @@ public class IoXmlLesen {
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
         daten = Daten.getInstance();
-    }
-
-    public ImmutableTriple<Integer, Integer, Integer> importAboBlacklist(String datei, boolean abo, boolean black,
-                                                                         boolean replace) throws IOException, XMLStreamException {
-        int foundAbos = 0;
-        int foundBlacklistEntries = 0;
-        int foundReplaceListEntries = 0;
-        XMLStreamReader parser = null;
-
-        try (FileInputStream fis = new FileInputStream(datei);
-             InputStreamReader in = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
-
-            parser = inFactory.createXMLStreamReader(in);
-            while (parser.hasNext()) {
-                final int event = parser.next();
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (abo && parser.getLocalName().equals(DatenAbo.TAG)) {
-                        // Abo
-                        DatenAbo datenAbo = new DatenAbo();
-                        if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
-                            foundAbos++;
-                            daten.getListeAbo().addAbo(datenAbo);
-                        }
-                    } else if (black && parser.getLocalName().equals(BlacklistRule.TAG)) {
-                        // Blacklist
-                        ListeBlacklist blacklist = daten.getListeBlacklist();
-                        BlacklistRule blacklistRule = new BlacklistRule();
-                        if (get(parser, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklistRule.arr)) {
-                            foundBlacklistEntries++;
-                            blacklist.addWithoutNotification(blacklistRule);
-                        }
-                    } else if (replace && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
-                        // Ersetzungstabelle
-                        String[] sa = new String[ReplaceList.MAX_ELEM];
-                        if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
-                            foundReplaceListEntries++;
-                            ReplaceList.list.add(sa);
-                        }
-                    }
-                }
-            }
-        } finally {
-            if (parser != null) {
-                try {
-                    parser.close();
-                } catch (XMLStreamException ignored) {
-                }
-            }
-        }
-        if (foundAbos > 0) {
-            daten.getListeAbo().aenderungMelden();
-        }
-
-        if (foundBlacklistEntries > 0)
-            daten.getListeBlacklist().filterListAndNotifyListeners();
-
-        if (foundReplaceListEntries > 0)
-            daten.getMessageBus().publishAsync(new ReplaceListChangedEvent());
-
-        return new ImmutableTriple<>(foundAbos, foundBlacklistEntries, foundReplaceListEntries);
     }
 
     private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames,
@@ -172,19 +107,24 @@ public class IoXmlLesen {
         }
     }
 
-    private void readAbos(XMLStreamReader parser) {
-        DatenAbo datenAbo = new DatenAbo();
-        if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
+    private void readAboEntry(XMLStreamReader parser) {
+        try {
+            DatenAbo datenAbo = new DatenAbo();
+            datenAbo.readFromConfig(parser);
             daten.getListeAbo().addAbo(datenAbo);
+        } catch (XMLStreamException e) {
+            logger.error("Failed to read abo entry", e);
         }
     }
 
-    private void readDownloads(XMLStreamReader parser) {
-        // Downloads
-        DatenDownload d = new DatenDownload();
-        if (get(parser, DatenDownload.TAG, DatenDownload.XML_NAMES, d.arr)) {
-            d.init();
-            daten.getListeDownloads().add(d);
+    private void readDownloadEntry(XMLStreamReader parser) {
+        try {
+            var dl = DatenDownload.getFromConfig(parser);
+            // abo entries will be generated...but we need this for CLI so far
+            if (!dl.isFromAbo())
+                daten.getListeDownloads().add(dl);
+        } catch (Exception e) {
+            logger.error("readDownloadEntry", e);
         }
     }
 
@@ -216,47 +156,26 @@ public class IoXmlLesen {
                     final int event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
                         switch (parser.getLocalName()) {
-                            case MVConfig.SYSTEM:
-                                // System
-                                readSystemConfiguration(parser);
-                                break;
-
-                            case DatenPset.TAG:
-                                // Programmgruppen
+                            case MVConfig.SYSTEM -> readSystemConfiguration(parser);
+                            case DatenPset.TAG -> {
                                 datenPset = new DatenPset();
                                 if (get(parser, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr)) {
                                     Daten.listePset.add(datenPset);
                                 }
-                                break;
-                            case DatenProg.TAG:
+                            }
+                            case DatenProg.TAG -> {
                                 DatenProg datenProg = new DatenProg();
                                 if (get(parser, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr)) {
                                     if (datenPset != null) {
                                         datenPset.addProg(datenProg);
                                     }
                                 }
-                                // ende Programgruppen
-                                break;
-
-                            case ReplaceList.REPLACELIST:
-                                readReplacementList(parser);
-                                break;
-
-                            case DatenAbo.TAG:
-                                readAbos(parser);
-                                break;
-
-                            case DatenDownload.TAG:
-                                readDownloads(parser);
-                                break;
-
-                            case BlacklistRule.TAG:
-                                readBlacklist(parser);
-                                break;
-
-                            case DatenMediaPath.TAG:
-                                readMediaPath(parser);
-                                break;
+                            }
+                            case ReplaceList.REPLACELIST -> readReplacementList(parser);
+                            case DatenAbo.TAG -> readAboEntry(parser);
+                            case DatenDownload.TAG -> readDownloadEntry(parser);
+                            case BlacklistRule.TAG -> readBlacklist(parser);
+                            case DatenMediaPath.TAG -> readMediaPath(parser);
                         }
                     }
                 }

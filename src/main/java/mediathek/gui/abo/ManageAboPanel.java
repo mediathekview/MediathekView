@@ -7,7 +7,6 @@ import javafx.scene.layout.HBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -22,17 +21,21 @@ import mediathek.tool.models.TModelAbo;
 import mediathek.tool.table.MVAbosTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-@SuppressWarnings("serial")
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
     private static final String ACTION_MAP_KEY_DELETE_ABO = "delete_abo";
+    private static final Logger logger = LogManager.getLogger();
     private final MVTable tabelle = new MVAbosTable();
     private final Daten daten;
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
@@ -45,7 +48,6 @@ public class ManageAboPanel extends JPanel {
      * update of abos in dialog will stop working...
      */
     private AboInformationController infoController;
-
 
     public ManageAboPanel() {
         super();
@@ -62,6 +64,40 @@ public class ManageAboPanel extends JPanel {
         initListeners();
 
         initializeTable();
+    }
+
+    public void addObjectData(TModelAbo model, String sender) {
+        model.setRowCount(0);
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
+        for (DatenAbo abo : daten.getListeAbo()) {
+            if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
+                object[DatenAbo.ABO_NR] = abo.getNr();
+                object[DatenAbo.ABO_EINGESCHALTET] = "";//Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                object[DatenAbo.ABO_NAME] = abo.arr[DatenAbo.ABO_NAME];
+                object[DatenAbo.ABO_SENDER] = abo.arr[DatenAbo.ABO_SENDER];
+                object[DatenAbo.ABO_THEMA] = abo.arr[DatenAbo.ABO_THEMA];
+                object[DatenAbo.ABO_TITEL] = abo.arr[DatenAbo.ABO_TITEL];
+                object[DatenAbo.ABO_THEMA_TITEL] = abo.arr[DatenAbo.ABO_THEMA_TITEL];
+                object[DatenAbo.ABO_IRGENDWO] = abo.arr[DatenAbo.ABO_IRGENDWO];
+                object[DatenAbo.ABO_MINDESTDAUER] = abo.mindestdauerMinuten;
+                object[DatenAbo.ABO_MIN] = abo.min ? "min" : "max";
+                object[DatenAbo.ABO_ZIELPFAD] = abo.arr[DatenAbo.ABO_ZIELPFAD];
+                object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                object[DatenAbo.ABO_PSET] = abo.arr[DatenAbo.ABO_PSET];
+                model.addRow(object);
+            }
+        }
+    }
+
+    private Datum getDatumForObject(String datum) {
+        Datum tmp = new Datum(0);
+        if (!datum.isEmpty()) {
+            try {
+                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
+            } catch (ParseException ignore) {
+            }
+        }
+        return tmp;
     }
 
     private void setupInfoPanel() {
@@ -92,6 +128,7 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setupToolBar() {
+        CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             toolBar = new FXAboToolBar();
             toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(true)));
@@ -99,7 +136,6 @@ public class ManageAboPanel extends JPanel {
             toolBar.btnDelete.setOnAction(e -> SwingUtilities.invokeLater(this::aboLoeschen));
             toolBar.btnEdit.setOnAction(e -> SwingUtilities.invokeLater(this::editAbo));
 
-            CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
             toolBar.btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
 
             toolBar.cbSender.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
@@ -182,14 +218,14 @@ public class ManageAboPanel extends JPanel {
 
         setCellRenderer();
 
-        tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
-        tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
+        tabelle.setModel(new TModelAbo(new Object[][]{}));
+        tabelle.setLineBreak(false);
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenAbo.spaltenAnzeigen,
                 new int[]{DatenAbo.ABO_EINGESCHALTET},
                 new int[]{},
                 true,
-                MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
+                null));
 
         setupKeyMap();
     }
@@ -201,7 +237,7 @@ public class ManageAboPanel extends JPanel {
             final String selectedItem = toolBar.cbSender.getValue();
             if (selectedItem != null) {
                 SwingUtilities.invokeLater(() -> {
-                    daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
+                    addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
                     tabelle.setSpalten();
                 });
             }
@@ -209,21 +245,27 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void aboLoeschen() {
-        int[] rows = tabelle.getSelectedRows();
+        final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             String text;
             if (rows.length == 1) {
-                int delRow = tabelle.convertRowIndexToModel(rows[0]);
+                final int delRow = tabelle.convertRowIndexToModel(rows[0]);
                 text = '"' + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
             } else {
-                text = rows.length + " Abos löschen?";
+                text = "Möchten Sie wirklich " + rows.length + " Abos löschen?";
             }
-            final int ret = JOptionPane.showConfirmDialog(this, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+
+            final int ret = JOptionPane.showConfirmDialog(this, text, "Abo löschen", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = tabelle.convertRowIndexToModel(rows[i]);
-                    ((TModelAbo) tabelle.getModel()).removeRow(delRow);
-                    daten.getListeAbo().remove(delRow);
+                try {
+                    final var listeAbo = daten.getListeAbo();
+                    for (var row : rows) {
+                        final int modelRow = tabelle.convertRowIndexToModel(row);
+                        var abo = listeAbo.findByNr(getAboNr(modelRow));
+                        listeAbo.remove(abo);
+                    }
+                } catch (Exception e) {
+                    logger.error("aboLoeschen", e);
                 }
             }
             tabelleLaden();
@@ -246,6 +288,16 @@ public class ManageAboPanel extends JPanel {
         }
     }
 
+    /**
+     * Get the abo number from the selected entry.
+     *
+     * @param modelRow the model index in the list.
+     * @return the number of the selected abo.
+     */
+    private int getAboNr(int modelRow) {
+        return (Integer) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_NR);
+    }
+
     public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
@@ -256,8 +308,10 @@ public class ManageAboPanel extends JPanel {
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
 
-        DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1);
+        var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
+
+        //DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, akt, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
         dialog.setVisible(true);
         if (!dialog.ok) {
@@ -272,7 +326,7 @@ public class ManageAboPanel extends JPanel {
                         continue;
                     }
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    DatenAbo sel = daten.getListeAbo().getAboNr(modelRow);
+                    var sel = daten.getListeAbo().findByNr(getAboNr(modelRow));
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
                         sel.setMindestDauerMinuten();
@@ -294,7 +348,7 @@ public class ManageAboPanel extends JPanel {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+                var akt = daten.getListeAbo().findByNr(getAboNr(modelRow));
                 akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();

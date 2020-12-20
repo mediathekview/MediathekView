@@ -1,7 +1,10 @@
 package mediathek.tool.listener;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.tool.table.MVTable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -11,21 +14,50 @@ import java.awt.event.MouseEvent;
  * Rechte Maustaste in der Tabelle (Kontextmenü)
  */
 public class BeobTableHeader extends MouseAdapter {
+    /**
+     * Size factor to increase/decrease the current font size.
+     */
+    private static final float FONT_SIZE_FACTOR = 2f;
     protected final MVTable tabelle;
     private final String[] columns;
     private final boolean[] spaltenAnzeigen;
-    private final int[] ausblenden;
+    /**
+     * Column indices which should NOT be displayed
+     */
+    private final int[] hiddenColumns;
+    /**
+     * Column indices which are supposed to be buttons.
+     */
     private final int[] button;
-    private final boolean icon;
-    private final MVConfig.Configs configs;
+    private final boolean displaySenderIconMenus;
+    private final MVConfig.Configs configKey;
     private JCheckBoxMenuItem[] box;
+    private JMenuItem miIncreaseFont;
+    private JMenuItem miDecreaseFont;
+    /**
+     * Indicate whether the used table (and cell renderer) is capable of changing font size.
+     */
+    private boolean fontSizeChangeCapable;
+    private JMenuItem miResetColumns;
+    private JMenuItem miResetFontSize;
 
-    public BeobTableHeader(MVTable tabelle, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon, MVConfig.Configs configs) {
+    /**
+     * Context Menu for manipulation of table visual appearance from table header.
+     *
+     * @param tabelle Attach mouse context handler to this table.
+     * @param spalten Which columns shall be displayed.
+     * @param hiddenColumns Column indices which should NOT be displayed.
+     * @param bbutton Column indices which are supposed to be buttons.
+     * @param displaySenderIconMenus Let user manipulate the display of sender icons.
+     * @param configKey If not NULL, store config setting for LINEBREAK in this key.
+     *                  If NULL, do not store/restore values and do not show LINEBREAK context menu entries.
+     */
+    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
         this.tabelle = tabelle;
-        this.icon = icon;
+        this.displaySenderIconMenus = displaySenderIconMenus;
         spaltenAnzeigen = spalten;
-        this.ausblenden = aausblenden;
-        this.configs = configs;
+        this.hiddenColumns = hiddenColumns;
+        this.configKey = configKey;
         button = bbutton;
 
         //dynamically query column names from table
@@ -35,6 +67,39 @@ public class BeobTableHeader extends MouseAdapter {
         for (int index = 0; index < colCount; index++) {
             columns[index] = (String) colModel.getColumn(index).getHeaderValue();
         }
+
+        createStaticMenuEntries();
+    }
+
+    private void createStaticMenuEntries() {
+        miResetColumns = new JMenuItem("Spalten zurücksetzen");
+        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
+
+        miDecreaseFont = new JMenuItem("Schrift verkleinern");
+        miDecreaseFont.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
+        miDecreaseFont.addActionListener(e -> {
+            var oldFont = tabelle.getDefaultFont();
+            final var oldSize = oldFont.getSize2D();
+            final var newSize = oldSize - FONT_SIZE_FACTOR;
+            tabelle.setDefaultFont(oldFont.deriveFont(newSize));
+            tabelle.setHeight();
+        });
+
+        miIncreaseFont = new JMenuItem("Schrift vergrößern");
+        miIncreaseFont.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
+        miIncreaseFont.addActionListener(e -> {
+            var oldFont = tabelle.getDefaultFont();
+            final var oldSize = oldFont.getSize2D();
+            final var newSize = oldSize + FONT_SIZE_FACTOR;
+            tabelle.setDefaultFont(oldFont.deriveFont(newSize));
+            tabelle.setHeight();
+        });
+
+        miResetFontSize = new JMenuItem("Schriftgröße zurücksetzen");
+        miResetFontSize.addActionListener(e -> {
+            tabelle.setDefaultFont(UIManager.getDefaults().getFont("Table.font"));
+            tabelle.setHeight();
+        });
     }
 
     @Override
@@ -52,7 +117,7 @@ public class BeobTableHeader extends MouseAdapter {
     }
 
     private boolean immer(int i) {
-        for (int ii : ausblenden) {
+        for (int ii : hiddenColumns) {
             if (i == ii) {
                 return true;
             }
@@ -71,7 +136,7 @@ public class BeobTableHeader extends MouseAdapter {
         setSpalten();
     }
 
-    private void showMenu(MouseEvent evt) {
+    protected JPopupMenu prepareMenu() {
         JPopupMenu jPopupMenu = new JPopupMenu();
         // Spalten ein-ausschalten
         box = new JCheckBoxMenuItem[this.columns.length];
@@ -93,7 +158,7 @@ public class BeobTableHeader extends MouseAdapter {
             item2.addActionListener(e -> toggleButtonVisibility(item2.isSelected()));
             jPopupMenu.add(item2);
         }
-        if (icon) {
+        if (displaySenderIconMenus) {
             jPopupMenu.addSeparator();
 
             final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Sendericons anzeigen");
@@ -115,24 +180,44 @@ public class BeobTableHeader extends MouseAdapter {
         }
 
         jPopupMenu.addSeparator();
-        // Tabellenspalten umbrechen
-        JCheckBoxMenuItem itemBr = new JCheckBoxMenuItem("Zeilen umbrechen");
-        itemBr.setSelected(tabelle.isLineBreak());
-        itemBr.addActionListener(e -> {
-            tabelle.setLineBreak(itemBr.isSelected());
-            MVConfig.add(configs, Boolean.toString(itemBr.isSelected()));
-            setSpalten();
-        });
-        jPopupMenu.add(itemBr);
+        if (configKey != null) {
+            // Tabellenspalten umbrechen
+            JCheckBoxMenuItem itemBr = new JCheckBoxMenuItem("Zeilen umbrechen");
+            itemBr.setSelected(tabelle.isLineBreak());
+            itemBr.addActionListener(e -> {
+                tabelle.setLineBreak(itemBr.isSelected());
+                MVConfig.add(configKey, Boolean.toString(itemBr.isSelected()));
+                setSpalten();
+            });
+            jPopupMenu.add(itemBr);
 
-        //##Trenner##
-        jPopupMenu.addSeparator();
+            jPopupMenu.addSeparator();
+        }
+
         // Tabellenspalten zurücksetzen
-        JMenuItem item1 = new JMenuItem("Spalten zurücksetzen");
-        item1.addActionListener(e -> tabelle.resetTabelle());
-        jPopupMenu.add(item1);
-        //anzeigen
-        jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        jPopupMenu.add(miResetColumns);
+
+        if (isFontSizeChangeCapable()) {
+            jPopupMenu.addSeparator();
+            jPopupMenu.add(miIncreaseFont);
+            jPopupMenu.add(miDecreaseFont);
+            jPopupMenu.add(miResetFontSize);
+        }
+
+        return jPopupMenu;
+    }
+
+    public boolean isFontSizeChangeCapable() {
+        return fontSizeChangeCapable;
+    }
+
+    public void setFontSizeChangeCapable(boolean fontSizeChangeCapable) {
+        this.fontSizeChangeCapable = fontSizeChangeCapable;
+    }
+
+    private void showMenu(MouseEvent evt) {
+        var popupMenu = prepareMenu();
+        popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
     }
 
     private boolean anzeigen(int i) {

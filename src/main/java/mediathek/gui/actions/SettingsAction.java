@@ -19,6 +19,6 @@ public class SettingsAction extends AbstractAction {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        mediathekGui.showSettingsDialog();
+        mediathekGui.getSettingsDialog().setVisible(true);
     }
 }

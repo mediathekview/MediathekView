@@ -4,11 +4,13 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.FileSpecifier;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Log;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -24,10 +26,11 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class MVPanelDownloadZiel extends JPanel {
-    public boolean nameGeaendert = false;
+    public boolean nameGeaendert;
     private final DatenDownload datenDownload;
     private final JFrame parent;
-    boolean letztenPfadAnzeigen;
+    private final boolean letztenPfadAnzeigen;
+    private static final Logger logger = LogManager.getLogger();
 
     public MVPanelDownloadZiel(JFrame p, DatenDownload download, boolean letzterPfad) {
         initComponents();
@@ -164,7 +167,7 @@ public class MVPanelDownloadZiel extends JPanel {
         if (pfad.endsWith(File.separator)) {
             pfad = pfad.substring(0, pfad.length() - 1);
         }
-        //##############################################
+
         // zur Sicherheit bei Unsinn im Set
         if (pfad.isEmpty()) {
             pfad = GuiFunktionen.getStandardDownloadPath();
@@ -172,20 +175,63 @@ public class MVPanelDownloadZiel extends JPanel {
         if (name.isEmpty()) {
             name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
-        String[] pathName = {pfad, name};
-        GuiFunktionen.checkLengthPath(pathName);
-        if (!pathName[0].equals(pfad) || !pathName[1].equals(name)) {
+
+        FileSpecifier fileSpecifier = new FileSpecifier(pfad,name);
+        fileSpecifier.checkLength();
+
+        if (!fileSpecifier.getPath().equals(pfad) || !fileSpecifier.getFileName().equals(name)) {
             MVMessageDialog.showMessageDialog(parent, "Dateiname war zu lang und wurde gekürzt!",
                     "Pfad zu lang!", JOptionPane.ERROR_MESSAGE);
-            pfad = pathName[0];
-            name = pathName[1];
         }
+
         String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
-        //##############################################
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD] = pfad;
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(pfad, name);
+
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = fileSpecifier.getFileName();
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD] = fileSpecifier.getPath();
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(fileSpecifier.getPath(),
+                fileSpecifier.getFileName());
+
         return !orgPfad.equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+    }
+
+    private class ZielBeobachter implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native directory chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(parent, "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
+                        jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
+                    } catch (Exception ex) {
+                        logger.error("actionPerformed", ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jComboBoxPath.getSelectedItem().toString().equals("")) {
+                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
+                        jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        logger.error("actionPerformed", ex);
+                    }
+                }
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -268,46 +314,5 @@ public class MVPanelDownloadZiel extends JPanel {
     private javax.swing.JLabel jLabelExists;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
-
-    private class ZielBeobachter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(parent, "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
-                        jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jComboBoxPath.getSelectedItem().toString().equals("")) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
-                        jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(356871087, ex);
-                    }
-                }
-            }
-        }
-    }
 
 }

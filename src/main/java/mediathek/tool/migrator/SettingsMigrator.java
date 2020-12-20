@@ -61,10 +61,6 @@ public class SettingsMigrator {
                         migrateMaxNumDownloads(element);
                         break;
 
-                    case "system-tab-filme-anzahl-button":
-                        migrateNumButtons(element);
-                        break;
-
                     case "system-panel-videoplayer-anzeigen":
                         migrateSystemPanelVideoplayerAnzeigen(element);
                         break;
@@ -95,21 +91,6 @@ public class SettingsMigrator {
         }
     }
 
-    private void migrateNumButtons(Element element) {
-        var node = element.getFirstChild();
-        int numButtons;
-        if (node != null) {
-            try {
-                numButtons = Integer.parseInt(node.getNodeValue());
-            }
-            catch (NumberFormatException ex) {
-                numButtons = 4;
-            }
-            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_MAX_VISIBLE, numButtons);
-            logger.debug("migrateNumButtons");
-        }
-    }
-
     private void migrateMaxNumDownloads(Element element) {
         var node = element.getFirstChild();
         int maxDownloads;
@@ -135,7 +116,7 @@ public class SettingsMigrator {
             catch (NumberFormatException ex) {
                 anzahl = 0;
             }
-            config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, anzahl);
+            config.setProperty(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, anzahl);
             logger.debug("migrateFilmListAnzTage");
         }
     }

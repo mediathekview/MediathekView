@@ -230,13 +230,25 @@ public class FilmActionPanel {
     dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
 
     try {
-      filmLengthSlider.setLowValueChanging(true);
-      filmLengthSlider.setLowValue(filterConfig.getFilmLengthMin());
-      filmLengthSlider.setLowValueChanging(false);
+        double loadedMin = filterConfig.getFilmLengthMin();
+        if(loadedMin > filmLengthSlider.getHighValue()) {
+            filmLengthSlider.setHighValueChanging(true);
+            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+            filmLengthSlider.setHighValueChanging(false);
 
-      filmLengthSlider.setHighValueChanging(true);
-      filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-      filmLengthSlider.setHighValueChanging(false);
+            filmLengthSlider.setLowValueChanging(true);
+            filmLengthSlider.setLowValue(loadedMin);
+            filmLengthSlider.setLowValueChanging(false);
+        } else {
+            filmLengthSlider.setLowValueChanging(true);
+            filmLengthSlider.setLowValue(loadedMin);
+            filmLengthSlider.setLowValueChanging(false);
+
+            filmLengthSlider.setHighValueChanging(true);
+            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+            filmLengthSlider.setHighValueChanging(false);
+        }
+
     } catch (Exception exception) {
       LOG.debug(
           "Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",

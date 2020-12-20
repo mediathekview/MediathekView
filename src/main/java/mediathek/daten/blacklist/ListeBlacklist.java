@@ -5,11 +5,11 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
-import mediathek.tool.Listener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -218,7 +218,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      */
     public synchronized void filterListAndNotifyListeners() {
         filterListe();
-        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        Daten.getInstance().getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /**
@@ -292,17 +292,21 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
         }
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
-        for (BlacklistRule blacklistEntry : this) {
-            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[BlacklistRule.BLACKLIST_SENDER], blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA],
-                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL])
-                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_TITEL].toLowerCase().split(","),
-                    Filter.isPattern(blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL])
-                            ? new String[]{blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
-                    new String[]{""}, 0, true, film, true)) {
+        for (BlacklistRule rule : this) {
+            if (Filter.filterAufFilmPruefenWithLength(rule.arr[BlacklistRule.BLACKLIST_SENDER],
+                    rule.arr[BlacklistRule.BLACKLIST_THEMA],
+                    makePattern(rule.arr[BlacklistRule.BLACKLIST_TITEL]),
+                    makePattern(rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]),
+                    EMPTY_STRING_ARRAY, 0, true, film, true)) {
                 return bl_is_whitelist;
             }
         }
         return !bl_is_whitelist;
+    }
+    final static private String[] EMPTY_STRING_ARRAY = new String[]{""};
+
+    private String[] makePattern(String input) {
+        return Filter.isPattern(input) ? new String[]{input} : input.toLowerCase().split(",");
     }
 
     /**

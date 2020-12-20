@@ -1,10 +1,14 @@
 package mediathek.javafx.descriptionPanel;
 
+import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
@@ -15,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
@@ -32,7 +37,6 @@ public class DescriptionPanelController {
     @FXML
     private ScrollPane scrollPane;
 
-    private EventHandler<Event> closeHandler;
     private DatenFilm currentFilm;
     private ContextMenu contextMenu;
     private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
@@ -48,6 +52,21 @@ public class DescriptionPanelController {
                 }
             });
         });
+    }
+
+    public static DescriptionPanelController install(JFXPanel fxDescriptionPanel) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
+
+        TabPane descriptionPane = loader.load();
+        final DescriptionPanelController descriptionPanelController = loader.getController();
+        descriptionPanelController.setOnCloseRequest(e -> {
+            SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
+            e.consume();
+        });
+
+        fxDescriptionPanel.setScene(new Scene(descriptionPane));
+        return descriptionPanelController;
     }
 
     public void showFilmDescription(@NotNull Optional<DatenFilm> optFilm) {
@@ -121,8 +140,7 @@ public class DescriptionPanelController {
     }
 
     public void setOnCloseRequest(EventHandler<Event> e) {
-        closeHandler = e;
-        descriptionTab.setOnCloseRequest(evt -> closeHandler.handle(evt));
+        descriptionTab.setOnCloseRequest(e);
     }
 
     public void initialize() {

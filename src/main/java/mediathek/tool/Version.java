@@ -3,39 +3,42 @@ package mediathek.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Version {
-
+public record Version(int major, int minor, int patch) {
+    private static final Version INVALID_VERSION = new Version(0,0,0);
     private static final Logger logger = LogManager.getLogger();
-    private int major;
-    private int minor;
-    private int patch;
 
-    public Version(int major, int minor, int patch) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
-    }
+    public static Version fromString(String versionsstring) {
+        Version result;
 
-    public Version(String versionsstring) {
-        String[] versions = versionsstring.replaceAll("-SNAPSHOT", "").split("\\.");
+        final String[] versions = versionsstring.replaceAll("-SNAPSHOT", "").split("\\.");
         if (versions.length == 3) {
             try {
-                major = Integer.parseInt(versions[0]);
-                minor = Integer.parseInt(versions[1]);
-                patch = Integer.parseInt(versions[2]);
+                result = new Version(Integer.parseInt(versions[0]), Integer.parseInt(versions[1]), Integer.parseInt(versions[2]));
             } catch (NumberFormatException ex) {
                 logger.error("Fehler beim Parsen der Version: {}", versionsstring, ex);
-                major = 0;
-                minor = 0;
-                patch = 0;
+                result = INVALID_VERSION;
             }
-        }
+        } else
+            result = INVALID_VERSION;
+
+        return result;
     }
 
-    public Version() {
-        major = 0;
-        minor = 0;
-        patch = 0;
+    /**
+     * Check if this version is invalid.
+     * @return true if invalid, false otherwise.
+     */
+    public boolean isInvalid() {
+        return equals(INVALID_VERSION);
+    }
+
+    /**
+     * Check if other version is newer than we are.
+     * @param other the other version to check.
+     * @return true if other is newer, otherwise false.
+     */
+    public boolean isOlderThan(Version other) {
+        return other.toNumber() > this.toNumber();
     }
 
     /**
@@ -43,7 +46,7 @@ public class Version {
      *
      * @return gewichtete Zahl als Integer
      */
-    public int toNumber() {
+    private int toNumber() {
         return major * 100 + minor * 10 + patch;
     }
 
@@ -56,15 +59,4 @@ public class Version {
     public String toString() {
         return String.format("%d.%d.%d", major, minor, patch);
     }
-
-    /**
-     * Nimmt ein Objekt vom Typ Version an und vergleicht ihn mit sich selbst
-     *
-     * @param versionzwei Versionsobjekt welches zum vergleich rangezogen werden soll
-     * @return 1 Version a ist größer, 0 Versionen sind gleich oder -1 Version a ist kleiner
-     */
-    public int compare(Version versionzwei) {
-        return Integer.compare(versionzwei.toNumber(), this.toNumber());
-    }
-
 }

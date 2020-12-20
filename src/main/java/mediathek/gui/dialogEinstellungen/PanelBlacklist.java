@@ -8,7 +8,9 @@ import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.tool.*;
+import net.engio.mbassy.listener.Handler;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -40,12 +42,9 @@ public class PanelBlacklist extends JPanel {
         jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
         init_();
         init();
-        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name) {
-            @Override
-            public void ping() {
-                init_();
-            }
-        });
+
+        daten.getMessageBus().subscribe(this);
+
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
             public void ping() {
@@ -64,6 +63,11 @@ public class PanelBlacklist extends JPanel {
                 comboThemaLaden();
             }
         });
+    }
+
+    @Handler
+    private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
+        SwingUtilities.invokeLater(this::init_);
     }
 
     private void init_() {
@@ -183,8 +187,8 @@ public class PanelBlacklist extends JPanel {
             }
 
             private void tus() {
-                Filter.checkPattern1(jTextFieldThemaTitel);
-                Filter.checkPattern1(jTextFieldTitel);
+                Filter.validatePatternInput(jTextFieldThemaTitel);
+                Filter.validatePatternInput(jTextFieldTitel);
             }
         };
         jTextFieldTitel.getDocument().addDocumentListener(documentListener);
@@ -224,7 +228,7 @@ public class PanelBlacklist extends JPanel {
 
     private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
-        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
+        daten.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     private void comboThemaLaden() {

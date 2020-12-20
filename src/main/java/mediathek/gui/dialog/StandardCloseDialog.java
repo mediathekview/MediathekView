@@ -1,39 +1,36 @@
 package mediathek.gui.dialog;
 
-import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
  * A standard swing dialog template with a close button.
  */
-public abstract class StandardCloseDialog extends StandardDialog {
+public abstract class StandardCloseDialog extends JDialog {
     public StandardCloseDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         EscapeKeyHandler.installHandler(this, this::dispose);
+
+        var contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(createContentPanel(), BorderLayout.CENTER);
+        var buttonPanel = new ButtonPanel();
+        buttonPanel.add(createButtonPanel(),BorderLayout.EAST);
+        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+        pack();
     }
 
-    @Override
     public abstract JComponent createContentPanel();
 
-    @Override
-    public JComponent createBannerPanel() {
-        return null;
-    }
-
-    @Override
-    public final ButtonPanel createButtonPanel() {
-        ButtonPanel pnl = new ButtonPanel();
+    public final ButtonFlowPanel createButtonPanel() {
+        ButtonFlowPanel pnl = new ButtonFlowPanel();
         JButton btn = new JButton(new DisposeDialogAction(this, "Schließen", "Dialog schließen"));
         getRootPane().setDefaultButton(btn);
-        pnl.addButton(btn);
-        pnl.setBorder(new EmptyBorder(5, 5, 5, 5));
+        pnl.add(btn);
         return pnl;
     }
 }

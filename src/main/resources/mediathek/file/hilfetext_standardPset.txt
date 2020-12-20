@@ -12,11 +12,6 @@ diese Programme installiert sein:
 VLC
 Dieses Programm dient zum Ansehen und teilweise auch zum Aufzeichnen der Filme.
 
-flvstreamer
-Damit können Flashfilme (die URL beginnt mit "rtmp") aufgezeichnet werden.
-Es ist auch möglich, durch die gleichzeitige Nutzung des VLC und des
-flvstreamers, Flashfilme direkt anzusehen.
-
 ffmpeg
 Zum Aufzeichnen von Playlisten (URL endet mit "m3u8")
 
@@ -26,10 +21,9 @@ Die Programme können über die Paketverwaltung eingespielt werden.
 
 
 Windows, OS X:
-Die Programme "flvstreamer" und "ffmpeg" sind bereits in MediathekView
-integriert. Es muss bloss noch "VLC" aus dem Internet geladen werden:
+Das Programm "ffmpeg" ist bereits in MediathekView integriert.
+Es muss bloss noch "VLC" aus dem Internet geladen werden:
 
 
 http://www.videolan.org
-https://savannah.nongnu.org/projects/flvstreamer/
 http://ffmpeg.org

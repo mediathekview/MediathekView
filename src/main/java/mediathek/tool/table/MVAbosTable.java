@@ -16,7 +16,7 @@ public class MVAbosTable extends ASelectableMVTable {
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN;
 
-        setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
+        setModel(new TModelAbo(new Object[][]{}));
     }
 
     @Override

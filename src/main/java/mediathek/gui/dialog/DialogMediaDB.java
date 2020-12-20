@@ -240,7 +240,7 @@ public class DialogMediaDB extends JDialog {
         }
 
         private void tus() {
-            Filter.checkPattern1(jTextFieldSearch);
+            Filter.validatePatternInput(jTextFieldSearch);
             if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
                 searchFilmInDb();
             }
