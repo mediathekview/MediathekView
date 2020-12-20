@@ -10,6 +10,8 @@ cache:
     - $HOME/.m2
 
 default:
+  tags:
+    - mvrunner1
   before_script:
     - source /private/ENVS
     - echo $LICENSE_KEY_8
