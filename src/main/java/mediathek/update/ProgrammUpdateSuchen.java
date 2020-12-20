@@ -35,19 +35,19 @@ public class ProgrammUpdateSuchen {
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        opt.ifPresentOrElse(progInfo -> {
+        opt.ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.version().toNumber() == 0) {
-                    Exception ex = new RuntimeException("progInfo.getVersion() == 0");
+                if (remoteProgramInfo.version().isInvalid()) {
+                    Exception ex = new RuntimeException("progInfo.version() is invalid");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
-                    logger.warn("getVersion().toNumber() == 0");
+                    logger.warn("progInfo.version() is invalid");
                 } else {
-                    if (checkForNewerVersion(progInfo.version())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo.version());
+                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.version())) {
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.version());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {
@@ -88,7 +88,7 @@ public class ProgrammUpdateSuchen {
                     text.append('\n');
                 }
             }
-            if (text.length() > 0) {
+            if (!text.isEmpty()) {
                 //TODO add new dialog with web view here!
                 JDialog dlg = new DialogHinweisUpdate(null, text.toString());
                 dlg.setVisible(true);
@@ -115,16 +115,6 @@ public class ProgrammUpdateSuchen {
                 displayNoNewInfoMessage();
         } else
             displayInfoMessages(showAll);
-    }
-
-    /**
-     * Check if a newer version exists.
-     *
-     * @param info the remote version number.
-     * @return true if there is a newer version
-     */
-    private boolean checkForNewerVersion(Version info) {
-        return (Konstanten.MVVERSION.compare(info) == 1);
     }
 
     /**
@@ -175,7 +165,7 @@ public class ProgrammUpdateSuchen {
                         }
                     }
 
-                    return Optional.of(new ServerProgramInformation(new Version(version)));
+                    return Optional.of(new ServerProgramInformation(Version.fromString(version)));
                 } finally {
                     if (parser != null) {
                         try {

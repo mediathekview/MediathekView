@@ -7,8 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import java.util.stream.Stream;
 @SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
-    private static final Logger logger = LogManager.getLogger(ListeFilme.class);
     private final FilmListMetaData metaData = new FilmListMetaData();
     /**
      * List of available senders which notifies its users.
@@ -71,17 +69,17 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 .collect(Collectors.toList());
     }
 
-    public synchronized void updateFromFilmList(ListeFilme listeEinsortieren) {
-        // in eine vorhandene Liste soll eine andere Filmliste einsortiert werden
+    public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
+        // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme die noch nicht vorhanden sind, einsortiert
-        final HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
+        final HashSet<String> hashNewFilms = new HashSet<>(newFilmsList.size() + 1, 1);
 
-        //TODO check if f.getUrl might be better solution
-        listeEinsortieren.forEach((DatenFilm f) -> hash.add(f.getIndex())); //alternativ f.getUrl()
-        this.removeIf(f -> hash.contains(f.getIndex())); //alternativ f.getUrl()
+        newFilmsList.forEach(newFilm -> hashNewFilms.add(newFilm.getUniqueHash()));
+        this.removeIf(currentFilm -> hashNewFilms.contains(currentFilm.getUniqueHash()));
 
-        listeEinsortieren.forEach(this::addInit);
-        hash.clear();
+        hashNewFilms.clear();
+
+        newFilmsList.forEach(this::addInit);
     }
 
     private void addInit(DatenFilm film) {
@@ -122,10 +120,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             if (f.getUrl().equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_HD).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).equals(url)) {
                 ret = f;
                 break;
-            } else if (f.getUrlFuerAufloesung(FilmResolution.AUFLOESUNG_KLEIN).equals(url)) {
+            } else if (f.getUrlFuerAufloesung(FilmResolution.Enum.LOW).equals(url)) {
                 ret = f;
                 break;
             }

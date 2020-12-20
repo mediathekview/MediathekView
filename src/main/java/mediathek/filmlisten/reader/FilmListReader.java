@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -14,6 +15,7 @@ import mediathek.tool.*;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.Okio;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,14 +28,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +47,7 @@ public class FilmListReader implements AutoCloseable {
     private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
+    private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
@@ -73,22 +76,12 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private InputStream selectDecompressor(String source, InputStream in) throws Exception {
-        final InputStream is;
 
-        switch (source.substring(source.lastIndexOf('.'))) {
-            case Konstanten.FORMAT_XZ:
-                is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
-                break;
-
-            case ".json":
-                is = in;
-                break;
-
-            default:
-                throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
-        }
-
-        return is;
+        return switch (source.substring(source.lastIndexOf('.'))) {
+            case Konstanten.FORMAT_XZ -> new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
+            case ".json" -> in;
+            default -> throw new UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.");
+        };
     }
 
     private void parseNeu(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -201,7 +194,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrlHd(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setHighQualityUrl(checkedString(jp));
+        datenFilm.setUrlHighQuality(checkedString(jp));
     }
 
     private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -243,7 +236,8 @@ public class FilmListReader implements AutoCloseable {
     private void parseAudioVersion(String title, DatenFilm film) {
         if (title.contains("Hörfassung") || title.contains("Audiodeskription")
                 || title.contains("AD |") || title.endsWith("(AD)")
-                || title.contains("Hörspiel") || title.contains("Hörfilm"))
+                || title.contains("Hörspiel") || title.contains("Hörfilm")
+                || title.contains("mit gesprochenen Untertiteln"))
             film.setAudioVersion(true);
     }
 
@@ -292,10 +286,10 @@ public class FilmListReader implements AutoCloseable {
         skipFieldDescriptions(jp);
 
         final var config = ApplicationConfiguration.getConfiguration();
-        final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_TRAILER, true);
-        final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_AUDIODESCRIPTION, true);
-        final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_SIGNLANGUAGE, true);
-        final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FILMLIST_LOAD_LIVESTREAMS, true);
+        final boolean loadTrailer = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true);
+        final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true);
+        final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true);
+        final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true);
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
@@ -326,6 +320,11 @@ public class FilmListReader implements AutoCloseable {
 
                 //this will check after all data has been read
                 parseLivestream(datenFilm);
+                checkPlayList(datenFilm);
+
+                //if user specified he doesn´t want to load this sender, skip...
+                if (!senderApprover.isApproved(datenFilm.getSender()))
+                    continue;
 
                 if (!loadTrailer) {
                     if (datenFilm.isTrailerTeaser())
@@ -361,6 +360,16 @@ public class FilmListReader implements AutoCloseable {
 
         stopwatch.stop();
         logger.debug("Reading filmlist took {}", stopwatch);
+    }
+
+    /**
+     * Check if this film entry is a playlist entry, ends with .m3u8
+     *
+     * @param datenFilm the film to check.
+     */
+    private void checkPlayList(@NotNull DatenFilm datenFilm) {
+        if (datenFilm.getUrl().endsWith(".m3u8"))
+            datenFilm.setPlayList(true);
     }
 
     private void checkDays(long days) {
@@ -403,7 +412,6 @@ public class FilmListReader implements AutoCloseable {
      * @param listeFilme the list to read to
      */
     private void processFromFile(String source, ListeFilme listeFilme) {
-        FileChannel fc = null;
         try {
             final Path filePath = Paths.get(source);
             final long fileSize = Files.size(filePath);
@@ -412,11 +420,11 @@ public class FilmListReader implements AutoCloseable {
 
             final ProgressMonitor monitor = new ProgressMonitor(source);
 
-            fc = (FileChannel) Files.newByteChannel(filePath, EnumSet.of(StandardOpenOption.READ));
-            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-
-            try (ByteBufferBackedInputStream bbis = new ByteBufferBackedInputStream(mbb);
-                 InputStream input = new ProgressMonitorInputStream(bbis, fileSize, monitor);
+            //windows doesn´t like mem-mapped files...causes FileSystemExceptions :(
+            try (var sourceFile = Okio.source(filePath);
+                 var bufferedSource = Okio.buffer(sourceFile);
+                 var is = bufferedSource.inputStream();
+                 InputStream input = new ProgressMonitorInputStream(is, fileSize, monitor);
                  InputStream in = selectDecompressor(source, input);
                  JsonParser jp = new JsonFactory().createParser(in)) {
                 readData(jp, listeFilme);
@@ -427,13 +435,6 @@ public class FilmListReader implements AutoCloseable {
         } catch (Exception ex) {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
-        } finally {
-            if (fc != null) {
-                try {
-                    fc.close();
-                } catch (IOException ignored) {
-                }
-            }
         }
     }
 
@@ -504,7 +505,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void notifyFertig(String url, ListeFilme liste) {
-        logger.info("Liste Filme gelesen am: {}",DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
+        logger.info("Liste Filme gelesen am: {}", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
                 .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
         logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());

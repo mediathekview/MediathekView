@@ -4,12 +4,15 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
 public class DirOpenAction {
+    private static final Logger logger = LogManager.getLogger();
 
     public static void zielordnerOeffnen(Frame parent, String ordner) {
         boolean gut = false;
@@ -67,7 +70,8 @@ public class DirOpenAction {
                     gut = true;
                 }
             } catch (Exception eex) {
-                Log.errorLog(306590789, ex, "Ordner öffnen: " + ordner);
+                logger.error("Ordner öffnen: {}", ordner);
+                logger.error(ex);
             }
         } finally {
             if (!gut) {

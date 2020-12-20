@@ -1,22 +1,22 @@
-JFDML JFormDesigner: "7.0.0.0.133" Java: "1.8.0_152-release" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jLabel1::::0:x, comp jPanel2:::::x}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jLabel1:::p:167:p, space :::p, comp jPanel2:::p::p, space :::x}}"
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+			"gap": 5
 		} ) {
 			name: "this"
+			"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel1"
-				"text": "<html>Bei Problemen sollten die Anleitung oder die FAQ die erste Anlaufstelle sein. Führt das zu keiner Lösung, kann auch eine Suche im Forum weiterhelfen.<br><br>\nWenn auch das nicht weiterhilft, sollte man eine Anfrage im Forum stellen. Damit die Frage auch beantwortet \nwerden kann, sind ein paar Infos wichtig:<br>\n * Möglichst genaue Beschreibung des Problems (was geht nicht, welcher Film, ..)<br>\n * Infos über das Betriebssystem und die Programmversion<br>\n<b>ODER BESSER:</b><br>\nDas generierte Logfile an den Post im Forum anhängen</html>"
+				"text": "<html>Bei Problemen sollten die Anleitung oder die FAQ die erste Anlaufstelle sein.<br>Führt das zu keiner Lösung, kann auch eine Suche im Forum weiterhelfen.<br><br> Wenn auch das nicht weiterhilft, sollte man eine Anfrage im Forum stellen. Damit diese auch beantwortet  werden kann,<br>sind ein paar Infos wichtig:<br>  * Möglichst <b>genaue Beschreibung</b> des Problems (was geht nicht, welcher Film, ..)<br>  * Infos über das Betriebssystem und die Programmversion</html>"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp jSeparator1::t:::x, seq {par l {seq l {comp jButtonResetSets:::p::p, space :::p, comp jButtonHilfeReset:::p::p}, comp jButtonResetAll::l:p::p}, space :0:0:x}, seq {space :6:6:p, par l {comp jLabel10::l::578:x, comp jLabel7::::0:x}}}, space :::p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jSeparator1::t:::x, seq {par l {seq l {comp jButtonResetSets:::p::p, space :::p, comp jButtonHilfeReset:::p::p}, comp jButtonResetAll::l:p::p}, space :0:0:x}, seq {space :6:6:p, par l {comp jLabel10::l:::x, comp jLabel7::::0:x}}}, space :::p}}"
 				"$verticalGroup": "par l {seq l {space :::p, par l {comp jButtonResetSets:::p::p, comp jButtonHilfeReset:::p::p}, space :::p, comp jLabel7:::p:54:p, space :::p, comp jSeparator1:::p::p, space :::p, comp jButtonResetAll:::p::p, space :::p, comp jLabel10:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel2"
@@ -33,9 +33,10 @@ new FormModel {
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
 					"toolTipText": "Hilfe anzeigen"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
+				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
 					name: "jLabel7"
-					"text": "<html>Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gelöscht und die Standardsets wieder angelegt.<br>Abos und Blacklist bleiben erhalten.</html>"
+					"text": "Es werden alle Programmsets (auch eigene) zum Abspielen und Aufzeichnen gelöscht und die Standardsets wieder angelegt.\nAbos und Blacklist bleiben erhalten."
+					"rows": 3
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -59,7 +60,7 @@ new FormModel {
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 610, 375 )
+			"size": new java.awt.Dimension( 610, 335 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

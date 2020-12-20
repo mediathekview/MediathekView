@@ -2,6 +2,7 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -10,10 +11,10 @@ import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.ByteUnitUtil;
 import mediathek.tool.Datum;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -58,7 +59,7 @@ public class StarterClass {
         } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
             logger.error("Download fehlgeschlagen, Datei zu klein:{}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else {
-            if (datenDownload.istAbo()) {
+            if (datenDownload.isFromAbo()) {
                 daten.getAboHistoryController().zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                         datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                         datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
@@ -154,7 +155,7 @@ public class StarterClass {
         }
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
-                text.add("Bytes gelesen: " + ByteUnitUtil.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
+                text.add("Bytes gelesen: " + FileUtils.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
                 text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
@@ -180,7 +181,7 @@ public class StarterClass {
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + ByteUnitUtil.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
+                "Größe:  " + FileUtils.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
         };
 
         StringBuilder meldung = new StringBuilder();
@@ -276,7 +277,10 @@ public class StarterClass {
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.getSeenHistoryController().zeileSchreiben(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            try (var historyController = new SeenHistoryController()){
+                historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            }
+
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
             if (ersterFilm.isBookmarked()) {
               ersterFilm.getBookmark().setSeen(true);
@@ -361,17 +365,15 @@ public class StarterClass {
             Thread downloadThread;
 
             switch (datenDownload.art) {
-                case DatenDownload.ART_PROGRAMM:
+                case DatenDownload.ART_PROGRAMM -> {
                     downloadThread = new ExternalProgramDownload(daten, datenDownload);
                     downloadThread.start();
-                    break;
-                case DatenDownload.ART_DOWNLOAD:
+                }
+                case DatenDownload.ART_DOWNLOAD -> {
                     downloadThread = new DirectHttpDownload(daten, datenDownload);
                     downloadThread.start();
-                    break;
-                default:
-                    logger.error("StarterClass.Starten - Switch-default");
-                    break;
+                }
+                default -> logger.error("StarterClass.Starten - Switch-default");
             }
         }
     }

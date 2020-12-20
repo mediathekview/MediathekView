@@ -1,10 +1,7 @@
 package mediathek.mac;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
@@ -26,20 +23,46 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-@SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-    private static final String SHUTDOWN_HELPER_APP_BINARY_PATH = "/Contents/MacOS/MediathekView Shutdown Helper";
-    private final OsxPowerManager powerManager = new OsxPowerManager();
     protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
+    private final OsxPowerManager powerManager = new OsxPowerManager();
 
     public MediathekGuiMac() {
         super();
 
         setupDockIcon();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+
+        if (TouchBarUtils.isTouchBarSupported()) {
+            var comp = tabbedPane.getSelectedComponent();
+            if (comp.equals(tabFilme)) {
+                // bugfix for macOS 11.1 Big Sur which otherwise wouldn´t show the touchbar on startup...
+                // window must be visible to activate touchbar
+                tabFilme.showTouchBar();
+            }
+        }
+    }
+
+    @Override
+    protected boolean officialLauncherInUse() {
+        boolean macOSBinaryInuse = true;
+        final var osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP);
+        if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
+            macOSBinaryInuse = false;
+        }
+        return macOSBinaryInuse;
+    }
+
+    @Override
+    protected void installAdditionalHelpEntries() {
+        //unused on macOS
     }
 
     @Override
@@ -51,17 +74,14 @@ public class MediathekGuiMac extends MediathekGui {
     protected void installTouchBarSupport() {
         logger.trace("install touch bar support");
         if (TouchBarUtils.isTouchBarSupported()) {
-            //make filme tab touchbar visible by default, otherwise it will not appear...
-            tabFilme.touchBar.show(MediathekGuiMac.this);
-            final var tabbedPane = getTabbedPane();
             tabbedPane.addChangeListener(e -> {
                 var comp = tabbedPane.getSelectedComponent();
                 if (comp.equals(tabFilme)) {
-                    tabDownloads.touchBar.hide(MediathekGuiMac.this);
-                    tabFilme.touchBar.show(MediathekGuiMac.this);
+                    tabDownloads.hideTouchBar();
+                    tabFilme.showTouchBar();
                 } else if (comp.equals(tabDownloads)) {
-                    tabFilme.touchBar.hide(MediathekGuiMac.this);
-                    tabDownloads.touchBar.show(MediathekGuiMac.this);
+                    tabFilme.hideTouchBar();
+                    tabDownloads.showTouchBar();
                 }
             });
         }
@@ -79,7 +99,7 @@ public class MediathekGuiMac extends MediathekGui {
             logger.error("error closing notification center", e);
         }
 
-        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
         // we need to figure if we have native support available
         config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
 
@@ -106,20 +126,9 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void shutdownComputer() {
         try {
-            var result = Spotlight.find("kMDItemCFBundleIdentifier == org.mediathekview.MediathekView-Shutdown-Helper");
-            if (result.isEmpty())
-                logger.error("could not locate mediathekview shutdown helper app");
-            else {
-                File appLocation = result.get(0);
-                logger.debug("Shutdown Helper location: {}", appLocation.toString());
-                logger.info("Executing shutdown helper");
-                final ProcessBuilder builder = new ProcessBuilder(appLocation.toString() + SHUTDOWN_HELPER_APP_BINARY_PATH);
-                builder.command().add("-shutdown");
-                builder.start();
-                logger.debug("shutdown helper app was launched");
-            }
-        } catch (Exception e) {
-            logger.error("unexpected error occured", e);
+            Runtime.getRuntime().exec("nohup bin/mv_shutdown_helper");
+        } catch (IOException e) {
+            logger.error(e);
         }
     }
 
@@ -197,7 +206,7 @@ public class MediathekGuiMac extends MediathekGui {
             }
         });
         desktop.setAboutHandler(e -> showAboutDialog());
-        desktop.setPreferencesHandler(e -> showSettingsDialog());
+        desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
     }
 
     /**
@@ -215,22 +224,6 @@ public class MediathekGuiMac extends MediathekGui {
             }
         } catch (IOException ex) {
             logger.error("OS X Application image could not be loaded", ex);
-        }
-    }
-
-    static class WorkaroundStage extends Stage {
-        public WorkaroundStage() {
-            initStyle(StageStyle.UTILITY);
-            var root = new StackPane();
-            root.setStyle("-fx-background-color: TRANSPARENT");
-
-            var scene = new Scene(root, 1, 1);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-
-            setScene(scene);
-            setWidth(1d);
-            setHeight(1d);
-            setOpacity(0d);
         }
     }
 }

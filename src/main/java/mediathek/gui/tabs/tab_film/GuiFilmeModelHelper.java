@@ -1,31 +1,31 @@
 package mediathek.gui.tabs.tab_film;
 
 import javafx.collections.ObservableList;
-import mediathek.config.Daten;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
+import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
-    private final Daten daten;
-    private final JTable tabelle;
     private final TModelFilm filmModel;
     private final ListeFilme listeFilme;
+    private final SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
-    private boolean nurNeue;
-    private boolean onlyBookMarked;
-    private boolean nurUt;
-    private boolean showOnlyHd;
-    private boolean kGesehen;
-    private boolean keineAbos;
-    private boolean showOnlyLivestreams;
+    private boolean showNewOnly;
+    private boolean showBookmarkedOnly;
+    private boolean showSubtitlesOnly;
+    private boolean showHqOnly;
+    private boolean dontShowSeen;
+    private boolean dontShowAbos;
+    private boolean showLivestreamsOnly;
     private boolean dontShowTrailers;
     private boolean dontShowGebaerdensprache;
     private boolean dontShowAudioVersions;
@@ -34,13 +34,13 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, JTable tabelle) {
+    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList,
+                               @NotNull SeenHistoryController historyController) {
         this.fap = fap;
-        this.daten = daten;
-        this.tabelle = tabelle;
+        this.historyController = historyController;
 
         filmModel = new TModelFilm();
-        listeFilme = daten.getListeFilmeNachBlackList();
+        listeFilme = filteredList;
 
     }
 
@@ -93,13 +93,13 @@ public class GuiFilmeModelHelper {
     }
 
     private void updateFilterVars() {
-        nurNeue = fap.showNewOnly.getValue();
-        onlyBookMarked = fap.showBookMarkedOnly.getValue();
-        nurUt = fap.showSubtitlesOnly.getValue();
-        showOnlyHd = fap.showOnlyHd.getValue();
-        kGesehen = fap.showUnseenOnly.getValue();
-        keineAbos = fap.dontShowAbos.getValue();
-        showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
+        showNewOnly = fap.showNewOnly.getValue();
+        showBookmarkedOnly = fap.showBookMarkedOnly.getValue();
+        showSubtitlesOnly = fap.showSubtitlesOnly.getValue();
+        showHqOnly = fap.showOnlyHd.getValue();
+        dontShowSeen = fap.showUnseenOnly.getValue();
+        dontShowAbos = fap.dontShowAbos.getValue();
+        showLivestreamsOnly = fap.showLivestreamsOnly.getValue();
         dontShowTrailers = fap.dontShowTrailers.getValue();
         dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
         dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
@@ -120,91 +120,76 @@ public class GuiFilmeModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        for (DatenFilm film : listeFilme) {
-            if (!selectedSenders.isEmpty()) {
-                if (!selectedSenders.contains(film.getSender()))
-                    continue;
-            }
+        if (dontShowSeen)
+            historyController.prepareMemoryCache();
 
-            final long filmLength = film.getFilmLength();
-            if (filmLength < minLengthInSeconds)
-                continue;
-
-            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-                if (filmLength > maxLengthInSeconds)
-                    continue;
-
-            }
-            if (nurNeue) {
-                if (!film.isNew()) {
-                    continue;
-                }
-            }
-            
-            if (onlyBookMarked) {
-              if (!film.isBookmarked()) {
-                continue;
-              }
-            }
-            if (showOnlyLivestreams) {
-                if (!film.isLivestream()) {
-                    continue;
-                }
-            }
-            if (showOnlyHd) {
-                if (!film.isHighQuality()) {
-                    continue;
-                }
-            }
-            if (nurUt) {
-                if (!film.hasSubtitle()) {
-                    if (!film.hasBurnedInSubtitles())
-                        continue;
-                }
-            }
-            if (keineAbos) {
-                if (!film.getAboName().isEmpty()) {
-                    continue;
-                }
-            }
-            if (kGesehen) {
-                if (daten.getSeenHistoryController().urlPruefen(film.getUrl())) {
-                    continue;
-                }
-            }
-
-            if (dontShowTrailers) {
-                if (film.isTrailerTeaser())
-                    continue;
-            }
-
-            if (dontShowGebaerdensprache) {
-                if (film.isSignLanguage())
-                    continue;
-            }
-
-            if (dontShowAudioVersions) {
-                if (film.isAudioVersion())
-                    continue;
-            }
-
-            if (!filterThema.isEmpty()) {
-                if (!film.getThema().equalsIgnoreCase(filterThema))
-                    continue;
-            }
-
-            //minor speedup in case we don´t have search field entries...
-            if (searchFieldEmpty)
-                addFilmToTableModel(film);
-            else {
-                if (finalStageFiltering(film)) {
-                    addFilmToTableModel(film);
-                }
-            }
+        var stream = listeFilme.parallelStream();
+        if (!selectedSenders.isEmpty()) {
+            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
         }
+        if (showNewOnly)
+            stream = stream.filter(DatenFilm::isNew);
+        if (showBookmarkedOnly)
+            stream = stream.filter(DatenFilm::isBookmarked);
+        if (showLivestreamsOnly)
+            stream = stream.filter(DatenFilm::isLivestream);
+        if (showHqOnly)
+            stream = stream.filter(DatenFilm::isHighQuality);
+        if (dontShowTrailers)
+            stream = stream.filter(film -> !film.isTrailerTeaser());
+        if (dontShowGebaerdensprache)
+            stream = stream.filter(film -> !film.isSignLanguage());
+        if (dontShowAudioVersions)
+            stream = stream.filter(film -> !film.isAudioVersion());
+        if (dontShowAbos)
+            stream = stream.filter(film -> film.getAboName().isEmpty());
+        if (showSubtitlesOnly) {
+            stream = stream.filter(this::subtitleCheck);
+        }
+        if (!filterThema.isEmpty()) {
+            stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
+        }
+        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+            stream = stream.filter(this::maxLengthCheck);
+        }
+        if (dontShowSeen) {
+            stream = stream.filter(this::seenCheck);
+        }
+        //perform min length filtering after all others may have reduced the available entries...
+        stream = stream.filter(this::minLengthCheck);
+
+        //final stage filtering...
+        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
+        if (!searchFieldEmpty) {
+            stream = stream.filter(this::finalStageFiltering);
+        }
+        
+        stream.forEachOrdered(this::addFilmToTableModel);
+        stream.close();
+
+        if (dontShowSeen)
+            historyController.emptyMemoryCache();
+    }
+
+    private boolean subtitleCheck(DatenFilm film) {
+        return film.hasSubtitle() || film.hasBurnedInSubtitles();
+    }
+    private boolean maxLengthCheck(DatenFilm film) {
+        return film.getFilmLength() < maxLengthInSeconds;
+    }
+
+    private boolean seenCheck(DatenFilm film) {
+        return !historyController.hasBeenSeenFromCache(film);
+    }
+
+    private boolean minLengthCheck(DatenFilm film) {
+        final long filmLength = film.getFilmLength();
+        if (filmLength == 0)
+            return true; // always show entries with length 0, which are internally "no length"
+        else
+            return filmLength >= minLengthInSeconds;
     }
 
     /**
@@ -250,15 +235,17 @@ public class GuiFilmeModelHelper {
         } else {
             performTableFiltering();
         }
-        tabelle.setModel(filmModel);
     }
 
-    public void prepareTableModel() {
+    /**
+     * Filter the filmlist.
+     *
+     * @return the filtered table model.
+     */
+    public TableModel getFilteredTableModel() {
         if (!listeFilme.isEmpty())
             fillTableModel();
-
-        //use empty model
-        tabelle.setModel(filmModel);
+        return filmModel;
     }
 
     private void addAllFilmsToTableModel() {

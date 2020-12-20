@@ -99,7 +99,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
         final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
-        final String PFAD_MAC_FFMPEG = "/Applications/MediathekView.app/Contents/Resources/ffmpeg";
+        final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad = "";
         try {
@@ -126,23 +126,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         } catch (Exception ignore) {
         }
         return pfad;
-    }
-
-    public static String getPfadScript() {
-        // liefert den Standardpfad zum Script "Ansehen" für das entsprechende BS 
-        // liegt im Ordner "bin" der mit dem Programm mitgeliefert wird
-        String pfadScript;
-        final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
-        final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
-        switch (getOs()) {
-            case LINUX:
-            case MAC:
-                pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
-                break;
-            default:
-                pfadScript = PFAD_WINDOWS_SCRIPT;
-        }
-        return pfadScript;
     }
 
     public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean setVersion) {
@@ -187,12 +170,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     private static boolean addOnZip(String datei) {
-        String zielPfad = addsPfad(getPathJar(), "bin");
+        String zielPfad = addsPfad(getPathToApplicationJar(), "bin");
         File zipFile;
         int n;
 
         try {
-            if (!GuiFunktionen.istUrl(datei)) {
+            if (!NetUtils.isUrl(datei)) {
                 zipFile = new File(datei);
                 if (!zipFile.exists()) {
                     // und Tschüss

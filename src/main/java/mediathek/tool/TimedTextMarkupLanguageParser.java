@@ -342,7 +342,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         }
     }
 
-    private class Subtitle {
+    private static class Subtitle {
 
         public Date begin;
         public Date end;

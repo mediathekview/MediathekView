@@ -1,6 +1,6 @@
-===========================================================================
+---------------------------------------------------------------------------
 MediathekView
----------------
+---------------------------------------------------------------------------
 
 Lizenz: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
  -> Link:         https://www.gnu.org/licenses/gpl-3.0.txt
@@ -21,15 +21,13 @@ Es lassen sich Abos anlegen und neue Beiträge automatisch herunterladen.
 
 ===========================================================================
 
-###########################################################################
-###########################################################################
 ---------------------------------------------------------------------------
 MediathekView startet nicht:
 ---------------------------------------------------------------------------
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* MediathekView benötigt mindestens Java 11 welches mit geliefert wird.
+* MediathekView benötigt mindestens Java 15 welches mit geliefert wird.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -41,11 +39,9 @@ https://mediathekview.de/faq/#mediathekview-startet-nicht
   MediathekView-Programmordner gelöscht oder verschoben wurden -> Neuinstallation.
 
 
-###########################################################################
-###########################################################################
 ---------------------------------------------------------------------------
 Installation:
----------------------------------------------------------
+---------------------------------------------------------------------------
 *Windows:
 MediathekView kann installiert oder das Zip entpackt werden.
 Der Installer (Exe) führt durch die Installation und hinterlegt MediathekView im Menü.
@@ -71,8 +67,6 @@ https://mediathekview.de/anleitung/#installation-1
 
 
 
-###########################################################################
-###########################################################################
 ---------------------------------------------------------------------------
 Starten:
 ---------------------------------------------------------------------------
@@ -82,7 +76,7 @@ Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann.
 Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-jre/bin/java -Xmx1G -jar MediathekView.jar
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar
 
 Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
@@ -92,9 +86,9 @@ Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
 
 
-jre/bin/java -Xmx1G -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -Xmx1G -jar MediathekView.jar c:\temp
-jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar c:\temp
+jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
@@ -109,33 +103,12 @@ Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
 Linux: MediathekView_Portable
-Java: jre/bin/java -Xmx1G -jar MediathekView.jar Einstellungen/.mediathek3
+Java: jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
 
 
-###########################################################################
-###########################################################################
 ---------------------------------------------------------------------------
 Hotkeys / Tastenkürzel:
 ---------------------------------------------------------------------------
-
-Menüs
-======
-alt+d		Datei
-alt+f		Filme
-alt+o		Downloads
-alt+b		Abos
-alt+a		Ansicht
-alt+h		Hilfe
-
-Menüpunkte
-===========
-Einstellungen			F4
-neue Filmliste			F5
-Programm beenden		ctrl + q
-
-Beschreibung anzeigen	F10
-Buttons anzeigen		F11
-
 
 Tab Filme
 ==============
@@ -161,9 +134,3 @@ return		Download ändern (in der Tabelle Downloads)
 
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
-
-
-Tab Abos
-=========
-Entf		Abos löschen
-Return		Abos ändern (in der Tabelle Abos)

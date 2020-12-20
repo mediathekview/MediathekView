@@ -3,93 +3,38 @@ package mediathek.tool.models;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.Datum;
 
-@SuppressWarnings("serial")
-public class TModelAbo extends TModel {
-    public TModelAbo(Object[][] data, Object[] columnNames) {
-        super(data, columnNames);
+public class TModelAbo extends NonEditableTableModel {
+    public TModelAbo(Object[][] data) {
+        super(data, DatenAbo.COLUMN_NAMES);
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        Class<?> result;
-        switch (columnIndex) {
-            case DatenAbo.ABO_NR:
-            case DatenAbo.ABO_MINDESTDAUER:
-                result = Integer.class;
-                break;
-
-            case DatenAbo.ABO_DOWN_DATUM:
-                result = Datum.class;
-                break;
-
-            default:
-                result = String.class;
-                break;
-        }
-        return result;
+        return switch (columnIndex) {
+            case DatenAbo.ABO_NR, DatenAbo.ABO_MINDESTDAUER -> Integer.class;
+            case DatenAbo.ABO_DOWN_DATUM -> Datum.class;
+            default -> String.class;
+        };
     }
 
     @Override
     public String getColumnName(int column) {
-        String result;
 
-        switch (column) {
-            case DatenAbo.ABO_NR:
-                result = "Nr";
-                break;
-
-            case DatenAbo.ABO_EINGESCHALTET:
-                result = "aktiv";
-                break;
-
-            case DatenAbo.ABO_NAME:
-                result = "Name";
-                break;
-
-            case DatenAbo.ABO_SENDER:
-                result = "Sender";
-                break;
-
-            case DatenAbo.ABO_THEMA:
-                result = "Thema";
-                break;
-
-            case DatenAbo.ABO_TITEL:
-                result = "Titel";
-                break;
-
-            case DatenAbo.ABO_THEMA_TITEL:
-                result = "Thema-Titel";
-                break;
-
-            case DatenAbo.ABO_IRGENDWO:
-                result = "Irgendwo";
-                break;
-
-            case DatenAbo.ABO_MINDESTDAUER:
-                result = "Dauer";
-                break;
-
-            case DatenAbo.ABO_MIN:
-                result = "min/max";
-                break;
-
-            case DatenAbo.ABO_ZIELPFAD:
-                result = "Zielpfad";
-                break;
-
-            case DatenAbo.ABO_DOWN_DATUM:
-                result = "letztes Abo";
-                break;
-
-            case DatenAbo.ABO_PSET:
-                result = "Programmset";
-                break;
-
-            default:
-                throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
-        }
-
-        return result;
+        return switch (column) {
+            case DatenAbo.ABO_NR -> "Nr";
+            case DatenAbo.ABO_EINGESCHALTET -> "aktiv";
+            case DatenAbo.ABO_NAME -> "Name";
+            case DatenAbo.ABO_SENDER -> "Sender";
+            case DatenAbo.ABO_THEMA -> "Thema";
+            case DatenAbo.ABO_TITEL -> "Titel";
+            case DatenAbo.ABO_THEMA_TITEL -> "Thema-Titel";
+            case DatenAbo.ABO_IRGENDWO -> "Irgendwo";
+            case DatenAbo.ABO_MINDESTDAUER -> "Dauer";
+            case DatenAbo.ABO_MIN -> "min/max";
+            case DatenAbo.ABO_ZIELPFAD -> "Zielpfad";
+            case DatenAbo.ABO_DOWN_DATUM -> "letztes Abo";
+            case DatenAbo.ABO_PSET -> "Programmset";
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
+        };
     }
 }

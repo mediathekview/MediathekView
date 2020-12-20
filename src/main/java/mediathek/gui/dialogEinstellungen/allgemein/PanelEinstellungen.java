@@ -28,20 +28,20 @@ public class PanelEinstellungen extends JPanel {
 
     private void setupProxySettings() {
 
-        jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
-        var listener = new TextFieldConfigWriter(jtfProxyHost,ApplicationConfiguration.HTTP_PROXY_HOSTNAME);
+        jtfProxyHost.setText(config.getString(ApplicationConfiguration.HttpProxy.HOST, ""));
+        var listener = new TextFieldConfigWriter(jtfProxyHost,ApplicationConfiguration.HttpProxy.HOST);
         jtfProxyHost.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jtfProxyPort.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PORT, ""));
-        listener = new TextFieldConfigWriter(jtfProxyPort,ApplicationConfiguration.HTTP_PROXY_PORT);
+        jtfProxyPort.setText(config.getString(ApplicationConfiguration.HttpProxy.PORT, ""));
+        listener = new TextFieldConfigWriter(jtfProxyPort,ApplicationConfiguration.HttpProxy.PORT);
         jtfProxyPort.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jtfProxyUser.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_USERNAME, ""));
-        listener = new TextFieldConfigWriter(jtfProxyUser,ApplicationConfiguration.HTTP_PROXY_USERNAME);
+        jtfProxyUser.setText(config.getString(ApplicationConfiguration.HttpProxy.USER, ""));
+        listener = new TextFieldConfigWriter(jtfProxyUser,ApplicationConfiguration.HttpProxy.USER);
         jtfProxyUser.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PASSWORD, ""));
-        listener = new TextFieldConfigWriter(jpfProxyPassword,ApplicationConfiguration.HTTP_PROXY_PASSWORD);
+        jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HttpProxy.PASSWORD, ""));
+        listener = new TextFieldConfigWriter(jpfProxyPassword,ApplicationConfiguration.HttpProxy.PASSWORD);
         jpfProxyPassword.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
@@ -179,7 +179,7 @@ public class PanelEinstellungen extends JPanel {
 
     private void initSpinner() {
         String s;
-        final int num_days = config.getInt(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS,0);
+        final int num_days = config.getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS,0);
         if (num_days == 0)
             s = ALLE;
         else
@@ -204,7 +204,7 @@ public class PanelEinstellungen extends JPanel {
             catch (NumberFormatException e) {
                 num_days = 0;
             }
-            config.setProperty(ApplicationConfiguration.FILMLIST_LOAD_NUM_DAYS, num_days);
+            config.setProperty(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, num_days);
         }
     }
 

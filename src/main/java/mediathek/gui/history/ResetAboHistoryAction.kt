@@ -14,7 +14,7 @@ class ResetAboHistoryAction(private val owner: JFrame) : AbstractAction() {
      Dies kann nicht rückgängig gemacht werden.
      """.trimIndent(), "Abo-Historie löschen", JOptionPane.YES_NO_OPTION)
         if (ret == JOptionPane.OK_OPTION) {
-            Daten.getInstance().aboHistoryController.alleLoeschen()
+            Daten.getInstance().aboHistoryController.removeAll()
         }
     }
 

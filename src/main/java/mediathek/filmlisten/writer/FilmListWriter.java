@@ -86,7 +86,9 @@ public class FilmListWriter {
                 Files.deleteIfExists(filePath);
             }
             catch (Exception e) {
-                logger.error("writeFilmList", e);
+                logger.warn("error trying to delete file", e);
+                logger.trace("Waiting two seconds...");
+                TimeUnit.SECONDS.sleep(2);
             }
             long start = System.nanoTime();
 
@@ -117,7 +119,7 @@ public class FilmListWriter {
                 long end = System.nanoTime();
 
                 logger.info("   --> geschrieben!");
-                logger.info("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+                logger.trace("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
             }
         } catch (Exception ex) {
             logger.error("nach: {}", datei, ex);
@@ -143,7 +145,7 @@ public class FilmListWriter {
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
         jg.writeString(datenFilm.getUrlKlein());
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        jg.writeString(datenFilm.getHighQualityUrl());
+        jg.writeString(datenFilm.getUrlHighQuality());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY

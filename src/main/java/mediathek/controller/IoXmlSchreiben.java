@@ -24,6 +24,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.BlacklistRule;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.RejectedExecutionException;
 
 public class IoXmlSchreiben {
     private static final Logger logger = LogManager.getLogger(IoXmlSchreiben.class);
@@ -62,11 +64,10 @@ public class IoXmlSchreiben {
 
     private void writeAbos(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Abos");
         writeNewLine(writer);
 
         for (DatenAbo datenAbo : Daten.getInstance().getListeAbo()) {
-            xmlSchreibenDaten(writer, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
+            datenAbo.writeToConfig(writer);
         }
     }
 
@@ -96,9 +97,9 @@ public class IoXmlSchreiben {
         writeNewLine(writer);
         //Proggruppen schreiben, bei Konfig-Datei
         for (DatenPset datenPset : Daten.listePset) {
-            xmlSchreibenDaten(writer, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, false);
+            xmlSchreibenDaten(writer, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, true);
             for (DatenProg datenProg : datenPset.getListeProg()) {
-                xmlSchreibenDaten(writer, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, false);
+                xmlSchreibenDaten(writer, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, true);
             }
         }
     }
@@ -113,18 +114,37 @@ public class IoXmlSchreiben {
         }
     }
 
+    /**
+     * Write all abo entries into XML config file.
+     * @param writer the writer for the config file
+     * @throws XMLStreamException caller must handle errors.
+     */
     private void writeDownloads(XMLStreamWriter writer) throws XMLStreamException {
+        /*
+            CLI client must rely on specific format as this is some strange dialect.
+            Here we set what version we save.
+         */
+        final int dl_list_version = 1;
+        try {
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CLI_CLIENT_DOWNLOAD_LIST_FORMAT, dl_list_version);
+        }
+        catch (RejectedExecutionException ignore) {
+            //this may occur during shutdown
+        }
+        catch (Exception e) {
+            logger.error("writeDownloads error!", e);
+        }
+
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Downloads");
         writeNewLine(writer);
-        //Abo schreiben
+
         for (DatenDownload download : Daten.getInstance().getListeDownloads()) {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
-                xmlSchreibenDaten(writer, DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
-            } else if (!download.istAbo() && !download.isFinished()) {
+                download.writeConfigEntry(writer);
+            } else if (!download.isFinished() && !download.isFromAbo()) {
                 //Download, (Abo müssen neu angelegt werden)
-                xmlSchreibenDaten(writer, DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
+                download.writeConfigEntry(writer);
             }
         }
     }

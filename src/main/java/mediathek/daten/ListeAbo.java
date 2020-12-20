@@ -25,18 +25,19 @@ import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
-import mediathek.tool.models.TModelAbo;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.Filter;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.MVMessageDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
@@ -71,7 +72,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, datenAbo, false /*onlyOne*/);
         dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
@@ -90,7 +91,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // die Änderung an der Liste wird nicht gemeldet!!
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
-        datenAbo.nr = nr;
+        datenAbo.setNr(nr);
         if (datenAbo.arr[DatenAbo.ABO_NAME].isEmpty()) {
             // Downloads ohne "Aboname" sind manuelle Downloads
             datenAbo.arr[DatenAbo.ABO_NAME] = "Abo_" + nr;
@@ -132,51 +133,29 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         daten.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
+    @Deprecated
+    /*
+     * Dangerous code, returns abo by list index not by number.
+     * Needs to be checked and recoded!!
+     */
     public DatenAbo getAboNr(int i) {
         return this.get(i);
     }
 
+    /**
+     * Find an abo by its assigned number within the list.
+     * @param nr the formerly assigned abo number.
+     * @return the found abo.
+     * @throws NoSuchElementException when no abo was found.
+     */
+    public DatenAbo findByNr(int nr) throws NoSuchElementException {
+        return this.stream()
+                .filter(abo -> abo.getNr() == nr)
+                .findAny().orElseThrow();
+    }
+
     public void sort() {
         Collections.sort(this);
-    }
-
-    public void addObjectData(TModelAbo model, String sender) {
-        model.setRowCount(0);
-        Object[] object = new Object[DatenAbo.MAX_ELEM];
-        for (DatenAbo datenAbo : this) {
-            if (sender.isEmpty() || sender.equals(datenAbo.arr[DatenAbo.ABO_SENDER])) {
-                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                    if (m == DatenAbo.ABO_NR) {
-                        object[m] = datenAbo.nr;
-                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
-                        object[m] = datenAbo.mindestdauerMinuten;
-                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
-                        object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM]);
-                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
-                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                    } else if (m == DatenAbo.ABO_MIN) {
-                        object[m] = datenAbo.min ? "min" : "max";
-                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
-                        // Name immer füllen, egal ob angezeigt
-                        object[m] = "";
-                    } else {
-                        object[m] = datenAbo.arr[m];
-                    }
-                }
-                model.addRow(object);
-            }
-        }
-    }
-
-    public Datum getDatumForObject(String datum) {
-        Datum tmp = new Datum(0);
-        if (!datum.isEmpty()) {
-            try {
-                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
-            } catch (ParseException ignore) {
-            }
-        }
-        return tmp;
     }
 
     public ArrayList<String> getPfade() {
@@ -258,9 +237,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 abo.titel,
                 abo.thema,
                 abo.irgendwo,
-                abo.mindestdauerMinuten,
-                abo.min,
-                film, false))
+                film))
                 .findFirst().
                 ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
     }

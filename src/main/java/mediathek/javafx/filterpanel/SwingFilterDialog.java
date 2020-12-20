@@ -3,11 +3,12 @@ package mediathek.javafx.filterpanel;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.ApplicationConfiguration;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
@@ -19,7 +20,7 @@ import java.util.NoSuchElementException;
 public class SwingFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
 
-    public SwingFilterDialog(Frame owner, VBox content) {
+    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content) {
         super(owner);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setTitle("Filter");
@@ -35,38 +36,49 @@ public class SwingFilterDialog extends JDialog {
             });
         });
 
+        Daten.getInstance().getMessageBus().subscribe(this);
+
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                setEnabled(false);
+                final boolean enabled = false;
+                setEnabled(enabled);
+                fxPanel.setEnabled(enabled);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                setEnabled(true);
+                final boolean enabled = true;
+                setEnabled(enabled);
+                fxPanel.setEnabled(enabled);
             }
         });
     }
 
+    @Handler
+    private void handleTableModelChangeEvent(TableModelChangeEvent e) {
+        SwingUtilities.invokeLater(() -> setEnabled(!e.active));
+    }
+
     private void restoreDialogVisibility() {
         var config = ApplicationConfiguration.getConfiguration();
-        final boolean visible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, false);
+        final boolean visible = config.getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
         setVisible(visible);
     }
 
     private void storeDialogVisibility() {
         var config = ApplicationConfiguration.getConfiguration();
-        config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_VISIBLE, isVisible());
+        config.setProperty(ApplicationConfiguration.FilterDialog.VISIBLE, isVisible());
     }
 
     private void restoreWindowSizeFromConfig() {
         var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
-            final int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_WIDTH);
-            final int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT);
-            final int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X);
-            final int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y);
+            final int width = config.getInt(ApplicationConfiguration.FilterDialog.WIDTH);
+            final int height = config.getInt(ApplicationConfiguration.FilterDialog.HEIGHT);
+            final int x = config.getInt(ApplicationConfiguration.FilterDialog.X);
+            final int y = config.getInt(ApplicationConfiguration.FilterDialog.Y);
 
             setBounds(x, y, width, height);
         } catch (NoSuchElementException ignored) {
@@ -108,10 +120,10 @@ public class SwingFilterDialog extends JDialog {
                 var loc = component.getLocation();
                 try {
                     config.lock(LockMode.WRITE);
-                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_WIDTH, dims.width);
-                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_HEIGHT, dims.height);
-                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_X, loc.x);
-                    config.setProperty(ApplicationConfiguration.APPLICATION_UI_FILTER_DIALOG_LOCATION_Y, loc.y);
+                    config.setProperty(ApplicationConfiguration.FilterDialog.WIDTH, dims.width);
+                    config.setProperty(ApplicationConfiguration.FilterDialog.HEIGHT, dims.height);
+                    config.setProperty(ApplicationConfiguration.FilterDialog.X, loc.x);
+                    config.setProperty(ApplicationConfiguration.FilterDialog.Y, loc.y);
                 } finally {
                     config.unlock(LockMode.WRITE);
                 }

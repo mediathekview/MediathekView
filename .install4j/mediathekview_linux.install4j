@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.7" transformSequenceNumber="8">
   <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target"
-               mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" convertDotsToUnderscores="false"
-               shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" 
-               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" convertDotsToUnderscores="false" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk14/jdk-14.0.2+12" />
+    <jreBundles jdkProviderId="AdoptOpenJDK" release="${install4j.adoptopenjdk.jdk.version}" />
   </application>
   <files>
     <mountPoints>
@@ -33,21 +30,6 @@
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck">
-        <classPath>
-          <archive location="MediathekView.jar" failOnError="false" />
-        </classPath>
-      </java>
-      <desktopFile>Categories=Network;FileTransfer</desktopFile>
-      <iconImageFiles>
-        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
-      </iconImageFiles>
-    </launcher>
-    <launcher name="MediathekView_ipv4" id="60" menuName="MediathekView IPv4">
-      <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>

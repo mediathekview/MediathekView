@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_downloads;
 
-import com.thizzer.jtouchbar.JTouchBar;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -26,8 +25,6 @@ import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.dialog.StandardCloseDialog;
-import mediathek.gui.history.DownloadHistoryPanel;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.toolbar.FXDownloadToolBar;
@@ -61,11 +58,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-@SuppressWarnings("serial")
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
     private static final String COMBO_DISPLAY_ALL = "alle";
@@ -124,11 +121,6 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
-
-    /**
-     * macOS touch bar support.
-     */
-    public JTouchBar touchBar;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -208,7 +200,7 @@ public class GuiDownloads extends AGuiTabPanel {
             am.put("einstellungen", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    mediathekGui.showSettingsDialog();
+                    mediathekGui.getSettingsDialog().setVisible(true);
                 }
             });
         }
@@ -234,7 +226,8 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
-    private void installTabInfoStatusBarControl() {
+    @Override
+    protected void installTabInfoStatusBarControl() {
         final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
 
         Platform.runLater(() -> {
@@ -382,6 +375,7 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
+    @Override
     public void installMenuEntries(JMenu menu) {
         JMenuItem miDownloadsStartAll = new JMenuItem("Alle Downloads starten");
         miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
@@ -441,11 +435,11 @@ public class GuiDownloads extends AGuiTabPanel {
 
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.addActionListener(e -> markFilmAsSeen());
+        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
 
         JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
         miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.addActionListener(e -> markFilmAsUnseen());
+        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
         JMenuItem miPlayDownload = new JMenuItem("Gespeicherten Film abspielen");
         miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
@@ -475,9 +469,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         });
 
-        JMenuItem miShowDownloadHistory = new JMenuItem("Download-Historie anzeigen...");
-        miShowDownloadHistory.addActionListener(e -> showDownloadHistory());
-
         menu.add(miDownloadsStartAll);
         menu.add(miDownloadStartTimed);
         menu.add(miStopAllDownloads);
@@ -500,17 +491,9 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.addSeparator();
         menu.add(miSearchMediaDb);
         menu.addSeparator();
-        menu.add(miShowDownloadHistory);
-        menu.addSeparator();
         menu.add(miInvertSelection);
         menu.addSeparator();
         menu.add(miShutdownAfterDownload);
-    }
-
-    private void showDownloadHistory() {
-        ShowDownloadHistoryDialog dialog = new ShowDownloadHistoryDialog(mediathekGui);
-        dialog.pack();
-        dialog.setVisible(true);
     }
 
     private void setupDescriptionPanel() {
@@ -554,13 +537,10 @@ public class GuiDownloads extends AGuiTabPanel {
         filmStartenWiederholenStoppen(alle, false);
     }
 
-    protected void markFilmAsSeen() {
-        daten.getSeenHistoryController().markAsSeen(getSelFilme());
-    }
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
 
-    protected void markFilmAsUnseen() {
-        daten.getSeenHistoryController().markAsUnseen(getSelFilme());
-    }
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+
 
     private void searchInMediaDb(DatenDownload datenDownload) {
         final var mediaDB = mediathekGui.getMediaDatabaseDialog();
@@ -591,18 +571,8 @@ public class GuiDownloads extends AGuiTabPanel {
                 downloadLoeschen(true);
             }
         });
-        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                markFilmAsSeen();
-            }
-        });
-        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                markFilmAsUnseen();
-            }
-        });
+        am.put(ACTION_MAP_KEY_MARK_AS_SEEN, markFilmAsSeenAction);
+        am.put(ACTION_MAP_KEY_MAERK_AS_UNSEEN, markFilmAsUnseenAction);
         am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -781,20 +751,20 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
+    @Handler
+    private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))
+                    && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO))) {
+                // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
+                updateDownloads();
+            }
+        });
+    }
+
     private void addListenerMediathekView() {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))
-                        && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO))) {
-                    // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
-                    updateDownloads();
-                }
-            }
-        });
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
@@ -919,12 +889,13 @@ public class GuiDownloads extends AGuiTabPanel {
         return arrayDownloads;
     }
 
-    private Optional<DatenFilm> getCurrentlySelectedFilm() {
+    @Override
+    protected Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
-
         if (selectedTableRow != -1) {
             Optional<DatenFilm> optRet;
-            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
+            final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
             if (download.film == null)
                 optRet = Optional.empty();
             else
@@ -1044,7 +1015,7 @@ public class GuiDownloads extends AGuiTabPanel {
             for (DatenDownload datenDownload : arrayDownloads) {
                 if (dauerhaft) {
                     arrayDownloadsLoeschen.add(datenDownload);
-                    if (datenDownload.istAbo()) {
+                    if (datenDownload.isFromAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
                         urlAboList.add(new MVUsedUrl(zeit,
                                 datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
@@ -1107,7 +1078,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         continue;
                     }
                     listeUrlsDownloadsAbbrechen.add(download);
-                    if (download.istAbo()) {
+                    if (download.isFromAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
@@ -1213,7 +1184,7 @@ public class GuiDownloads extends AGuiTabPanel {
                             continue;
                         }
                         listeDownloadsLoeschen.add(download);
-                        if (download.istAbo()) {
+                        if (download.isFromAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
@@ -1236,7 +1207,7 @@ public class GuiDownloads extends AGuiTabPanel {
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
-            DatenDownload.startenDownloads(daten, listeDownloadsStarten);
+            DatenDownload.startenDownloads(listeDownloadsStarten);
         }
         reloadTable();
     }
@@ -1290,7 +1261,18 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private ArrayList<DatenFilm> getSelFilme() {
+    @Override
+    public void showTouchBar() {
+        touchBar.show(MediathekGui.ui());
+    }
+
+    @Override
+    public void hideTouchBar() {
+        touchBar.hide(MediathekGui.ui());
+    }
+
+    @Override
+    protected List<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
         final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
@@ -1304,17 +1286,6 @@ public class GuiDownloads extends AGuiTabPanel {
             NoSelectionErrorDialog.show();
         }
         return arrayFilme;
-    }
-
-    class ShowDownloadHistoryDialog extends StandardCloseDialog {
-        public ShowDownloadHistoryDialog(Frame owner) {
-            super(owner, "Download-Historie", true);
-        }
-
-        @Override
-        public JComponent createContentPanel() {
-            return new DownloadHistoryPanel(daten);
-        }
     }
 
     private class SearchInMediaDbAction extends AbstractAction {
@@ -1533,7 +1504,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             daten.getListeAbo().aenderungMelden();
@@ -1616,53 +1587,48 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_VIEW_ALL:
+                case INDEX_COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_NOT_STARTED:
+                }
+                case INDEX_COMBO_VIEW_NOT_STARTED -> {
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_STARTED:
+                }
+                case INDEX_COMBO_VIEW_STARTED -> {
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_WAITING:
+                }
+                case INDEX_COMBO_VIEW_WAITING -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_FINISHED_ONLY:
+                }
+                case INDEX_COMBO_VIEW_FINISHED_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
-                    break;
-
-                case INDEX_COMBO_VIEW_RUN_ONLY:
+                }
+                case INDEX_COMBO_VIEW_RUN_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = true;
-                    break;
+                }
             }
 
             reloadTable();
@@ -1678,20 +1644,18 @@ public class GuiDownloads extends AGuiTabPanel {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
             switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_DISPLAY_ALL:
+                case INDEX_COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY -> {
                     onlyAbos = false;
                     onlyDownloads = true;
-                    break;
-
-                case INDEX_COMBO_DISPLAY_ABOS_ONLY:
+                }
+                case INDEX_COMBO_DISPLAY_ABOS_ONLY -> {
                     onlyAbos = true;
                     onlyDownloads = false;
-                    break;
+                }
             }
 
             reloadTable();

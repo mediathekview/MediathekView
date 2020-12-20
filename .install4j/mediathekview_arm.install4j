@@ -4,11 +4,11 @@
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target"
                mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-armhf" convertDotsToUnderscores="false"
                shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}"
-               macVolumeId="d594baf3c2b3424d" javaMinVersion="13">
+               macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="OpenJDK 14.0.2+13">
+    <jreBundles jdkProviderId="Liberica" release="${install4j.liberica.jdk.version}">
       <modules>
         <defaultModules set="all"/>
       </modules>
@@ -38,22 +38,6 @@
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main"
             vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
-        <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
-        </classPath>
-      </java>
-      <desktopFile>Categories=Network;FileTransfer</desktopFile>
-      <iconImageFiles>
-        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
-        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
-      </iconImageFiles>
-    </launcher>
-    <launcher name="MediathekView_ipv4 arm" id="325" menuName="MediathekView IPv4">
-      <executable name="MediathekView_ipv4" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main"
-            vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED -Djava.net.preferIPv4Stack=true">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>

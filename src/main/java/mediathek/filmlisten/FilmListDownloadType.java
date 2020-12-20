@@ -1,3 +1,3 @@
 package mediathek.filmlisten;
 
-enum FilmListDownloadType {FULL, DIFF_ONLY}
+public enum FilmListDownloadType {FULL, DIFF_ONLY}

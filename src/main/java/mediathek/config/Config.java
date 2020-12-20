@@ -24,15 +24,25 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "MediathekView")
 public class Config {
 
-    @CommandLine.Parameters(index="0", paramLabel = "<Pfad zum Verzeichnis>",description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
+    @CommandLine.Parameters(index = "0", paramLabel = "<Pfad zum Verzeichnis>", description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
     public static String baseFilePath;
     @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
     /**
+     * Limit the number of used CPUs on Windows.
+     */
+    @CommandLine.Option(names = {"-n", "--num-cpus"}, hidden = true, description = "Anzahl der genutzen CPU-Kerne festlegen (FÜR ENTWICKLER)")
+    private static int numCpus;
+    /**
      * For development use parameter to enable TRACE output to log env.
      */
-    @CommandLine.Option(names = {"-e", "--enhanced-logging"}, hidden = true, description = "Erweiterten Log-Modus aktivieren (FÜR ENTWICKLER)")
+    @CommandLine.Option(names = {"-e", "--enhanced-logging"}, description = "Erweiterten Log-Modus aktivieren")
     private static boolean enhancedLogging;
+    /**
+     * This will install a repaint manager which monitors Swing EDT violations.
+     */
+    @CommandLine.Option(names = {"-s", "--swing-thread-checker"}, description = "Swing EDT Thread Repaint Manager installieren (FÜR ENTWICKLER)", hidden = true)
+    private static boolean installThreadCheckingRepaintManager;
     /**
      * Log HTTP traffic to console. By default HttpLoggingInterceptor.Level.BASIC will be used.
      * Configuration can be changed by ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL
@@ -40,14 +50,24 @@ public class Config {
     @CommandLine.Option(names = {"-t", "--debug-http-traffic"}, hidden = true, description = "Logging für HTTP Traffic aktivieren (FÜR ENTWICKLER)")
     private static boolean debugHttpTraffic;
     private static boolean portableMode;
-
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
-    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Hilfe anzeigen")
+    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
-
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
     private static boolean fileLoggingDisabled;
+
+    public static boolean isInstallThreadCheckingRepaintManager() {
+        return installThreadCheckingRepaintManager;
+    }
+
+    public static int getNumCpus() {
+        return numCpus;
+    }
+
+    public static void setNumCpus(int num) {
+        numCpus = num;
+    }
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -65,7 +85,9 @@ public class Config {
         return debug;
     }
 
-    public static boolean isFileLoggingDisabled() { return fileLoggingDisabled;}
+    public static boolean isFileLoggingDisabled() {
+        return fileLoggingDisabled;
+    }
 
     public static boolean isStartMaximized() {
         return startMaximized;

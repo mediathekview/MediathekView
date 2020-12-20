@@ -9,7 +9,6 @@ import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
-import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
@@ -95,16 +94,11 @@ public class Daten {
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private INotificationCenter notificationCenter;
     /**
-     * alle angesehenen Filme.
-     */
-    private SeenHistoryController history;
-    /**
      * erfolgreich geladene Abos.
      */
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private ListenableFuture<SeenHistoryController> historyFuture;
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
@@ -144,7 +138,7 @@ public class Daten {
         return reset;
     }
 
-    public static void setRestConfigurationData(final boolean aIsReset) {
+    public static void setResetConfigurationData(final boolean aIsReset) {
         reset = aIsReset;
     }
 
@@ -300,14 +294,6 @@ public class Daten {
                 .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
     }
 
-    public SeenHistoryController getSeenHistoryController() {
-        return history;
-    }
-
-    public void setSeenHistoryController(SeenHistoryController controller) {
-        history = controller;
-    }
-
     public void setAboHistoryList(AboHistoryController controller) {
         erledigteAbos = controller;
     }
@@ -343,26 +329,8 @@ public class Daten {
     public void launchHistoryDataLoading() {
         logger.trace("launching async history data loading");
         var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
-        historyFuture = launchSeenHistoryController(decoratedPool);
         aboHistoryFuture = launchAboHistoryController(decoratedPool);
 
-    }
-
-    private ListenableFuture<SeenHistoryController> launchSeenHistoryController(ListeningExecutorService pool) {
-        var historyFuture = pool.submit(SeenHistoryController::new);
-        Futures.addCallback(historyFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable SeenHistoryController seenHistoryController) {
-                setSeenHistoryController(seenHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
-                logger.error("launchHistoryController", throwable);
-            }
-        }, pool);
-
-        return historyFuture;
     }
 
     private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
@@ -383,9 +351,7 @@ public class Daten {
     }
 
     public void waitForHistoryDataLoadingToComplete() throws ExecutionException, InterruptedException {
-        historyFuture.get();
         aboHistoryFuture.get();
-        historyFuture = null;
         aboHistoryFuture = null;
     }
 

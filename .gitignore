@@ -18,3 +18,4 @@ RepoZugang.properties
 /dependency-reduced-pom.xml
 *.iml
 /install4j8.0.7/
+/res/macOS/
