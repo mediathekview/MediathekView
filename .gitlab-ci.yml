@@ -14,7 +14,7 @@ default:
     - mvrunner1
   before_script:
     - apt-get update
-    - apt-get install ssh lib32ncurses5 lib32z1 -y
+    - apt-get install ssh lib32ncurses6 lib32z1 -y
     - source /private/ENVS
     - whoami
     - mkdir ~/.ssh
