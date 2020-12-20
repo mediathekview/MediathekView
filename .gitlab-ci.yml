@@ -13,13 +13,13 @@ default:
   tags:
     - mvrunner1
   before_script:
+    - sudo apt-get update
+    - sudo apt-get install ssh lib32ncurses5 lib32z1 -y
     - source /private/ENVS
     - whoami
     - mkdir ~/.ssh
     - ssh-keyscan -p 52150 mediathekview.de:52150 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - sudo apt-get update
-    - sudo apt-get install lib32ncurses5 lib32z1 -y
     - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_7.tar.gz
     - tar -zxf install4j_unix_8_0_7.tar.gz
     - mvn clean
