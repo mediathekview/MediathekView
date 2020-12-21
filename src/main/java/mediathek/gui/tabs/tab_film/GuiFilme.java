@@ -552,12 +552,9 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             } else {
                 // dann alle Downloads im Dialog abfragen
-                String aufloesung = "";
-                if (fap.showOnlyHd.getValue()) {
-                    aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
-                }
-                DialogAddDownload dialog =
-                        new DialogAddDownload(mediathekGui, datenFilm, pSet, aufloesung);
+                Optional<FilmResolution.Enum> res =
+                        fap.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
                 dialog.setVisible(true);
             }
         }

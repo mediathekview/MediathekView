@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mediathek.config.Daten;
 import mediathek.gui.messages.SenderIconStyleChangedEvent;
+import mediathek.tool.http.MVHttpClient;
 import net.engio.mbassy.listener.Handler;
 import okhttp3.Request;
 import okhttp3.Response;

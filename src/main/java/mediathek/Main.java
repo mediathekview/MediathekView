@@ -40,7 +40,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import oshi.SystemInfo;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -244,46 +243,25 @@ public class Main {
         Security.setProperty("crypto.policy", "unlimited");
     }
 
-    private static void printEnvironmentInformation() {
-        try {
-            SystemInfo si = new SystemInfo();
-            var hal = si.getHardware();
-            var cpu = hal.getProcessor();
-            logger.debug("=== Hardware Information ===");
-            logger.debug(cpu);
-            logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
-            logger.debug("=== Memory Information ===");
-            var mi = hal.getMemory();
-            logger.debug(mi);
-            logger.debug("=== Operating System ===");
-            var os = si.getOperatingSystem();
-            logger.debug(os);
-        }
-        catch (Exception e) {
-            logger.error("Failed to retrieve System Info", e);
-        }
-    }
-
     private static void printVersionInformation() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-        logger.debug("=== Java Information ===");
         logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
-        final long maxMem = Runtime.getRuntime().maxMemory();
-        logger.debug("maxMemory: {} MB", maxMem / FileUtils.ONE_MB);
+        logger.info("=== Java Information ===");
 
-        logger.debug("Java:");
-        final String[] java = Functions.getJavaVersion();
-        for (String ja : java) {
-            logger.debug(ja);
-        }
-        var arch = System.getProperty("os.arch");
-        if (arch != null) {
-            logger.debug("Architecture: {}", arch);
-        }
-        logger.debug("===");
+        logger.info("Vendor: {}", SystemUtils.JAVA_VENDOR);
+        logger.info("VMname: {}", SystemUtils.JAVA_VM_NAME);
+        logger.info("Version: {}", SystemUtils.JAVA_VERSION);
+        logger.info("Runtime Version: {}", SystemUtils.JAVA_RUNTIME_VERSION);
+        final var runtime = Runtime.getRuntime();
+        logger.info("Maximum Memory: {} MB", runtime.maxMemory() / FileUtils.ONE_MB);
+
+        logger.info("Operating System: {}", SystemUtils.OS_NAME);
+        logger.info("OS Version: {}", SystemUtils.OS_VERSION);
+        logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
+        logger.info("Available Processors: {}", runtime.availableProcessors());
     }
 
     /**
@@ -369,7 +347,7 @@ public class Main {
             setupPortableMode();
 
             printVersionInformation();
-            printEnvironmentInformation();
+
             printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {

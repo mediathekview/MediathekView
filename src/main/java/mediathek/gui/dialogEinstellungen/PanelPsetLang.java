@@ -17,6 +17,8 @@ import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.cellrenderer.CellRendererProgramme;
+import mediathek.tool.cellrenderer.CellRendererPset;
 import mediathek.tool.models.TModel;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;

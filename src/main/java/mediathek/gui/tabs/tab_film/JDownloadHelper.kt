@@ -6,9 +6,13 @@ import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.tool.http.MVHttpClient
 import mediathek.tool.javafx.FXErrorDialog
-import okhttp3.*
+import okhttp3.FormBody
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.Request
+import okhttp3.RequestBody
 import org.apache.logging.log4j.LogManager
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -28,7 +32,7 @@ class JDownloadHelper {
                 .post(formBody)
                 .build()
         try {
-            val builder = OkHttpClient.Builder()
+            val builder = MVHttpClient.getInstance().reducedTimeOutClient.newBuilder()
             builder.connectTimeout(125, TimeUnit.MILLISECONDS)
             val client = builder.build()
             client.newCall(request).execute().use {
