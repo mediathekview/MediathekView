@@ -17,9 +17,7 @@ mkdir -p Appimage/$APP.AppDir/usr/bin
 
 cd Appimage
 
-#URL=https://download.mediathekview.de/stabil/MediathekView-latest.tar.gz
-#wget -c "$URL" --trust-server-names
-#tar -xzf MediathekView*tar.gz
+
 cp ../target/media/MediathekView*.tar.gz ./
 tar -xzf MediathekView*.tar.gz
 # Beispiel Datiename MediathekView-13.6.0-SNAPSHOT-linux.tar.gz

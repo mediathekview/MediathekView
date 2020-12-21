@@ -13,8 +13,8 @@ default:
   tags:
     - mvrunner1
   before_script:
-    - apt-get update
-    - apt-get install ssh lib32ncurses6 lib32z1 wget tar -y -q
+    - apt-get update -qq
+    - apt-get install ssh lib32ncurses6 lib32z1 wget tar -y -qq
     - source /private/ENVS
     - whoami
     - mkdir ~/.ssh
