@@ -60,7 +60,7 @@ echo "put $STATUSDATEI" >> $BATCHDATEI
 echo "exit" >> $BATCHDATEI
 
 # SFTP Batchdatei ausführen
-echo sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port=$PORT $ADRESSE
+sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port=$PORT $ADRESSE
 
 # Aufräumen
 rm $BATCHDATEI $STATUSDATEI
