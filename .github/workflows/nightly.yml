@@ -62,11 +62,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get version
-        run: VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout ) >> $GITHUB_ENV
+        run: echo "VERSION::$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
+      - name: Set current date
+        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          name: ${{ VERSION }}_NOW
           body_path: CHANGELOG.md
           prerelease: true
           files: |
