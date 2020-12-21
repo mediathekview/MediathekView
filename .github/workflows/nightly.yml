@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      name: Set up JDK 15
+      - name: Set up JDK 15
         uses: actions/setup-java@v1
         with:
           java-version: 15
@@ -21,8 +21,8 @@ jobs:
           targets: 'INSTALL4J_JAVA_HOME'
       - name: Install install4j
         uses: teddyking/dependency-action@master
-          with:
-            deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
+        with:
+          deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
       - name: Add install4j license
         run: ./mvnw clean install4j:install-license -Pinstall4j
       - name: Build and test with Maven
@@ -33,6 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
@@ -53,8 +54,30 @@ jobs:
             maven_profiles: "mac,!linux"
     steps:
       - name: Building ${{ matrix.os }} ${{ matrix.architecture }} with Maven
-          run: ./mvnw clean -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - name: Building AppImage
         if: matrix.os == 'linux'
         run: scripte/appimage.sh
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version
+        run: VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout ) >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          prerelease: true
+          files: |
+            target/media/*.zip
+            target/media/*.gz
+            target/media/*.AppImage
+            target/media/MediathekView*.exe
+            target/media/*.deb
+            target/media/*.rpm
+            target/media/MediathekView*.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
 
