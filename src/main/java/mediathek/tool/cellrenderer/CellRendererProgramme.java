@@ -1,4 +1,4 @@
-package mediathek.tool;
+package mediathek.tool.cellrenderer;
 
 import mediathek.config.Icons;
 import mediathek.daten.DatenProg;

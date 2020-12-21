@@ -3,8 +3,8 @@ package mediathek.daten;
 
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
-import mediathek.tool.MVHttpClient;
 import mediathek.tool.NetUtils;
+import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.models.TModel;
 import okhttp3.Request;
 import okhttp3.Response;

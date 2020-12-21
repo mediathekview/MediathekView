@@ -95,6 +95,7 @@
         <install4j.liberica.jdk.version>OpenJDK 15.0.1+9</install4j.liberica.jdk.version>
         <install4j.jdk.min-version>15</install4j.jdk.min-version>
         <install4j.home>./install4j8.0.9</install4j.home>
+        <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
         <kotlin.version>1.4.20</kotlin.version>
     </properties>
@@ -122,12 +123,6 @@
             <groupId>com.thizzer.jtouchbar</groupId>
             <artifactId>jtouchbar-javafx</artifactId>
             <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.oshi</groupId>
-            <artifactId>oshi-core</artifactId>
-            <version>5.3.6</version>
         </dependency>
 
         <dependency>
@@ -312,12 +307,19 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>logging-interceptor</artifactId>
             <version>${okhttp.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
+            <version>20.1.0</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -377,9 +379,15 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
@@ -468,11 +476,17 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>test-compile</id>
+                        <id>kotlin-test-compile</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+
                     </execution>
                 </executions>
                 <configuration>
