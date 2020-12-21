@@ -28,14 +28,12 @@ import java.util.stream.Collectors;
 import static mediathek.tool.Functions.getOs;
 import static mediathek.tool.Functions.getOsString;
 
-@SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {
     public static final String BS_WIN_32 = "Windows-32Bit";
     public static final String BS_WIN_64 = "Windows-64Bit";
     public static final String BS_LINUX = "Linux";
     public static final String BS_MAC = "Mac";
     public static final String[] BS = {"", BS_WIN_32, BS_WIN_64, BS_LINUX, BS_MAC};
-    //
     public static final String PGR = "Vorlage";
     public static final String PGR_NAME = "Name";
     public static final int PGR_NAME_NR = 0;
