@@ -26,6 +26,13 @@ jobs:
         uses: teddyking/dependency-action@master
         with:
           deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Add install4j license
         run: ./mvnw clean install4j:install-license -Pinstall4j
       - name: Build and test with Maven
