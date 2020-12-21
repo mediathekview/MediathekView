@@ -1,0 +1,73 @@
+
+variables:
+  MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
+  MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
+image: maven:3.6-adoptopenjdk-15
+
+
+cache:
+  paths:
+    - ./.m2
+
+default:
+  tags:
+    - mvrunner1
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar > /dev/null
+    - source /private/ENVS
+    - whoami
+    - mkdir ~/.ssh
+    - ssh-keyscan -p 52150 mediathekview.de >> ~/.ssh/known_hosts
+    - ssh-keyscan -p 52150 5.1.76.243 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
+    - tar -zxf install4j_unix_8_0_9.tar.gz
+    - java -version
+    - ${INSTALL4J_JAVA_HOME}/bin/java -version
+    - mvn -v
+    - mvn clean
+    - mvn install4j:install-license -Pinstall4j
+
+stages:
+  - deploy-lin
+  - deploy-linarm
+  - deploy-win
+  - deploy-win32
+
+
+Build and Deploy Linux:
+  stage: deploy-lin
+  script:
+    - mvn clean install -Plinux,install4j $MAVEN_CLI_OPTS
+    - echo "Baue AppImage"
+    - scripte/appimage.sh
+    - scripte/deploy/deploy.sh release linux
+  rules:
+    - if: $CI_COMMIT_TAG
+
+Build and Deploy Linux ARM:
+  stage: deploy-linarm
+  script:
+    - mvn clean install -Parm,!64bit,32bit,install4j,!linux $MAVEN_CLI_OPTS
+    - scripte/deploy/deploy.sh release linux-armhf
+  rules:
+    - if: $CI_COMMIT_TAG
+
+Build and Deploy Windows:
+  stage: deploy-win
+  script:
+    - mvn clean install -Pwindows,!linux,install4j $MAVEN_CLI_OPTS
+    - scripte/deploy/deploy.sh release win
+  rules:
+    - if: $CI_COMMIT_TAG
+
+Build and Deploy Windows 32bit:
+  stage: deploy-win32
+  script:
+    - mvn clean install -Pwindows32,!64bit,32bit,!linux,install4j $MAVEN_CLI_OPTS
+    - scripte/deploy/deploy.sh release win32
+  rules:
+    - if: $CI_COMMIT_TAG
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.7" transformSequenceNumber="8">
+<install4j version="8.0.9" transformSequenceNumber="8">
   <directoryPresets config="/home/nicklas/git/MediathekView" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView"
                mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-win32" convertDotsToUnderscores="false"

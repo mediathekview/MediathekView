@@ -8,13 +8,13 @@ STATUSDATEI="target/upload.status"
 PLATTFORMDATEI="target/plattform.txt"
 COMMITDATEI="target/gitcommithash.txt"
 
-PORT="52150"
-ADRESSE="deploy@mediathekview.de"
-KEYFILE="scripte/deploy/deploy.key"
+# Folgende Variablen werden automatisch aus der ENVS Datei gesetzt
+
+#PORT=""
+#ADRESSE=""
+#KEYFILE=""
 
 echo "Deploy zu Hauptserver";
-# Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
-chmod 600 $KEYFILE
 
 
 if [ "$1" = "nightly" ]; then
