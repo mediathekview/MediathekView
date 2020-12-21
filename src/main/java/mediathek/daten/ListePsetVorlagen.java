@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mediathek.tool.Functions.getOs;
 import static mediathek.tool.Functions.getOsString;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
@@ -96,14 +95,8 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         if (listePset == null) {
             // dann nehmen wir halt die im jar-File
             // liefert das Standard Programmset für das entsprechende BS
-            InputStreamReader inReader = switch (getOs()) {
-                case LINUX -> new GetFile().getPsetVorlageLinux();
-                case MAC -> new GetFile().getPsetVorlageMac();
-                default -> new GetFile().getPsetVorlageWindows();
-            };
-
             // Standardgruppen laden
-            listePset = ListePsetVorlagen.importPset(inReader, true);
+            listePset = ListePsetVorlagen.importPset(GetFile.getLocalPsetTemplate(), true);
         }
 
         if (replaceMuster && listePset != null) {
