@@ -23,7 +23,7 @@ default:
     - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
     - tar -zxf install4j_unix_8_0_9.tar.gz
     - java -version
-    - /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -version
+    - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
     - mvn clean
     - mvn install4j:install-license -Pinstall4j
