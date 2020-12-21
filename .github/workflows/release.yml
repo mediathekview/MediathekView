@@ -1,7 +1,8 @@
-name: Nigthly release
+name: Release
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    tags:
+      - *
 
 
 jobs:
@@ -65,15 +66,13 @@ jobs:
     steps:
       - name: Get version
         run: echo "VERSION::$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
-      - name: Set current date
-        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ VERSION }}_${{ NOW }}
+          name: ${{ VERSION }}
           body_path: CHANGELOG.md
-          prerelease: true
+          prerelease: false
           files: |
             target/media/*.zip
             target/media/*.gz
