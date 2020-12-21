@@ -5,9 +5,9 @@ variables:
 image: maven:3.6-openjdk-15-slim
 
 
-cache:
-  paths:
-    - $HOME/.m2
+#cache:
+#  paths:
+#    - $HOME/.m2
 
 default:
   tags:
