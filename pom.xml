@@ -94,7 +94,7 @@
         <!-- Liberica includes JavaFX and is used for Arm and 32bit -->
         <install4j.liberica.jdk.version>OpenJDK 15.0.1+9</install4j.liberica.jdk.version>
         <install4j.jdk.min-version>15</install4j.jdk.min-version>
-        <install4j.home>./install4j8.0.7</install4j.home>
+        <install4j.home>./install4j8.0.9</install4j.home>
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
         <kotlin.version>1.4.20</kotlin.version>
     </properties>
