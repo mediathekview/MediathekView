@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.net.ConnectException;
@@ -207,10 +208,11 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     private static ListePset importPset(InputStreamReader in, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
+        XMLStreamReader parser = null;
+
         try {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            XMLStreamReader parser;
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 int event = parser.next();
@@ -244,6 +246,12 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
             return null;
         } finally {
+            if (parser != null) {
+                try {
+                    parser.close();
+                } catch (XMLStreamException ignored) {
+                }
+            }
             if (in != null) {
                 try {
                     in.close();
