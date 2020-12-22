@@ -1,6 +1,6 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Build Status](https://travis-ci.com/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.com/mediathekview/MediathekView)
+[![Build and test](https://github.com/mediathekview/MediathekView/workflows/Build%20and%20test/badge.svg?branch=master)](https://github.com/mediathekview/MediathekView/actions?query=workflow%3A"Build+and+test"+branch%3Amaster)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mediathekview_MediathekView&metric=alert_status)](https://sonarcloud.io/dashboard?id=mediathekview_MediathekView)
 
 # MediathekView

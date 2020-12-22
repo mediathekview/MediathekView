@@ -1,0 +1,122 @@
+name: Release
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+      - uses: AdoptOpenJDK/install-jdk@v1
+        with:
+          version: '8'
+          targets: 'INSTALL4J_JAVA_HOME'
+      - name: Install install4j
+        uses: teddyking/dependency-action@master
+        with:
+          deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Add install4j license
+        run: ./mvnw clean install4j:install-license -Pinstall4j
+      - name: Build and test with Maven
+        run: ./mvnw -B package
+      - uses: actions/upload-artifact@v2
+        with:
+          name: target
+          path: target/
+      - name: SonarCloud Scan
+        run: ./mvnw -B org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView -Dsonar.organization=mediathekview -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            architecture: 64bit
+            maven_profiles: "linux,64bit,install4j"
+          - os: arm
+            architecture: 32bit
+            maven_profiles: "arm,!64bit,32bit,install4j,!linux"
+          - os: windows
+            architecture: 64bit
+            maven_profiles: "windows,64bit,install4j,!linux"
+          - os: windows
+            architecture: 32bit
+            maven_profiles: "windows32,!64bit,32bit,install4j,!linux"
+          - os: macOS
+            architecture: 64bit
+            maven_profiles: "mac,!linux"
+    steps:
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/download-artifact@v2
+        with:
+          name: target
+      - name: Building ${{ matrix.os }} ${{ matrix.architecture }} with Maven
+        run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      - name: Building AppImage
+        if: matrix.os == 'linux'
+        run: scripte/appimage.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: release-target
+          path: target/
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version
+        run: echo "VERSION::$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/download-artifact@v2
+        with:
+          name: release-target
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ VERSION }}
+          body_path: CHANGELOG.md
+          prerelease: false
+          files: |
+            target/media/*.zip
+            target/media/*.gz
+            target/media/*.AppImage
+            target/media/MediathekView*.exe
+            target/media/*.deb
+            target/media/*.rpm
+            target/media/MediathekView*.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
