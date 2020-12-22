@@ -36,6 +36,10 @@ jobs:
         run: ./mvnw clean install4j:install-license -Pinstall4j
       - name: Build and test with Maven
         run: ./mvnw -B package
+      - uses: actions/upload-artifact@v2
+        with:
+          name: target
+          path: target/
       - name: SonarCloud Scan
         run: ./mvnw -B org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView -Dsonar.organization=mediathekview -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
         env:
@@ -62,11 +66,25 @@ jobs:
             architecture: 64bit
             maven_profiles: "mac,!linux"
     steps:
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/download-artifact@v2
+        with:
+          name: target
       - name: Building ${{ matrix.os }} ${{ matrix.architecture }} with Maven
         run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - name: Building AppImage
         if: matrix.os == 'linux'
         run: scripte/appimage.sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: release-target
+          path: target/
   publish:
     runs-on: ubuntu-latest
     steps:
@@ -74,6 +92,16 @@ jobs:
         run: echo "VERSION::$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
       - name: Set current date
         run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/download-artifact@v2
+        with:
+          name: release-target
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -84,7 +112,7 @@ jobs:
           files: |
             target/media/*.zip
             target/media/*.gz
-            target/media/*.AppImage
+            target/*.AppImage
             target/media/MediathekView*.exe
             target/media/*.deb
             target/media/*.rpm
