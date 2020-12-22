@@ -1,0 +1,28 @@
+name: Build and test
+on: [ push,pull_request ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Build and test with Maven
+        run: ./mvnw -B package
+      - name: SonarCloud Scan
+        run: ./mvnw -B org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.projectKey=mediathekview_MediathekView -Dsonar.organization=mediathekview -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
