@@ -83,13 +83,12 @@ jobs:
           version: '8'
           targets: 'INSTALL4J_JAVA_HOME'
 
-      - name: Install install4j
-        uses: teddyking/dependency-action@master
+      - name: Download install4j
+        uses: wei/curl@v1
         with:
-          deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
-      - run: ls -l
-      - run: ls -l $HOME
-      - run: ls -l /home/runner/work/_temp/_github_home
+          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz' --output install4j.tar.gz
+      - name: Extract install4j
+        run: tar -zxvf install4j.tar.gz
 
       - name: Cache local Maven repository
         uses: actions/cache@v2
@@ -99,13 +98,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Add install4j license
-        run: ./mvnw clean install4j:install-license -Pinstall4j -Dinstall4j.home=$HOME/install4j8.0.9
+        run: ./mvnw clean install4j:install-license -Pinstall4j
       - uses: actions/download-artifact@v2
         with:
           name: target
 
       - name: Building ${{ matrix.os }} ${{ matrix.architecture }} with Maven
-        run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dinstall4j.home=$HOME/install4j8.0.9
+        run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - name: Building AppImage
         if: matrix.os == 'linux'
         run: scripte/appimage.sh
