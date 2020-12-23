@@ -69,28 +69,28 @@ jobs:
             maven_profiles: "mac,!linux"
     steps:
       - uses: actions/checkout@v2
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         with:
           ref: develop
       - name: Set up JDK 15
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 15
       - uses: AdoptOpenJDK/install-jdk@v1
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         with:
           version: '8'
           targets: 'INSTALL4J_JAVA_HOME'
 
       - name: Install install4j
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         uses: teddyking/dependency-action@master
         with:
           deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
 
       - name: Cache local Maven repository
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -98,20 +98,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Add install4j license
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         run: ./mvnw clean install4j:install-license -Pinstall4j
       - uses: actions/download-artifact@v2
+        if: needs.test.outputs.changed == 'true'
         with:
           name: target
 
       - name: Building ${{ matrix.os }} ${{ matrix.architecture }} with Maven
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         run: ./mvnw -B package -P${{ matrix.maven_profiles }} -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - name: Building AppImage
-        if: matrix.os == 'linux' && needs.test.changed == 'true'
+        if: matrix.os == 'linux' && needs.test.outputs.changed == 'true'
         run: scripte/appimage.sh
       - uses: actions/upload-artifact@v2
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         with:
           name: release-target
           path: target/media/
@@ -120,19 +121,19 @@ jobs:
     needs: build
     steps:
       - name: Get version
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         run: echo "VERSION::$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
       - name: Set current date
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - uses: actions/download-artifact@v2
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         with:
           name: release-target
 
       - name: Release
-        if: needs.test.changed == 'true'
+        if: needs.test.outputs.changed == 'true'
         uses: softprops/action-gh-release@v1
         with:
           name: ${VERSION}_${NOW}
