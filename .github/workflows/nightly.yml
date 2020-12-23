@@ -142,7 +142,7 @@ jobs:
           body_path: CHANGELOG.md
           prerelease: true
           draft: true
-          tag_name: ${VERSION}_${NOW}
+          tag_name: "${VERSION}_${NOW}"
           files: |
             target/media/*.zip
             target/media/*.gz
@@ -153,5 +153,11 @@ jobs:
             target/media/MediathekView*.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deleting build artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            release-target
+            target
 
 
