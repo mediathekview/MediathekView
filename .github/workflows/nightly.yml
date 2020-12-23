@@ -113,7 +113,9 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: release-target
-          path: target/media/
+          path: |
+            target/media/
+            target/*.AppImage
   publish:
     runs-on: ubuntu-latest
     needs: [build,test]
@@ -134,11 +136,22 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: release-target
-
+      - run: ls -l target/media/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: release-artifacts
+          path: |
+            target/media/*.zip
+            target/media/*.gz
+            target/*.AppImage
+            target/media/MediathekView*.exe
+            target/media/*.deb
+            target/media/*.rpm
+            target/media/MediathekView*.sh
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${VERSION}_${NOW}
+          name: "${VERSION}_${NOW}"
           body_path: CHANGELOG.md
           prerelease: true
           draft: true
