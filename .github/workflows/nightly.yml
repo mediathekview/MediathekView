@@ -141,6 +141,8 @@ jobs:
           name: ${VERSION}_${NOW}
           body_path: CHANGELOG.md
           prerelease: true
+          draft: true
+          tag_name: ${VERSION}_${NOW}
           files: |
             target/media/*.zip
             target/media/*.gz
