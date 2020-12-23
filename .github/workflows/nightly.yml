@@ -89,7 +89,6 @@ jobs:
           deps: https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
       - run: ls -l
       - run: ls -l $HOME
-      - run: ls -l /github/home/
       - run: ls -l /home/runner/work/_temp/_github_home
 
       - name: Cache local Maven repository
