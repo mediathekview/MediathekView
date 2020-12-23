@@ -147,15 +147,15 @@ jobs:
             media/*.deb
             media/*.rpm
             media/MediathekView*.sh
-      - run: echo "${{env.$VERSION}}_${{env.NOW}}"
+      - run: echo "${{env.VERSION}}_${{env.NOW}}"
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: "${{env.$VERSION}}_${{env.NOW}}"
+          name: "${{env.VERSION}}_${{env.NOW}}"
           body_path: CHANGELOG.md
           prerelease: true
           draft: true
-          tag_name: "${{env.$VERSION}}_${{env.NOW}}"
+          tag_name: "${{env.VERSION}}_${{env.NOW}}"
           files: |
             media/*.zip
             media/*.gz
