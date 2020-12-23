@@ -115,6 +115,13 @@ jobs:
     needs: [build,test]
     if: needs.test.outputs.haschanged == 'true'
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
       - name: Get version
         run: echo "VERSION::$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
       - name: Set current date
