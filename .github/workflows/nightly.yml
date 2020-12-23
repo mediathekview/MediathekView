@@ -99,6 +99,8 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Add install4j license
         run: ./mvnw clean install4j:install-license -Pinstall4j
+        env:
+          LICENSE_KEY_8: ${{ secrets.LICENSE_KEY_8 }}
       - uses: actions/download-artifact@v2
         with:
           name: target
