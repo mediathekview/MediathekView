@@ -136,18 +136,18 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: release-target
-      - run: ls -l target/media/
+      - run: ls -l
       - uses: actions/upload-artifact@v2
         with:
           name: release-artifacts
           path: |
-            target/media/*.zip
-            target/media/*.gz
-            target/*.AppImage
-            target/media/MediathekView*.exe
-            target/media/*.deb
-            target/media/*.rpm
-            target/media/MediathekView*.sh
+            *.zip
+            *.gz
+            *.AppImage
+            MediathekView*.exe
+            *.deb
+            *.rpm
+            MediathekView*.sh
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -157,13 +157,13 @@ jobs:
           draft: true
           tag_name: "${VERSION}_${NOW}"
           files: |
-            target/media/*.zip
-            target/media/*.gz
-            target/*.AppImage
-            target/media/MediathekView*.exe
-            target/media/*.deb
-            target/media/*.rpm
-            target/media/MediathekView*.sh
+            *.zip
+            *.gz
+            *.AppImage
+            MediathekView*.exe
+            *.deb
+            *.rpm
+            MediathekView*.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deleting build artifacts
