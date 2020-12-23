@@ -68,6 +68,9 @@ jobs:
             architecture: 64bit
             maven_profiles: "mac,!linux"
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
@@ -91,8 +94,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
       - name: Get version
-        run: echo "VERSION::$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
+        run: echo "VERSION::$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
       - name: Set current date
         run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
       - name: Cache local Maven repository
