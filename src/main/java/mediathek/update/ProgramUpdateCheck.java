@@ -33,7 +33,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
 
     private void searchForProgramUpdate() {
         var pgrUpdate = new ProgrammUpdateSuchen();
-        pgrUpdate.checkVersion(false, true, false);
+        pgrUpdate.checkVersion(false, true, false, true);
     }
 
     private void checkForPsetUpdates() {
