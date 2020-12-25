@@ -55,7 +55,6 @@ import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
-import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
@@ -150,7 +149,7 @@ public class MediathekGui extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
-        searchProgramUpdateAction = new SearchProgramUpdateAction(this);
+        searchProgramUpdateAction = new SearchProgramUpdateAction();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MAINWINDOW));
 
@@ -874,7 +873,7 @@ public class MediathekGui extends JFrame {
         if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
-        jMenuHilfe.add(new ShowProgramInfosAction(this));
+        jMenuHilfe.add(new ShowProgramInfosAction());
         if (officialLauncherInUse()) {
             jMenuHilfe.addSeparator();
             jMenuHilfe.add(new SetAppMemoryAction());
@@ -1112,10 +1111,6 @@ public class MediathekGui extends JFrame {
      */
     protected void shutdownComputer() {
         //default is none
-    }
-
-    public void searchForUpdateOrShowProgramInfos(boolean infos) {
-        new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
     }
 
     /**

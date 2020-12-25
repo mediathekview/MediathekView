@@ -32,8 +32,13 @@ public class ProgrammUpdateSuchen {
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
     private final ArrayList<String[]> listInfos = new ArrayList<>();
 
+    /**
+     * Prüft auf neue Version; Updates und Programminfos.
+     * @param anzeigen wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
+     * @param showProgramInformation show program info dialog
+     * @param showAllInformation show all(outdated) infos
+     */
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
-        // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
         opt.ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
@@ -94,6 +99,9 @@ public class ProgrammUpdateSuchen {
                 dlg.setVisible(true);
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
             }
+            else {
+                displayNoNewInfoMessage();
+            }
         } catch (Exception ex) {
             logger.error("displayInfoMessages failed", ex);
         }
@@ -103,8 +111,8 @@ public class ProgrammUpdateSuchen {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText(UPDATE_SEARCH_TITLE);
-            alert.setContentText("Es liegen keine Programminfos vor.");
+            alert.setHeaderText("Programminformationen");
+            alert.setContentText("Es liegen keine aktuellen Informationen vor.");
             alert.showAndWait();
         });
     }
