@@ -37,14 +37,16 @@ public class ProgrammUpdateSuchen {
      * @param anzeigen wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
      * @param showProgramInformation show program info dialog
      * @param showAllInformation show all(outdated) infos
+     * @param silent If true, do not show no program info dialog
      */
-    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
+    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation,
+                             boolean silent) {
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
         opt.ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
-                    showProgramInformation(showAllInformation);
+                    showProgramInformation(showAllInformation, silent);
 
                 if (remoteProgramInfo.version().isInvalid()) {
                     Exception ex = new RuntimeException("progInfo.version() is invalid");
@@ -72,7 +74,7 @@ public class ProgrammUpdateSuchen {
         });
     }
 
-    private void displayInfoMessages(boolean showAll) {
+    private void displayInfoMessages(boolean showAll, boolean silent) {
         //display available info...
         try {
             int angezeigt = 0;
@@ -100,7 +102,8 @@ public class ProgrammUpdateSuchen {
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
             }
             else {
-                displayNoNewInfoMessage();
+                if (!silent)
+                    displayNoNewInfoMessage();
             }
         } catch (Exception ex) {
             logger.error("displayInfoMessages failed", ex);
@@ -117,12 +120,12 @@ public class ProgrammUpdateSuchen {
         });
     }
 
-    private void showProgramInformation(boolean showAll) {
+    private void showProgramInformation(boolean showAll, boolean silent) {
         if (listInfos.isEmpty()) {
             if (showAll)
                 displayNoNewInfoMessage();
         } else
-            displayInfoMessages(showAll);
+            displayInfoMessages(showAll, silent);
     }
 
     /**

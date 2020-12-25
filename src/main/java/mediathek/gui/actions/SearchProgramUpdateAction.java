@@ -12,6 +12,6 @@ public class SearchProgramUpdateAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new ProgrammUpdateSuchen().checkVersion(true, false, false);
+        new ProgrammUpdateSuchen().checkVersion(true, false, false, false);
     }
 }
