@@ -1,3 +1,10 @@
+<u>**13.7.1**</u>
+
+- Abfrage der Filmgrößen im "Film speichern" Dialog beschleunigt.
+- **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
+- **BUGFIX:** "URL kopieren" Kontextmenü zeigt bei Playlists wieder unterschiedliche Auflösungen an.
+- **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.
+
 <u>**13.7**</u>
 
 - **Erstellt vor dem Update zwingend ein Backup eurer Konfiguration! 
