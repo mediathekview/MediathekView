@@ -898,7 +898,6 @@ public class GuiFilme extends AGuiTabPanel {
      * Implements the context menu for tab film.
      */
     class TableContextMenuHandler extends MouseAdapter {
-        private static final String COPY_URL_STR = "URL kopieren";
         private final BeobPrint beobPrint = new BeobPrint();
         private final BeobAbo beobAbo = new BeobAbo(false);
         private final BeobAbo beobAboMitTitel = new BeobAbo(true);
@@ -1109,60 +1108,54 @@ public class GuiFilme extends AGuiTabPanel {
             res.ifPresent(film -> jDownloadHelper.installContextMenu(film, jPopupMenu));
             // Url
             res.ifPresent(film -> {
-                if (film.isPlayList()) {
-                    var miCopyPlayListUrl = new JMenuItem(COPY_URL_STR);
-                    miCopyPlayListUrl.addActionListener(l -> GuiFunktionen.copyToClipboard(film.getUrl()));
+                JMenuItem item;
+                final String uNormal = film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL);
+                String uHd = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY);
+                String uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW);
+                if (uHd.equals(uNormal)) {
+                    uHd = ""; // dann gibts keine
+                }
+                if (uLow.equals(uNormal)) {
+                    uLow = ""; // dann gibts keine
+                }
+                if (!uNormal.isEmpty()) {
                     jPopupMenu.addSeparator();
-                    jPopupMenu.add(miCopyPlayListUrl);
-                } else {
-                    JMenuItem item;
-                    final String uNormal = film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL);
-                    String uHd = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY);
-                    String uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW);
-                    if (uHd.equals(uNormal)) {
-                        uHd = ""; // dann gibts keine
-                    }
-                    if (uLow.equals(uNormal)) {
-                        uLow = ""; // dann gibts keine
-                    }
-                    if (!uNormal.isEmpty()) {
-                        jPopupMenu.addSeparator();
 
-                        final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(uNormal);
-                        if (!uHd.isEmpty() || !uLow.isEmpty()) {
-                            JMenu submenueURL = new JMenu(COPY_URL_STR);
-                            // HD
-                            if (!uHd.isEmpty()) {
-                                item = new JMenuItem("in höchster/hoher Qualität");
-                                item.addActionListener(
-                                        e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY)));
-                                submenueURL.add(item);
-                            }
-
-                            // normale Auflösung, gibts immer
-                            item = new JMenuItem("in mittlerer Qualität");
-                            item.addActionListener(copyNormalUrlListener);
+                    final ActionListener copyNormalUrlListener = e -> GuiFunktionen.copyToClipboard(uNormal);
+                    if (!uHd.isEmpty() || !uLow.isEmpty()) {
+                        JMenu submenueURL = new JMenu("URL kopieren");
+                        // HD
+                        if (!uHd.isEmpty()) {
+                            item = new JMenuItem("in höchster/hoher Qualität");
+                            item.addActionListener(
+                                    e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY)));
                             submenueURL.add(item);
-
-                            // kleine Auflösung
-                            if (!uLow.isEmpty()) {
-                                item = new JMenuItem("in niedriger Qualität");
-                                item.addActionListener(
-                                        e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.LOW)));
-                                submenueURL.add(item);
-                            }
-                            jPopupMenu.add(submenueURL);
-                        } else {
-                            item = new JMenuItem("Film-URL kopieren");
-                            item.addActionListener(copyNormalUrlListener);
-                            jPopupMenu.add(item);
                         }
-                    }
-                    if (!film.getUrlSubtitle().isEmpty()) {
-                        item = new JMenuItem("Untertitel-URL kopieren");
-                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlSubtitle()));
+
+                        // normale Auflösung, gibts immer
+                        item = new JMenuItem("in mittlerer Qualität");
+                        item.addActionListener(copyNormalUrlListener);
+                        submenueURL.add(item);
+
+                        // kleine Auflösung
+                        if (!uLow.isEmpty()) {
+                            item = new JMenuItem("in niedriger Qualität");
+                            item.addActionListener(
+                                    e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.LOW)));
+                            submenueURL.add(item);
+                        }
+                        jPopupMenu.add(submenueURL);
+                    } else {
+                        item = new JMenuItem("Film-URL kopieren");
+                        item.addActionListener(copyNormalUrlListener);
                         jPopupMenu.add(item);
                     }
+                }
+
+                if (!film.getUrlSubtitle().isEmpty()) {
+                    item = new JMenuItem("Untertitel-URL kopieren");
+                    item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlSubtitle()));
+                    jPopupMenu.add(item);
                 }
             });
 
