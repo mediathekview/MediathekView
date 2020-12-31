@@ -1,7 +1,6 @@
 package mediathek.tool;
 
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

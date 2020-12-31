@@ -262,7 +262,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     Arrays.stream(FilterConfigurationKeys.values())
         .map(FilterConfigurationKeys::getKey)
         .map(this::toFilterConfigNameWithCurrentFilter)
-        .forEach(configuration::clearProperty);
+        .forEach(cachedConfiguration::clearProperty);
     return this;
   }
 
@@ -293,6 +293,8 @@ public class CachedFilterConfiguration extends FilterConfiguration {
 
   public CachedFilterConfiguration setCurrentFilter(UUID currentFilterID) {
     cachedConfiguration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
+    //Persist the current filter. This should be always persisted.
+    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
     currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
@@ -311,7 +313,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
 
   public List<FilterDTO> getAvailableFilters() {
     List<String> availableFilterKeys = new ArrayList<>();
-    configuration
+    cachedConfiguration
         .getKeys()
         .forEachRemaining(
             key -> {
@@ -356,7 +358,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     if (filterToDeleteIsCurrentFilter) {
       cachedConfiguration.clearProperty(FILTER_PANEL_CURRENT_FILTER);
     }
-    configuration
+    cachedConfiguration
         .getKeys()
         .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
     availableFiltersChangedCallbacks.forEach(Runnable::run);

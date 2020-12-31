@@ -49,7 +49,6 @@ public class FilmActionPanel {
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
   private final Tooltip bookmarklistDeselected = new Tooltip("Gemerkte Filme anzeigen");
-  private FilterConfiguration filterConfig;
   private final ObservableList<FilterDTO> availableFilters;
   public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
   public BooleanProperty showOnlyHd;
@@ -69,6 +68,7 @@ public class FilmActionPanel {
   public CheckListView<String> senderList;
   public JDialog filterDialog;
   public ManageAboAction manageAboAction;
+  private FilterConfiguration filterConfig;
   /** Stores the list of thema strings used for autocompletion. */
   private SuggestionProvider<String> themaSuggestionProvider;
 
@@ -77,14 +77,18 @@ public class FilmActionPanel {
   private boolean themaLoading = false;
   private boolean senderLoading = false;
   private CachedFilterConfiguration chachedFilterConfig;
+  private boolean switchingFilter = false;
 
   public FilmActionPanel() {
     this.filterConfig = new FilterConfiguration();
 
     setupViewSettingsPane();
-    ApplicationConfiguration.getInstance().addEventListener(ConfigurationEvent.SET_PROPERTY,event -> {
-      setFilterConfiguration();
-    });
+    ApplicationConfiguration.getInstance()
+        .addEventListener(
+            ConfigurationEvent.SET_PROPERTY,
+            event -> {
+              setFilterConfiguration();
+            });
     setFilterConfiguration();
     setupSaveFilterSettingsButton();
     setupRestoreFilterSettingsButton();
@@ -105,23 +109,26 @@ public class FilmActionPanel {
   }
 
   private void setupRestoreFilterSettingsButton() {
-    viewSettingsPane.registerRestoreButtonListener(actionEvent -> {
-        viewSettingsPane.setRestoreButtonDisabled(true);
-        if(chachedFilterConfig != null) {
-          chachedFilterConfig.restore();
-          restoreConfigSettings();
-        }
-    });
+    viewSettingsPane.registerRestoreButtonListener(
+        actionEvent -> {
+          if (chachedFilterConfig != null) {
+            chachedFilterConfig.restore();
+            restoreConfigSettings();
+          }
+          viewSettingsPane.setRestoreButtonDisabled(true);
+          viewSettingsPane.setSaveButtonDisabled(true);
+        });
   }
 
   private void setupSaveFilterSettingsButton() {
-    viewSettingsPane.registerSaveButtonListener(actionEvent ->  {
-      viewSettingsPane.setSaveButtonDisabled(true);
-      if(chachedFilterConfig!=null)
-      {
-        chachedFilterConfig.save();
-      }
-    });
+    viewSettingsPane.registerSaveButtonListener(
+        actionEvent -> {
+          if (chachedFilterConfig != null) {
+            chachedFilterConfig.save();
+          }
+          viewSettingsPane.setRestoreButtonDisabled(true);
+          viewSettingsPane.setSaveButtonDisabled(true);
+        });
   }
 
   private void setFilterConfiguration() {
@@ -143,14 +150,18 @@ public class FilmActionPanel {
   }
 
   private void setupCachedFilterConfigListener() {
-    this.chachedFilterConfig.registerEventListener(configurationEvent -> {
-      viewSettingsPane.setSaveButtonDisabled(false);
-      viewSettingsPane.setRestoreButtonDisabled(false);
-    });
+    this.chachedFilterConfig.registerEventListener(
+        configurationEvent -> {
+          if (!switchingFilter) {
+            viewSettingsPane.setSaveButtonDisabled(false);
+            viewSettingsPane.setRestoreButtonDisabled(false);
+          }
+        });
   }
 
   private boolean isLivePersistence() {
-    return ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_LIVE_PERSIST_FILTERS,true);
+    return ApplicationConfiguration.getConfiguration()
+        .getBoolean(ApplicationConfiguration.CONFIG_LIVE_PERSIST_FILTERS, true);
   }
 
   private void setupAddNewFilterButton() {
@@ -197,7 +208,9 @@ public class FilmActionPanel {
     viewSettingsPane.setFilterSelectionChangeListener(
         (observableValue, oldValue, newValue) -> {
           if (newValue != null && !newValue.equals(oldValue)) {
+            switchingFilter = true;
             filterConfig.setCurrentFilter(newValue);
+            switchingFilter = false;
           }
         });
 
@@ -274,6 +287,10 @@ public class FilmActionPanel {
   }
 
   private void loadSavedSenderChecks() {
+    if (senderLoading) {
+      return;
+    }
+
     senderLoading = true;
     IndexedCheckModel<String> senderCheckModel = senderList.getCheckModel();
     List<String> loadedSender = filterConfig.getSender();
@@ -512,7 +529,7 @@ public class FilmActionPanel {
       }
     }
     themaBox.setItems(
-            FXCollections.observableList(
+        FXCollections.observableList(
             themen.stream()
                 .distinct()
                 .sorted(GermanStringSorter.getInstance())
@@ -588,4 +605,3 @@ public class FilmActionPanel {
     updateThemaBox();
   }
 }
-
