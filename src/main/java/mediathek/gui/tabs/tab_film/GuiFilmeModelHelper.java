@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film;
 
-import javafx.collections.ObservableList;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -11,6 +10,8 @@ import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
@@ -124,7 +125,8 @@ public class GuiFilmeModelHelper {
     calculateFilmLengthSliderValues();
 
     final String filterThema = getFilterThema();
-    final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
+    //Copy the selected senders to prevent conflicts when sender list get changed while filtering.
+    final List<String> selectedSenders = new ArrayList<>(fap.senderList.getCheckModel().getCheckedItems());
 
     if (dontShowSeen) historyController.prepareMemoryCache();
 
