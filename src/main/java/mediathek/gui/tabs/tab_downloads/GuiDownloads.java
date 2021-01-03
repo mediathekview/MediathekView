@@ -1257,7 +1257,10 @@ public class GuiDownloads extends AGuiTabPanel {
                     aktFilm = datenDownload.film;
                 }
             }
-            mediathekGui.getFilmInfoDialog().updateCurrentFilm(aktFilm);
+            var infoDialog = mediathekGui.getFilmInfoDialog();
+            if (infoDialog != null) {
+                infoDialog.updateCurrentFilm(aktFilm);
+            }
         }
     }
 

@@ -134,7 +134,7 @@ public class MediathekGui extends JFrame {
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private StatusBarController statusBarController;
-    private InfoDialog filmInfo; // Infos zum Film
+    private final InfoDialog filmInfo;
     private ProgramUpdateCheck programUpdateChecker;
     /**
      * Progress indicator thread for OS X and windows.
@@ -221,6 +221,10 @@ public class MediathekGui extends JFrame {
             getBandwidthMonitorController().setVisibility();
         }
         logger.trace("Finished loading bandwidth monitor");
+
+        logger.trace("Loading info dialog");
+        filmInfo = new InfoDialog(this);
+        logger.trace("Finished loading info dialog");
     }
 
     /**
@@ -487,9 +491,6 @@ public class MediathekGui extends JFrame {
     }
 
     public InfoDialog getFilmInfoDialog() {
-        if (filmInfo == null)
-            filmInfo = new InfoDialog(this);
-
         return filmInfo;
     }
 

@@ -682,8 +682,11 @@ public class GuiFilme extends AGuiTabPanel {
      * Update Film Information and description panel with updated film...
      */
     private void updateFilmData() {
-        final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(mediathekGui.getFilmInfoDialog()::updateCurrentFilm);
+        var infoDialog = mediathekGui.getFilmInfoDialog();
+        if (infoDialog != null) {
+            final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
+            filmSelection.ifPresent(mediathekGui.getFilmInfoDialog()::updateCurrentFilm);
+        }
     }
 
     private void setInfoStatusbar() {
@@ -935,9 +938,12 @@ public class GuiFilme extends AGuiTabPanel {
                         buttonTable(row, column);
                     }
                 } else if (arg0.getClickCount() > 1) {
-                    // filmAbspielen_();
-                    if (!mediathekGui.getFilmInfoDialog().isVisible()) {
-                        mediathekGui.getFilmInfoDialog().showInfo();
+                    var infoDialog = mediathekGui.getFilmInfoDialog();
+                    if (infoDialog != null) {
+                        if (!infoDialog.isVisible()) {
+                            infoDialog.showInfo();
+                        }
+
                     }
                 }
             }
