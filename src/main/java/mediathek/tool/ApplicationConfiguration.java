@@ -206,6 +206,12 @@ public class ApplicationConfiguration {
         public static final String VISIBLE = "application.ui.filter_dialog.visible";
     }
 
+    public static class FilmInfoDialog {
+        public static final String FILM_INFO_VISIBLE = "film.information.visible";
+        public static final String FILM_INFO_LOCATION_X = "film.information.location.x";
+        public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+    }
+
     /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case
      * this listener is called several times in a row the timer will get reset in order to ensure that

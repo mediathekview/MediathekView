@@ -66,8 +66,8 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         config.lock(LockMode.READ)
         try {
             val newLocation = Point()
-            newLocation.x = config.getInt(FILM_INFO_LOCATION_X)
-            newLocation.y = config.getInt(FILM_INFO_LOCATION_Y)
+            newLocation.x = config.getInt(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_X)
+            newLocation.y = config.getInt(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_Y)
             location = newLocation
         } catch (ignored: NoSuchElementException) {
         } finally {
@@ -84,8 +84,8 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         config.lock(LockMode.WRITE)
         try {
             val location = locationOnScreen
-            config.setProperty(FILM_INFO_LOCATION_X, location.x)
-            config.setProperty(FILM_INFO_LOCATION_Y, location.y)
+            config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_X, location.x)
+            config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_Y, location.y)
         } finally {
             config.unlock(LockMode.WRITE)
         }
@@ -255,13 +255,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         }
     }
 
-    companion object {
-        private const val serialVersionUID = -890508930316467747L
-        private const val FILM_INFO_VISIBLE = "film.information.visible"
-        private const val FILM_INFO_LOCATION_X = "film.information.location.x"
-        private const val FILM_INFO_LOCATION_Y = "film.information.location.y"
-    }
-
     init {
         type = Type.UTILITY
         title = "Filminformation"
@@ -272,17 +265,17 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         buildLayout()
         updateTextFields()
         restoreLocation()
-        val wasVisible = config.getBoolean(FILM_INFO_VISIBLE, false)
+        val wasVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
         if (wasVisible) {
             isVisible = true
         }
         addWindowListener(object : WindowAdapter() {
             override fun windowOpened(e: WindowEvent) {
-                config.setProperty(FILM_INFO_VISIBLE, true)
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, true)
             }
 
             override fun windowClosed(e: WindowEvent) {
-                config.setProperty(FILM_INFO_VISIBLE, false)
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
             }
         })
 
