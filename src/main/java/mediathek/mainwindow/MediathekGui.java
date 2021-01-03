@@ -191,11 +191,6 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();
 
-        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
-            getBandwidthMonitorController().setVisibility();
-        }
-
         setupNotificationCenter();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
@@ -220,6 +215,12 @@ public class MediathekGui extends JFrame {
         setupShutdownHook();
 
         checkInvalidRegularExpressions();
+
+        logger.trace("Loading bandwidth monitor");
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
+            getBandwidthMonitorController().setVisibility();
+        }
+        logger.trace("Finished loading bandwidth monitor");
     }
 
     /**
@@ -988,6 +989,9 @@ public class MediathekGui extends JFrame {
 
         showMemoryMonitorAction.closeMemoryMonitor();
 
+        if (bandwidthMonitor != null)
+            bandwidthMonitor.close();
+
         endProgramUpdateChecker();
 
         ShutdownDialog dialog = new ShutdownDialog(this);
@@ -1041,9 +1045,6 @@ public class MediathekGui extends JFrame {
         dialog.hide();
 
         tabFilme.fap.filterDialog.dispose();
-
-        if (bandwidthMonitor != null)
-            bandwidthMonitor.close();
 
         Log.printRuntimeStatistics();
 
