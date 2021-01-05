@@ -75,7 +75,7 @@ public class DownloadInfos {
         } else if (bandwidth > 1_000.0) {
             bandwidthStr = Math.round(bandwidth / 1_000.0) + " kByte/s";
         } else {
-            bandwidthStr = Math.round(bandwidth) + " Byte/s";
+            bandwidthStr = bandwidth + " Byte/s";
         }
     }
 
