@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 public class Filter {
     /**
@@ -281,14 +280,12 @@ public class Filter {
     static class PatternCacheLoader extends CacheLoader<String, Pattern> {
 
         @Override
-        public Pattern load(@NotNull String pattern) throws IllegalArgumentException, PatternSyntaxException {
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
             logger.trace("COMPILING PATTERN: " + pattern);
             final String regexPattern = pattern.substring(2);
-            Pattern p;
-            p = Pattern.compile(regexPattern,
-                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
 
-            return p;
+            return Pattern.compile(regexPattern,
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
         }
     }
 }
