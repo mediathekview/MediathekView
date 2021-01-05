@@ -1,6 +1,7 @@
 package mediathek.controller.history
 
 import com.google.common.collect.Sets
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
@@ -15,6 +16,7 @@ import kotlin.system.exitProcess
 /**
  * Database based seen history controller.
  */
+@SuppressFBWarnings("UWF_NULL_FIELD")
 class SeenHistoryController : AutoCloseable {
     private var connection: Connection? = null
     private var insertStatement: PreparedStatement? = null

@@ -37,7 +37,7 @@ public class FilmListFilterTask extends Task<Void> {
         updateProgress(-1, 4);
         daten.getListeBlacklist().filterListe();
 
-        SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false)));
+        SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false)));
 
         logger.trace("FilmListFilterTask finished");
 
