@@ -1,6 +1,7 @@
 package mediathek;
 
 import com.google.common.base.Stopwatch;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
@@ -431,6 +432,7 @@ public class Main {
     }
 
     @SuppressWarnings("unused")
+    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
     private static void initializeJavaFX() {
         //JavaFX stuff
         Platform.setImplicitExit(false);

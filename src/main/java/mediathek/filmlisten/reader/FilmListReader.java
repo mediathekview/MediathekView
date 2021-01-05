@@ -45,7 +45,7 @@ public class FilmListReader implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(FilmListReader.class);
     private static final String THEMA_LIVE = "Livestream";
     private final EventListenerList listeners = new EventListenerList();
-    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
+    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
     private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
@@ -488,7 +488,7 @@ public class FilmListReader implements AutoCloseable {
     private void notifyStart(String url) {
         progress = 0;
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.start(new ListenerFilmeLadenEvent(url, "", max, 0, 0, false));
+            l.start(new ListenerFilmeLadenEvent(url, "", max, 0, false));
         }
     }
 
