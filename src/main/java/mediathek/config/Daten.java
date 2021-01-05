@@ -59,7 +59,6 @@ public class Daten {
     private static final Logger logger = LogManager.getLogger(Daten.class);
     private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
     public static ListePset listePset;
-    private static Daten instance;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     /**
@@ -136,7 +135,7 @@ public class Daten {
     }
 
     public static Daten getInstance() {
-        return instance == null ? instance = new Daten() : instance;
+        return DatenHolder.INSTANCE;
     }
 
     /**
@@ -188,7 +187,7 @@ public class Daten {
     public static Path getBookmarkFilePath() {
         return StandardLocations.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
     }
-    
+
     /**
      * Load the stored bookmarkdata form JSON file
      * into memory
@@ -208,7 +207,7 @@ public class Daten {
 
         return zdt.toInstant().toEpochMilli();
     }
-
+    
     public INotificationCenter notificationCenter() {
         return notificationCenter;
     }
@@ -492,11 +491,11 @@ public class Daten {
     public ListeBlacklist getListeBlacklist() {
         return listeBlacklist;
     }
-    
+
     public BookmarkDataList getListeBookmarkList() {
         return listeBookmarkList;
     }
-
+    
     public ListeMediaDB getListeMediaDB() {
         return listeMediaDB;
     }
@@ -511,6 +510,13 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
+    }
+
+    /**
+     * Part of the Bill Pugh Singleton implementation
+     */
+    private static class DatenHolder {
+        private static final Daten INSTANCE = new Daten();
     }
 
     /**
