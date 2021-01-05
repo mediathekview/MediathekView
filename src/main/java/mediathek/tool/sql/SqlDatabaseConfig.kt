@@ -1,6 +1,6 @@
 package mediathek.tool.sql
 
-import mediathek.config.Daten
+import mediathek.config.StandardLocations
 import org.sqlite.SQLiteConfig
 import org.sqlite.SQLiteDataSource
 import java.nio.file.Path
@@ -10,7 +10,7 @@ object SqlDatabaseConfig {
     val dataSource: SQLiteDataSource
 
     @JvmStatic
-    val historyDbPath: Path = Daten.getSettingsDirectory().resolve("history.db")
+    val historyDbPath: Path = StandardLocations.getSettingsDirectory().resolve("history.db")
 
     @JvmStatic
     val config: SQLiteConfig

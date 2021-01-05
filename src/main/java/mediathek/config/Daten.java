@@ -153,28 +153,17 @@ public class Daten {
         final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
 
         if (Config.isPortableMode())
-            strFile = getSettingsDirectory().toString() + filePart;
+            strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 strFile = SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
             } else {
-                strFile = getSettingsDirectory().toString() + filePart;
+                strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
             }
         }
 
         return strFile;
-    }
-
-    /**
-     * Return the location of the settings directory.
-     * If it does not exist, create one.
-     *
-     * @return Path to the settings directory
-     * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
-     */
-    public static Path getSettingsDirectory() throws IllegalStateException {
-        return StandardLocations.getSettingsDirectory();
     }
 
     /**
@@ -186,7 +175,7 @@ public class Daten {
         List<Path> xmlFilePath = new ArrayList<>();
 
         for (int i = 1; i <= MAX_COPY; ++i) {
-            Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+            Path path = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
             if (Files.exists(path)) {
                 xmlFilePath.add(path);
             }
@@ -201,7 +190,7 @@ public class Daten {
      * @return Path object of bookmark file
      */
     public static Path getBookmarkFilePath() {
-        return Daten.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
+        return StandardLocations.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
     }
     
     /**
@@ -409,7 +398,7 @@ public class Daten {
         if (resetConfigurationData()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir1 = getSettingsDirectory().toString();
+            String dir1 = StandardLocations.getSettingsDirectory().toString();
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
@@ -429,7 +418,7 @@ public class Daten {
                         alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
                         alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                                 + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                                + getSettingsDirectory().toString() + '\n'
+                                + StandardLocations.getSettingsDirectory().toString() + '\n'
                                 + "von Hand löschen und dann das Programm wieder starten.\n\n"
                                 + "Im Forum erhalten Sie weitere Hilfe.");
                         JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
@@ -462,14 +451,14 @@ public class Daten {
                 if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
                     for (int i = MAX_COPY; i > 1; --i) {
-                        xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
-                        final Path xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                        xmlFilePathCopy_1 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
+                        final Path xmlFilePathCopy_2 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
                         if (Files.exists(xmlFilePathCopy_1)) {
                             Files.move(xmlFilePathCopy_1, xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
                     if (Files.exists(xmlFilePath)) {
-                        Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
+                        Files.move(xmlFilePath, StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
                     logger.info("Einstellungen wurden gesichert");
                 } else {

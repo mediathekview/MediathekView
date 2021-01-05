@@ -1,6 +1,6 @@
 package mediathek.controller.history;
 
-import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.tool.FileUtils;
 import mediathek.tool.sql.SqlAutoRollback;
 import mediathek.tool.sql.SqlAutoSetAutoCommit;
@@ -40,7 +40,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
     private final List<MVUsedUrl> historyEntries = new ArrayList<>();
 
     public SeenHistoryMigrator() throws InvalidPathException {
-        historyFilePath = Daten.getSettingsDirectory().resolve("history.txt");
+        historyFilePath = StandardLocations.getSettingsDirectory().resolve("history.txt");
         historyDbPath = SqlDatabaseConfig.getHistoryDbPath();
     }
 

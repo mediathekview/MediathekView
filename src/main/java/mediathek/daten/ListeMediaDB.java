@@ -22,6 +22,7 @@ package mediathek.daten;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.Filter;
@@ -365,7 +366,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     private Path getFilePath() {
         Path urlPath = null;
         try {
-            urlPath = Daten.getSettingsDirectory().resolve(Konstanten.FILE_MEDIA_DB);
+            urlPath = StandardLocations.getSettingsDirectory().resolve(Konstanten.FILE_MEDIA_DB);
             if (Files.notExists(urlPath)) {
                 urlPath = Files.createFile(urlPath);
             }
