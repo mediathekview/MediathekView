@@ -6,6 +6,7 @@ package mediathek.gui.dialog.about;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.StandardLocations;
 import mediathek.tool.swing.HyperlinkDecorator;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -38,7 +39,7 @@ public class AboutDialogPanel extends JPanel {
 
     private void setupProgramPaths() {
         // Programmpfade
-        final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        final Path xmlFilePath = StandardLocations.getMediathekXmlFile();
         lblSettingsDirectory.setText(xmlFilePath.toAbsolutePath().toString());
         lblFilmListPath.setText(Daten.getDateiFilmliste());
     }

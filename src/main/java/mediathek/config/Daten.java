@@ -66,8 +66,6 @@ public class Daten {
     private static Daten instance;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
-    // Verzeichnis zum Speichern der Programmeinstellungen
-    private static String basisverzeichnis;
     /**
      * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
      */
@@ -141,11 +139,6 @@ public class Daten {
         reset = aIsReset;
     }
 
-    public static Daten getInstance(@NotNull String aBasisverzeichnis) {
-        basisverzeichnis = aBasisverzeichnis;
-        return getInstance();
-    }
-
     public static Daten getInstance() {
         return instance == null ? instance = new Daten() : instance;
     }
@@ -181,33 +174,7 @@ public class Daten {
      * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
      */
     public static Path getSettingsDirectory() throws IllegalStateException {
-        final Path baseDirectoryPath;
-        if (basisverzeichnis == null || basisverzeichnis.isEmpty()) {
-            baseDirectoryPath = Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_EINSTELLUNGEN);
-        } else {
-            baseDirectoryPath = Paths.get(basisverzeichnis);
-        }
-
-        if (Files.notExists(baseDirectoryPath)) {
-            try {
-                Files.createDirectories(baseDirectoryPath);
-            } catch (IOException ioException) {
-                final var errMsg = String.format("Der Ordner \"%s\" konnte nicht angelegt werden.%n Bitte prüfen Sie die Dateirechte.", baseDirectoryPath.toString());
-                logger.error(errMsg, ioException);
-                throw new IllegalStateException(errMsg, ioException);
-            }
-        }
-
-        return baseDirectoryPath;
-    }
-
-    /**
-     * Return the path to "mediathek.xml"
-     *
-     * @return Path object to mediathek.xml file
-     */
-    public static Path getMediathekXmlFilePath() {
-        return Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
+        return StandardLocations.getSettingsDirectory();
     }
 
     /**
@@ -361,7 +328,7 @@ public class Daten {
 
     private boolean load() {
         boolean ret = false;
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Path xmlFilePath = StandardLocations.getMediathekXmlFile();
 
         if (Files.exists(xmlFilePath)) {
             final IoXmlLesen configReader = new IoXmlLesen();
@@ -437,7 +404,7 @@ public class Daten {
         createConfigurationBackupCopies();
 
         final IoXmlSchreiben configWriter = new IoXmlSchreiben();
-        configWriter.writeConfigurationFile(getMediathekXmlFilePath());
+        configWriter.writeConfigurationFile(StandardLocations.getMediathekXmlFile());
 
         if (resetConfigurationData()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
@@ -482,10 +449,10 @@ public class Daten {
             logger.info("Einstellungen sichern");
 
             try {
-                final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+                final Path xmlFilePath = StandardLocations.getMediathekXmlFile();
                 long creatTime = -1;
 
-                Path xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
+                Path xmlFilePathCopy_1 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
                 if (Files.exists(xmlFilePathCopy_1)) {
                     BasicFileAttributes attrs = Files.readAttributes(xmlFilePathCopy_1, BasicFileAttributes.class);
                     FileTime d = attrs.lastModifiedTime();
