@@ -17,7 +17,7 @@ public final class ReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public static List<String[]> list = new LinkedList<>();
+    public static final List<String[]> list = new LinkedList<>();
 
     public static void init() {
         list.clear();

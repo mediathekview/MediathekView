@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public class MediathekGuiMac extends MediathekGui {
-    protected static Logger logger = LogManager.getLogger(MediathekGuiMac.class);
+    protected static final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     private final OsxPowerManager powerManager = new OsxPowerManager();
 
     public MediathekGuiMac() {
