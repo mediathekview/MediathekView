@@ -3,16 +3,14 @@ package mediathek.tool;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.starter.RuntimeExec;
-import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +28,7 @@ import static mediathek.tool.Functions.getOs;
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
     private static final ArrayList<String> winPfade = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger();
 
     private static void setWinProgPfade() {
         String pfad;
@@ -53,9 +52,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         }
     }
 
+    /**
+     * Liefert den Standardpfad für das entsprechende BS.
+     * Programm muss auf dem Rechner installiert sein.
+     *
+     * @return Pfad als String
+     */
     public static String getMusterPfadVlc() {
-        // liefert den Standardpfad für das entsprechende BS 
-        // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_FREEBSD = "/usr/local/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
@@ -64,11 +67,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         try {
             switch (getOs()) {
                 case LINUX:
-                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                    if (SystemUtils.IS_OS_FREE_BSD)
                         pfad = PFAD_FREEBSD;
-                    } else {
+                    else
                         pfad = PFAD_LINUX_VLC;
-                    }
                     break;
                 case MAC:
                     pfad = PFAD_MAC_VLC;
@@ -93,11 +95,15 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfad;
     }
 
+    /**
+     * Liefert den Standardpfad für das entsprechende BS.
+     * Bei Win+Mac wird das Programm mitgeliefert und liegt im Ordner "bin" der mit dem Programm
+     * mitgeliefert wird.
+     * Bei Linux muss das Programm auf dem Rechner installiert sein.
+     *
+     * @return Pfad als String
+     */
     public static String getMusterPfadFFmpeg() {
-        // liefert den Standardpfad für das entsprechende BS 
-        // bei Win+Mac wird das Programm mitgeliefert und liegt 
-        // im Ordner "bin" der mit dem Programm mitgeliefert wird
-        // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
         final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
         final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
@@ -106,11 +112,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         try {
             switch (getOs()) {
                 case LINUX:
-                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                    if (SystemUtils.IS_OS_FREE_BSD)
                         pfad = PFAD_FREEBSD_FFMPEG;
-                    } else {
+                    else
                         pfad = PFAD_LINUX_FFMPEG;
-                    }
                     break;
                 case MAC:
                     pfad = PFAD_MAC_FFMPEG;
@@ -241,7 +246,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             return false;
         }
 
-
         try (ZipFile zipFile = new ZipFile(archive)) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
@@ -310,8 +314,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return ret;
     }
 
-    private static final Logger logger = LogManager.getLogger(GuiFunktionenProgramme.class);
-
     /**
      * Test if a path is a directory and writeable.
      * Path directories will be created before trying write test.
@@ -342,77 +344,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             logger.error("checkPathWriteable()", e);
         }
 
-        return ret;
-    }
-
-
-    public static boolean programmePruefen(JFrame jFrame) {
-        // prüfen ob die eingestellten Programmsets passen
-        final String PIPE = "| ";
-        final String LEER = "      ";
-        final String PFEIL = " -> ";
-        boolean ret = true;
-        String text = "";
-
-        for (DatenPset datenPset : Daten.listePset) {
-            ret = true;
-            if (!datenPset.isFreeLine() && !datenPset.isLabel()) {
-                // nur wenn kein Label oder freeline
-                text += "++++++++++++++++++++++++++++++++++++++++++++" + '\n';
-                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + '\n';
-                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
-                if (datenPset.progsContainPath()) {
-                    // beim nur Abspielen wird er nicht gebraucht
-                    if (zielPfad.isEmpty()) {
-                        ret = false;
-                        text += PIPE + LEER + "Zielpfad fehlt!\n";
-                    } else // Pfad beschreibbar?
-                        if (!checkPathWriteable(zielPfad)) {
-                            //da Pfad-leer und "kein" Pfad schon abgeprüft
-                            ret = false;
-                            text += PIPE + LEER + "Falscher Zielpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + '\n';
-                        }
-                }
-                for (DatenProg datenProg : datenPset.getListeProg()) {
-                    // Programmpfad prüfen
-                    if (datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].isEmpty()) {
-                        ret = false;
-                        text += PIPE + LEER + "Kein Programm angegeben!\n";
-                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
-                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
-                    } else if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
-                        // dann noch mit RuntimeExec versuchen
-                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
-                        Process pr = r.exec(false /*log*/);
-                        if (pr != null) {
-                            // dann passts ja
-                            pr.destroy();
-                        } else {
-                            // läßt sich nicht starten
-                            ret = false;
-                            text += PIPE + LEER + "Falscher Programmpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
-                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
-                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(File.separator)) {
-                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n';
-                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n';
-                            }
-                        }
-                    }
-                }
-                if (ret) {
-                    //sollte alles passen
-                    text += PIPE + PFEIL + "Ok!" + '\n';
-                }
-                text += """
-                        ++++++++++++++++++++++++++++++++++++++++++++
-
-
-                        """;
-            }
-        }
-        new DialogHilfe(jFrame, true, text).setVisible(true);
         return ret;
     }
 }
