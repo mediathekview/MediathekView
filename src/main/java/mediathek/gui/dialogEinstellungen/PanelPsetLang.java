@@ -34,6 +34,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -334,68 +336,70 @@ public class PanelPsetLang extends PanelVorlage {
         final String LEER = "      ";
         final String PFEIL = " -> ";
         boolean ret;
-        String text = "";
+        StringBuilder text = new StringBuilder();
 
         for (DatenPset datenPset : Daten.listePset) {
             ret = true;
             if (!datenPset.isFreeLine() && !datenPset.isLabel()) {
                 // nur wenn kein Label oder freeline
-                text += "++++++++++++++++++++++++++++++++++++++++++++" + '\n';
-                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + '\n';
+                text.append("++++++++++++++++++++++++++++++++++++++++++++" + '\n');
+                text.append(PIPE + "Programmgruppe: ").append(datenPset.arr[DatenPset.PROGRAMMSET_NAME]).append('\n');
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
                 if (datenPset.progsContainPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
                     if (zielPfad.isEmpty()) {
                         ret = false;
-                        text += PIPE + LEER + "Zielpfad fehlt!\n";
+                        text.append(PIPE + LEER + "Zielpfad fehlt!\n");
                     } else // Pfad beschreibbar?
                         if (!GuiFunktionenProgramme.checkPathWriteable(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
-                            text += PIPE + LEER + "Falscher Zielpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + '\n';
+                            text.append(PIPE + LEER + "Falscher Zielpfad!\n");
+                            text.append(PIPE + LEER + PFEIL + "Zielpfad \"").append(zielPfad).append("\" nicht beschreibbar!").append('\n');
                         }
                 }
+
                 for (DatenProg datenProg : datenPset.getListeProg()) {
                     // Programmpfad prüfen
-                    if (datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].isEmpty()) {
+                    final var progPfad = datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD];
+                    final var progName = datenProg.arr[DatenProg.PROGRAMM_NAME];
+                    if (progPfad.isEmpty()) {
                         ret = false;
-                        text += PIPE + LEER + "Kein Programm angegeben!\n";
-                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
-                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
-                    } else if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
+                        text.append(PIPE + LEER + "Kein Programm angegeben!\n");
+                        text.append(PIPE + LEER + PFEIL + "Programmname: ").append(progName).append('\n');
+                        text.append(PIPE + LEER + LEER + "Pfad: ").append(progPfad).append('\n');
+                    } else if (!Files.isExecutable(Paths.get(progPfad))) {
                         // dann noch mit RuntimeExec versuchen
-                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
-                        Process pr = r.exec(false /*log*/);
-                        if (pr != null) {
-                            // dann passts ja
-                            pr.destroy();
-                        } else {
+                        RuntimeExec r = new RuntimeExec(progPfad);
+                        Process pr = r.exec(false);
+                        if (pr == null) {
                             // läßt sich nicht starten
                             ret = false;
-                            text += PIPE + LEER + "Falscher Programmpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
-                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
-                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(File.separator)) {
-                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n';
-                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n';
+                            text.append(PIPE + LEER + "Falscher Programmpfad!\n");
+                            text.append(PIPE + LEER + PFEIL + "Programmname: ").append(progName).append('\n');
+                            text.append(PIPE + LEER + LEER + "Pfad: ").append(progPfad).append('\n');
+                            if (!progPfad.contains(File.separator)) {
+                                text.append(PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n');
+                                text.append(PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n');
                             }
                         }
+                        else
+                            pr.destroy();
                     }
                 }
                 if (ret) {
                     //sollte alles passen
-                    text += PIPE + PFEIL + "Ok!" + '\n';
+                    text.append(PIPE + PFEIL + "Ok!" + '\n');
                 }
-                text += """
+                text.append("""
                         ++++++++++++++++++++++++++++++++++++++++++++
 
 
-                        """;
+                        """);
             }
         }
 
-        var dlg = new DialogHilfe(parentComponent, true, text);
+        var dlg = new DialogHilfe(parentComponent, true, text.toString());
         dlg.setVisible(true);
     }
 
