@@ -161,13 +161,13 @@ public class Daten {
         final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
 
         if (Config.isPortableMode())
-            strFile = getSettingsDirectory_String() + filePart;
+            strFile = getSettingsDirectory().toString() + filePart;
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 strFile = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
             } else {
-                strFile = getSettingsDirectory_String() + filePart;
+                strFile = getSettingsDirectory().toString() + filePart;
             }
         }
 
@@ -200,10 +200,6 @@ public class Daten {
         }
 
         return baseDirectoryPath;
-    }
-
-    public static String getSettingsDirectory_String() {
-        return getSettingsDirectory().toString();
     }
 
     /**
@@ -447,7 +443,7 @@ public class Daten {
         if (resetConfigurationData()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir1 = getSettingsDirectory_String();
+            String dir1 = getSettingsDirectory().toString();
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
@@ -467,7 +463,7 @@ public class Daten {
                         alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
                         alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                                 + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                                + getSettingsDirectory_String() + '\n'
+                                + getSettingsDirectory().toString() + '\n'
                                 + "von Hand löschen und dann das Programm wieder starten.\n\n"
                                 + "Im Forum erhalten Sie weitere Hilfe.");
                         JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
