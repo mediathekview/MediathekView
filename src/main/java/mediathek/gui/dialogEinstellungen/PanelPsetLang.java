@@ -5,6 +5,7 @@ import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
+import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
@@ -32,9 +33,9 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.LinkedList;
 
-@SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler;
     private final ListePset listePset;
@@ -290,7 +291,7 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
-        jButtonPruefen.addActionListener(l -> GuiFunktionenProgramme.programmePruefen(parentComponent));
+        jButtonPruefen.addActionListener(l -> programmePruefen());
 
 
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
@@ -323,6 +324,79 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
+    }
+
+    /**
+     * Prüfen ob die eingestellten Programmsets passen
+     */
+    public void programmePruefen() {
+        final String PIPE = "| ";
+        final String LEER = "      ";
+        final String PFEIL = " -> ";
+        boolean ret;
+        String text = "";
+
+        for (DatenPset datenPset : Daten.listePset) {
+            ret = true;
+            if (!datenPset.isFreeLine() && !datenPset.isLabel()) {
+                // nur wenn kein Label oder freeline
+                text += "++++++++++++++++++++++++++++++++++++++++++++" + '\n';
+                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + '\n';
+                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
+                if (datenPset.progsContainPath()) {
+                    // beim nur Abspielen wird er nicht gebraucht
+                    if (zielPfad.isEmpty()) {
+                        ret = false;
+                        text += PIPE + LEER + "Zielpfad fehlt!\n";
+                    } else // Pfad beschreibbar?
+                        if (!GuiFunktionenProgramme.checkPathWriteable(zielPfad)) {
+                            //da Pfad-leer und "kein" Pfad schon abgeprüft
+                            ret = false;
+                            text += PIPE + LEER + "Falscher Zielpfad!\n";
+                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + '\n';
+                        }
+                }
+                for (DatenProg datenProg : datenPset.getListeProg()) {
+                    // Programmpfad prüfen
+                    if (datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].isEmpty()) {
+                        ret = false;
+                        text += PIPE + LEER + "Kein Programm angegeben!\n";
+                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
+                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
+                    } else if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
+                        // dann noch mit RuntimeExec versuchen
+                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
+                        Process pr = r.exec(false /*log*/);
+                        if (pr != null) {
+                            // dann passts ja
+                            pr.destroy();
+                        } else {
+                            // läßt sich nicht starten
+                            ret = false;
+                            text += PIPE + LEER + "Falscher Programmpfad!\n";
+                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
+                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
+                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(File.separator)) {
+                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n';
+                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n';
+                            }
+                        }
+                    }
+                }
+                if (ret) {
+                    //sollte alles passen
+                    text += PIPE + PFEIL + "Ok!" + '\n';
+                }
+                text += """
+                        ++++++++++++++++++++++++++++++++++++++++++++
+
+
+                        """;
+            }
+        }
+
+        var dlg = new DialogHilfe(parentComponent, true, text);
+        dlg.setVisible(true);
     }
 
     private void setAufloesung() {
