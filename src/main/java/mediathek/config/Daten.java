@@ -184,7 +184,7 @@ public class Daten {
     public static Path getSettingsDirectory() throws IllegalStateException {
         final Path baseDirectoryPath;
         if (basisverzeichnis == null || basisverzeichnis.isEmpty()) {
-            baseDirectoryPath = Paths.get(System.getProperty("user.home"), Konstanten.VERZEICHNIS_EINSTELLUNGEN);
+            baseDirectoryPath = Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_EINSTELLUNGEN);
         } else {
             baseDirectoryPath = Paths.get(basisverzeichnis);
         }

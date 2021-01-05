@@ -43,7 +43,7 @@ public class FilmListWriter {
     }
 
     private void checkOsxCacheDirectory() {
-        final Path filePath = Paths.get(System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView");
+        final Path filePath = Paths.get(SystemUtils.USER_HOME + File.separator + "Library/Caches/MediathekView");
         if (Files.notExists(filePath)) {
             try {
                 Files.createDirectories(filePath);
