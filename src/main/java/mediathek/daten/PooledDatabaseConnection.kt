@@ -3,8 +3,8 @@ package mediathek.daten
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import mediathek.config.Config
-import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.StandardLocations
 import mediathek.tool.MemoryUtils
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
@@ -22,7 +22,7 @@ object PooledDatabaseConnection {
     val databaseLocation: String
         get() {
             val strDatabase: String = if (Config.isPortableMode()) {
-                Daten.getSettingsDirectory().toString() + File.separator + "database" + File.separator
+                StandardLocations.getSettingsDirectory().toString() + File.separator + "database" + File.separator
             } else {
                 databaseCacheDirectory
             }
@@ -38,7 +38,7 @@ object PooledDatabaseConnection {
                 //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator
             } else {
-                Daten.getSettingsDirectory().toString() + File.separator
+                StandardLocations.getSettingsDirectory().toString() + File.separator
             }
         }
 

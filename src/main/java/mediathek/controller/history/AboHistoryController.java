@@ -1,6 +1,7 @@
 package mediathek.controller.history;
 
 import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.gui.messages.history.AboHistoryChangedEvent;
 import mediathek.tool.FileUtils;
 import okhttp3.HttpUrl;
@@ -33,7 +34,7 @@ public class AboHistoryController {
     private Path urlPath;
 
     public AboHistoryController() {
-        final var settingsDir = Daten.getSettingsDirectory();
+        final var settingsDir = StandardLocations.getSettingsDirectory();
         try {
             urlPath = settingsDir.resolve(FILENAME);
         } catch (InvalidPathException e) {

@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.StandardLocations;
 import mediathek.daten.GeoblockingField;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -121,7 +122,7 @@ public class ApplicationConfiguration {
     private void createFileHandler() {
         handler = new FileHandler(config);
         handler.setEncoding("UTF-8");
-        final String path = Daten.getSettingsDirectory().toString() + File.separatorChar;
+        final String path = StandardLocations.getSettingsDirectory().toString() + File.separatorChar;
 
         handler.setPath(path + "settings.xml");
     }
