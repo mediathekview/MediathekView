@@ -177,7 +177,7 @@ public class ExternalProgramDownload extends Thread {
             exMessage = ex.getLocalizedMessage();
             logger.error("run()", ex);
             SwingUtilities.invokeLater(() ->
-                    new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
+                    new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
         }
         finalizeDownload(datenDownload, start, state);
         daten.getMessageBus().publish(new DownloadFinishedEvent());
