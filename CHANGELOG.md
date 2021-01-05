@@ -6,6 +6,8 @@
 - **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
 - **BUGFIX:** "URL kopieren" Kontextmenü zeigt bei Playlists wieder unterschiedliche Auflösungen an.
 - **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.
+- **BUGFIX:** Livestreams werden nun nicht mehr bei eingeschränktem Laden der Filmliste oder durch den Zeitraum-Filter herausgefiltert.
+- **BUGFIX:** Infodatei zeigt statt -1 nun keine Größeninformationen mehr an, wenn diese nicht ermittelt werden kann.
 
 <u>**13.7**</u>
 
