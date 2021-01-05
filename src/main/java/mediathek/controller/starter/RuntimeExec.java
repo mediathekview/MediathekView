@@ -19,6 +19,9 @@
  */
 package mediathek.controller.starter;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
@@ -26,11 +29,14 @@ import mediathek.tool.MVFilmSize;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,15 +44,18 @@ import java.util.regex.Pattern;
  * Responsible for the interaction with ffmpeg/avconv.
  */
 public class RuntimeExec {
-
     public static final String TRENNER_PROG_ARRAY = "<>";
-    private static final int INPUT = 1;
-    private static final int ERROR = 2;
-    private static final Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
-    private static final Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
-    private static final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
-    private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
-    private static int procnr;
+    /**
+     * The cache for compiled RegExp.
+     */
+    private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build(new PatternCacheLoader());
+    private static final String PATTERN_FFMPEG = "(?<=  Duration: )[^,]*"; // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
+    private static final String PATTERN_TIME = "(?<=time=)[^ ]*"; // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
+    private static final String PATTERN_SIZE = "(?<=size=)[^k]*"; // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
+    private static final Logger logger = LogManager.getLogger();
+    private static final AtomicInteger processNr = new AtomicInteger(0);
     private final String strProgCall;
     private Process process;
     private Start start;
@@ -58,7 +67,7 @@ public class RuntimeExec {
     private String strProgCallArray = "";
 
     public RuntimeExec(MVFilmSize mVFilmSize, Start start,
-            String strProgCall, String strProgCallArray) {
+                       String strProgCall, String strProgCallArray) {
         this.mVFilmSize = mVFilmSize;
         this.start = start;
         this.strProgCall = strProgCall;
@@ -93,8 +102,10 @@ public class RuntimeExec {
                 process = Runtime.getRuntime().exec(strProgCall);
             }
 
-            Thread clearIn = new Thread(new ClearInOut(INPUT, process));
-            Thread clearOut = new Thread(new ClearInOut(ERROR, process));
+            Thread clearIn = new Thread(new ClearInOut(IoType.INPUT, process));
+            Thread clearOut = new Thread(new ClearInOut(IoType.ERROR, process));
+            clearIn.setName("ClearIn: " + clearIn.getId());
+            clearOut.setName("ClearOut: " + clearOut.getId());
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
@@ -103,36 +114,47 @@ public class RuntimeExec {
         return process;
     }
 
+    private enum IoType {INPUT, ERROR}
+
+    /**
+     * This loader will compile regexp patterns when they are not in cache.
+     */
+    static class PatternCacheLoader extends CacheLoader<String, Pattern> {
+
+        @Override
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+            logger.trace("COMPILING RuntimeExec PATTERN: " + pattern);
+            return Pattern.compile(pattern);
+        }
+    }
+
     private class ClearInOut implements Runnable {
-        private final int art;
+        private final IoType art;
         private final Process process;
-        private BufferedReader buff;
-        private InputStream in;
         private int percent;
         private int percent_start = -1;
 
-        public ClearInOut(int a, Process p) {
-            art = a;
-            process = p;
+        public ClearInOut(IoType art, Process process) {
+            this.art = art;
+            this.process = process;
         }
 
         @Override
         public void run() {
-            String titel = "";
-            try {
-                switch (art) {
-                    case INPUT -> {
-                        in = process.getInputStream();
-                        titel = "INPUTSTREAM";
-                    }
-                    case ERROR -> {
-                        in = process.getErrorStream();
-                        synchronized (this) {
-                            titel = "ERRORSTREAM [" + (++procnr) + ']';
-                        }
-                    }
-                }
-                buff = new BufferedReader(new InputStreamReader(in));
+            final String titel;
+            final InputStream in;
+            if (art == IoType.INPUT) {
+                in = process.getInputStream();
+                titel = "INPUTSTREAM";
+            } else {
+                in = process.getErrorStream();
+                titel = String.format("ERRORSTREAM [%d]", processNr.incrementAndGet());
+                //titel = "ERRORSTREAM [" + processNr.incrementAndGet() + ']';
+            }
+
+            try (in;
+                 var isr = new InputStreamReader(in);
+                 var buff = new BufferedReader(isr)) {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
@@ -141,12 +163,8 @@ public class RuntimeExec {
                         System.out.printf("  >> %s: %s%n", titel, inStr);
                     }
                 }
-            } catch (IOException ignored) {
-            } finally {
-                try {
-                    buff.close();
-                } catch (IOException ignored) {
-                }
+            } catch (IOException ex) {
+                logger.error("ClearInOut.run() error occured", ex);
             }
         }
 
@@ -158,7 +176,7 @@ public class RuntimeExec {
             // -i %f -acodec copy -vcodec copy -y **
             try {
                 // Gesamtzeit
-                matcher = patternFfmpeg.matcher(input);
+                matcher = CACHE.get(PATTERN_FFMPEG).matcher(input);
                 if (matcher.find()) {
                     // Find duration
                     String dauer = matcher.group().trim();
@@ -168,7 +186,7 @@ public class RuntimeExec {
                             + Double.parseDouble(hms[2]);
                 }
                 // Bandbreite
-                matcher = patternSize.matcher(input);
+                matcher = CACHE.get(PATTERN_SIZE).matcher(input);
                 if (matcher.find()) {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
@@ -186,7 +204,7 @@ public class RuntimeExec {
                     }
                 }
                 // Fortschritt
-                matcher = patternZeit.matcher(input);
+                matcher = CACHE.get(PATTERN_TIME).matcher(input);
                 if (totalSecs > 0 && matcher.find()) {
                     // ffmpeg    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
                     // avconv    size=   26182kB time=100.96 bitrate=2124.5kbits/s 
