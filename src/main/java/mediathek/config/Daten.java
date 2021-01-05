@@ -57,10 +57,6 @@ public class Daten {
      */
     public static final AtomicBoolean dontWriteFilmlistOnStartup = new AtomicBoolean(true);
     private static final Logger logger = LogManager.getLogger(Daten.class);
-    /**
-     * Maximum number of backup files to be stored.
-     */
-    private final static int MAX_COPY = 5;
     private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
     public static ListePset listePset;
     private static Daten instance;
@@ -174,7 +170,7 @@ public class Daten {
     private static List<Path> getMediathekXmlCopyFilePath() {
         List<Path> xmlFilePath = new ArrayList<>();
 
-        for (int i = 1; i <= MAX_COPY; ++i) {
+        for (int i = 1; i <= Konstanten.MAX_NUM_BACKUP_FILE_COPIES; ++i) {
             Path path = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
             if (Files.exists(path)) {
                 xmlFilePath.add(path);
@@ -450,7 +446,7 @@ public class Daten {
 
                 if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
-                    for (int i = MAX_COPY; i > 1; --i) {
+                    for (int i = Konstanten.MAX_NUM_BACKUP_FILE_COPIES; i > 1; --i) {
                         xmlFilePathCopy_1 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                         final Path xmlFilePathCopy_2 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
                         if (Files.exists(xmlFilePathCopy_1)) {
