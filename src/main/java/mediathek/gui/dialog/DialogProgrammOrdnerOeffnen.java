@@ -2,7 +2,6 @@ package mediathek.gui.dialog;
 
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -97,7 +96,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
                 if (!jTextFieldProgramm.getText().equals("")) {
                     chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
                 } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

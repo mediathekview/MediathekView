@@ -4,7 +4,6 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -144,7 +143,7 @@ public class PanelProgrammPfade extends JPanel {
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 if (textField.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 } else {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 }
