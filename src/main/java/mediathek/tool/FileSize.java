@@ -12,6 +12,7 @@ import java.io.IOException;
 
 public class FileSize {
     public static final int ONE_MiB = 1_000_000;
+    public static final byte INVALID_SIZE = -1;
     private static final Logger logger = LogManager.getLogger();
 
     /**
@@ -59,7 +60,7 @@ public class FileSize {
      */
     public static long getContentLength(@NotNull Response response) {
         var sizeStr = response.headers().get("Content-Length");
-        long respLength = -1;
+        long respLength = INVALID_SIZE;
 
         if (sizeStr != null) {
             try {
@@ -79,12 +80,12 @@ public class FileSize {
      */
     public static long getFileSizeFromUrl(@NotNull HttpUrl url) {
         if (!url.scheme().startsWith("http") || url.encodedPath().endsWith(".m3u8")) {
-            return -1;
+            return INVALID_SIZE;
         }
 
         logger.info("Requesting file size for: {}", url);
         final Request request = new Request.Builder().url(url).head().build();
-        long respLength = -1;
+        long respLength = INVALID_SIZE;
         try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
                 respLength = getContentLength(response);
@@ -95,7 +96,7 @@ public class FileSize {
         if (respLength < ONE_MiB) {
             // alles unter 1MB sind Playlisten, ORF: Trailer bei im Ausland gesperrten Filmen, ...
             // dann wars nix
-            respLength = -1;
+            respLength = INVALID_SIZE;
         }
         return respLength;
     }
