@@ -347,13 +347,15 @@ public class FilmListReader implements AutoCloseable {
                         continue;
                 }
 
-                listeFilme.importFilmliste(datenFilm);
+                listeFilme.addAndInitialize(datenFilm);
 
                 if (milliseconds > 0) {
-                    // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
-                    // wenns drin bleibt, kann mans noch ändern
-                    if (!checkDate(datenFilm)) {
-                        listeFilme.remove(datenFilm);
+                    if (!datenFilm.isLivestream()) {
+                        // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
+                        // wenns drin bleibt, kann mans noch ändern
+                        if (!checkDate(datenFilm)) {
+                            listeFilme.remove(datenFilm);
+                        }
                     }
                 }
             }
