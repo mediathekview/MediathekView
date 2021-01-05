@@ -189,13 +189,13 @@ public class Daten {
             baseDirectoryPath = Paths.get(basisverzeichnis);
         }
 
-
         if (Files.notExists(baseDirectoryPath)) {
             try {
                 Files.createDirectories(baseDirectoryPath);
             } catch (IOException ioException) {
-                Messages.logMessage(Messages.ERROR_CANT_CREATE_FOLDER, ioException, baseDirectoryPath.toString());
-                throw new IllegalStateException(Messages.ERROR_CANT_CREATE_FOLDER.getTextFormatted(baseDirectoryPath.toString()), ioException);
+                final var errMsg = String.format("Der Ordner \"%s\" konnte nicht angelegt werden.%n Bitte prüfen Sie die Dateirechte.", baseDirectoryPath.toString());
+                logger.error(errMsg, ioException);
+                throw new IllegalStateException(errMsg, ioException);
             }
         }
 
