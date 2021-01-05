@@ -6,7 +6,6 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
@@ -165,7 +164,7 @@ public class PanelEinstellungenErweitert extends JPanel {
                 if (!textField.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

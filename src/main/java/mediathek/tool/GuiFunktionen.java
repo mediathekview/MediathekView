@@ -231,16 +231,6 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     /**
-     * Return the path to the user´s home directory.
-     *
-     * @return String to the user´s home directory.
-     */
-    @Deprecated
-    public static String getHomePath() {
-        return SystemUtils.USER_HOME;
-    }
-
-    /**
      * Liefert den Standardpfad für Downloads.
      *
      * @return Standardpfad zu den Downloads.

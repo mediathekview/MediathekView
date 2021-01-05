@@ -19,7 +19,6 @@ import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
@@ -165,7 +164,7 @@ public class Daten {
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
+                strFile = SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
             } else {
                 strFile = getSettingsDirectory().toString() + filePart;
             }

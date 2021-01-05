@@ -9,7 +9,6 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
@@ -27,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelPsetImport extends PanelVorlage {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
     private static final Logger logger = LogManager.getLogger();
@@ -211,8 +209,8 @@ public class PanelPsetImport extends PanelVorlage {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
-                if (jTextFieldDatei.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                if (jTextFieldDatei.getText().isEmpty()) {
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 } else {
                     chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
                 }

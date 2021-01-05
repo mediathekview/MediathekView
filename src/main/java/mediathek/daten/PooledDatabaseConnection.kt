@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource
 import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.tool.GuiFunktionen
 import mediathek.tool.MemoryUtils
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
@@ -37,7 +36,7 @@ object PooledDatabaseConnection {
         get() {
             return if (SystemUtils.IS_OS_MAC_OSX) {
                 //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator
+                SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator
             } else {
                 Daten.getSettingsDirectory().toString() + File.separator
             }

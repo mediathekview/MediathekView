@@ -2,7 +2,6 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.GuiFunktionen
 import mediathek.tool.MVFunctionSys
 import mediathek.tool.javafx.FXErrorDialog
 import okio.buffer
@@ -69,7 +68,7 @@ class SetAppMemoryAction : AbstractAction() {
 
     companion object {
         private const val WIN_VMOPTIONS_FILE = "MediathekView.vmoptions"
-        private val MAC_VMOPTIONS_FILE = GuiFunktionen.getHomePath() + File.separator + ".mediathek3" + File.separator + "MediathekView_vmoptions.txt"
+        private val MAC_VMOPTIONS_FILE = SystemUtils.USER_HOME + File.separator + ".mediathek3" + File.separator + "MediathekView_vmoptions.txt"
         private val logger = LogManager.getLogger()
     }
 

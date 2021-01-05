@@ -8,7 +8,6 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -97,7 +96,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 jButtonZiel.setEnabled(true);
                 // Zielpfad muss gesetzt werden
                 if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].equals("")) {
-                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = GuiFunktionen.getHomePath();
+                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = SystemUtils.USER_HOME;
                 }
             }
             jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD]);
