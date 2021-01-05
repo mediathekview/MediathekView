@@ -3,6 +3,8 @@
 **ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**
 
 - Abfrage der Filmgrößen im "Film speichern" Dialog beschleunigt.
+- Speicherverbrauch reduziert
+- Ausgabe der ffmpeg-Informationen während eines Downloads wird nur noch bei aktiviertem erweiterten Loggen ausgegeben.  
 - **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
 - **BUGFIX:** "URL kopieren" Kontextmenü zeigt bei Playlists wieder unterschiedliche Auflösungen an.
 - **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.

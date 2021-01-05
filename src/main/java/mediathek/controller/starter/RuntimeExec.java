@@ -23,7 +23,6 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.SysMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -135,8 +134,10 @@ public class RuntimeExec {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
-                    if (Config.isDebugModeEnabled())
-                        SysMsg.playerMsg(titel + ": " + inStr);
+                    // only print stream info when enhanced log mode enabled
+                    if (Config.isEnhancedLoggingEnabled()) {
+                        System.out.printf("  >> %s: %s%n", titel, inStr);
+                    }
                 }
             } catch (IOException ignored) {
             } finally {
