@@ -482,19 +482,22 @@ public class Main {
 
             var page3 = new WizardPane();
             page3.setContentText("Please set geographic location");
-            page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
+            //page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
 
             var wizard = new Wizard();
             wizard.getSettings().put("first","MyName");
-            wizard.setTitle("Our new wizard from hell");
+            wizard.setTitle("New first launch wizard sample");
             wizard.setFlow(new Wizard.LinearFlow(page1,page2,page3));
             wizard.showAndWait().ifPresent(r -> {
                 if (r == ButtonType.FINISH) {
                     System.out.println("Wizard finished, settings: " + wizard.getSettings());
                 }
+                if (r == ButtonType.CANCEL){
+                    System.exit(2);
+                    //delete incomplete settings dir!
+                }
             });
-        });
-        System.exit(2);*/
+        });*/
 
         if (!daten.allesLaden()) {
             // erster Start
