@@ -89,7 +89,7 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
-    protected static Logger logger = LogManager.getLogger(MediathekGui.class);
+    protected static final Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
      */

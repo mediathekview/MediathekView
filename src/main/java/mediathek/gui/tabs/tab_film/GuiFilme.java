@@ -569,7 +569,7 @@ public class GuiFilme extends AGuiTabPanel {
                 ButtonType no = new ButtonType("Nein", ButtonBar.ButtonData.NO);
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         String.format(
-                                "Möchten Sie wirklich %d Einträge bearbeiten?\nDas Programm könnte während der Operation nicht reagieren.",
+                                "Möchten Sie wirklich %d Einträge bearbeiten?%nDas Programm könnte während der Operation nicht reagieren.",
                                 size),
                         yes,
                         no);

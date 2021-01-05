@@ -31,7 +31,7 @@ public class Filter {
     /**
      * Stores the regexp strings that were rejected as invalid.
      */
-    public static Set<String> regExpErrorList = new HashSet<>();
+    public static final Set<String> regExpErrorList = new HashSet<>();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
