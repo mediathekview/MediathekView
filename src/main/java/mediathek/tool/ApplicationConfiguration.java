@@ -79,8 +79,7 @@ public class ApplicationConfiguration {
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
-    private static final Logger logger = LogManager.getLogger(ApplicationConfiguration.class);
-    private static ApplicationConfiguration ourInstance;
+    private static final Logger logger = LogManager.getLogger();
     private XMLConfiguration config;
     private FileHandler handler;
     /**
@@ -98,9 +97,7 @@ public class ApplicationConfiguration {
     }
 
     public static ApplicationConfiguration getInstance() {
-        if (ourInstance == null) ourInstance = new ApplicationConfiguration();
-
-        return ourInstance;
+        return ConfigHolder.INSTANCE;
     }
 
     public static Configuration getConfiguration() {
@@ -174,6 +171,13 @@ public class ApplicationConfiguration {
         if (!config.containsKey(APPLICATION_INSTALL_TAB_SWITCH_LISTENER)) {
             config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, !SystemUtils.IS_OS_MAC_OSX);
         }
+    }
+
+    /**
+     * Part of the Bill Pugh Singleton implementation
+     */
+    private static class ConfigHolder {
+        private static final ApplicationConfiguration INSTANCE = new ApplicationConfiguration();
     }
 
     public static class FilmList {
