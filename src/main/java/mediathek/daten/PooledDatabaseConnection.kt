@@ -23,7 +23,7 @@ object PooledDatabaseConnection {
     val databaseLocation: String
         get() {
             val strDatabase: String = if (Config.isPortableMode()) {
-                Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator
+                Daten.getSettingsDirectory().toString() + File.separator + "database" + File.separator
             } else {
                 databaseCacheDirectory
             }
@@ -39,7 +39,7 @@ object PooledDatabaseConnection {
                 //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 GuiFunktionen.getHomePath() + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + File.separator
             } else {
-                Daten.getSettingsDirectory_String() + File.separator
+                Daten.getSettingsDirectory().toString() + File.separator
             }
         }
 
