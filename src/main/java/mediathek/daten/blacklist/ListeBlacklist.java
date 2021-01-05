@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
-@SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<BlacklistRule> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
@@ -316,6 +315,10 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      * @return true if film can be displayed
      */
     private boolean checkDate(@NotNull DatenFilm film) {
+        // always show livestreams
+        if (film.isLivestream())
+            return true;
+
         if (days_lower_boundary != 0) {
             final long filmTime = film.getDatumFilm().getTime();
             return filmTime == 0 || filmTime >= days_lower_boundary;
