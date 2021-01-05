@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.tool.MVFilmSize;
@@ -134,7 +135,8 @@ public class RuntimeExec {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
-                    SysMsg.playerMsg(titel + ": " + inStr);
+                    if (Config.isDebugModeEnabled())
+                        SysMsg.playerMsg(titel + ": " + inStr);
                 }
             } catch (IOException ignored) {
             } finally {
