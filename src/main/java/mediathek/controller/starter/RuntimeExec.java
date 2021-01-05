@@ -34,6 +34,9 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Responsible for the interaction with ffmpeg/avconv.
+ */
 public class RuntimeExec {
 
     public static final String TRENNER_PROG_ARRAY = "<>";
@@ -43,15 +46,15 @@ public class RuntimeExec {
     private static final Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
     private static final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
     private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
-    private static int procnr = 0;
+    private static int procnr;
     private final String strProgCall;
-    private Process process = null;
+    private Process process;
     private Start start;
-    private double totalSecs = 0;
-    private long oldSize = 0;
-    private long oldSecs = 0;
-    private MVFilmSize mVFilmSize = null;
-    private String[] arrProgCallArray = null;
+    private double totalSecs;
+    private long oldSize;
+    private long oldSecs;
+    private MVFilmSize mVFilmSize;
+    private String[] arrProgCallArray;
     private String strProgCallArray = "";
 
     public RuntimeExec(MVFilmSize mVFilmSize, Start start,
@@ -101,12 +104,11 @@ public class RuntimeExec {
     }
 
     private class ClearInOut implements Runnable {
-
         private final int art;
         private final Process process;
         private BufferedReader buff;
         private InputStream in;
-        private int percent = 0;
+        private int percent;
         private int percent_start = -1;
 
         public ClearInOut(int a, Process p) {
@@ -221,7 +223,7 @@ public class RuntimeExec {
                 }
                 if (percent > (percent_start + 5)) {
                     // sonst macht es noch keinen Sinn
-                    int diffZeit = start.startZeit.diffInSekunden();
+                    long diffZeit = start.startZeit.diffInSekunden();
                     int diffProzent = percent - percent_start;
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
