@@ -339,8 +339,6 @@ public class Main {
             checkMemoryRequirements();
             installSingleInstanceHandler();
 
-            Daten.getInstance(); // init Daten object
-
             printVersionInformation();
 
             printJvmParameters();
