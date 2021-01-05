@@ -7,10 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.Config;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
@@ -101,11 +98,12 @@ public class Main {
         final var loggerContext = (LoggerContext) LogManager.getContext(false);
         final var config = loggerContext.getConfiguration();
         final String path;
+        final String fileName = "/mediathekview.log";
 
         if (!Config.isPortableMode())
-            path = Daten.getSettingsDirectory().toString() + "/mediathekview.log";
+            path = Daten.getSettingsDirectory().toString() + fileName;
         else
-            path = Config.baseFilePath + "/mediathekview.log";
+            path = Config.baseFilePath + fileName;
 
 
         final PatternLayout consolePattern;
@@ -163,22 +161,6 @@ public class Main {
             rootLogger.addAppender(asyncAppender);
 
         loggerContext.updateLoggers();
-    }
-
-    private static void setupPortableMode() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        var portableMode = Config.isPortableMode();
-        logger.info("Portable Mode: {}", portableMode);
-
-        if (portableMode) {
-            logger.trace("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-            Daten.getInstance(Config.baseFilePath);
-        } else {
-            logger.trace("Configuring for non-portable mode");
-            Daten.getInstance();
-        }
-        stopwatch.stop();
-        logger.trace("setupPortableMode: {}", stopwatch);
     }
 
     /**
@@ -309,6 +291,14 @@ public class Main {
         }
     }
 
+    private static void printPortableModeInfo() {
+        if (Config.isPortableMode()) {
+            logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
+        }
+        else
+            logger.info("Configuring for non-portable mode");
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -330,7 +320,12 @@ public class Main {
             }
 
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
+            if (Config.isPortableMode()) {
+                StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
+            }
+
             setupLogging();
+            printPortableModeInfo();
 
             final int numCpus = Config.getNumCpus();
             if (numCpus != 0) {
@@ -344,7 +339,7 @@ public class Main {
             checkMemoryRequirements();
             installSingleInstanceHandler();
 
-            setupPortableMode();
+            Daten.getInstance(); // init Daten object
 
             printVersionInformation();
 
