@@ -181,7 +181,7 @@ public class Daten {
      * @return Path to the settings directory
      * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
      */
-    private static Path getSettingsDirectory() throws IllegalStateException {
+    public static Path getSettingsDirectory() throws IllegalStateException {
         final Path baseDirectoryPath;
         if (basisverzeichnis == null || basisverzeichnis.isEmpty()) {
             baseDirectoryPath = Paths.get(System.getProperty("user.home"), Konstanten.VERZEICHNIS_EINSTELLUNGEN);
