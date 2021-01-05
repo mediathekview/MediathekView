@@ -1,45 +1,46 @@
-package mediathek.tool;
+package mediathek.tool
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.FXCollections
 
-public class SysMsg {
+object SysMsg {
+    private val outputList = FXCollections.observableArrayList<String>()
+    private const val MAX_STELLEN = 5
+    private const val FUELL_ZEICHEN = "0"
+    private var zeilenNrProgramm = 0
 
-    private static final ObservableList<String> textProgramm = FXCollections.observableArrayList();
-    private static final int MAX_STELLEN = 5;
-    private static final String FUELL_ZEICHEN = "0";
-    private static int zeilenNrProgramm;
-
-    public static synchronized void playerMsg(String text) {
-        playermeldung(new String[]{text});
+    @Synchronized
+    @JvmStatic
+    fun playerMsg(text: String) {
+        playermeldung(arrayOf(text))
     }
 
-    private static void playermeldung(String[] texte) {
-        final String z = "  >>";
-        System.out.println(z + " " + texte[0]);
-        notify(texte[0]);
-        for (int i = 1; i < texte.length; ++i) {
-            System.out.println(z + " " + texte[i]);
-            notify(texte[i]);
+    private fun playermeldung(texte: Array<String>) {
+        val z = "  >>"
+        println(z + " " + texte[0])
+        notify(texte[0])
+        for (i in 1 until texte.size) {
+            println(z + " " + texte[i])
+            notify(texte[i])
         }
     }
 
-    private static void notify(String zeile) {
-        addText("[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
+    private fun notify(zeile: String) {
+        addText("[" + getNr(zeilenNrProgramm++) + "]   " + zeile)
     }
 
-    private static String getNr(int nr) {
-        String str = String.valueOf(nr);
-        while (str.length() < MAX_STELLEN) {
-            str = FUELL_ZEICHEN + str;
+    private fun getNr(nr: Int): String {
+        var str = nr.toString()
+        while (str.length < MAX_STELLEN) {
+            str = FUELL_ZEICHEN + str
         }
-        return str;
+        return str
     }
 
-    private synchronized static void addText(String texte) {
-        if (textProgramm.size() > 50000) {
-            textProgramm.remove(0, 30000);
+    @Synchronized
+    private fun addText(texte: String) {
+        if (outputList.size > 50000) {
+            outputList.remove(0, 30000)
         }
-        textProgramm.add(texte + System.lineSeparator());
+        outputList.add(texte + System.lineSeparator())
     }
 }
