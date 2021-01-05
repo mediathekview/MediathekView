@@ -34,7 +34,6 @@ import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
@@ -366,7 +365,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     private Path getFilePath() {
         Path urlPath = null;
         try {
-            urlPath = Paths.get(Daten.getSettingsDirectory_String()).resolve(Konstanten.FILE_MEDIA_DB);
+            urlPath = Daten.getSettingsDirectory().resolve(Konstanten.FILE_MEDIA_DB);
             if (Files.notExists(urlPath)) {
                 urlPath = Files.createFile(urlPath);
             }

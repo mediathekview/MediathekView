@@ -121,7 +121,7 @@ public class ApplicationConfiguration {
     private void createFileHandler() {
         handler = new FileHandler(config);
         handler.setEncoding("UTF-8");
-        final String path = Daten.getSettingsDirectory_String() + File.separatorChar;
+        final String path = Daten.getSettingsDirectory().toString() + File.separatorChar;
 
         handler.setPath(path + "settings.xml");
     }

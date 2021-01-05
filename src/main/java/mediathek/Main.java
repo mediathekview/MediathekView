@@ -74,7 +74,7 @@ public class Main {
     private static void cleanupOsxFiles() {
         if (!Config.isPortableMode()) {
             try {
-                var oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
+                var oldFilmList = Daten.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
             } catch (IOException ignored) {
             }
@@ -103,7 +103,7 @@ public class Main {
         final String path;
 
         if (!Config.isPortableMode())
-            path = Daten.getSettingsDirectory_String() + "/mediathekview.log";
+            path = Daten.getSettingsDirectory().toString() + "/mediathekview.log";
         else
             path = Config.baseFilePath + "/mediathekview.log";
 
@@ -286,7 +286,7 @@ public class Main {
      * Migrate old settings stored in mediathek.xml to new app config
      */
     private static void migrateOldConfigSettings() {
-        var settingsDir = Daten.getSettingsDirectory_String();
+        var settingsDir = Daten.getSettingsDirectory().toString();
         if (settingsDir != null && !settingsDir.isEmpty()) {
             Path pSettingsDir = Paths.get(settingsDir);
             if (Files.exists(pSettingsDir)) {
@@ -515,7 +515,7 @@ public class Main {
 
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory().toString());
     }
 
     private static void deleteDatabase() {

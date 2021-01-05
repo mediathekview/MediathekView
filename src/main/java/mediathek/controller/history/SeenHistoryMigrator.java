@@ -17,7 +17,6 @@ import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +40,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
     private final List<MVUsedUrl> historyEntries = new ArrayList<>();
 
     public SeenHistoryMigrator() throws InvalidPathException {
-        historyFilePath = Paths.get(Daten.getSettingsDirectory_String()).resolve("history.txt");
+        historyFilePath = Daten.getSettingsDirectory().resolve("history.txt");
         historyDbPath = SqlDatabaseConfig.getHistoryDbPath();
     }
 
