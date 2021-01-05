@@ -1,5 +1,6 @@
 package mediathek.javafx;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +12,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -39,6 +41,7 @@ public class MemoryMonitor extends Stage {
         initComponents();
     }
 
+    @SuppressFBWarnings("DM_GC")
     private void initComponents() {
         setTitle("Speicherverbrauch");
         initOwner(JFXHiddenApplication.getPrimaryStage());
@@ -54,6 +57,8 @@ public class MemoryMonitor extends Stage {
 
         setOnHiding(e -> updateMemoryTimer.stop());
         setOnShowing(e -> updateMemoryTimer.play());
+
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.gc());
     }
 
     private long toMegabytes(long bytes) {
