@@ -15,8 +15,20 @@ public class ZeitraumSpinner extends Spinner<String> {
             days.add(String.valueOf(i));
 
         SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(days);
+        valueFactory.setWrapAround(true);
         setValueFactory(valueFactory);
         valueFactory.setValue(UNLIMITED_VALUE);
         setEditable(true);
+        getEditor().textProperty().addListener(((observable, oldValue, newValue) -> {
+            boolean found = false;
+            for (var item : days) {
+                if (item.startsWith(newValue)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                getEditor().setText(oldValue);
+        }));
     }
 }
