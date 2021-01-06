@@ -397,8 +397,7 @@ public class FilmActionPanel {
                 .selectedProperty()
                 .set(toolBar.btnShowBookmarkedMovies.isSelected()));
     showBookMarkedOnly.addListener(
-        (observable, oldValue, newValue) -> {
-          boolean benabled = newValue;
+        (observable, oldValue, benabled) -> {
           toolBar.btnShowBookmarkedMovies.setTooltip(
               benabled ? bookmarklistSelected : bookmarklistDeselected);
           toolBar.btnShowBookmarkedMovies.setSelected(benabled);
