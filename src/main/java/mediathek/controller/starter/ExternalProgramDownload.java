@@ -32,7 +32,6 @@ public class ExternalProgramDownload extends Thread {
     private final DatenDownload datenDownload;
     private final Start start;
     private File file;
-    private String exMessage = "";
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
@@ -174,7 +173,6 @@ public class ExternalProgramDownload extends Thread {
                 }
             }
         } catch (Exception ex) {
-            exMessage = ex.getLocalizedMessage();
             logger.error("run()", ex);
             SwingUtilities.invokeLater(() ->
                     new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
@@ -190,7 +188,7 @@ public class ExternalProgramDownload extends Thread {
         startmeldung(datenDownload, start);
         RuntimeExec runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
                 datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
-        start.process = runtimeExec.exec(true /*log*/);
+        start.process = runtimeExec.exec(true);
         if (start.process != null) {
             ret = true;
         }
