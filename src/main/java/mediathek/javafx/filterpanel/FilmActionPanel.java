@@ -320,7 +320,7 @@ public class FilmActionPanel {
     // Schriftfarbe ändern wenn eine RegEx
     final String text = toolBar.jfxSearchField.getText();
     if (Filter.isPattern(text)) {
-      if (Filter.makePattern(text) == null) {
+      if (Filter.makePatternNoCheck(text) == null) {
         // soll Pattern sein, ist aber falsch
         toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_RED);
       } else {
