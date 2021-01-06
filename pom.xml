@@ -115,9 +115,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.derreisende77</groupId>
+            <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
-            <version>master</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
