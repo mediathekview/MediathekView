@@ -200,6 +200,24 @@ public class Filter {
         return checkLowercase(filter, im.toLowerCase());
     }
 
+    public static boolean pruefenInteractive(@NotNull String[] filter, @NotNull final String im) {
+        // wenn einer passt, dann ists gut
+        final var strFilter = filter[0];
+        if (filter.length == 1) {
+            if (strFilter.isEmpty()) {
+                return true; // Filter ist leer, das wars
+            } else {
+                final Pattern p;
+                if ((p = makePatternNoCheck(strFilter)) != null) {
+                    // dann ists eine RegEx
+                    return p.matcher(im).matches();
+                }
+            }
+        }
+
+        return checkLowercase(filter, im.toLowerCase());
+    }
+
     /**
      * @param filter the filters array
      * @param im     checked String IN LOWERCASE!!!!!
@@ -237,6 +255,27 @@ public class Filter {
                 logger.error("!!! Please review your config files !!!");
                 logger.error("!!!!");
                 regExpErrorList.add(regExpStr);
+                p = null;
+            }
+        } else
+            p = null;
+
+        return p;
+    }
+
+    /**
+     * Compile a regexp pattern if it doesn´t exist in the pattern cache.
+     * Does NOT report any errors.
+     *
+     * @param regExpStr regexp to be compiled
+     * @return the compiled regexp or null on error.
+     */
+    public static Pattern makePatternNoCheck(final String regExpStr) {
+        Pattern p;
+        if (isPattern(regExpStr)) {
+            try {
+                p = CACHE.get(regExpStr);
+            } catch (Exception ex) {
                 p = null;
             }
         } else
