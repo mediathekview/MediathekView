@@ -149,7 +149,6 @@ public class RuntimeExec {
             } else {
                 in = process.getErrorStream();
                 titel = String.format("ERRORSTREAM [%d]", processNr.incrementAndGet());
-                //titel = "ERRORSTREAM [" + processNr.incrementAndGet() + ']';
             }
 
             try (in;
@@ -160,7 +159,7 @@ public class RuntimeExec {
                     GetPercentageFromErrorStream(inStr);
                     // only print stream info when enhanced log mode enabled
                     if (Config.isEnhancedLoggingEnabled()) {
-                        System.out.printf("  >> %s: %s%n", titel, inStr);
+                        logger.trace("  >> {}}: {}}", titel, inStr);
                     }
                 }
             } catch (IOException ex) {
