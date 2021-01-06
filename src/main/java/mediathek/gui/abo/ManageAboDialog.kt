@@ -1,31 +1,32 @@
-package mediathek.gui.abo;
+package mediathek.gui.abo
 
-import mediathek.config.MVConfig;
-import mediathek.tool.GuiFunktionen;
+import mediathek.config.MVConfig
+import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.GuiFunktionen
+import java.awt.BorderLayout
+import java.awt.Frame
+import javax.swing.JDialog
 
-import javax.swing.*;
-import java.awt.*;
-
-public class ManageAboDialog extends JDialog {
-    private final ManageAboPanel aboPanel;
-
-    public ManageAboDialog(Frame owner) {
-        super(owner);
-        setTitle("Abos verwalten");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setResizable(true);
-
-        aboPanel = new ManageAboPanel();
-        var contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(aboPanel, BorderLayout.CENTER);
-
-        pack();
-        //restore saved size
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_MANAGE_ABO, this, owner);
+class ManageAboDialog(owner: Frame?) : JDialog(owner) {
+    private val aboPanel: ManageAboPanel
+    override fun dispose() {
+        aboPanel.tabelleSpeichern()
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_MANAGE_ABO, this)
+        super.dispose()
     }
 
-    public ManageAboPanel getAboPanel() {
-        return aboPanel;
+    init {
+        title = "Abos verwalten"
+        defaultCloseOperation = DISPOSE_ON_CLOSE
+        isResizable = true
+        isModal = true
+        aboPanel = ManageAboPanel()
+        val contentPane = contentPane
+        contentPane.layout = BorderLayout()
+        contentPane.add(aboPanel, BorderLayout.CENTER)
+        pack()
+        //restore saved size
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_MANAGE_ABO, this, owner)
+        EscapeKeyHandler.installHandler(this) { dispose() }
     }
 }

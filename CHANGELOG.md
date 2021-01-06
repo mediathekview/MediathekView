@@ -10,6 +10,7 @@
 - **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.
 - **BUGFIX:** Livestreams werden nun nicht mehr bei eingeschränktem Laden der Filmliste oder durch den Zeitraum-Filter herausgefiltert.
 - **BUGFIX:** Infodatei zeigt statt -1 nun keine Größeninformationen mehr an, wenn diese nicht ermittelt werden kann.
+- **BUGFIX:** "Abos verwalten"-Dialog konnte nicht mit Tastenkombination oder Escape geschlossen werden.
 
 <u>**13.7**</u>
 
