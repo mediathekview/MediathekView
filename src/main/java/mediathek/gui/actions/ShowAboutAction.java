@@ -16,5 +16,14 @@ public class ShowAboutAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         mediathekGui.showAboutDialog();
+        /*
+        Platform.runLater(() -> {
+            Stage window = new Stage();
+            window.setTitle("JavaFX About");
+            window.setScene(new Scene(new AboutController()));
+            window.setResizable(false);
+            window.show();
+        });
+         */
     }
 }

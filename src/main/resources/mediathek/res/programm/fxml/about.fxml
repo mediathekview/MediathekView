@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="436.0"
+         prefWidth="686.0" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1"
+         xmlns:fx="http://javafx.com/fxml/1">
+    <!--fx:controller="mediathek.javafx.AboutController"-->
+    <ImageView fitHeight="196.0" fitWidth="198.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true"
+               AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <Image url="/splash@2x.png"/>
+    </ImageView>
+    <Hyperlink fx:id="developerDonationHyperlink" layoutX="15.0" layoutY="241.0"
+               onAction="#developerDonationLinkClicked" text="Spende an den Entwickler des Programms"
+               AnchorPane.leftAnchor="5.0"/>
+    <Hyperlink fx:id="homepage" layoutX="15.0" layoutY="218.0" onAction="#homepageLinkClicked" text="Homepage"
+               AnchorPane.leftAnchor="5.0"/>
+    <Hyperlink fx:id="serverDonationHyperlink" layoutX="15.0" layoutY="264.0" onAction="#serverDonationLinkClicked"
+               text="Spende für die Server" AnchorPane.leftAnchor="5.0"/>
+    <Hyperlink fx:id="forum" layoutX="15.0" layoutY="287.0" onAction="#forumLinkClicked" text="Hilfe-Forum"
+               AnchorPane.leftAnchor="5.0"/>
+    <Hyperlink fx:id="anleitung" layoutX="15.0" layoutY="311.0" onAction="#anleitungLinkClicked" text="Online-Anleitung"
+               AnchorPane.leftAnchor="5.0"/>
+    <Label layoutX="266.0" layoutY="14.0" text="MediathekView" AnchorPane.leftAnchor="266.0"
+           AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <font>
+            <Font name="System Bold" size="36.0"/>
+        </font>
+    </Label>
+    <Label fx:id="version" layoutX="266.0" layoutY="58.0" prefHeight="18.0" prefWidth="264.0" text="Version"
+           AnchorPane.leftAnchor="266.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0"/>
+    <Hyperlink layoutX="213.0" layoutY="364.0" onAction="#jetbrainsLinkClicked" text="JetBrains IntelliJ"
+               AnchorPane.bottomAnchor="48.8" AnchorPane.leftAnchor="213.0" AnchorPane.rightAnchor="5.0"/>
+    <Hyperlink layoutX="213.0" layoutY="387.0" onAction="#ejLinkClicked"
+               text="ej-technologies JProfiler &amp; install4j" AnchorPane.bottomAnchor="26.0"
+               AnchorPane.leftAnchor="213.0" AnchorPane.rightAnchor="5.0"/>
+    <Label layoutX="15.0" layoutY="367.0" text="Die Entwicklung wird unterstützt von:" AnchorPane.bottomAnchor="51.4"
+           AnchorPane.leftAnchor="5.0"/>
+    <TabPane layoutX="266.0" layoutY="87.0" prefHeight="268.0" prefWidth="410.0" tabClosingPolicy="UNAVAILABLE"
+             AnchorPane.bottomAnchor="88.0" AnchorPane.leftAnchor="266.0" AnchorPane.rightAnchor="5.0"
+             AnchorPane.topAnchor="80.0">
+        <Tab text="Aktive Entwickler">
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+                <center>
+                    <TextArea editable="false"
+                              text="MediathekView-Client:&#10;Christian Franzke (derreisende77)&#10;&#10;MediathekView-Server:&#10;Nicklas Wiegandt (nicklas2751)&#10;Peter W. (pidoubleyou)&#10;Sascha Wiegandt (thesasch)&#10;&#10;Server-Administration:&#10;Alexander Finkhäuser (alex1702)"
+                              wrapText="true" BorderPane.alignment="CENTER"/>
+                </center>
+            </BorderPane>
+        </Tab>
+        <Tab text="Ehemalige">
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+                <center>
+                    <TextArea editable="false"
+                              text="Gründer des Programms:&#10;Xaver W. (xaverW)&#10;&#10;Weitere Beteiligte:&#10;siedlerchr&#10;styrol&#10;zxsd&#10;siedlerchr&#10;apoleon&#10;hostis&#10;pmshell&#10;clel&#10;thausherr"
+                              BorderPane.alignment="CENTER"/>
+                </center>
+            </BorderPane>
+        </Tab>
+    </TabPane>
+</fx:root>
