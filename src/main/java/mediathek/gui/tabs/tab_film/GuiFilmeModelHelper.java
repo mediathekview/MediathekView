@@ -209,8 +209,8 @@ public class GuiFilmeModelHelper {
 
     private boolean searchEntries(DatenFilm film) {
         boolean result = false;
-        if (Filter.pruefenInteractive(arrIrgendwo, film.getThema())
-                || Filter.pruefenInteractive(arrIrgendwo, film.getTitle())) {
+        if (Filter.pruefen(arrIrgendwo, film.getThema())
+                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
             result = true;
         }
         return result;
@@ -219,7 +219,7 @@ public class GuiFilmeModelHelper {
     private boolean searchEntriesWithDescription(DatenFilm film) {
         boolean result = false;
 
-        if (Filter.pruefenInteractive(arrIrgendwo, film.getDescription())
+        if (Filter.pruefen(arrIrgendwo, film.getDescription())
                 || searchEntries(film)) {
             result = true;
         }
