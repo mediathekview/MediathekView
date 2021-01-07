@@ -10,7 +10,7 @@ import net.engio.mbassy.listener.Handler
 import java.net.URL
 import java.util.*
 
-class AboInformationController: Initializable {
+class AboInformationController : Initializable {
     @FXML
     private lateinit var totalAbos: Label
 
@@ -34,20 +34,20 @@ class AboInformationController: Initializable {
 
     private fun updateDisplayText() {
         val listeAbo = Daten.getInstance().listeAbo
-        val _activeAbos = listeAbo.activeAbos()
-        val _inactiveAbos = listeAbo.inactiveAbos()
+        val numActiveAbos = listeAbo.activeAbos()
+        val numInactiveAbos = listeAbo.inactiveAbos()
         val gesamt = listeAbo.size
         if (gesamt != oldSize) {
             updateTotalDisplay(gesamt)
             oldSize = gesamt
         }
-        if (_activeAbos != oldActive) {
-            activeAbos.text = String.format("%d eingeschaltet", _activeAbos)
-            oldActive = _activeAbos
+        if (numActiveAbos != oldActive) {
+            activeAbos.text = String.format("%d eingeschaltet", numActiveAbos)
+            oldActive = numActiveAbos
         }
-        if (_inactiveAbos != oldInactive) {
-            inactiveAbos.text = String.format("%d ausgeschaltet", _inactiveAbos)
-            oldInactive = _inactiveAbos
+        if (numInactiveAbos != oldInactive) {
+            inactiveAbos.text = String.format("%d ausgeschaltet", numInactiveAbos)
+            oldInactive = numInactiveAbos
         }
     }
 
