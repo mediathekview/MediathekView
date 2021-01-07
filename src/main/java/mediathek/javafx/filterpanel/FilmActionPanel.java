@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
  */
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
-  private final Daten daten;
   private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
@@ -73,8 +72,7 @@ public class FilmActionPanel {
   private FXFilmToolBar toolBar;
   private CommonViewSettingsPane viewSettingsPane;
 
-  public FilmActionPanel(Daten daten) {
-    this.daten = daten;
+  public FilmActionPanel() {
     this.filterConfig = new FilterConfiguration();
 
     setupViewSettingsPane();
@@ -91,7 +89,7 @@ public class FilmActionPanel {
     setupDeleteCurrentFilterButton();
     setupAddNewFilterButton();
 
-    daten.getMessageBus().subscribe(this);
+    Daten.getInstance().getMessageBus().subscribe(this);
   }
 
   private void setupAddNewFilterButton() {
@@ -391,72 +389,62 @@ public class FilmActionPanel {
         });
   }
 
-  public void updateThemaBox() {
-    final var items = themaBox.getItems();
-    items.clear();
-    items.add("");
+    public void updateThemaBox() {
+        final var items = themaBox.getItems();
+        items.clear();
+        items.add("");
 
-    List<String> finalList = new ArrayList<>();
-    List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+        List<String> finalList = new ArrayList<>();
+        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
 
-    if (selectedSenders.isEmpty()) {
-      final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
-      finalList.addAll(lst);
-      lst.clear();
-    } else {
-      for (String sender : selectedSenders) {
-        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
-        finalList.addAll(lst);
-        lst.clear();
-      }
+        final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
+        if (selectedSenders.isEmpty()) {
+            final List<String> lst = blackList.getThemen("");
+            finalList.addAll(lst);
+            lst.clear();
+        } else {
+            for (String sender : selectedSenders) {
+                final List<String> lst = blackList.getThemen(sender);
+                finalList.addAll(lst);
+                lst.clear();
+            }
+        }
+
+        items.addAll(finalList.stream()
+                        .distinct()
+                        .sorted(GermanStringSorter.getInstance())
+                        .collect(Collectors.toList()));
+        finalList.clear();
+
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(items);
+        themaBox.getSelectionModel().select(0);
     }
-
-    items.addAll(
-        finalList.stream()
-            .distinct()
-            .sorted(GermanStringSorter.getInstance())
-            .collect(Collectors.toList()));
-    finalList.clear();
-
-    themaSuggestionProvider.clearSuggestions();
-    themaSuggestionProvider.addPossibleSuggestions(items);
-    themaBox.getSelectionModel().select(0);
-  }
 
   private void setupToolBar() {
     toolBar = new FXFilmToolBar();
-    toolBar.btnDownloadFilmList.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
+    toolBar.btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().performFilmListLoadOperation(false)));
     toolBar.btnFilmInfo.setOnAction(
         e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-    toolBar.btnPlay.setOnAction(
-        evt ->
+    toolBar.btnPlay.setOnAction(evt ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-    toolBar.btnRecord.setOnAction(
-        e ->
+    toolBar.btnRecord.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-    toolBar.btnBookmark.setOnAction(
-        e ->
+    toolBar.btnBookmark.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkFilmAction.actionPerformed(null)));
-    toolBar.btnManageBookMarks.setOnAction(
-        e ->
+    toolBar.btnManageBookMarks.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkManageListAction.actionPerformed(null)));
-    toolBar.btnManageAbos.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
-                () -> {
+    toolBar.btnManageAbos.setOnAction(e ->
+            SwingUtilities.invokeLater(() -> {
                   if (manageAboAction.isEnabled()) manageAboAction.actionPerformed(null);
                 }));
-    toolBar.btnShowFilter.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
-                () -> {
+    toolBar.btnShowFilter.setOnAction(e ->
+            SwingUtilities.invokeLater(() -> {
                   if (filterDialog != null) {
                     filterDialog.setVisible(
                         !filterDialog.isVisible()); // Toggle Dialog display on button press
@@ -464,30 +452,28 @@ public class FilmActionPanel {
                 }));
   }
 
-  public Scene getFilmActionPanelScene() {
-    setupToolBar();
+    public Scene getFilmActionPanelScene() {
+        setupToolBar();
 
-    setupSearchField();
+        setupSearchField();
 
-    setupSearchThroughDescriptionButton();
+        setupSearchThroughDescriptionButton();
 
-    setupShowBookmarkedMoviesButton();
+        setupShowBookmarkedMoviesButton();
 
-    daten
-        .getFilmeLaden()
-        .addAdListener(
-            new ListenerFilmeLaden() {
-              @Override
-              public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(true));
-              }
+        Daten.getInstance().getFilmeLaden().addAdListener(
+                new ListenerFilmeLaden() {
+                    @Override
+                    public void start(ListenerFilmeLadenEvent event) {
+                        Platform.runLater(() -> toolBar.setDisable(true));
+                    }
 
-              @Override
-              public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(false));
-              }
-            });
+                    @Override
+                    public void fertig(ListenerFilmeLadenEvent event) {
+                        Platform.runLater(() -> toolBar.setDisable(false));
+                    }
+                });
 
-    return new Scene(toolBar);
-  }
+        return new Scene(toolBar);
+    }
 }

@@ -295,7 +295,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        fap = new FilmActionPanel(daten);
+        fap = new FilmActionPanel();
         JavaFxUtils.invokeInFxThreadAndWait(
                 () -> fxFilmActionPanel.setScene(fap.getFilmActionPanelScene()));
     }
