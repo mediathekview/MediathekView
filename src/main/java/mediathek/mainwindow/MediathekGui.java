@@ -35,7 +35,6 @@ import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.LoadFilmListDialog;
-import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
@@ -904,7 +903,7 @@ public class MediathekGui extends JFrame {
         action.setMenuItem(item);
 
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ShowAboutAction(this));
+        jMenuHilfe.add(new ShowAboutAction());
     }
 
     protected void initMenus() {
@@ -928,16 +927,6 @@ public class MediathekGui extends JFrame {
         manageAboAction = new ManageAboAction();
         tabFilme.fap.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
-    }
-
-    /**
-     * Display the About Box
-     */
-    public void showAboutDialog() {
-        AboutDialog dialog = new AboutDialog(this);
-        GuiFunktionen.centerOnScreen(dialog, false);
-        dialog.setVisible(true);
-        dialog.dispose();
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
