@@ -47,7 +47,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED" arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication --enable-preview -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
