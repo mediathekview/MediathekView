@@ -1,6 +1,5 @@
 package mediathek.javafx;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.animation.*;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.LongProperty;
@@ -39,7 +38,6 @@ public class MemoryMonitor extends Stage {
         initComponents();
     }
 
-    @SuppressFBWarnings("DM_GC")
     private void initComponents() {
         setTitle("Speicherverbrauch");
         initOwner(JFXHiddenApplication.getPrimaryStage());

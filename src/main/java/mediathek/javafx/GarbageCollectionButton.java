@@ -1,6 +1,5 @@
 package mediathek.javafx;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -17,11 +16,6 @@ public class GarbageCollectionButton extends Button {
         super("", fontAwesome.create(FontAwesome.Glyph.RECYCLE));
         setText("");
         setTooltip(new Tooltip("Garbage Collection durchführen"));
-        setOnAction(e -> collectGarbage());
-    }
-
-    @SuppressFBWarnings("DM_GC")
-    private void collectGarbage() {
-        System.gc();
+        setOnAction(e -> System.gc());
     }
 }
