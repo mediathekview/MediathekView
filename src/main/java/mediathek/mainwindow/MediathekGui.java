@@ -35,6 +35,7 @@ import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.LoadFilmListDialog;
+import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
@@ -933,18 +934,10 @@ public class MediathekGui extends JFrame {
      * Display the About Box
      */
     public void showAboutDialog() {
-        /*AboutDialog dialog = new AboutDialog(this);
+        AboutDialog dialog = new AboutDialog(this);
         GuiFunktionen.centerOnScreen(dialog, false);
         dialog.setVisible(true);
-        dialog.dispose();*/
-        Platform.runLater(() -> {
-            Stage window = new Stage();
-            window.setTitle("JavaFX About");
-            window.setScene(new Scene(new AboutController()));
-            window.setResizable(false);
-            window.show();
-        });
-
+        dialog.dispose();
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
