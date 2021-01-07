@@ -8,7 +8,7 @@
 <fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="436.0"
          prefWidth="686.0" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1"
          xmlns:fx="http://javafx.com/fxml/1">
-    <!--fx:controller="mediathek.javafx.AboutController"-->
+    <!--fx:controller="mediathek.gui.dialog.about.AboutController"-->
     <ImageView fitHeight="196.0" fitWidth="198.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true"
                AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
         <Image url="/splash@2x.png"/>

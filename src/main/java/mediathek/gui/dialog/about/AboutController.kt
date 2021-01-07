@@ -1,4 +1,4 @@
-package mediathek.javafx
+package mediathek.gui.dialog.about
 
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
