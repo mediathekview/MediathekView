@@ -26,6 +26,7 @@ import net.engio.mbassy.listener.Handler;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +44,8 @@ public class FilmActionPanel {
   private static final Logger LOG = LoggerFactory.getLogger(FilmActionPanel.class);
   private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
   private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
-  private static final String STYLE_TEXT_FILL_RED = "-fx-text-fill: red";
-  private static final String STYLE_TEXT_FILL_BLUE = "-fx-text-fill: blue";
-  private static final String STYLE_TEXT_FILL_BLACK = "-fx-text-fill: black";
   private final Daten daten;
-  private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
-  private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
+  private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
   private final Tooltip themaTitelTooltip = new Tooltip("Thema/Titel durchsuchen");
   private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
@@ -314,42 +311,60 @@ public class FilmActionPanel {
     Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(false));
   }
 
-  private void checkPatternValidity() {
-    toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_RED);
-
-    // Schriftfarbe ändern wenn eine RegEx
-    final String text = toolBar.jfxSearchField.getText();
-    if (Filter.isPattern(text)) {
-      if (Filter.makePatternNoCheck(text) == null) {
-        // soll Pattern sein, ist aber falsch
-        toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_RED);
-      } else {
-        toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_BLUE);
-      }
-    } else {
-      toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_BLACK);
+    /**
+     * Check if entered text is regular search text or regexp pattern.
+     * If it is regexp, check validity and change text color to indicate validity.
+     *
+     * @param text String with content to be checked.
+     */
+    private void checkPatternValidity(@NotNull String text) {
+        if (Filter.isPattern(text)) {
+            if (Filter.makePatternNoCache(text) == null) {
+                // invalid pattern
+                toolBar.jfxSearchField.setStyle("-fx-text-fill: red");
+            } else {
+                //valid pattern
+                toolBar.jfxSearchField.setStyle("-fx-text-fill: blue");
+            }
+        } else {
+            // regular search text, reset to default style
+            toolBar.jfxSearchField.setStyle(null);
+        }
     }
-  }
 
-  private void setupSearchField() {
-    toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+    private void searchFieldFinalAction() {
+        final var text = toolBar.jfxSearchField.getText();
+        if (Filter.isPattern(text)) {
+            //only invoke filtering if we have regexp pattern and the pattern is valid
+            if (Filter.makePatternNoCache(text) != null) {
+                invokeTableViewFiltering();
+            }
+        } else {
+            invokeTableViewFiltering();
+        }
+    }
 
-    final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
+    private void setupSearchField() {
+        toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
+        toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
-    pause2.setOnFinished(evt -> checkPatternValidity());
-    textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
+        final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
+        roSearchStringProperty.bind(textProperty);
 
-    pause3.setOnFinished(
-        evt ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null)));
-    textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
+        textProperty.addListener((observable, oldValue, newValue) -> checkPatternValidity(newValue));
 
-    roSearchStringProperty.bind(textProperty);
-  }
+        finalActionTrans.setOnFinished(e -> searchFieldFinalAction());
+        textProperty.addListener((observable, oldValue, newValue) -> finalActionTrans.playFromStart());
+    }
 
-  private void setupSearchThroughDescriptionButton() {
+    /**
+     * Reload table view to apply filter text.
+     */
+    private void invokeTableViewFiltering() {
+        SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null));
+    }
+
+    private void setupSearchThroughDescriptionButton() {
     final boolean enabled =
         ApplicationConfiguration.getConfiguration()
             .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
