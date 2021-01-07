@@ -112,7 +112,6 @@ public class ManageAboPanel extends JPanel {
                 infoPanel.setScene(new Scene(infoPane));
 
                 infoController = loader.getController();
-                infoController.startListener();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
