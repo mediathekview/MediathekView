@@ -2,6 +2,7 @@ package mediathek.mac;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.gui.actions.ShowAboutAction;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
@@ -205,7 +206,7 @@ public class MediathekGuiMac extends MediathekGui {
                 response.performQuit();
             }
         });
-        desktop.setAboutHandler(e -> showAboutDialog());
+        desktop.setAboutHandler(e -> new ShowAboutAction().actionPerformed(null));
         desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
     }
 

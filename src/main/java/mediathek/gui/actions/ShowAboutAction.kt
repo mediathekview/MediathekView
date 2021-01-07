@@ -1,20 +1,20 @@
-package mediathek.gui.actions;
+package mediathek.gui.actions
 
-import mediathek.mainwindow.MediathekGui;
+import mediathek.gui.dialog.about.AboutDialog
+import mediathek.mainwindow.MediathekGui
+import mediathek.tool.GuiFunktionen
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-
-public class ShowAboutAction extends AbstractAction {
-    private final MediathekGui mediathekGui;
-
-    public ShowAboutAction(MediathekGui mediathekGui) {
-        this.mediathekGui = mediathekGui;
-        putValue(Action.NAME,"Über dieses Programm...");
+class ShowAboutAction : AbstractAction() {
+    override fun actionPerformed(e: ActionEvent?) {
+        val dialog = AboutDialog(MediathekGui.ui())
+        GuiFunktionen.centerOnScreen(dialog, false)
+        dialog.isVisible = true
+        dialog.dispose()
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        mediathekGui.showAboutDialog();
+    init {
+        putValue(NAME, "Über dieses Programm...")
     }
 }
