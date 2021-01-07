@@ -130,8 +130,8 @@ public class ManageAboPanel extends JPanel {
         CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             toolBar = new FXAboToolBar();
-            toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(true)));
-            toolBar.btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> aboEinAus(false)));
+            toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> changeAboActiveState(true)));
+            toolBar.btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> changeAboActiveState(false)));
             toolBar.btnDelete.setOnAction(e -> SwingUtilities.invokeLater(this::aboLoeschen));
             toolBar.btnEdit.setOnAction(e -> SwingUtilities.invokeLater(this::editAbo));
 
@@ -184,11 +184,11 @@ public class ManageAboPanel extends JPanel {
     private JPopupMenu createContextMenu() {
         JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
         itemEinschalten.setIcon(IconFontSwing.buildIcon(FontAwesome.CHECK, 16));
-        itemEinschalten.addActionListener(e -> aboEinAus(true));
+        itemEinschalten.addActionListener(e -> changeAboActiveState(true));
 
         JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
         itemDeaktivieren.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
-        itemDeaktivieren.addActionListener(e -> aboEinAus(false));
+        itemDeaktivieren.addActionListener(e -> changeAboActiveState(false));
 
         JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
         itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
@@ -342,7 +342,7 @@ public class ManageAboPanel extends JPanel {
         daten.getListeAbo().aenderungMelden();
     }
 
-    private void aboEinAus(boolean ein) {
+    private void changeAboActiveState(boolean ein) {
         final int[] rows = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
