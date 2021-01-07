@@ -23,12 +23,11 @@ import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -41,13 +40,9 @@ import java.util.stream.Collectors;
  * property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
-  private static final Logger LOG = LoggerFactory.getLogger(FilmActionPanel.class);
-  private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
-  private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
+  private static final Logger logger = LogManager.getLogger();
   private final Daten daten;
   private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
-  private final Tooltip themaTitelTooltip = new Tooltip("Thema/Titel durchsuchen");
-  private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
@@ -167,8 +162,8 @@ public class FilmActionPanel {
 
   private FilterDTO renameCurrentFilter(String newValue) {
     FilterDTO currentFilter = filterConfig.getCurrentFilter();
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
+    if (logger.isDebugEnabled()) {
+      logger.debug(
           "Can't find a filter with name \"{}\". Renaming the current filter \"{}\" to it.",
           newValue,
           currentFilter.name());
@@ -247,7 +242,7 @@ public class FilmActionPanel {
         }
 
     } catch (Exception exception) {
-      LOG.debug(
+      logger.debug(
           "Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",
           exception);
     }
@@ -255,7 +250,7 @@ public class FilmActionPanel {
     try {
       viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
     } catch (Exception exception) {
-      LOG.debug(
+      logger.debug(
           "Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
           exception);
     }
@@ -311,27 +306,6 @@ public class FilmActionPanel {
     Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(false));
   }
 
-    /**
-     * Check if entered text is regular search text or regexp pattern.
-     * If it is regexp, check validity and change text color to indicate validity.
-     *
-     * @param text String with content to be checked.
-     */
-    private void checkPatternValidity(@NotNull String text) {
-        if (Filter.isPattern(text)) {
-            if (Filter.makePatternNoCache(text) == null) {
-                // invalid pattern
-                toolBar.jfxSearchField.setStyle("-fx-text-fill: red");
-            } else {
-                //valid pattern
-                toolBar.jfxSearchField.setStyle("-fx-text-fill: blue");
-            }
-        } else {
-            // regular search text, reset to default style
-            toolBar.jfxSearchField.setStyle(null);
-        }
-    }
-
     private void searchFieldFinalAction() {
         final var text = toolBar.jfxSearchField.getText();
         if (Filter.isPattern(text)) {
@@ -345,13 +319,10 @@ public class FilmActionPanel {
     }
 
     private void setupSearchField() {
-        toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
-        toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
 
         final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
         roSearchStringProperty.bind(textProperty);
-
-        textProperty.addListener((observable, oldValue, newValue) -> checkPatternValidity(newValue));
 
         finalActionTrans.setOnFinished(e -> searchFieldFinalAction());
         textProperty.addListener((observable, oldValue, newValue) -> finalActionTrans.playFromStart());
@@ -389,15 +360,13 @@ public class FilmActionPanel {
   }
 
   private void setupForRegularSearch() {
-    toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
 
     toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchRegular);
   }
 
   private void setupForIrgendwoSearch() {
-    toolBar.jfxSearchField.setTooltip(irgendwoTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
+    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.IRGENDWO);
 
     toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchIrgendwo);
   }
