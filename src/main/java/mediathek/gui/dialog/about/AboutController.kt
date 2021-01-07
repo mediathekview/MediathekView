@@ -16,6 +16,10 @@ import java.net.URISyntaxException
 import javax.swing.SwingUtilities
 
 class AboutController : AnchorPane() {
+    companion object {
+        private val logger = LogManager.getLogger()
+    }
+
     @FXML
     private lateinit var homepage: Hyperlink
 
@@ -50,8 +54,7 @@ class AboutController : AnchorPane() {
     private fun developerDonationLinkClicked(e: ActionEvent) {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI("https://paypal.me/ChristianFranzke")
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://paypal.me/ChristianFranzke")
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -98,8 +101,7 @@ class AboutController : AnchorPane() {
     private fun jetbrainsLinkClicked(e: ActionEvent) {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI("https://www.jetbrains.com")
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.jetbrains.com")
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -110,8 +112,7 @@ class AboutController : AnchorPane() {
     private fun ejLinkClicked(e: ActionEvent) {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI("https://www.ej-technologies.com")
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.ej-technologies.com")
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -119,6 +120,7 @@ class AboutController : AnchorPane() {
     }
 
     init {
+
         try {
             val url = javaClass.getResource("/mediathek/res/programm/fxml/about.fxml")
             val fxmlLoader = FXMLLoader(url)
@@ -126,10 +128,9 @@ class AboutController : AnchorPane() {
             fxmlLoader.setController(this)
             fxmlLoader.load<Any>()
         } catch (e: IOException) {
-            val logger = LogManager.getLogger()
             logger.error("Failed to load FXML!")
         }
 
-        version.text = "Version ${Konstanten.VERSION_STR}"
+        version.text = "Version ${Konstanten.MVVERSION}"
     }
 }
