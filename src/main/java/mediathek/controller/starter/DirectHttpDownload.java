@@ -18,13 +18,17 @@ import mediathek.tool.http.MVHttpClient;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 import okhttp3.*;
+import okio.Okio;
+import okio.Sink;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -145,8 +149,7 @@ public class DirectHttpDownload extends Thread {
                 try {
                     MVInfoFile infoFile = new MVInfoFile();
                     infoFile.writeInfoFile(datenDownload);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     logger.error("Failed to write info file", ex);
                 }
             });
@@ -174,14 +177,13 @@ public class DirectHttpDownload extends Thread {
 
         datenDownload.interruptRestart();
 
-        /*
-        This is a read-only property. Only experienced users should change it.
-        Therefore we don´t save it.
-         */
-        final int bufferSize = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE, 64 * 1024);
-
-        try (FileOutputStream fos = new FileOutputStream(file, (alreadyDownloaded != 0));
-             BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
+        Sink fileSink;
+        if (alreadyDownloaded != 0)
+            fileSink = Okio.appendingSink(file);
+        else
+            fileSink = Okio.sink(file);
+        try (fileSink;
+             var bufferedSink = Okio.buffer(fileSink);
              ThrottlingInputStream tis = new ThrottlingInputStream(inputStream, rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis)) {
             start.mVBandwidthCountingInputStream = mvis;
@@ -194,7 +196,7 @@ public class DirectHttpDownload extends Thread {
 
             while ((len = start.mVBandwidthCountingInputStream.read(buffer)) != -1 && (!start.stoppen)) {
                 alreadyDownloaded += len;
-                bos.write(buffer, 0, len);
+                bufferedSink.write(buffer, 0, len);
                 datenDownload.mVFilmSize.addAktSize(len);
 
                 //für die Anzeige prüfen ob sich was geändert hat
@@ -220,7 +222,7 @@ public class DirectHttpDownload extends Thread {
                         if (p > 2 && p > startProzent) {
                             // sonst macht es noch keinen Sinn
                             final int diffZeit = start.startZeit.diffInSekunden();
-                            final int restProzent = 1000 - (int) p;
+                            final long restProzent = 1000L - p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
                             // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
                             // als die bereits geladene Speilzeit des Films
@@ -325,8 +327,7 @@ public class DirectHttpDownload extends Thread {
                             logger.error("HTTP error 404 received for URL: {}", request.url().toString());
                             state = HttpDownloadState.ERROR;
                             start.status = Start.STATUS_ERR;
-                        }
-                        else {
+                        } else {
                             printHttpErrorMessage(response);
                         }
                     }
