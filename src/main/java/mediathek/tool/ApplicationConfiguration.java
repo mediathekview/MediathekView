@@ -45,8 +45,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
             "application.ui.download.tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
-    public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE =
-            "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
             "application.notifications.show_native";
