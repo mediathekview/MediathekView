@@ -48,13 +48,13 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation, silent);
 
-                if (remoteProgramInfo.version().isInvalid()) {
+                if (remoteProgramInfo.getVersion().isInvalid()) {
                     Exception ex = new RuntimeException("progInfo.version() is invalid");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("progInfo.version() is invalid");
                 } else {
-                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.version())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.version());
+                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.getVersion())) {
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.getVersion());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {
