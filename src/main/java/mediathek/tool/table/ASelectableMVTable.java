@@ -24,11 +24,7 @@ public abstract class ASelectableMVTable extends MVTable {
                 }
             }
             if (!found && selRow >= 0 && this.getRowCount() > selRow) {
-                // große Frage was da besser ist???
-                for (int i = selRow; i >= 0; --i) {
-                    setRowSelectionInterval(i, i);
-                    break;
-                }
+                setRowSelectionInterval(selRow, selRow);
             } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
                 setRowSelectionInterval(tModel.getRowCount() - 1, tModel.getRowCount() - 1);
             }
