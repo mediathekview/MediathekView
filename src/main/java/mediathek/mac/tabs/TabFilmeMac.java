@@ -22,6 +22,16 @@ public class TabFilmeMac extends GuiFilme
             setupTouchBar();
     }
 
+    @Override
+    public void showTouchBar() {
+        touchBar.show(mediathekGui);
+    }
+
+    @Override
+    public void hideTouchBar() {
+        touchBar.hide(mediathekGui);
+    }
+
     protected void setupTouchBar() {
         touchBar = new JTouchBar();
         touchBar.setCustomizationIdentifier("tabFilme");
