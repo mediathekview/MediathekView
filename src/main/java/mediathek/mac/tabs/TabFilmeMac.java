@@ -18,9 +18,10 @@ public class TabFilmeMac extends GuiFilme
 {
     public TabFilmeMac(Daten aDaten, MediathekGui mediathekGui) {
         super(aDaten,mediathekGui);
+        if (TouchBarUtils.isTouchBarSupported())
+            setupTouchBar();
     }
 
-    @Override
     protected void setupTouchBar() {
         touchBar = new JTouchBar();
         touchBar.setCustomizationIdentifier("tabFilme");

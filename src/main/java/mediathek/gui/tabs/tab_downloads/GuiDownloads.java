@@ -121,6 +121,7 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
+    private MVDownloadsTable tabelle;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -159,8 +160,13 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
 
-        initializeTouchBar();
+    @Override
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
     }
 
     private void setupToolBar() {
