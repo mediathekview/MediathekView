@@ -86,4 +86,11 @@ public class TModelFilm extends TModel {
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };
     }
+
+    public void addFilm(DatenFilm film) {
+        Object[] object = new Object[1];
+        object[0] = film;
+
+        addRow(object);
+    }
 }

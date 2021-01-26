@@ -166,7 +166,7 @@ public class GuiFilmeModelHelper {
             stream = stream.filter(this::finalStageFiltering);
         }
         
-        stream.forEachOrdered(this::addFilmToTableModel);
+        stream.forEachOrdered(filmModel::addFilm);
         stream.close();
 
         if (dontShowSeen)
@@ -251,15 +251,8 @@ public class GuiFilmeModelHelper {
     private void addAllFilmsToTableModel() {
         if (!listeFilme.isEmpty()) {
             for (DatenFilm film : listeFilme) {
-                addFilmToTableModel(film);
+                filmModel.addFilm(film);
             }
         }
-    }
-
-    private void addFilmToTableModel(DatenFilm film) {
-        Object[] object = new Object[1];
-        object[0] = film;
-
-        filmModel.addRow(object);
     }
 }
