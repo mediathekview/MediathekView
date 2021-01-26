@@ -255,6 +255,8 @@ public class Daten {
     private void setupTimerPool() {
         //get rid of cancelled tasks immediately...
         timerPool.setRemoveOnCancelPolicy(true);
+        timerPool.allowCoreThreadTimeOut(true);
+        timerPool.setKeepAliveTime(1, TimeUnit.MINUTES);
 
         timerPool.scheduleWithFixedDelay(() -> messageBus.publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
