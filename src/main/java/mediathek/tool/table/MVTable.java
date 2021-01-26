@@ -1,12 +1,12 @@
 package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
-import mediathek.tool.models.TModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.ArrayList;
@@ -253,7 +253,8 @@ public abstract class MVTable extends JTable {
         if (setSpalten) {
             getSelected();
         }
-        ((TModel) getModel()).fireTableDataChanged();
+        var model = (AbstractTableModel)getModel();
+        model.fireTableDataChanged();
         if (setSpalten) {
             setSelected();
         }
