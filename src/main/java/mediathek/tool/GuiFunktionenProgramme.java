@@ -253,7 +253,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             int len;
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-
                 String entryFileName = entry.getName();
 
                 File dir = buildDirectoryHierarchyFor(entryFileName, destDir);
@@ -262,8 +261,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
 
                 if (!entry.isDirectory()) {
-                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(destDir, entryFileName)));
-                         BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry))) {
+                    try (var fos = new FileOutputStream(new File(destDir, entryFileName));
+                         var bos = new BufferedOutputStream(fos);
+                         var bis = new BufferedInputStream(zipFile.getInputStream(entry))) {
                         while ((len = bis.read(buffer)) > 0) {
                             bos.write(buffer, 0, len);
                         }
