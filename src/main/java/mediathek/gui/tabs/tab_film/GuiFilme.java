@@ -105,6 +105,7 @@ public class GuiFilme extends AGuiTabPanel {
      * panel controller will not receive change messages.
      */
     private ButtonsPanelController psetController;
+    private MVFilmTable tabelle;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -136,8 +137,13 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getMessageBus().subscribe(this);
 
         setupActionListeners();
+    }
 
-        initializeTouchBar();
+    @Override
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
     }
 
     private void setupFilmListTable() {

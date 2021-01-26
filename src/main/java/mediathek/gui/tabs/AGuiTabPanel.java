@@ -4,10 +4,7 @@ import com.thizzer.jtouchbar.JTouchBar;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
-import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.table.MVTable;
-import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class AGuiTabPanel extends JPanel {
-    protected MVTable tabelle;
     protected Daten daten;
     protected MediathekGui mediathekGui;
     protected JTouchBar touchBar;
@@ -23,15 +19,7 @@ public abstract class AGuiTabPanel extends JPanel {
     public abstract void showTouchBar();
     public abstract void hideTouchBar();
 
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
-    }
-
-    protected void setupTouchBar() {
-
-    }
+    public abstract void tabelleSpeichern();
 
     /**
      * Get the list of currently selected films.
@@ -44,12 +32,6 @@ public abstract class AGuiTabPanel extends JPanel {
 
     public abstract void installMenuEntries(JMenu menu);
     protected abstract void installTabInfoStatusBarControl();
-
-    protected void initializeTouchBar() {
-        if (SystemUtils.IS_OS_MAC_OSX && TouchBarUtils.isTouchBarSupported()) {
-            setupTouchBar();
-        }
-    }
 
     public class MarkFilmAsSeenAction extends AbstractAction {
 
