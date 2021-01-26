@@ -660,12 +660,10 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void showTouchBar() {
-        touchBar.show(MediathekGui.ui());
     }
 
     @Override
     public void hideTouchBar() {
-        touchBar.hide(MediathekGui.ui());
     }
 
     @Override
