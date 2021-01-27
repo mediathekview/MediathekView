@@ -5,7 +5,6 @@ import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 
@@ -19,11 +18,8 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected boolean geoMelden;
 
-    public CellRendererBaseWithStart(MVSenderIconCache cache) {
-        super(cache);
-
+    public CellRendererBaseWithStart() {
         Daten.getInstance().getMessageBus().subscribe(this);
-
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
     }
 
