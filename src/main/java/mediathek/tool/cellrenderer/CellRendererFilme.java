@@ -29,9 +29,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final Icon normalBookmarkIcon;
     private final Icon selectedBookmarkIconHighlighted;
 
-    public CellRendererFilme(Daten d) {
-        super(d.getSenderIconCache());
-
+    public CellRendererFilme() {
         selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, Color.WHITE);
         normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
 

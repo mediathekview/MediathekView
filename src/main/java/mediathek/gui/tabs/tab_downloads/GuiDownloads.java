@@ -592,7 +592,7 @@ public class GuiDownloads extends AGuiTabPanel {
         setupKeyMappings();
         //Tabelle einrichten
 
-        final CellRendererDownloads cellRenderer = new CellRendererDownloads(daten.getSenderIconCache());
+        final CellRendererDownloads cellRenderer = new CellRendererDownloads();
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);

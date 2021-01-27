@@ -150,7 +150,7 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setCellRenderer() {
-        final CellRendererAbo cellRenderer = new CellRendererAbo(daten.getSenderIconCache());
+        final CellRendererAbo cellRenderer = new CellRendererAbo();
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
