@@ -12,6 +12,7 @@ import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
@@ -598,6 +599,9 @@ public class Main {
                 window.toFront();
                 window.requestFocus();
             }
+            //show a link to tutorial if we are in Austria and have never used MV before...
+            AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
+            vlcCheck.perform();
         });
     }
 

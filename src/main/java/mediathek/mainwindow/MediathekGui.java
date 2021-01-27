@@ -209,8 +209,6 @@ public class MediathekGui extends JFrame {
 
         setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
 
-        showVlcHintForAustrianUsers();
-
         setupShutdownHook();
 
         checkInvalidRegularExpressions();
@@ -320,11 +318,6 @@ public class MediathekGui extends JFrame {
         }
 
         return bandwidthMonitor;
-    }
-
-    private void showVlcHintForAustrianUsers() {
-        var thread = new OrfSetupInformationThread();
-        daten.getTimerPool().schedule(thread, 10L, TimeUnit.SECONDS);
     }
 
     private void setupTaskbarMenu() {

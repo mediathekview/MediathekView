@@ -66,6 +66,7 @@ public class Konstanten {
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
+    public static final String ORF_TUTORIAL_LINK = "https://forum.mediathekview.de/topic/2546/anleitung-einstellungen-für-orf-download";
     // Dateien/Verzeichnisse
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
