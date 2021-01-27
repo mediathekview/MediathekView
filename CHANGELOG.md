@@ -3,7 +3,7 @@
 **ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**
 
 - Abfrage der Filmgrößen im "Film speichern" Dialog beschleunigt.
-- Performance des Filme-Tab deutlich verbessert.  
+- Performance des Filme-Tab bei Nutzung deutlich verbessert.  
 - Speicherverbrauch reduziert
 - Ausgabe der ffmpeg-Informationen während eines Downloads wird nur noch bei aktiviertem erweiterten Loggen ausgegeben.  
 - **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
@@ -14,6 +14,7 @@
 - **BUGFIX:** "Abos verwalten"-Dialog konnte nicht mit Tastenkombination oder Escape geschlossen werden.
 - **BUGFIX:** Fehlerhafte RegExp im Suchfeld lassen das Programm nicht mehr einfrieren, ungültige RegExp im Suchfeld werden nicht mehr auf die Filmliste angewendet.
 - **BUGFIX:** Es können nun keine "fehlerhaften" Einträge im Filter-Zeitraum Spinner eingeben werden.
+- **BUGFIX:** Markierung eines Films als gesehen in der Liste hat eine höhere Priorität als Geoblocking.
 - **FEATURE:** Filter-Zeitraum Spinner schlägt nun bei Erreichen der Start- oder Endwerte um (wraparound).
 
 <u>**13.7**</u>

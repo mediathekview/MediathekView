@@ -16,7 +16,6 @@ import java.awt.*;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
-    private static final long serialVersionUID = 1659689253119935809L;
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected boolean geoMelden;
 
@@ -77,7 +76,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         }
     }
 
-    protected void setGeoblockingBackgroundColor(final Component c, final boolean isSelected) {
+    private void setGeoblockingBackgroundColor(final Component c, final boolean isSelected) {
         final Color color;
         if (isSelected)
             color = MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color;
