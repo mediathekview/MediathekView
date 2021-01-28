@@ -15,7 +15,6 @@ import org.jdesktop.swingx.VerticalLayout;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungenGeo extends JPanel {
     private final JFrame parentComponent;
 

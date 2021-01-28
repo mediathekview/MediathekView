@@ -18,11 +18,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.NoSuchElementException;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungen extends JPanel {
     private final static String ALLE = " Alle ";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private final Daten daten;
     private final SpinnerListModel daySpinnerModel = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
             "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
 
@@ -111,10 +109,8 @@ public class PanelEinstellungen extends JPanel {
         cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
     }
 
-    public PanelEinstellungen(Daten d) {
+    public PanelEinstellungen() {
         super();
-        daten = d;
-
         initComponents();
 
         setupUserAgentSettings();
@@ -124,6 +120,7 @@ public class PanelEinstellungen extends JPanel {
         setupDatabaseCleanerCheckbox();
 
         jButtonLoad.addActionListener(ae -> {
+            final var daten = Daten.getInstance();
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
             daten.getFilmeLaden().loadFilmlist("", false);
         });
