@@ -87,7 +87,7 @@
         <log4j2.version>2.14.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
         <okhttp.version>4.9.0</okhttp.version>
-        <jackson.version>2.11.1</jackson.version>
+        <jackson.version>2.11.4</jackson.version>
 
         <mainclass>mediathek.Main</mainclass>
         <!-- AdopOpenJDK is used for Windows and Linux 64bit -->
