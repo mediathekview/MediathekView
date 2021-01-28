@@ -19,13 +19,11 @@ import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.MessageBus;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.bus.MBassador;
-import net.engio.mbassy.bus.config.BusConfiguration;
-import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.config.IBusConfiguration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,16 +88,13 @@ public class Daten {
      */
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
-    private MBassador<BaseEvent> messageBus;
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
-        setupMessageBus();
-
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
 
-        senderIconCache = new MVSenderIconCache(this);
+        senderIconCache = new MVSenderIconCache();
 
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
@@ -115,7 +110,7 @@ public class Daten {
         listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
 
-        downloadInfos = new DownloadInfos(messageBus);
+        downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
 
         setupTimerPool();
@@ -225,19 +220,7 @@ public class Daten {
     }
 
     public MBassador<BaseEvent> getMessageBus() {
-        return messageBus;
-    }
-
-    /**
-     * Set up message bus to log errors to our default logger
-     */
-    private void setupMessageBus() {
-        messageBus = new MBassador<>(new BusConfiguration()
-                .addFeature(Feature.SyncPubSub.Default())
-                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
-                .addFeature(Feature.AsynchronousMessageDispatch.Default())
-                .addPublicationErrorHandler(error -> logger.error(error.getMessage(), error.getCause()))
-                .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
+        return MessageBus.getMessageBus();
     }
 
     public void setAboHistoryList(AboHistoryController controller) {
@@ -258,7 +241,7 @@ public class Daten {
         timerPool.allowCoreThreadTimeOut(true);
         timerPool.setKeepAliveTime(1, TimeUnit.MINUTES);
 
-        timerPool.scheduleWithFixedDelay(() -> messageBus.publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
+        timerPool.scheduleWithFixedDelay(() -> getMessageBus().publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
 
     public boolean allesLaden() {

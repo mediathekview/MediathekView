@@ -2,47 +2,44 @@ package mediathek.daten;
 
 import mediathek.config.Daten;
 import mediathek.controller.starter.Start;
-import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
 import mediathek.gui.messages.TimerEvent;
-import net.engio.mbassy.bus.MBassador;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 import java.text.DecimalFormat;
 
 public class DownloadInfos {
     private static final DecimalFormat formatter = new DecimalFormat("####0.00");
-    private final MBassador<BaseEvent> messageBus;
     /**
      * Bandbreite: bytes per second
      */
-    private long bandwidth = 0;
+    private long bandwidth;
     /**
      * Restzeit aller gestarteten Downloads
      */
-    private long timeRestAllDownloads = 0;
+    private long timeRestAllDownloads;
     /**
      * Restzeit für die gerade ladenden/laufenden Downloads
      */
-    private long timeRestAktDownloads = 0;
+    private long timeRestAktDownloads;
     /**
      * Anzahl Bytes bereits geladen für die gerade ladenden/laufenden Downloads
      */
-    private long byteAktDownloads = 0;
+    private long byteAktDownloads;
     /**
      * Anzahl Bytes für alle gestarteten Downloads
      */
-    private long byteAlleDownloads = 0;
+    private long byteAlleDownloads;
     /**
      * Anzahl gestarteter Downloads
      */
-    private int anzDownloadsRun = 0;
+    private int anzDownloadsRun;
 
     private String bandwidthStr = "";
 
-    public DownloadInfos(MBassador<BaseEvent> messageBus) {
-        this.messageBus = messageBus;
-        messageBus.subscribe(this);
+    public DownloadInfos() {
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     public long getBandwidth() {
@@ -152,7 +149,7 @@ public class DownloadInfos {
         formatBandwidthString();
 
         //TODO put status values in Info Event message
-        messageBus.publishAsync(new DownloadInfoUpdateAvailableEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadInfoUpdateAvailableEvent());
     }
 
     private void resetData() {
