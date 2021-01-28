@@ -48,7 +48,7 @@ object TimerPool {
         init {
             val s = System.getSecurityManager()
             group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
-            namePrefix = "timerPool-thread-"
+            namePrefix = "TimerPool-thread-"
         }
     }
 }
