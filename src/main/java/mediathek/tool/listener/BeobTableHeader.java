@@ -1,6 +1,6 @@
 package mediathek.tool.listener;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.tool.table.MVTable;

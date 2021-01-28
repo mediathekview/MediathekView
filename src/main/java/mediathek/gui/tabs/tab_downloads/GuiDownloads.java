@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;

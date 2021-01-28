@@ -28,7 +28,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;

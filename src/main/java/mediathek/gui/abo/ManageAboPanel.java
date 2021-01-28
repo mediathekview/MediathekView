@@ -4,7 +4,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;

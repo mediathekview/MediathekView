@@ -4,7 +4,7 @@ import com.thizzer.jtouchbar.JTouchBar;
 import com.thizzer.jtouchbar.common.ImageName;
 import com.thizzer.jtouchbar.item.TouchBarItem;
 import com.thizzer.jtouchbar.item.view.TouchBarButton;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import mediathek.config.Daten;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.mac.touchbar.TouchBarUtils;
