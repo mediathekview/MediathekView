@@ -17,7 +17,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class ResetSettingsPanel extends JPanel {
     private static final String RESET_MESSAGE = "<html>Es werden <b>ALLE</b> von Ihnen erzeugten Änderungen gelöscht.<br>" +
             "Möchten Sie wirklich alle Einstellungen zurücksetzen?<br></html>";

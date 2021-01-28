@@ -17,6 +17,7 @@ object MessageBus {
     private val logger = LogManager.getLogger()
 
     init {
+        logger.trace("Initializing message bus")
         messageBus = MBassador(BusConfiguration()
             .addFeature(Feature.SyncPubSub.Default())
             .addFeature(Feature.AsynchronousHandlerInvocation.Default())

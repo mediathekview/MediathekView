@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelMediaDB extends PanelVorlage {
     private final NonEditableTableModel modelPath = new NonEditableTableModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
