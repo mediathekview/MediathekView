@@ -18,10 +18,13 @@ import javax.swing.ImageIcon
 /**
  * This class will load only one instance for all used sender icons.
  */
-class MVSenderIconCache {
+object MVSenderIconCache {
     private val useLocalIcons = AtomicBoolean(false)
     private val smallSenderCache: LoadingCache<String, Optional<ImageIcon>>
     private val largeSenderCache: LoadingCache<String, Optional<ImageIcon>>
+    private val logger = LogManager.getLogger()
+    const val CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
+
 
     @Handler
     private fun handleSenderIconStyleChangedEvent(e: SenderIconStyleChangedEvent) {
@@ -46,6 +49,7 @@ class MVSenderIconCache {
      * @param small  large or small icon requested.
      * @return The [javax.swing.ImageIcon] for the sender or null.
      */
+    @JvmStatic
     operator fun get(sender: String, small: Boolean): Optional<ImageIcon> {
         return try {
             if (small)
@@ -59,12 +63,8 @@ class MVSenderIconCache {
         }
     }
 
-    companion object {
-        const val CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
-        private val logger = LogManager.getLogger()
-    }
-
     init {
+        logger.trace("Initializing sender icon cache...")
         setupCleanupScheduler()
 
         largeSenderCache = CacheBuilder.newBuilder()
