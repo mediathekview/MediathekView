@@ -4,6 +4,7 @@ import mediathek.config.Daten
 import mediathek.daten.DatenAbo
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.gui.messages.ReplaceListChangedEvent
+import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
 import org.apache.commons.lang3.tuple.ImmutableTriple
 import org.apache.logging.log4j.LogManager
@@ -66,7 +67,7 @@ class OldConfigFileImporter {
         if (foundBlacklistEntries > 0)
             daten.listeBlacklist.filterListAndNotifyListeners()
         if (foundReplaceListEntries > 0)
-            daten.messageBus.publishAsync(ReplaceListChangedEvent())
+            MessageBus.messageBus.publishAsync(ReplaceListChangedEvent())
 
         return ImmutableTriple(foundAbos, foundBlacklistEntries, foundReplaceListEntries)
     }

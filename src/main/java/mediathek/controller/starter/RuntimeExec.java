@@ -23,9 +23,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mediathek.config.Config;
-import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.tool.MVFilmSize;
+import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -222,7 +222,7 @@ public class RuntimeExec {
                     }
                 }
             } catch (Exception ex) {
-                Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
                 logger.error("GetPercentageFromErrorStream(): {}", input);
             }
         }
@@ -245,7 +245,7 @@ public class RuntimeExec {
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
-                Daten.getInstance().getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
             }
         }
     }

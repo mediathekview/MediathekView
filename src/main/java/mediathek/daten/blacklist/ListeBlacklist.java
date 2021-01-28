@@ -10,6 +10,7 @@ import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
+import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -217,7 +218,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      */
     public synchronized void filterListAndNotifyListeners() {
         filterListe();
-        Daten.getInstance().getMessageBus().publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /**

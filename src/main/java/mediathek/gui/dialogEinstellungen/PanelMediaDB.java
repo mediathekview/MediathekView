@@ -12,6 +12,7 @@ import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.cellrenderer.CellRendererMediaDB;
@@ -60,7 +61,7 @@ public class PanelMediaDB extends PanelVorlage {
         initComponents();
         daten = d;
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         progress.setVisible(false);
         progress.setIndeterminate(true);

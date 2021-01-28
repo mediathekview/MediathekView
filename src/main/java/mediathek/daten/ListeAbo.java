@@ -25,10 +25,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.Filter;
-import mediathek.tool.GermanStringSorter;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -130,7 +127,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public void aenderungMelden() {
         // Filmliste anpassen
         setAboFuerFilm(daten.getListeFilme(), true);
-        daten.getMessageBus().publishAsync(new AboListChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
     @Deprecated

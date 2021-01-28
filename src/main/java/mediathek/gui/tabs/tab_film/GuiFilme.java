@@ -134,7 +134,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         start_init();
         // register message bus handler
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
     }
@@ -227,7 +227,7 @@ public class GuiFilme extends AGuiTabPanel {
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
         cbShowButtons.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
-        cbShowButtons.addActionListener(e -> daten.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
+        cbShowButtons.addActionListener(e -> MessageBus.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
 
         jMenuAnsicht.add(cbShowButtons, 0);
     }
@@ -311,7 +311,7 @@ public class GuiFilme extends AGuiTabPanel {
             try {
                 psetController = ButtonsPanelController.install(fxPsetButtonsPanel,this);
                 psetController.setOnCloseRequest(e -> {
-                    daten.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(false));
+                    MessageBus.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(false));
                     e.consume();
                 });
                 psetController.setupButtonLayout();
@@ -551,7 +551,7 @@ public class GuiFilme extends AGuiTabPanel {
                 datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
 
                 daten.getListeDownloads().addMitNummer(datenDownload);
-                daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
                     // und evtl. auch gleich starten
                     datenDownload.startDownload();
@@ -694,7 +694,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setInfoStatusbar() {
-        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
+        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     private void reloadTable() {
@@ -800,7 +800,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private synchronized void loadTable() {
-        final var messageBus = Daten.getInstance().getMessageBus();
+        final var messageBus = MessageBus.getMessageBus();
         messageBus.publishAsync(new TableModelChangeEvent(true));
         try {
             stopBeob = true;

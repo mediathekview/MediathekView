@@ -13,7 +13,6 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.javafx.tool.JFXHiddenApplication;
@@ -23,7 +22,6 @@ import mediathek.tool.MessageBus;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
-import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -219,10 +217,6 @@ public class Daten {
         return cleaner;
     }
 
-    public MBassador<BaseEvent> getMessageBus() {
-        return MessageBus.getMessageBus();
-    }
-
     public void setAboHistoryList(AboHistoryController controller) {
         erledigteAbos = controller;
     }
@@ -241,7 +235,7 @@ public class Daten {
         timerPool.allowCoreThreadTimeOut(true);
         timerPool.setKeepAliveTime(1, TimeUnit.MINUTES);
 
-        timerPool.scheduleWithFixedDelay(() -> getMessageBus().publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
+        timerPool.scheduleWithFixedDelay(() -> MessageBus.getMessageBus().publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
     }
 
     public boolean allesLaden() {

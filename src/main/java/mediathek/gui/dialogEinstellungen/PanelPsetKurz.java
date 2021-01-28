@@ -8,6 +8,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.MessageBus;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -47,7 +48,7 @@ public class PanelPsetKurz extends PanelVorlage {
             });
         }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         initBeob();
     }

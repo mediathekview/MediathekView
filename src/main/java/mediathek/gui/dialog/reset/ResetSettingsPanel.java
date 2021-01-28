@@ -8,6 +8,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.MessageBus;
 import mediathek.tool.swing.MultilineLabel;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -29,7 +30,7 @@ public class ResetSettingsPanel extends JPanel {
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
             GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), ListePsetVorlagen.getStandarset(parent, true), true);
-            Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
         });
         jButtonResetAll.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parent, RESET_MESSAGE, "Einstellungen zurücksetzen", JOptionPane.YES_NO_OPTION);

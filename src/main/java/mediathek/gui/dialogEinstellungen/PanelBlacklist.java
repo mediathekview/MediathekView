@@ -43,7 +43,7 @@ public class PanelBlacklist extends JPanel {
         init_();
         init();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
@@ -228,7 +228,7 @@ public class PanelBlacklist extends JPanel {
 
     private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
-        daten.getMessageBus().publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     private void comboThemaLaden() {

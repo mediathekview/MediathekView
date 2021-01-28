@@ -1,9 +1,9 @@
 package mediathek.controller.history;
 
-import mediathek.config.Daten;
 import mediathek.config.StandardLocations;
 import mediathek.gui.messages.history.AboHistoryChangedEvent;
 import mediathek.tool.FileUtils;
+import mediathek.tool.MessageBus;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +50,7 @@ public class AboHistoryController {
     }
 
     private void sendChangeMessage() {
-        Daten.getInstance().getMessageBus().publishAsync(new AboHistoryChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new AboHistoryChangedEvent());
     }
 
     /**

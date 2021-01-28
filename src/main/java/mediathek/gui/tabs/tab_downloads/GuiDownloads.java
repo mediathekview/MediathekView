@@ -179,7 +179,7 @@ public class GuiDownloads extends AGuiTabPanel {
             toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
             toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
             toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
-            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
+            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> MessageBus.getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
 
             Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
@@ -377,7 +377,7 @@ public class GuiDownloads extends AGuiTabPanel {
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, downloadLimit);
             DownloadRateLimitChangedEvent evt = new DownloadRateLimitChangedEvent();
             evt.newLimit = downloadLimit;
-            daten.getMessageBus().publishAsync(evt);
+            MessageBus.getMessageBus().publishAsync(evt);
         });
     }
 
@@ -625,7 +625,7 @@ public class GuiDownloads extends AGuiTabPanel {
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
             final int maxNumDownloads = ((Number)jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
             config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
-            daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
         final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
@@ -770,7 +770,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void addListenerMediathekView() {
         //register message bus handler
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
@@ -1233,7 +1233,7 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setInfo() {
-        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
+        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     /**

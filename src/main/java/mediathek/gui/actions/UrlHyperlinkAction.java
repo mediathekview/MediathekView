@@ -1,9 +1,9 @@
 package mediathek.gui.actions;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
+import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +43,7 @@ public class UrlHyperlinkAction extends AbstractAction {
             launchApplication(programm, url);
 
             MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, programm);
-            Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
         } catch (Exception ex) {
             MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
             logger.error("Failed to launch URL {} with custom browser", url);

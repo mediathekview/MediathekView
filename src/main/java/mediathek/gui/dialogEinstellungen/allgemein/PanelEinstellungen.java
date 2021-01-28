@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
@@ -53,12 +54,12 @@ public class PanelEinstellungen extends JPanel {
 
     private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
-        daten.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
     }
     
     private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
-        daten.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
+        MessageBus.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
     }
 
     private void setupDays() {
@@ -73,14 +74,14 @@ public class PanelEinstellungen extends JPanel {
         jCheckBoxTabsTop.setSelected(tabPositionTop);
         jCheckBoxTabsTop.addActionListener(ae -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
-            Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
         jCheckBoxTabIcon.addActionListener(ae -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, jCheckBoxTabIcon.isSelected());
-            Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
     }
 
@@ -94,7 +95,7 @@ public class PanelEinstellungen extends JPanel {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
-            daten.getMessageBus().subscribe(this);
+            MessageBus.getMessageBus().subscribe(this);
 
             jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false));
             jCheckBoxTray.addActionListener(ae -> {
@@ -172,7 +173,7 @@ public class PanelEinstellungen extends JPanel {
                 } else {
                     evt.event = InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE;
                 }
-                daten.getMessageBus().publishAsync(evt);
+                MessageBus.getMessageBus().publishAsync(evt);
             });
         }
     }

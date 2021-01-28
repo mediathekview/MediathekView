@@ -89,7 +89,7 @@ public class FilmActionPanel {
     setupDeleteCurrentFilterButton();
     setupAddNewFilterButton();
 
-    Daten.getInstance().getMessageBus().subscribe(this);
+      MessageBus.getMessageBus().subscribe(this);
   }
 
   private void setupAddNewFilterButton() {

@@ -29,6 +29,7 @@ import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +89,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -107,7 +108,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -151,7 +152,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             this.addFirst(datenDownload);
         }
 
-        daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
     }
 
     public synchronized void delDownloadButton(String url) {
@@ -164,7 +165,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 datenDownload.mVFilmSize.reset();
                 datenDownload.start = null;
-                daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
                 break;
             }
         }
@@ -190,7 +191,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new StartEvent());
+            MessageBus.getMessageBus().publishAsync(new StartEvent());
         }
     }
 
@@ -209,7 +210,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -472,7 +473,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden)
-            daten.getMessageBus().publishAsync(new ButtonStartEvent());
+            MessageBus.getMessageBus().publishAsync(new ButtonStartEvent());
     }
 
     public synchronized DatenDownload getNextStart() {
