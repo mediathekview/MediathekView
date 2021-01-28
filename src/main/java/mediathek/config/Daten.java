@@ -18,7 +18,6 @@ import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ReplaceList;
-import mediathek.tool.TimerPool;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import org.apache.commons.lang3.SystemUtils;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
@@ -220,10 +218,6 @@ public class Daten {
 
     public AboHistoryController getAboHistoryController() {
         return erledigteAbos;
-    }
-
-    public ScheduledThreadPoolExecutor getTimerPool() {
-        return TimerPool.getTimerPool();
     }
 
     public boolean allesLaden() {

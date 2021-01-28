@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
 import mediathek.daten.GeoblockingField;
@@ -222,21 +221,15 @@ public class ApplicationConfiguration {
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
-            future =
-                    Daten.getInstance()
-                            .getTimerPool()
-                            .schedule(
-                                    () -> {
-                                        try {
-                                            logger.trace("Writing app configuration file");
-                                            handler.save();
-                                        } catch (ConfigurationException e) {
-                                            logger.error("writing app config file:", e);
-                                        }
-                                        future = null;
-                                    },
-                                    5,
-                                    TimeUnit.SECONDS);
+            future = TimerPool.getTimerPool().schedule(() -> {
+                try {
+                    logger.trace("Writing app configuration file");
+                    handler.save();
+                } catch (ConfigurationException e) {
+                    logger.error("writing app config file:", e);
+                }
+                future = null;
+            }, 5, TimeUnit.SECONDS);
         }
 
         @Override
