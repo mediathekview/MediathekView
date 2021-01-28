@@ -6,11 +6,11 @@ import com.google.common.cache.LoadingCache
 import mediathek.gui.messages.SenderIconStyleChangedEvent
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
+import mediathek.tool.TimerPool
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import java.util.*
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.ImageIcon
@@ -22,7 +22,6 @@ class MVSenderIconCache {
     private val useLocalIcons = AtomicBoolean(false)
     private val smallSenderCache: LoadingCache<String, Optional<ImageIcon>>
     private val largeSenderCache: LoadingCache<String, Optional<ImageIcon>>
-    private val cacheCleanupScheduler = Executors.newScheduledThreadPool(1)
 
     @Handler
     private fun handleSenderIconStyleChangedEvent(e: SenderIconStyleChangedEvent) {
@@ -33,7 +32,8 @@ class MVSenderIconCache {
     }
 
     private fun setupCleanupScheduler() {
-        cacheCleanupScheduler.scheduleAtFixedRate({
+        TimerPool.timerPool.scheduleAtFixedRate({
+            logger.trace("Cleaning sender icon caches")
             largeSenderCache.cleanUp()
             smallSenderCache.cleanUp()
         }, 5, 5, TimeUnit.MINUTES)
