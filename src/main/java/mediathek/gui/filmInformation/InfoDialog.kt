@@ -14,7 +14,7 @@ import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.javafx.tool.JavaFxUtils
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.GuiFunktionen
-import mediathek.tool.MVSenderIconCache
+import mediathek.tool.sender_icon_cache.MVSenderIconCache
 import net.miginfocom.layout.CC
 import org.apache.commons.configuration2.sync.LockMode
 import org.tbee.javafx.scene.layout.MigPane
