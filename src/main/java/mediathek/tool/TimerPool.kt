@@ -14,7 +14,8 @@ object TimerPool {
 
     @JvmStatic
     val timerPool =
-        ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, TimerPoolThreadFactory())
+        ScheduledThreadPoolExecutor((Runtime.getRuntime().availableProcessors() / 2).coerceIn(2, 4),
+            TimerPoolThreadFactory())
 
     init {
         logger.trace("Initializing timer pool...")
@@ -30,25 +31,21 @@ object TimerPool {
      * Follows the java.util.concurrent.Executors.DefaultThreadFactory implementation for
      * setting up the threads.
      */
-    internal class TimerPoolThreadFactory internal constructor() : ThreadFactory {
+    private class TimerPoolThreadFactory() : ThreadFactory {
         private val group: ThreadGroup
         private val threadNumber = AtomicInteger(1)
-        private val namePrefix: String
+
         override fun newThread(r: Runnable): Thread {
-            val t = Thread(
-                group, r,
-                namePrefix + threadNumber.getAndIncrement(),
-                0
-            )
-            if (t.isDaemon) t.isDaemon = false
-            if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
+            val t = Thread(group, r, "TimerPool-thread-${threadNumber.getAndIncrement()}", 0)
+            t.isDaemon = false
+            t.priority = Thread.NORM_PRIORITY
+
             return t
         }
 
         init {
             val s = System.getSecurityManager()
             group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
-            namePrefix = "TimerPool-thread-"
         }
     }
 }
