@@ -24,10 +24,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 public class PanelBlacklist extends JPanel {
     public boolean ok;
-    public String ziel;
     private final String name;
     private final Daten daten;
     private final JFrame parentComponent;

@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
 
