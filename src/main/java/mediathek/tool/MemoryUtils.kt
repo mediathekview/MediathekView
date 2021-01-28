@@ -1,15 +1,8 @@
-package mediathek.tool;
+package mediathek.tool
 
-import mediathek.config.Konstanten;
+import mediathek.config.Konstanten
 
-public class MemoryUtils {
-    private static final boolean isLowMemory;
-
-    static {
-        isLowMemory = Runtime.getRuntime().maxMemory() <= Konstanten.LOW_MEMORY_THRESHOLD;
-    }
-
-    public static boolean isLowMemoryEnvironment() {
-        return isLowMemory;
-    }
+object MemoryUtils {
+    @JvmStatic
+    val isLowMemoryEnvironment: Boolean = Runtime.getRuntime().maxMemory() <= Konstanten.LOW_MEMORY_THRESHOLD
 }

@@ -43,7 +43,7 @@ object PooledDatabaseConnection {
         }
 
     init {
-        if (MemoryUtils.isLowMemoryEnvironment()) {
+        if (MemoryUtils.isLowMemoryEnvironment) {
             val driverCommand = "jdbc:h2:file:$databaseLocation/mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE"
             val config = HikariConfig()
             config.dataSourceClassName = "org.h2.jdbcx.JdbcDataSource"
