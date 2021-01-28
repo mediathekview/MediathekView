@@ -27,6 +27,7 @@ import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModelMediaDB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +89,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         @Override
         public void run() {
             logger.info("Clean MediaDB start");
-            final var messageBus = daten.getMessageBus();
+            final var messageBus = MessageBus.getMessageBus();
             messageBus.publishAsync(new MediaDbStartEvent());
             makeIndex = true;
 
@@ -120,7 +121,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void delList(boolean ohneSave) {
-        final var messageBus = daten.getMessageBus();
+        final var messageBus = MessageBus.getMessageBus();
         messageBus.publishAsync(new MediaDbStartEvent());
         makeIndex = true;
 
@@ -140,7 +141,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void createMediaDB(String pfad) {
-        daten.getMessageBus().publishAsync(new MediaDbStartEvent());
+        MessageBus.getMessageBus().publishAsync(new MediaDbStartEvent());
         suffix = MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
@@ -288,7 +289,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             makeIndex = false;
             logger.debug("Ende Mediensammlung erstellen");
 
-            daten.getMessageBus().publishAsync(new MediaDbStopEvent());
+            MessageBus.getMessageBus().publishAsync(new MediaDbStopEvent());
         }
 
         private void errorMsg() {

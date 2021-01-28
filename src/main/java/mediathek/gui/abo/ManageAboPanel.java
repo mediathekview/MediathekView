@@ -14,6 +14,7 @@ import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.Datum;
+import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
@@ -59,7 +60,7 @@ public class ManageAboPanel extends JPanel {
         setupToolBar();
         setupInfoPanel();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         initListeners();
 

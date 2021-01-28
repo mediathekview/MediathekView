@@ -45,6 +45,7 @@ import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
+import mediathek.tool.MessageBus;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
@@ -733,7 +734,7 @@ public class BookmarkWindowController implements Initializable {
         datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
 
         daten.getListeDownloads().addMitNummer(datenDownload);
-        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
           datenDownload.startDownload();  // und evtl. auch gleich starten
         }

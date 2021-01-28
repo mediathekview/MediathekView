@@ -6,6 +6,7 @@ import javafx.scene.control.Label
 import mediathek.config.Daten
 import mediathek.gui.messages.AboListChangedEvent
 import mediathek.javafx.tool.JavaFxUtils
+import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import java.net.URL
 import java.util.*
@@ -39,7 +40,7 @@ class AboInformationController : Initializable {
     }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        Daten.getInstance().messageBus.subscribe(this)
+        MessageBus.messageBus.subscribe(this)
         updateDisplayText()
     }
 }

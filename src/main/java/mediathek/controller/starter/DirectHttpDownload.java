@@ -10,10 +10,7 @@ import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.FileSize;
-import mediathek.tool.MVInfoFile;
-import mediathek.tool.MVSubtitle;
+import mediathek.tool.*;
 import mediathek.tool.http.MVHttpClient;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
@@ -66,7 +63,7 @@ public class DirectHttpDownload extends Thread {
 
         httpClient = MVHttpClient.getInstance().getHttpClient();
         rateLimiter = RateLimiter.create(getDownloadLimit());
-        messageBus = daten.getMessageBus();
+        messageBus = MessageBus.getMessageBus();
         messageBus.subscribe(this);
 
         this.daten = daten;
@@ -237,7 +234,7 @@ public class DirectHttpDownload extends Thread {
                     melden = true;
                 }
                 if (melden) {
-                    daten.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+                    MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
                     melden = false;
                 }
             }
@@ -419,7 +416,7 @@ public class DirectHttpDownload extends Thread {
 
                 case RESTART_WITH_NEW_NAME:
                     if (dialogContinueDownload.isNewName()) {
-                        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
                         createDirectory();
                         file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                     }

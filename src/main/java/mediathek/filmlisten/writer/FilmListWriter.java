@@ -3,11 +3,11 @@ package mediathek.filmlisten.writer;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +66,7 @@ public class FilmListWriter {
     }
 
     public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener listener) {
-        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
+        MessageBus.getMessageBus().publishAsync(new FilmListWriteStartEvent());
 
         try {
             logger.info("Filme schreiben ({} Filme) :", listeFilme.size());
@@ -125,7 +125,7 @@ public class FilmListWriter {
             logger.error("nach: {}", datei, ex);
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
+        MessageBus.getMessageBus().publishAsync(new FilmListWriteStopEvent());
     }
 
     private void writeEntry(DatenFilm datenFilm, JsonGenerator jg) throws IOException {

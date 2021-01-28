@@ -1,10 +1,10 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 
@@ -19,7 +19,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     protected boolean geoMelden;
 
     public CellRendererBaseWithStart() {
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
     }
 

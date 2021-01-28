@@ -185,7 +185,7 @@ public class MediathekGui extends JFrame {
         initializeMediaDbDialog();
 
         //register message bus handler
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();

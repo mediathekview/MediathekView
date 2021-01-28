@@ -20,6 +20,7 @@ import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class BandwidthMonitorController {
             calculateHudPosition();
         }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         setVisibility();
     }
@@ -165,7 +166,7 @@ public class BandwidthMonitorController {
 
     private void updateListeners() {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
-        Daten.getInstance().getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
     }
 
     /**

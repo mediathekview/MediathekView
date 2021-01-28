@@ -1,6 +1,7 @@
 package mediathek.gui.history;
 
 import mediathek.gui.messages.history.AboHistoryChangedEvent;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public final class AboHistoryPanel extends PanelErledigteUrls {
         super();
         workList = daten.getAboHistoryController();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     @Handler

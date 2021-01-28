@@ -1,6 +1,5 @@
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
@@ -227,7 +226,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                         d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             }
         }
-        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public static String getTextBandbreite(long b) {
@@ -376,7 +375,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     public void interruptRestart() {
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
-        Daten.getInstance().getMessageBus().publishAsync(new RestartDownloadEvent());
+        MessageBus.getMessageBus().publishAsync(new RestartDownloadEvent());
     }
 
     public boolean notStarted() {
@@ -413,7 +412,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                     arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {

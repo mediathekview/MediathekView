@@ -7,6 +7,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
+import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.TextCopyPasteHandler;
@@ -39,7 +40,7 @@ public class PanelDateinamen extends PanelVorlage {
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");

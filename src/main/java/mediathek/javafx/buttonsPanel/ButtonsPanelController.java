@@ -20,6 +20,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,6 +100,6 @@ public class ButtonsPanelController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
     }
 }

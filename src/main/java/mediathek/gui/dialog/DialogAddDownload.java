@@ -516,7 +516,7 @@ public class DialogAddDownload extends JDialog {
 
             final var daten = Daten.getInstance();
             daten.getListeDownloads().addMitNummer(datenDownload);
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
                 datenDownload.startDownload();

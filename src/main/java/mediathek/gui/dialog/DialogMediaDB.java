@@ -59,7 +59,7 @@ public class DialogMediaDB extends JDialog {
         daten = Daten.getInstance();
         initComponents();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         this.parent = pparent;
         this.addWindowListener(new WindowAdapter() {
@@ -118,7 +118,7 @@ public class DialogMediaDB extends JDialog {
 
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        daten.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
+        MessageBus.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
     }
 
     public void tabelleSpeichern() {

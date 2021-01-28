@@ -1,12 +1,12 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MessageBus;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
@@ -81,7 +81,7 @@ public class PanelEinstellungenErweitert extends JPanel {
             jButtonProgrammShutdown.setEnabled(false);
         }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     private String getWebBrowserLocation() {

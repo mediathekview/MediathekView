@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -32,7 +31,7 @@ public class PanelFilmlisteLaden extends JPanel {
     public PanelFilmlisteLaden(boolean inSettingsDialog) {
         super();
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         initComponents();
         init();
@@ -143,7 +142,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 else
                     GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
 
-                Daten.getInstance().getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
             }
         };
         jRadioButtonManuell.addActionListener(listener);

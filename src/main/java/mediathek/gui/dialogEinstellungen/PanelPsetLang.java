@@ -83,7 +83,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         //Programme
         tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -552,7 +552,7 @@ public class PanelPsetLang extends PanelVorlage {
      * Send message that changes to the Pset were performed.
      */
     private void notifyProgramSetChanged() {
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
     }
 
     private void fillTextProgramme() {

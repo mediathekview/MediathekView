@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
@@ -66,7 +65,7 @@ public class DirOpenAction {
                     Runtime.getRuntime().exec(arrProgCallArray);
 
                     MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, programm);
-                    Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
+                    MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                     gut = true;
                 }
             } catch (Exception eex) {
@@ -76,7 +75,7 @@ public class DirOpenAction {
         } finally {
             if (!gut) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "");
-                Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

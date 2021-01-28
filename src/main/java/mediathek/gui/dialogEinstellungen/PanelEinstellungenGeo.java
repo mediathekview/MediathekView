@@ -8,6 +8,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -70,11 +71,10 @@ public class PanelEinstellungenGeo extends JPanel {
      */
     private void filterBlacklistAndNotifyChanges() {
         final var daten = Daten.getInstance();
-        final var messageBus = daten.getMessageBus();
 
         daten.getListeBlacklist().filterListe();
-        messageBus.publishAsync(new GeoStateChangedEvent());
-        messageBus.publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new GeoStateChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /** This method is called from within the constructor to

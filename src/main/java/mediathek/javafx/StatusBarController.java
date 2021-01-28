@@ -14,6 +14,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.javafx.filmlist.FilmListAgeLabel;
 import mediathek.javafx.filmlist.FilmListInfoPane;
+import mediathek.tool.MessageBus;
 import org.controlsfx.control.StatusBar;
 
 public class StatusBarController {
@@ -30,7 +31,7 @@ public class StatusBarController {
     public StatusBarController(Daten daten) {
         filmListInfoPane = new FilmListInfoPane(daten);
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         createProgressPane();
 
