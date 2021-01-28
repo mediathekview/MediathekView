@@ -4,7 +4,7 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
