@@ -8,7 +8,6 @@ import javafx.geometry.Pos
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.ImageView
-import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.javafx.tool.JavaFxUtils
@@ -33,7 +32,6 @@ import javax.swing.SwingUtilities
 
 class InfoDialog(parent: Window?) : JDialog(parent) {
     private val config = ApplicationConfiguration.getConfiguration()
-    private val senderIconCache: MVSenderIconCache = Daten.getInstance().senderIconCache
     private var currentFilm: DatenFilm? = null
     private val lblSender = Label()
     private val lblThema = Label()
@@ -125,7 +123,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 lblDescription.text = desc
                 lblDescription.scrollTop = 0.0
                 lblDescription.scrollLeft = 0.0
-                senderIconCache[currentFilm!!.sender, true].ifPresent { icon: ImageIcon? ->
+                MVSenderIconCache[currentFilm!!.sender, true].ifPresent { icon: ImageIcon? ->
                     lblSender.text = ""
                     lblSender.graphic = ImageView(
                             SwingFXUtils.toFXImage(JavaFxUtils.toBufferedImage(icon), null))

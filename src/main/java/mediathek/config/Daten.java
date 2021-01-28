@@ -19,7 +19,6 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
-import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,7 +74,6 @@ public class Daten {
     private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
-    private final MVSenderIconCache senderIconCache;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private INotificationCenter notificationCenter;
     /**
@@ -88,8 +86,6 @@ public class Daten {
     private Daten() {
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
-
-        senderIconCache = new MVSenderIconCache();
 
         listeFilmeNachBlackList = new ListeFilme();
         listeBlacklist = new ListeBlacklist();
@@ -202,10 +198,6 @@ public class Daten {
 
     public void setNotificationCenter(INotificationCenter center) {
         notificationCenter = center;
-    }
-
-    public MVSenderIconCache getSenderIconCache() {
-        return senderIconCache;
     }
 
     public Cleaner getCleaner() {
