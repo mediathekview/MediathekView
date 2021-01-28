@@ -1,6 +1,6 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -29,7 +29,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class DialogMediaDB extends JDialog {
     private final JFrame parent;
     private final Daten daten;

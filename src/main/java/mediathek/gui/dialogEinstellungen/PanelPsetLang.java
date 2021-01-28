@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javafx.scene.control.Alert;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;

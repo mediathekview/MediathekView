@@ -82,11 +82,12 @@
 
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <javafx.version>15.0.1</javafx.version>
-        <picocli.version>4.3.2</picocli.version>
+        <picocli.version>4.6.1</picocli.version>
         <miglayout.version>5.3-SNAPSHOT</miglayout.version>
-        <log4j2.version>2.13.3</log4j2.version>
+        <log4j2.version>2.14.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
         <okhttp.version>4.9.0</okhttp.version>
+        <jackson.version>2.11.1</jackson.version>
 
         <mainclass>mediathek.Main</mainclass>
         <!-- AdopOpenJDK is used for Windows and Linux 64bit -->
@@ -128,7 +129,7 @@
         <dependency>
             <groupId>eu.hansolo</groupId>
             <artifactId>tilesfx</artifactId>
-            <version>11.45</version>
+            <version>11.47</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>
@@ -187,7 +188,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
 
         <dependency>
@@ -199,7 +200,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.7</version>
+            <version>2.8.0</version>
         </dependency>
 
         <dependency>
@@ -211,27 +212,27 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
+            <version>30.1-jre</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.11.1</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- for Bookmark JSON reading and writing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.1</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Gui-Elemente -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.0.1</version>
+            <version>11.0.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>
@@ -269,7 +270,7 @@
         <dependency>
             <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-font_awesome</artifactId>
-            <version>4.7.0.0</version>
+            <version>4.7.0.1</version>
         </dependency>
 
         <dependency>
@@ -289,7 +290,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.4.1</version>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>

@@ -1,6 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;

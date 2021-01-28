@@ -1,6 +1,6 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class DialogEditDownload extends JDialog {
     private final DatenDownload datenDownload;
     public boolean ok;
