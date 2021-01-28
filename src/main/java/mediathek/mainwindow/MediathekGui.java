@@ -239,7 +239,7 @@ public class MediathekGui extends JFrame {
      * So we simply wait 30 seconds until we check.
      */
     private void checkInvalidRegularExpressions() {
-        Daten.getInstance().getTimerPool().schedule(() -> {
+        TimerPool.getTimerPool().schedule(() -> {
             if (Filter.regExpErrorsOccured()) {
                 final var regexStr = Filter.regExpErrorList.stream()
                         .reduce("", (p, e) ->
@@ -617,7 +617,7 @@ public class MediathekGui extends JFrame {
      */
     private void setupUpdateCheck(boolean newState) {
         if (newState) {
-            programUpdateChecker = new ProgramUpdateCheck(daten);
+            programUpdateChecker = new ProgramUpdateCheck();
             programUpdateChecker.start();
         } else {
             endProgramUpdateChecker();
@@ -1051,7 +1051,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void shutdownTimerPool() {
-        var timerPool = daten.getTimerPool();
+        var timerPool = TimerPool.getTimerPool();
         timerPool.shutdown();
         try {
             if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))

@@ -46,6 +46,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
 import mediathek.tool.MessageBus;
+import mediathek.tool.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
@@ -651,7 +652,7 @@ public class BookmarkWindowController implements Initializable {
     btnSaveList.setDisable(!listUpdated);
     if (listUpdated) { // Schedule new save task after 30 s
       cancelBookmarkSave();
-      SaveBookmarkTask = Daten.getInstance().getTimerPool().schedule(() -> {
+      SaveBookmarkTask = TimerPool.getTimerPool().schedule(() -> {
                                         saveBookMarkList();
                                         SaveBookmarkTask = null;
                                     },
