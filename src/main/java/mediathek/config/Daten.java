@@ -13,13 +13,12 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.messages.TimerEvent;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.MessageBus;
 import mediathek.tool.ReplaceList;
+import mediathek.tool.TimerPool;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import org.apache.commons.lang3.SystemUtils;
@@ -42,9 +41,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Daten {
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
@@ -53,7 +53,6 @@ public class Daten {
      */
     public static final AtomicBoolean dontWriteFilmlistOnStartup = new AtomicBoolean(true);
     private static final Logger logger = LogManager.getLogger(Daten.class);
-    private static final ScheduledThreadPoolExecutor timerPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, new TimerPoolThreadFactory());
     public static ListePset listePset;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
@@ -110,8 +109,6 @@ public class Daten {
 
         downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
-
-        setupTimerPool();
     }
 
     /**
@@ -226,16 +223,7 @@ public class Daten {
     }
 
     public ScheduledThreadPoolExecutor getTimerPool() {
-        return timerPool;
-    }
-
-    private void setupTimerPool() {
-        //get rid of cancelled tasks immediately...
-        timerPool.setRemoveOnCancelPolicy(true);
-        timerPool.allowCoreThreadTimeOut(true);
-        timerPool.setKeepAliveTime(1, TimeUnit.MINUTES);
-
-        timerPool.scheduleWithFixedDelay(() -> MessageBus.getMessageBus().publishAsync(new TimerEvent()), 4,1, TimeUnit.SECONDS);
+        return TimerPool.getTimerPool();
     }
 
     public boolean allesLaden() {
@@ -497,34 +485,4 @@ public class Daten {
     private static class DatenHolder {
         private static final Daten INSTANCE = new Daten();
     }
-
-    /**
-     * Thread factory to give timer pool threads a recognizable name.
-     * Follows the java.util.concurrent.Executors.DefaultThreadFactory implementation for
-     * setting up the threads.
-     */
-    private static class TimerPoolThreadFactory implements ThreadFactory {
-        private final ThreadGroup group;
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        TimerPoolThreadFactory() {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            namePrefix = "timerPool-thread-";
-        }
-
-        public Thread newThread(@NotNull Runnable r) {
-            Thread t = new Thread(group, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
-            if (t.isDaemon())
-                t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
-                t.setPriority(Thread.NORM_PRIORITY);
-            return t;
-        }
-    }
-
 }
