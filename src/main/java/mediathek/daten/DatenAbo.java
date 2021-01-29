@@ -114,15 +114,22 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
     }
 
-    public boolean aboIstEingeschaltet() {
+    /**
+     * Returns whether this item is active or not.
+     * @return true if it active, false otherwise
+     */
+    public boolean isActive() {
         if (arr[DatenAbo.ABO_EINGESCHALTET].isEmpty()) {
-            aboEin();
+            activate();
             return true;
         }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
     }
 
-    private void aboEin() {
+    /**
+     * Set abo state to active.
+     */
+    private void activate() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
     }
 
@@ -130,7 +137,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr = new String[MAX_ELEM];
         Arrays.fill(arr, "");
         // neue Abos sind immer ein
-        aboEin();
+        activate();
     }
 
     /**

@@ -15,7 +15,7 @@
 - **BUGFIX:** Fehlerhafte RegExp im Suchfeld lassen das Programm nicht mehr einfrieren, ungültige RegExp im Suchfeld werden nicht mehr auf die Filmliste angewendet.
 - **BUGFIX:** Es können nun keine "fehlerhaften" Einträge im Filter-Zeitraum Spinner eingeben werden.
 - **BUGFIX:** Markierung eines Films als gesehen in der Liste hat eine höhere Priorität als Geoblocking.
-- **BUGFIX:** Aktiv/Inaktiv-Icons der Abo-Liste wurde den ToolBar-Icons entsprechend angepasst.
+- **FEATURE:** Abos verwalten Dialog nutzt nun zur Darstellung des Aktiv/Inaktiv-Zustands keine eigenen Icons mehr.
 - **FEATURE:** Filter-Zeitraum Spinner schlägt nun bei Erreichen der Start- oder Endwerte um (wraparound).
 
 <u>**13.7**</u>

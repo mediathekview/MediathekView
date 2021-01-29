@@ -360,7 +360,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // dann gibts dafür kein Abo
                 continue;
             }
-            if (!abo.aboIstEingeschaltet()) {
+            if (!abo.isActive()) {
                 continue;
             }
             if (checkWithBlackList) {
