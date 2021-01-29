@@ -113,7 +113,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      * @return num of used abos
      */
     public long activeAbos() {
-        return stream().filter(DatenAbo::aboIstEingeschaltet).count();
+        return stream().filter(DatenAbo::isActive).count();
     }
 
     /**
@@ -121,7 +121,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      * @return number of abos which are offline
      */
     public long inactiveAbos() {
-        return stream().filter(abo -> !abo.aboIstEingeschaltet()).count();
+        return stream().filter(abo -> !abo.isActive()).count();
     }
 
     public void aenderungMelden() {

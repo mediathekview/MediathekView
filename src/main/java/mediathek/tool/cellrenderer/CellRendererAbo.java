@@ -1,7 +1,5 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
@@ -15,13 +13,6 @@ import java.awt.*;
 
 public class CellRendererAbo extends CellRendererBase {
     private static final Logger logger = LogManager.getLogger(CellRendererAbo.class);
-    private final Icon checkedIcon;
-    private final Icon uncheckedIcon;
-
-    public CellRendererAbo() {
-        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
-        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.TIMES, 12);
-    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -42,18 +33,13 @@ public class CellRendererAbo extends CellRendererBase {
             final int r = table.convertRowIndexToModel(row);
             final int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
-            final boolean aboIstEingeschaltet = abo.aboIstEingeschaltet();
+            final boolean aboIstEingeschaltet = abo.isActive();
 
             switch (c) {
                 case DatenAbo.ABO_NR:
                 case DatenAbo.ABO_MINDESTDAUER:
                 case DatenAbo.ABO_MIN:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
-
-                case DatenAbo.ABO_EINGESCHALTET:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(aboIstEingeschaltet);
                     break;
 
                 case DatenAbo.ABO_SENDER:
@@ -86,20 +72,4 @@ public class CellRendererAbo extends CellRendererBase {
             setFont(getFont().deriveFont(Font.ITALIC));
         }
     }
-
-    /**
-     * Set icon either to yes or no based on condition
-     *
-     * @param condition yes if true, no if false
-     */
-    private void setCheckedOrUncheckedIcon(final boolean condition) {
-        final Icon icon;
-        if (condition)
-            icon = checkedIcon;
-        else
-            icon = uncheckedIcon;
-
-        setIcon(icon);
-    }
-
 }

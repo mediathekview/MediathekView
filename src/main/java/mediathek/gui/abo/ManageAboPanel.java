@@ -73,7 +73,7 @@ public class ManageAboPanel extends JPanel {
         for (DatenAbo abo : daten.getListeAbo()) {
             if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
                 object[DatenAbo.ABO_NR] = abo.getNr();
-                object[DatenAbo.ABO_EINGESCHALTET] = "";//Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                object[DatenAbo.ABO_EINGESCHALTET] = abo.isActive();
                 object[DatenAbo.ABO_NAME] = abo.arr[DatenAbo.ABO_NAME];
                 object[DatenAbo.ABO_SENDER] = abo.arr[DatenAbo.ABO_SENDER];
                 object[DatenAbo.ABO_THEMA] = abo.arr[DatenAbo.ABO_THEMA];

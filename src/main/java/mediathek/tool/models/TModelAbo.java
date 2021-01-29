@@ -13,6 +13,7 @@ public class TModelAbo extends NonEditableTableModel {
         return switch (columnIndex) {
             case DatenAbo.ABO_NR, DatenAbo.ABO_MINDESTDAUER -> Integer.class;
             case DatenAbo.ABO_DOWN_DATUM -> Datum.class;
+            case DatenAbo.ABO_EINGESCHALTET -> Boolean.class;
             default -> String.class;
         };
     }
