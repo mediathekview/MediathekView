@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.control.skin.TableViewSkin;
+import org.jetbrains.annotations.Nullable;
 
 public class TableViewColumnContextMenuHelper {
 
@@ -40,7 +41,7 @@ public class TableViewColumnContextMenuHelper {
         });
     }
 
-    private Node getMenuButton() {
+    private @Nullable Node getMenuButton() {
         final TableHeaderRow tableHeaderRow = getTableHeaderRow();
         if (tableHeaderRow == null) {
             return null;
@@ -48,10 +49,10 @@ public class TableViewColumnContextMenuHelper {
         // child identified as cornerRegion in TableHeaderRow.java
         return tableHeaderRow.getChildren().stream().filter(child -> child
                 .getStyleClass().contains("show-hide-columns-button")).findAny()
-                .get();
+                .orElse(null);
     }
 
-    private TableHeaderRow getTableHeaderRow() {
+    private @Nullable TableHeaderRow getTableHeaderRow() {
         final TableViewSkin<?> tableSkin = (TableViewSkin<?>) tableView
                 .getSkin();
         if (tableSkin == null) {
@@ -60,7 +61,7 @@ public class TableViewColumnContextMenuHelper {
         // find the TableHeaderRow child
         return (TableHeaderRow) tableSkin.getChildren().stream()
                 .filter(child -> child instanceof TableHeaderRow).findAny()
-                .get();
+                .orElse(null);
     }
 
     protected void showContextMenu() {
