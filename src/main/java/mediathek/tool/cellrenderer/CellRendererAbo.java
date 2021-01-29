@@ -20,7 +20,7 @@ public class CellRendererAbo extends CellRendererBase {
 
     public CellRendererAbo() {
         checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
-        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
+        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.TIMES, 12);
     }
 
     @Override
