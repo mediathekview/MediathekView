@@ -6,7 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.control.skin.TableViewSkin;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class TableViewColumnContextMenuHelper {
 
@@ -32,55 +33,54 @@ public class TableViewColumnContextMenuHelper {
     }
 
     private void registerListeners() {
-        final Node buttonNode = getMenuButton();
         // replace mouse listener on "+" node
-        assert buttonNode != null;
-        buttonNode.setOnMousePressed(event -> {
+        getMenuButton().ifPresent(node -> node.setOnMousePressed(event -> {
             showContextMenu();
             event.consume();
-        });
+        }));
     }
 
-    private @Nullable Node getMenuButton() {
-        final TableHeaderRow tableHeaderRow = getTableHeaderRow();
-        if (tableHeaderRow == null) {
-            return null;
+    private Optional<Node> getMenuButton() {
+        var tableHeaderRow = getTableHeaderRow();
+        if (tableHeaderRow.isEmpty()) {
+            return Optional.empty();
         }
+
         // child identified as cornerRegion in TableHeaderRow.java
-        return tableHeaderRow.getChildren().stream().filter(child -> child
-                .getStyleClass().contains("show-hide-columns-button")).findAny()
-                .orElse(null);
+        return tableHeaderRow.get().getChildren().stream()
+                .filter(child -> child.getStyleClass().contains("show-hide-columns-button"))
+                .findAny();
     }
 
-    private @Nullable TableHeaderRow getTableHeaderRow() {
-        final TableViewSkin<?> tableSkin = (TableViewSkin<?>) tableView
-                .getSkin();
+    private Optional<TableHeaderRow> getTableHeaderRow() {
+        final TableViewSkin<?> tableSkin = (TableViewSkin<?>) tableView.getSkin();
         if (tableSkin == null) {
-            return null;
+            return Optional.empty();
         }
         // find the TableHeaderRow child
-        return (TableHeaderRow) tableSkin.getChildren().stream()
-                .filter(child -> child instanceof TableHeaderRow).findAny()
-                .orElse(null);
+        return tableSkin.getChildren().stream()
+                .filter(child -> child instanceof TableHeaderRow)
+                .map(node -> (TableHeaderRow) node)
+                .findAny();
     }
 
     protected void showContextMenu() {
-        final Node buttonNode = getMenuButton();
         // When the menu is already shown clicking the + button hides it.
         if (tableContextMenu != null) {
             tableContextMenu.hide();
         } else {
-            // Show the menu
-            // rebuilds the menu each time it is opened
-            tableContextMenu = createContextMenu();
-            tableContextMenu.setOnHidden(event -> tableContextMenu = null);
-            tableContextMenu.show(buttonNode, Side.BOTTOM, 0, 0);
-            // Repositioning the menu to be aligned by its right side (keeping
-            // inside the table view)
-            assert buttonNode != null;
-            tableContextMenu.setX(
-                    buttonNode.localToScreen(buttonNode.getBoundsInLocal())
-                            .getMaxX() - tableContextMenu.getWidth());
+            getMenuButton().ifPresent(buttonNode -> {
+                // Show the menu
+                // rebuilds the menu each time it is opened
+                tableContextMenu = createContextMenu();
+                tableContextMenu.setOnHidden(event -> tableContextMenu = null);
+                tableContextMenu.show(buttonNode, Side.BOTTOM, 0, 0);
+                // Repositioning the menu to be aligned by its right side (keeping
+                // inside the table view)
+                tableContextMenu.setX(
+                        buttonNode.localToScreen(buttonNode.getBoundsInLocal())
+                                .getMaxX() - tableContextMenu.getWidth());
+            });
         }
     }
 
