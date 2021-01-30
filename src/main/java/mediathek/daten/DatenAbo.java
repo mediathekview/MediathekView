@@ -23,7 +23,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_THEMA_TITEL = 6;
     public static final int ABO_IRGENDWO = 7;
     public static final int ABO_MINDESTDAUER = 8;
-    public static final int ABO_MIN = 9; // TODO: not checked yet
+    public static final int ABO_MIN = 9;
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
