@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
+import mediathek.daten.AboTags;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -320,7 +321,7 @@ public class ManageAboPanel extends JPanel {
                     modelRow = tabelle.convertRowIndexToModel(row);
                     var curSelAbo = (DatenAbo)tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
 
-                    DatenAbo.AboTags.fromIndex(b).ifPresent(tag -> {
+                    AboTags.fromIndex(b).ifPresent(tag -> {
                         switch (tag) {
                             case EINGESCHALTET -> curSelAbo.setActive(editedAbo.isActive());
                             case MINDESTDAUER -> curSelAbo.setMindestDauerMinuten(editedAbo.getMindestDauerMinuten());

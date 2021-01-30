@@ -4,6 +4,7 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
+import mediathek.daten.AboTags;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
@@ -25,7 +26,7 @@ import java.util.Objects;
 
 public class DialogEditAbo extends JDialog {
     private final DatenAbo aktAbo;
-    private final EnumMap<DatenAbo.AboTags, JTextField> textFieldMap = new EnumMap<>(DatenAbo.AboTags.class);
+    private final EnumMap<AboTags, JTextField> textFieldMap = new EnumMap<>(AboTags.class);
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
     private final JComboBox<String> comboboxSender = new JComboBox<>();
     private final JComboBox<String> comboboxPfad = new JComboBox<>();
@@ -38,7 +39,7 @@ public class DialogEditAbo extends JDialog {
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
-    public boolean[] multiEditCbIndices = new boolean[DatenAbo.AboTags.values().length];
+    public boolean[] multiEditCbIndices = new boolean[AboTags.values().length];
     /**
      * Determines whether the whole edit operation was "ok" -> successful or not.
      */
@@ -152,7 +153,7 @@ public class DialogEditAbo extends JDialog {
             c.gridy = 0;
         }
 
-        for (var tag : DatenAbo.AboTags.values()) {
+        for (var tag : AboTags.values()) {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.WEST;
             addExtraFeld(tag, gridbag, c, jPanelExtra);
@@ -169,23 +170,23 @@ public class DialogEditAbo extends JDialog {
         return tf;
     }
 
-    private JLabel createLabel(@NotNull DatenAbo.AboTags tag, GridBagLayout gridbag, GridBagConstraints c) {
+    private JLabel createLabel(@NotNull AboTags tag, GridBagLayout gridbag, GridBagConstraints c) {
         JLabel label;
 
         switch(tag) {
             case SENDER, THEMA, TITEL, THEMA_TITEL, IRGENDWO -> {
-                label = new JLabel(DatenAbo.COLUMN_NAMES[tag.index()] + ":");
+                label = new JLabel(DatenAbo.COLUMN_NAMES[tag.getIndex()] + ":");
                 label.setForeground(Color.BLUE);
             }
             case MINDESTDAUER -> label = new JLabel("Dauer [min]: ");
-            default -> label = new JLabel(DatenAbo.COLUMN_NAMES[tag.index()] + ":");
+            default -> label = new JLabel(DatenAbo.COLUMN_NAMES[tag.getIndex()] + ":");
         }
         gridbag.setConstraints(label, c);
 
         return label;
     }
 
-    private void addExtraFeld(DatenAbo.AboTags index, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
+    private void addExtraFeld(AboTags index, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
         //Labels
         c.gridx = 0;
         c.weightx = 0;
@@ -304,7 +305,7 @@ public class DialogEditAbo extends JDialog {
                     var jcb = new JCheckBox();
                     jcb.setBorder(emptyBorder);
                     jcb.setHorizontalTextPosition(JCheckBox.CENTER);
-                    jcb.addActionListener(l -> multiEditCbIndices[index.index()] = jcb.isSelected());
+                    jcb.addActionListener(l -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
                 }
@@ -329,12 +330,12 @@ public class DialogEditAbo extends JDialog {
     private void get(DatenAbo abo) {
         //no ABO_NR
         abo.setActive(checkBoxEingeschaltet.isSelected());
-        abo.setName(textFieldMap.get(DatenAbo.AboTags.NAME).getText().trim());
+        abo.setName(textFieldMap.get(AboTags.NAME).getText().trim());
         abo.setSender(Objects.requireNonNull(comboboxSender.getSelectedItem()).toString());
-        abo.setThema(textFieldMap.get(DatenAbo.AboTags.THEMA).getText().trim());
-        abo.setTitle(textFieldMap.get(DatenAbo.AboTags.TITEL).getText().trim());
-        abo.setThemaTitel(textFieldMap.get(DatenAbo.AboTags.THEMA_TITEL).getText().trim());
-        abo.setIrgendwo(textFieldMap.get(DatenAbo.AboTags.IRGENDWO).getText().trim());
+        abo.setThema(textFieldMap.get(AboTags.THEMA).getText().trim());
+        abo.setTitle(textFieldMap.get(AboTags.TITEL).getText().trim());
+        abo.setThemaTitel(textFieldMap.get(AboTags.THEMA_TITEL).getText().trim());
+        abo.setIrgendwo(textFieldMap.get(AboTags.IRGENDWO).getText().trim());
         abo.setMindestDauerMinuten(sliderDauer.getValue());
         abo.setMin(rbMin.isSelected());
         abo.setZielpfad(Objects.requireNonNull(comboboxPfad.getSelectedItem()).toString());
