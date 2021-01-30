@@ -89,9 +89,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
         datenAbo.setNr(nr);
-        if (datenAbo.arr[DatenAbo.ABO_NAME].isEmpty()) {
+        if (datenAbo.getName().isEmpty()) {
             // Downloads ohne "Aboname" sind manuelle Downloads
-            datenAbo.arr[DatenAbo.ABO_NAME] = "Abo_" + nr;
+            datenAbo.setName("Abo_" + nr);
         }
         datenAbo.setMindestDauerMinuten();
         if (datenAbo.arr[DatenAbo.ABO_MIN].isEmpty()) {
@@ -242,9 +242,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
         if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
             // dann ist der Film zu kurz
-            film.setAboName(foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]"));
+            film.setAboName(foundAbo.getName() + (foundAbo.min ? " [zu kurz]" : " [zu lang]"));
         } else {
-            film.setAboName(foundAbo.arr[DatenAbo.ABO_NAME]);
+            film.setAboName(foundAbo.getName());
         }
         film.setAbo(foundAbo);
     }

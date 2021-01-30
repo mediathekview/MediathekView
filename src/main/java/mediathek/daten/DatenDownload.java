@@ -677,7 +677,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
             if (abo != null) {
                 //Abos: den Namen des Abos eintragen
-                arr[DatenDownload.DOWNLOAD_ABO] = abo.arr[DatenAbo.ABO_NAME];
+                arr[DatenDownload.DOWNLOAD_ABO] = abo.getName();
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und Abopfad an den Pfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
