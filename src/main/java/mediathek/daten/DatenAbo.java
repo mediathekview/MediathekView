@@ -67,6 +67,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
+    public String getMindestDauer() {
+        return arr[ABO_MINDESTDAUER];
+    }
+
     public String getIrgendwo() {
         return arr[ABO_IRGENDWO];
     }
@@ -147,7 +151,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     public void setMindestDauerMinuten() {
-        if (this.arr[DatenAbo.ABO_MINDESTDAUER].isEmpty()) {
+        if (getMindestDauer().isEmpty()) {
             // für den ProgUpdate
             mindestdauerMinuten = 0;
             arr[ABO_MINDESTDAUER] = "0";
@@ -225,7 +229,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_TITEL], getTitle());
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], getIrgendwo());
-            writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], arr[ABO_MINDESTDAUER]);
+            writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
             writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
             writeElement.accept(XML_NAMES[ABO_ZIELPFAD], arr[ABO_ZIELPFAD]);
             writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], arr[ABO_DOWN_DATUM]);
