@@ -294,7 +294,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
             if (event == XMLStreamConstants.START_ELEMENT) {
                 for (int i = 0; i < arr.length; ++i) {
                     if (parser.getLocalName().equals(XML_NAMES[i])) {
-                        arr[i] = parser.getElementText();
+                        if (i == DatenAbo.ABO_MIN) {
+                            setMin(Boolean.parseBoolean(parser.getElementText()));
+                        }
+                        else
+                            arr[i] = parser.getElementText();
                         break;
                     }
                 }
