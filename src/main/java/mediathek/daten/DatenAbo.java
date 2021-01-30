@@ -27,6 +27,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
+    public static final int ABO_REF_OBJECT = 13;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
@@ -34,7 +35,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
-    public static final int MAX_ELEM = 13;
+    public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -62,6 +63,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+    }
+
+    public String getName() {
+        return arr[ABO_NAME];
+    }
+
+    public void setName(String name) {
+        arr[ABO_NAME] = name;
     }
 
     public static boolean anzeigen(int i) {
@@ -165,7 +174,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
             //never write ABO_NR
             writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
-            writeElement.accept(XML_NAMES[ABO_NAME], arr[ABO_NAME]);
+            writeElement.accept(XML_NAMES[ABO_NAME], getName());
             writeElement.accept(XML_NAMES[ABO_SENDER], arr[ABO_SENDER]);
             writeElement.accept(XML_NAMES[ABO_THEMA], arr[ABO_THEMA]);
             writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
@@ -204,7 +213,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     @Override
-    public int compareTo(@NotNull DatenAbo arg0) {
-        return sorter.compare(arr[ABO_NAME], arg0.arr[ABO_NAME]);
+    public int compareTo(@NotNull DatenAbo other) {
+        return sorter.compare(getName(), other.getName());
     }
 }
