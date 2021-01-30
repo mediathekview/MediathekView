@@ -217,8 +217,8 @@ public class DialogEditAbo extends JDialog {
                 panel.add(checkBoxEingeschaltet);
                 break;
             case DatenAbo.ABO_MIN:
-                rbMin.setSelected(aktAbo.getMinBool());
-                rbMax.setSelected(!aktAbo.getMinBool());
+                rbMin.setSelected(aktAbo.getMin());
+                rbMax.setSelected(!aktAbo.getMin());
                 p = new JPanel(new BorderLayout());
                 p.add(rbMin, BorderLayout.NORTH);
                 p.add(rbMax, BorderLayout.CENTER);
