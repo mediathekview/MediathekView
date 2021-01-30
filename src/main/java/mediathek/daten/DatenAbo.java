@@ -39,7 +39,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public int mindestdauerMinuten;
-    private boolean min = true;
+    private boolean min;
     public String[] arr;
     public String[] titel, thema, irgendwo;
     private int nr;
@@ -68,12 +68,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
-    public boolean getMinBool() {
+    public boolean getMin() {
         return min;
-    }
-
-    public String getMin() {
-        return arr[ABO_MIN]; //FIXME: ABO_MIN IST .min!!
     }
 
     public void setMin(boolean min) {
@@ -236,7 +232,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         // neue Abos sind immer ein
         activate();
 
-        // for backward compatibility make it true y default
+        // for backward compatibility make it true by default
         setMin(true);
     }
 
@@ -271,7 +267,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], getIrgendwo());
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
-            writeElement.accept(XML_NAMES[ABO_MIN], Boolean.toString(getMinBool()));
+            writeElement.accept(XML_NAMES[ABO_MIN], Boolean.toString(getMin()));
             writeElement.accept(XML_NAMES[ABO_ZIELPFAD], getZielpfad());
             writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], getDownDatum());
             writeElement.accept(XML_NAMES[ABO_PSET], getPsetName());
