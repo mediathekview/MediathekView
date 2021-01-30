@@ -79,7 +79,7 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_THEMA] = abo.getThema();
                 object[DatenAbo.ABO_TITEL] = abo.getTitle();
                 object[DatenAbo.ABO_THEMA_TITEL] = abo.getThemaTitel();
-                object[DatenAbo.ABO_IRGENDWO] = abo.arr[DatenAbo.ABO_IRGENDWO];
+                object[DatenAbo.ABO_IRGENDWO] = abo.getIrgendwo();
                 object[DatenAbo.ABO_MINDESTDAUER] = abo.mindestdauerMinuten;
                 object[DatenAbo.ABO_MIN] = abo.min ? "min" : "max";
                 object[DatenAbo.ABO_ZIELPFAD] = abo.arr[DatenAbo.ABO_ZIELPFAD];

@@ -41,12 +41,12 @@ public class Filter {
 
         String[] titelExistiert = StringUtils.split(aboExistiert.getTitle().toLowerCase(), ",");
         String[] themaTitelExistiert = StringUtils.split(aboExistiert.getThemaTitel().toLowerCase(), ",");
-        String[] irgendwoExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase(), ",");
+        String[] irgendwoExistiert = StringUtils.split(aboExistiert.getIrgendwo().toLowerCase(), ",");
 
         // Abos sollen sich nicht nur in der Länge unterscheiden
         String themaPruefen = aboPruefen.getThema();
         String titelPruefen = aboPruefen.getTitle();
-        String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
+        String irgendwoPruefen = aboPruefen.getIrgendwo();
 
         if (conditionExists(senderExistiert, aboPruefen.getSender())) {
             if (conditionExists(themaExistiert, themaPruefen)) {
