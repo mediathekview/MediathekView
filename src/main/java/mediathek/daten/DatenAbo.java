@@ -51,9 +51,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
         initialize();
-        arr[ABO_NAME] = name;
-        arr[ABO_SENDER] = sender;
-        arr[ABO_THEMA] = thema;
+        setName(name);
+        setSender(sender);
+        setThema(thema);
         arr[ABO_TITEL] = titel;
         arr[ABO_THEMA_TITEL] = themaTitel;
         arr[ABO_IRGENDWO] = irgendwo;
@@ -62,6 +62,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+    }
+
+    public String getThema() {
+        return arr[ABO_THEMA];
+    }
+
+    public void setThema(String thema) {
+        arr[ABO_THEMA] = thema;
     }
 
     public String getSender() {
@@ -103,8 +111,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public boolean isEmpty() {
         //liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde
         //ist dann offensichtlich falsch!!
-        return arr[ABO_SENDER].isEmpty()
-                && arr[ABO_THEMA].isEmpty()
+        return getSender().isEmpty()
+                && getThema().isEmpty()
                 && arr[ABO_TITEL].isEmpty()
                 && arr[ABO_THEMA_TITEL].isEmpty()
                 && arr[ABO_IRGENDWO].isEmpty();
@@ -190,7 +198,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
             writeElement.accept(XML_NAMES[ABO_NAME], getName());
             writeElement.accept(XML_NAMES[ABO_SENDER], getSender());
-            writeElement.accept(XML_NAMES[ABO_THEMA], arr[ABO_THEMA]);
+            writeElement.accept(XML_NAMES[ABO_THEMA], getThema());
             writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], arr[ABO_IRGENDWO]);

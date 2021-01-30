@@ -230,7 +230,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
      */
     private void assignAboToFilm(@NotNull DatenFilm film) {
         stream().filter(abo
-                -> Filter.filterAufFilmPruefen(abo.getSender(), abo.arr[DatenAbo.ABO_THEMA],
+                -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
                 abo.titel,
                 abo.thema,
                 abo.irgendwo,
