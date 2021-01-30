@@ -54,7 +54,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         setSender(sender);
         setThema(thema);
         setTitle(titel);
-        arr[ABO_THEMA_TITEL] = themaTitel;
+        setThemaTitel(themaTitel);
         arr[ABO_IRGENDWO] = irgendwo;
         setMindestDauerMinuten(mmindestdauerMinuten);
         arr[ABO_MIN] = Boolean.toString(min);
@@ -65,6 +65,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public String getThemaTitel() {
+        return arr[ABO_THEMA_TITEL];
+    }
+
+    public void setThemaTitel(String themaTitel) {
+        arr[ABO_THEMA_TITEL] = themaTitel;
     }
 
     public String getTitle() {
@@ -121,7 +129,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return getSender().isEmpty()
                 && getThema().isEmpty()
                 && getTitle().isEmpty()
-                && arr[ABO_THEMA_TITEL].isEmpty()
+                && getThemaTitel().isEmpty()
                 && arr[ABO_IRGENDWO].isEmpty();
     }
 
@@ -207,7 +215,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_SENDER], getSender());
             writeElement.accept(XML_NAMES[ABO_THEMA], getThema());
             writeElement.accept(XML_NAMES[ABO_TITEL], getTitle());
-            writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], arr[ABO_IRGENDWO]);
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], arr[ABO_MINDESTDAUER]);
             writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
