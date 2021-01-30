@@ -300,7 +300,7 @@ public class DialogEditAbo extends JDialog {
                     abo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_SENDER):
-                    abo.arr[DatenAbo.ABO_SENDER] = comboboxSender.getSelectedItem().toString();
+                    abo.setSender(comboboxSender.getSelectedItem().toString());
                     break;
                 case (DatenAbo.ABO_EINGESCHALTET):
                     abo.setActive(checkBoxEingeschaltet.isSelected());
