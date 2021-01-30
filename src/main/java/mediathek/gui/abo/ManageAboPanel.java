@@ -251,7 +251,8 @@ public class ManageAboPanel extends JPanel {
             String text;
             if (rows.length == 1) {
                 final int delRow = tabelle.convertRowIndexToModel(rows[0]);
-                text = '"' + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
+                var abo = (DatenAbo)tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_REF);
+                text = '"' + abo.getName() + "\" löschen?";
             } else {
                 text = "Möchten Sie wirklich " + rows.length + " Abos löschen?";
             }
