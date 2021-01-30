@@ -208,11 +208,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             abo.titel = Filter.isPattern(abo.getTitle())
                     ? new String[]{abo.getTitle()} : abo.getTitle().toLowerCase().split(",");
         }
-        if (abo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
+        if (abo.getThemaTitel().isEmpty()) {
             abo.thema = LEER;
         } else {
-            abo.thema = Filter.isPattern(abo.arr[DatenAbo.ABO_THEMA_TITEL])
-                    ? new String[]{abo.arr[DatenAbo.ABO_THEMA_TITEL]} : abo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
+            abo.thema = Filter.isPattern(abo.getThemaTitel())
+                    ? new String[]{abo.getThemaTitel()} : abo.getThemaTitel().toLowerCase().split(",");
         }
         if (abo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
             abo.irgendwo = LEER;
