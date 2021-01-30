@@ -67,7 +67,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void init() {
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonProgPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);

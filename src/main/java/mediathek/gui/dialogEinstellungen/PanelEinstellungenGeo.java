@@ -1,7 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -61,7 +62,7 @@ public class PanelEinstellungenGeo extends JPanel {
             config.setProperty(ApplicationConfiguration.GEO_REPORT, jCheckBoxMarkieren.isSelected());
             filterBlacklistAndNotifyChanges();
         });
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 

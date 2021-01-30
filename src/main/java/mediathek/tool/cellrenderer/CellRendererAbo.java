@@ -1,10 +1,7 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.config.Daten;
-import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.table.MVTable;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,49 +24,30 @@ public class CellRendererAbo extends CellRendererBase {
         setFont(null);
         setIcon(null);
         setHorizontalAlignment(SwingConstants.LEADING);
-        super.getTableCellRendererComponent(
-                table, value, isSelected, hasFocus, row, column);
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         try {
-            final int r = table.convertRowIndexToModel(row);
-            final int c = table.convertColumnIndexToModel(column);
-            DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
-            final boolean aboIstEingeschaltet = abo.isActive();
+            var abo = (DatenAbo)table.getModel().getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF);
+            DatenAbo.AboTags.fromIndex(table.convertColumnIndexToModel(column)).ifPresent(col -> {
+                switch (col) {
+                    case NR:
+                    case MINDESTDAUER:
+                    case MIN:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        break;
 
-            switch (c) {
-                case DatenAbo.ABO_NR:
-                case DatenAbo.ABO_MINDESTDAUER:
-                case DatenAbo.ABO_MIN:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
+                    case SENDER:
+                        if (((MVTable) table).showSenderIcons()) {
+                            setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
+                        }
+                        break;
+                }
+            });
 
-                case DatenAbo.ABO_SENDER:
-                    if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
-                    }
-                    break;
-            }
-
-            if (!aboIstEingeschaltet)
-                setBackgroundColor(this, isSelected);
+            if (!abo.isActive())
+                setFont(getFont().deriveFont(Font.ITALIC));
         } catch (Exception ex) {
             logger.error("Fehler 630365892", ex);
         }
         return this;
-    }
-
-    private void setBackgroundColor(Component c, final boolean isSelected) {
-        setFontItalic();
-        if (isSelected) {
-            c.setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
-        } else {
-            c.setBackground(MVColor.ABO_AUSGESCHALTET.color);
-        }
-    }
-
-    private void setFontItalic() {
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            // On OS X do not change fonts as it violates HIG...
-            setFont(getFont().deriveFont(Font.ITALIC));
-        }
     }
 }

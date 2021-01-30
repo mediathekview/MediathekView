@@ -34,7 +34,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
     private static final String[] LEER = {""};
@@ -80,10 +79,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         datenAbo.setZielpfad(namePfad);
         datenAbo.setPsetName("");
 
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, datenAbo, false /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), datenAbo, false /*onlyOne*/);
         dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
-        if (dialogEditAbo.ok) {
+        if (dialogEditAbo.successful()) {
             if (!aboExistiertBereits(datenAbo)) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.getMindestDauer()); // als Vorgabe merken
                 addAbo(datenAbo);
@@ -134,27 +133,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // Filmliste anpassen
         setAboFuerFilm(daten.getListeFilme(), true);
         MessageBus.getMessageBus().publishAsync(new AboListChangedEvent());
-    }
-
-    @Deprecated
-    /*
-     * Dangerous code, returns abo by list index not by number.
-     * Needs to be checked and recoded!!
-     */
-    public DatenAbo getAboNr(int i) {
-        return this.get(i);
-    }
-
-    /**
-     * Find an abo by its assigned number within the list.
-     * @param nr the formerly assigned abo number.
-     * @return the found abo.
-     * @throws NoSuchElementException when no abo was found.
-     */
-    public DatenAbo findByNr(int nr) throws NoSuchElementException {
-        return this.stream()
-                .filter(abo -> abo.getNr() == nr)
-                .findAny().orElseThrow();
     }
 
     public void sort() {

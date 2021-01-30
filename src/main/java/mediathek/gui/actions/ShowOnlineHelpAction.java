@@ -15,7 +15,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
-        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE, 16));
+        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
     }
 
     @Override

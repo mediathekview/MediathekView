@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -134,7 +136,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonPath.addActionListener(new BeobPath(false/*ext*/));
         jButtonAdd.addActionListener((ActionEvent e) -> addPath());
         jButtonRemove.addActionListener((ActionEvent e) -> removePath());
-        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonExport.addActionListener(l -> filmeExportieren());

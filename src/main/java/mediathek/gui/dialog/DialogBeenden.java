@@ -1,7 +1,8 @@
 package mediathek.gui.dialog;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.javafx.AppTerminationIndefiniteProgress;
 import mediathek.mainwindow.MediathekGui;
@@ -67,7 +68,7 @@ public class DialogBeenden extends JDialog {
             }
         });
 
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);

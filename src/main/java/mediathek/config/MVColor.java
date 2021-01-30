@@ -48,10 +48,6 @@ public class MVColor {
     public static final MVC DOWNLOAD_FEHLER = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_FEHLER, new Color(241, 188, 221), "Download, fehlerhaft");
     public static final MVC DOWNLOAD_FEHLER_SEL = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_FEHLER_SEL, new Color(206, 92, 128), "Download, fehlerhaft, selektiert");
 
-    // Tabelle Abos
-    public static final MVC ABO_AUSGESCHALTET = new MVC(MVConfig.Configs.FARBE__ABO_AUSGESCHALTET, new Color(225, 225, 225), "Abo, ausgeschaltet");
-    public static final MVC ABO_AUSGESCHALTET_SEL = new MVC(MVConfig.Configs.FARBE__ABO_AUSGESCHALTET_SEL, new Color(190, 190, 190), "Abo, ausgeschaltet, selektiert");
-
     // Filter wenn RegEx
     public static final MVC FILTER_REGEX = new MVC(MVConfig.Configs.FARBE__FILTER_REGEX, new Color(153, 214, 255), "Filter ist RegEx");
     public static final MVC FILTER_REGEX_FEHLER = new MVC(MVConfig.Configs.FARBE__FILTER_REGEX_FEHLER, Color.RED, "Filter ist Regex, fehlerhaft");
@@ -87,8 +83,6 @@ public class MVColor {
         liste.add(DOWNLOAD_FERTIG_SEL);
         liste.add(DOWNLOAD_FEHLER);
         liste.add(DOWNLOAD_FEHLER_SEL);
-        liste.add(ABO_AUSGESCHALTET);
-        liste.add(ABO_AUSGESCHALTET_SEL);
         liste.add(FILTER_REGEX);
         liste.add(FILTER_REGEX_FEHLER);
         liste.add(BUTTON_SET_ABSPIELEN);
