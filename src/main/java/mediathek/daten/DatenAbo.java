@@ -57,14 +57,24 @@ public class DatenAbo implements Comparable<DatenAbo> {
         setThemaTitel(themaTitel);
         setIrgendwo(irgendwo);
         setMindestDauerMinuten(mmindestdauerMinuten);
-        arr[ABO_MIN] = Boolean.toString(min);
+
         this.min = min;
+        setMin(Boolean.toString(min));
+
         setZielpfad(ziel);
         setPsetName(pset);
     }
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public String getMin() {
+        return arr[ABO_MIN]; //FIXME: ABO_MIN IST .min!!
+    }
+
+    public void setMin(String min) {
+        arr[ABO_MIN] = min;
     }
 
     public String getPsetName() {
@@ -254,7 +264,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], getIrgendwo());
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
-            writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
+            writeElement.accept(XML_NAMES[ABO_MIN], getMin());
             writeElement.accept(XML_NAMES[ABO_ZIELPFAD], getZielpfad());
             writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], getDownDatum());
             writeElement.accept(XML_NAMES[ABO_PSET], getPsetName());

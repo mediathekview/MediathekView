@@ -93,11 +93,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo.setName("Abo_" + nr);
         }
         datenAbo.setMindestDauerMinuten();
-        if (datenAbo.arr[DatenAbo.ABO_MIN].isEmpty()) {
+        if (datenAbo.getMin().isEmpty()) {
             //zum Erhalt der alten Funktionalität
-            datenAbo.arr[DatenAbo.ABO_MIN] = Boolean.TRUE.toString();
+            datenAbo.setMin(Boolean.TRUE.toString());
         }
-        datenAbo.min = Boolean.parseBoolean(datenAbo.arr[DatenAbo.ABO_MIN]);
+        datenAbo.min = Boolean.parseBoolean(datenAbo.getMin());
 
         add(datenAbo);
     }

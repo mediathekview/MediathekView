@@ -306,8 +306,9 @@ public class DialogEditAbo extends JDialog {
                     abo.setActive(checkBoxEingeschaltet.isSelected());
                     break;
                 case (DatenAbo.ABO_MIN):
-                    abo.arr[DatenAbo.ABO_MIN] = Boolean.toString(rbMin.isSelected());
-                    abo.min = rbMin.isSelected();
+                    final boolean minSel = rbMin.isSelected();
+                    abo.setMin(Boolean.toString(minSel));
+                    abo.min = minSel;
                     break;
                 case (DatenAbo.ABO_MINDESTDAUER):
                     abo.setMindestDauerMinuten(sliderDauer.getValue());
