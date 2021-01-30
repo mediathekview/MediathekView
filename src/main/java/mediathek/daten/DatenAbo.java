@@ -37,7 +37,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private final String[] arr = new String[MAX_ELEM];
-    public String[] titel, thema, irgendwo;
+    private String[] irgendwoFilterPattern;
+    private String[] themaFilterPattern;
+    private String[] titelFilterPattern;
     private int mindestdauerMinuten;
     private boolean min;
     /**
@@ -68,6 +70,30 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public String[] getTitelFilterPattern() {
+        return titelFilterPattern;
+    }
+
+    public void setTitelFilterPattern(String[] titelFilterPattern) {
+        this.titelFilterPattern = titelFilterPattern;
+    }
+
+    public String[] getThemaFilterPattern() {
+        return themaFilterPattern;
+    }
+
+    public void setThemaFilterPattern(String[] themaFilterPattern) {
+        this.themaFilterPattern = themaFilterPattern;
+    }
+
+    public String[] getIrgendwoFilterPattern() {
+        return irgendwoFilterPattern;
+    }
+
+    public void setIrgendwoFilterPattern(String[] irgendwoFilterPattern) {
+        this.irgendwoFilterPattern = irgendwoFilterPattern;
     }
 
     public int getMindestDauerMinuten() {
@@ -187,6 +213,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     /**
      * Liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde.
      * ist dann offensichtlich falsch!!
+     *
      * @return true wenn Abo leer.
      */
     public boolean isEmpty() {

@@ -109,12 +109,13 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void aboLoeschen(@NotNull DatenAbo abo) {
-            remove(abo);
-            aenderungMelden();
+        remove(abo);
+        aenderungMelden();
     }
 
     /**
      * Get the number of abos which are active and used.
+     *
      * @return num of used abos
      */
     public long activeAbos() {
@@ -123,6 +124,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     /**
      * Get the number of abos which are created but offline.
+     *
      * @return number of abos which are offline
      */
     public long inactiveAbos() {
@@ -187,22 +189,22 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     private void createAbo(DatenAbo abo) {
         if (abo.getTitle().isEmpty()) {
-            abo.titel = LEER;
+            abo.setTitelFilterPattern(LEER);
         } else {
-            abo.titel = Filter.isPattern(abo.getTitle())
-                    ? new String[]{abo.getTitle()} : abo.getTitle().toLowerCase().split(",");
+            abo.setTitelFilterPattern(Filter.isPattern(abo.getTitle())
+                    ? new String[]{abo.getTitle()} : abo.getTitle().toLowerCase().split(","));
         }
         if (abo.getThemaTitel().isEmpty()) {
-            abo.thema = LEER;
+            abo.setThemaFilterPattern(LEER);
         } else {
-            abo.thema = Filter.isPattern(abo.getThemaTitel())
-                    ? new String[]{abo.getThemaTitel()} : abo.getThemaTitel().toLowerCase().split(",");
+            abo.setThemaFilterPattern(Filter.isPattern(abo.getThemaTitel())
+                    ? new String[]{abo.getThemaTitel()} : abo.getThemaTitel().toLowerCase().split(","));
         }
         if (abo.getIrgendwo().isEmpty()) {
-            abo.irgendwo = LEER;
+            abo.setIrgendwoFilterPattern(LEER);
         } else {
-            abo.irgendwo = Filter.isPattern(abo.getIrgendwo())
-                    ? new String[]{abo.getIrgendwo()} : abo.getIrgendwo().toLowerCase().split(",");
+            abo.setIrgendwoFilterPattern(Filter.isPattern(abo.getIrgendwo())
+                    ? new String[]{abo.getIrgendwo()} : abo.getIrgendwo().toLowerCase().split(","));
         }
     }
 
@@ -215,9 +217,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     private void assignAboToFilm(@NotNull DatenFilm film) {
         stream().filter(abo
                 -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
-                abo.titel,
-                abo.thema,
-                abo.irgendwo,
+                abo.getTitelFilterPattern(),
+                abo.getThemaFilterPattern(),
+                abo.getIrgendwoFilterPattern(),
                 film))
                 .findFirst().
                 ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
@@ -254,9 +256,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
         // und jetzt wieder löschen
         forEach(datenAbo -> {
-            datenAbo.titel = LEER;
-            datenAbo.thema = LEER;
-            datenAbo.irgendwo = LEER;
+            datenAbo.setTitelFilterPattern(LEER);
+            datenAbo.setThemaFilterPattern(LEER);
+            datenAbo.setIrgendwoFilterPattern(LEER);
         });
 
         stopwatch.stop();
