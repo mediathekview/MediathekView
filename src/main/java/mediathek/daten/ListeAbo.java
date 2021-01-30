@@ -73,7 +73,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER]); // als Vorgabe merken
+                MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.getMindestDauer()); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
                 sort();
