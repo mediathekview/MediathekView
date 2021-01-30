@@ -39,7 +39,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public int mindestdauerMinuten;
-    public boolean min = true;
+    private boolean min = true;
     public String[] arr;
     public String[] titel, thema, irgendwo;
     private int nr;
@@ -58,7 +58,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
         setIrgendwo(irgendwo);
         setMindestDauerMinuten(mmindestdauerMinuten);
 
-        this.min = min;
         setMin(min);
 
         setZielpfad(ziel);
@@ -69,12 +68,17 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
+    public boolean getMinBool() {
+        return min;
+    }
+
     public String getMin() {
         return arr[ABO_MIN]; //FIXME: ABO_MIN IST .min!!
     }
 
     public void setMin(boolean min) {
         arr[ABO_MIN] = Boolean.toString(min);
+        this.min = min;
     }
 
     public String getPsetName() {
@@ -231,6 +235,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
         Arrays.fill(arr, "");
         // neue Abos sind immer ein
         activate();
+
+        // for backward compatibility make it true y default
+        setMin(true);
     }
 
     /**
@@ -264,7 +271,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], getIrgendwo());
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
-            writeElement.accept(XML_NAMES[ABO_MIN], getMin());
+            writeElement.accept(XML_NAMES[ABO_MIN], Boolean.toString(getMinBool()));
             writeElement.accept(XML_NAMES[ABO_ZIELPFAD], getZielpfad());
             writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], getDownDatum());
             writeElement.accept(XML_NAMES[ABO_PSET], getPsetName());

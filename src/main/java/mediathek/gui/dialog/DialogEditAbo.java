@@ -217,8 +217,8 @@ public class DialogEditAbo extends JDialog {
                 panel.add(checkBoxEingeschaltet);
                 break;
             case DatenAbo.ABO_MIN:
-                rbMin.setSelected(aktAbo.min);
-                rbMax.setSelected(!aktAbo.min);
+                rbMin.setSelected(aktAbo.getMinBool());
+                rbMax.setSelected(!aktAbo.getMinBool());
                 p = new JPanel(new BorderLayout());
                 p.add(rbMin, BorderLayout.NORTH);
                 p.add(rbMax, BorderLayout.CENTER);
@@ -299,11 +299,7 @@ public class DialogEditAbo extends JDialog {
         abo.setThemaTitel(textfeldListe[DatenAbo.ABO_THEMA_TITEL].getText().trim());
         abo.setIrgendwo(textfeldListe[DatenAbo.ABO_IRGENDWO].getText().trim());
         abo.setMindestDauerMinuten(sliderDauer.getValue());
-        //ABO_MIN
-        final boolean minSel = rbMin.isSelected();
-        abo.setMin(minSel);
-        abo.min = minSel;
-
+        abo.setMin(rbMin.isSelected());
         abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
         //no ABO_DOWN_DATUM
         abo.setPsetName(comboboxPSet.getSelectedItem().toString());
