@@ -76,7 +76,7 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_EINGESCHALTET] = abo.isActive();
                 object[DatenAbo.ABO_NAME] = abo.getName();
                 object[DatenAbo.ABO_SENDER] = abo.getSender();
-                object[DatenAbo.ABO_THEMA] = abo.arr[DatenAbo.ABO_THEMA];
+                object[DatenAbo.ABO_THEMA] = abo.getThema();
                 object[DatenAbo.ABO_TITEL] = abo.arr[DatenAbo.ABO_TITEL];
                 object[DatenAbo.ABO_THEMA_TITEL] = abo.arr[DatenAbo.ABO_THEMA_TITEL];
                 object[DatenAbo.ABO_IRGENDWO] = abo.arr[DatenAbo.ABO_IRGENDWO];
