@@ -71,11 +71,11 @@ public class ManageAboPanel extends JPanel {
         model.setRowCount(0);
         Object[] object = new Object[DatenAbo.MAX_ELEM+1];
         for (DatenAbo abo : daten.getListeAbo()) {
-            if (sender.isEmpty() || sender.equals(abo.arr[DatenAbo.ABO_SENDER])) {
+            if (sender.isEmpty() || sender.equals(abo.getSender())) {
                 object[DatenAbo.ABO_NR] = abo.getNr();
                 object[DatenAbo.ABO_EINGESCHALTET] = abo.isActive();
                 object[DatenAbo.ABO_NAME] = abo.getName();
-                object[DatenAbo.ABO_SENDER] = abo.arr[DatenAbo.ABO_SENDER];
+                object[DatenAbo.ABO_SENDER] = abo.getSender();
                 object[DatenAbo.ABO_THEMA] = abo.arr[DatenAbo.ABO_THEMA];
                 object[DatenAbo.ABO_TITEL] = abo.arr[DatenAbo.ABO_TITEL];
                 object[DatenAbo.ABO_THEMA_TITEL] = abo.arr[DatenAbo.ABO_THEMA_TITEL];

@@ -64,6 +64,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[ABO_PSET] = pset;
     }
 
+    public String getSender() {
+        return arr[ABO_SENDER];
+    }
+
+    public void setSender(String sender) {
+        arr[ABO_SENDER] = sender;
+    }
+
     public String getName() {
         return arr[ABO_NAME];
     }
@@ -181,7 +189,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             //never write ABO_NR
             writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
             writeElement.accept(XML_NAMES[ABO_NAME], getName());
-            writeElement.accept(XML_NAMES[ABO_SENDER], arr[ABO_SENDER]);
+            writeElement.accept(XML_NAMES[ABO_SENDER], getSender());
             writeElement.accept(XML_NAMES[ABO_THEMA], arr[ABO_THEMA]);
             writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);

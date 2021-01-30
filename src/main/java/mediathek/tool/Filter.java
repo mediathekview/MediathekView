@@ -36,7 +36,7 @@ public class Filter {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
         // Filme findet, dann wäre das neue Abo hinfällig
 
-        String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER];
+        String senderExistiert = aboExistiert.getSender();
         String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA];
 
         String[] titelExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_TITEL].toLowerCase(), ",");
@@ -48,7 +48,7 @@ public class Filter {
         String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL];
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
 
-        if (conditionExists(senderExistiert, aboPruefen.arr[DatenAbo.ABO_SENDER])) {
+        if (conditionExists(senderExistiert, aboPruefen.getSender())) {
             if (conditionExists(themaExistiert, themaPruefen)) {
                 if (titleConditionExists(titelExistiert, titelPruefen)) {
                     if (themaTitelConditionExists(themaTitelExistiert, themaPruefen, titelPruefen)) {
