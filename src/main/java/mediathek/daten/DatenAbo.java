@@ -41,12 +41,23 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public String[] titel, thema, irgendwo;
     private int mindestdauerMinuten;
     private boolean min;
+    /**
+     * Used internally for display in table.
+     * Should NOT be used in code logic!!
+     */
     private int nr;
+    /**
+    Stores the active state of the abo.
+    On by default.
+     */
+    private boolean active = true;
+    /**
+     * The display name.
+     */
+    private String name = "";
 
     public DatenAbo() {
         Arrays.fill(arr, "");
-        // neue Abos sind immer ein
-        activate();
 
         // for backward compatibility make it true by default
         setMin(true);
@@ -146,11 +157,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     public String getName() {
-        return arr[ABO_NAME];
+        return name;
     }
 
     public void setName(String name) {
-        arr[ABO_NAME] = name;
+        this.name = name;
     }
 
     public int getNr() {
@@ -201,21 +212,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
      * @return true if it active, false otherwise
      */
     public boolean isActive() {
-        return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
+        return active;
     }
 
     public void setActive(boolean active) {
-        if (active)
-            activate();
-        else
-            arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(false);
-    }
-
-    /**
-     * Set abo state to active.
-     */
-    private void activate() {
-        arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
+        this.active = active;
     }
 
     /**
@@ -241,7 +242,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writer.writeCharacters("\n");
 
             //never write ABO_NR
-            writeElement.accept(AboTags.EINGESCHALTET.xml_name, arr[ABO_EINGESCHALTET]);
+            writeElement.accept(AboTags.EINGESCHALTET.xml_name, Boolean.toString(isActive()));
             writeElement.accept(AboTags.NAME.xml_name, getName());
             writeElement.accept(AboTags.SENDER.xml_name, getSender());
             writeElement.accept(AboTags.THEMA.xml_name, getThema());
@@ -273,10 +274,22 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 AboTags.fromXmlTag(parser.getLocalName()).ifPresent(tag -> {
                     try {
                         final var text = parser.getElementText();
-                        if (tag == AboTags.MIN) {
-                            setMin(Boolean.parseBoolean(text));
-                        } else {
-                            arr[tag.index] = text;
+                        switch(tag) {
+                            case EINGESCHALTET:
+                                setActive(Boolean.parseBoolean(text));
+                                break;
+
+                            case MIN:
+                                setMin(Boolean.parseBoolean(text));
+                                break;
+
+                            case NAME:
+                                setName(text);
+                                break;
+
+                            default:
+                                arr[tag.index] = text;
+                                break;
                         }
                     } catch (XMLStreamException e) {
                         logger.error("Error reading abo entry", e);
