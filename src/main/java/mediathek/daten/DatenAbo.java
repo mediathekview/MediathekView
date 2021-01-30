@@ -30,12 +30,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
+    public static final int MAX_ELEM = 13;
+    public static final String TAG = "Abonnement";
     private static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
-
-    public static final int MAX_ELEM = 13;
-    public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
@@ -62,6 +61,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+    }
+
+    public static boolean anzeigen(int i) {
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
     public String getTitle() {
@@ -94,10 +97,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public void setName(String name) {
         arr[ABO_NAME] = name;
-    }
-
-    public static boolean anzeigen(int i) {
-        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
     public int getNr() {
@@ -148,6 +147,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     /**
      * Returns whether this item is active or not.
+     *
      * @return true if it active, false otherwise
      */
     public boolean isActive() {
@@ -192,8 +192,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 writer.writeCharacters(content);
                 writer.writeEndElement();
                 writer.writeCharacters("\n");
-            }
-            catch (XMLStreamException e) {
+            } catch (XMLStreamException e) {
                 logger.error("writeElement failed", e);
             }
         };
