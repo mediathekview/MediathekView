@@ -59,7 +59,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         setMindestDauerMinuten(mmindestdauerMinuten);
 
         this.min = min;
-        setMin(Boolean.toString(min));
+        setMin(min);
 
         setZielpfad(ziel);
         setPsetName(pset);
@@ -73,8 +73,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return arr[ABO_MIN]; //FIXME: ABO_MIN IST .min!!
     }
 
-    public void setMin(String min) {
-        arr[ABO_MIN] = min;
+    public void setMin(boolean min) {
+        arr[ABO_MIN] = Boolean.toString(min);
     }
 
     public String getPsetName() {
