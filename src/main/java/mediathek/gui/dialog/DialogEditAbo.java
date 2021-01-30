@@ -19,7 +19,6 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
 public class DialogEditAbo extends JDialog {
     private final DatenAbo aktAbo;
     private JTextField[] textfeldListe;
@@ -186,19 +185,19 @@ public class DialogEditAbo extends JDialog {
                 panel.add(textfeld);
                 break;
             case DatenAbo.ABO_PSET:
-                comboboxPSet.setSelectedItem(aktAbo.arr[i]);
+                comboboxPSet.setSelectedItem(aktAbo.getPsetName());
                 //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
                 aktAbo.setPsetName(comboboxPSet.getSelectedItem().toString());// damit immer eine Set eingetragen ist!
                 gridbag.setConstraints(comboboxPSet, c);
                 panel.add(comboboxPSet);
                 break;
             case DatenAbo.ABO_SENDER:
-                comboboxSender.setSelectedItem(aktAbo.arr[i]);
+                comboboxSender.setSelectedItem(aktAbo.getSender());
                 gridbag.setConstraints(comboboxSender, c);
                 panel.add(comboboxSender);
                 break;
             case DatenAbo.ABO_ZIELPFAD:
-                comboboxPfad.setSelectedItem(aktAbo.arr[i]);
+                comboboxPfad.setSelectedItem(aktAbo.getZielpfad());
                 gridbag.setConstraints(comboboxPfad, c);
                 panel.add(comboboxPfad);
                 break;
@@ -291,36 +290,23 @@ public class DialogEditAbo extends JDialog {
     }
 
     private void get(DatenAbo abo) {
-        for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
-            switch (i) {
-                case (DatenAbo.ABO_ZIELPFAD):
-                    abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
-                    break;
-                case (DatenAbo.ABO_PSET):
-                    abo.setPsetName(comboboxPSet.getSelectedItem().toString());
-                    break;
-                case (DatenAbo.ABO_SENDER):
-                    abo.setSender(comboboxSender.getSelectedItem().toString());
-                    break;
-                case (DatenAbo.ABO_EINGESCHALTET):
-                    abo.setActive(checkBoxEingeschaltet.isSelected());
-                    break;
-                case (DatenAbo.ABO_MIN):
-                    final boolean minSel = rbMin.isSelected();
-                    abo.setMin(Boolean.toString(minSel));
-                    abo.min = minSel;
-                    break;
-                case (DatenAbo.ABO_MINDESTDAUER):
-                    abo.setMindestDauerMinuten(sliderDauer.getValue());
-                    break;
-                case (DatenAbo.ABO_NR):
-                case (DatenAbo.ABO_DOWN_DATUM):
-                    break;
-                default:
-                    abo.arr[i] = textfeldListe[i].getText().trim();
-                    break;
-            }
-        }
+        //no ABO_NR
+        abo.setActive(checkBoxEingeschaltet.isSelected());
+        abo.setName(textfeldListe[DatenAbo.ABO_NAME].getText().trim());
+        abo.setSender(comboboxSender.getSelectedItem().toString());
+        abo.setThema(textfeldListe[DatenAbo.ABO_THEMA].getText().trim());
+        abo.setTitle(textfeldListe[DatenAbo.ABO_TITEL].getText().trim());
+        abo.setThemaTitel(textfeldListe[DatenAbo.ABO_THEMA_TITEL].getText().trim());
+        abo.setIrgendwo(textfeldListe[DatenAbo.ABO_IRGENDWO].getText().trim());
+        abo.setMindestDauerMinuten(sliderDauer.getValue());
+        //ABO_MIN
+        final boolean minSel = rbMin.isSelected();
+        abo.setMin(Boolean.toString(minSel));
+        abo.min = minSel;
+
+        abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
+        //no ABO_DOWN_DATUM
+        abo.setPsetName(comboboxPSet.getSelectedItem().toString());
     }
 
     private void beenden() {
