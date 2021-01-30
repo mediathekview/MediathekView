@@ -27,7 +27,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
-    public static final int ABO_REF_OBJECT = 13;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
@@ -35,7 +34,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             "Sender", "Thema", "Titel", "Thema-Titel",
             "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
 
-    public static final int MAX_ELEM = 14;
+    public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -133,6 +132,13 @@ public class DatenAbo implements Comparable<DatenAbo> {
             return true;
         }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
+    }
+
+    public void setActive(boolean active) {
+        if (active)
+            activate();
+        else
+            arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(false);
     }
 
     /**

@@ -213,7 +213,7 @@ public class DialogEditAbo extends JDialog {
                 panel.add(p);
                 break;
             case DatenAbo.ABO_EINGESCHALTET:
-                checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(aktAbo.arr[i]));
+                checkBoxEingeschaltet.setSelected(aktAbo.isActive());
                 gridbag.setConstraints(checkBoxEingeschaltet, c);
                 panel.add(checkBoxEingeschaltet);
                 break;
@@ -303,7 +303,7 @@ public class DialogEditAbo extends JDialog {
                     abo.arr[DatenAbo.ABO_SENDER] = comboboxSender.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_EINGESCHALTET):
-                    abo.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(checkBoxEingeschaltet.isSelected());
+                    abo.setActive(checkBoxEingeschaltet.isSelected());
                     break;
                 case (DatenAbo.ABO_MIN):
                     abo.arr[DatenAbo.ABO_MIN] = Boolean.toString(rbMin.isSelected());
