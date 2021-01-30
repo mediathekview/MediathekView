@@ -158,13 +158,13 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // liefert eine Array mit allen Pfaden
         ArrayList<String> pfade = new ArrayList<>();
         for (DatenAbo abo : this) {
-            String s = abo.arr[DatenAbo.ABO_ZIELPFAD];
-            if (!pfade.contains(s)) {
-                pfade.add(abo.arr[DatenAbo.ABO_ZIELPFAD]);
+            final String zielpfad = abo.getZielpfad();
+            if (!pfade.contains(zielpfad)) {
+                pfade.add(zielpfad);
             }
         }
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        pfade.sort(sorter);
+
+        pfade.sort(GermanStringSorter.getInstance());
         return pfade;
     }
 

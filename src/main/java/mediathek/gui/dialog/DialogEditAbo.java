@@ -57,8 +57,8 @@ public class DialogEditAbo extends JDialog {
 
         // Zeilpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
-        if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
-            pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
+        if (!pfade.contains(aktAbo.getZielpfad())) {
+            pfade.add(0, aktAbo.getZielpfad());
         }
         comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
         comboboxPfad.setEditable(true);
@@ -294,7 +294,7 @@ public class DialogEditAbo extends JDialog {
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
                 case (DatenAbo.ABO_ZIELPFAD):
-                    abo.arr[DatenAbo.ABO_ZIELPFAD] = comboboxPfad.getSelectedItem().toString();
+                    abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
                     break;
                 case (DatenAbo.ABO_PSET):
                     abo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString();
