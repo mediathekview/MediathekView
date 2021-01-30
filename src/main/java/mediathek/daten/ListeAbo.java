@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-@SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
     private static final String[] LEER = {""};
     private static final Logger logger = LogManager.getLogger(ListeAbo.class);
@@ -214,11 +213,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             abo.thema = Filter.isPattern(abo.getThemaTitel())
                     ? new String[]{abo.getThemaTitel()} : abo.getThemaTitel().toLowerCase().split(",");
         }
-        if (abo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
+        if (abo.getIrgendwo().isEmpty()) {
             abo.irgendwo = LEER;
         } else {
-            abo.irgendwo = Filter.isPattern(abo.arr[DatenAbo.ABO_IRGENDWO])
-                    ? new String[]{abo.arr[DatenAbo.ABO_IRGENDWO]} : abo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
+            abo.irgendwo = Filter.isPattern(abo.getIrgendwo())
+                    ? new String[]{abo.getIrgendwo()} : abo.getIrgendwo().toLowerCase().split(",");
         }
     }
 
