@@ -203,10 +203,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
      * @return true if it active, false otherwise
      */
     public boolean isActive() {
-        if (arr[DatenAbo.ABO_EINGESCHALTET].isEmpty()) {
-            activate();
-            return true;
-        }
         return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET]);
     }
 
