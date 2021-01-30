@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
@@ -32,16 +33,13 @@ public class DatenAbo implements Comparable<DatenAbo> {
             "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
-    private static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
-            "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Mindestdauer", "min_max", "Zielpfad", "letztes_Abo", "Programmset"};
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public int mindestdauerMinuten;
-    private boolean min;
     public String[] arr;
     public String[] titel, thema, irgendwo;
+    private boolean min;
     private int nr;
 
     public DatenAbo() {
@@ -259,18 +257,18 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writer.writeCharacters("\n");
 
             //never write ABO_NR
-            writeElement.accept(XML_NAMES[ABO_EINGESCHALTET], arr[ABO_EINGESCHALTET]);
-            writeElement.accept(XML_NAMES[ABO_NAME], getName());
-            writeElement.accept(XML_NAMES[ABO_SENDER], getSender());
-            writeElement.accept(XML_NAMES[ABO_THEMA], getThema());
-            writeElement.accept(XML_NAMES[ABO_TITEL], getTitle());
-            writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], getThemaTitel());
-            writeElement.accept(XML_NAMES[ABO_IRGENDWO], getIrgendwo());
-            writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
-            writeElement.accept(XML_NAMES[ABO_MIN], Boolean.toString(getMin()));
-            writeElement.accept(XML_NAMES[ABO_ZIELPFAD], getZielpfad());
-            writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], getDownDatum());
-            writeElement.accept(XML_NAMES[ABO_PSET], getPsetName());
+            writeElement.accept(AboTags.EINGESCHALTET.xml_name, arr[ABO_EINGESCHALTET]);
+            writeElement.accept(AboTags.NAME.xml_name, getName());
+            writeElement.accept(AboTags.SENDER.xml_name, getSender());
+            writeElement.accept(AboTags.THEMA.xml_name, getThema());
+            writeElement.accept(AboTags.TITEL.xml_name, getTitle());
+            writeElement.accept(AboTags.THEMA_TITEL.xml_name, getThemaTitel());
+            writeElement.accept(AboTags.IRGENDWO.xml_name, getIrgendwo());
+            writeElement.accept(AboTags.MINDESTDAUER.xml_name, getMindestDauer());
+            writeElement.accept(AboTags.MIN.xml_name, Boolean.toString(getMin()));
+            writeElement.accept(AboTags.ZIELPFAD.xml_name, getZielpfad());
+            writeElement.accept(AboTags.DOWN_DATUM.xml_name, getDownDatum());
+            writeElement.accept(AboTags.PSET.xml_name, getPsetName());
 
             writer.writeEndElement();
             writer.writeCharacters("\n");
@@ -288,16 +286,19 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 }
             }
             if (event == XMLStreamConstants.START_ELEMENT) {
-                for (int i = 0; i < arr.length; ++i) {
-                    if (parser.getLocalName().equals(XML_NAMES[i])) {
-                        if (i == DatenAbo.ABO_MIN) {
-                            setMin(Boolean.parseBoolean(parser.getElementText()));
+                AboTags.fromXmlTag(parser.getLocalName()).ifPresent(tag -> {
+                    try {
+                        final var text = parser.getElementText();
+                        if (tag == AboTags.MIN) {
+                            setMin(Boolean.parseBoolean(text));
+                        } else {
+                            arr[tag.index] = text;
                         }
-                        else
-                            arr[i] = parser.getElementText();
-                        break;
                     }
-                }
+                    catch (XMLStreamException e) {
+                        logger.error("Error reading abo entry", e);
+                    }
+                });
             }
         }
     }
@@ -305,5 +306,33 @@ public class DatenAbo implements Comparable<DatenAbo> {
     @Override
     public int compareTo(@NotNull DatenAbo other) {
         return sorter.compare(getName(), other.getName());
+    }
+
+    enum AboTags {
+        NR(ABO_NR, "Nr"),
+        EINGESCHALTET(ABO_EINGESCHALTET, "aktiv"),
+        NAME(ABO_NAME, "Name"),
+        SENDER(ABO_SENDER, "Sender"),
+        THEMA(ABO_THEMA, "Thema"),
+        TITEL(ABO_TITEL, "Titel"),
+        THEMA_TITEL(ABO_THEMA_TITEL, "Thema-Titel"),
+        IRGENDWO(ABO_IRGENDWO, "Irgendwo"),
+        MINDESTDAUER(ABO_MINDESTDAUER, "Mindestdauer"),
+        MIN(ABO_MIN, "min_max"),
+        ZIELPFAD(ABO_ZIELPFAD, "Zielpfad"),
+        DOWN_DATUM(ABO_DOWN_DATUM, "letztes_Abo"),
+        PSET(ABO_PSET, "Programmset");
+
+        private final int index;
+        private final String xml_name;
+
+        AboTags(int index, String xml_name) {
+            this.index = index;
+            this.xml_name = xml_name;
+        }
+
+        public static Optional<AboTags> fromXmlTag(@NotNull String tag) {
+            return Arrays.stream(AboTags.values()).filter(e -> e.xml_name.equals(tag)).findAny();
+        }
     }
 }
