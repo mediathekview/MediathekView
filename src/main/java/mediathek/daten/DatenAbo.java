@@ -23,7 +23,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_THEMA_TITEL = 6;
     public static final int ABO_IRGENDWO = 7;
     public static final int ABO_MINDESTDAUER = 8;
-    public static final int ABO_MIN = 9; // not checked yet
+    public static final int ABO_MIN = 9; // TODO: not checked yet
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
@@ -60,11 +60,27 @@ public class DatenAbo implements Comparable<DatenAbo> {
         arr[ABO_MIN] = Boolean.toString(min);
         this.min = min;
         setZielpfad(ziel);
-        arr[ABO_PSET] = pset;
+        setPsetName(pset);
     }
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public String getPsetName() {
+        return arr[ABO_PSET];
+    }
+
+    public void setPsetName(String pset) {
+        arr[ABO_PSET] = pset;
+    }
+
+    public String getDownDatum() {
+        return arr[ABO_DOWN_DATUM];
+    }
+
+    public void setDownDatum(String datum) {
+        arr[ABO_DOWN_DATUM] = datum;
     }
 
     public String getZielpfad() {
@@ -240,8 +256,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], getMindestDauer());
             writeElement.accept(XML_NAMES[ABO_MIN], arr[ABO_MIN]);
             writeElement.accept(XML_NAMES[ABO_ZIELPFAD], getZielpfad());
-            writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], arr[ABO_DOWN_DATUM]);
-            writeElement.accept(XML_NAMES[ABO_PSET], arr[ABO_PSET]);
+            writeElement.accept(XML_NAMES[ABO_DOWN_DATUM], getDownDatum());
+            writeElement.accept(XML_NAMES[ABO_PSET], getPsetName());
 
             writer.writeEndElement();
             writer.writeCharacters("\n");

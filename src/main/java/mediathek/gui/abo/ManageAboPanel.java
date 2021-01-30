@@ -83,8 +83,8 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_MINDESTDAUER] = abo.mindestdauerMinuten;
                 object[DatenAbo.ABO_MIN] = abo.min ? "min" : "max";
                 object[DatenAbo.ABO_ZIELPFAD] = abo.getZielpfad();
-                object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
-                object[DatenAbo.ABO_PSET] = abo.arr[DatenAbo.ABO_PSET];
+                object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.getDownDatum());
+                object[DatenAbo.ABO_PSET] = abo.getPsetName();
                 model.addRow(object);
             }
         }
