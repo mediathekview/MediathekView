@@ -188,7 +188,7 @@ public class DialogEditAbo extends JDialog {
             case DatenAbo.ABO_PSET:
                 comboboxPSet.setSelectedItem(aktAbo.arr[i]);
                 //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-                aktAbo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString(); // damit immer eine Set eingetragen ist!
+                aktAbo.setPsetName(comboboxPSet.getSelectedItem().toString());// damit immer eine Set eingetragen ist!
                 gridbag.setConstraints(comboboxPSet, c);
                 panel.add(comboboxPSet);
                 break;
@@ -297,7 +297,7 @@ public class DialogEditAbo extends JDialog {
                     abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
                     break;
                 case (DatenAbo.ABO_PSET):
-                    abo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString();
+                    abo.setPsetName(comboboxPSet.getSelectedItem().toString());
                     break;
                 case (DatenAbo.ABO_SENDER):
                     abo.setSender(comboboxSender.getSelectedItem().toString());

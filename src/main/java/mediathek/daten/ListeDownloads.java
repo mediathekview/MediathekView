@@ -374,7 +374,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            DatenPset pSet = abo.getPsetName().isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.getPsetName());
             if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]));
@@ -384,10 +384,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 listeUrls.add(urlDownload);
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = todayDateStr;
-                if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
+                abo.setDownDatum(todayDateStr);
+                if (!abo.getPsetName().equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
-                    abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
+                    abo.setPsetName(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
                 }
 
                 //dann in die Liste schreiben
