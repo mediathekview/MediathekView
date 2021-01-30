@@ -332,7 +332,7 @@ public class ManageAboPanel extends JPanel {
                         sel.setMindestDauerMinuten();
                     }
                     if (b == DatenAbo.ABO_MIN) {
-                        sel.min = Boolean.parseBoolean(sel.arr[DatenAbo.ABO_MIN]);
+                        sel.min = Boolean.parseBoolean(sel.getMin());
                     }
                 }
             }
