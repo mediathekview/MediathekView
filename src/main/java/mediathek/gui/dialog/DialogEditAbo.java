@@ -301,7 +301,7 @@ public class DialogEditAbo extends JDialog {
         abo.setMindestDauerMinuten(sliderDauer.getValue());
         //ABO_MIN
         final boolean minSel = rbMin.isSelected();
-        abo.setMin(Boolean.toString(minSel));
+        abo.setMin(minSel);
         abo.min = minSel;
 
         abo.setZielpfad(comboboxPfad.getSelectedItem().toString());
