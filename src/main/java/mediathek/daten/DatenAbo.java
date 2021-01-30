@@ -31,7 +31,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_REF = 13;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset",""};
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset", ""};
     public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
@@ -47,14 +47,15 @@ public class DatenAbo implements Comparable<DatenAbo> {
      */
     private int nr;
     /**
-    Stores the active state of the abo.
-    On by default.
+     * Stores the active state of the abo.
+     * On by default.
      */
     private boolean active = true;
     /**
      * The display name.
      */
     private String name = "";
+    private String sender = "";
 
     public DatenAbo() {
         Arrays.fill(arr, "");
@@ -149,11 +150,11 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     public String getSender() {
-        return arr[ABO_SENDER];
+        return sender;
     }
 
     public void setSender(String sender) {
-        arr[ABO_SENDER] = sender;
+        this.sender = sender;
     }
 
     public String getName() {
@@ -173,10 +174,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     public DatenAbo getCopy() {
+        //FIXME do it correct!
         DatenAbo ret = new DatenAbo();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.mindestdauerMinuten = this.mindestdauerMinuten;
         ret.min = this.min;
+        ret.active = this.active;
+        ret.name = this.name;
+        ret.sender = this.sender;
         return ret;
     }
 
@@ -274,7 +279,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 AboTags.fromXmlTag(parser.getLocalName()).ifPresent(tag -> {
                     try {
                         final var text = parser.getElementText();
-                        switch(tag) {
+                        switch (tag) {
                             case EINGESCHALTET:
                                 setActive(Boolean.parseBoolean(text));
                                 break;
@@ -285,6 +290,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
                             case NAME:
                                 setName(text);
+                                break;
+
+                            case SENDER:
+                                setSender(text);
                                 break;
 
                             default:
