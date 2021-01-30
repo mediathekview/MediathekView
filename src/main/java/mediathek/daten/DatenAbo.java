@@ -36,34 +36,35 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    public int mindestdauerMinuten;
-    public String[] arr;
+    public String[] arr = new String[MAX_ELEM];
     public String[] titel, thema, irgendwo;
+    private int mindestdauerMinuten;
     private boolean min;
     private int nr;
 
     public DatenAbo() {
-        initialize();
-    }
+        Arrays.fill(arr, "");
+        // neue Abos sind immer ein
+        activate();
 
-    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
-        initialize();
-        setName(name);
-        setSender(sender);
-        setThema(thema);
-        setTitle(titel);
-        setThemaTitel(themaTitel);
-        setIrgendwo(irgendwo);
-        setMindestDauerMinuten(mmindestdauerMinuten);
+        // for backward compatibility make it true by default
+        setMin(true);
 
-        setMin(min);
-
-        setZielpfad(ziel);
-        setPsetName(pset);
+        mindestdauerMinuten = 0;
+        arr[ABO_MINDESTDAUER] = "0";
     }
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    }
+
+    public int getMindestDauerMinuten() {
+        return mindestdauerMinuten;
+    }
+
+    public final void setMindestDauerMinuten(int d) {
+        mindestdauerMinuten = d;
+        arr[ABO_MINDESTDAUER] = String.valueOf(d);
     }
 
     public boolean getMin() {
@@ -177,12 +178,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 && getIrgendwo().isEmpty();
     }
 
-    public final void setMindestDauerMinuten(int d) {
-        mindestdauerMinuten = d;
-        arr[ABO_MINDESTDAUER] = String.valueOf(d);
-    }
-
     public void setMindestDauerMinuten() {
+        //TODO remove after accesses to arr[] have been killed
         if (getMindestDauer().isEmpty()) {
             // für den ProgUpdate
             mindestdauerMinuten = 0;
@@ -218,16 +215,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
      */
     private void activate() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
-    }
-
-    private void initialize() {
-        arr = new String[MAX_ELEM];
-        Arrays.fill(arr, "");
-        // neue Abos sind immer ein
-        activate();
-
-        // for backward compatibility make it true by default
-        setMin(true);
     }
 
     /**
