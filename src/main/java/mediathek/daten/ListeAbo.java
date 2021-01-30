@@ -93,11 +93,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo.setName("Abo_" + nr);
         }
         datenAbo.setMindestDauerMinuten();
-        if (datenAbo.getMin().isEmpty()) {
-            //zum Erhalt der alten Funktionalität
-            datenAbo.setMin(true);
-        }
-        datenAbo.min = Boolean.parseBoolean(datenAbo.getMin());
 
         add(datenAbo);
     }
@@ -186,7 +181,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             return null;
         } else {
             if (laengePruefen) {
-                if (!Filter.laengePruefen(abo.mindestdauerMinuten, film.getFilmLength(), abo.min)) {
+                if (!Filter.laengePruefen(abo.mindestdauerMinuten, film.getFilmLength(), abo.getMinBool())) {
                     return null;
                 }
             }
@@ -239,9 +234,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
-        if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.min)) {
+        if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.getMinBool())) {
             // dann ist der Film zu kurz
-            film.setAboName(foundAbo.getName() + (foundAbo.min ? " [zu kurz]" : " [zu lang]"));
+            film.setAboName(foundAbo.getName() + (foundAbo.getMinBool() ? " [zu kurz]" : " [zu lang]"));
         } else {
             film.setAboName(foundAbo.getName());
         }
