@@ -184,9 +184,12 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return ret;
     }
 
+    /**
+     * Liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde.
+     * ist dann offensichtlich falsch!!
+     * @return true wenn Abo leer.
+     */
     public boolean isEmpty() {
-        //liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde
-        //ist dann offensichtlich falsch!!
         return getSender().isEmpty()
                 && getThema().isEmpty()
                 && getTitle().isEmpty()
