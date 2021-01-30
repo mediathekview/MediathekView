@@ -54,7 +54,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         setName(name);
         setSender(sender);
         setThema(thema);
-        arr[ABO_TITEL] = titel;
+        setTitle(titel);
         arr[ABO_THEMA_TITEL] = themaTitel;
         arr[ABO_IRGENDWO] = irgendwo;
         setMindestDauerMinuten(mmindestdauerMinuten);
@@ -62,6 +62,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
+    }
+
+    public String getTitle() {
+        return arr[ABO_TITEL];
+    }
+
+    public void setTitle(String titel) {
+        arr[ABO_TITEL] = titel;
     }
 
     public String getThema() {
@@ -113,7 +121,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         //ist dann offensichtlich falsch!!
         return getSender().isEmpty()
                 && getThema().isEmpty()
-                && arr[ABO_TITEL].isEmpty()
+                && getTitle().isEmpty()
                 && arr[ABO_THEMA_TITEL].isEmpty()
                 && arr[ABO_IRGENDWO].isEmpty();
     }
@@ -199,7 +207,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(XML_NAMES[ABO_NAME], getName());
             writeElement.accept(XML_NAMES[ABO_SENDER], getSender());
             writeElement.accept(XML_NAMES[ABO_THEMA], getThema());
-            writeElement.accept(XML_NAMES[ABO_TITEL], arr[ABO_TITEL]);
+            writeElement.accept(XML_NAMES[ABO_TITEL], getTitle());
             writeElement.accept(XML_NAMES[ABO_THEMA_TITEL], arr[ABO_THEMA_TITEL]);
             writeElement.accept(XML_NAMES[ABO_IRGENDWO], arr[ABO_IRGENDWO]);
             writeElement.accept(XML_NAMES[ABO_MINDESTDAUER], arr[ABO_MINDESTDAUER]);

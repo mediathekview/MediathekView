@@ -69,7 +69,7 @@ public class ManageAboPanel extends JPanel {
 
     public void addObjectData(TModelAbo model, String sender) {
         model.setRowCount(0);
-        Object[] object = new Object[DatenAbo.MAX_ELEM+1];
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
         for (DatenAbo abo : daten.getListeAbo()) {
             if (sender.isEmpty() || sender.equals(abo.getSender())) {
                 object[DatenAbo.ABO_NR] = abo.getNr();
@@ -77,7 +77,7 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_NAME] = abo.getName();
                 object[DatenAbo.ABO_SENDER] = abo.getSender();
                 object[DatenAbo.ABO_THEMA] = abo.getThema();
-                object[DatenAbo.ABO_TITEL] = abo.arr[DatenAbo.ABO_TITEL];
+                object[DatenAbo.ABO_TITEL] = abo.getTitle();
                 object[DatenAbo.ABO_THEMA_TITEL] = abo.arr[DatenAbo.ABO_THEMA_TITEL];
                 object[DatenAbo.ABO_IRGENDWO] = abo.arr[DatenAbo.ABO_IRGENDWO];
                 object[DatenAbo.ABO_MINDESTDAUER] = abo.mindestdauerMinuten;
@@ -85,7 +85,6 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_ZIELPFAD] = abo.arr[DatenAbo.ABO_ZIELPFAD];
                 object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.arr[DatenAbo.ABO_DOWN_DATUM]);
                 object[DatenAbo.ABO_PSET] = abo.arr[DatenAbo.ABO_PSET];
-                object[DatenAbo.MAX_ELEM] = abo;
                 model.addRow(object);
             }
         }
