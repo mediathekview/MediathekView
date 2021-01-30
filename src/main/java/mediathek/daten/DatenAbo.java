@@ -10,7 +10,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
@@ -247,18 +246,18 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writer.writeCharacters("\n");
 
             //never write ABO_NR
-            writeElement.accept(AboTags.EINGESCHALTET.xml_name, Boolean.toString(isActive()));
-            writeElement.accept(AboTags.NAME.xml_name, getName());
-            writeElement.accept(AboTags.SENDER.xml_name, getSender());
-            writeElement.accept(AboTags.THEMA.xml_name, getThema());
-            writeElement.accept(AboTags.TITEL.xml_name, getTitle());
-            writeElement.accept(AboTags.THEMA_TITEL.xml_name, getThemaTitel());
-            writeElement.accept(AboTags.IRGENDWO.xml_name, getIrgendwo());
-            writeElement.accept(AboTags.MINDESTDAUER.xml_name, getMindestDauer());
-            writeElement.accept(AboTags.MIN.xml_name, Boolean.toString(getMin()));
-            writeElement.accept(AboTags.ZIELPFAD.xml_name, getZielpfad());
-            writeElement.accept(AboTags.DOWN_DATUM.xml_name, getDownDatum());
-            writeElement.accept(AboTags.PSET.xml_name, getPsetName());
+            writeElement.accept(AboTags.EINGESCHALTET.getXmlName(), Boolean.toString(isActive()));
+            writeElement.accept(AboTags.NAME.getXmlName(), getName());
+            writeElement.accept(AboTags.SENDER.getXmlName(), getSender());
+            writeElement.accept(AboTags.THEMA.getXmlName(), getThema());
+            writeElement.accept(AboTags.TITEL.getXmlName(), getTitle());
+            writeElement.accept(AboTags.THEMA_TITEL.getXmlName(), getThemaTitel());
+            writeElement.accept(AboTags.IRGENDWO.getXmlName(), getIrgendwo());
+            writeElement.accept(AboTags.MINDESTDAUER.getXmlName(), getMindestDauer());
+            writeElement.accept(AboTags.MIN.getXmlName(), Boolean.toString(getMin()));
+            writeElement.accept(AboTags.ZIELPFAD.getXmlName(), getZielpfad());
+            writeElement.accept(AboTags.DOWN_DATUM.getXmlName(), getDownDatum());
+            writeElement.accept(AboTags.PSET.getXmlName(), getPsetName());
 
             writer.writeEndElement();
             writer.writeCharacters("\n");
@@ -297,7 +296,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
                                 break;
 
                             default:
-                                arr[tag.index] = text;
+                                arr[tag.getIndex()] = text;
                                 break;
                         }
                     } catch (XMLStreamException e) {
@@ -313,39 +312,4 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return sorter.compare(getName(), other.getName());
     }
 
-    public enum AboTags {
-        NR(ABO_NR, "Nr"),
-        EINGESCHALTET(ABO_EINGESCHALTET, "aktiv"),
-        NAME(ABO_NAME, "Name"),
-        SENDER(ABO_SENDER, "Sender"),
-        THEMA(ABO_THEMA, "Thema"),
-        TITEL(ABO_TITEL, "Titel"),
-        THEMA_TITEL(ABO_THEMA_TITEL, "Thema-Titel"),
-        IRGENDWO(ABO_IRGENDWO, "Irgendwo"),
-        MINDESTDAUER(ABO_MINDESTDAUER, "Mindestdauer"),
-        MIN(ABO_MIN, "min_max"),
-        ZIELPFAD(ABO_ZIELPFAD, "Zielpfad"),
-        DOWN_DATUM(ABO_DOWN_DATUM, "letztes_Abo"),
-        PSET(ABO_PSET, "Programmset");
-
-        private final int index;
-        private final String xml_name;
-
-        AboTags(int index, String xml_name) {
-            this.index = index;
-            this.xml_name = xml_name;
-        }
-
-        public static Optional<AboTags> fromXmlTag(@NotNull String tag) {
-            return Arrays.stream(AboTags.values()).filter(e -> e.xml_name.equals(tag)).findAny();
-        }
-
-        public static Optional<AboTags> fromIndex(int index) {
-            return Arrays.stream(AboTags.values()).filter(e -> e.index == index).findAny();
-        }
-
-        public int index() {
-            return index;
-        }
-    }
 }

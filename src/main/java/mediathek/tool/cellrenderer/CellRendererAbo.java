@@ -1,5 +1,6 @@
 package mediathek.tool.cellrenderer;
 
+import mediathek.daten.AboTags;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +28,7 @@ public class CellRendererAbo extends CellRendererBase {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         try {
             var abo = (DatenAbo)table.getModel().getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF);
-            DatenAbo.AboTags.fromIndex(table.convertColumnIndexToModel(column)).ifPresent(col -> {
+            AboTags.fromIndex(table.convertColumnIndexToModel(column)).ifPresent(col -> {
                 switch (col) {
                     case NR:
                     case MINDESTDAUER:
