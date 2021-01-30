@@ -59,7 +59,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, "0");
         }
 
-        addAbo(filmSender, filmThema, filmTitel, "", "", min, true/*min*/, aboname);
+        addAbo(filmSender, filmThema, filmTitel, "", "", min, true, aboname);
     }
 
     public void addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, boolean min, String namePfad) {
@@ -67,7 +67,19 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-        DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
+
+        DatenAbo datenAbo = new DatenAbo();
+        datenAbo.setName(namePfad);
+        datenAbo.setSender(filmSender);
+        datenAbo.setThema(filmThema);
+        datenAbo.setTitle(filmTitel);
+        datenAbo.setThemaTitel(filmThemaTitel);
+        datenAbo.setIrgendwo(irgendwo);
+        datenAbo.setMindestDauerMinuten(mindestdauer);
+        datenAbo.setMin(min);
+        datenAbo.setZielpfad(namePfad);
+        datenAbo.setPsetName("");
+
         DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, datenAbo, false /*onlyOne*/);
         dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
@@ -181,7 +193,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             return null;
         } else {
             if (laengePruefen) {
-                if (!Filter.laengePruefen(abo.mindestdauerMinuten, film.getFilmLength(), abo.getMin())) {
+                if (!Filter.laengePruefen(abo.getMindestDauerMinuten(), film.getFilmLength(), abo.getMin())) {
                     return null;
                 }
             }
@@ -234,7 +246,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
-        if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.getFilmLength(), foundAbo.getMin())) {
+        if (!Filter.laengePruefen(foundAbo.getMindestDauerMinuten(), film.getFilmLength(), foundAbo.getMin())) {
             // dann ist der Film zu kurz
             film.setAboName(foundAbo.getName() + (foundAbo.getMin() ? " [zu kurz]" : " [zu lang]"));
         } else {
