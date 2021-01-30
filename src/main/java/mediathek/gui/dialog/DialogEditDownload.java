@@ -354,7 +354,7 @@ public class DialogEditDownload extends JDialog {
                             jButtonReset.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
                             jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
-                            jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+                            jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
                             jButtonHelp.setToolTipText("Hilfe anzeigen");
                             jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
 

@@ -28,15 +28,16 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
+    public static final int ABO_REF = 13;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset"};
-    public static final int MAX_ELEM = 13;
+            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset",""};
+    public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    public String[] arr = new String[MAX_ELEM];
+    private final String[] arr = new String[MAX_ELEM];
     public String[] titel, thema, irgendwo;
     private int mindestdauerMinuten;
     private boolean min;
@@ -277,8 +278,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
                         } else {
                             arr[tag.index] = text;
                         }
-                    }
-                    catch (XMLStreamException e) {
+                    } catch (XMLStreamException e) {
                         logger.error("Error reading abo entry", e);
                     }
                 });
@@ -291,7 +291,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return sorter.compare(getName(), other.getName());
     }
 
-    enum AboTags {
+    public enum AboTags {
         NR(ABO_NR, "Nr"),
         EINGESCHALTET(ABO_EINGESCHALTET, "aktiv"),
         NAME(ABO_NAME, "Name"),
@@ -316,6 +316,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
         public static Optional<AboTags> fromXmlTag(@NotNull String tag) {
             return Arrays.stream(AboTags.values()).filter(e -> e.xml_name.equals(tag)).findAny();
+        }
+
+        public static Optional<AboTags> fromIndex(int index) {
+            return Arrays.stream(AboTags.values()).filter(e -> e.index == index).findAny();
+        }
+
+        public int index() {
+            return index;
         }
     }
 }

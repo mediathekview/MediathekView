@@ -95,7 +95,7 @@ public class DialogMediaDB extends JDialog {
 
         jButtonIndex.addActionListener(e -> daten.getListeMediaDB().createMediaDB(""));
 
-        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> searchFilmInDb());
         jButtonBeenden.addActionListener(e -> beenden());
@@ -285,7 +285,7 @@ public class DialogMediaDB extends JDialog {
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
+            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
 

@@ -1261,9 +1261,9 @@ public class GuiFilme extends AGuiTabPanel {
                                     != null) {
                                 // gibts schon, dann löschen
                                 DialogEditAbo dialog =
-                                        new DialogEditAbo(mediathekGui, true, datenAbo, false /*onlyOne*/);
+                                        new DialogEditAbo(mediathekGui, datenAbo, false /*onlyOne*/);
                                 dialog.setVisible(true);
-                                if (dialog.ok) {
+                                if (dialog.successful()) {
                                     daten.getListeAbo().aenderungMelden();
                                 }
                             }

@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -36,7 +38,7 @@ public class PanelBlacklist extends JPanel {
 
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
         init_();
         init();

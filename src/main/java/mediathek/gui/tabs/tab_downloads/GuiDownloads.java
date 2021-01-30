@@ -1483,7 +1483,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(itemDeleteDownload);
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
+            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(e -> zielordnerOeffnen());
 
@@ -1511,9 +1511,9 @@ public class GuiDownloads extends AGuiTabPanel {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
-                        if (dialog.ok) {
+                        if (dialog.successful()) {
                             daten.getListeAbo().aenderungMelden();
                         }
                     });
