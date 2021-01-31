@@ -1,6 +1,7 @@
 package mediathek.daten;
 
 import mediathek.config.Daten;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.tool.*;
 import mediathek.tool.sql.SqlAutoRollback;

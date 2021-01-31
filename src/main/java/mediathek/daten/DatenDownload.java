@@ -4,6 +4,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;

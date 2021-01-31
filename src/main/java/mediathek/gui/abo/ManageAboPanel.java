@@ -7,8 +7,8 @@ import javafx.scene.layout.HBox;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.daten.AboTags;
-import mediathek.daten.DatenAbo;
+import mediathek.daten.abo.AboTags;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
@@ -73,16 +73,16 @@ public class ManageAboPanel extends JPanel {
         Object[] object = new Object[DatenAbo.MAX_ELEM];
         for (DatenAbo abo : daten.getListeAbo()) {
             if (sender.isEmpty() || sender.equals(abo.getSender())) {
-                object[DatenAbo.ABO_NR] = abo.getNr();
+                object[DatenAbo.ABO_NR] = null;
                 object[DatenAbo.ABO_EINGESCHALTET] = abo.isActive();
-                object[DatenAbo.ABO_NAME] = abo.getName();
-                object[DatenAbo.ABO_SENDER] = abo.getSender();
-                object[DatenAbo.ABO_THEMA] = abo.getThema();
-                object[DatenAbo.ABO_TITEL] = abo.getTitle();
+                object[DatenAbo.ABO_NAME] = null;
+                object[DatenAbo.ABO_SENDER] = null;
+                object[DatenAbo.ABO_THEMA] = null;
+                object[DatenAbo.ABO_TITEL] = null;
                 object[DatenAbo.ABO_THEMA_TITEL] = abo.getThemaTitel();
                 object[DatenAbo.ABO_IRGENDWO] = abo.getIrgendwo();
                 object[DatenAbo.ABO_MINDESTDAUER] = abo.getMindestDauerMinuten();
-                object[DatenAbo.ABO_MIN] = abo.getMin() ? "min" : "max";
+                object[DatenAbo.ABO_MIN] = null;
                 object[DatenAbo.ABO_ZIELPFAD] = abo.getZielpfad();
                 object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.getDownDatum());
                 object[DatenAbo.ABO_PSET] = abo.getPsetName();
@@ -325,7 +325,7 @@ public class ManageAboPanel extends JPanel {
                         switch (tag) {
                             case EINGESCHALTET -> curSelAbo.setActive(editedAbo.isActive());
                             case MINDESTDAUER -> curSelAbo.setMindestDauerMinuten(editedAbo.getMindestDauerMinuten());
-                            case MIN -> curSelAbo.setMin(editedAbo.getMin());
+                            case MIN -> curSelAbo.setFilmLengthState(editedAbo.getFilmLengthState());
                             case ZIELPFAD -> curSelAbo.setZielpfad(editedAbo.getZielpfad());
                             case PSET -> curSelAbo.setPsetName(editedAbo.getPsetName());
                             default -> logger.error("Unhandled tag called {}", tag);

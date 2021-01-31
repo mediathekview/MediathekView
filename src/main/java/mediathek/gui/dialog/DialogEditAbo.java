@@ -4,8 +4,9 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.daten.AboTags;
-import mediathek.daten.DatenAbo;
+import mediathek.daten.abo.AboTags;
+import mediathek.daten.abo.DatenAbo;
+import mediathek.daten.abo.FilmLengthState;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.FilenameUtils;
@@ -263,7 +264,7 @@ public class DialogEditAbo extends JDialog {
             }
 
             case MIN -> {
-                final boolean isMin = aktAbo.getMin();
+                final boolean isMin = aktAbo.getFilmLengthState() == FilmLengthState.MINIMUM;
                 rbMin.setSelected(isMin);
                 rbMax.setSelected(!isMin);
                 var p = new JPanel(new BorderLayout());
@@ -337,7 +338,10 @@ public class DialogEditAbo extends JDialog {
         abo.setThemaTitel(textFieldMap.get(AboTags.THEMA_TITEL).getText().trim());
         abo.setIrgendwo(textFieldMap.get(AboTags.IRGENDWO).getText().trim());
         abo.setMindestDauerMinuten(sliderDauer.getValue());
-        abo.setMin(rbMin.isSelected());
+        if (rbMin.isSelected())
+            abo.setFilmLengthState(FilmLengthState.MINIMUM);
+        else
+            abo.setFilmLengthState(FilmLengthState.MAXIMUM);
         abo.setZielpfad(Objects.requireNonNull(comboboxPfad.getSelectedItem()).toString());
         //no ABO_DOWN_DATUM
         abo.setPsetName(Objects.requireNonNull(comboboxPSet.getSelectedItem()).toString());
