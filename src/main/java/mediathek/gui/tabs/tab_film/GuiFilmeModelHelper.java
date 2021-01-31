@@ -11,6 +11,8 @@ import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -126,7 +128,10 @@ public class GuiFilmeModelHelper {
 
         var stream = listeFilme.parallelStream();
         if (!selectedSenders.isEmpty()) {
-            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
+            //ObservableList.contains() is insanely slow...this speeds up to factor 250!
+            Set<String> senderSet = new HashSet<>(selectedSenders.size());
+            senderSet.addAll(selectedSenders);
+            stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
         if (showNewOnly)
             stream = stream.filter(DatenFilm::isNew);
