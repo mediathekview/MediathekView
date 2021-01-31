@@ -23,6 +23,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadListChangedEvent;

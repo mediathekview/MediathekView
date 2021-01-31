@@ -1,4 +1,4 @@
-package mediathek.daten;
+package mediathek.daten.abo;
 
 import mediathek.tool.GermanStringSorter;
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
@@ -36,12 +35,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    private final String[] arr = new String[MAX_ELEM];
     private String[] irgendwoFilterPattern;
     private String[] themaFilterPattern;
     private String[] titelFilterPattern;
     private int mindestdauerMinuten;
-    private boolean min;
     /**
      * Used internally for display in table.
      * Should NOT be used in code logic!!
@@ -57,15 +54,23 @@ public class DatenAbo implements Comparable<DatenAbo> {
      */
     private String name = "";
     private String sender = "";
+    private String thema = "";
+    private String titel = "";
+    private String thema_titel = "";
+    private String irgendwo = "";
+    private String zielpfad = "";
+    private String down_datum = ""; //TODO store as date??
+    private String pSetName = "";
+    /**
+     * Whether or not to use minimum film length or maximum film length.
+     */
+    private FilmLengthState filmLengthState;
 
     public DatenAbo() {
-        Arrays.fill(arr, "");
-
         // for backward compatibility make it true by default
-        setMin(true);
+        filmLengthState = FilmLengthState.MINIMUM;
 
         mindestdauerMinuten = 0;
-        arr[ABO_MINDESTDAUER] = "0";
     }
 
     public static boolean anzeigen(int i) {
@@ -100,78 +105,72 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return mindestdauerMinuten;
     }
 
-    public final void setMindestDauerMinuten(int d) {
-        mindestdauerMinuten = d;
-        arr[ABO_MINDESTDAUER] = String.valueOf(d);
+    public final void setMindestDauerMinuten(int dauer) {
+        mindestdauerMinuten = dauer;
     }
 
-    public boolean getMin() {
-        return min;
+    public FilmLengthState getFilmLengthState() {
+        return filmLengthState;
     }
 
-    public void setMin(boolean min) {
-        arr[ABO_MIN] = Boolean.toString(min);
-        this.min = min;
+    public void setFilmLengthState(FilmLengthState filmLengthState) {
+        this.filmLengthState = filmLengthState;
     }
 
     public String getPsetName() {
-        return arr[ABO_PSET];
+        return pSetName;
     }
 
     public void setPsetName(String pset) {
-        arr[ABO_PSET] = pset;
+        this.pSetName = pset;
     }
 
     public String getDownDatum() {
-        return arr[ABO_DOWN_DATUM];
+        return down_datum;
     }
 
     public void setDownDatum(String datum) {
-        arr[ABO_DOWN_DATUM] = datum;
+        this.down_datum = datum;
     }
 
     public String getZielpfad() {
-        return arr[ABO_ZIELPFAD];
+        return zielpfad;
     }
 
     public void setZielpfad(String ziel) {
-        arr[ABO_ZIELPFAD] = ziel;
-    }
-
-    public String getMindestDauer() {
-        return arr[ABO_MINDESTDAUER];
+        this.zielpfad = ziel;
     }
 
     public String getIrgendwo() {
-        return arr[ABO_IRGENDWO];
+        return irgendwo;
     }
 
     public void setIrgendwo(String irgendwo) {
-        arr[ABO_IRGENDWO] = irgendwo;
+        this.irgendwo = irgendwo;
     }
 
     public String getThemaTitel() {
-        return arr[ABO_THEMA_TITEL];
+        return thema_titel;
     }
 
     public void setThemaTitel(String themaTitel) {
-        arr[ABO_THEMA_TITEL] = themaTitel;
+        this.thema_titel = themaTitel;
     }
 
     public String getTitle() {
-        return arr[ABO_TITEL];
+        return titel;
     }
 
     public void setTitle(String titel) {
-        arr[ABO_TITEL] = titel;
+        this.titel = titel;
     }
 
     public String getThema() {
-        return arr[ABO_THEMA];
+        return thema;
     }
 
     public void setThema(String thema) {
-        arr[ABO_THEMA] = thema;
+        this.thema = thema;
     }
 
     public String getSender() {
@@ -201,12 +200,18 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public DatenAbo getCopy() {
         //FIXME do it correct!
         DatenAbo ret = new DatenAbo();
-        System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.mindestdauerMinuten = this.mindestdauerMinuten;
-        ret.min = this.min;
+        ret.filmLengthState = this.filmLengthState;
         ret.active = this.active;
         ret.name = this.name;
         ret.sender = this.sender;
+        ret.thema = this.thema;
+        ret.titel = this.titel;
+        ret.thema_titel = this.thema_titel;
+        ret.down_datum = this.down_datum;
+        ret.zielpfad = this.zielpfad;
+        ret.pSetName = this.pSetName;
+        ret.irgendwo = this.irgendwo;
         return ret;
     }
 
@@ -222,22 +227,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
                 && getTitle().isEmpty()
                 && getThemaTitel().isEmpty()
                 && getIrgendwo().isEmpty();
-    }
-
-    public void setMindestDauerMinuten() {
-        //TODO remove after accesses to arr[] have been killed
-        if (getMindestDauer().isEmpty()) {
-            // für den ProgUpdate
-            mindestdauerMinuten = 0;
-            arr[ABO_MINDESTDAUER] = "0";
-        }
-        try {
-            mindestdauerMinuten = Integer.parseInt(this.arr[DatenAbo.ABO_MINDESTDAUER]);
-        } catch (Exception ex) {
-            logger.error("setMindestDauerMinuten()", ex);
-            mindestdauerMinuten = 0;
-            arr[ABO_MINDESTDAUER] = "0";
-        }
     }
 
     /**
@@ -283,8 +272,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(AboTags.TITEL.getXmlName(), getTitle());
             writeElement.accept(AboTags.THEMA_TITEL.getXmlName(), getThemaTitel());
             writeElement.accept(AboTags.IRGENDWO.getXmlName(), getIrgendwo());
-            writeElement.accept(AboTags.MINDESTDAUER.getXmlName(), getMindestDauer());
-            writeElement.accept(AboTags.MIN.getXmlName(), Boolean.toString(getMin()));
+            writeElement.accept(AboTags.MINDESTDAUER.getXmlName(), Integer.toString(getMindestDauerMinuten()));
+            writeElement.accept(AboTags.MIN.getXmlName(), Boolean.toString(getFilmLengthState() == FilmLengthState.MINIMUM));
             writeElement.accept(AboTags.ZIELPFAD.getXmlName(), getZielpfad());
             writeElement.accept(AboTags.DOWN_DATUM.getXmlName(), getDownDatum());
             writeElement.accept(AboTags.PSET.getXmlName(), getPsetName());
@@ -314,7 +303,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
                                 break;
 
                             case MIN:
-                                setMin(Boolean.parseBoolean(text));
+                                if (Boolean.parseBoolean(text))
+                                    setFilmLengthState(FilmLengthState.MINIMUM);
+                                else
+                                    setFilmLengthState(FilmLengthState.MAXIMUM);
                                 break;
 
                             case NAME:
@@ -325,9 +317,40 @@ public class DatenAbo implements Comparable<DatenAbo> {
                                 setSender(text);
                                 break;
 
-                            default:
-                                arr[tag.getIndex()] = text;
+                            case THEMA:
+                                setThema(text);
                                 break;
+
+                            case TITEL:
+                                setTitle(text);
+                                break;
+
+                            case THEMA_TITEL:
+                                setThemaTitel(text);
+                                break;
+
+                            case IRGENDWO:
+                                setIrgendwo(text);
+                                break;
+
+                            case MINDESTDAUER:
+                                setMindestDauerMinuten(Integer.parseInt(text));
+                                break;
+
+                            case ZIELPFAD:
+                                setZielpfad(text);
+                                break;
+
+                            case DOWN_DATUM:
+                                setDownDatum(text);
+                                break;
+
+                            case PSET:
+                                setPsetName(text);
+                                break;
+
+                            default:
+                                throw new AssertionError("Illegal tag detected");
                         }
                     } catch (XMLStreamException e) {
                         logger.error("Error reading abo entry", e);

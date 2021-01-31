@@ -1,7 +1,8 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.daten.AboTags;
-import mediathek.daten.DatenAbo;
+import mediathek.daten.abo.AboTags;
+import mediathek.daten.abo.DatenAbo;
+import mediathek.daten.abo.FilmLengthState;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,18 +28,36 @@ public class CellRendererAbo extends CellRendererBase {
         setHorizontalAlignment(SwingConstants.LEADING);
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         try {
-            var abo = (DatenAbo)table.getModel().getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF);
+            var abo = (DatenAbo) table.getModel().getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF);
             AboTags.fromIndex(table.convertColumnIndexToModel(column)).ifPresent(col -> {
                 switch (col) {
                     case NR:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        setText(Integer.toString(abo.getNr()));
+                        break;
+                    case NAME:
+                        setText(abo.getName());
+                        break;
+                    case THEMA:
+                        setText(abo.getThema());
+                        break;
+                    case TITEL:
+                        setText(abo.getTitle());
+                        break;
                     case MINDESTDAUER:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        break;
                     case MIN:
                         setHorizontalAlignment(SwingConstants.CENTER);
+                        if (abo.getFilmLengthState() == FilmLengthState.MINIMUM)
+                            setText("min");
+                        else
+                            setText("max");
                         break;
 
                     case SENDER:
                         if (((MVTable) table).showSenderIcons()) {
-                            setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
+                            setSenderIcon(abo.getSender(), ((MVTable) table).useSmallSenderIcons);
                         }
                         break;
                 }

@@ -22,6 +22,8 @@ package mediathek.daten;
 import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.daten.abo.DatenAbo;
+import mediathek.daten.abo.FilmLengthState;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
@@ -75,7 +77,12 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         datenAbo.setThemaTitel(filmThemaTitel);
         datenAbo.setIrgendwo(irgendwo);
         datenAbo.setMindestDauerMinuten(mindestdauer);
-        datenAbo.setMin(min);
+        FilmLengthState state;
+        if (min)
+            state = FilmLengthState.MINIMUM;
+        else
+            state = FilmLengthState.MAXIMUM;
+        datenAbo.setFilmLengthState(state);
         datenAbo.setZielpfad(namePfad);
         datenAbo.setPsetName("");
 
@@ -84,7 +91,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.successful()) {
             if (!aboExistiertBereits(datenAbo)) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.getMindestDauer()); // als Vorgabe merken
+                MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, Integer.toString(datenAbo.getMindestDauerMinuten())); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
                 sort();
@@ -103,7 +110,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             // Downloads ohne "Aboname" sind manuelle Downloads
             datenAbo.setName("Abo_" + nr);
         }
-        datenAbo.setMindestDauerMinuten();
 
         add(datenAbo);
     }
@@ -173,7 +179,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             return null;
         } else {
             if (laengePruefen) {
-                if (!Filter.laengePruefen(abo.getMindestDauerMinuten(), film.getFilmLength(), abo.getMin())) {
+                if (!Filter.laengePruefen(abo.getMindestDauerMinuten(), film.getFilmLength(),
+                        abo.getFilmLengthState() == FilmLengthState.MINIMUM)) {
                     return null;
                 }
             }
@@ -226,9 +233,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
-        if (!Filter.laengePruefen(foundAbo.getMindestDauerMinuten(), film.getFilmLength(), foundAbo.getMin())) {
+        final boolean min = foundAbo.getFilmLengthState() == FilmLengthState.MINIMUM;
+        if (!Filter.laengePruefen(foundAbo.getMindestDauerMinuten(), film.getFilmLength(), min)) {
             // dann ist der Film zu kurz
-            film.setAboName(foundAbo.getName() + (foundAbo.getMin() ? " [zu kurz]" : " [zu lang]"));
+            film.setAboName(foundAbo.getName() + (min ? " [zu kurz]" : " [zu lang]"));
         } else {
             film.setAboName(foundAbo.getName());
         }
