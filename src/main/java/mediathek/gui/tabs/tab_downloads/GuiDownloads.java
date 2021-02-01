@@ -1477,7 +1477,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNLOAD_LOESCHEN);
+            itemDeleteDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
 
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
