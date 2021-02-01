@@ -4,7 +4,6 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
@@ -38,7 +37,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void init() {
         jButtonAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-        jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(e -> tabelleLaden());
         jButtonImportDatei.setEnabled(false);

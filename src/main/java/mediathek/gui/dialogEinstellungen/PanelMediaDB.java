@@ -130,7 +130,7 @@ public class PanelMediaDB extends PanelVorlage {
                 daten.getListeMediaDB().delList(true);
             }
         });
-        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonPath.addActionListener(new BeobPath(false/*ext*/));
@@ -138,7 +138,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonRemove.addActionListener((ActionEvent e) -> removePath());
         jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
-        jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonExportPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonExport.addActionListener(l -> filmeExportieren());
         jButtonExportPath.addActionListener(new BeobPfad());
         btnExtAdd.addActionListener(l -> {

@@ -1,7 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -33,7 +34,7 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
-        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
         if (!listePset.isEmpty()) {
@@ -175,7 +176,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.gridx = 2;
         c.weightx = 0;
         JButton button = new JButton();
-        button.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        button.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         button.addActionListener(new ZielBeobachter(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
         button.setToolTipText("Programm auswählen");
         gridbag.setConstraints(button, c);
