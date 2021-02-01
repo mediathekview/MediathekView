@@ -38,7 +38,6 @@ public class Icons {
     public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_CLEAR = GetIcon.getProgramIcon("button-clear.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_DEL = GetIcon.getProgramIcon("button-del.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_FILE_OPEN = GetIcon.getProgramIcon("button-file-open.png", 16, 16);
 
     // Icons TABBED_PANE
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", 32, 32);

@@ -1,6 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Icons;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
@@ -93,10 +94,11 @@ public class PanelEinstellungenErweitert extends JPanel {
     }
 
     private void setIcon() {
-        jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        var icon = IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16);
+        jButtonProgrammDateimanager.setIcon(icon);
+        jButtonProgrammVideoplayer.setIcon(icon);
+        jButtonProgrammUrl.setIcon(icon);
+        jButtonProgrammShutdown.setIcon(icon);
     }
 
     static private class BeobDoc implements DocumentListener {
