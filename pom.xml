@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>13.7.1</version>
+    <version>13.7.2</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -98,7 +98,7 @@
         <install4j.home>./install4j8.0.9</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
-        <kotlin.version>1.4.21-2</kotlin.version>
+        <kotlin.version>1.4.30</kotlin.version>
     </properties>
 
     <dependencies>
