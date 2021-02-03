@@ -27,7 +27,6 @@ import java.util.List;
 
 public class PanelFilmlisteLaden extends JPanel {
     private final List<JCheckBox> senderCbList = new ArrayList<>();
-    private final SenderFilmlistLoadApprover approver = SenderFilmlistLoadApprover.INSTANCE;
 
     public PanelFilmlisteLaden(boolean inSettingsDialog) {
         super();
@@ -46,7 +45,7 @@ public class PanelFilmlisteLaden extends JPanel {
 
         setupSenderList();
         //load initial settings
-        senderCbList.forEach(cb -> cb.setSelected(approver.isApproved(cb.getText())));
+        senderCbList.forEach(cb -> cb.setSelected(SenderFilmlistLoadApprover.isApproved(cb.getText())));
         //now add the item listeners for update
         senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
 
@@ -119,9 +118,9 @@ public class PanelFilmlisteLaden extends JPanel {
         var selected = cb.isSelected();
         var sender = cb.getText();
         if (selected)
-            approver.approve(sender);
+            SenderFilmlistLoadApprover.approve(sender);
         else
-            approver.deny(sender);
+            SenderFilmlistLoadApprover.deny(sender);
     }
 
     private void init() {

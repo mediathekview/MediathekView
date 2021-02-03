@@ -48,7 +48,6 @@ public class FilmListReader implements AutoCloseable {
     private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
-    private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
@@ -324,7 +323,7 @@ public class FilmListReader implements AutoCloseable {
                 checkPlayList(datenFilm);
 
                 //if user specified he doesn´t want to load this sender, skip...
-                if (!senderApprover.isApproved(datenFilm.getSender()))
+                if (!SenderFilmlistLoadApprover.isApproved(datenFilm.getSender()))
                     continue;
 
                 if (!loadTrailer) {
