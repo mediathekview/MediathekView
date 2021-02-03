@@ -1,20 +1,17 @@
 package mediathek.gui.actions;
 
-import mediathek.mainwindow.MediathekGui;
+import mediathek.update.ProgrammUpdateSuchen;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class SearchProgramUpdateAction extends AbstractAction {
-    private final MediathekGui mediathekGui;
-
-    public SearchProgramUpdateAction(MediathekGui mediathekGui) {
-        this.mediathekGui = mediathekGui;
+    public SearchProgramUpdateAction() {
         putValue(Action.NAME, "Nach Update suchen...");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        mediathekGui.searchForUpdateOrShowProgramInfos(false);
+        new ProgrammUpdateSuchen().checkVersion(true, false, false, false);
     }
 }

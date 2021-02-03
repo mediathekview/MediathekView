@@ -1,6 +1,6 @@
 package mediathek.update;
 
-import mediathek.config.Daten;
+import mediathek.tool.TimerPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +32,7 @@ public class AutomaticFilmlistUpdate implements Closeable {
 
     public void start() {
         logger.debug("AutomaticFilmlistUpdate Started.");
-        actionFuture = Daten.getInstance().getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::reloadFilmList), 12L, 12L, TimeUnit.HOURS);
+        actionFuture = TimerPool.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::reloadFilmList), 12L, 12L, TimeUnit.HOURS);
     }
 
     @Override

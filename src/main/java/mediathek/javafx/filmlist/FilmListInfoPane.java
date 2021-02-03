@@ -7,6 +7,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
+import mediathek.tool.MessageBus;
 
 import javax.swing.*;
 
@@ -25,13 +26,13 @@ public class FilmListInfoPane extends HBox {
         SwingUtilities.invokeLater(() -> daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                daten.getMessageBus().unsubscribe(this);
+                MessageBus.getMessageBus().unsubscribe(this);
                 Platform.runLater(() -> setVisible(false));
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                daten.getMessageBus().subscribe(this);
+                MessageBus.getMessageBus().subscribe(this);
                 Platform.runLater(() -> {
                     filmListCreationDateLabel.computeCreationDate();
                     setVisible(true);

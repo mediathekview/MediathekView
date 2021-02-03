@@ -8,7 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.MVHttpClient;
+import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;

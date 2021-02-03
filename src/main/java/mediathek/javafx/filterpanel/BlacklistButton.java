@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.BlacklistChangedEvent;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class BlacklistButton extends Button {
         });
 
         final var daten = Daten.getInstance();
-        final var messageBus = daten.getMessageBus();
+        final var messageBus = MessageBus.getMessageBus();
         messageBus.subscribe(this);
 
         activeProperty.setValue(isOn);

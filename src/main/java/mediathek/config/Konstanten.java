@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 640 * FileUtils.ONE_MB;
     public static final long LOW_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(13, 7, 0);
+    public static final Version MVVERSION = new Version(13,7,1);
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
     public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
@@ -44,6 +44,10 @@ public class Konstanten {
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
+    /**
+     * Maximum number of backup files to be stored.
+     */
+    public static final short MAX_NUM_BACKUP_FILE_COPIES = 5;
     public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
@@ -62,6 +66,7 @@ public class Konstanten {
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
+    public static final String ORF_TUTORIAL_LINK = "https://forum.mediathekview.de/topic/2546/anleitung-einstellungen-für-orf-download";
     // Dateien/Verzeichnisse
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis

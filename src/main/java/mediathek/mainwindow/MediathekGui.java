@@ -35,7 +35,6 @@ import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.LoadFilmListDialog;
-import mediathek.gui.dialog.about.AboutDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
@@ -55,7 +54,6 @@ import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
-import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
@@ -89,7 +87,7 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
-    protected static Logger logger = LogManager.getLogger(MediathekGui.class);
+    protected static final Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
      */
@@ -135,7 +133,7 @@ public class MediathekGui extends JFrame {
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private StatusBarController statusBarController;
-    private InfoDialog filmInfo; // Infos zum Film
+    private final InfoDialog filmInfo;
     private ProgramUpdateCheck programUpdateChecker;
     /**
      * Progress indicator thread for OS X and windows.
@@ -150,7 +148,7 @@ public class MediathekGui extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
-        searchProgramUpdateAction = new SearchProgramUpdateAction(this);
+        searchProgramUpdateAction = new SearchProgramUpdateAction();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MAINWINDOW));
 
@@ -187,15 +185,10 @@ public class MediathekGui extends JFrame {
         initializeMediaDbDialog();
 
         //register message bus handler
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();
-
-        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_BANDWIDTH_MONITOR));
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
-            getBandwidthMonitorController().setVisibility();
-        }
 
         setupNotificationCenter();
 
@@ -216,11 +209,19 @@ public class MediathekGui extends JFrame {
 
         setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
 
-        showVlcHintForAustrianUsers();
-
         setupShutdownHook();
 
         checkInvalidRegularExpressions();
+
+        logger.trace("Loading bandwidth monitor");
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
+            getBandwidthMonitorController().setVisibility();
+        }
+        logger.trace("Finished loading bandwidth monitor");
+
+        logger.trace("Loading info dialog");
+        filmInfo = new InfoDialog(this);
+        logger.trace("Finished loading info dialog");
     }
 
     /**
@@ -238,7 +239,7 @@ public class MediathekGui extends JFrame {
      * So we simply wait 30 seconds until we check.
      */
     private void checkInvalidRegularExpressions() {
-        Daten.getInstance().getTimerPool().schedule(() -> {
+        TimerPool.getTimerPool().schedule(() -> {
             if (Filter.regExpErrorsOccured()) {
                 final var regexStr = Filter.regExpErrorList.stream()
                         .reduce("", (p, e) ->
@@ -317,11 +318,6 @@ public class MediathekGui extends JFrame {
         }
 
         return bandwidthMonitor;
-    }
-
-    private void showVlcHintForAustrianUsers() {
-        var thread = new OrfSetupInformationThread();
-        daten.getTimerPool().schedule(thread, 10L, TimeUnit.SECONDS);
     }
 
     private void setupTaskbarMenu() {
@@ -487,9 +483,6 @@ public class MediathekGui extends JFrame {
     }
 
     public InfoDialog getFilmInfoDialog() {
-        if (filmInfo == null)
-            filmInfo = new InfoDialog(this);
-
         return filmInfo;
     }
 
@@ -624,7 +617,7 @@ public class MediathekGui extends JFrame {
      */
     private void setupUpdateCheck(boolean newState) {
         if (newState) {
-            programUpdateChecker = new ProgramUpdateCheck(daten);
+            programUpdateChecker = new ProgramUpdateCheck();
             programUpdateChecker.start();
         } else {
             endProgramUpdateChecker();
@@ -874,7 +867,7 @@ public class MediathekGui extends JFrame {
         if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
-        jMenuHilfe.add(new ShowProgramInfosAction(this));
+        jMenuHilfe.add(new ShowProgramInfosAction());
         if (officialLauncherInUse()) {
             jMenuHilfe.addSeparator();
             jMenuHilfe.add(new SetAppMemoryAction());
@@ -903,7 +896,7 @@ public class MediathekGui extends JFrame {
         action.setMenuItem(item);
 
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ShowAboutAction(this));
+        jMenuHilfe.add(new ShowAboutAction());
     }
 
     protected void initMenus() {
@@ -927,16 +920,6 @@ public class MediathekGui extends JFrame {
         manageAboAction = new ManageAboAction();
         tabFilme.fap.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
-    }
-
-    /**
-     * Display the About Box
-     */
-    public void showAboutDialog() {
-        AboutDialog dialog = new AboutDialog(this);
-        GuiFunktionen.centerOnScreen(dialog, false);
-        dialog.setVisible(true);
-        dialog.dispose();
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
@@ -988,6 +971,9 @@ public class MediathekGui extends JFrame {
             automaticFilmlistUpdate.close();
 
         showMemoryMonitorAction.closeMemoryMonitor();
+
+        if (bandwidthMonitor != null)
+            bandwidthMonitor.close();
 
         endProgramUpdateChecker();
 
@@ -1043,9 +1029,6 @@ public class MediathekGui extends JFrame {
 
         tabFilme.fap.filterDialog.dispose();
 
-        if (bandwidthMonitor != null)
-            bandwidthMonitor.close();
-
         Log.printRuntimeStatistics();
 
         dispose();
@@ -1068,7 +1051,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void shutdownTimerPool() {
-        var timerPool = daten.getTimerPool();
+        var timerPool = TimerPool.getTimerPool();
         timerPool.shutdown();
         try {
             if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))
@@ -1112,10 +1095,6 @@ public class MediathekGui extends JFrame {
      */
     protected void shutdownComputer() {
         //default is none
-    }
-
-    public void searchForUpdateOrShowProgramInfos(boolean infos) {
-        new ProgrammUpdateSuchen().checkVersion(!infos, infos, false);
     }
 
     /**

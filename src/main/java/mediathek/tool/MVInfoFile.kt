@@ -20,7 +20,6 @@ open class MVInfoFile {
 
         //calculate file size based on actual used URL
         val fileSize = FileSize.getFileSizeFromUrl(url)
-        val fileSizeStr = FileUtils.byteCountToDisplaySize(fileSize)
 
         val formatString = String.format("%%-%ds %%s", MAX_HEADER_LENGTH)
         var sb = StringBuilder()
@@ -30,7 +29,12 @@ open class MVInfoFile {
         sb = appendFormattedTableLine(sb, formatString, FILM_DATUM, film.sendeDatum)
         sb = appendFormattedTableLine(sb, formatString, FILM_ZEIT, film.sendeZeit)
         sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.dauer)
-        sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, fileSizeStr).append(System.lineSeparator())
+        if (fileSize > FileSize.INVALID_SIZE)
+            sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, FileUtils.byteCountToDisplaySize(fileSize))
+        else
+            sb.append(System.lineSeparator())
+
+        sb.append(System.lineSeparator())
         sb.append("Website")
         sb.append(System.lineSeparator())
         sb.append(film.websiteLink)

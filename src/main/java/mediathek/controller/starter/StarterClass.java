@@ -12,6 +12,7 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Datum;
+import mediathek.tool.MessageBus;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import org.apache.commons.io.FileUtils;
@@ -45,19 +46,22 @@ public class StarterClass {
     static boolean pruefen(Daten daten, DatenDownload datenDownload, Start start) {
         //prüfen ob der Download geklappt hat und die Datei existiert und eine min. Größe hat
         boolean ret = false;
+        final var filePath = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
+
         if (start != null) {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-                logger.error("Download fehlgeschlagen: 99,5% wurden nicht erreicht: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+                logger.error("Download fehlgeschlagen: 99,5% wurden nicht erreicht: {}", filePath);
+                logger.error("Erreichte Prozente: {}%", (start.percent / 10d));
 
                 return false;
             }
         }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (!file.exists()) {
-            logger.error("Download fehlgeschlagen, Datei existiert nicht: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Download fehlgeschlagen, Datei existiert nicht: {}", filePath);
         } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
-            logger.error("Download fehlgeschlagen, Datei zu klein:{}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Download fehlgeschlagen, Datei zu klein:{}", filePath);
         } else {
             if (datenDownload.isFromAbo()) {
                 daten.getAboHistoryController().zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
@@ -258,7 +262,7 @@ public class StarterClass {
     }
 
     static void notifyStartEvent(DatenDownload datenDownload) {
-        final var messageBus = Daten.getInstance().getMessageBus();
+        final var messageBus = MessageBus.getMessageBus();
 
         messageBus.publishAsync(new StartEvent());
 
@@ -360,13 +364,13 @@ public class StarterClass {
          */
         private void launchDownloadThread(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
-            daten.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
 
             Thread downloadThread;
 
             switch (datenDownload.art) {
                 case DatenDownload.ART_PROGRAMM -> {
-                    downloadThread = new ExternalProgramDownload(daten, datenDownload);
+                    downloadThread = new ExternalProgramDownload(datenDownload);
                     downloadThread.start();
                 }
                 case DatenDownload.ART_DOWNLOAD -> {

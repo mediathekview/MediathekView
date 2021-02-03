@@ -37,7 +37,7 @@
     <launcher name="mediathekview arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main"
-            vmParameters="-Xmx1280M --enable-preview -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+            vmParameters="-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication --enable-preview -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false"/>
         </classPath>

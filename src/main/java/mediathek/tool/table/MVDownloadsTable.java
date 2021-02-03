@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
+import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelDownload;
 
@@ -207,7 +208,7 @@ public class MVDownloadsTable extends ASelectableMVTable {
             setAutoCreateRowSorter(true);
             setSelected();
 
-            daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
         }
 
         @Override

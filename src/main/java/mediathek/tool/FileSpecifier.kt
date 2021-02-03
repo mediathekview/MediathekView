@@ -17,7 +17,7 @@ class FileSpecifier(var path: String, var fileName: String) {
             if (path.length + 10 > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
                 logger.error("Path too long: {}", path)
-                path = GuiFunktionen.getHomePath()
+                path = SystemUtils.USER_HOME
             }
             if (path.length + fileName.length > WIN_MAX_PATH_LENGTH) {
                 logger.error("FileSpecifier too long: {}", path)

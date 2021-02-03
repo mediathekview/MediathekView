@@ -1,7 +1,8 @@
 package mediathek.gui.dialog;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
 
@@ -63,7 +64,7 @@ public class DialogNewSet extends JDialog {
                 beenden();
             }
         });
-        jButtonSetHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonSetHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonSetHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
 
         EscapeKeyHandler.installHandler(this, () -> {

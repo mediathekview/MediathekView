@@ -4,8 +4,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mediathek.config.MVColor;
-import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.abo.DatenAbo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 public class Filter {
     /**
@@ -31,25 +30,25 @@ public class Filter {
     /**
      * Stores the regexp strings that were rejected as invalid.
      */
-    public static Set<String> regExpErrorList = new HashSet<>();
+    public static final Set<String> regExpErrorList = new HashSet<>();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
         // Filme findet, dann wäre das neue Abo hinfällig
 
-        String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER];
-        String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA];
+        String senderExistiert = aboExistiert.getSender();
+        String themaExistiert = aboExistiert.getThema();
 
-        String[] titelExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_TITEL].toLowerCase(), ",");
-        String[] themaTitelExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase(), ",");
-        String[] irgendwoExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase(), ",");
+        String[] titelExistiert = StringUtils.split(aboExistiert.getTitle().toLowerCase(), ",");
+        String[] themaTitelExistiert = StringUtils.split(aboExistiert.getThemaTitel().toLowerCase(), ",");
+        String[] irgendwoExistiert = StringUtils.split(aboExistiert.getIrgendwo().toLowerCase(), ",");
 
         // Abos sollen sich nicht nur in der Länge unterscheiden
-        String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA];
-        String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL];
-        String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
+        String themaPruefen = aboPruefen.getThema();
+        String titelPruefen = aboPruefen.getTitle();
+        String irgendwoPruefen = aboPruefen.getIrgendwo();
 
-        if (conditionExists(senderExistiert, aboPruefen.arr[DatenAbo.ABO_SENDER])) {
+        if (conditionExists(senderExistiert, aboPruefen.getSender())) {
             if (conditionExists(themaExistiert, themaPruefen)) {
                 if (titleConditionExists(titelExistiert, titelPruefen)) {
                     if (themaTitelConditionExists(themaTitelExistiert, themaPruefen, titelPruefen)) {
@@ -247,6 +246,28 @@ public class Filter {
     }
 
     /**
+     * Create pattern without using the cache.
+     * Used for interactive search field where cache pollution is not wanted.
+     * @param regExpStr the regexp pattern
+     * @return Pattern if successful, otherwise null.
+     */
+    public static Pattern makePatternNoCache(final String regExpStr) {
+        Pattern p;
+        if (isPattern(regExpStr)) {
+            try {
+                final String regexPattern = regExpStr.substring(2);
+                p = Pattern.compile(regexPattern,
+                        Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+            } catch (IllegalArgumentException ex) {
+                p = null;
+            }
+        } else
+            p = null;
+
+        return p;
+    }
+
+    /**
      * Check if we have errors
      *
      * @return true if there are errors, false otherwise
@@ -281,14 +302,12 @@ public class Filter {
     static class PatternCacheLoader extends CacheLoader<String, Pattern> {
 
         @Override
-        public Pattern load(@NotNull String pattern) throws IllegalArgumentException, PatternSyntaxException {
+        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
             logger.trace("COMPILING PATTERN: " + pattern);
             final String regexPattern = pattern.substring(2);
-            Pattern p;
-            p = Pattern.compile(regexPattern,
-                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
 
-            return p;
+            return Pattern.compile(regexPattern,
+                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
         }
     }
 }

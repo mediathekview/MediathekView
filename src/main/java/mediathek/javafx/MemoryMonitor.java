@@ -1,20 +1,18 @@
 package mediathek.javafx;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -26,13 +24,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MemoryMonitor extends Stage {
     private static final int TIMELINE_SIZE = 60;
-    private Timeline updateMemoryTimer;
     private final AtomicInteger time = new AtomicInteger();
+    private final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+    private Timeline updateMemoryTimer;
     private LongProperty totalMemory;
     private LongProperty freeMemory;
     private LongProperty maxMemory;
-    private final XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private NumberBinding usedMemory;
+    private LineChart<Number, Number> chart;
 
     public MemoryMonitor() {
         super();
@@ -54,6 +53,23 @@ public class MemoryMonitor extends Stage {
 
         setOnHiding(e -> updateMemoryTimer.stop());
         setOnShowing(e -> updateMemoryTimer.play());
+
+        addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            final Animation animation = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(1000));
+                    setInterpolator(Interpolator.EASE_OUT);
+                }
+
+                @Override
+                protected void interpolate(double frac) {
+                    Color vColor = new Color(1, 0, 0, 1 - frac);
+                    chart.setBackground(new Background(new BackgroundFill(vColor, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+            };
+            animation.play();
+            System.gc();
+        });
     }
 
     private long toMegabytes(long bytes) {
@@ -87,8 +103,9 @@ public class MemoryMonitor extends Stage {
         series.setName("Speicherverbrauch (MByte)");
 
         createUpdateTimer();
+        chart = createChart();
 
-        return new BorderPane(createChart(), createLabels(), null, null, null);
+        return new BorderPane(chart, createLabels(), null, null, null);
     }
 
     private Pane createLabels() {
@@ -110,7 +127,7 @@ public class MemoryMonitor extends Stage {
         return labels;
     }
 
-    private Region createChart() {
+    private LineChart<Number, Number> createChart() {
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("Laufzeit");
         xAxis.setForceZeroInRange(false);

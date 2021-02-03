@@ -1,6 +1,6 @@
 package mediathek.mac.touchbar;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

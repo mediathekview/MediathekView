@@ -11,6 +11,7 @@ import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 public class FilmTabInfoPane extends HBox {
@@ -28,15 +29,15 @@ public class FilmTabInfoPane extends HBox {
                 new VerticalSeparator());
 
         if (isVisible())
-            daten.getMessageBus().subscribe(this);
+            MessageBus.getMessageBus().subscribe(this);
 
         visibleProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    daten.getMessageBus().subscribe(this);
+                    MessageBus.getMessageBus().subscribe(this);
                 } else {
-                    daten.getMessageBus().unsubscribe(this);
+                    MessageBus.getMessageBus().unsubscribe(this);
                 }
             }
         });

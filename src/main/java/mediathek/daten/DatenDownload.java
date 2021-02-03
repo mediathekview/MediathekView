@@ -1,10 +1,10 @@
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
@@ -227,7 +227,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                         d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             }
         }
-        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public static String getTextBandbreite(long b) {
@@ -376,7 +376,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     public void interruptRestart() {
         arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
-        Daten.getInstance().getMessageBus().publishAsync(new RestartDownloadEvent());
+        MessageBus.getMessageBus().publishAsync(new RestartDownloadEvent());
     }
 
     public boolean notStarted() {
@@ -413,7 +413,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                     arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
@@ -678,10 +678,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
             if (abo != null) {
                 //Abos: den Namen des Abos eintragen
-                arr[DatenDownload.DOWNLOAD_ABO] = abo.arr[DatenAbo.ABO_NAME];
+                arr[DatenDownload.DOWNLOAD_ABO] = abo.getName();
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und Abopfad an den Pfad anhängen
-                    path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
+                    path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.getZielpfad(), true));
                 }
             } else //Downloads
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {

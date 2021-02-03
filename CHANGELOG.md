@@ -1,3 +1,24 @@
+<u>**13.7.1**</u>
+
+**ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**
+
+- Abfrage der Filmgrößen im "Film speichern" Dialog beschleunigt.
+- Performance des Filme-Tab bei Nutzung deutlich verbessert.
+- Geschwindigkeit des Filterns nach Sendern wurde deutlich verbessert.
+- Speicherverbrauch reduziert
+- Ausgabe der ffmpeg-Informationen während eines Downloads wird nur noch bei aktiviertem erweiterten Loggen ausgegeben.  
+- **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
+- **BUGFIX:** "URL kopieren" Kontextmenü zeigt bei Playlists wieder unterschiedliche Auflösungen an.
+- **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.
+- **BUGFIX:** Livestreams werden nun nicht mehr bei eingeschränktem Laden der Filmliste oder durch den Zeitraum-Filter herausgefiltert.
+- **BUGFIX:** Infodatei zeigt statt -1 nun keine Größeninformationen mehr an, wenn diese nicht ermittelt werden kann.
+- **BUGFIX:** "Abos verwalten"-Dialog konnte nicht mit Tastenkombination oder Escape geschlossen werden.
+- **BUGFIX:** Fehlerhafte RegExp im Suchfeld lassen das Programm nicht mehr einfrieren, ungültige RegExp im Suchfeld werden nicht mehr auf die Filmliste angewendet.
+- **BUGFIX:** Es können nun keine "fehlerhaften" Einträge im Filter-Zeitraum Spinner eingeben werden.
+- **BUGFIX:** Markierung eines Films als gesehen in der Liste hat eine höhere Priorität als Geoblocking.
+- **FEATURE:** Abos verwalten Dialog nutzt nun zur Darstellung des Aktiv/Inaktiv-Zustands keine eigenen Icons mehr.
+- **FEATURE:** Filter-Zeitraum Spinner schlägt nun bei Erreichen der Start- oder Endwerte um (wraparound).
+
 <u>**13.7**</u>
 
 - **Erstellt vor dem Update zwingend ein Backup eurer Konfiguration! 

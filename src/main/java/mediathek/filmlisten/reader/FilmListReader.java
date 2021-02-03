@@ -12,6 +12,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.tool.*;
+import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -44,7 +45,7 @@ public class FilmListReader implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(FilmListReader.class);
     private static final String THEMA_LIVE = "Livestream";
     private final EventListenerList listeners = new EventListenerList();
-    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
+    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
     private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
@@ -346,13 +347,15 @@ public class FilmListReader implements AutoCloseable {
                         continue;
                 }
 
-                listeFilme.importFilmliste(datenFilm);
+                listeFilme.addAndInitialize(datenFilm);
 
                 if (milliseconds > 0) {
-                    // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
-                    // wenns drin bleibt, kann mans noch ändern
-                    if (!checkDate(datenFilm)) {
-                        listeFilme.remove(datenFilm);
+                    if (!datenFilm.isLivestream()) {
+                        // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
+                        // wenns drin bleibt, kann mans noch ändern
+                        if (!checkDate(datenFilm)) {
+                            listeFilme.remove(datenFilm);
+                        }
                     }
                 }
             }
@@ -487,7 +490,7 @@ public class FilmListReader implements AutoCloseable {
     private void notifyStart(String url) {
         progress = 0;
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.start(new ListenerFilmeLadenEvent(url, "", max, 0, 0, false));
+            l.start(new ListenerFilmeLadenEvent(url, "", max, 0, false));
         }
     }
 

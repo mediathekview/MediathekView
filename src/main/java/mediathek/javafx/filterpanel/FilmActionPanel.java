@@ -23,11 +23,11 @@ import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -40,17 +40,8 @@ import java.util.stream.Collectors;
  * property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
-  private static final Logger LOG = LoggerFactory.getLogger(FilmActionPanel.class);
-  private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
-  private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
-  private static final String STYLE_TEXT_FILL_RED = "-fx-text-fill: red";
-  private static final String STYLE_TEXT_FILL_BLUE = "-fx-text-fill: blue";
-  private static final String STYLE_TEXT_FILL_BLACK = "-fx-text-fill: black";
-  private final Daten daten;
-  private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
-  private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
-  private final Tooltip themaTitelTooltip = new Tooltip("Thema/Titel durchsuchen");
-  private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
+  private static final Logger logger = LogManager.getLogger();
+  private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
@@ -81,8 +72,7 @@ public class FilmActionPanel {
   private FXFilmToolBar toolBar;
   private CommonViewSettingsPane viewSettingsPane;
 
-  public FilmActionPanel(Daten daten) {
-    this.daten = daten;
+  public FilmActionPanel() {
     this.filterConfig = new FilterConfiguration();
 
     setupViewSettingsPane();
@@ -99,7 +89,7 @@ public class FilmActionPanel {
     setupDeleteCurrentFilterButton();
     setupAddNewFilterButton();
 
-    daten.getMessageBus().subscribe(this);
+      MessageBus.getMessageBus().subscribe(this);
   }
 
   private void setupAddNewFilterButton() {
@@ -170,8 +160,8 @@ public class FilmActionPanel {
 
   private FilterDTO renameCurrentFilter(String newValue) {
     FilterDTO currentFilter = filterConfig.getCurrentFilter();
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
+    if (logger.isDebugEnabled()) {
+      logger.debug(
           "Can't find a filter with name \"{}\". Renaming the current filter \"{}\" to it.",
           newValue,
           currentFilter.name());
@@ -250,7 +240,7 @@ public class FilmActionPanel {
         }
 
     } catch (Exception exception) {
-      LOG.debug(
+      logger.debug(
           "Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",
           exception);
     }
@@ -258,7 +248,7 @@ public class FilmActionPanel {
     try {
       viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
     } catch (Exception exception) {
-      LOG.debug(
+      logger.debug(
           "Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
           exception);
     }
@@ -314,42 +304,36 @@ public class FilmActionPanel {
     Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(false));
   }
 
-  private void checkPatternValidity() {
-    toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_RED);
-
-    // Schriftfarbe ändern wenn eine RegEx
-    final String text = toolBar.jfxSearchField.getText();
-    if (Filter.isPattern(text)) {
-      if (Filter.makePattern(text) == null) {
-        // soll Pattern sein, ist aber falsch
-        toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_RED);
-      } else {
-        toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_BLUE);
-      }
-    } else {
-      toolBar.jfxSearchField.setStyle(STYLE_TEXT_FILL_BLACK);
+    private void searchFieldFinalAction() {
+        final var text = toolBar.jfxSearchField.getText();
+        if (Filter.isPattern(text)) {
+            //only invoke filtering if we have regexp pattern and the pattern is valid
+            if (Filter.makePatternNoCache(text) != null) {
+                invokeTableViewFiltering();
+            }
+        } else {
+            invokeTableViewFiltering();
+        }
     }
-  }
 
-  private void setupSearchField() {
-    toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+    private void setupSearchField() {
+        toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
 
-    final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
+        final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
+        roSearchStringProperty.bind(textProperty);
 
-    pause2.setOnFinished(evt -> checkPatternValidity());
-    textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
+        finalActionTrans.setOnFinished(e -> searchFieldFinalAction());
+        textProperty.addListener((observable, oldValue, newValue) -> finalActionTrans.playFromStart());
+    }
 
-    pause3.setOnFinished(
-        evt ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null)));
-    textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
+    /**
+     * Reload table view to apply filter text.
+     */
+    private void invokeTableViewFiltering() {
+        SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null));
+    }
 
-    roSearchStringProperty.bind(textProperty);
-  }
-
-  private void setupSearchThroughDescriptionButton() {
+    private void setupSearchThroughDescriptionButton() {
     final boolean enabled =
         ApplicationConfiguration.getConfiguration()
             .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
@@ -374,15 +358,13 @@ public class FilmActionPanel {
   }
 
   private void setupForRegularSearch() {
-    toolBar.jfxSearchField.setTooltip(themaTitelTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
 
     toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchRegular);
   }
 
   private void setupForIrgendwoSearch() {
-    toolBar.jfxSearchField.setTooltip(irgendwoTooltip);
-    toolBar.jfxSearchField.setPromptText(PROMPT_IRGENDWO);
+    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.IRGENDWO);
 
     toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchIrgendwo);
   }
@@ -397,8 +379,7 @@ public class FilmActionPanel {
                 .selectedProperty()
                 .set(toolBar.btnShowBookmarkedMovies.isSelected()));
     showBookMarkedOnly.addListener(
-        (observable, oldValue, newValue) -> {
-          boolean benabled = newValue;
+        (observable, oldValue, benabled) -> {
           toolBar.btnShowBookmarkedMovies.setTooltip(
               benabled ? bookmarklistSelected : bookmarklistDeselected);
           toolBar.btnShowBookmarkedMovies.setSelected(benabled);
@@ -408,72 +389,62 @@ public class FilmActionPanel {
         });
   }
 
-  public void updateThemaBox() {
-    final var items = themaBox.getItems();
-    items.clear();
-    items.add("");
+    public void updateThemaBox() {
+        final var items = themaBox.getItems();
+        items.clear();
+        items.add("");
 
-    List<String> finalList = new ArrayList<>();
-    List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+        List<String> finalList = new ArrayList<>();
+        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
 
-    if (selectedSenders.isEmpty()) {
-      final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
-      finalList.addAll(lst);
-      lst.clear();
-    } else {
-      for (String sender : selectedSenders) {
-        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
-        finalList.addAll(lst);
-        lst.clear();
-      }
+        final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
+        if (selectedSenders.isEmpty()) {
+            final List<String> lst = blackList.getThemen("");
+            finalList.addAll(lst);
+            lst.clear();
+        } else {
+            for (String sender : selectedSenders) {
+                final List<String> lst = blackList.getThemen(sender);
+                finalList.addAll(lst);
+                lst.clear();
+            }
+        }
+
+        items.addAll(finalList.stream()
+                        .distinct()
+                        .sorted(GermanStringSorter.getInstance())
+                        .collect(Collectors.toList()));
+        finalList.clear();
+
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(items);
+        themaBox.getSelectionModel().select(0);
     }
-
-    items.addAll(
-        finalList.stream()
-            .distinct()
-            .sorted(GermanStringSorter.getInstance())
-            .collect(Collectors.toList()));
-    finalList.clear();
-
-    themaSuggestionProvider.clearSuggestions();
-    themaSuggestionProvider.addPossibleSuggestions(items);
-    themaBox.getSelectionModel().select(0);
-  }
 
   private void setupToolBar() {
     toolBar = new FXFilmToolBar();
-    toolBar.btnDownloadFilmList.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
+    toolBar.btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().performFilmListLoadOperation(false)));
     toolBar.btnFilmInfo.setOnAction(
         e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
-    toolBar.btnPlay.setOnAction(
-        evt ->
+    toolBar.btnPlay.setOnAction(evt ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
-    toolBar.btnRecord.setOnAction(
-        e ->
+    toolBar.btnRecord.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-    toolBar.btnBookmark.setOnAction(
-        e ->
+    toolBar.btnBookmark.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkFilmAction.actionPerformed(null)));
-    toolBar.btnManageBookMarks.setOnAction(
-        e ->
+    toolBar.btnManageBookMarks.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkManageListAction.actionPerformed(null)));
-    toolBar.btnManageAbos.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
-                () -> {
+    toolBar.btnManageAbos.setOnAction(e ->
+            SwingUtilities.invokeLater(() -> {
                   if (manageAboAction.isEnabled()) manageAboAction.actionPerformed(null);
                 }));
-    toolBar.btnShowFilter.setOnAction(
-        e ->
-            SwingUtilities.invokeLater(
-                () -> {
+    toolBar.btnShowFilter.setOnAction(e ->
+            SwingUtilities.invokeLater(() -> {
                   if (filterDialog != null) {
                     filterDialog.setVisible(
                         !filterDialog.isVisible()); // Toggle Dialog display on button press
@@ -481,30 +452,28 @@ public class FilmActionPanel {
                 }));
   }
 
-  public Scene getFilmActionPanelScene() {
-    setupToolBar();
+    public Scene getFilmActionPanelScene() {
+        setupToolBar();
 
-    setupSearchField();
+        setupSearchField();
 
-    setupSearchThroughDescriptionButton();
+        setupSearchThroughDescriptionButton();
 
-    setupShowBookmarkedMoviesButton();
+        setupShowBookmarkedMoviesButton();
 
-    daten
-        .getFilmeLaden()
-        .addAdListener(
-            new ListenerFilmeLaden() {
-              @Override
-              public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(true));
-              }
+        Daten.getInstance().getFilmeLaden().addAdListener(
+                new ListenerFilmeLaden() {
+                    @Override
+                    public void start(ListenerFilmeLadenEvent event) {
+                        Platform.runLater(() -> toolBar.setDisable(true));
+                    }
 
-              @Override
-              public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> toolBar.setDisable(false));
-              }
-            });
+                    @Override
+                    public void fertig(ListenerFilmeLadenEvent event) {
+                        Platform.runLater(() -> toolBar.setDisable(false));
+                    }
+                });
 
-    return new Scene(toolBar);
-  }
+        return new Scene(toolBar);
+    }
 }

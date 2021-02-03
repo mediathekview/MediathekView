@@ -5,8 +5,8 @@ import javafx.scene.control.Alert;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.MVHttpClient;
 import mediathek.tool.Version;
+import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.javafx.FXErrorDialog;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,22 +32,29 @@ public class ProgrammUpdateSuchen {
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
     private final ArrayList<String[]> listInfos = new ArrayList<>();
 
-    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
-        // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
+    /**
+     * Prüft auf neue Version; Updates und Programminfos.
+     * @param anzeigen wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
+     * @param showProgramInformation show program info dialog
+     * @param showAllInformation show all(outdated) infos
+     * @param silent If true, do not show no program info dialog
+     */
+    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation,
+                             boolean silent) {
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
         opt.ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
-                    showProgramInformation(showAllInformation);
+                    showProgramInformation(showAllInformation, silent);
 
-                if (remoteProgramInfo.version().isInvalid()) {
+                if (remoteProgramInfo.getVersion().isInvalid()) {
                     Exception ex = new RuntimeException("progInfo.version() is invalid");
                     Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("progInfo.version() is invalid");
                 } else {
-                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.version())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.version());
+                    if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.getVersion())) {
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.getVersion());
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {
@@ -67,7 +74,7 @@ public class ProgrammUpdateSuchen {
         });
     }
 
-    private void displayInfoMessages(boolean showAll) {
+    private void displayInfoMessages(boolean showAll, boolean silent) {
         //display available info...
         try {
             int angezeigt = 0;
@@ -94,6 +101,10 @@ public class ProgrammUpdateSuchen {
                 dlg.setVisible(true);
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
             }
+            else {
+                if (!silent)
+                    displayNoNewInfoMessage();
+            }
         } catch (Exception ex) {
             logger.error("displayInfoMessages failed", ex);
         }
@@ -103,18 +114,18 @@ public class ProgrammUpdateSuchen {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText(UPDATE_SEARCH_TITLE);
-            alert.setContentText("Es liegen keine Programminfos vor.");
+            alert.setHeaderText("Programminformationen");
+            alert.setContentText("Es liegen keine aktuellen Informationen vor.");
             alert.showAndWait();
         });
     }
 
-    private void showProgramInformation(boolean showAll) {
+    private void showProgramInformation(boolean showAll, boolean silent) {
         if (listInfos.isEmpty()) {
             if (showAll)
                 displayNoNewInfoMessage();
         } else
-            displayInfoMessages(showAll);
+            displayInfoMessages(showAll, silent);
     }
 
     /**

@@ -5,6 +5,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmSize;
+import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,9 +16,52 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MVFilmTable extends ASelectableMVTable {
-    private static final long serialVersionUID = -5362792359176783146L;
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
+
+    public MVFilmTable() {
+        super();
+        setAutoCreateRowSorter(false);
+
+        addPropertyChangeListener("model", evt -> {
+            //System.out.println("TABLE MODEL CHANGED");
+            if (sorter == null) {
+                sorter = new MyRowSorter<>(getModel());
+                //sorter.addRowSorterListener(evt1 -> System.out.println("SORT ORDER HAS CHANGED"));
+            }
+            setRowSorter(sorter);
+            sorter.setModel(getModel());
+        });
+
+    }
+
+    @Override
+    protected void setSelected() {
+        boolean found = false;
+
+        if (selIndexes != null) {
+            int r;
+            selectionModel.setValueIsAdjusting(true);
+            final var tModel = (TModelFilm) getModel();
+            for (int i : selIndexes) {
+                r = tModel.getModelRowForFilmNumber(i);
+                if (r >= 0) {
+                    // ansonsten gibts die Zeile nicht mehr
+                    r = convertRowIndexToView(r);
+                    addRowSelectionInterval(r, r);
+                    found = true;
+                }
+            }
+            if (!found && selRow >= 0 && this.getRowCount() > selRow) {
+                setRowSelectionInterval(selRow,selRow);
+            } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
+                final var rowCount = tModel.getRowCount() - 1;
+                setRowSelectionInterval(rowCount, rowCount);
+            }
+            selectionModel.setValueIsAdjusting(false);
+        }
+        selIndexes = null;
+    }
 
     @Override
     protected void loadDefaultFontSize() {
@@ -35,22 +79,6 @@ public class MVFilmTable extends ASelectableMVTable {
         var config = ApplicationConfiguration.getConfiguration();
         final var fontSize = getDefaultFont().getSize2D();
         config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
-    }
-
-    public MVFilmTable() {
-        super();
-        setAutoCreateRowSorter(false);
-
-        addPropertyChangeListener("model", evt -> {
-            //System.out.println("TABLE MODEL CHANGED");
-            if (sorter == null) {
-                sorter = new MyRowSorter<>(getModel());
-                //sorter.addRowSorterListener(evt1 -> System.out.println("SORT ORDER HAS CHANGED"));
-            }
-            setRowSorter(sorter);
-            sorter.setModel(getModel());
-        });
-
     }
 
     @Override

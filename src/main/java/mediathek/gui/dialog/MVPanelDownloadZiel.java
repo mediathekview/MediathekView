@@ -1,5 +1,7 @@
 package mediathek.gui.dialog;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
@@ -37,7 +39,7 @@ public class MVPanelDownloadZiel extends JPanel {
         parent = p;
         datenDownload = download;
         letztenPfadAnzeigen = letzterPfad;
-        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
          jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());

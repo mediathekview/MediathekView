@@ -32,7 +32,8 @@ public class FXFilmToolBar extends ToolBar {
 
   @FXML Button btnShowFilter;
 
-  @FXML JFXSearchPanel jfxSearchField;
+  @FXML
+  FXSearchControl jfxSearchField;
 
   @FXML ToggleButton btnSearchThroughDescription;
 

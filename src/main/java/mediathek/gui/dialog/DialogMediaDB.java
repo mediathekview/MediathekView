@@ -1,6 +1,6 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -11,6 +11,7 @@ import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.tool.*;
+import mediathek.tool.cellrenderer.CellRendererMediaDB;
 import mediathek.tool.models.TModelMediaDB;
 import mediathek.tool.table.MVMediaDbTable;
 import mediathek.tool.table.MVTable;
@@ -28,7 +29,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class DialogMediaDB extends JDialog {
     private final JFrame parent;
     private final Daten daten;
@@ -58,7 +58,7 @@ public class DialogMediaDB extends JDialog {
         daten = Daten.getInstance();
         initComponents();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         this.parent = pparent;
         this.addWindowListener(new WindowAdapter() {
@@ -95,7 +95,7 @@ public class DialogMediaDB extends JDialog {
 
         jButtonIndex.addActionListener(e -> daten.getListeMediaDB().createMediaDB(""));
 
-        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> searchFilmInDb());
         jButtonBeenden.addActionListener(e -> beenden());
@@ -117,7 +117,7 @@ public class DialogMediaDB extends JDialog {
 
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        daten.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
+        MessageBus.getMessageBus().publishAsync(new MediaDbDialogVisibleEvent());
     }
 
     public void tabelleSpeichern() {
@@ -285,7 +285,7 @@ public class DialogMediaDB extends JDialog {
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
+            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
 

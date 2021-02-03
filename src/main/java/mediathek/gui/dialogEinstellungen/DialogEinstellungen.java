@@ -116,7 +116,7 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void initPanels() {
-        panelEinstellungen = new PanelEinstellungen(daten);
+        panelEinstellungen = new PanelEinstellungen();
         panelDownload = new PanelDownload();
         panelMediaDB = new PanelMediaDB(daten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert();

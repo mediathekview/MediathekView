@@ -4,7 +4,7 @@ import com.thizzer.jtouchbar.JTouchBar;
 import com.thizzer.jtouchbar.common.ImageName;
 import com.thizzer.jtouchbar.item.TouchBarItem;
 import com.thizzer.jtouchbar.item.view.TouchBarButton;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import mediathek.config.Daten;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.mac.touchbar.TouchBarUtils;
@@ -15,9 +15,20 @@ import javax.swing.*;
 public class TabDownloadsMac extends GuiDownloads {
     public TabDownloadsMac(Daten aDaten, MediathekGui mediathekGui) {
         super(aDaten, mediathekGui);
+        if (TouchBarUtils.isTouchBarSupported())
+            setupTouchBar();
     }
 
     @Override
+    public void showTouchBar() {
+        touchBar.show(mediathekGui);
+    }
+
+    @Override
+    public void hideTouchBar() {
+        touchBar.hide(mediathekGui);
+    }
+
     protected void setupTouchBar() {
         touchBar = new JTouchBar();
         touchBar.setCustomizationIdentifier("tabDownloads");

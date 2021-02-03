@@ -1,8 +1,8 @@
 package mediathek.gui.dialog;
 
-import mediathek.config.Icons;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
          setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(l -> {
@@ -97,7 +97,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
                 if (!jTextFieldProgramm.getText().equals("")) {
                     chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
                 } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

@@ -1,5 +1,7 @@
 package mediathek.gui.dialog;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
@@ -61,7 +63,7 @@ public class DialogAddMoreDownload extends JDialog {
             beenden();
         });
 
-        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonPath.addActionListener(l -> {
             var initialDirectory = "";
             var cbItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();

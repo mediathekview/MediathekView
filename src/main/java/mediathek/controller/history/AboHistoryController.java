@@ -1,14 +1,18 @@
 package mediathek.controller.history;
 
-import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.gui.messages.history.AboHistoryChangedEvent;
 import mediathek.tool.FileUtils;
+import mediathek.tool.MessageBus;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -30,9 +34,9 @@ public class AboHistoryController {
     private Path urlPath;
 
     public AboHistoryController() {
-        final var settingsDir = Daten.getSettingsDirectory_String();
+        final var settingsDir = StandardLocations.getSettingsDirectory();
         try {
-            urlPath = Paths.get(settingsDir).resolve(FILENAME);
+            urlPath = settingsDir.resolve(FILENAME);
         } catch (InvalidPathException e) {
             logger.error("Path resolve failed for {},{}", settingsDir, FILENAME);
             urlPath = null;
@@ -46,7 +50,7 @@ public class AboHistoryController {
     }
 
     private void sendChangeMessage() {
-        Daten.getInstance().getMessageBus().publishAsync(new AboHistoryChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new AboHistoryChangedEvent());
     }
 
     /**

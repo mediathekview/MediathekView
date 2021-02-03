@@ -1,13 +1,15 @@
 package mediathek.gui.dialog.reset;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.MessageBus;
 import mediathek.tool.swing.MultilineLabel;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -16,7 +18,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class ResetSettingsPanel extends JPanel {
     private static final String RESET_MESSAGE = "<html>Es werden <b>ALLE</b> von Ihnen erzeugten Änderungen gelöscht.<br>" +
             "Möchten Sie wirklich alle Einstellungen zurücksetzen?<br></html>";
@@ -24,12 +25,12 @@ public class ResetSettingsPanel extends JPanel {
     public ResetSettingsPanel(JFrame parent) {
         initComponents();
 
-        jButtonHilfeReset.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfeReset.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
             GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), ListePsetVorlagen.getStandarset(parent, true), true);
-            Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
         });
         jButtonResetAll.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parent, RESET_MESSAGE, "Einstellungen zurücksetzen", JOptionPane.YES_NO_OPTION);

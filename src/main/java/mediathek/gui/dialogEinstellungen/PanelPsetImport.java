@@ -1,15 +1,13 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TextCopyPasteHandler;
 import mediathek.tool.models.TModel;
@@ -27,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelPsetImport extends PanelVorlage {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
     private static final Logger logger = LogManager.getLogger();
@@ -40,7 +37,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void init() {
         jButtonAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-        jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(e -> tabelleLaden());
         jButtonImportDatei.setEnabled(false);
@@ -211,8 +208,8 @@ public class PanelPsetImport extends PanelVorlage {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
-                if (jTextFieldDatei.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                if (jTextFieldDatei.getText().isEmpty()) {
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 } else {
                     chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
                 }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
     private final FilmListMetaData metaData = new FilmListMetaData();
@@ -44,10 +43,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     public ObservableList<String> getSenders() {
         return obs_senderList;
-    }
-
-    public synchronized void importFilmliste(DatenFilm film) {
-        addInit(film);
     }
 
     /**
@@ -79,10 +74,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
         hashNewFilms.clear();
 
-        newFilmsList.forEach(this::addInit);
+        newFilmsList.forEach(this::addAndInitialize);
     }
 
-    private void addInit(DatenFilm film) {
+    public synchronized void addAndInitialize(DatenFilm film) {
         film.init();
         add(film);
     }
@@ -98,10 +93,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         metaData.setId(meta.getId());
     }
 
-    public synchronized DatenFilm getFilmByUrl(final String url) {
-        return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url)).findAny().orElse(null);
-    }
-    
     /**
      * Find movie with given url and sendername
      * @param url    String wiht URL

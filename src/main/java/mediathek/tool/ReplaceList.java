@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 
 import java.io.File;
@@ -17,7 +16,7 @@ public final class ReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public static List<String[]> list = new LinkedList<>();
+    public static final List<String[]> list = new LinkedList<>();
 
     public static void init() {
         list.clear();
@@ -36,7 +35,7 @@ public final class ReplaceList {
             // hat der Nutzer als Suchbegriff "leer" eingegeben, dann weg damit
             if (strReplace[0].isEmpty()) {
                 it.remove();
-                Daten.getInstance().getMessageBus().publishAsync(new ReplaceListChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new ReplaceListChangedEvent());
                 continue;
             }
 

@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
-import mediathek.config.Icons;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
@@ -32,7 +32,7 @@ public class PanelFilmlisteLaden extends JPanel {
     public PanelFilmlisteLaden(boolean inSettingsDialog) {
         super();
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         initComponents();
         init();
@@ -127,7 +127,7 @@ public class PanelFilmlisteLaden extends JPanel {
     private void init() {
         initRadio();
 
-        jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonDateiAuswaehlen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonDateiAuswaehlen.addActionListener(l -> {
             var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
             if (loadFile != null) {
@@ -143,7 +143,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 else
                     GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
 
-                Daten.getInstance().getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
             }
         };
         jRadioButtonManuell.addActionListener(listener);

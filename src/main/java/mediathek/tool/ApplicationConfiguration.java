@@ -1,7 +1,7 @@
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.StandardLocations;
 import mediathek.daten.GeoblockingField;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -44,8 +44,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
             "application.ui.download.tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
-    public static final String APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE =
-            "application.http_download.file_buffer_size";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
             "application.notifications.show_native";
@@ -78,8 +76,7 @@ public class ApplicationConfiguration {
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
-    private static final Logger logger = LogManager.getLogger(ApplicationConfiguration.class);
-    private static ApplicationConfiguration ourInstance;
+    private static final Logger logger = LogManager.getLogger();
     private XMLConfiguration config;
     private FileHandler handler;
     /**
@@ -97,9 +94,7 @@ public class ApplicationConfiguration {
     }
 
     public static ApplicationConfiguration getInstance() {
-        if (ourInstance == null) ourInstance = new ApplicationConfiguration();
-
-        return ourInstance;
+        return ConfigHolder.INSTANCE;
     }
 
     public static Configuration getConfiguration() {
@@ -121,7 +116,7 @@ public class ApplicationConfiguration {
     private void createFileHandler() {
         handler = new FileHandler(config);
         handler.setEncoding("UTF-8");
-        final String path = Daten.getSettingsDirectory_String() + File.separatorChar;
+        final String path = StandardLocations.getSettingsDirectory().toString() + File.separatorChar;
 
         handler.setPath(path + "settings.xml");
     }
@@ -175,6 +170,13 @@ public class ApplicationConfiguration {
         }
     }
 
+    /**
+     * Part of the Bill Pugh Singleton implementation
+     */
+    private static class ConfigHolder {
+        private static final ApplicationConfiguration INSTANCE = new ApplicationConfiguration();
+    }
+
     public static class FilmList {
         public static final String LOAD_TRAILER = "filmlist.load.trailer";
         public static final String LOAD_AUDIO_DESCRIPTION = "filmlist.load.audio_description";
@@ -206,6 +208,12 @@ public class ApplicationConfiguration {
         public static final String VISIBLE = "application.ui.filter_dialog.visible";
     }
 
+    public static class FilmInfoDialog {
+        public static final String FILM_INFO_VISIBLE = "film.information.visible";
+        public static final String FILM_INFO_LOCATION_X = "film.information.location.x";
+        public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+    }
+
     /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case
      * this listener is called several times in a row the timer will get reset in order to ensure that
@@ -213,21 +221,15 @@ public class ApplicationConfiguration {
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
-            future =
-                    Daten.getInstance()
-                            .getTimerPool()
-                            .schedule(
-                                    () -> {
-                                        try {
-                                            logger.trace("Writing app configuration file");
-                                            handler.save();
-                                        } catch (ConfigurationException e) {
-                                            logger.error("writing app config file:", e);
-                                        }
-                                        future = null;
-                                    },
-                                    5,
-                                    TimeUnit.SECONDS);
+            future = TimerPool.getTimerPool().schedule(() -> {
+                try {
+                    logger.trace("Writing app configuration file");
+                    handler.save();
+                } catch (ConfigurationException e) {
+                    logger.error("writing app config file:", e);
+                }
+                future = null;
+            }, 5, TimeUnit.SECONDS);
         }
 
         @Override

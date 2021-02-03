@@ -10,6 +10,7 @@ import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.InfoLabel.*;
 import mediathek.javafx.VerticalSeparator;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 
@@ -35,15 +36,15 @@ public class DownloadTabInformationLabel extends HBox {
 
     private void setupListeners() {
         if (isVisible())
-            daten.getMessageBus().subscribe(this);
+            MessageBus.getMessageBus().subscribe(this);
 
         visibleProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    daten.getMessageBus().subscribe(this);
+                    MessageBus.getMessageBus().subscribe(this);
                 } else {
-                    daten.getMessageBus().unsubscribe(this);
+                    MessageBus.getMessageBus().unsubscribe(this);
                 }
             }
         });

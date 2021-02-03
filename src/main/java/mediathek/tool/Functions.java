@@ -81,15 +81,6 @@ public class Functions {
         return getOs().toString();
     }
 
-    public static String[] getJavaVersion() {
-        String[] ret = new String[4];
-        ret[0] = "Vendor: " + System.getProperty("java.vendor");
-        ret[1] = "VMname: " + System.getProperty("java.vm.name");
-        ret[2] = "Version: " + System.getProperty("java.version");
-        ret[3] = "Runtimeversion: " + System.getProperty("java.runtime.version");
-        return ret;
-    }
-
     public enum OperatingSystemType {
 
         UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac");

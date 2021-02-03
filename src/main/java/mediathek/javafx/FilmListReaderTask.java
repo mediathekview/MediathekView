@@ -5,6 +5,7 @@ import mediathek.config.Daten;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.messages.FilmListReadStartEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 
 public class FilmListReaderTask extends Task<Void> {
     private final Daten daten;
@@ -16,7 +17,7 @@ public class FilmListReaderTask extends Task<Void> {
 
     @Override
     protected Void call() {
-        daten.getMessageBus().publishAsync(new FilmListReadStartEvent());
+        MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
 
         updateProgress(-1, 4);
         updateMessage("Lese lokale Filmliste");

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Region?>
 <?import mediathek.javafx.filterpanel.BlacklistButton?>
 <?import mediathek.javafx.filterpanel.EditBlacklistButton?>
-<?import mediathek.javafx.filterpanel.JFXSearchPanel?>
+<?import mediathek.javafx.filterpanel.FXSearchControl?>
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
@@ -115,7 +115,7 @@
 
     <VerticalSeparator/>
 
-    <JFXSearchPanel fx:id="jfxSearchField"/>
+    <FXSearchControl fx:id="jfxSearchField"/>
 
     <ToggleButton mnemonicParsing="false" fx:id="btnSearchThroughDescription">
         <graphic>

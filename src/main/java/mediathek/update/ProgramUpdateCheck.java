@@ -10,6 +10,7 @@ import mediathek.gui.dialog.DialogNewSet;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.NetUtils;
+import mediathek.tool.TimerPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,16 +25,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProgramUpdateCheck implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(ProgramUpdateCheck.class);
-    private final Daten daten;
     private ScheduledFuture<?> actionFuture;
-
-    public ProgramUpdateCheck(Daten daten) {
-        this.daten = daten;
-    }
 
     private void searchForProgramUpdate() {
         var pgrUpdate = new ProgrammUpdateSuchen();
-        pgrUpdate.checkVersion(false, true, false);
+        pgrUpdate.checkVersion(false, true, false, true);
     }
 
     private void checkForPsetUpdates() {
@@ -99,7 +95,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
                         String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
-                    GuiFunktionenProgramme.addSetVorlagen(MediathekGui.ui(), daten, listePsetStandard, true); // damit auch AddOns geladen werden
+                    GuiFunktionenProgramme.addSetVorlagen(MediathekGui.ui(), Daten.getInstance(), listePsetStandard, true); // damit auch AddOns geladen werden
                     logger.info("Setanlegen: OK");
                     logger.info("==========================================");
                 }
@@ -137,7 +133,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
 
     public void start() {
         logger.debug("ProgramUpdateCheck Started.");
-        actionFuture = daten.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::performUpdateCheck), 60L, TimeUnit.SECONDS.convert(24L, TimeUnit.HOURS), TimeUnit.SECONDS);
+        actionFuture = TimerPool.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::performUpdateCheck), 60L, TimeUnit.SECONDS.convert(24L, TimeUnit.HOURS), TimeUnit.SECONDS);
     }
 
     @Override

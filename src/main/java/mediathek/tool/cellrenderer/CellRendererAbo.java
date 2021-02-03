@@ -1,32 +1,17 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.FontAwesome;
-import jiconfont.swing.IconFontSwing;
-import mediathek.config.Daten;
-import mediathek.config.MVColor;
-import mediathek.daten.DatenAbo;
-import mediathek.tool.MVSenderIconCache;
+import mediathek.daten.abo.AboTags;
+import mediathek.daten.abo.DatenAbo;
+import mediathek.daten.abo.FilmLengthState;
 import mediathek.tool.table.MVTable;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererAbo extends CellRendererBase {
     private static final Logger logger = LogManager.getLogger(CellRendererAbo.class);
-    private final Icon checkedIcon;
-    private final Icon uncheckedIcon;
-
-    public CellRendererAbo(MVSenderIconCache cache) {
-        super(cache);
-
-
-        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
-        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
-    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -41,70 +26,48 @@ public class CellRendererAbo extends CellRendererBase {
         setFont(null);
         setIcon(null);
         setHorizontalAlignment(SwingConstants.LEADING);
-        super.getTableCellRendererComponent(
-                table, value, isSelected, hasFocus, row, column);
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         try {
-            final int r = table.convertRowIndexToModel(row);
-            final int c = table.convertColumnIndexToModel(column);
-            DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
-            final boolean aboIstEingeschaltet = abo.aboIstEingeschaltet();
+            var abo = (DatenAbo) table.getModel().getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF);
+            AboTags.fromIndex(table.convertColumnIndexToModel(column)).ifPresent(col -> {
+                switch (col) {
+                    case NR:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        setText(Integer.toString(abo.getNr()));
+                        break;
+                    case NAME:
+                        setText(abo.getName());
+                        break;
+                    case THEMA:
+                        setText(abo.getThema());
+                        break;
+                    case TITEL:
+                        setText(abo.getTitle());
+                        break;
+                    case MINDESTDAUER:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        break;
+                    case MIN:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        if (abo.getFilmLengthState() == FilmLengthState.MINIMUM)
+                            setText("min");
+                        else
+                            setText("max");
+                        break;
 
-            switch (c) {
-                case DatenAbo.ABO_NR:
-                case DatenAbo.ABO_MINDESTDAUER:
-                case DatenAbo.ABO_MIN:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
+                    case SENDER:
+                        if (((MVTable) table).showSenderIcons()) {
+                            setSenderIcon(abo.getSender(), ((MVTable) table).useSmallSenderIcons);
+                        }
+                        break;
+                }
+            });
 
-                case DatenAbo.ABO_EINGESCHALTET:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(aboIstEingeschaltet);
-                    break;
-
-                case DatenAbo.ABO_SENDER:
-                    if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
-                    }
-                    break;
-            }
-
-            if (!aboIstEingeschaltet)
-                setBackgroundColor(this, isSelected);
+            if (!abo.isActive())
+                setFont(getFont().deriveFont(Font.ITALIC));
         } catch (Exception ex) {
             logger.error("Fehler 630365892", ex);
         }
         return this;
     }
-
-    private void setBackgroundColor(Component c, final boolean isSelected) {
-        setFontItalic();
-        if (isSelected) {
-            c.setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
-        } else {
-            c.setBackground(MVColor.ABO_AUSGESCHALTET.color);
-        }
-    }
-
-    private void setFontItalic() {
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            // On OS X do not change fonts as it violates HIG...
-            setFont(getFont().deriveFont(Font.ITALIC));
-        }
-    }
-
-    /**
-     * Set icon either to yes or no based on condition
-     *
-     * @param condition yes if true, no if false
-     */
-    private void setCheckedOrUncheckedIcon(final boolean condition) {
-        final Icon icon;
-        if (condition)
-            icon = checkedIcon;
-        else
-            icon = uncheckedIcon;
-
-        setIcon(icon);
-    }
-
 }
