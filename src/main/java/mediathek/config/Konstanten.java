@@ -48,7 +48,6 @@ public class Konstanten {
      * Maximum number of backup files to be stored.
      */
     public static final short MAX_NUM_BACKUP_FILE_COPIES = 5;
-    public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
     public static final byte CONTINUE_DOWNLOAD = 60; //seconds
