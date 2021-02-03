@@ -79,6 +79,22 @@ public class Main {
         }
     }
 
+    /**
+     * Remove the old and now unsupported mediafile to trash.
+     * CAUTION: At least some UI MUST BE INITILIZED, otherwise on macOS VM will crash in native code!!!!
+     */
+    private static void removeMediaDb() {
+        try {
+            var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
+            if (Files.exists(mediaDbPath)) {
+                logger.info("Moving old unsupported media database to trash.");
+                mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
+            }
+        }
+        catch (IOException ignored) {
+        }
+    }
+
     private static void printJvmParameters() {
         logger.info("=== JavaVM Parameter ===");
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
@@ -335,6 +351,8 @@ public class Main {
             }
 
             initializeJavaFX();
+
+            removeMediaDb();
 
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
