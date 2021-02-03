@@ -1,6 +1,7 @@
 <u>**13.8**</u>
 
-- Mediensammlung wurde entfernt. Es gibt deutlich bessere Alternativen dafür.
+- **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
+- **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben.
 
 <u>**13.7.1**</u>
 
