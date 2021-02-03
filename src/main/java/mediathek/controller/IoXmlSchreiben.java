@@ -23,7 +23,6 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenMediaPath;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.abo.DatenAbo;
@@ -153,16 +152,6 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void writeMediaDatabase(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeCharacters("\n\n");
-        //writer.writeComment("Pfade MedienDB");
-        writeNewLine(writer);
-        //Pfade der MedienDB schreiben
-        for (DatenMediaPath mp : Daten.getInstance().getListeMediaPath()) {
-            xmlSchreibenDaten(writer, DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr, false);
-        }
-    }
-
     private void xmlSchreibenPset(XMLStreamWriter writer, DatenPset[] psetArray) throws XMLStreamException {
         // wird beim Export Sets verwendet
         writer.writeCharacters("\n\n");
@@ -272,8 +261,6 @@ public class IoXmlSchreiben {
             writeReplacementTable(writer);
 
             writeDownloads(writer);
-
-            writeMediaDatabase(writer);
 
             writer.writeCharacters("\n\n");
 

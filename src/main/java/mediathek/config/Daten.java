@@ -70,8 +70,6 @@ public class Daten {
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
     private final BookmarkDataList listeBookmarkList;
-    private final ListeMediaDB listeMediaDB;
-    private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -97,9 +95,6 @@ public class Daten {
 
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
-
-        listeMediaDB = new ListeMediaDB(this);
-        listeMediaPath = new ListeMediaPath();
 
         downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
@@ -449,14 +444,6 @@ public class Daten {
         return listeBookmarkList;
     }
     
-    public ListeMediaDB getListeMediaDB() {
-        return listeMediaDB;
-    }
-
-    public ListeMediaPath getListeMediaPath() {
-        return listeMediaPath;
-    }
-
     public ListeAbo getListeAbo() {
         return listeAbo;
     }

@@ -21,7 +21,6 @@ public class DialogEinstellungen extends JFrame {
     public boolean ok;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
-    private PanelMediaDB panelMediaDB;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
     private PanelEinstellungenColor panelEinstellungenColor;
@@ -37,7 +36,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
     private static final String NAME_notifications = "Benachrichtigungen";
     private static final String NAME_bandwidth = "Download";
-    private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
     private static final String NAME_allgemeineEinstellungenGeo = "Standort & Geoblocking";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
@@ -60,7 +58,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
     // ########### Programme ##############
     private final DefaultMutableTreeNode treeNodeBandwidth = new DefaultMutableTreeNode(NAME_bandwidth);
-    private final DefaultMutableTreeNode treeNodeMediaDB = new DefaultMutableTreeNode(NAME_mediaDB);
 
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
@@ -118,7 +115,6 @@ public class DialogEinstellungen extends JFrame {
     private void initPanels() {
         panelEinstellungen = new PanelEinstellungen();
         panelDownload = new PanelDownload();
-        panelMediaDB = new PanelMediaDB(daten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert();
         panelEinstellungenGeo = new PanelEinstellungenGeo(this);
         panelEinstellungenColor = new PanelEinstellungenColor();
@@ -140,7 +136,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
-        treeNodeEinstellungen.add(treeNodeMediaDB);
         treeNodeStart.add(treeNodeEinstellungen);
 
         // ######## Filme ###############
@@ -179,10 +174,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_bandwidth -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDownload);
-                    }
-                    case NAME_mediaDB -> {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMediaDB);
                     }
                     case NAME_allgemeineEinstellungen -> {
                         jPanelExtra.removeAll();

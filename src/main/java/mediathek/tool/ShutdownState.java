@@ -6,7 +6,6 @@ public enum ShutdownState {
     PERFORM_SEEN_HISTORY_MAINTENANCE("Führe Wartung an der Download-Historie durch..."),
     SAVE_FILM_DATA("Film-Daten sichern"),
     SAVE_DOWNLOAD_DATA("Download-Daten sichern"),
-    SAVE_MEDIA_DB("MediaDB sichern"),
     STOP_DOWNLOADS("Downloads anhalten"),
     SAVE_CONFIG("Programmkonfiguration schreiben"),
     CLOSE_DB("Datenbank schließen"),

@@ -18,7 +18,6 @@ package mediathek.controller;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenMediaPath;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.abo.DatenAbo;
@@ -140,13 +139,6 @@ public class IoXmlLesen {
         }
     }
 
-    private void readMediaPath(XMLStreamReader parser) {
-        DatenMediaPath mp = new DatenMediaPath();
-        if (get(parser, DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr)) {
-            daten.getListeMediaPath().add(mp);
-        }
-    }
-
     public boolean datenLesen(Path xmlFilePath) {
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
@@ -179,7 +171,6 @@ public class IoXmlLesen {
                             case DatenAbo.TAG -> readAboEntry(parser);
                             case DatenDownload.TAG -> readDownloadEntry(parser);
                             case BlacklistRule.TAG -> readBlacklist(parser);
-                            case DatenMediaPath.TAG -> readMediaPath(parser);
                         }
                     }
                 }

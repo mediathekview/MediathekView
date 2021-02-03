@@ -92,7 +92,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
     private static final String ACTION_MAP_KEY_MAERK_AS_UNSEEN = "unseen";
     private static final String ACTION_MAP_KEY_START_DOWNLOAD = "dl_start";
-    private static final String ACTION_MAP_KEY_SEARCH_MEDIADB = "search_in_mediadb";
     private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
             DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF,
@@ -451,10 +450,6 @@ public class GuiDownloads extends AGuiTabPanel {
         miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
         miPlayDownload.addActionListener(e -> filmAbspielen());
 
-        JMenuItem miSearchMediaDb = new JMenuItem("Titel in der Mediensammlung suchen");
-        miSearchMediaDb.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
-        miSearchMediaDb.addActionListener(e -> searchInMediaDb());
-
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> tabelle.invertSelection());
 
@@ -494,8 +489,6 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.add(miPlayDownload);
-        menu.addSeparator();
-        menu.add(miSearchMediaDb);
         menu.addSeparator();
         menu.add(miInvertSelection);
         menu.addSeparator();
@@ -547,14 +540,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
 
-
-    private void searchInMediaDb(DatenDownload datenDownload) {
-        final var mediaDB = mediathekGui.getMediaDatabaseDialog();
-        mediaDB.setVis();
-        if (datenDownload != null)
-            mediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-    }
-
     private void setupKeyMappings() {
         final InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_EDIT_DOWNLOAD);
@@ -562,7 +547,6 @@ public class GuiDownloads extends AGuiTabPanel {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_AS_SEEN);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MAERK_AS_UNSEEN);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_START_DOWNLOAD);
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_SEARCH_MEDIADB);
 
         final ActionMap am = tabelle.getActionMap();
         am.put(ACTION_MAP_KEY_EDIT_DOWNLOAD, new AbstractAction() {
@@ -585,7 +569,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 filmStartenWiederholenStoppen(false, true);
             }
         });
-        am.put(ACTION_MAP_KEY_SEARCH_MEDIADB, new SearchInMediaDbAction());
     }
 
     private void init() {
@@ -844,12 +827,6 @@ public class GuiDownloads extends AGuiTabPanel {
     @Handler
     private void handleStartEvent(StartEvent msg) {
         SwingUtilities.invokeLater(this::reloadTable);
-    }
-
-    private void searchInMediaDb() {
-        final DatenDownload datenDownload = getSelDownload();
-        MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        searchInMediaDb(datenDownload);
     }
 
     public synchronized void updateDownloads() {
@@ -1295,19 +1272,6 @@ public class GuiDownloads extends AGuiTabPanel {
         return arrayFilme;
     }
 
-    private class SearchInMediaDbAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            final int row = tabelle.getSelectedRow();
-            if (row != -1) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
-                searchInMediaDb(datenDownload);
-            }
-        }
-    }
-
     public class BeobMausTabelle extends MouseAdapter {
 
         private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
@@ -1524,11 +1488,6 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(submenueAbo);
 
             jPopupMenu.addSeparator();
-
-            // Film in der MediaDB suchen
-            JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-            itemDb.addActionListener(e -> searchInMediaDb());
-            jPopupMenu.add(itemDb);
 
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");

@@ -65,7 +65,6 @@ public class GuiFilme extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url";
     private static final String ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd";
     private static final String ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein";
-    private static final String ACTION_MAP_KEY_MEDIA_DB = "mediadb";
     private static final String ACTION_MAP_KEY_MARK_SEEN = "seen";
     private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
     private static final int[] HIDDEN_COLUMNS =
@@ -85,7 +84,6 @@ public class GuiFilme extends AGuiTabPanel {
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription =
             new JCheckBoxMenuItem("Beschreibung anzeigen");
-    private final MediensammlungAction mediensammlungAction = new MediensammlungAction();
     private final JFXPanel fxDescriptionPanel = new JFXPanel();
     private final JFXPanel fxPsetButtonsPanel = new JFXPanel();
     private final SeenHistoryController historyController = new SeenHistoryController();
@@ -282,11 +280,6 @@ public class GuiFilme extends AGuiTabPanel {
                 KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
-        JMenuItem miSearchMediaCollection = new JMenuItem("Titel in der Mediensammlung suchen");
-        miSearchMediaCollection.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
-        miSearchMediaCollection.addActionListener(mediensammlungAction);
-
         menu.add(miPlayFilm);
         menu.add(miRecordFilm);
         menu.add(miBookmarkFilm);
@@ -297,8 +290,6 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(miOpenBlacklist);
         menu.addSeparator();
         menu.add(cbkShowDescription);
-        menu.addSeparator();
-        menu.add(miSearchMediaCollection);
     }
 
     private void setupFilmActionPanel() {
@@ -385,7 +376,6 @@ public class GuiFilme extends AGuiTabPanel {
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL);
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_MEDIA_DB);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN);
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN);
 
@@ -393,15 +383,9 @@ public class GuiFilme extends AGuiTabPanel {
         actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
         actionMap.put(ACTION_MAP_KEY_BOOKMARK_FILM, bookmarkFilmAction);
-        actionMap.put(
-                ACTION_MAP_KEY_COPY_NORMAL_URL,
-                new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL));
-        actionMap.put(
-                ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY));
-        actionMap.put(
-                ACTION_MAP_KEY_COPY_KLEIN_URL,
-                new CopyUrlToClipboardAction(FilmResolution.Enum.LOW));
-        actionMap.put(ACTION_MAP_KEY_MEDIA_DB, mediensammlungAction);
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL));
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY));
+        actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.LOW));
         actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
         actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
     }
@@ -888,20 +872,6 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private class MediensammlungAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-            filmSelection.ifPresent(film -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                final var mediaDB = mediathekGui.getMediaDatabaseDialog();
-                mediaDB.setVis();
-                mediaDB.setFilter(film.getTitle());
-            });
-        }
-    }
-
     /**
      * Implements the context menu for tab film.
      */
@@ -1171,13 +1141,6 @@ public class GuiFilme extends AGuiTabPanel {
             });
 
             jPopupMenu.addSeparator();
-
-            // Film in der MediaDB suchen
-            res.ifPresent(film -> {
-                JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-                itemDb.addActionListener(mediensammlungAction);
-                jPopupMenu.add(itemDb);
-            });
 
             // Drucken
             jPopupMenu.add(miPrintTable);

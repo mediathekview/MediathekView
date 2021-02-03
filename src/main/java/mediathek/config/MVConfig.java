@@ -238,13 +238,6 @@ public class MVConfig {
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
         // Abo
         SYSTEM_ABO_MIN_SIZE("Abo-Mindestdauer-Minuten"),
-        // MediaDB
-        SYSTEM_MEDIA_DB_DIALOG_GROESSE("Media_DB_Dialog-Groesse"),
-        SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN("Media_DB_Dialog-anzeigen"),
-        SYSTEM_MEDIA_DB_ECHTZEITSUCHE("Media_DB_Echtzeitsuche", Boolean.TRUE.toString()),
-        SYSTEM_MEDIA_DB_SUFFIX("Media_DB_Suffix"),
-        SYSTEM_MEDIA_DB_SUFFIX_OHNE("Media_DB_ohne-Suffix"),
-        SYSTEM_MEDIA_DB_EXPORT_DATEI("Media_DB_export-datei"),
         //Farben
         FARBE__FILM_LIVESTREAM("FARBE_FILM_LIVESTREAM"),
         FARBE__FILM_HISTORY("FARBE_FILM_HISTORY"),

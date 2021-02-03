@@ -1,3 +1,7 @@
+<u>**13.8**</u>
+
+- Mediensammlung wurde entfernt. Es gibt deutlich bessere Alternativen dafür.
+
 <u>**13.7.1**</u>
 
 **ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**
