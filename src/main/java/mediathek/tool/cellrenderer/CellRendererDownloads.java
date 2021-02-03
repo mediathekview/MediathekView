@@ -1,11 +1,10 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +15,6 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STARTEN = "Download starten";
     private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
@@ -39,9 +37,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final Icon download_del_sw_tab;
     private JProgressBar progressBar;
 
-    public CellRendererDownloads(MVSenderIconCache cache) {
-        super(cache);
-
+    public CellRendererDownloads() {
         download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
         download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
         download_start_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16, Color.WHITE);

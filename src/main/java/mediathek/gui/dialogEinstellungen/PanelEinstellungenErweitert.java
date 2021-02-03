@@ -1,13 +1,13 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
-import mediathek.config.Icons;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MessageBus;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
 
@@ -82,7 +81,7 @@ public class PanelEinstellungenErweitert extends JPanel {
             jButtonProgrammShutdown.setEnabled(false);
         }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     private String getWebBrowserLocation() {
@@ -95,10 +94,11 @@ public class PanelEinstellungenErweitert extends JPanel {
     }
 
     private void setIcon() {
-        jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        var icon = IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16);
+        jButtonProgrammDateimanager.setIcon(icon);
+        jButtonProgrammVideoplayer.setIcon(icon);
+        jButtonProgrammUrl.setIcon(icon);
+        jButtonProgrammShutdown.setIcon(icon);
     }
 
     static private class BeobDoc implements DocumentListener {
@@ -165,7 +165,7 @@ public class PanelEinstellungenErweitert extends JPanel {
                 if (!textField.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 } else {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

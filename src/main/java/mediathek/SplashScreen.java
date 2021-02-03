@@ -9,9 +9,9 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.tool.TimerPool;
 import mediathek.tool.UIProgressState;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -73,7 +73,7 @@ public class SplashScreen {
                 window.setScene(scene);
 
                 appName.setText(Konstanten.PROGRAMMNAME);
-                appVersion.setText("Version: " + Konstanten.MVVERSION.toString() + " (" + getOsName() + ")");
+                appVersion.setText("Version: " + Konstanten.MVVERSION + " (" + getOsName() + ")");
                 progressBar.prefWidthProperty().bind(scene.widthProperty());
 
                 window.setScene(scene);
@@ -86,7 +86,7 @@ public class SplashScreen {
     }
 
     public void close() {
-        Daten.getInstance().getTimerPool().schedule(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
+        TimerPool.getTimerPool().schedule(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
             window.close();
             Main.splashScreen = Optional.empty(); // delete reference as we are not working anymore
         }),2, TimeUnit.SECONDS);

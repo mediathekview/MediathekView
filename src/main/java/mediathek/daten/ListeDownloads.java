@@ -23,12 +23,14 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.messages.ButtonStartEvent;
 import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +90,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -107,7 +109,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -151,7 +153,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             this.addFirst(datenDownload);
         }
 
-        daten.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
     }
 
     public synchronized void delDownloadButton(String url) {
@@ -164,7 +166,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 datenDownload.mVFilmSize.reset();
                 datenDownload.start = null;
-                daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
                 break;
             }
         }
@@ -190,7 +192,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new StartEvent());
+            MessageBus.getMessageBus().publishAsync(new StartEvent());
         }
     }
 
@@ -209,7 +211,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         }
     }
 
@@ -359,7 +361,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // dann gibts dafür kein Abo
                 continue;
             }
-            if (!abo.aboIstEingeschaltet()) {
+            if (!abo.isActive()) {
                 continue;
             }
             if (checkWithBlackList) {
@@ -373,7 +375,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            DatenPset pSet = abo.getPsetName().isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.getPsetName());
             if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]));
@@ -383,10 +385,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 listeUrls.add(urlDownload);
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = todayDateStr;
-                if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
+                abo.setDownDatum(todayDateStr);
+                if (!abo.getPsetName().equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
-                    abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
+                    abo.setPsetName(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
                 }
 
                 //dann in die Liste schreiben
@@ -472,7 +474,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden)
-            daten.getMessageBus().publishAsync(new ButtonStartEvent());
+            MessageBus.getMessageBus().publishAsync(new ButtonStartEvent());
     }
 
     public synchronized DatenDownload getNextStart() {

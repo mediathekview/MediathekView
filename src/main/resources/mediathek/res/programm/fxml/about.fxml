@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="436.0" prefWidth="686.0" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <GridPane layoutX="5.0" layoutY="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         <RowConstraints minHeight="10.0" vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+         <VBox>
+            <children>
+                <!--fx:controller="mediathek.gui.dialog.about.AboutController"-->
+                <ImageView fitHeight="196.0" fitWidth="198.0" pickOnBounds="true" preserveRatio="true">
+       <Image url="/splash@2x.png"/>
+    </ImageView>
+               <VBox minHeight="-Infinity" minWidth="-Infinity">
+                  <children>
+                      <Hyperlink fx:id="homepage" onAction="#homepageLinkClicked" text="Homepage" />
+                      <Hyperlink fx:id="developerDonationHyperlink" onAction="#developerDonationLinkClicked" text="Spende an den Entwickler des Programms" />
+                      <Hyperlink fx:id="serverDonationHyperlink" onAction="#serverDonationLinkClicked" text="Spende für die Server" />
+                      <Hyperlink fx:id="forum" onAction="#forumLinkClicked" text="Hilfe-Forum" />
+                      <Hyperlink fx:id="anleitung" onAction="#anleitungLinkClicked" text="Online-Anleitung" />
+                  </children>
+               </VBox>
+            </children>
+         </VBox>
+         <VBox GridPane.columnIndex="1">
+            <children>
+                <Label text="MediathekView">
+                    <font>
+                        <Font name="System Bold" size="36.0" />
+                    </font>
+                </Label>
+                <Label fx:id="version" prefHeight="18.0" prefWidth="264.0" text="Version" />
+                <TabPane prefHeight="268.0" prefWidth="410.0" tabClosingPolicy="UNAVAILABLE">
+                    <Tab text="Aktive Entwickler">
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <center>
+                                <TextArea editable="false" text="MediathekView-Client:&#10;Christian Franzke (derreisende77)&#10;&#10;MediathekView-Server:&#10;Nicklas Wiegandt (nicklas2751)&#10;Peter W. (pidoubleyou)&#10;Sascha Wiegandt (thesasch)&#10;&#10;Server-Administration:&#10;Alexander Finkhäuser (alex1702)" wrapText="true" BorderPane.alignment="CENTER" />
+                            </center>
+                        </BorderPane>
+                    </Tab>
+                    <Tab text="Ehemalige">
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <center>
+                                <TextArea editable="false" text="Gründer des Programms:&#10;Xaver W. (xaverW)&#10;&#10;Weitere Beteiligte:&#10;siedlerchr&#10;styrol&#10;zxsd&#10;siedlerchr&#10;apoleon&#10;hostis&#10;pmshell&#10;clel&#10;thausherr" BorderPane.alignment="CENTER" />
+                            </center>
+                        </BorderPane>
+                    </Tab>
+                </TabPane>
+            </children>
+         </VBox>
+         <GridPane hgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+            <columnConstraints>
+               <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Hyperlink onAction="#jetbrainsLinkClicked" text="JetBrains IntelliJ" GridPane.columnIndex="1" />
+                <Hyperlink onAction="#ejLinkClicked" text="ej-technologies JProfiler &amp; install4j" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Die Entwicklung wird unterstützt von:" />
+            </children>
+         </GridPane>
+      </children>
+   </GridPane>
+</fx:root>

@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -11,10 +13,11 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.mediadb.MediaDbStartEvent;
 import mediathek.gui.messages.mediadb.MediaDbStopEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.cellrenderer.CellRendererMediaDB;
 import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.models.TModelMediaDB;
 import net.engio.mbassy.listener.Handler;
@@ -30,7 +33,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelMediaDB extends PanelVorlage {
     private final NonEditableTableModel modelPath = new NonEditableTableModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
@@ -60,7 +62,7 @@ public class PanelMediaDB extends PanelVorlage {
         initComponents();
         daten = d;
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         progress.setVisible(false);
         progress.setIndeterminate(true);
@@ -128,15 +130,15 @@ public class PanelMediaDB extends PanelVorlage {
                 daten.getListeMediaDB().delList(true);
             }
         });
-        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonPath.addActionListener(new BeobPath(false/*ext*/));
         jButtonAdd.addActionListener((ActionEvent e) -> addPath());
         jButtonRemove.addActionListener((ActionEvent e) -> removePath());
-        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
-        jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonExportPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonExport.addActionListener(l -> filmeExportieren());
         jButtonExportPath.addActionListener(new BeobPfad());
         btnExtAdd.addActionListener(l -> {

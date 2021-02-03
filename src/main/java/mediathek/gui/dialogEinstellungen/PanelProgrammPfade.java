@@ -1,10 +1,10 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Icons;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,9 +35,9 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void init() {
-        jButtonVlcPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonFFmpegPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonVlcPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonFFmpegPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jPanelVlc.setVisible(vlc);
 
         jPanelFFmpeg.setVisible(ffmpeg);
@@ -144,7 +144,7 @@ public class PanelProgrammPfade extends JPanel {
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 if (textField.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                    chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 } else {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 }

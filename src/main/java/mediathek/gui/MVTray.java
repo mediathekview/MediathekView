@@ -7,6 +7,7 @@ import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import mediathek.tool.notification.thrift.MessageType;
 import mediathek.tool.notification.thrift.NotificationMessage;
 import net.engio.mbassy.listener.Handler;
@@ -28,7 +29,7 @@ public final class MVTray {
 
     public MVTray() {
         daten = Daten.getInstance();
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     @Handler
@@ -91,7 +92,7 @@ public final class MVTray {
                 MediathekGui.ui().setVisible(true);
                 ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
                 MediathekGui.ui().initializeSystemTray();
-                daten.getMessageBus().publishAsync(new TrayIconEvent());
+                MessageBus.getMessageBus().publishAsync(new TrayIconEvent());
             });
             popup.add(itemRemoveTray);
 

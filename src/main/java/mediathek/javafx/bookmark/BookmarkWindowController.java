@@ -28,7 +28,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -45,6 +45,8 @@ import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
+import mediathek.tool.MessageBus;
+import mediathek.tool.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
@@ -650,7 +652,7 @@ public class BookmarkWindowController implements Initializable {
     btnSaveList.setDisable(!listUpdated);
     if (listUpdated) { // Schedule new save task after 30 s
       cancelBookmarkSave();
-      SaveBookmarkTask = Daten.getInstance().getTimerPool().schedule(() -> {
+      SaveBookmarkTask = TimerPool.getTimerPool().schedule(() -> {
                                         saveBookMarkList();
                                         SaveBookmarkTask = null;
                                     },
@@ -733,7 +735,7 @@ public class BookmarkWindowController implements Initializable {
         datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
 
         daten.getListeDownloads().addMitNummer(datenDownload);
-        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
           datenDownload.startDownload();  // und evtl. auch gleich starten
         }

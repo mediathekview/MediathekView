@@ -1,12 +1,20 @@
 package mediathek.tool;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ProgressMonitorInputStream extends FilterInputStream {
+    private final InputStreamProgressMonitor monitor;
+    /**
+     * The number of bytes that can be read from the InputStream.
+     */
+    private final long size;
+    /**
+     * The number of bytes that have been read from the InputStream.
+     */
+    private long bytesRead;
+
     /**
      * Creates a <code>FilterInputStream</code>
      * by assigning the  argument <code>in</code>
@@ -24,7 +32,6 @@ public class ProgressMonitorInputStream extends FilterInputStream {
             throw new IOException("Size must be greater than zero!");
     }
 
-
     @Override
     public int read() throws IOException {
         final int read = super.read();
@@ -37,7 +44,7 @@ public class ProgressMonitorInputStream extends FilterInputStream {
     }
 
     @Override
-    public int read(@NotNull byte[] b) throws IOException {
+    public int read(byte[] b) throws IOException {
         final int read = super.read(b);
         if (read != -1) {
             bytesRead += read;
@@ -48,7 +55,7 @@ public class ProgressMonitorInputStream extends FilterInputStream {
     }
 
     @Override
-    public int read(@NotNull byte[] b, int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) throws IOException {
         final int read = super.read(b, off, len);
         if (read != -1) {
             bytesRead += read;
@@ -57,14 +64,4 @@ public class ProgressMonitorInputStream extends FilterInputStream {
         }
         return read;
     }
-
-    private InputStreamProgressMonitor monitor = null;
-    /**
-     * The number of bytes that can be read from the InputStream.
-     */
-    private long size = 0;
-    /**
-     * The number of bytes that have been read from the InputStream.
-     */
-    private long bytesRead = 0;
 }

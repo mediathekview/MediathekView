@@ -10,6 +10,7 @@ import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
+import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
-@SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<BlacklistRule> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
@@ -218,7 +218,7 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      */
     public synchronized void filterListAndNotifyListeners() {
         filterListe();
-        Daten.getInstance().getMessageBus().publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /**
@@ -316,6 +316,10 @@ public class ListeBlacklist extends LinkedList<BlacklistRule> {
      * @return true if film can be displayed
      */
     private boolean checkDate(@NotNull DatenFilm film) {
+        // always show livestreams
+        if (film.isLivestream())
+            return true;
+
         if (days_lower_boundary != 0) {
             final long filmTime = film.getDatumFilm().getTime();
             return filmTime == 0 || filmTime >= days_lower_boundary;

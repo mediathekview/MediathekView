@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -14,10 +14,10 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.starter.Start;
-import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
@@ -121,6 +121,7 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private DownloadTabInformationLabel filmInfoLabel;
+    private MVDownloadsTable tabelle;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -159,8 +160,13 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
 
-        initializeTouchBar();
+    @Override
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
     }
 
     private void setupToolBar() {
@@ -173,7 +179,7 @@ public class GuiDownloads extends AGuiTabPanel {
             toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
             toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
             toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
-            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.getInstance().getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
+            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> MessageBus.getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
 
             Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
@@ -371,7 +377,7 @@ public class GuiDownloads extends AGuiTabPanel {
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, downloadLimit);
             DownloadRateLimitChangedEvent evt = new DownloadRateLimitChangedEvent();
             evt.newLimit = downloadLimit;
-            daten.getMessageBus().publishAsync(evt);
+            MessageBus.getMessageBus().publishAsync(evt);
         });
     }
 
@@ -586,7 +592,7 @@ public class GuiDownloads extends AGuiTabPanel {
         setupKeyMappings();
         //Tabelle einrichten
 
-        final CellRendererDownloads cellRenderer = new CellRendererDownloads(daten.getSenderIconCache());
+        final CellRendererDownloads cellRenderer = new CellRendererDownloads();
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);
@@ -619,7 +625,7 @@ public class GuiDownloads extends AGuiTabPanel {
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
             final int maxNumDownloads = ((Number)jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
             config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
-            daten.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
+            MessageBus.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
         final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
@@ -764,7 +770,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void addListenerMediathekView() {
         //register message bus handler
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads.class.getSimpleName()) {
             @Override
@@ -1227,7 +1233,7 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setInfo() {
-        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
+        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     /**
@@ -1257,18 +1263,19 @@ public class GuiDownloads extends AGuiTabPanel {
                     aktFilm = datenDownload.film;
                 }
             }
-            mediathekGui.getFilmInfoDialog().updateCurrentFilm(aktFilm);
+            var infoDialog = mediathekGui.getFilmInfoDialog();
+            if (infoDialog != null) {
+                infoDialog.updateCurrentFilm(aktFilm);
+            }
         }
     }
 
     @Override
     public void showTouchBar() {
-        touchBar.show(MediathekGui.ui());
     }
 
     @Override
     public void hideTouchBar() {
-        touchBar.hide(MediathekGui.ui());
     }
 
     @Override
@@ -1470,13 +1477,13 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNLOAD_LOESCHEN);
+            itemDeleteDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
 
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
+            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(e -> zielordnerOeffnen());
 
@@ -1504,9 +1511,9 @@ public class GuiDownloads extends AGuiTabPanel {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, true, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(mediathekGui, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
-                        if (dialog.ok) {
+                        if (dialog.successful()) {
                             daten.getListeAbo().aenderungMelden();
                         }
                     });

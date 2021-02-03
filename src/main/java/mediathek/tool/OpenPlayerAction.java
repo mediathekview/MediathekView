@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
@@ -54,7 +53,7 @@ public class OpenPlayerAction {
                 String[] cmd = {programm, sFile.getAbsolutePath()};
                 Runtime.getRuntime().exec(cmd);
                 MVConfig.add(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, programm);
-                Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 gut = true;
             } catch (Exception eex) {
                 logger.error("Ordner öffnen: {}", datei, ex);
@@ -62,7 +61,7 @@ public class OpenPlayerAction {
         } finally {
             if (!gut) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "");
-                Daten.getInstance().getMessageBus().publishAsync(new ProgramLocationChangedEvent());
+                MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

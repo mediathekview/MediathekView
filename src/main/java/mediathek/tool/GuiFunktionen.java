@@ -231,24 +231,15 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     /**
-     * Return the path to the user´s home directory.
-     *
-     * @return String to the user´s home directory.
-     */
-    public static String getHomePath() {
-        return System.getProperty("user.home");
-    }
-
-    /**
      * Liefert den Standardpfad für Downloads.
      *
      * @return Standardpfad zu den Downloads.
      */
     public static String getStandardDownloadPath() {
         if (SystemUtils.IS_OS_MAC_OSX) {
-            return addsPfad(getHomePath(), "Downloads");
+            return addsPfad(SystemUtils.USER_HOME, "Downloads");
         } else {
-            return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);
+            return addsPfad(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS);
         }
     }
 

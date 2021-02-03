@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -24,10 +26,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 public class PanelBlacklist extends JPanel {
     public boolean ok;
-    public String ziel;
     private final String name;
     private final Daten daten;
     private final JFrame parentComponent;
@@ -38,12 +38,12 @@ public class PanelBlacklist extends JPanel {
 
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
         init_();
         init();
 
-        daten.getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
@@ -228,7 +228,7 @@ public class PanelBlacklist extends JPanel {
 
     private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
-        daten.getMessageBus().publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     private void comboThemaLaden() {

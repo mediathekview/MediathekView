@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.messages.FilmListReadStopEvent;
+import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,7 @@ public class FilmListFilterTask extends Task<Void> {
         logger.trace("FilmListFilterTask started");
 
         if (submitEvent)
-            daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
+            MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
 
         updateMessage("Themen suchen");
         updateProgress(-1, 4);
@@ -37,7 +38,7 @@ public class FilmListFilterTask extends Task<Void> {
         updateProgress(-1, 4);
         daten.getListeBlacklist().filterListe();
 
-        SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false)));
+        SwingUtilities.invokeLater(() -> daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false)));
 
         logger.trace("FilmListFilterTask finished");
 

@@ -11,9 +11,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import mediathek.config.Daten;
 import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.FilterDTO;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -103,7 +103,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     if (SystemUtils.IS_OS_LINUX) themaLabel.setPrefWidth(50d);
     else themaLabel.setPrefWidth(45d);
 
-    Daten.getInstance().getMessageBus().subscribe(this);
+      MessageBus.getMessageBus().subscribe(this);
   }
 
   public void setFilterSelectionChangeListener(ChangeListener<FilterDTO> changeListener) {

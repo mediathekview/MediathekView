@@ -1,6 +1,6 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class DialogEditDownload extends JDialog {
     private final DatenDownload datenDownload;
     public boolean ok;
@@ -355,7 +354,7 @@ public class DialogEditDownload extends JDialog {
                             jButtonReset.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
                             jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
-                            jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+                            jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
                             jButtonHelp.setToolTipText("Hilfe anzeigen");
                             jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
 

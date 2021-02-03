@@ -1,11 +1,11 @@
 package mediathek.tool.models;
 
-import mediathek.daten.DatenAbo;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.tool.Datum;
 
 public class TModelAbo extends NonEditableTableModel {
     public TModelAbo(Object[][] data) {
-        super(data, DatenAbo.COLUMN_NAMES);
+        super(data, new String[DatenAbo.MAX_ELEM]);
     }
 
     @Override
@@ -13,6 +13,8 @@ public class TModelAbo extends NonEditableTableModel {
         return switch (columnIndex) {
             case DatenAbo.ABO_NR, DatenAbo.ABO_MINDESTDAUER -> Integer.class;
             case DatenAbo.ABO_DOWN_DATUM -> Datum.class;
+            case DatenAbo.ABO_EINGESCHALTET -> Boolean.class;
+            case DatenAbo.ABO_REF -> DatenAbo.class;
             default -> String.class;
         };
     }
@@ -34,6 +36,7 @@ public class TModelAbo extends NonEditableTableModel {
             case DatenAbo.ABO_ZIELPFAD -> "Zielpfad";
             case DatenAbo.ABO_DOWN_DATUM -> "letztes Abo";
             case DatenAbo.ABO_PSET -> "Programmset";
+            case DatenAbo.ABO_REF -> "";
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
         };
     }

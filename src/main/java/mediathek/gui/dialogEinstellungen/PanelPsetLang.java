@@ -1,10 +1,11 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javafx.scene.control.Alert;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
+import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
@@ -17,6 +18,8 @@ import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
+import mediathek.tool.cellrenderer.CellRendererProgramme;
+import mediathek.tool.cellrenderer.CellRendererPset;
 import mediathek.tool.models.TModel;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
@@ -30,9 +33,11 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 
-@SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler;
     private final ListePset listePset;
@@ -62,13 +67,13 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void init() {
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonGruppePfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonProgPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jButtonProgPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonGruppeNeu.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
@@ -78,7 +83,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         //Programme
         tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -288,7 +293,7 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
-        jButtonPruefen.addActionListener(l -> GuiFunktionenProgramme.programmePruefen(parentComponent));
+        jButtonPruefen.addActionListener(l -> programmePruefen());
 
 
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
@@ -321,6 +326,81 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
+    }
+
+    /**
+     * Prüfen ob die eingestellten Programmsets passen
+     */
+    public void programmePruefen() {
+        final String PIPE = "| ";
+        final String LEER = "      ";
+        final String PFEIL = " -> ";
+        boolean ret;
+        StringBuilder text = new StringBuilder();
+
+        for (DatenPset datenPset : Daten.listePset) {
+            ret = true;
+            if (!datenPset.isFreeLine() && !datenPset.isLabel()) {
+                // nur wenn kein Label oder freeline
+                text.append("++++++++++++++++++++++++++++++++++++++++++++" + '\n');
+                text.append(PIPE + "Programmgruppe: ").append(datenPset.arr[DatenPset.PROGRAMMSET_NAME]).append('\n');
+                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
+                if (datenPset.progsContainPath()) {
+                    // beim nur Abspielen wird er nicht gebraucht
+                    if (zielPfad.isEmpty()) {
+                        ret = false;
+                        text.append(PIPE + LEER + "Zielpfad fehlt!\n");
+                    } else // Pfad beschreibbar?
+                        if (!GuiFunktionenProgramme.checkPathWriteable(zielPfad)) {
+                            //da Pfad-leer und "kein" Pfad schon abgeprüft
+                            ret = false;
+                            text.append(PIPE + LEER + "Falscher Zielpfad!\n");
+                            text.append(PIPE + LEER + PFEIL + "Zielpfad \"").append(zielPfad).append("\" nicht beschreibbar!").append('\n');
+                        }
+                }
+
+                for (DatenProg datenProg : datenPset.getListeProg()) {
+                    // Programmpfad prüfen
+                    final var progPfad = datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD];
+                    final var progName = datenProg.arr[DatenProg.PROGRAMM_NAME];
+                    if (progPfad.isEmpty()) {
+                        ret = false;
+                        text.append(PIPE + LEER + "Kein Programm angegeben!\n");
+                        text.append(PIPE + LEER + PFEIL + "Programmname: ").append(progName).append('\n');
+                        text.append(PIPE + LEER + LEER + "Pfad: ").append(progPfad).append('\n');
+                    } else if (!Files.isExecutable(Paths.get(progPfad))) {
+                        // dann noch mit RuntimeExec versuchen
+                        RuntimeExec r = new RuntimeExec(progPfad);
+                        Process pr = r.exec(false);
+                        if (pr == null) {
+                            // läßt sich nicht starten
+                            ret = false;
+                            text.append(PIPE + LEER + "Falscher Programmpfad!\n");
+                            text.append(PIPE + LEER + PFEIL + "Programmname: ").append(progName).append('\n');
+                            text.append(PIPE + LEER + LEER + "Pfad: ").append(progPfad).append('\n');
+                            if (!progPfad.contains(File.separator)) {
+                                text.append(PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n');
+                                text.append(PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n');
+                            }
+                        }
+                        else
+                            pr.destroy();
+                    }
+                }
+                if (ret) {
+                    //sollte alles passen
+                    text.append(PIPE + PFEIL + "Ok!" + '\n');
+                }
+                text.append("""
+                        ++++++++++++++++++++++++++++++++++++++++++++
+
+
+                        """);
+            }
+        }
+
+        var dlg = new DialogHilfe(parentComponent, true, text.toString());
+        dlg.setVisible(true);
     }
 
     private void setAufloesung() {
@@ -472,7 +552,7 @@ public class PanelPsetLang extends PanelVorlage {
      * Send message that changes to the Pset were performed.
      */
     private void notifyProgramSetChanged() {
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
     }
 
     private void fillTextProgramme() {

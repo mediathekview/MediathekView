@@ -11,11 +11,14 @@ import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
-    private final TModelFilm filmModel;
+    private TModelFilm filmModel;
     private final ListeFilme listeFilme;
     private final SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
@@ -39,9 +42,7 @@ public class GuiFilmeModelHelper {
         this.fap = fap;
         this.historyController = historyController;
 
-        filmModel = new TModelFilm();
         listeFilme = filteredList;
-
     }
 
     private String getFilterThema() {
@@ -127,7 +128,10 @@ public class GuiFilmeModelHelper {
 
         var stream = listeFilme.parallelStream();
         if (!selectedSenders.isEmpty()) {
-            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
+            //ObservableList.contains() is insanely slow...this speeds up to factor 250!
+            Set<String> senderSet = new HashSet<>(selectedSenders.size());
+            senderSet.addAll(selectedSenders);
+            stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
         if (showNewOnly)
             stream = stream.filter(DatenFilm::isNew);
@@ -165,9 +169,15 @@ public class GuiFilmeModelHelper {
         if (!searchFieldEmpty) {
             stream = stream.filter(this::finalStageFiltering);
         }
-        
-        stream.forEachOrdered(this::addFilmToTableModel);
+
+        var list = stream.collect(Collectors.toList());
         stream.close();
+
+        //adjust initial capacity
+        filmModel = new TModelFilm(list.size());
+        filmModel.addAll(list);
+
+        list.clear();
 
         if (dontShowSeen)
             historyController.emptyMemoryCache();
@@ -227,39 +237,23 @@ public class GuiFilmeModelHelper {
         return result;
     }
 
-    private void fillTableModel() {
-        // dann ein neues Model anlegen
-        if (noFiltersAreSet()) {
-            // dann ganze Liste laden
-            addAllFilmsToTableModel();
-        } else {
-            performTableFiltering();
-        }
-    }
-
     /**
      * Filter the filmlist.
      *
      * @return the filtered table model.
      */
     public TableModel getFilteredTableModel() {
-        if (!listeFilme.isEmpty())
-            fillTableModel();
-        return filmModel;
-    }
-
-    private void addAllFilmsToTableModel() {
         if (!listeFilme.isEmpty()) {
-            for (DatenFilm film : listeFilme) {
-                addFilmToTableModel(film);
+            if (noFiltersAreSet()) {
+                //adjust initial capacity
+                filmModel = new TModelFilm(listeFilme.size());
+                filmModel.addAll(listeFilme);
+            } else {
+                performTableFiltering();
             }
-        }
-    }
+        } else
+            return new TModelFilm();
 
-    private void addFilmToTableModel(DatenFilm film) {
-        Object[] object = new Object[1];
-        object[0] = film;
-
-        filmModel.addRow(object);
+        return filmModel;
     }
 }

@@ -20,6 +20,7 @@ import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -37,8 +38,8 @@ public class BandwidthMonitorController {
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 150;
     private final ListeDownloads listeDownloads;
-    private JDialog hudDialog = null;
-    private Timeline updateMemoryTimer = null;
+    private JDialog hudDialog;
+    private Timeline updateMemoryTimer;
     private Tile bandwidthTile;
     private JFXPanel fxPanel;
 
@@ -55,7 +56,7 @@ public class BandwidthMonitorController {
             calculateHudPosition();
         }
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        MessageBus.getMessageBus().subscribe(this);
 
         setVisibility();
     }
@@ -137,7 +138,7 @@ public class BandwidthMonitorController {
                 .prefSize(400, 400)
                 .unit("MBit/s")
                 .minValue(0)
-                .maxValue(2 * 1024)
+                .maxValue(2d * 1024d)
                 .decimals(0)
                 .tickLabelDecimals(0)
                 .time(ZonedDateTime.now(ZoneId.of("Europe/Berlin")))
@@ -165,7 +166,7 @@ public class BandwidthMonitorController {
 
     private void updateListeners() {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
-        Daten.getInstance().getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
     }
 
     /**

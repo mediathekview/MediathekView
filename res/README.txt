@@ -56,10 +56,6 @@ Zip:
 - die ZIP-Datei kann nach dem Entpacken gelöscht werden
 https://mediathekview.de/anleitung/#windows
 
-*OS X:
-Für OS X 10.10 (und neuer) gibt es eine separate Applikation "MediathekView.app"
-https://mediathekview.de/anleitung/#mac
-
 *Linux:
 MediathekView kann installiert oder das tar.gz entpackt werden.
 Den Installer gibt es als rpm, deb und sh.
@@ -73,10 +69,8 @@ Starten:
 Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
-Für OS X 10.10 und neuer besteht eine eigenständige Applikation (MediathekView.app);
-
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar
+jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar
 
 Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
@@ -84,18 +78,16 @@ Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE ge
 ===========================================================    
 Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
-
-
-jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar c:\temp
-jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication  --enable-preview -jar MediathekView.jar c:\temp
+jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication  --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
-"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 1GB ist nicht möglich.)
+"-Xmx2G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 2GB werden nicht empfohlen.)
 
 
 ===========================================================    
@@ -103,34 +95,4 @@ Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
 Linux: MediathekView_Portable
-Java: jre/bin/java -Xmx1G --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
-
-
----------------------------------------------------------------------------
-Hotkeys / Tastenkürzel:
----------------------------------------------------------------------------
-
-Tab Filme
-==============
-ctrl + p	Film abspielen
-return		Film abspielen (in der Tabelle Filme)
-ctrl + d	Download erstellen
-
-ctrl + i	Infos zum Film anzeigen
-ctrl + m	Titel in der Mediensammlung suchen
-
-ctrl + g	Filme als gesehen markieren
-ctrl + n	Filme als ungesehen markieren
-
-
-Tab Downloads
-==============
-ctrl + d	Download starten
-Rücktaste	Download zurückstellen
-Entf		Download dauerhaft löschen
-ctrl + w	Downloads aktualisieren
-return		Download ändern (in der Tabelle Downloads)
-
-
-ctrl + i	Infos zum Film anzeigen
-ctrl + m	Titel in der Mediensammlung suchen
+Java: jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3

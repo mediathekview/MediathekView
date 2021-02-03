@@ -98,7 +98,7 @@ public class ImportFilmliste {
 
     private synchronized void fertigMelden(boolean ok) {
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            l.fertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, !ok));
+            l.fertig(new ListenerFilmeLadenEvent("", "", 0, 0, !ok));
         }
     }
 }

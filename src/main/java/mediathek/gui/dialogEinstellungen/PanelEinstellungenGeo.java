@@ -1,20 +1,21 @@
 package mediathek.gui.dialogEinstellungen;
 
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-@SuppressWarnings("serial")
 public class PanelEinstellungenGeo extends JPanel {
     private final JFrame parentComponent;
 
@@ -61,7 +62,7 @@ public class PanelEinstellungenGeo extends JPanel {
             config.setProperty(ApplicationConfiguration.GEO_REPORT, jCheckBoxMarkieren.isSelected());
             filterBlacklistAndNotifyChanges();
         });
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 
@@ -70,11 +71,10 @@ public class PanelEinstellungenGeo extends JPanel {
      */
     private void filterBlacklistAndNotifyChanges() {
         final var daten = Daten.getInstance();
-        final var messageBus = daten.getMessageBus();
 
         daten.getListeBlacklist().filterListe();
-        messageBus.publishAsync(new GeoStateChangedEvent());
-        messageBus.publishAsync(new BlacklistChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new GeoStateChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /** This method is called from within the constructor to

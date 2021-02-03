@@ -1,11 +1,10 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 
@@ -16,15 +15,11 @@ import java.awt.*;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
-    private static final long serialVersionUID = 1659689253119935809L;
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected boolean geoMelden;
 
-    public CellRendererBaseWithStart(MVSenderIconCache cache) {
-        super(cache);
-
-        Daten.getInstance().getMessageBus().subscribe(this);
-
+    public CellRendererBaseWithStart() {
+        MessageBus.getMessageBus().subscribe(this);
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
     }
 
@@ -77,7 +72,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         }
     }
 
-    protected void setGeoblockingBackgroundColor(final Component c, final boolean isSelected) {
+    private void setGeoblockingBackgroundColor(final Component c, final boolean isSelected) {
         final Color color;
         if (isSelected)
             color = MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color;

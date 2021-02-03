@@ -1,11 +1,11 @@
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.StringUtils;
 
@@ -107,7 +107,7 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         this.add(neu, prog);
 
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
 
         return neu;
     }
@@ -125,7 +125,7 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         boolean ret = add(datenPset);
 
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
 
         return ret;
     }
@@ -138,7 +138,7 @@ public class ListePset extends LinkedList<DatenPset> {
             }
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
 
         return ret;
     }
@@ -148,7 +148,7 @@ public class ListePset extends LinkedList<DatenPset> {
             progMusterErsetzen(parent, pSet);
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
     }
 
     private static void progMusterErsetzen(JFrame parent, DatenPset pSet) {

@@ -1,6 +1,6 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
@@ -11,11 +11,11 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
     private final Icon selectedStopIcon;
@@ -29,9 +29,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final Icon normalBookmarkIcon;
     private final Icon selectedBookmarkIconHighlighted;
 
-    public CellRendererFilme(Daten d) {
-        super(d.getSenderIconCache());
-
+    public CellRendererFilme() {
         selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, Color.WHITE);
         normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
 
@@ -139,9 +137,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
     }
 
-    private void applyColorSettings(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected, boolean isBookMarked) {
+    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected, boolean isBookMarked) {
         // gestarteter Film
         final boolean start = (datenDownload != null) && (datenDownload.start != null);
+        final boolean hasBeenSeen = history.hasBeenSeen(datenFilm);
 
         if (start) {
             //film is started for download
@@ -151,7 +150,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (datenFilm.isLivestream()) {
                 // bei livestreams keine History anzeigen
                 c.setForeground(MVColor.FILM_LIVESTREAM.color);
-            } else if (history.hasBeenSeen(datenFilm)) {
+            } else if (hasBeenSeen) {
                 if (!isSelected) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }
@@ -164,7 +163,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             }
 
             if (geoMelden) {
-                setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
+                //only apply geo block colors when we haven´t changed the background for seen history
+                if (!hasBeenSeen) {
+                        setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
+                }
             }
         }
     }

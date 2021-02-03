@@ -4,27 +4,49 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.DatumFilm;
 import mediathek.tool.FilmSize;
 
-import java.util.Vector;
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("serial")
-public class TModelFilm extends TModel {
+public class TModelFilm extends AbstractTableModel {
     private static final int COLUMN_COUNT = 15;
+    private final List<DatenFilm> dataList;
+
+    public TModelFilm() {
+        dataList = new ArrayList<>();
+    }
+
+    public TModelFilm(int capacity) {
+        dataList = new ArrayList<>(capacity);
+    }
+
+    @Override
+    public boolean isCellEditable(int i, int j) {
+        return false;
+    }
 
     /**
-     * Liefert die model row in der die erste Spalte idx enthält.
-     * Die Indexspalte ist die SPALTE 0!!!!
+     * Get model row for a requested film nr.
+     *
+     * @param reqFilmNr the filmnr of the request
+     * @return the model row, otherwise -1
      */
-    @Override
-    public int getIdxRow(int idxWert) {
+    public int getModelRowForFilmNumber(int reqFilmNr) {
         int ret = 0;
-        for (Vector<?> list : getDataVector()) {
-            final DatenFilm film = (DatenFilm) list.get(0);
-            if (film.getFilmNr() == idxWert) {
+
+        for (var film : dataList) {
+            if (film.getFilmNr() == reqFilmNr)
                 return ret;
-            }
-            ++ret;
+            else
+                ret++;
         }
+
         return -1;
+    }
+
+    @Override
+    public int getRowCount() {
+        return dataList.size();
     }
 
     @Override
@@ -66,7 +88,7 @@ public class TModelFilm extends TModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        final DatenFilm film = (DatenFilm) dataVector.elementAt(row).elementAt(0);
+        final var film = dataList.get(row);
 
         return switch (column) {
             case DatenFilm.FILM_NR -> film.getFilmNr();
@@ -85,5 +107,17 @@ public class TModelFilm extends TModel {
             case DatenFilm.FILM_REF -> film;
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };
+    }
+
+    public void addAll(List<DatenFilm> listeFilme) {
+        final int oldRowCount = dataList.size();
+        dataList.addAll(listeFilme);
+        fireTableRowsInserted(oldRowCount, dataList.size());
+    }
+
+    public void addRow(DatenFilm film) {
+        dataList.add(film);
+        final int rowCount = dataList.size();
+        fireTableRowsInserted(rowCount, rowCount);
     }
 }

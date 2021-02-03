@@ -11,6 +11,7 @@ import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
+import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,21 +29,18 @@ import static mediathek.controller.starter.StarterClass.*;
 public class ExternalProgramDownload extends Thread {
 
     private static final Logger logger = LogManager.getLogger(ExternalProgramDownload.class);
-    private final Daten daten;
     private final DatenDownload datenDownload;
     private final Start start;
     private File file;
-    private String exMessage = "";
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
 
 
-    public ExternalProgramDownload(Daten daten, DatenDownload d) {
+    public ExternalProgramDownload(DatenDownload d) {
         super();
         setName("PROGRAMM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
 
-        this.daten = daten;
         datenDownload = d;
         start = datenDownload.start;
         start.status = Start.STATUS_RUN;
@@ -78,7 +76,7 @@ public class ExternalProgramDownload extends Thread {
         final int stat_ende = 99;
         int stat = stat_start;
 
-        daten.getMessageBus().publishAsync(new DownloadStartEvent());
+        MessageBus.getMessageBus().publishAsync(new DownloadStartEvent());
         try {
             if (!cancelDownload()) {
                 while (stat < stat_ende) {
@@ -154,7 +152,7 @@ public class ExternalProgramDownload extends Thread {
                             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
                                 //für die direkten Starts mit dem Button und die remote downloads wars das dann
                                 stat = stat_fertig_ok;
-                            } else if (pruefen(daten, datenDownload, start)) {
+                            } else if (pruefen(Daten.getInstance(), datenDownload, start)) {
                                 //fertig und OK
                                 stat = stat_fertig_ok;
                             } else {
@@ -174,13 +172,12 @@ public class ExternalProgramDownload extends Thread {
                 }
             }
         } catch (Exception ex) {
-            exMessage = ex.getLocalizedMessage();
             logger.error("run()", ex);
             SwingUtilities.invokeLater(() ->
-                    new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
+                    new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
         }
         finalizeDownload(datenDownload, start, state);
-        daten.getMessageBus().publish(new DownloadFinishedEvent());
+        MessageBus.getMessageBus().publish(new DownloadFinishedEvent());
     }
 
     private boolean starten() {
@@ -190,7 +187,7 @@ public class ExternalProgramDownload extends Thread {
         startmeldung(datenDownload, start);
         RuntimeExec runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
                 datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
-        start.process = runtimeExec.exec(true /*log*/);
+        start.process = runtimeExec.exec(true);
         if (start.process != null) {
             ret = true;
         }
@@ -255,7 +252,7 @@ public class ExternalProgramDownload extends Thread {
                     if (dialogContinueDownload.isNewName()) {
                         // jetzt den Programmaufruf nochmal mit dem geänderten Dateinamen nochmal bauen
                         datenDownload.aufrufBauen();
-                        daten.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
                         try {
                             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
                         } catch (IOException ignored) {

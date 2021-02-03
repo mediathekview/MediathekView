@@ -1,12 +1,10 @@
 package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
-import mediathek.daten.DatenAbo;
+import mediathek.daten.abo.DatenAbo;
 import mediathek.tool.models.TModelAbo;
 
-public class MVAbosTable extends ASelectableMVTable {
-    private static final long serialVersionUID = 679215520194372998L;
-
+public class MVAbosTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenAbo.MAX_ELEM;

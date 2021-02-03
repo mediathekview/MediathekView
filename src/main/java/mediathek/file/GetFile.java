@@ -1,5 +1,6 @@
 package mediathek.file;
 
+import mediathek.tool.Functions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,29 +44,16 @@ public class GetFile {
         return ret;
     }
 
-    public InputStreamReader getPsetVorlageLinux() {
+    public static InputStreamReader getLocalPsetTemplate() {
+        final String pfad = switch (Functions.getOs()) {
+            case LINUX -> PFAD_PSET_LINUX;
+            case MAC -> PFAD_PSET_MAC;
+            default -> PFAD_PSET_WINDOWS;
+        };
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), StandardCharsets.UTF_8);
+            return new InputStreamReader(GetFile.class.getResource(pfad).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
-            logger.error("getPsetVorlageLinux()",ex);
-        }
-        return null;
-    }
-
-    public InputStreamReader getPsetVorlageWindows() {
-        try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            logger.error("getPsetVorlageWindows()", ex);
-        }
-        return null;
-    }
-
-    public InputStreamReader getPsetVorlageMac() {
-        try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            logger.error("getPsetVorlageMac()",ex);
+            logger.error("getLocalPsetTemplate()",ex);
         }
         return null;
     }

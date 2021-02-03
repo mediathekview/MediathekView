@@ -5,16 +5,14 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
-import jiconfont.icons.FontAwesome;
+import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.Config;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
@@ -40,7 +38,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import oshi.SystemInfo;
 import picocli.CommandLine;
 
 import javax.swing.*;
@@ -75,7 +72,7 @@ public class Main {
     private static void cleanupOsxFiles() {
         if (!Config.isPortableMode()) {
             try {
-                var oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
+                var oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
             } catch (IOException ignored) {
             }
@@ -102,11 +99,12 @@ public class Main {
         final var loggerContext = (LoggerContext) LogManager.getContext(false);
         final var config = loggerContext.getConfiguration();
         final String path;
+        final String fileName = "/mediathekview.log";
 
         if (!Config.isPortableMode())
-            path = Daten.getSettingsDirectory_String() + "/mediathekview.log";
+            path = StandardLocations.getSettingsDirectory().toString() + fileName;
         else
-            path = Config.baseFilePath + "/mediathekview.log";
+            path = Config.baseFilePath + fileName;
 
 
         final PatternLayout consolePattern;
@@ -164,22 +162,6 @@ public class Main {
             rootLogger.addAppender(asyncAppender);
 
         loggerContext.updateLoggers();
-    }
-
-    private static void setupPortableMode() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        var portableMode = Config.isPortableMode();
-        logger.info("Portable Mode: {}", portableMode);
-
-        if (portableMode) {
-            logger.trace("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-            Daten.getInstance(Config.baseFilePath);
-        } else {
-            logger.trace("Configuring for non-portable mode");
-            Daten.getInstance();
-        }
-        stopwatch.stop();
-        logger.trace("setupPortableMode: {}", stopwatch);
     }
 
     /**
@@ -244,46 +226,25 @@ public class Main {
         Security.setProperty("crypto.policy", "unlimited");
     }
 
-    private static void printEnvironmentInformation() {
-        try {
-            SystemInfo si = new SystemInfo();
-            var hal = si.getHardware();
-            var cpu = hal.getProcessor();
-            logger.debug("=== Hardware Information ===");
-            logger.debug(cpu);
-            logger.debug("CPU is 64bit: {}", cpu.getProcessorIdentifier().isCpu64bit());
-            logger.debug("=== Memory Information ===");
-            var mi = hal.getMemory();
-            logger.debug(mi);
-            logger.debug("=== Operating System ===");
-            var os = si.getOperatingSystem();
-            logger.debug(os);
-        }
-        catch (Exception e) {
-            logger.error("Failed to retrieve System Info", e);
-        }
-    }
-
     private static void printVersionInformation() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-        logger.debug("=== Java Information ===");
         logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
-        final long maxMem = Runtime.getRuntime().maxMemory();
-        logger.debug("maxMemory: {} MB", maxMem / FileUtils.ONE_MB);
+        logger.info("=== Java Information ===");
 
-        logger.debug("Java:");
-        final String[] java = Functions.getJavaVersion();
-        for (String ja : java) {
-            logger.debug(ja);
-        }
-        var arch = System.getProperty("os.arch");
-        if (arch != null) {
-            logger.debug("Architecture: {}", arch);
-        }
-        logger.debug("===");
+        logger.info("Vendor: {}", SystemUtils.JAVA_VENDOR);
+        logger.info("VMname: {}", SystemUtils.JAVA_VM_NAME);
+        logger.info("Version: {}", SystemUtils.JAVA_VERSION);
+        logger.info("Runtime Version: {}", SystemUtils.JAVA_RUNTIME_VERSION);
+        final var runtime = Runtime.getRuntime();
+        logger.info("Maximum Memory: {} MB", runtime.maxMemory() / FileUtils.ONE_MB);
+
+        logger.info("Operating System: {}", SystemUtils.OS_NAME);
+        logger.info("OS Version: {}", SystemUtils.OS_VERSION);
+        logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
+        logger.info("Available Processors: {}", runtime.availableProcessors());
     }
 
     /**
@@ -308,7 +269,7 @@ public class Main {
      * Migrate old settings stored in mediathek.xml to new app config
      */
     private static void migrateOldConfigSettings() {
-        var settingsDir = Daten.getSettingsDirectory_String();
+        var settingsDir = StandardLocations.getSettingsDirectory().toString();
         if (settingsDir != null && !settingsDir.isEmpty()) {
             Path pSettingsDir = Paths.get(settingsDir);
             if (Files.exists(pSettingsDir)) {
@@ -329,6 +290,14 @@ public class Main {
             else
                 logger.trace("nothing to migrate");
         }
+    }
+
+    private static void printPortableModeInfo() {
+        if (Config.isPortableMode()) {
+            logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
+        }
+        else
+            logger.info("Configuring for non-portable mode");
     }
 
     /**
@@ -352,7 +321,12 @@ public class Main {
             }
 
             Config.setPortableMode(parseResult.hasMatchedPositional(0));
+            if (Config.isPortableMode()) {
+                StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
+            }
+
             setupLogging();
+            printPortableModeInfo();
 
             final int numCpus = Config.getNumCpus();
             if (numCpus != 0) {
@@ -366,10 +340,8 @@ public class Main {
             checkMemoryRequirements();
             installSingleInstanceHandler();
 
-            setupPortableMode();
-
             printVersionInformation();
-            printEnvironmentInformation();
+
             printJvmParameters();
             printArguments(args);
         } catch (CommandLine.ParameterException ex) {
@@ -509,19 +481,22 @@ public class Main {
 
             var page3 = new WizardPane();
             page3.setContentText("Please set geographic location");
-            page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
+            //page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
 
             var wizard = new Wizard();
             wizard.getSettings().put("first","MyName");
-            wizard.setTitle("Our new wizard from hell");
+            wizard.setTitle("New first launch wizard sample");
             wizard.setFlow(new Wizard.LinearFlow(page1,page2,page3));
             wizard.showAndWait().ifPresent(r -> {
                 if (r == ButtonType.FINISH) {
                     System.out.println("Wizard finished, settings: " + wizard.getSettings());
                 }
+                if (r == ButtonType.CANCEL){
+                    System.exit(2);
+                    //delete incomplete settings dir!
+                }
             });
-        });
-        System.exit(2);*/
+        });*/
 
         if (!daten.allesLaden()) {
             // erster Start
@@ -537,7 +512,7 @@ public class Main {
 
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory().toString());
     }
 
     private static void deleteDatabase() {
@@ -624,6 +599,9 @@ public class Main {
                 window.toFront();
                 window.requestFocus();
             }
+            //show a link to tutorial if we are in Austria and have never used MV before...
+            AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
+            vlcCheck.perform();
         });
     }
 
