@@ -78,7 +78,6 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      * High Quality (formerly known as HD) URL if available.
      */
     private Optional<String> highQuality_url = Optional.empty();
-    private String aboName = "";
     private String datumLong = "";
     private String sender = "";
     private String thema = "";
@@ -141,14 +140,6 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
             highQuality_url = Optional.of(urlHd);
         else
             highQuality_url = Optional.empty();
-    }
-
-    public String getAboName() {
-        return aboName;
-    }
-
-    public void setAboName(String aboName) {
-        this.aboName = aboName;
     }
 
     public String getDatumLong() {
@@ -352,7 +343,6 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
         ret.abo = this.abo;
         ret.highQuality_url = this.highQuality_url;
         ret.urlKlein = this.urlKlein;
-        ret.aboName = this.aboName;
         ret.datumLong = this.datumLong;
         ret.sender = this.sender;
         ret.thema = this.thema;
