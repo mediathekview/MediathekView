@@ -11,7 +11,10 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.tool.*;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.InputStreamProgressMonitor;
+import mediathek.tool.ProgressMonitorInputStream;
+import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -400,9 +403,6 @@ public class FilmListReader implements AutoCloseable {
         } catch (MalformedURLException ex) {
             logger.warn(ex);
         }
-
-        if (MemoryUtils.isLowMemoryEnvironment())
-            DatenFilm.Database.createIndices();
 
         notifyFertig(source, listeFilme);
     }

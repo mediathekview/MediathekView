@@ -2,6 +2,7 @@
 
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
 - **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben.
+- Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen.
 
 <u>**13.7.1**</u>
 

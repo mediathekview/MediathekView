@@ -103,12 +103,6 @@ public class PanelEinstellungen extends JPanel {
         }
     }
 
-    private void setupDatabaseCleanerCheckbox() {
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-        cbUseDatabaseCleaner.setSelected(config.getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false));
-        cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
-    }
-
     public PanelEinstellungen() {
         super();
         initComponents();
@@ -116,8 +110,6 @@ public class PanelEinstellungen extends JPanel {
         setupUserAgentSettings();
 
         setupProxySettings();
-
-        setupDatabaseCleanerCheckbox();
 
         jButtonLoad.addActionListener(ae -> {
             final var daten = Daten.getInstance();
@@ -230,8 +222,6 @@ public class PanelEinstellungen extends JPanel {
         var jLabel6 = new JLabel();
         jSpinnerDays = new JSpinner();
         jButtonLoad = new JButton();
-        var jPanel7 = new JPanel();
-        cbUseDatabaseCleaner = new JCheckBox();
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
@@ -425,39 +415,13 @@ public class PanelEinstellungen extends JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(96, Short.MAX_VALUE))
+                        .addContainerGap(102, Short.MAX_VALUE))
             );
             jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-            );
-        }
-
-        //======== jPanel7 ========
-        {
-            jPanel7.setBorder(new TitledBorder("Datenbank (Neustart erforderlich!)")); //NON-NLS
-
-            //---- cbUseDatabaseCleaner ----
-            cbUseDatabaseCleaner.setText("Bereinigung w\u00e4hrend Laufzeit"); //NON-NLS
-            cbUseDatabaseCleaner.setToolTipText("<html>Wenn aktiviert werden ung\u00fcltige Datenbankeintr\u00e4ge sofort aus der Datenbank gel\u00f6scht um Speicher zu sparen.<br/>Dies wird f\u00fcr Rechner mit wenig Arbeitsspeicher empfohlen, verringert jedoch die Performance von MediathekView deutlich beim Laden einer neuen Filmliste.</html>"); //NON-NLS
-
-            GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
-            jPanel7.setLayout(jPanel7Layout);
-            jPanel7Layout.setHorizontalGroup(
-                jPanel7Layout.createParallelGroup()
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbUseDatabaseCleaner)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-            jPanel7Layout.setVerticalGroup(
-                jPanel7Layout.createParallelGroup()
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cbUseDatabaseCleaner)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
         }
 
@@ -477,16 +441,16 @@ public class PanelEinstellungen extends JPanel {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(jPanel7, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jCheckBoxTray)
                                 .addComponent(cbUseWikipediaSenderLogos)
-                                .addComponent(cbAutomaticUpdateChecks)
-                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(cbAutomaticUpdateChecks))
                             .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap())
         );
@@ -502,14 +466,12 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jCheckBoxTray)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbUseWikipediaSenderLogos)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbAutomaticUpdateChecks)
-                    .addContainerGap(3, Short.MAX_VALUE))
+                    .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -524,7 +486,6 @@ public class PanelEinstellungen extends JPanel {
     private JPasswordField jpfProxyPassword;
     private JSpinner jSpinnerDays;
     private JButton jButtonLoad;
-    private JCheckBox cbUseDatabaseCleaner;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
