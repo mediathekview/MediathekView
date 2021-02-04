@@ -22,7 +22,6 @@ import mediathek.config.Konstanten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
@@ -969,11 +968,6 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
         daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
-
-        dialog.setStatusText(ShutdownState.CLOSE_DB);
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            DatenFilm.Database.closeDatabase();
-        }
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();

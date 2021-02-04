@@ -9,8 +9,6 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
@@ -264,24 +262,6 @@ public class Main {
     }
 
     /**
-     * Copy user agent database to cache directory.
-     * Unfortunately we cannot work from within jar :(
-     */
-    private static void copyUserAgentDatabase() {
-        var strDatabase = PooledDatabaseConnection.getDatabaseCacheDirectory();
-
-        Path p = Paths.get(strDatabase + Konstanten.USER_AGENT_DATABASE);
-        logger.trace("deleting user agent database");
-        try {
-            Files.deleteIfExists(p);
-            logger.trace("copy user agent database to cache directory");
-            FileUtils.copyToFile(Main.class.getResourceAsStream("/database/" + Konstanten.USER_AGENT_DATABASE), p.toFile());
-        } catch (IOException e) {
-            logger.error("copyUserAgentDatabase failed:", e);
-        }
-    }
-
-    /**
      * Migrate old settings stored in mediathek.xml to new app config
      */
     private static void migrateOldConfigSettings() {
@@ -398,14 +378,6 @@ public class Main {
         Daten.getInstance().launchHistoryDataLoading();
         
         Daten.getInstance().loadBookMarkData();
-
-        deleteDatabase();
-
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            DatenFilm.Database.initializeDatabase();
-        }
-
-        copyUserAgentDatabase();
 
         if (!SystemUtils.IS_OS_MAC_OSX)
             changeGlobalFontSize();
@@ -533,18 +505,6 @@ public class Main {
         logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory().toString());
     }
 
-    private static void deleteDatabase() {
-        if (!MemoryUtils.isLowMemoryEnvironment()) {
-            //we can delete the database as it is not needed.
-            try {
-                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "/mediathekview.mv.db";
-                Files.deleteIfExists(Paths.get(dbLocation));
-            } catch (IOException e) {
-                logger.error("deleteDatabase()", e);
-            }
-        }
-    }
-
     private static void installSingleInstanceHandler() {
         //prevent startup of multiple instances...
         var singleInstanceWatcher = new SingleInstance();
@@ -577,7 +537,7 @@ public class Main {
                 alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Nicht genügend Arbeitsspeicher");
                 alert.setContentText("""
-                        Es werden mindestens 640MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
+                        Es werden mindestens 768MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
 
                         Das Programm wird nun beendet.""");
                 alert.showAndWait();

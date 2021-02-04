@@ -8,7 +8,6 @@ public enum ShutdownState {
     SAVE_DOWNLOAD_DATA("Download-Daten sichern"),
     STOP_DOWNLOADS("Downloads anhalten"),
     SAVE_CONFIG("Programmkonfiguration schreiben"),
-    CLOSE_DB("Datenbank schließen"),
     SAVE_APP_DATA("Programmdaten sichern"),
     SAVE_BOOKMARKS("Merkliste sichern"),
     COMPLETE("Fertig.");
