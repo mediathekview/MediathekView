@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -111,7 +112,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
         return duration;
     }
 
-    public DatenAbo getAbo() {
+    public @Nullable DatenAbo getAbo() {
         return abo;
     }
 

@@ -139,7 +139,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 cbSubtitle.isSelected = currentFilm!!.hasSubtitle()
                 hyperlink.tooltip = Tooltip(currentFilm!!.websiteLink)
                 hyperlink.isDisable = false
-                lblAbo.text = currentFilm!!.aboName
+                lblAbo.text = currentFilm!!.abo?.name
             }
         }
     }
