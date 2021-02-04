@@ -190,7 +190,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     private void deleteAboInFilm(DatenFilm film) {
         // für jeden Film Abo löschen
-        film.setAboName("");
         film.setAbo(null);
     }
 
@@ -229,18 +228,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 abo.getIrgendwoFilterPattern(),
                 film))
                 .findFirst().
-                ifPresentOrElse(foundAbo -> assignAboToFilm(foundAbo, film), () -> deleteAboInFilm(film));
-    }
-
-    private void assignAboToFilm(DatenAbo foundAbo, DatenFilm film) {
-        final boolean min = foundAbo.getFilmLengthState() == FilmLengthState.MINIMUM;
-        if (!Filter.laengePruefen(foundAbo.getMindestDauerMinuten(), film.getFilmLength(), min)) {
-            // dann ist der Film zu kurz
-            film.setAboName(foundAbo.getName() + (min ? " [zu kurz]" : " [zu lang]"));
-        } else {
-            film.setAboName(foundAbo.getName());
-        }
-        film.setAbo(foundAbo);
+                ifPresentOrElse(film::setAbo, () -> deleteAboInFilm(film));
     }
 
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
