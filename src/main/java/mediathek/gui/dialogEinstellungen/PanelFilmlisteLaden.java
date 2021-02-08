@@ -51,7 +51,6 @@ public class PanelFilmlisteLaden extends JPanel {
 
         jRadioButtonManuell.addChangeListener(l -> {
             final var selected = jRadioButtonManuell.isSelected();
-            System.out.println("ACTIVE: " + selected);
             jTextFieldUrl.setEnabled(selected);
             jButtonDateiAuswaehlen.setEnabled(selected);
             jCheckBoxUpdate.setEnabled(selected);

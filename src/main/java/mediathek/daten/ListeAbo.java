@@ -227,7 +227,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 abo.getThemaFilterPattern(),
                 abo.getIrgendwoFilterPattern(),
                 film))
-                .findFirst().
+                .findAny().
                 ifPresentOrElse(film::setAbo, () -> deleteAboInFilm(film));
     }
 
@@ -242,7 +242,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
 
         // leere Abos löschen, die sind Fehler
-        this.stream().filter(DatenAbo::isEmpty).forEach(this::remove);
+        this.stream().filter(DatenAbo::isInvalid).forEach(this::remove);
 
         // und jetzt erstellen
         forEach(this::createAbo);

@@ -3,10 +3,9 @@ package mediathek.x11;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.LinuxNotificationCenter;
-import mediathek.tool.notification.NullNotificationCenter;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,34 +36,12 @@ public class MediathekGuiX11 extends MediathekGui {
     }
 
     @Override
-    protected void setupNotificationCenter() {
-        try {
-            var notificationCenter = daten.notificationCenter();
-            if (notificationCenter != null) {
-                notificationCenter.close();
-            }
-        } catch (IOException e) {
-            logger.error("error closing notification center", e);
-        }
-
-        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
-        // we need to figure if we have native support available
+    protected INotificationCenter getNotificationCenter() {
         var notificationCenter = new LinuxNotificationCenter();
-        final boolean hasNativeSupport = notificationCenter.hasNativeSupport();
-        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, hasNativeSupport);
-
-        //reset if we don´t have native support
-        if (!hasNativeSupport) {
-           config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS,false);
-        }
-        if (!showNotifications) {
-            daten.setNotificationCenter(new NullNotificationCenter());
-        } else {
-            if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false))
-                daten.setNotificationCenter(notificationCenter);
-            else
-                daten.setNotificationCenter(new GenericNotificationCenter());
-        }
+        if (notificationCenter.hasNativeSupport())
+            return notificationCenter;
+        else
+            return new GenericNotificationCenter();
     }
 
     @Override

@@ -13,13 +13,14 @@ import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Datum;
 import mediathek.tool.MessageBus;
-import mediathek.tool.notification.thrift.MessageType;
-import mediathek.tool.notification.thrift.NotificationMessage;
+import mediathek.tool.notification.MessageType;
+import mediathek.tool.notification.NotificationMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
@@ -181,28 +182,23 @@ public class StarterClass {
     /**
      * Post a notification dialog whether download was successful or not.
      */
-    private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        final String[] m = {
-                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + FileUtils.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
-        };
-
-        StringBuilder meldung = new StringBuilder();
-        for (String s : m) {
-            meldung.append(s).append('\n');
-        }
-
+    private static void addNotification(@NotNull DatenDownload datenDownload, boolean erfolgreich) {
         final NotificationMessage msg = new NotificationMessage();
-        msg.setMessage(meldung.toString());
+        final String message;
+
         if (erfolgreich) {
             msg.setType(MessageType.INFO);
-            msg.setTitle("Download war erfolgreich");
+            msg.setTitle("Download erfolgreich");
+            message = String.format("\"%s\" vom %s wurde geladen.", datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_SENDER]);
         }
         else {
             msg.setType(MessageType.ERROR);
-            msg.setTitle("Download war fehlerhaft");
+            msg.setTitle("Download fehlerhaft");
+            message = String.format("Fehler beim Laden von \"%s\" des Senders %s aufgetreten.", datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_SENDER]);
         }
+        msg.setMessage(message);
 
         Daten.getInstance().notificationCenter().displayNotification(msg);
     }

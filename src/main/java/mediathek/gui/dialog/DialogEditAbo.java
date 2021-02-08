@@ -319,7 +319,7 @@ public class DialogEditAbo extends JDialog {
     private boolean check() {
         DatenAbo test = aktAbo.getCopy();
         get(test);
-        if (test.isEmpty()) {
+        if (test.isInvalid()) {
             ok = false;
         } else {
             get(aktAbo);

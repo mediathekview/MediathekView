@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.Cleaner;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,10 +52,6 @@ public class Daten {
     public static ListePset listePset;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
-    /**
-     * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
-     */
-    private final Cleaner cleaner = Cleaner.create();
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     /**
      * "source" list of all entries, contains everything
@@ -193,10 +188,6 @@ public class Daten {
 
     public void setNotificationCenter(INotificationCenter center) {
         notificationCenter = center;
-    }
-
-    public Cleaner getCleaner() {
-        return cleaner;
     }
 
     public void setAboHistoryList(AboHistoryController controller) {
