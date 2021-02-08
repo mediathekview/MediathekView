@@ -35,6 +35,7 @@ import org.controlsfx.control.textfield.TextFields;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -513,35 +514,35 @@ public class FilmActionPanel {
 
     private void updateThemaBox() {
         if (themaLoading) {
-      return;
-    }
-    themaLoading = true;
-    List<String> themen = new ArrayList<>();
-    themen.add("");
-        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+          return;
+        }
+        themaLoading = true;
+        List<String> themen = new ArrayList<>();
+        themen.add("");
+        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems().stream().filter(Objects::nonNull).collect(Collectors.toList());
 
-    final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
-    if (selectedSenders.isEmpty()) {
-      themen.addAll(blackList.getThemen(""));
-    } else {
-      for (String sender : selectedSenders) {
-        themen.addAll(blackList.getThemen(sender));
-      }
-    }
-    themaBox.setItems(
-        FXCollections.observableList(
-            themen.stream()
-                .distinct()
-                .sorted(GermanStringSorter.getInstance())
-                .collect(Collectors.toList())));
-    themaSuggestionProvider.clearSuggestions();
-    themaSuggestionProvider.addPossibleSuggestions(themen);
-    loadSavedThema();
-    themaLoading = false;
+        final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
+        if (selectedSenders.isEmpty()) {
+          themen.addAll(blackList.getThemen(""));
+        } else {
+          for (String sender : selectedSenders) {
+            themen.addAll(blackList.getThemen(sender));
+          }
+        }
+        themaBox.setItems(
+            FXCollections.observableList(
+                themen.stream()
+                    .distinct()
+                    .sorted(GermanStringSorter.getInstance())
+                    .collect(Collectors.toList())));
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(themen);
+        loadSavedThema();
+        themaLoading = false;
 
-    if (!themaBox.getItems().contains(themaBox.getSelectionModel().getSelectedItem())) {
-      themaBox.getSelectionModel().selectFirst();
-    }
+        if (!themaBox.getItems().contains(themaBox.getSelectionModel().getSelectedItem())) {
+          themaBox.getSelectionModel().selectFirst();
+        }
   }
 
   private void setupToolBar() {

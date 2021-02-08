@@ -63,7 +63,7 @@ public class PanelEinstellungen extends JPanel {
     private void livePersistFiltersActionPerformed(ActionEvent event)
     {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_LIVE_PERSIST_FILTERS, livePersistFilters.isSelected());
-        daten.getMessageBus().publishAsync(new UpdateStateChangedEvent(livePersistFilters.isSelected()));
+        MessageBus.getMessageBus().publishAsync(new UpdateStateChangedEvent(livePersistFilters.isSelected()));
     }
 
     private void setupDays() {

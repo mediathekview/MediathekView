@@ -54,9 +54,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      */
     public List<String> getThemen(String sender) {
         Stream<DatenFilm> mystream = parallelStream();
-        //if sender is empty return all themas...
-        if (!sender.isEmpty())
+        // if sender is empty return all themas...
+        if (sender != null && !sender.isEmpty()) {
             mystream = mystream.filter(f -> f.getSender().equals(sender));
+        }
 
         return mystream.map(DatenFilm::getThema)
                 .distinct()
