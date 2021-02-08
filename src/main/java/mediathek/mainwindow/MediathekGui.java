@@ -49,6 +49,7 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
@@ -66,6 +67,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -261,17 +263,31 @@ public class MediathekGui extends JFrame {
     /**
      * Create either a native or a javafx notification center depending on platform
      */
-    protected void setupNotificationCenter() {
+    private void setupNotificationCenter() {
+        final var notificationCenter = daten.notificationCenter();
         final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
 
-        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
-        config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false);
+        if (notificationCenter != null) {
+            try {
+                notificationCenter.close();
+            } catch (IOException e) {
+                logger.error("Failed to close old notification center", e);
+            }
+        }
 
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
-            daten.setNotificationCenter(new GenericNotificationCenter());
+            daten.setNotificationCenter(getNotificationCenter());
         }
+    }
+
+    /**
+     * Return the platform-specific notification implementation.
+     * @return generic or platform-specific notification implementation.
+     */
+    protected INotificationCenter getNotificationCenter() {
+        return new GenericNotificationCenter();
     }
 
     @Handler

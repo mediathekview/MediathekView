@@ -45,10 +45,6 @@ public class ApplicationConfiguration {
             "application.ui.download.tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
-    public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
-            "application.notifications.show_native";
-    public static final String APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT =
-            "application.notifications.native_support";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
     /**
      * can be BASIC, HEADERS, BODY
