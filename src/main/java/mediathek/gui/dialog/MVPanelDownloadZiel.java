@@ -25,8 +25,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
-@SuppressWarnings("serial")
+
 public class MVPanelDownloadZiel extends JPanel {
     public boolean nameGeaendert;
     private final DatenDownload datenDownload;
@@ -219,8 +220,9 @@ public class MVPanelDownloadZiel extends JPanel {
                 //use the cross-platform swing chooser
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jComboBoxPath.getSelectedItem().toString().equals("")) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
+                var selItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();
+                if (!selItem.isEmpty()) {
+                    chooser.setCurrentDirectory(new File(selItem));
                 }
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

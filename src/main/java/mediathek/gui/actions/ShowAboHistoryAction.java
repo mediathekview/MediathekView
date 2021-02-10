@@ -20,7 +20,7 @@ public class ShowAboHistoryAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        AboHistoryDialog dialog = new AboHistoryDialog(owner, daten);
+        AboHistoryDialog dialog = new AboHistoryDialog(owner);
         dialog.pack();
         dialog.setVisible(true);
     }
