@@ -43,7 +43,7 @@
         </Button>
         <Button mnemonicParsing="false" fx:id="btnSaveFilterSettings" disable="true">
             <tooltip>
-                <Tooltip text="Alle Filter Änderungen speichern"/>
+                <Tooltip text="Filter Änderungen speichern"/>
             </tooltip>
             <graphic>
                 <Glyph fontFamily="FontAwesome" icon="SAVE" fontSize="16"/>
@@ -51,7 +51,7 @@
         </Button>
         <Button mnemonicParsing="false" fx:id="btnRestoreFilterSettings" disable="true">
             <tooltip>
-                <Tooltip text="Alle Filter Änderungen zurücksetzen"/>
+                <Tooltip text="Filter Änderungen zurücksetzen"/>
             </tooltip>
             <graphic>
                 <Glyph fontFamily="FontAwesome" icon="UNDO" fontSize="16"/>
