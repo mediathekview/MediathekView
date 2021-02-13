@@ -467,8 +467,8 @@ public class PanelEinstellungen extends JPanel {
                                     .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addComponent(jCheckBoxTray)
                                 .addComponent(cbUseWikipediaSenderLogos)
-                                .addComponent(cbAutomaticUpdateChecks))
                                 .addComponent(livePersistFilters)
+                                .addComponent(cbAutomaticUpdateChecks))
                             .addGap(0, 0, Short.MAX_VALUE)))
                     .addContainerGap())
         );
@@ -489,6 +489,7 @@ public class PanelEinstellungen extends JPanel {
                     .addComponent(cbUseWikipediaSenderLogos)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(cbAutomaticUpdateChecks)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(livePersistFilters)
                     .addContainerGap(16, Short.MAX_VALUE))
         );
