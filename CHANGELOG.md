@@ -3,6 +3,8 @@
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
 - **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben.
 - Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen.
+- Menüeintrag "Downloads/Alle Downloads um xx:yy Uhr starten" in "Downloads/Alle Downloads zeitverzögert starten..." umbenannt.
+- Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
 
 <u>**13.7.1**</u>
 
