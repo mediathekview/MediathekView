@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
+import javafx.stage.Modality;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
@@ -386,8 +387,8 @@ public class GuiDownloads extends AGuiTabPanel {
         miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
         miDownloadsStartAll.addActionListener(e -> starten(true));
 
-        JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads um xx:yy Uhr starten");
-        miDownloadStartTimed.addActionListener(e -> startAtTime());
+        JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads zeitverzögert starten...");
+        miDownloadStartTimed.addActionListener(e -> filmStartAtTime());
 
         JMenuItem miStopAllDownloads = new JMenuItem("Alle Downloads stoppen");
         miStopAllDownloads.addActionListener(e -> stoppen(true));
@@ -526,10 +527,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
     public void starten(boolean alle) {
         filmStartenWiederholenStoppen(alle, true);
-    }
-
-    public void startAtTime() {
-        filmStartAtTime();
     }
 
     public void stoppen(boolean alle) {
@@ -1020,7 +1017,7 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void filmStartAtTime() {
+    public void filmStartAtTime() {
         // bezieht sich immer auf "alle"
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
@@ -1031,6 +1028,14 @@ public class GuiDownloads extends AGuiTabPanel {
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (tabelle.getRowCount() == 0) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Keine Downloads vorhanden");
+                alert.setContentText("Es sind keine Downloads in der Liste zum Starten vorhanden.");
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.showAndWait();
+            });
             return;
         }
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
