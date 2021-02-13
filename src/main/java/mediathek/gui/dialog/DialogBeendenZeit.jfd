@@ -1,0 +1,65 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jLabel1::l::386:x, comp comboActions::l::0:x, seq t {space :0:0:x, comp jButtonHilfe:::p::p, space :::p, comp btnCancel:::p::p, space :::p, comp btnContinue:::p::p}, seq {par l {comp cbShutdownComputer::l:p::p, seq l {comp jLabel2:::p::p, space :::p, comp jSpinnerTime:::p::p, space :::p, comp jLabel3:::p::p}}, space :0:0:x}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :::p, par b {comp jLabel2::b:p::p, comp jSpinnerTime::b:p::p, comp jLabel3::b:p::p}, space s:::x, comp jLabel1:::p::p, space u:::p, comp comboActions:::p::p, space :::p, par t {seq {comp cbShutdownComputer:::p::p, space s:::p, par b {comp btnContinue::b:p::p, comp btnCancel::b:p::p}}, comp jButtonHilfe:::p::p}, space :::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"resizable": false
+			"title": "Zeitverzögerter Download-Start"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "Wie möchten Sie fortfahren wenn alle Downloads fertig sind?"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "comboActions"
+				auxiliary() {
+					"JavaCodeGenerator.typeParameters": "String"
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnContinue"
+				"text": "Weiter"
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "cbShutdownComputer"
+				"text": "Rechner herunterfahren"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCancel"
+				"text": "Abbrechen"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonHilfe"
+				"toolTipText": "Hilfe anzeigen"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": "Alle Downloads starten um: "
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JSpinner" ) {
+				name: "jSpinnerTime"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel3"
+				"text": "Uhr"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
