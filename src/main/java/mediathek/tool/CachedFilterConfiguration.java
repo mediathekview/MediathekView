@@ -27,6 +27,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
   }
 
   public void restore() {
+    cachedConfiguration.clear();
     cachedConfiguration.copy(configuration);
   }
 
@@ -271,8 +272,8 @@ public class CachedFilterConfiguration extends FilterConfiguration {
   }
 
   public FilterDTO getCurrentFilter() {
-    if (!cachedConfiguration.containsKey(FILTER_PANEL_CURRENT_FILTER)
-        || cachedConfiguration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER) == null) {
+    if (!cachedConfiguration.containsKey(FILTER_CONFIG_PROPERTIES_NAME_START)
+        || cachedConfiguration.get(UUID.class, FILTER_CONFIG_PROPERTIES_NAME_START) == null) {
       setCurrentFilter(
           getAvailableFilters().stream()
               .findFirst()
@@ -283,7 +284,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
                     return newFilter;
                   }));
     }
-    UUID currentFilterId = cachedConfiguration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER);
+    UUID currentFilterId = cachedConfiguration.get(UUID.class, FILTER_CONFIG_PROPERTIES_NAME_START);
     return new FilterDTO(currentFilterId, getFilterName(currentFilterId));
   }
 
@@ -292,9 +293,9 @@ public class CachedFilterConfiguration extends FilterConfiguration {
   }
 
   public CachedFilterConfiguration setCurrentFilter(UUID currentFilterID) {
-    cachedConfiguration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
+    cachedConfiguration.setProperty(FILTER_CONFIG_PROPERTIES_NAME_START, currentFilterID);
     //Persist the current filter. This should be always persisted.
-    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
+    configuration.setProperty(FILTER_CONFIG_PROPERTIES_NAME_START, currentFilterID);
     currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
@@ -356,7 +357,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
   public CachedFilterConfiguration deleteFilter(UUID idToDelete) {
     boolean filterToDeleteIsCurrentFilter = idToDelete.equals(getCurrentFilterID());
     if (filterToDeleteIsCurrentFilter) {
-      cachedConfiguration.clearProperty(FILTER_PANEL_CURRENT_FILTER);
+      cachedConfiguration.clearProperty(FILTER_CONFIG_PROPERTIES_NAME_START);
     }
     cachedConfiguration
         .getKeys()

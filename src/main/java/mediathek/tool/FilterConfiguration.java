@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 
 
 public class FilterConfiguration {
-  protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
-  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
+  public static final String FILTER_CONFIG_PROPERTIES_NAME_START = "filter.";
+  public static final String FILTER_PANEL_CURRENT_FILTER = FILTER_CONFIG_PROPERTIES_NAME_START+"current.filter";
+  protected static final String FILTER_PANEL_AVAILABLE_FILTERS = FILTER_CONFIG_PROPERTIES_NAME_START+"available.filters.filter_";
   protected static final String KEY_UUID_SPLITERATOR = "_";
   private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
   protected static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks =
@@ -399,8 +400,8 @@ public class FilterConfiguration {
   }
 
   public FilterDTO getCurrentFilter() {
-    if (!configuration.containsKey(FILTER_PANEL_CURRENT_FILTER)
-        || configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER) == null) {
+    if (!configuration.containsKey(FILTER_CONFIG_PROPERTIES_NAME_START)
+        || configuration.get(UUID.class, FILTER_CONFIG_PROPERTIES_NAME_START) == null) {
       setCurrentFilter(
           getAvailableFilters().stream()
               .findFirst()
@@ -411,7 +412,7 @@ public class FilterConfiguration {
                     return newFilter;
                   }));
     }
-    UUID currentFilterId = configuration.get(UUID.class, FILTER_PANEL_CURRENT_FILTER);
+    UUID currentFilterId = configuration.get(UUID.class, FILTER_CONFIG_PROPERTIES_NAME_START);
     return new FilterDTO(currentFilterId, getFilterName(currentFilterId));
   }
 
@@ -420,7 +421,7 @@ public class FilterConfiguration {
   }
 
   public FilterConfiguration setCurrentFilter(UUID currentFilterID) {
-    configuration.setProperty(FILTER_PANEL_CURRENT_FILTER, currentFilterID);
+    configuration.setProperty(FILTER_CONFIG_PROPERTIES_NAME_START, currentFilterID);
     currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
@@ -481,7 +482,7 @@ public class FilterConfiguration {
   public FilterConfiguration deleteFilter(UUID idToDelete) {
     boolean filterToDeleteIsCurrentFilter = idToDelete.equals(getCurrentFilterID());
     if (filterToDeleteIsCurrentFilter) {
-      configuration.clearProperty(FILTER_PANEL_CURRENT_FILTER);
+      configuration.clearProperty(FILTER_CONFIG_PROPERTIES_NAME_START);
     }
     configuration
         .getKeys()
@@ -511,21 +512,21 @@ public class FilterConfiguration {
   }
 
   protected enum FilterConfigurationKeys {
-    FILTER_PANEL_SHOW_HD_ONLY("filter.filter_%s.show.hd_only"),
-    FILTER_PANEL_SHOW_SUBTITLES_ONLY("filter.filter_%s.show.subtitles_only"),
-    FILTER_PANEL_SHOW_BOOK_MARKED_ONLY("filter.filter_%s.show.book_marked_only"),
-    FILTER_PANEL_SHOW_NEW_ONLY("filter.filter_%s.show.new_only"),
-    FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.filter_%s.show.unseen_only"),
-    FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.filter_%s.show.livestreams_only"),
-    FILTER_PANEL_DONT_SHOW_ABOS("filter.filter_%s.dont_show.abos"),
-    FILTER_PANEL_DONT_SHOW_TRAILERS("filter.filter_%s.dont_show.trailers"),
-    FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"),
-    FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),
-    FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"),
-    FILTER_PANEL_SENDER("filter.filter_%s.sender"),
-    FILTER_PANEL_THEMA("filter.filter_%s.thema"),
-    FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
-    FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum");
+    FILTER_PANEL_SHOW_HD_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.hd_only"),
+    FILTER_PANEL_SHOW_SUBTITLES_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.subtitles_only"),
+    FILTER_PANEL_SHOW_BOOK_MARKED_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.book_marked_only"),
+    FILTER_PANEL_SHOW_NEW_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.new_only"),
+    FILTER_PANEL_SHOW_UNSEEN_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.unseen_only"),
+    FILTER_PANEL_SHOW_LIVESTREAMS_ONLY(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.show.livestreams_only"),
+    FILTER_PANEL_DONT_SHOW_ABOS(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.dont_show.abos"),
+    FILTER_PANEL_DONT_SHOW_TRAILERS(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.dont_show.trailers"),
+    FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.dont_show.sign_language"),
+    FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.dont_show.audio_versions"),
+    FILTER_PANEL_FILM_LENGTH_MIN(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.film_length.min"),
+    FILTER_PANEL_SENDER(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.sender"),
+    FILTER_PANEL_THEMA(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.thema"),
+    FILTER_PANEL_FILM_LENGTH_MAX(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.film_length.max"),
+    FILTER_PANEL_ZEITRAUM(FILTER_CONFIG_PROPERTIES_NAME_START+"filter_%s.zeitraum");
 
     private final String key;
 
