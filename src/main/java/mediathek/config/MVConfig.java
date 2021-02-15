@@ -213,8 +213,6 @@ public class MVConfig {
         SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein", Boolean.TRUE.toString()),
-        // Extrafenster
-        SYSTEM_GROESSE_MANAGE_ABO("manage-abo-dialog-size"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
