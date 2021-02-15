@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -210,13 +211,18 @@ public class ApplicationConfiguration {
     }
 
     /**
+     * A custom small thread scheduler exclusively for config changes.
+     */
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+
+    /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case
      * this listener is called several times in a row the timer will get reset in order to ensure that
      * config is written only once.
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
-            future = TimerPool.getTimerPool().schedule(() -> {
+            future = executor.schedule(() -> {
                 try {
                     logger.trace("Writing app configuration file");
                     handler.save();
