@@ -5,6 +5,7 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.FileSpecifier;
 import mediathek.tool.FilenameUtils;
@@ -173,7 +174,7 @@ public class MVPanelDownloadZiel extends JPanel {
 
         // zur Sicherheit bei Unsinn im Set
         if (pfad.isEmpty()) {
-            pfad = GuiFunktionen.getStandardDownloadPath();
+            pfad = StandardLocations.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
             name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";

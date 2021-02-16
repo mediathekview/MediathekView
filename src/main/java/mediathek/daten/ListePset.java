@@ -1,22 +1,20 @@
 package mediathek.daten;
 
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("serial")
 public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
@@ -152,7 +150,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     private static void progMusterErsetzen(JFrame parent, DatenPset pSet) {
-        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, StandardLocations.getStandardDownloadPath());
         String vlc = "";
         String ffmpeg = "";
 
@@ -222,9 +220,5 @@ public class ListePset extends LinkedList<DatenPset> {
             model = new TModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
         }
         return model;
-    }
-
-    public ArrayList<String> getListProg() {
-        return this.stream().map(DatenPset::toString).collect(Collectors.toCollection(ArrayList::new));
     }
 }
