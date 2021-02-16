@@ -6,6 +6,7 @@
 - Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen.
 - Menüeintrag "Downloads/Alle Downloads um xx:yy Uhr starten" in "Downloads/Alle Downloads zeitverzögert starten..." umbenannt.
 - Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
+- **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
 
 <u>**13.7.1**</u>
 
