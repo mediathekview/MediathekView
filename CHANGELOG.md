@@ -1,5 +1,6 @@
 <u>**13.8**</u>
 
+- **macOS:** MediathekView funktioniert in Zusammenarbeit mit **AltTab v6.15.1 und neuer.** In Zusammenarbeit mit dem Entwickler konnte eine Lösung für das Problem gefunden werden.**Die Nutzung des offiziellen App-Bundle ist dafür zwingend erforderlich!**
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
 - **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben.
 - Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen.
