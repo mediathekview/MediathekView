@@ -230,19 +230,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    /**
-     * Liefert den Standardpfad für Downloads.
-     *
-     * @return Standardpfad zu den Downloads.
-     */
-    public static String getStandardDownloadPath() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            return addsPfad(SystemUtils.USER_HOME, "Downloads");
-        } else {
-            return addsPfad(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS);
-        }
-    }
-
     public static ComboBoxModel<String> getSenderListComboBoxModel(ListeFilme listeFilme) {
         DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList(listeFilme.getBaseSenderList()));
         senderModel.setSelectedItem("");

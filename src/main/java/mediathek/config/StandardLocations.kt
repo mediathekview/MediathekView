@@ -4,6 +4,7 @@ import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -50,7 +51,24 @@ object StandardLocations {
      * @return Path to the file
      */
     @JvmStatic
+    @Throws(InvalidPathException::class)
     fun getMediathekXmlFile(): Path {
         return getSettingsDirectory().resolve(Konstanten.CONFIG_FILE)
+    }
+
+    /**
+     * Return the standard path to downloads.
+     *
+     * @return Standard path to the download directory.
+     */
+    @JvmStatic
+    @Throws(InvalidPathException::class)
+    fun getStandardDownloadPath(): String {
+        val userHome = SystemUtils.USER_HOME
+        val path = if (SystemUtils.IS_OS_MAC_OSX)
+            Paths.get(userHome, "Downloads")
+        else
+            Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS)
+        return path.toAbsolutePath().toString()
     }
 }

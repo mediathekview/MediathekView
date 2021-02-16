@@ -2,6 +2,7 @@ package mediathek.daten;
 
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.abo.DatenAbo;
@@ -671,7 +672,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         } else {
             // Pfad sinnvoll belegen
             if (pSet.getZielPfad().isEmpty()) {
-                path = GuiFunktionen.getStandardDownloadPath();
+                path = StandardLocations.getStandardDownloadPath();
             } else {
                 path = pSet.getZielPfad();
             }
@@ -700,7 +701,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
         // zur Sicherheit bei Unsinn im Set
         if (path.isEmpty()) {
-            path = GuiFunktionen.getStandardDownloadPath();
+            path = StandardLocations.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
             name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
