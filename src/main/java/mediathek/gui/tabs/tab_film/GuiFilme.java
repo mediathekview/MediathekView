@@ -23,6 +23,7 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowFilmInformationAction;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -47,12 +48,17 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -1141,6 +1147,7 @@ public class GuiFilme extends AGuiTabPanel {
             });
 
             jPopupMenu.addSeparator();
+            res.ifPresent(film -> setupSearchEntries(jPopupMenu, film));
 
             // Drucken
             jPopupMenu.add(miPrintTable);
@@ -1165,6 +1172,41 @@ public class GuiFilme extends AGuiTabPanel {
             });
             // anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private void setupSearchEntries(@NotNull JPopupMenu popupMenu, @NotNull DatenFilm film) {
+            var mThema = new JMenu("Online-Suche nach Thema");
+            var mTitel = new JMenu("Online-Suche nach Titel");
+
+            var set = EnumSet.allOf(OnlineSearchProviders.class);
+
+            for (var item : set) {
+                var miThema = new JMenuItem(item.toString());
+                miThema.addActionListener(l -> {
+                    var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
+                    try {
+                        UrlHyperlinkAction.openURL(MediathekGui.ui(), url);
+                    } catch (URISyntaxException ex) {
+                        logger.error("Failed to launch online search for url {}", url);
+                    }
+                });
+                mThema.add(miThema);
+
+                var miTitel = new JMenuItem(item.toString());
+                miTitel.addActionListener(l -> {
+                    var url = item.getQueryUrl() + URLEncoder.encode(film.getTitle(), StandardCharsets.UTF_8);
+                    try {
+                        UrlHyperlinkAction.openURL(MediathekGui.ui(), url);
+                    } catch (URISyntaxException ex) {
+                        logger.error("Failed to launch online search for url {}", url);
+                    }
+                });
+                mTitel.add(miTitel);
+            }
+
+            popupMenu.add(mThema);
+            popupMenu.add(mTitel);
+            popupMenu.addSeparator();
         }
 
         private class BeobHistory implements ActionListener {
