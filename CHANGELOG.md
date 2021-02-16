@@ -7,6 +7,7 @@
 - Menüeintrag "Downloads/Alle Downloads um xx:yy Uhr starten" in "Downloads/Alle Downloads zeitverzögert starten..." umbenannt.
 - Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
+- **BUGFIX:** MediathekView korrigiert nun die Themen "ZIB Flash" und "Guten Morgen Österreich" so dass diese keine Zahlen/Uhrzeiten mehr enthalten. Dadurch wird die Themensuche und das Einrichten von Abos erleichtert. Leider waren die Serverentwickler bisher zu faul dies in der Filmliste zu beheben.
 
 <u>**13.7.1**</u>
 
