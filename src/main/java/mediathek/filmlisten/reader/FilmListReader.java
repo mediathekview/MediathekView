@@ -388,6 +388,15 @@ public class FilmListReader implements AutoCloseable {
         logger.trace("ZF LIST SIZE: " + list.size());
         if (!list.isEmpty())
             list.forEach(film -> film.setThema(thema2));
+
+        // remove time from MDR aktuell
+        final var thema3 = "MDR aktuell";
+        list = listeFilme.parallelStream()
+                .filter(film -> film.getThema().startsWith(thema3))
+                .collect(Collectors.toList());
+        logger.trace("MA LIST SIZE: " + list.size());
+        if (!list.isEmpty())
+            list.forEach(film -> film.setThema(thema3));
     }
 
     /**
