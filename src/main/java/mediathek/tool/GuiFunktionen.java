@@ -6,7 +6,6 @@ import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
 import mediathek.filmlisten.FilmListDownloadType;
-import mediathek.mainwindow.MediathekGui;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,20 +43,6 @@ public class GuiFunktionen extends MVFunctionSys {
         };
     }
 
-    public static void updateGui(MediathekGui mediathekGui) {
-        try {
-            SwingUtilities.updateComponentTreeUI(mediathekGui);
-            for (Frame f : Frame.getFrames()) {
-                SwingUtilities.updateComponentTreeUI(f);
-                for (Window w : f.getOwnedWindows()) {
-                    SwingUtilities.updateComponentTreeUI(w);
-                }
-            }
-        } catch (Exception ignored) {
-        }
-
-    }
-
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
@@ -81,6 +66,7 @@ public class GuiFunktionen extends MVFunctionSys {
         c.setLocation(x, y);
     }
 
+    @Deprecated
     public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {
             MVConfig.add(nr, jFrame.getSize().width + ":"
@@ -90,6 +76,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
+    @Deprecated
     public static void getSize(Configs nr, JDialog jDialog) {
         if (jDialog != null) {
             MVConfig.add(nr, jDialog.getSize().width + ":"
@@ -99,6 +86,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
+    @Deprecated
     public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
