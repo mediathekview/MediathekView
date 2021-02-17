@@ -36,7 +36,7 @@ public class StarterClass {
     private static final Logger logger = LogManager.getLogger(StarterClass.class);
     private final Daten daten;
     private final Starten starten;
-    private boolean pause = false;
+    private boolean pause;
 
     public StarterClass(Daten daten) {
         this.daten = daten;
