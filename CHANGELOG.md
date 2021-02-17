@@ -9,6 +9,7 @@
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
 - **BUGFIX:** MediathekView korrigiert nun die Themen "ZIB Flash" und "Guten Morgen Österreich" des ORF,so dass diese keine Zahlen/Uhrzeiten mehr enthalten. Dadurch wird die Themensuche und das Einrichten von Abos erleichtert. Leider waren die Serverentwickler bisher zu faul dies in der Filmliste zu beheben.
 - **BUGFIX:** "MDR aktuell" des MDR wird nun auch so intern korrigiert dass keine Uhrzeiten mehr genutzt werden für eine bessere Abo-Nutzung.
+- **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
 
 <u>**13.7.1**</u>
 
