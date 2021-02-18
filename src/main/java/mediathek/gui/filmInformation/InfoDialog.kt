@@ -155,7 +155,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     }
 
     private fun buildLayout() {
-        val contentPane = contentPane
         contentPane.layout = BorderLayout()
         val newFxPanel = JFXPanel()
         contentPane.add(newFxPanel, BorderLayout.CENTER)
