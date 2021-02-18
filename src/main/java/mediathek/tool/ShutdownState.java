@@ -7,7 +7,6 @@ public enum ShutdownState {
     SAVE_FILM_DATA("Film-Daten sichern"),
     SAVE_DOWNLOAD_DATA("Download-Daten sichern"),
     STOP_DOWNLOADS("Downloads anhalten"),
-    SAVE_CONFIG("Programmkonfiguration schreiben"),
     SAVE_APP_DATA("Programmdaten sichern"),
     SAVE_BOOKMARKS("Merkliste sichern"),
     COMPLETE("Fertig.");

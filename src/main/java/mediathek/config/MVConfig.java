@@ -195,7 +195,6 @@ public class MVConfig {
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         // Fenstereinstellungen
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
-        SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),

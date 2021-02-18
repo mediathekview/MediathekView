@@ -919,12 +919,6 @@ public class MediathekGui extends JFrame {
         return dialogEinstellungen;
     }
 
-    private void writeOldConfiguration() {
-        // Infodialog/Bandwidth
-        if (bandwidthMonitor != null)
-            bandwidthMonitor.writeConfig();
-    }
-
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
@@ -978,9 +972,6 @@ public class MediathekGui extends JFrame {
 
         dialog.setStatusText(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
-
-        dialog.setStatusText(ShutdownState.SAVE_CONFIG);
-        writeOldConfiguration();
 
         dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
         daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
