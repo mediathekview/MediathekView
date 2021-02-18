@@ -548,13 +548,17 @@ public class GuiFilme extends AGuiTabPanel {
                     datenDownload.startDownload();
                 }
             } else {
-                // dann alle Downloads im Dialog abfragen
-                Optional<FilmResolution.Enum> res =
-                        fap.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-                DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
-                dialog.setVisible(true);
+                saveFilm(datenFilm, pSet);
             }
         }
+    }
+
+    private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
+        // dann alle Downloads im Dialog abfragen
+        Optional<FilmResolution.Enum> res =
+                fap.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+        DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
+        dialog.setVisible(true);
     }
 
     private synchronized void bookmarkFilm() {
