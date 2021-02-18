@@ -12,16 +12,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeDownloads;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,12 +37,16 @@ public class BandwidthMonitorController {
 
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 150;
+    private static final String CONFIG_X = "bandwidth_monitor.x";
+    private static final String CONFIG_Y = "bandwidth_monitor.y";
+    private static final String CONFIG_HEIGHT = "bandwidth_monitor.height";
+    private static final String CONFIG_WIDTH = "bandwidth_monitor.width";
     private final ListeDownloads listeDownloads;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
     private JDialog hudDialog;
     private Timeline updateMemoryTimer;
     private Tile bandwidthTile;
     private JFXPanel fxPanel;
-
     public BandwidthMonitorController(JFrame parent) {
         listeDownloads = Daten.getInstance().getListeDownloads();
         createDialog(parent);
@@ -51,14 +55,32 @@ public class BandwidthMonitorController {
             createUpdateTimer();
         });
 
-        if (!GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, hudDialog, null)) {
-            hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-            calculateHudPosition();
-        }
+        restoreSizeFromConfig();
 
         MessageBus.getMessageBus().subscribe(this);
 
         setVisibility();
+        hudDialog.addComponentListener(new WriteConfigComponentListener());
+    }
+
+    private void restoreSizeFromConfig() {
+        try {
+            config.lock(LockMode.READ);
+            int x = config.getInt(CONFIG_X);
+            int y = config.getInt(CONFIG_Y);
+            int width = config.getInt(CONFIG_WIDTH);
+            int height = config.getInt(CONFIG_HEIGHT);
+
+            hudDialog.setSize(width, height);
+            hudDialog.setLocation(x, y);
+        }
+        catch (Exception ex) {
+            hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            calculateHudPosition();
+        }
+        finally {
+            config.unlock(LockMode.READ);
+        }
     }
 
     public void close() {
@@ -165,7 +187,7 @@ public class BandwidthMonitorController {
     }
 
     private void updateListeners() {
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
         MessageBus.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
     }
 
@@ -173,12 +195,36 @@ public class BandwidthMonitorController {
      * Show/hide bandwidth display. Take also care about the used timer.
      */
     public void setVisibility() {
-        final var vis = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
         hudDialog.setVisible(vis);
     }
 
-    public void writeConfig() {
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, hudDialog);
+    private class WriteConfigComponentListener extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            try {
+                config.lock(LockMode.WRITE);
+                final var size = hudDialog.getSize();
+                config.setProperty(CONFIG_WIDTH, size.width);
+                config.setProperty(CONFIG_HEIGHT, size.height);
+            }
+            finally {
+                config.unlock(LockMode.WRITE);
+            }
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            try {
+                config.lock(LockMode.WRITE);
+                final var location = hudDialog.getLocation();
+                config.setProperty(CONFIG_X, location.x);
+                config.setProperty(CONFIG_Y, location.y);
+            }
+            finally {
+                config.unlock(LockMode.WRITE);
+            }
+        }
     }
 }
 

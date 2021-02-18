@@ -77,16 +77,6 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     @Deprecated
-    public static void getSize(Configs nr, JDialog jDialog) {
-        if (jDialog != null) {
-            MVConfig.add(nr, jDialog.getSize().width + ":"
-                    + jDialog.getSize().height + ':'
-                    + jDialog.getLocation().x + ':'
-                    + jDialog.getLocation().y);
-        }
-    }
-
-    @Deprecated
     public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
