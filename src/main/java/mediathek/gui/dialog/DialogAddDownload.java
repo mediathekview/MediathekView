@@ -133,14 +133,12 @@ public class DialogAddDownload extends JDialog {
         } else {
             pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         }
-        if (Daten.listePset.getListeSpeichern().size() == 1) {
+        if (Daten.listePset.getListeSpeichern().size() <= 1) {
             // macht dann keinen Sinn
-            jLabelSet.setVisible(false);
-            jComboBoxPset.setVisible(false);
             jComboBoxPset.setEnabled(false);
-        } else {
-            jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
+        jComboBoxPset.addActionListener(e -> setupResolutionButtons());
+
         jTextFieldSender.setText(' ' + datenFilm.getSender() + ":   " + datenFilm.getTitle());
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
