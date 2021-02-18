@@ -50,11 +50,13 @@ public class SaveDownloadController implements Initializable {
             dialog.dispose();
         });
 
-        lblThema.setText("Hello");
-        lblTitle.setText("World");
-        var icon = MVSenderIconCache.get(film.getSender(), false);
-        var image = SwingFXUtils.toFXImage(JavaFxUtils.toBufferedImage(icon.get()),null);
-        ivSender.setImage(image);
+        lblThema.setText(film.getThema());
+        lblTitle.setText(film.getTitle());
+        var icn = MVSenderIconCache.get(film.getSender(), false);
+        icn.ifPresentOrElse(icon -> {
+            var image = SwingFXUtils.toFXImage(JavaFxUtils.toBufferedImage(icon),null);
+            ivSender.setImage(image);
+        }, () -> ivSender.setImage(null));
     }
 
     public boolean success() {

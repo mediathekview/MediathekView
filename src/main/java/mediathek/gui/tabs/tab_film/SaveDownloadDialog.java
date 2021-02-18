@@ -18,7 +18,7 @@ class SaveDownloadDialog extends JDialog {
     public SaveDownloadController controller;
 
     public SaveDownloadDialog(DatenFilm datenFilm, DatenPset pSet) {
-        setTitle("FX TestDialog");
+        setTitle("FX Film Speichern");
         setModal(true);
         JFXPanel fxPanel = new JFXPanel();
 
