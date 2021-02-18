@@ -2,7 +2,10 @@ package mediathek.gui.dialog;
 
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -88,7 +91,7 @@ public class DialogAddDownload extends JDialog {
             return datenFilm.getDateigroesse(url);
         });
 
-        jButtonDelHistory.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
