@@ -1,7 +1,7 @@
 package mediathek.filmlisten;
 
+import mediathek.config.StandardLocations;
 import mediathek.daten.ListeFilme;
-import mediathek.tool.GuiFunktionen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,15 +30,15 @@ class FilmeImportierenAutoThread extends Thread {
         if (listeFilme.isEmpty() || !listeFilme.metaData().canUseDiffList()) {
             // dann eine komplette Liste laden
             listeFilme.clear();
-            ret = downloadAction.performDownload(GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
+            ret = downloadAction.performDownload(StandardLocations.getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
         } else {
             // nur ein Update laden
-            ret = downloadAction.performDownload(GuiFunktionen.getFilmListUrl(FilmListDownloadType.DIFF_ONLY), listeFilmeDiff, days);
+            ret = downloadAction.performDownload(StandardLocations.getFilmListUrl(FilmListDownloadType.DIFF_ONLY), listeFilmeDiff, days);
             if (!ret || listeFilmeDiff.isEmpty()) {
                 // wenn diff, dann nochmal mit einer kompletten Liste versuchen
                 listeFilme.clear();
                 listeFilmeDiff.clear();
-                ret = downloadAction.performDownload(GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
+                ret = downloadAction.performDownload(StandardLocations.getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);
             }
         }
 
