@@ -75,6 +75,12 @@ public class SaveDownloadController implements Initializable {
         }
         else
             cBxPSet.getSelectionModel().selectFirst();
+
+        if (cBxPSet.getItems().size() <= 1) {
+            cBxPSet.setDisable(true);
+        }
+
+        //TODO change resolution on PSet change...
     }
 
     @Override
