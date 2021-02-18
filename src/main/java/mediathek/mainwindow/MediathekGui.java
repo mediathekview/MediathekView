@@ -418,7 +418,7 @@ public class MediathekGui extends JFrame {
     private void loadFilmlist() {
         Platform.runLater(() -> {
             //don´t write filmlist when we are reading only...
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
+            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
                 Daten.dontWriteFilmlistOnStartup.set(false);
             } else
                 Daten.dontWriteFilmlistOnStartup.set(true);
@@ -566,7 +566,7 @@ public class MediathekGui extends JFrame {
      */
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
+            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
                     FilmeLaden filmeLaden = new FilmeLaden(daten);
@@ -900,7 +900,7 @@ public class MediathekGui extends JFrame {
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
-        if (manualMode || GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL) {
+        if (manualMode || GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.MANUAL) {
             // Dialog zum Laden der Filme anzeigen
             LoadFilmListDialog dlg = new LoadFilmListDialog(this);
             dlg.setVisible(true);

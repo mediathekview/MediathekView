@@ -39,7 +39,7 @@ public class TabFilmeMac extends GuiFilme
         TouchBarButton btnLoadFilmlist = new TouchBarButton();
         btnLoadFilmlist.setImage(TouchBarUtils.touchBarImageFromFontAwesome(FontAwesome.CLOUD_DOWNLOAD));
         btnLoadFilmlist.setAction(touchBarView -> SwingUtilities.invokeLater(() ->
-                mediathekGui.performFilmListLoadOperation(GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL)));
+                mediathekGui.performFilmListLoadOperation(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.MANUAL)));
 
         TouchBarButton btnFilmInformation = new TouchBarButton();
         btnFilmInformation.setAction(view -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));

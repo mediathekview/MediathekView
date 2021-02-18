@@ -137,9 +137,9 @@ public class PanelFilmlisteLaden extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jRadioButtonManuell.isSelected())
-                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
                 else
-                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
+                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.AUTOMATIC);
 
                 MessageBus.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
             }
@@ -158,7 +158,7 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void initRadio() {
-        switch (GuiFunktionen.getImportArtFilme()) {
+        switch (GuiFunktionen.getFilmListUpdateType()) {
             case MANUAL -> jRadioButtonManuell.setSelected(true);
             case AUTOMATIC -> jRadioButtonAuto.setSelected(true);
         }

@@ -34,7 +34,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
         val btn = JButton("Filmliste laden")
         btn.addActionListener {
             val filmeLaden = Daten.getInstance().filmeLaden
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
+            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
                 filmeLaden.loadFilmlist("", false)
             } else {

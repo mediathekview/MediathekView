@@ -29,7 +29,7 @@ public class MVConfig {
 
         if (Config.isDebugModeEnabled()) {
             logger.debug("Setting FilmList import mode to MANUAL");
-            GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+            GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
         }
 
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
