@@ -101,8 +101,6 @@ public class DialogAddDownload extends JDialog {
             return datenFilm.getDateigroesse(url);
         });
 
-        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
 
@@ -124,14 +122,13 @@ public class DialogAddDownload extends JDialog {
 
         jButtonOk.addActionListener(e -> {
             if (check()) {
-                beenden(true);
+                saveDownload();
             }
         });
         getRootPane().setDefaultButton(jButtonOk);
 
         EscapeKeyHandler.installHandler(this, this::dispose);
-
-        jButtonAbbrechen.addActionListener(e -> beenden(false));
+        jButtonAbbrechen.addActionListener(e -> dispose());
 
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(listeSpeichern.getObjectDataCombo()));
         if (pSet != null) {
@@ -259,6 +256,7 @@ public class DialogAddDownload extends JDialog {
         //not needed anymore
         pool.shutdown();
 
+        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jButtonDelHistory.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
@@ -511,24 +509,26 @@ public class DialogAddDownload extends JDialog {
         return ok;
     }
 
-    private void beenden(boolean ok) {
-        if (ok) {
-            // jetzt wird mit den angegebenen Pfaden gearbeitet
-            datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
-            datenDownload.setGroesse(getFilmSize());
-            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+    /**
+     * Store download in list and start immediately if requested.
+     */
+    private void saveDownload() {
+        // jetzt wird mit den angegebenen Pfaden gearbeitet
+        datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
+        datenDownload.setGroesse(getFilmSize());
+        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
 
-            final var daten = Daten.getInstance();
-            daten.getListeDownloads().addMitNummer(datenDownload);
-            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-            if (jCheckBoxStarten.isSelected()) {
-                // und evtl. auch gleich starten
-                datenDownload.startDownload();
-            }
+        final var daten = Daten.getInstance();
+        daten.getListeDownloads().addMitNummer(datenDownload);
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (jCheckBoxStarten.isSelected()) {
+            // und evtl. auch gleich starten
+            datenDownload.startDownload();
         }
+
         saveComboPfad(jComboBoxPfad, orgPfad);
-        this.dispose();
+        dispose();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
