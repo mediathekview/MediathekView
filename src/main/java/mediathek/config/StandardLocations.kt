@@ -1,5 +1,6 @@
 package mediathek.config
 
+import mediathek.filmlisten.FilmListDownloadType
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
@@ -70,5 +71,19 @@ object StandardLocations {
         else
             Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS)
         return path.toAbsolutePath().toString()
+    }
+
+    /**
+     * Get the address of the used film list type as string.
+     *
+     * @param type which list to use.
+     * @return URL of filmlist as String.
+     */
+    @JvmStatic
+    fun getFilmListUrl(type: FilmListDownloadType): String {
+        return when (type) {
+            FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz").toString()
+            FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz").toString()
+        }
     }
 }

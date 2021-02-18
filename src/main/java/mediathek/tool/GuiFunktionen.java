@@ -1,11 +1,9 @@
 package mediathek.tool;
 
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
-import mediathek.filmlisten.FilmListDownloadType;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +13,6 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
-import java.util.Objects;
 
 public class GuiFunktionen extends MVFunctionSys {
 
@@ -29,19 +26,6 @@ public class GuiFunktionen extends MVFunctionSys {
     private static final int UPDATE_FILME_AUTO = 2;
 
     private static final Logger logger = LogManager.getLogger();
-
-    /**
-     * Get the address of the used film list type as string.
-     *
-     * @param type which list to use.
-     * @return URL of filmlist as String.
-     */
-    public static String getFilmListUrl(FilmListDownloadType type) {
-        return switch (type) {
-            case FULL -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
-            case DIFF_ONLY -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
-        };
-    }
 
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
