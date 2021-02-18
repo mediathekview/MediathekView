@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Test;
 class GuiFunktionenTest {
 
     @Test
+    void getFilmListUpdateType() {
+        var res = GuiFunktionen.getFilmListUpdateType();
+        Assertions.assertSame(res, FilmListUpdateType.AUTOMATIC);
+    }
+
+    @Test
     void getSuffixFromUrl() {
         var testStr = "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd";
         var res = GuiFunktionen.getSuffixFromUrl(testStr);

@@ -107,7 +107,7 @@ public class FilmeLaden {
 
         boolean showDialogs = true;
 
-        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
+        if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
         HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");

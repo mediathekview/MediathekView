@@ -216,7 +216,11 @@ public class GuiFunktionen extends MVFunctionSys {
         return result;
     }
 
-    public static FilmListUpdateType getImportArtFilme() {
+    /**
+     * Get the the user set filmlist update type.
+     * @return MANUAL or AUTOMATIC based on config. Default is AUTOMATIC.
+     */
+    public static FilmListUpdateType getFilmListUpdateType() {
         FilmListUpdateType result;
 
         int ret;
@@ -236,7 +240,11 @@ public class GuiFunktionen extends MVFunctionSys {
         return result;
     }
 
-    public static void setImportArtFilme(FilmListUpdateType type) {
+    /**
+     * Store filmlist update mode in config.
+     * @param type MANUAL or AUTOMATIC mode.
+     */
+    public static void setFilmListUpdateType(FilmListUpdateType type) {
         final int value;
         if (type == FilmListUpdateType.MANUAL) {
             value = UPDATE_FILME_AUS;
