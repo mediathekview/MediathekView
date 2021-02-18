@@ -545,7 +545,7 @@ public class DialogAddDownload extends JDialog {
         jButtonDelHistory = new javax.swing.JButton();
         jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
         jCheckBoxInfodatei = new javax.swing.JCheckBox();
-        jLabelSet = new javax.swing.JLabel();
+        javax.swing.JLabel jLabelSet = new javax.swing.JLabel();
         jComboBoxPset = new javax.swing.JComboBox<>();
         jCheckBoxSubtitle = new javax.swing.JCheckBox();
         jPanelSize = new javax.swing.JPanel();
@@ -580,7 +580,8 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
 
-        jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
+        jCheckBoxInfodatei.setText("Lege Infodatei  an");
+        jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
 
         jLabelSet.setText("Set:");
 
@@ -615,7 +616,7 @@ public class DialogAddDownload extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxInfodatei)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxPfadSpeichern))
                             .addComponent(jTextFieldName))))
                 .addContainerGap())
@@ -684,7 +685,7 @@ public class DialogAddDownload extends JDialog {
         );
 
         jTextFieldSender.setEditable(false);
-        jTextFieldSender.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jTextFieldSender.setFont(jTextFieldSender.getFont().deriveFont(jTextFieldSender.getFont().getStyle() | java.awt.Font.BOLD));
         jTextFieldSender.setText(" ARD: Tatort, ...");
         jTextFieldSender.setBorder(javax.swing.BorderFactory.createTitledBorder("Film"));
 
@@ -741,7 +742,6 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JComboBox<String> jComboBoxPfad;
     private javax.swing.JComboBox<String> jComboBoxPset;
-    private javax.swing.JLabel jLabelSet;
     private javax.swing.JPanel jPanelSize;
     private javax.swing.JRadioButton jRadioButtonAufloesungHd;
     private javax.swing.JRadioButton jRadioButtonAufloesungHoch;
