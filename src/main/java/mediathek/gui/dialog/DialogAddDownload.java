@@ -122,7 +122,7 @@ public class DialogAddDownload extends JDialog {
 
         jButtonOk.addActionListener(e -> {
             if (check()) {
-                beenden(true);
+                saveDownload();
             }
         });
         getRootPane().setDefaultButton(jButtonOk);
@@ -509,22 +509,24 @@ public class DialogAddDownload extends JDialog {
         return ok;
     }
 
-    private void beenden(boolean ok) {
-        if (ok) {
-            // jetzt wird mit den angegebenen Pfaden gearbeitet
-            datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
-            datenDownload.setGroesse(getFilmSize());
-            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+    /**
+     * Store download in list and start immediately if requested.
+     */
+    private void saveDownload() {
+        // jetzt wird mit den angegebenen Pfaden gearbeitet
+        datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
+        datenDownload.setGroesse(getFilmSize());
+        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
 
-            final var daten = Daten.getInstance();
-            daten.getListeDownloads().addMitNummer(datenDownload);
-            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-            if (jCheckBoxStarten.isSelected()) {
-                // und evtl. auch gleich starten
-                datenDownload.startDownload();
-            }
+        final var daten = Daten.getInstance();
+        daten.getListeDownloads().addMitNummer(datenDownload);
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (jCheckBoxStarten.isSelected()) {
+            // und evtl. auch gleich starten
+            datenDownload.startDownload();
         }
+
         saveComboPfad(jComboBoxPfad, orgPfad);
         dispose();
     }
