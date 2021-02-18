@@ -56,7 +56,7 @@
                 <Label text="Set:" GridPane.halignment="RIGHT"/>
                 <Label text="Zielpfad:" GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
                 <Label text="Dateiname:" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
-                <ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cBxPSet" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
                 <TextField GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1"
                       GridPane.rowIndex="1">
