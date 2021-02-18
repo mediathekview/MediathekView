@@ -76,6 +76,16 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void init() {
+        final var listeSpeichern = Daten.listePset.getListeSpeichern();
+        if (listeSpeichern.isEmpty()) {
+            logger.error("No PSets available, closing dialog.");
+            dispose();
+        }
+        else if (listeSpeichern.size() == 1) {
+            // macht dann keinen Sinn
+            jComboBoxPset.setEnabled(false);
+        }
+
         // launch async tasks first
         var pool = Executors.newWorkStealingPool();
         var hdFuture = pool.submit(() -> {
@@ -92,17 +102,12 @@ public class DialogAddDownload extends JDialog {
         });
 
         jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-        jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
+
         jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonZiel.setText("");
-        if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            // Satz mit x, war wohl nix
-            beenden(false);
-        }
-
         jButtonZiel.addActionListener(l -> {
             var initialDirectory = "";
             if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
@@ -124,18 +129,15 @@ public class DialogAddDownload extends JDialog {
         });
         getRootPane().setDefaultButton(jButtonOk);
 
-        EscapeKeyHandler.installHandler(this, () -> beenden(false));
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         jButtonAbbrechen.addActionListener(e -> beenden(false));
 
+        jComboBoxPset.setModel(new DefaultComboBoxModel<>(listeSpeichern.getObjectDataCombo()));
         if (pSet != null) {
             jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
         } else {
-            pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
-        }
-        if (Daten.listePset.getListeSpeichern().size() <= 1) {
-            // macht dann keinen Sinn
-            jComboBoxPset.setEnabled(false);
+            pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
         }
         jComboBoxPset.addActionListener(e -> setupResolutionButtons());
 
@@ -163,7 +165,7 @@ public class DialogAddDownload extends JDialog {
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
-                        jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+                        jTextFieldName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                     }
                 }
 
