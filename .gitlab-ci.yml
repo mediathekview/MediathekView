@@ -31,10 +31,52 @@ default:
     - mvn install4j:install-license -Pinstall4j
 
 stages:
+  - deploy-nightly-lin
+  - deploy-nightly-linarm
+  - deploy-nightly-win
+  - deploy-nightly-win32
   - deploy-lin
   - deploy-linarm
   - deploy-win
   - deploy-win32
+
+Build and Deploy nightly Linux:
+  stage: deploy-nightly-lin
+  script:
+    - mvn clean install -Plinux,install4j $MAVEN_CLI_OPTS
+    - echo "Baue AppImage"
+    - scripte/appimage.sh
+    - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+Build and Deploy nightly Linux ARM:
+  stage: deploy-nightly-linarm
+  script:
+    - mvn clean install -Parm,!64bit,32bit,install4j,!linux $MAVEN_CLI_OPTS
+    - /skripte/deploy.sh nightly linux-armhf $CI_COMMIT_SHA
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+Build and Deploy nightly Windows:
+  stage: deploy-nightly-win
+  script:
+    - mvn clean install -Pwindows,!linux,install4j $MAVEN_CLI_OPTS
+    - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+Build and Deploy nightly Windows 32bit:
+  stage: deploy-nightly-win32
+  script:
+    - mvn clean install -Pwindows32,!64bit,32bit,!linux,install4j $MAVEN_CLI_OPTS
+    - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
 
 
 Build and Deploy Linux:
