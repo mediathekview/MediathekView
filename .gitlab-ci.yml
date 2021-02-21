@@ -49,8 +49,7 @@ Build and Deploy nightly Linux:
     - scripte/appimage.sh
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Linux ARM:
   stage: deploy-nightly-linarm
@@ -58,8 +57,7 @@ Build and Deploy nightly Linux ARM:
     - mvn clean install -Parm,!64bit,32bit,install4j,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly linux-armhf $CI_COMMIT_SHA
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Windows:
   stage: deploy-nightly-win
@@ -67,8 +65,7 @@ Build and Deploy nightly Windows:
     - mvn clean install -Pwindows,!linux,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Windows 32bit:
   stage: deploy-nightly-win32
@@ -76,8 +73,7 @@ Build and Deploy nightly Windows 32bit:
     - mvn clean install -Pwindows32,!64bit,32bit,!linux,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Mac:
   stage: deploy-nightly-mac
@@ -85,8 +81,7 @@ Build and Deploy nightly Mac:
     - mvn clean install -Pmac,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 
 
