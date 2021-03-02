@@ -554,12 +554,13 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
-        SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
+        //FIXME remove for production!!!
+        /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
         dlg.setVisible(true);
         if (dlg.controller.success())
             System.out.println("SUCCESS");
         else
-            System.out.println("NO SUCCESS");
+            System.out.println("NO SUCCESS");*/
 
         // dann alle Downloads im Dialog abfragen
         Optional<FilmResolution.Enum> res =
