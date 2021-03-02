@@ -42,7 +42,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
@@ -364,39 +363,8 @@ public class FilmListReader implements AutoCloseable {
             }
         }
 
-        workaroundLazyServerDevelopers(listeFilme);
-
         stopwatch.stop();
         logger.debug("Reading filmlist took {}", stopwatch);
-    }
-
-    private void workaroundLazyServerDevelopers(@NotNull ListeFilme listeFilme) {
-        //remove the useless number in the thema...
-        final var thema = "Guten Morgen Österreich";
-        var list = listeFilme.parallelStream()
-                .filter(film -> film.getThema().startsWith(thema))
-                .collect(Collectors.toList());
-        logger.trace("GMÖ LIST SIZE: " + list.size());
-        if (!list.isEmpty())
-            list.forEach(film -> film.setThema(thema));
-
-        //remove time from ZIB Flash
-        final var thema2 = "ZIB Flash";
-        list = listeFilme.parallelStream()
-                .filter(film -> film.getThema().startsWith(thema2))
-                .collect(Collectors.toList());
-        logger.trace("ZF LIST SIZE: " + list.size());
-        if (!list.isEmpty())
-            list.forEach(film -> film.setThema(thema2));
-
-        // remove time from MDR aktuell
-        final var thema3 = "MDR aktuell";
-        list = listeFilme.parallelStream()
-                .filter(film -> film.getThema().startsWith(thema3))
-                .collect(Collectors.toList());
-        logger.trace("MA LIST SIZE: " + list.size());
-        if (!list.isEmpty())
-            list.forEach(film -> film.setThema(thema3));
     }
 
     /**
