@@ -554,6 +554,14 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
+        //FIXME remove for production!!!
+        /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
+        dlg.setVisible(true);
+        if (dlg.controller.success())
+            System.out.println("SUCCESS");
+        else
+            System.out.println("NO SUCCESS");*/
+
         // dann alle Downloads im Dialog abfragen
         Optional<FilmResolution.Enum> res =
                 fap.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
