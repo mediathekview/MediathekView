@@ -103,7 +103,7 @@
         <install4j.home>./install4j8.0.9</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
-        <kotlin.version>1.4.30</kotlin.version>
+        <kotlin.version>1.4.31</kotlin.version>
     </properties>
 
     <dependencies>
