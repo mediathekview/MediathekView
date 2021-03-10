@@ -1,6 +1,5 @@
 package mediathek.gui.dialog.about
 
-import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Hyperlink
@@ -39,7 +38,7 @@ class AboutController : AnchorPane() {
     private lateinit var version: Label
 
     @FXML
-    private fun homepageLinkClicked(e: ActionEvent) {
+    private fun homepageLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 val uri = URI(Konstanten.ADRESSE_WEBSITE)
@@ -51,7 +50,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun developerDonationLinkClicked(e: ActionEvent) {
+    private fun developerDonationLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://paypal.me/ChristianFranzke")
@@ -62,7 +61,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun serverDonationLinkClicked(e: ActionEvent) {
+    private fun serverDonationLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 val uri = URI(Konstanten.ADRESSE_DONATION)
@@ -74,7 +73,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun forumLinkClicked(e: ActionEvent) {
+    private fun forumLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 val uri = URI(Konstanten.ADRESSE_FORUM)
@@ -86,7 +85,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun anleitungLinkClicked(e: ActionEvent) {
+    private fun anleitungLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 val uri = URI(Konstanten.ADRESSE_ANLEITUNG)
@@ -98,7 +97,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun jetbrainsLinkClicked(e: ActionEvent) {
+    private fun jetbrainsLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.jetbrains.com")
@@ -109,7 +108,7 @@ class AboutController : AnchorPane() {
     }
 
     @FXML
-    private fun ejLinkClicked(e: ActionEvent) {
+    private fun ejLinkClicked() {
         SwingUtilities.invokeLater {
             try {
                 UrlHyperlinkAction.openURL(MediathekGui.ui(), "https://www.ej-technologies.com")
