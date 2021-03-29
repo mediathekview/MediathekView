@@ -106,6 +106,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public int nr;
     public byte quelle = QUELLE_ALLE;
     public byte art = ART_DOWNLOAD;
+    private String websiteUrl = "";
 
     public DatenDownload() {
         initialize();
@@ -138,6 +139,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
         arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
+
+        websiteUrl = film.getWebsiteLink();
 
         // und jetzt noch die Dateigröße für die entsp. URL
         setGroesse("");
@@ -183,32 +186,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         //everything went fine so initialize and return
         dl.init();
         return dl;
-    }
-
-    /**
-     * Store the download data in config file.
-     *
-     * @param writer  the writer to the config file.
-     */
-    public void writeConfigEntry(XMLStreamWriter writer) {
-        final int xmlMax = arr.length;
-        try {
-            writer.writeStartElement(TAG);
-            writer.writeCharacters("\n");
-            for (int i = 0; i < xmlMax; ++i) {
-                if (!arr[i].isEmpty()) {
-                    writer.writeCharacters("\t"); //Tab
-                    writer.writeStartElement(XML_NAMES[i]);
-                    writer.writeCharacters(arr[i]);
-                    writer.writeEndElement();
-                    writer.writeCharacters("\n");
-                }
-            }
-            writer.writeEndElement();
-            writer.writeCharacters("\n");
-        } catch (Exception ex) {
-            logger.error("writeConfigEntry", ex);
-        }
     }
 
     public static boolean anzeigen(int i) {
@@ -312,6 +289,32 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         String ret = StringUtils.replace(datum, ":", "");
         ret = StringUtils.replace(ret, ".", "");
         return ret;
+    }
+
+    /**
+     * Store the download data in config file.
+     *
+     * @param writer  the writer to the config file.
+     */
+    public void writeConfigEntry(XMLStreamWriter writer) {
+        final int xmlMax = arr.length;
+        try {
+            writer.writeStartElement(TAG);
+            writer.writeCharacters("\n");
+            for (int i = 0; i < xmlMax; ++i) {
+                if (!arr[i].isEmpty()) {
+                    writer.writeCharacters("\t"); //Tab
+                    writer.writeStartElement(XML_NAMES[i]);
+                    writer.writeCharacters(arr[i]);
+                    writer.writeEndElement();
+                    writer.writeCharacters("\n");
+                }
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        } catch (Exception ex) {
+            logger.error("writeConfigEntry", ex);
+        }
     }
 
     public void setGroesseFromFilm() {
@@ -597,6 +600,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = StringUtils.replace(befehlsString, "%F", arr[DOWNLOAD_URL_RTMP]);
         befehlsString = StringUtils.replace(befehlsString, "%a", arr[DOWNLOAD_ZIEL_PFAD]);
         befehlsString = StringUtils.replace(befehlsString, "%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
+        befehlsString = StringUtils.replace(befehlsString, "%w", websiteUrl);
 
         return befehlsString;
     }
