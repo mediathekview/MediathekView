@@ -7,6 +7,8 @@
 - Menüeintrag "Downloads/Alle Downloads um xx:yy Uhr starten" in "Downloads/Alle Downloads zeitverzögert starten..." umbenannt.
 - Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
+- **FEATURE:** Die Sender-Website zu einem Film kann nun per Kontextmenü im Film-Tab an JDownloader übergeben werden.
+- **FEATURE:** In den PSets kann der Parameter `%w` genutzt werden, um die Sender-Website-URL des Films an ein Programm zu übergeben.
 - **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
 
 <u>**13.7.1**</u>
