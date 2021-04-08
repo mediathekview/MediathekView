@@ -95,7 +95,7 @@ class JDownloadHelper {
             jPopupMenu.add(mJD)
         }
 
-        val miWebsiteToJd = JMenuItem("Website-URL an JDownloader übergeben")
+        val miWebsiteToJd = JMenuItem("Webseiten-URL an JDownloader übergeben")
         miWebsiteToJd.addActionListener {
             try {
                 val webSiteUrl = film.websiteLink.toHttpUrl()
