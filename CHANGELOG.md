@@ -2,14 +2,15 @@
 
 - **macOS:** MediathekView funktioniert in Zusammenarbeit mit **AltTab v6.15.1 und neuer.** In Zusammenarbeit mit dem Entwickler konnte eine Lösung für das Problem gefunden werden.**Die Nutzung des offiziellen App-Bundle ist dafür zwingend erforderlich!**
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
-- **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben.
+- **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben. Ansonsten wird sie gelöscht.
 - Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen.
-- Menüeintrag "Downloads/Alle Downloads um xx:yy Uhr starten" in "Downloads/Alle Downloads zeitverzögert starten..." umbenannt.
+- Menüeintrag *"Downloads/Alle Downloads um xx:yy Uhr starten"* in *"Downloads/Alle Downloads zeitverzögert starten..."* umbenannt.
 - Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
 - **FEATURE:** Die Sender-Website zu einem Film kann nun per Kontextmenü im Film-Tab an JDownloader übergeben werden.
 - **FEATURE:** In den PSets kann der Parameter `%w` genutzt werden, um die Sender-Website-URL des Films an ein Programm zu übergeben.
 - **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
+- **BUGFIX:** In *"Einstellungen\Aufzeichnung & Abspielen\Set bearbeiten"* wurde das Springen des Cursor an das Textende in den Eingabefeldern behoben.
 
 <u>**13.7.1**</u>
 

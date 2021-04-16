@@ -513,7 +513,7 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-                                              <Component id="jTextFieldGruppeZielPfad" max="32767" attributes="0"/>
+                                              <Component id="tfGruppeZielPfad" max="32767" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jButtonGruppePfad" min="-2" max="-2" attributes="1"/>
                                           </Group>
@@ -528,7 +528,7 @@
                                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jTextFieldGruppeZielName" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="tfGruppeZielName" alignment="0" max="32767" attributes="0"/>
                                           <Group type="102" attributes="0">
                                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                                   <Group type="102" attributes="0">
@@ -565,13 +565,13 @@
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="jLabel7" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeZielPfad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="tfGruppeZielPfad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButtonGruppePfad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeZielName" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="tfGruppeZielName" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -600,7 +600,7 @@
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldGruppeZielPfad">
+                    <Component class="javax.swing.JTextField" name="tfGruppeZielPfad">
                     </Component>
                     <Component class="javax.swing.JButton" name="jButtonGruppePfad">
                       <Properties>
@@ -625,7 +625,7 @@
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldGruppeZielName">
+                    <Component class="javax.swing.JTextField" name="tfGruppeZielName">
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxLaenge">
                       <Properties>
@@ -748,11 +748,11 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektPraefix" max="32767" attributes="0"/>
+                              <Component id="tfGruppeDirektPraefix" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jTextFieldGruppeDirektSuffix" max="32767" attributes="0"/>
+                              <Component id="tfGruppeDirektSuffix" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -763,9 +763,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="jLabel10" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeDirektPraefix" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="tfGruppeDirektPraefix" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldGruppeDirektSuffix" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="tfGruppeDirektSuffix" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="34" max="32767" attributes="0"/>
                           </Group>
@@ -782,7 +782,7 @@
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldGruppeDirektPraefix">
+                    <Component class="javax.swing.JTextField" name="tfGruppeDirektPraefix">
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel5">
                       <Properties>
@@ -793,7 +793,7 @@
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextFieldGruppeDirektSuffix">
+                    <Component class="javax.swing.JTextField" name="tfGruppeDirektSuffix">
                     </Component>
                   </SubComponents>
                 </Container>
