@@ -138,10 +138,22 @@ public class PanelPsetLang extends PanelVorlage {
         });
         jButtonProgMinus.addActionListener(new BeobProgLoeschen());
         jButtonProgDuplizieren.addActionListener(new BeobProgDuplizieren());
-        jButtonProgAuf.addActionListener(new BeobProgAufAb(true));
-        jButtonProgAb.addActionListener(new BeobProgAufAb(false));
+
+        jButtonProgAuf.addActionListener(e -> progAufAb(true));
+        jButtonProgAb.addActionListener(e -> progAufAb(false));
+
         jButtonProgPfad.setEnabled(false);
-        jCheckBoxRestart.addActionListener(new BeobProgRestart());
+        jCheckBoxRestart.addActionListener(e -> {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
+                }
+            }
+        });
         jCheckBoxRemoteDownload.addActionListener(new BeobProgRemoteDownload());
         //Pset
         jButtonAbspielen.addActionListener(e -> {
@@ -233,8 +245,9 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
-        jButtonGruppeLoeschen.addActionListener(new BeobGruppeLoeschen());
+
+        jButtonGruppeNeu.addActionListener(e -> setNeu());
+        jButtonGruppeLoeschen.addActionListener(e -> setLoeschen());
         jButtonGruppeFarbe.addActionListener(new BeobachterFarbe());
         jButtonGruppeStandardfarbe.addActionListener(l -> {
             DatenPset pSet = getPset();
@@ -245,10 +258,13 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonGruppeAuf.addActionListener(new BeobGruppeAufAb(true));
-        jButtonGruppeAb.addActionListener(new BeobGruppeAufAb(false));
+        jButtonGruppeAuf.addActionListener(e -> setAufAb(true));
+        jButtonGruppeAb.addActionListener(e -> setAufAb(false));
+
         jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
-        jButtonExport.addActionListener(new BeobGruppeExport());
+
+        jButtonExport.addActionListener(e -> setExport());
+
         jButtonGruppePfad.addActionListener(l -> {
             var initialFile = "";
             if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
@@ -730,23 +746,6 @@ public class PanelPsetLang extends PanelVorlage {
 
     }
 
-    private class BeobProgRestart implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
-                }
-            }
-
-        }
-    }
-
     private class BeobProgRemoteDownload implements ActionListener {
 
         @Override
@@ -919,58 +918,6 @@ public class PanelPsetLang extends PanelVorlage {
             } else {
                 NoSelectionErrorDialog.show();
             }
-        }
-    }
-
-    private class BeobProgAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobProgAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            progAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobGruppeAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeNeu implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setNeu();
-        }
-    }
-
-    private class BeobGruppeLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setLoeschen();
-        }
-    }
-
-    private class BeobGruppeExport implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setExport();
         }
     }
 
