@@ -32,8 +32,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -137,8 +135,41 @@ public class PanelPsetLang extends PanelVorlage {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
         });
-        jButtonProgMinus.addActionListener(new BeobProgLoeschen());
-        jButtonProgDuplizieren.addActionListener(new BeobProgDuplizieren());
+
+        jButtonProgMinus.addActionListener(e -> {
+            final int[] rows = tabelleProgramme.getSelectedRows();
+            if (rows.length > 0) {
+                DatenPset pSet = getPset();
+                String text;
+                if (rows.length == 1) {
+                    final int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
+                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
+                } else {
+                    text = rows.length + " Programme löschen?";
+                }
+                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+                if (ret == JOptionPane.OK_OPTION) {
+                    for (int i = rows.length - 1; i >= 0; --i) {
+                        final int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
+                        pSet.getListeProg().remove(delRow);
+                    }
+                    tabelleProgramme();
+                }
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
+
+        jButtonProgDuplizieren.addActionListener(e -> {
+            final int rows = tabelleProgramme.getSelectedRow();
+            if (rows != -1) {
+                int row = tabelleProgramme.convertRowIndexToModel(rows);
+                DatenProg prog = getPset().getListeProg().get(row);
+                progNeueZeile(prog.copy());
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
 
         jButtonProgAuf.addActionListener(e -> progAufAb(true));
         jButtonProgAb.addActionListener(e -> progAufAb(false));
@@ -155,7 +186,18 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        jCheckBoxRemoteDownload.addActionListener(new BeobProgRemoteDownload());
+        jCheckBoxRemoteDownload.addActionListener(e -> {
+            if (!stopBeob) {
+                final int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    final int modelIndex = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(modelIndex);
+                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), modelIndex, DatenProg.PROGRAMM_DOWNLOADMANAGER);
+                }
+            }
+        });
+
         //Pset
         jButtonAbspielen.addActionListener(e -> {
             jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
@@ -249,7 +291,17 @@ public class PanelPsetLang extends PanelVorlage {
 
         jButtonGruppeNeu.addActionListener(e -> setNeu());
         jButtonGruppeLoeschen.addActionListener(e -> setLoeschen());
-        jButtonGruppeFarbe.addActionListener(new BeobachterFarbe());
+        jButtonGruppeFarbe.addActionListener(e -> {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
+                if (selectedColor != null) {
+                    pSet.setFarbe(selectedColor);
+                    tabellePset();
+                    notifyProgramSetChanged();
+                }
+            }
+        });
         jButtonGruppeStandardfarbe.addActionListener(l -> {
             DatenPset pSet = getPset();
             if (pSet != null) {
@@ -262,7 +314,17 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAuf.addActionListener(e -> setAufAb(true));
         jButtonGruppeAb.addActionListener(e -> setAufAb(false));
 
-        jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
+        jButtonGruppeDuplizieren.addActionListener(e -> {
+            final int row = tabellePset.getSelectedRow();
+            if (row != -1) {
+                var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
+                listePset.addPset(gruppe.copy());
+                tabellePset();
+                notifyProgramSetChanged();
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
 
         jButtonExport.addActionListener(e -> setExport());
 
@@ -749,23 +811,6 @@ public class PanelPsetLang extends PanelVorlage {
 
     }
 
-    private class BeobProgRemoteDownload implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER);
-                }
-            }
-
-        }
-    }
-
     private class BeobProgDoc implements DocumentListener {
 
         @Override
@@ -803,21 +848,6 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
 //                    progNamePruefen();
                 }
-            }
-        }
-    }
-
-    private class BeobProgDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int rows = tabelleProgramme.getSelectedRow();
-            if (rows != -1) {
-                int row = tabelleProgramme.convertRowIndexToModel(rows);
-                DatenProg prog = getPset().getListeProg().get(row);
-                progNeueZeile(prog.copy());
-            } else {
-                NoSelectionErrorDialog.show();
             }
         }
     }
@@ -873,68 +903,6 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             setNamePruefen();
-        }
-    }
-
-    private class BeobGruppeDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset gruppe;
-            int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
-                listePset.addPset(gruppe.copy());
-                tabellePset();
-                notifyProgramSetChanged();
-            } else {
-                NoSelectionErrorDialog.show();
-            }
-        }
-    }
-
-    private class BeobProgLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int[] rows = tabelleProgramme.getSelectedRows();
-            if (rows.length > 0) {
-                DatenPset pSet = getPset();
-                String text;
-                if (rows.length == 1) {
-                    int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
-                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
-                } else {
-                    text = rows.length + " Programme löschen?";
-                }
-                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    for (int i = rows.length - 1; i >= 0; --i) {
-                        int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
-                        pSet.getListeProg().remove(delRow);
-                    }
-                    tabelleProgramme();
-                }
-            } else {
-                NoSelectionErrorDialog.show();
-            }
-        }
-    }
-
-    private class BeobachterFarbe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
-                if (selectedColor != null) {
-                    pSet.setFarbe(selectedColor);
-                    tabellePset();
-                    notifyProgramSetChanged();
-                }
-            }
-
         }
     }
 
