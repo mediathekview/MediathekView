@@ -639,11 +639,9 @@ public class PanelPsetLang extends PanelVorlage {
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
-        int row = tabelleProgramme.getSelectedRow();
-        boolean letzteZeile = false;
-        if (tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1) {
-            letzteZeile = true;
-        }
+        final int row = tabelleProgramme.getSelectedRow();
+        final boolean letzteZeile = tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1;
+
         jTextFieldProgPfad.setEnabled(row != -1);
         jTextFieldProgSchalter.setEnabled(row != -1);
         jTextFieldProgZielDateiName.setEnabled(row != -1);
