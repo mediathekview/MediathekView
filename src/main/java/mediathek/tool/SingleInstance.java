@@ -21,6 +21,7 @@ package mediathek.tool;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -34,12 +35,17 @@ final public class SingleInstance {
 
     private FileChannel channel;
     private FileLock lock;
+    private final File file = new File(SystemUtils.JAVA_IO_TMPDIR, "MediathekView.lock");
+    private final RandomAccessFile raf;
+
+    public SingleInstance() throws FileNotFoundException {
+        raf = new RandomAccessFile(file, "rw");
+    }
 
     public boolean isAppAlreadyActive() {
         try {
             //store lock in temp directory, will not survive reboot
-            final File file = new File(SystemUtils.JAVA_IO_TMPDIR, "MediathekView.lock");
-            channel = new RandomAccessFile(file, "rw").getChannel();
+            channel = raf.getChannel();
 
             lock = channel.tryLock();
             if (lock == null) {

@@ -506,18 +506,24 @@ public class Main {
     }
 
     private static void installSingleInstanceHandler() {
-        //prevent startup of multiple instances...
-        var singleInstanceWatcher = new SingleInstance();
-        if (singleInstanceWatcher.isAppAlreadyActive()) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("MediathekView wird bereits ausgeführt");
-                alert.setContentText("Es dürfen nicht mehrere Programme gleichzeitig laufen.\n" +
-                        "Bitte beenden Sie die andere Instanz.");
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.showAndWait();
-            });
+        try {
+            //prevent startup of multiple instances...
+            var singleInstanceWatcher = new SingleInstance();
+            if (singleInstanceWatcher.isAppAlreadyActive()) {
+                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("MediathekView wird bereits ausgeführt");
+                    alert.setContentText("Es dürfen nicht mehrere Programme gleichzeitig laufen.\n" +
+                            "Bitte beenden Sie die andere Instanz.");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.showAndWait();
+                });
+                System.exit(1);
+            }
+        }
+        catch (IOException e) {
+            logger.error("unable to install single instance handler");
             System.exit(1);
         }
     }
