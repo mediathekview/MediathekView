@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * @author emil
@@ -22,8 +23,6 @@ public class GetFile {
     public static final String PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG = "hilfetext_editDownloadProg.txt";
     public static final String PFAD_HILFETEXT_RESET = "hilfetext_reset.txt";
     public static final String PFAD_HILFETEXT_RESET_SET = "hilfetext_reset_set.txt";
-    public static final String PFAD_HILFETEXT_DIALOG_MEDIA_DB = "hilfetext_dialog_mediaDb.txt";
-    public static final String PFAD_HILFETEXT_PANEL_MEDIA_DB = "hilfetext_panel_mediaDb.txt";
     public static final String PFAD_HILFETEXT_DIALOG_ADD_ABO = "hilfetext_dialog_add_abo.txt";
     private static final String PFAD_PSET_LINUX = "/mediathek/file/pset_linux.xml";
     private static final String PFAD_PSET_WINDOWS = "/mediathek/file/pset_windows.xml";
@@ -31,17 +30,18 @@ public class GetFile {
     private static final Logger logger = LogManager.getLogger();
 
     public String getHilfeSuchen(String pfad) {
-        String ret = "";
-        try (InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), StandardCharsets.UTF_8);
+        StringBuilder ret = new StringBuilder();
+        try (var is = Objects.requireNonNull(getClass().getResource(pfad)).openStream();
+             InputStreamReader in = new InputStreamReader(is, StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(in)) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                ret = ret + '\n' + strLine;
+                ret.append('\n').append(strLine);
             }
         } catch (IOException ex) {
             logger.error("getHilfeSuchen()", ex);
         }
-        return ret;
+        return ret.toString();
     }
 
     public static InputStreamReader getLocalPsetTemplate() {
@@ -51,7 +51,7 @@ public class GetFile {
             default -> PFAD_PSET_WINDOWS;
         };
         try {
-            return new InputStreamReader(GetFile.class.getResource(pfad).openStream(), StandardCharsets.UTF_8);
+            return new InputStreamReader(Objects.requireNonNull(GetFile.class.getResource(pfad)).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             logger.error("getLocalPsetTemplate()",ex);
         }
