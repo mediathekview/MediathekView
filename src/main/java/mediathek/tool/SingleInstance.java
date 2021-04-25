@@ -31,7 +31,7 @@ import java.nio.file.Files;
 /**
  * Prevents startup of multiple instances
  */
-final public class SingleInstance {
+final public class SingleInstance implements AutoCloseable {
 
     private FileChannel channel;
     private FileLock lock;
@@ -77,5 +77,10 @@ final public class SingleInstance {
             channel.close();
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        raf.close();
     }
 }

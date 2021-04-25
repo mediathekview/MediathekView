@@ -116,7 +116,7 @@ public class Main {
         final String fileName = "/mediathekview.log";
 
         if (!Config.isPortableMode())
-            path = StandardLocations.getSettingsDirectory().toString() + fileName;
+            path = StandardLocations.getSettingsDirectory() + fileName;
         else
             path = Config.baseFilePath + fileName;
 
@@ -502,13 +502,14 @@ public class Main {
 
     private static void printDirectoryPaths() {
         logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory().toString());
+        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
     }
 
+    /**
+     * Prevent startup of multiple instances of the app.
+     */
     private static void installSingleInstanceHandler() {
-        try {
-            //prevent startup of multiple instances...
-            var singleInstanceWatcher = new SingleInstance();
+        try (var singleInstanceWatcher = new SingleInstance()){
             if (singleInstanceWatcher.isAppAlreadyActive()) {
                 JavaFxUtils.invokeInFxThreadAndWait(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -522,7 +523,7 @@ public class Main {
                 System.exit(1);
             }
         }
-        catch (IOException e) {
+        catch (Exception e) {
             logger.error("unable to install single instance handler");
             System.exit(1);
         }
