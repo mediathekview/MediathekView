@@ -1,6 +1,5 @@
 package mediathek.gui.actions;
 
-import mediathek.config.Daten;
 import mediathek.gui.history.AboHistoryDialog;
 
 import javax.swing.*;
@@ -9,11 +8,9 @@ import java.awt.event.ActionEvent;
 
 public class ShowAboHistoryAction extends AbstractAction {
     private final Frame owner;
-    private final Daten daten;
 
-    public ShowAboHistoryAction(Frame owner, Daten daten) {
+    public ShowAboHistoryAction(Frame owner) {
         this.owner = owner;
-        this.daten = daten;
 
         putValue(Action.NAME, "Abo-Historie anzeigen...");
     }
