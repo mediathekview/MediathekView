@@ -153,7 +153,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
      * Read the download data from config.
      * @param parser The parser for the config file
      * @return A valid DatenDownload object when everything went smooth.
-     * @throws XMLStreamException
+     * @throws XMLStreamException when something went wrong
      */
     public static DatenDownload getFromConfig(XMLStreamReader parser) throws XMLStreamException {
         DatenDownload dl = new DatenDownload();
@@ -238,19 +238,27 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    private static String getDMY(String s, String datum) {
-        // liefert das Datum: Jahr - Monat - Tag aus dd.MM.yyyy
-        // %1 - Tag
-        // %2 - Monat
-        // %3 - Jahr
+    private enum DMYTag {
+        DAY,
+        MONTH,
+        YEAR
+    }
+
+    /**
+     * Return a specific string based on the specified tag.
+     * @param tag Specifies what to return from the date string (xx.xx.xxxx)
+     * @param datum a date string
+     * @return Return the string part specified by tag
+     */
+    private String getDMY(DMYTag tag, String datum) {
         String ret = "";
         if (!datum.isEmpty()) {
             try {
                 if (datum.length() == 10) {
-                    switch (s) {
-                        case DMYHMSTags.DAY -> ret = datum.substring(0, 2);
-                        case DMYHMSTags.MONTH -> ret = datum.substring(3, 5);
-                        case DMYHMSTags.YEAR -> ret = datum.substring(6);
+                    switch (tag) {
+                        case DAY -> ret = datum.substring(0, 2);
+                        case MONTH -> ret = datum.substring(3, 5);
+                        case YEAR -> ret = datum.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -260,19 +268,27 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private static String getHMS(String s, String zeit) {
-        // liefert die Zeit: Stunde, Minute, Sekunde aus "HH:mm:ss"
-        // %4 - Stunde
-        // %5 - Minute
-        // %6 - Sekunde
+    private enum HMSTag {
+        HOUR,
+        MINUTE,
+        SECOND
+    }
+
+    /**
+     * Return a specific string based on the specified tag.
+     * @param tag Specifies what to return from the time string ("HH:mm:ss")
+     * @param zeit a time string
+     * @return Return the string part specified by tag
+     */
+    private String getHMS(HMSTag tag, String zeit) {
         String ret = "";
         if (!zeit.isEmpty()) {
             try {
                 if (zeit.length() == 8) {
-                    switch (s) {
-                        case DMYHMSTags.HOUR -> ret = zeit.substring(0, 2);
-                        case DMYHMSTags.MINUTE -> ret = zeit.substring(3, 5);
-                        case DMYHMSTags.SECOND -> ret = zeit.substring(6);
+                    switch (tag) {
+                        case HOUR -> ret = zeit.substring(0, 2);
+                        case MINUTE -> ret = zeit.substring(3, 5);
+                        case SECOND -> ret = zeit.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -763,12 +779,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
         replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
-        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%1", getDMY(DMYTag.DAY, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%2", getDMY(DMYTag.MONTH, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%3", getDMY(DMYTag.YEAR, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%4", getHMS(HMSTag.HOUR, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
 
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
@@ -867,18 +883,5 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
         }
         return ret;
-    }
-
-    /**
-     * Tags for getDMY() and getHMS() functions.
-     */
-    private static class DMYHMSTags {
-        public static final String DAY = "%1";
-        public static final String MONTH = "%2";
-        public static final String YEAR = "%3";
-
-        public static final String HOUR = "%4";
-        public static final String MINUTE = "%5";
-        public static final String SECOND = "%6";
     }
 }
