@@ -207,6 +207,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
+    /**
+     * Starts all downloads from list but fire only one update event.
+     * @param downloads the list of downloads
+     */
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
         try (var historyController = new SeenHistoryController()){
