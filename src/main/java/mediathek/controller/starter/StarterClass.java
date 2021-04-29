@@ -268,22 +268,22 @@ public class StarterClass {
         }
     }
 
-    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = ersterFilm.getUrl();
+        String url = film.getUrl();
         if (!url.isEmpty()) {
-            DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
+            DatenDownload d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starten.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            try (var historyController = new SeenHistoryController()){
-                historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            try (var historyController = new SeenHistoryController()) {
+                historyController.markSeen(film);
             }
 
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
-            if (ersterFilm.isBookmarked()) {
-              ersterFilm.getBookmark().setSeen(true);
+            if (film.isBookmarked()) {
+                film.getBookmark().setSeen(true);
             }
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             daten.getListeDownloadsButton().addMitNummer(d);

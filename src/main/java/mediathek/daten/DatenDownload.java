@@ -196,13 +196,23 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
+    public void startDownload() {
+        // Start erstellen und zur Liste hinzufügen
+        this.start = new Start();
+
+        try (var historyController = new SeenHistoryController()){
+            historyController.markSeen(film);
+        }
+
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
+    }
+
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
         try (var historyController = new SeenHistoryController()){
             for (DatenDownload d : downloads) {
                 d.start = new Start();
-                historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
-                        d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                historyController.markSeen(d.film);
             }
         }
         MessageBus.getMessageBus().publishAsync(new StartEvent());
@@ -406,18 +416,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public void resetDownload() {
         mVFilmSize.reset();
         start = null;
-    }
-
-    public void startDownload() {
-        // Start erstellen und zur Liste hinzufügen
-        this.start = new Start();
-
-        try (var historyController = new SeenHistoryController()){
-            historyController.writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA],
-                    arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-        }
-
-        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
