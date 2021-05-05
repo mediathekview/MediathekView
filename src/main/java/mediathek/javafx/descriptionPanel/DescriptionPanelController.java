@@ -14,6 +14,7 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +79,18 @@ public class DescriptionPanelController {
             websiteLink.setVisited(false);
             websiteLink.setTooltip(new Tooltip(film.getWebsiteLink()));
 
-            Font defaultFont = Font.getDefault();
+            /*
+            Thank you Oracle for not fixing the bold font handling for years in JavaFX...
+            As of version 16 bold font handling ist STILL BROKEN on macOS.
+            So we need a little workaround which will not die before 2027 based on bug fix rate
+            of non-paying customers...
+             */
+            Font defaultFont;
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                defaultFont = Font.font("Arial", 14d);
+            }
+            else
+                defaultFont = Font.getDefault();
             Text headLine = new Text((film.getSender().isEmpty() ? "" : film.getSender() + "  -  ") + film.getTitle());
             headLine.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, FontPosture.REGULAR, defaultFont.getSize()));
 
