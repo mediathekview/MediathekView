@@ -14,6 +14,7 @@
 - **BUGFIX:** In *"Einstellungen\Aufzeichnung & Abspielen\Set bearbeiten"* wurde das Springen des Cursor an das Textende in den Eingabefeldern behoben.
 - **BUGFIX:** Livestreams werden beim Abspielen nicht mehr als gesehen markiert.
 - **BUGFIX(macOS):** Im Tab "Beschreibung" werden Titel nun fett dargestellt.
+- **BUGFIX:** Weißer Hntergrund der Filminfo im "Film speichern" Dialog zeigt je nach Plattform nun korrekte Hintergrundfarbe an.
 
 <u>**13.7.1**</u>
 

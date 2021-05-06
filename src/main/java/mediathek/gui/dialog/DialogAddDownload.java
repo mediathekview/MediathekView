@@ -139,6 +139,8 @@ public class DialogAddDownload extends JDialog {
         jComboBoxPset.addActionListener(e -> setupResolutionButtons());
 
         jTextFieldSender.setText(' ' + datenFilm.getSender() + ":   " + datenFilm.getTitle());
+        jTextFieldSender.setBackground(UIManager.getColor("Label.background"));
+
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
