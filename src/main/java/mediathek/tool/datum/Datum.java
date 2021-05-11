@@ -1,13 +1,8 @@
-package mediathek.tool;
+package mediathek.tool.datum;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@SuppressWarnings("serial")
 public class Datum extends Date {
-    //hier war timezone nicht gefordert...
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");//.withZone(ZoneId.of("Europe/Berlin"));
-
     public Datum() {
         super();
     }
@@ -21,7 +16,7 @@ public class Datum extends Date {
         if (getTime() == 0) {
             return "";
         } else {
-            return formatter.format(DateUtil.convertToLocalDate(this));
+            return DateUtil.FORMATTER.format(DateUtil.convertToLocalDate(this));
         }
     }
 

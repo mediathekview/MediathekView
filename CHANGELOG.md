@@ -1,5 +1,6 @@
 <u>**13.8**</u>
 
+- **Java wurde auf Version 16 aktualisiert.**
 - **macOS:** MediathekView funktioniert in Zusammenarbeit mit **AltTab v6.15.1 und neuer.** In Zusammenarbeit mit dem Entwickler konnte eine Lösung für das Problem gefunden werden.**Die Nutzung des offiziellen App-Bundle ist dafür zwingend erforderlich!**
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
 - **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben. Ansonsten wird sie gelöscht.
@@ -15,6 +16,7 @@
 - **BUGFIX:** Livestreams werden beim Abspielen nicht mehr als gesehen markiert.
 - **BUGFIX(macOS):** Im Tab "Beschreibung" werden Titel nun fett dargestellt.
 - **BUGFIX:** Weißer Hntergrund der Filminfo im "Film speichern" Dialog zeigt je nach Plattform nun korrekte Hintergrundfarbe an.
+- **BUGFIX:** Datum wird in unterschiedlichen Zeitzonen wieder korrekt dargestellt.
 
 <u>**13.7.1**</u>
 

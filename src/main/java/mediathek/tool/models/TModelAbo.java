@@ -1,7 +1,7 @@
 package mediathek.tool.models;
 
 import mediathek.daten.abo.DatenAbo;
-import mediathek.tool.Datum;
+import mediathek.tool.datum.Datum;
 
 public class TModelAbo extends NonEditableTableModel {
     public TModelAbo(Object[][] data) {
