@@ -10,7 +10,9 @@
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
 - **FEATURE:** Die Sender-Website zu einem Film kann nun per Kontextmenü im Film-Tab an JDownloader übergeben werden.
 - **FEATURE:** In den PSets kann der Parameter `%w` genutzt werden, um die Sender-Website-URL des Films an ein Programm zu übergeben.
-- **FEATURE(macOS):** Download-Button im Update-Dialog hinzugefügt.  
+- **FEATURE(macOS):** Download-Button im Update-Dialog hinzugefügt.
+- **FEATURE:** Im Tab "Filme" kann über das Kontext-Menü *"In Zwischenablage kopieren"* nun auch Film-Thema und Titel kopiert werden.
+- **FEATURE:** Im Tab "Filme" wurde das Kontextmenü übersichtlicher gegliedert.  
 - **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
 - **BUGFIX:** In *"Einstellungen\Aufzeichnung & Abspielen\Set bearbeiten"* wurde das Springen des Cursor an das Textende in den Eingabefeldern behoben.
 - **BUGFIX:** Livestreams werden beim Abspielen nicht mehr als gesehen markiert.
