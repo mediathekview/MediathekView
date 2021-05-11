@@ -1,8 +1,8 @@
 package mediathek.tool.models;
 
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Datum;
 import mediathek.tool.MVFilmSize;
+import mediathek.tool.datum.Datum;
 
 @SuppressWarnings("serial")
 public class TModelDownload extends TModel {
