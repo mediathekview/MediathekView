@@ -1105,38 +1105,39 @@ public class GuiFilme extends AGuiTabPanel {
             submenueBlack.add(itemBlackThema);
             submenueBlack.add(itemBlackSenderThema);
 
-            res.ifPresent(film -> jDownloadHelper.installContextMenu(film, jPopupMenu));
-
-            jPopupMenu.addSeparator();
             res.ifPresent(film -> {
+                jDownloadHelper.installContextMenu(film, jPopupMenu);
+                jPopupMenu.addSeparator();
                 setupCopytoClipboardContextMenu(film, jPopupMenu);
                 jPopupMenu.addSeparator();
+                setupSearchEntries(jPopupMenu, film);
             });
 
-            res.ifPresent(film -> setupSearchEntries(jPopupMenu, film));
             // Drucken
             jPopupMenu.add(miPrintTable);
 
             jPopupMenu.add(showFilmInformationAction);
-
             // History
-            res.ifPresent(film -> {
-                if (!film.isLivestream()) {
-                    JMenuItem miHistory;
-                    try (var history = new SeenHistoryController()) {
-                        if (history.hasBeenSeen(film)) {
-                            miHistory = new JMenuItem("Film als ungesehen markieren");
-                            miHistory.addActionListener(unseenActionListener);
-                        } else {
-                            miHistory = new JMenuItem("Film als gesehen markieren");
-                            miHistory.addActionListener(seenActionListener);
-                        }
-                        jPopupMenu.add(miHistory);
-                    }
-                }
-            });
+            res.ifPresent(film -> setupHistoryContextActions(jPopupMenu, film));
             // anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+        private void setupHistoryContextActions(@NotNull JPopupMenu popupMenu, @NotNull DatenFilm film)
+        {
+            if (!film.isLivestream()) {
+                JMenuItem miHistory;
+                try (var history = new SeenHistoryController()) {
+                    if (history.hasBeenSeen(film)) {
+                        miHistory = new JMenuItem("Film als ungesehen markieren");
+                        miHistory.addActionListener(unseenActionListener);
+                    } else {
+                        miHistory = new JMenuItem("Film als gesehen markieren");
+                        miHistory.addActionListener(seenActionListener);
+                    }
+                    popupMenu.add(miHistory);
+                }
+            }
         }
 
         private void setupCopytoClipboardContextMenu(@NotNull DatenFilm film, @NotNull JPopupMenu popupMenu) {
