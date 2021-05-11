@@ -1188,8 +1188,9 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         private void setupSearchEntries(@NotNull JPopupMenu popupMenu, @NotNull DatenFilm film) {
-            var mThema = new JMenu("Online-Suche nach Thema");
-            var mTitel = new JMenu("Online-Suche nach Titel");
+            var mOnlineSearch = new JMenu("Online-Suche nach");
+            var mThema = new JMenu("Thema");
+            var mTitel = new JMenu("Titel");
 
             var set = EnumSet.allOf(OnlineSearchProviders.class);
 
@@ -1217,8 +1218,9 @@ public class GuiFilme extends AGuiTabPanel {
                 mTitel.add(miTitel);
             }
 
-            popupMenu.add(mThema);
-            popupMenu.add(mTitel);
+            mOnlineSearch.add(mThema);
+            mOnlineSearch.add(mTitel);
+            popupMenu.add(mOnlineSearch);
             popupMenu.addSeparator();
         }
 
