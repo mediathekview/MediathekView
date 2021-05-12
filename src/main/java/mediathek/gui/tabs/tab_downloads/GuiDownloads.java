@@ -1194,6 +1194,10 @@ public class GuiDownloads extends AGuiTabPanel {
         // jetzt noch die Starts stoppen
         daten.getListeDownloads().downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
+
+        //do not start manual downloads, only downloads which were created from abos
+        listeDownloadsStarten.removeIf(item -> !item.isFromAbo());
+
         if (starten) {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(listeDownloadsStarten);
