@@ -28,7 +28,7 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -XX:+UseG1GC -XX:+UseStringDeduplication --enable-preview -Dfile.encoding=UTF-8 -DexternalUpdateCheck">
+      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -XX:+UseG1GC -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
