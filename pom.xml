@@ -80,7 +80,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>15</jdk.language.version>
+        <jdk.language.version>16</jdk.language.version>
         <kotlin.language.target>15</kotlin.language.target>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
@@ -416,7 +416,7 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <argLine>
-                        --illegal-access=deny --enable-preview
+                        --illegal-access=deny
                     </argLine>
                 </configuration>
             </plugin>
@@ -483,7 +483,6 @@
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
-                        <arg>--enable-preview</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -492,8 +491,8 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>15</source>
-                    <target>15</target>
+                    <source>${jdk.language.version}</source>
+                    <target>${jdk.language.version}</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
