@@ -840,7 +840,8 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
-            filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/, false /*fertige wieder starten*/);
+            // Auto DL should NOT start manually created downloads
+            filmStartenWiederholenStoppen(true, true, false, true);
         }
     }
 
@@ -1091,11 +1092,19 @@ public class GuiDownloads extends AGuiTabPanel {
         reloadTable();
     }
 
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
-        filmStartenWiederholenStoppen(alle, starten, true /*auch fertige wieder starten*/);
+    /**
+     * Start/Restart or stop downloads.
+     * Wrapper for full featured function with more parameters.
+     * @param alle when true all downloads will be started, otherwise only marked list entries.
+     * @param starten if true, start dl. if false stop DLs.
+     */
+    private void filmStartenWiederholenStoppen(boolean alle, boolean starten) {
+        filmStartenWiederholenStoppen(alle, starten, true, false);
     }
 
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */, boolean fertige /*auch fertige wieder starten*/) {
+    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */,
+                                               boolean fertige /*auch fertige wieder starten*/,
+                                               boolean skipManualDownloads) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
@@ -1194,6 +1203,11 @@ public class GuiDownloads extends AGuiTabPanel {
         // jetzt noch die Starts stoppen
         daten.getListeDownloads().downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
+
+        //do not start manual downloads, only downloads which were created from abos
+        if (skipManualDownloads)
+            listeDownloadsStarten.removeIf(item -> !item.isFromAbo());
+
         if (starten) {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(listeDownloadsStarten);
@@ -1328,20 +1342,14 @@ public class GuiDownloads extends AGuiTabPanel {
             if (row != -1) {
                 datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START) {
-                    // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             filmAbspielen();
-                        } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                            // Download starten
-                            filmStartenWiederholenStoppen(false, true /*starten*/);
-                        } else {
-                            // Download stoppen
-                            filmStartenWiederholenStoppen(false, false /*starten*/);
-                        }
+                        } else
+                            filmStartenWiederholenStoppen(false, datenDownload.start.status == Start.STATUS_ERR);
                     } else {
                         // Download starten
-                        filmStartenWiederholenStoppen(false, true /*starten*/);
+                        filmStartenWiederholenStoppen(false, true);
                     }
                 } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL) {
                     if (datenDownload.start != null) {
