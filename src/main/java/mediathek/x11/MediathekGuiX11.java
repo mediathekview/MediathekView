@@ -30,8 +30,8 @@ public class MediathekGuiX11 extends MediathekGui {
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            logger.warn("Could not set awtAppClassName");
+        } catch (Exception e) {
+            logger.error("Could not set awtAppClassName", e);
         }
     }
 
