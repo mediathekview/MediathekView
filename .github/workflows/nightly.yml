@@ -85,7 +85,7 @@ jobs:
       - name: Download install4j
         uses: wei/curl@v1
         with:
-          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz' --output install4j.tar.gz
+          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_2.tar.gz' --output install4j.tar.gz
       - name: Extract install4j
         run: tar -zxvf install4j.tar.gz
 
@@ -99,7 +99,7 @@ jobs:
       - name: Add install4j license
         run: ./mvnw clean install4j:install-license -Pinstall4j
         env:
-          LICENSE_KEY_8: ${{ secrets.LICENSE_KEY_8 }}
+          LICENSE_KEY_9: ${{ secrets.LICENSE_KEY_9 }}
       - uses: actions/download-artifact@v2
         with:
           name: target

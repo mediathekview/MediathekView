@@ -96,13 +96,13 @@
 
         <mainclass>mediathek.Main</mainclass>
         <!-- AdopOpenJDK is used for Windows and Linux 64bit -->
-        <install4j.adoptopenjdk.jdk.version>openjdk15/jdk-15.0.1+9</install4j.adoptopenjdk.jdk.version>
+        <install4j.adoptopenjdk.jdk.version>16/jdk-16.0.1+9</install4j.adoptopenjdk.jdk.version>
         <!-- Liberica includes JavaFX and is used for Arm and 32bit -->
-        <install4j.liberica.jdk.version>OpenJDK 15.0.1+9</install4j.liberica.jdk.version>
-        <install4j.jdk.min-version>15</install4j.jdk.min-version>
-        <install4j.home>./install4j8.0.9</install4j.home>
+        <install4j.liberica.jdk.version>16/16.0.1+9</install4j.liberica.jdk.version>
+        <install4j.jdk.min-version>16</install4j.jdk.min-version>
+        <install4j.home>./install4j9.0.2</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
+        <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
         <kotlin.version>1.5.0</kotlin.version>
     </properties>
 
@@ -1029,7 +1029,7 @@
                     <plugin>
                         <groupId>org.sonatype.install4j</groupId>
                         <artifactId>install4j-maven-plugin</artifactId>
-                        <version>1.1.1</version>
+                        <version>1.1.2</version>
                         <executions>
                             <execution>
                                 <id>compile-installers</id>
