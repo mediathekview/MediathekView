@@ -20,7 +20,7 @@
 - **BUGFIX:** Weißer Hintergrund der Filminfo im "Film speichern" Dialog zeigt je nach Plattform nun korrekte Hintergrundfarbe an.
 - **BUGFIX:** Datum wird in unterschiedlichen Zeitzonen wieder korrekt dargestellt.
 - **BUGFIX:** Manuell angelegte Downloads werden nicht mehr automatisch gestartet wenn in *"Einstellungen/Erweitert"* der automatische Start von Abos ausgewählt wurde.
-
+- **BUGFIX(Linux):** RPM-Signaturfehler von install4j behoben.
 <u>**13.7.1**</u>
 
 **ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**
