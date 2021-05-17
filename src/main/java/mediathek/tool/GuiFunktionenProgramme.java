@@ -10,6 +10,7 @@ import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +26,7 @@ import java.util.zip.ZipFile;
 
 import static mediathek.tool.Functions.getOs;
 
-public class GuiFunktionenProgramme extends GuiFunktionen {
+public class GuiFunktionenProgramme {
 
     private static final ArrayList<String> winPfade = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger();
@@ -50,6 +51,32 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 winPfade.add(s);
             }
         }
+    }
+
+    /**
+     * Retrieve the path to the program jar file.
+     *
+     * @return The program jar file path with a separator added.
+     */
+    public static String getPathToApplicationJar() {
+        // macht Probleme bei Win und Netzwerkpfaden, liefert dann Absolute Pfade zB. \\VBOXSVR\share\Mediathek\...
+        final var pFilePath = "pFile";
+        var propFile = new File(pFilePath);
+        if (!propFile.exists()) {
+            try {
+                final var cS = GuiFunktionenProgramme.class.getProtectionDomain().getCodeSource();
+                final var jarFile = new File(cS.getLocation().toURI().getPath());
+                final var jarDir = jarFile.getParentFile().getPath();
+                propFile = new File(jarDir + File.separator + pFilePath);
+            } catch (Exception ignored) {
+            }
+        }
+
+        var s = StringUtils.replace(propFile.getAbsolutePath(), pFilePath, "");
+        if (!s.endsWith(File.separator)) {
+            s += File.separator;
+        }
+        return s;
     }
 
     /**
@@ -176,7 +203,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     }
 
     private static boolean addOnZip(String datei) {
-        String zielPfad = addsPfad(getPathToApplicationJar(), "bin");
+        String zielPfad = GuiFunktionen.addsPfad(getPathToApplicationJar(), "bin");
         File zipFile;
         int n;
 
