@@ -51,16 +51,6 @@ public class GuiFunktionen {
     }
 
     @Deprecated
-    public static void getSize(Configs nr, JFrame jFrame) {
-        if (jFrame != null) {
-            MVConfig.add(nr, jFrame.getSize().width + ":"
-                    + jFrame.getSize().height + ':'
-                    + jFrame.getLocation().x + ':'
-                    + jFrame.getLocation().y);
-        }
-    }
-
-    @Deprecated
     public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;

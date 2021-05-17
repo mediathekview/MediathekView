@@ -8,7 +8,6 @@ import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -231,9 +230,18 @@ public class DialogEinstellungen extends JFrame {
         jTree1.setSelectionPath(tp);
     }
 
+    private void storeSizeInConfig() {
+        final var size = getSize();
+        final var location = getLocation();
+        MVConfig.add(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN,
+                size.width + ":"
+                        + size.height + ':'
+                        + location.x + ':'
+                        + location.y);
+    }
+
     private void beenden() {
-        //save the dialog size when we are closing...
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this);
+        storeSizeInConfig();
 
         daten.allesSpeichern();
         dispose();
