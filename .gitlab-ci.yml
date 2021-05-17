@@ -3,7 +3,7 @@ variables:
   MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
   MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
-image: maven:3.6-adoptopenjdk-15
+image: maven:3.8-adoptopenjdk-16
 
 
 cache:
@@ -22,8 +22,8 @@ default:
     - ssh-keyscan -p 52150 mediathekview.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 52150 5.1.76.243 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_8_0_9.tar.gz
-    - tar -zxf install4j_unix_8_0_9.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_2.tar.gz
+    - tar -zxf install4j_unix_9_0_2.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
