@@ -35,6 +35,7 @@ class AboInformationController : Initializable {
     }
 
     @Handler
+    @Suppress("UNUSED_PARAMETER")
     private fun handleAboChangedEvent(e: AboListChangedEvent) {
         JavaFxUtils.invokeInFxThreadAndWait { updateDisplayText() }
     }
