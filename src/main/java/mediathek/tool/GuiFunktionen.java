@@ -14,7 +14,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
 
-public class GuiFunktionen extends MVFunctionSys {
+public class GuiFunktionen {
 
     /**
      * legacy constant, used internally only

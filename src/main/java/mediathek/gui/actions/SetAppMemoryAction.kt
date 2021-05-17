@@ -2,7 +2,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.MVFunctionSys
+import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.javafx.FXErrorDialog
 import okio.buffer
 import okio.sink
@@ -44,7 +44,7 @@ class SetAppMemoryAction : AbstractAction() {
             }
         } else {
             fileName = WIN_VMOPTIONS_FILE
-            optionsPath = Paths.get(MVFunctionSys.getPathToApplicationJar(), fileName)
+            optionsPath = Paths.get(GuiFunktionenProgramme.getPathToApplicationJar(), fileName)
         }
         val fileStr = optionsPath.normalize().toAbsolutePath().toString()
         if (Desktop.isDesktopSupported()) {
