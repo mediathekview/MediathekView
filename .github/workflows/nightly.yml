@@ -18,11 +18,11 @@ jobs:
         id: check-if-changed
         with:
           paths: .github/workflows src/ res/ pom.xml .install4j/ .mvn/
-      - name: Set up JDK 15
+      - name: Set up JDK 16
         if: steps.check-if-changed.outputs.changed == 'true'
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
 
       - name: Cache local Maven repository
         if: steps.check-if-changed.outputs.changed == 'true'
