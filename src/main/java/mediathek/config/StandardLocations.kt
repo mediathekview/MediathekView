@@ -89,6 +89,7 @@ object StandardLocations {
     }
 
     private const val OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView"
+    private const val LOCKFILE_NAME = "MediathekView.lock"
 
     /**
      * Return the string path to the filmlist.
@@ -98,15 +99,32 @@ object StandardLocations {
     @JvmStatic
     fun getFilmlistFilePath(): String {
         val filePart = File.separator + Konstanten.JSON_DATEI_FILME
-         return if (Config.isPortableMode())
+        return if (Config.isPortableMode())
+            getSettingsDirectory().toString() + filePart
+        else {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+                SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME + filePart
+            } else {
                 getSettingsDirectory().toString() + filePart
-            else {
-                if (SystemUtils.IS_OS_MAC_OSX) {
-                    //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                    SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME + filePart
-                } else {
-                    getSettingsDirectory().toString() + filePart
-                }
             }
+        }
+    }
+
+    /**
+     * Return the path to the lockfile.
+     * On macOS we do not support roaming settings with the official app, therefore keep the old temp dir convention.
+     * On linux and windows we do support now multiple instances running with different "portable" settings directories.
+     * Therefore store the lock file now in the settings directory during runtime.
+     *
+     * @return The Path object to the lockfile
+     */
+    @JvmStatic
+    fun getLockFilePath(): Path {
+        return if (SystemUtils.IS_OS_MAC_OSX)
+            Paths.get(SystemUtils.JAVA_IO_TMPDIR).resolve(LOCKFILE_NAME)
+        else {
+            getSettingsDirectory().resolve(LOCKFILE_NAME)
+        }
     }
 }

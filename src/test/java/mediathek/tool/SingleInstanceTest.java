@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SingleInstanceTest {
     @Test
-    void instance1_not_active() throws Exception {
+    void instance1_not_active() {
         try (var instance1 = new SingleInstance()) {
             assertFalse(instance1.isAppAlreadyActive());
         }
     }
 
     @Test
-    void instance2_activity_test() throws Exception {
+    void instance2_activity_test() {
         try (var instance1 = new SingleInstance();
         var instance2 = new SingleInstance()) {
             assertFalse(instance1.isAppAlreadyActive());
