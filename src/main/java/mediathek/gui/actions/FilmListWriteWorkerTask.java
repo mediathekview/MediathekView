@@ -2,6 +2,7 @@ package mediathek.gui.actions;
 
 import javafx.concurrent.Task;
 import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.filmlisten.writer.FilmListWriter;
 
 public class FilmListWriteWorkerTask extends Task<Void> {
@@ -18,7 +19,7 @@ public class FilmListWriteWorkerTask extends Task<Void> {
         FilmListWriter writer = new FilmListWriter(false);
         updateMessage("Schreibe Filmliste");
         updateProgress(0d, 1d);
-        writer.writeFilmList(Daten.getDateiFilmliste(),
+        writer.writeFilmList(StandardLocations.getFilmlistFilePath(),
                 daten.getListeFilme(),
                 prog -> updateProgress(prog, 1d));
 

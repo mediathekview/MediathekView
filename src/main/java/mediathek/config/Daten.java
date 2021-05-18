@@ -19,7 +19,6 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -110,29 +109,6 @@ public class Daten {
 
     public static Daten getInstance() {
         return DatenHolder.INSTANCE;
-    }
-
-    /**
-     * Liefert den Pfad zur Filmliste
-     *
-     * @return Den Pfad als String
-     */
-    public static String getDateiFilmliste() {
-        String strFile;
-        final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
-
-        if (Config.isPortableMode())
-            strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
-        else {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
-            } else {
-                strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
-            }
-        }
-
-        return strFile;
     }
 
     /**
