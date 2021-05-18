@@ -7,8 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 
 public class MVConfig {
 
@@ -112,16 +111,17 @@ public class MVConfig {
     }
 
     public static synchronized String[][] getAll() {
-        final LinkedList<String[]> liste = new LinkedList<>();
-        final Set<String> strings = HASHMAP.keySet();
-        final String[] setArray = strings.toArray(new String[0]);
-        for (String entry : setArray) {
+        final List<String[]> liste = new ArrayList<>();
+
+        for (String entry : HASHMAP.keySet()) {
             String[] s = new String[2];
             s[0] = entry;
             s[1] = HASHMAP.get(entry);
             liste.add(s);
         }
-        listeSort(liste);
+
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        liste.sort((o1, o2) -> sorter.compare(o1[0],o2[0]));
 
         return liste.toArray(new String[][]{});
     }
@@ -160,27 +160,6 @@ public class MVConfig {
             sa[k] = key.initValue;
         }
         return sa;
-    }
-
-    private static void listeSort(LinkedList<String[]> liste) {
-        //Stringliste alphabetisch sortieren
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        if (liste != null) {
-            String str1;
-            String str2;
-            for (int i = 1; i < liste.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    str1 = liste.get(k - 1)[0];
-                    str2 = liste.get(k)[0];
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (sorter.compare(str1, str2) > 0) {
-                        liste.add(k - 1, liste.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     public enum Configs {
