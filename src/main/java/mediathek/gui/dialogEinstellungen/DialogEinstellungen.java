@@ -2,12 +2,13 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
+import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -78,32 +79,32 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void restoreSizeFromConfig() {
-        int breite = 0,
-                hoehe = 0,
-                posX = 0,
-                posY = 0;
+        int width, height, x, y;
+        final var config = ApplicationConfiguration.getConfiguration();
 
-        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN).split(":");
+        config.lock(LockMode.READ);
         try {
-            if (arr.length == 4) {
-                breite = Integer.parseInt(arr[0]);
-                hoehe = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
+            width = config.getInt(ApplicationConfiguration.SettingsDialog.WIDTH);
+            height = config.getInt(ApplicationConfiguration.SettingsDialog.HEIGHT);
+            x = config.getInt(ApplicationConfiguration.SettingsDialog.X);
+            y = config.getInt(ApplicationConfiguration.SettingsDialog.Y);
+        }
+        catch (Exception e) {
+            width = 0;
+            height = 0;
+            x = 0;
+            y = 0;
+        }
+        finally {
+            config.unlock(LockMode.READ);
         }
 
-        if (breite > 0 && hoehe > 0) {
-            setSize(breite, hoehe);
+        if (width > 0 && height > 0) {
+            setSize(width, height);
         }
 
-        if (posX > 0 && posY > 0) {
-            setLocation(posX, posY);
+        if (x > 0 && y > 0) {
+            setLocation(x, y);
         } else {
             final var parentFrame = MediathekGui.ui();
             if (parentFrame != null)
@@ -233,11 +234,18 @@ public class DialogEinstellungen extends JFrame {
     private void storeSizeInConfig() {
         final var size = getSize();
         final var location = getLocation();
-        MVConfig.add(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN,
-                size.width + ":"
-                        + size.height + ':'
-                        + location.x + ':'
-                        + location.y);
+        final var config = ApplicationConfiguration.getConfiguration();
+
+        config.lock(LockMode.WRITE);
+        try {
+            config.setProperty(ApplicationConfiguration.SettingsDialog.WIDTH, size.width);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.HEIGHT, size.height);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.X, location.x);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.Y, location.y);
+        }
+        finally {
+            config.unlock(LockMode.WRITE);
+        }
     }
 
     private void beenden() {
