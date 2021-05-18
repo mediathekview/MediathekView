@@ -4,8 +4,10 @@ import mediathek.tool.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +17,6 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
-    private static final int MAX_FILTER = 5; //old filter profile code setting
 
     public static void loadSystemParameter() {
         //einmal die leeren mit den inits füllen
@@ -27,7 +28,7 @@ public class MVConfig {
         }
 
         if (Config.isDebugModeEnabled()) {
-            logger.debug("Setting FilmList import mode to MANUAL");
+            logger.debug("Debug mode enabled - Setting FilmList import mode to MANUAL");
             GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
         }
 
@@ -36,40 +37,12 @@ public class MVConfig {
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
     }
 
-    public static void check(Configs key, int min, int max) {
-        int v = getInt(key);
-        if (v < min || v > max) {
-            add(key, key.initValue);
-        }
-    }
-
     public static synchronized void add(String key, String value) {
         HASHMAP.put(key, value);
     }
 
     public static synchronized void add(Configs key, String value) {
         HASHMAP.put(key.cValue, value);
-    }
-
-    public static synchronized void add(Configs key, String value, int i) {
-        boolean ok = false;
-        String[] sa = {""};
-        String s = HASHMAP.get(key.cValue);
-        if (s != null) {
-            sa = split(s);
-            if (sa.length == MAX_FILTER) {
-                sa[i] = value;
-                ok = true;
-            }
-        }
-        if (!ok) {
-            // dann anlegen
-            sa = initArray(key);
-            sa[i] = value;
-        }
-        // und jetzt eintragen
-        s = addArray(sa);
-        HASHMAP.put(key.cValue, s);
     }
 
     public static synchronized String get(Configs key) {
@@ -110,20 +83,17 @@ public class MVConfig {
         }
     }
 
-    public static synchronized String[][] getAll() {
+    public static synchronized List<String[]> getSortedKVList() {
         final List<String[]> liste = new ArrayList<>();
 
         for (String entry : HASHMAP.keySet()) {
-            String[] s = new String[2];
-            s[0] = entry;
-            s[1] = HASHMAP.get(entry);
-            liste.add(s);
+            liste.add(new String[]{entry, HASHMAP.get(entry)});
         }
 
         GermanStringSorter sorter = GermanStringSorter.getInstance();
         liste.sort((o1, o2) -> sorter.compare(o1[0],o2[0]));
 
-        return liste.toArray(new String[][]{});
+        return liste;
     }
 
     private static String[] split(String sIn) {
@@ -137,29 +107,6 @@ public class MVConfig {
 
         return l.toArray(new String[0]);
 
-    }
-
-    private static String addArray(String[] arr) {
-        if (arr == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int k = 0; k < arr.length; ++k) {
-            sb.append(arr[k]);
-            if (k < arr.length - 1) {
-                sb.append(TRENNER);
-            }
-        }
-        return sb.toString();
-    }
-
-    private static String[] initArray(Configs key) {
-        String[] sa = new String[MAX_FILTER];
-        for (int k = 0; k < MAX_FILTER; ++k) {
-            sa[k] = key.initValue;
-        }
-        return sa;
     }
 
     public enum Configs {
@@ -251,13 +198,10 @@ public class MVConfig {
             initValue = init;
         }
 
-        public static boolean find(String value) {
-            for (Configs conf : values()) {
-                if (conf.cValue.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+        private static final EnumSet<MVConfig.Configs> CONFIGS_ENUM_SET = EnumSet.allOf(MVConfig.Configs.class);
+
+        public static boolean find(@NotNull final String value) {
+            return CONFIGS_ENUM_SET.stream().anyMatch(e -> e.cValue.equals(value));
         }
     }
 }

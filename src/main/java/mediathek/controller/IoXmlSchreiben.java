@@ -41,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 public class IoXmlSchreiben {
@@ -86,17 +87,14 @@ public class IoXmlSchreiben {
 
     private void writeProgramSettings(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
-        //writer.writeComment(MVConfig.PARAMETER_INFO);
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Programmeinstellungen");
         writeNewLine(writer);
-        xmlSchreibenConfig(writer, MVConfig.getAll());
+        xmlSchreibenConfig(writer, MVConfig.getSortedKVList());
         writeNewLine(writer);
     }
 
     private void writeProgramSets(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Programmsets");
         writeNewLine(writer);
         //Proggruppen schreiben, bei Konfig-Datei
         for (DatenPset datenPset : Daten.listePset) {
@@ -195,19 +193,20 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n"); //neue Zeile
     }
 
-    private void xmlSchreibenConfig(XMLStreamWriter writer, String[][] xmlSpalten) {
+    private void xmlSchreibenConfig(XMLStreamWriter writer, List<String[]> configValues) {
         try {
             writer.writeStartElement(MVConfig.SYSTEM);
             writeNewLine(writer);
-            for (String[] xmlSpalte : xmlSpalten) {
-                if (!MVConfig.Configs.find(xmlSpalte[0])) {
-                    continue; //nur Configs schreiben die es noch gibt
+            for (var xmlSpalte : configValues) {
+                final var key = xmlSpalte[0];
+                if (MVConfig.Configs.find(key)) {
+                    //nur Configs schreiben die es noch gibt
+                    writer.writeCharacters("\t"); //Tab
+                    writer.writeStartElement(key);
+                    writer.writeCharacters(xmlSpalte[1]);
+                    writer.writeEndElement();
+                    writeNewLine(writer);
                 }
-                writer.writeCharacters("\t"); //Tab
-                writer.writeStartElement(xmlSpalte[0]);
-                writer.writeCharacters(xmlSpalte[1]);
-                writer.writeEndElement();
-                writeNewLine(writer);
             }
             writer.writeEndElement();
             writeNewLine(writer);
