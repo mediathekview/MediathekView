@@ -31,7 +31,6 @@ public class Konstanten {
     public static final Version MVVERSION = new Version(13,8,0);
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
-    public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
     public static final String FORMAT_ZIP = ".zip";

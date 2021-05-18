@@ -308,7 +308,7 @@ public class FilmeLaden {
 
             try (FilmListReader reader = new FilmListReader()) {
                 final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
+                reader.readFilmListe(StandardLocations.getFilmlistFilePath(), listeFilme, num_days);
             }
             logger.info("");
 

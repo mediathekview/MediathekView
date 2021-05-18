@@ -3,6 +3,7 @@ package mediathek.config
 import mediathek.filmlisten.FilmListDownloadType
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
+import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
@@ -85,5 +86,27 @@ object StandardLocations {
             FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz").toString()
             FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz").toString()
         }
+    }
+
+    private const val OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView"
+
+    /**
+     * Return the string path to the filmlist.
+     *
+     * @return the path as String.
+     */
+    @JvmStatic
+    fun getFilmlistFilePath(): String {
+        val filePart = File.separator + Konstanten.JSON_DATEI_FILME
+         return if (Config.isPortableMode())
+                getSettingsDirectory().toString() + filePart
+            else {
+                if (SystemUtils.IS_OS_MAC_OSX) {
+                    //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+                    SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME + filePart
+                } else {
+                    getSettingsDirectory().toString() + filePart
+                }
+            }
     }
 }
