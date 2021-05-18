@@ -2,6 +2,7 @@ package mediathek.tool.migrator;
 
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -45,31 +46,45 @@ public class SettingsMigrator {
                 Element element = (Element) node;
                 var nodeName = element.getNodeName();
                 switch (nodeName) {
-                    case "Bandwidthmonitor-visible":
-                        migrateBandwidthMonitorVisibility(element);
-                        break;
-
-                    case "Tray-anzeigen":
-                        migrateShowTray(element);
-                        break;
-
-                    case "system-anz-tage-filmilste": // kein Fehler!!!
-                        migrateFilmListAnzTage(element);
-                        break;
-
-                    case "maxDownload":
-                        migrateMaxNumDownloads(element);
-                        break;
-
-                    case "system-panel-videoplayer-anzeigen":
-                        migrateSystemPanelVideoplayerAnzeigen(element);
-                        break;
-
-                    case "Blacklist-Geo-nicht-anzeigen":
-                        migrateDoNotShowGeoFilms(element);
-                        break;
+                    case "Bandwidthmonitor-visible" -> migrateBandwidthMonitorVisibility(element);
+                    case "Tray-anzeigen" -> migrateShowTray(element);
+                    case "system-anz-tage-filmilste" -> // kein Fehler!!!
+                            migrateFilmListAnzTage(element);
+                    case "maxDownload" -> migrateMaxNumDownloads(element);
+                    case "system-panel-videoplayer-anzeigen" -> migrateSystemPanelVideoplayerAnzeigen(element);
+                    case "Blacklist-Geo-nicht-anzeigen" -> migrateDoNotShowGeoFilms(element);
+                    case "Groesse-Einstellungen" -> migrateSettingsDialogSize(element);
                 }
             }
+        }
+    }
+
+    private void migrateSettingsDialogSize(Element element) {
+        int width = 0, height = 0, x = 0, y = 0;
+        var node = element.getFirstChild();
+        if (node != null) {
+            config.lock(LockMode.WRITE);
+            try {
+                var result = node.getNodeValue().split(":");
+                if (result.length == 4) {
+                    width = Integer.parseInt(result[0]);
+                    height = Integer.parseInt(result[1]);
+                    x = Integer.parseInt(result[2]);
+                    y = Integer.parseInt(result[3]);
+                }
+            } catch (Exception e) {
+                width = 0;
+                height = 0;
+                x = 0;
+                y = 0;
+            }
+
+            config.setProperty(ApplicationConfiguration.SettingsDialog.WIDTH, width);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.HEIGHT, height);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.X, x);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.Y, y);
+            config.unlock(LockMode.WRITE);
+            logger.debug("migrateSettingsDialogSize");
         }
     }
 

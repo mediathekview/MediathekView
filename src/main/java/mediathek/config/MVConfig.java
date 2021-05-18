@@ -120,7 +120,6 @@ public class MVConfig {
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         // Fenstereinstellungen
-        SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),

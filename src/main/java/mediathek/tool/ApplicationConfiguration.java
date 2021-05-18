@@ -210,6 +210,13 @@ public class ApplicationConfiguration {
         public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
     }
 
+    public static class SettingsDialog {
+        public static final String WIDTH = "application.ui.settings_dialog.width";
+        public static final String HEIGHT = "application.ui.settings_dialog.height";
+        public static final String X = "application.ui.settings_dialog.x";
+        public static final String Y = "application.ui.settings_dialog.y";
+    }
+
     /**
      * A custom small thread scheduler exclusively for config changes.
      */
