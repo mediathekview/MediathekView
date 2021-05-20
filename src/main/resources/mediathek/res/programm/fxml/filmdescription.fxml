@@ -17,7 +17,7 @@
                     </padding>
                 </TextFlow>
             </ScrollPane>
-            <Hyperlink fx:id="websiteLink" text="Link zur Website" />
+            <Hyperlink fx:id="websiteLink" text="Link zur Webseite" />
         </VBox>
     </Tab>
 </TabPane>
