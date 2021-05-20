@@ -53,6 +53,13 @@ public class DescriptionPanelController {
                 }
             });
         });
+
+        // create context menu
+        var contextMenu = new ContextMenu();
+        var mi = new MenuItem("URL kopieren");
+        mi.setOnAction(e -> SwingUtilities.invokeLater(() -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink())));
+        contextMenu.getItems().add(mi);
+        websiteLink.setContextMenu(contextMenu);
     }
 
     public static DescriptionPanelController install(JFXPanel fxDescriptionPanel) throws IOException {
@@ -70,6 +77,23 @@ public class DescriptionPanelController {
         return descriptionPanelController;
     }
 
+    private Font getFont() {
+        /*
+            Thank you Oracle for not fixing the bold font handling for years in JavaFX...
+            As of version 16 bold font handling ist STILL BROKEN on macOS.
+            So we need a little workaround which will not die before 2027 based on bug fix rate
+            of non-paying customers...
+             */
+        Font defaultFont;
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            defaultFont = Font.font("Arial", 14d);
+        }
+        else
+            defaultFont = Font.getDefault();
+
+        return defaultFont;
+    }
+
     public void showFilmDescription(@NotNull Optional<DatenFilm> optFilm) {
         textField.getChildren().clear();
 
@@ -79,18 +103,7 @@ public class DescriptionPanelController {
             websiteLink.setVisited(false);
             websiteLink.setTooltip(new Tooltip(film.getWebsiteLink()));
 
-            /*
-            Thank you Oracle for not fixing the bold font handling for years in JavaFX...
-            As of version 16 bold font handling ist STILL BROKEN on macOS.
-            So we need a little workaround which will not die before 2027 based on bug fix rate
-            of non-paying customers...
-             */
-            Font defaultFont;
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                defaultFont = Font.font("Arial", 14d);
-            }
-            else
-                defaultFont = Font.getDefault();
+            Font defaultFont = getFont();
             Text headLine = new Text((film.getSender().isEmpty() ? "" : film.getSender() + "  -  ") + film.getTitle());
             headLine.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, FontPosture.REGULAR, defaultFont.getSize()));
 
