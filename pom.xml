@@ -88,7 +88,7 @@
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <javafx.version>16</javafx.version>
         <picocli.version>4.6.1</picocli.version>
-        <miglayout.version>5.3-SNAPSHOT</miglayout.version>
+        <miglayout.version>11.0</miglayout.version>
         <log4j2.version>2.14.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
         <okhttp.version>4.9.1</okhttp.version>
@@ -232,16 +232,46 @@
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-core</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-javafx</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
