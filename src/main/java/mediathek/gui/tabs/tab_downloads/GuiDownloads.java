@@ -1,5 +1,6 @@
 package mediathek.gui.tabs.tab_downloads;
 
+import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -1101,6 +1102,7 @@ public class GuiDownloads extends AGuiTabPanel {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         // wird immer vom Benutzer aufgerufen
+        Stopwatch stopwatch = Stopwatch.createStarted();
         ArrayList<DatenDownload> listeDownloadsLoeschen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsMarkiert = new ArrayList<>();
@@ -1177,7 +1179,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         }
                         listeDownloadsLoeschen.add(download);
                         if (download.isFromAbo()) {
-                            // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                            // wenn er schon fertig ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
@@ -1206,7 +1208,10 @@ public class GuiDownloads extends AGuiTabPanel {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(listeDownloadsStarten);
         }
+
         reloadTable();
+        stopwatch.stop();
+        logger.trace("filmStartenWiederholenStoppen() took: {}", stopwatch);
     }
 
     public void stopAllWaitingDownloads() {
@@ -1417,13 +1422,14 @@ public class GuiDownloads extends AGuiTabPanel {
 
             jPopupMenu.addSeparator();
 
-            JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
+            JMenuItem itemAlleStarten = new JMenuItem("Alle Downloads starten");
             itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
+            itemAlleStarten.addActionListener(arg0 -> starten(true));
             jPopupMenu.add(itemAlleStarten);
-            itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true, true, true, false));
-            JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
+
+            JMenuItem itemAlleStoppen = new JMenuItem("Alle Downloads stoppen");
+            itemAlleStoppen.addActionListener(arg0 -> stoppen(true));
             jPopupMenu.add(itemAlleStoppen);
-            itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true, false, true, false));
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
