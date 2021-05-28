@@ -31,12 +31,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StarterClass {
     private static final Logger logger = LogManager.getLogger(StarterClass.class);
     private final Daten daten;
     private final Starten starten;
-    private boolean pause;
+    private final AtomicBoolean pause = new AtomicBoolean(false);
 
     public StarterClass(Daten daten) {
         this.daten = daten;
@@ -290,8 +291,8 @@ public class StarterClass {
         }
     }
 
-    public void pause() {
-        pause = true;
+    public void delayNewStarts() {
+        pause.set(true);
     }
 
     private void reStartmeldung(DatenDownload datenDownload) {
@@ -335,11 +336,11 @@ public class StarterClass {
         private synchronized DatenDownload getNextStart() throws InterruptedException {
             // get: erstes passendes Element der Liste zurückgeben oder null
             // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-            if (pause) {
+            if (pause.get()) {
                 // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
                 // damit ein zu Löschender Download nicht noch schnell gestartet wird
                 TimeUnit.SECONDS.sleep(5);
-                pause = false;
+                pause.set(false);
             }
 
             DatenDownload download = daten.getListeDownloads().getNextStart();
