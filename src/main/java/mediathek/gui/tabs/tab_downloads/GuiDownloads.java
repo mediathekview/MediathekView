@@ -527,11 +527,11 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     public void starten(boolean alle) {
-        filmStartenWiederholenStoppen(alle, true);
+        filmStartenWiederholenStoppen(alle, true, true, false);
     }
 
     public void stoppen(boolean alle) {
-        filmStartenWiederholenStoppen(alle, false);
+        filmStartenWiederholenStoppen(alle, false, true, false);
     }
 
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -564,7 +564,7 @@ public class GuiDownloads extends AGuiTabPanel {
         am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                filmStartenWiederholenStoppen(false, true);
+                filmStartenWiederholenStoppen(false, true, true, false);
             }
         });
     }
@@ -1093,16 +1093,6 @@ public class GuiDownloads extends AGuiTabPanel {
         reloadTable();
     }
 
-    /**
-     * Start/Restart or stop downloads.
-     * Wrapper for full featured function with more parameters.
-     * @param alle when true all downloads will be started, otherwise only marked list entries.
-     * @param starten if true, start dl. if false stop DLs.
-     */
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten) {
-        filmStartenWiederholenStoppen(alle, starten, true, false);
-    }
-
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */,
                                                boolean fertige /*auch fertige wieder starten*/,
                                                boolean skipManualDownloads) {
@@ -1350,10 +1340,10 @@ public class GuiDownloads extends AGuiTabPanel {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             filmAbspielen();
                         } else
-                            filmStartenWiederholenStoppen(false, datenDownload.start.status == Start.STATUS_ERR);
+                            filmStartenWiederholenStoppen(false, datenDownload.start.status == Start.STATUS_ERR, true, false);
                     } else {
                         // Download starten
-                        filmStartenWiederholenStoppen(false, true);
+                        filmStartenWiederholenStoppen(false, true, true, false);
                     }
                 } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL) {
                     if (datenDownload.start != null) {
@@ -1395,13 +1385,13 @@ public class GuiDownloads extends AGuiTabPanel {
             itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
-            itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, true /* starten */));
+            itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, true, true, false));
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
-            itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, false /* starten */));
+            itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, false, true, false));
 
             jPopupMenu.addSeparator();
 
@@ -1430,10 +1420,10 @@ public class GuiDownloads extends AGuiTabPanel {
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
             itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
             jPopupMenu.add(itemAlleStarten);
-            itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, true /* starten */));
+            itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true, true, true, false));
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
             jPopupMenu.add(itemAlleStoppen);
-            itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, false /* starten */));
+            itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true, false, true, false));
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
