@@ -9,6 +9,7 @@ import org.apache.commons.configuration2.event.ConfigurationEvent;
 import org.apache.commons.configuration2.event.EventListener;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -87,6 +88,17 @@ public class ApplicationConfiguration {
 
         loadOrCreateConfiguration();
         initializeTimedEventWriting();
+
+        config.lock(LockMode.WRITE);
+        try {
+            var version = Konstanten.MVVERSION;
+            config.setProperty("config.major", version.getMajor());
+            config.setProperty("config.minor", version.getMinor());
+            config.setProperty("config.patch", version.getPatch());
+        }
+        finally {
+            config.unlock(LockMode.WRITE);
+        }
     }
 
     public static ApplicationConfiguration getInstance() {
