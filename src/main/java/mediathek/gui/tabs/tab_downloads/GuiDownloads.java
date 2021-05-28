@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_downloads;
 
-import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -49,6 +48,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -1021,16 +1021,44 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
+    /**
+     * Don´t know why this is actually called...
+     */
+    private synchronized void sortDownloadListByTableRows()
+    {
+        final var rowCount = tabelle.getRowCount();
+        final var tableModel = tabelle.getModel();
+        final var listeDownloads = daten.getListeDownloads();
+
+        //Liste in der Reihenfolge wie in der Tabelle sortieren
+        for (int i = 0; i < rowCount; ++i) {
+            DatenDownload datenDownload = (DatenDownload) tableModel.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+            listeDownloads.remove(datenDownload);
+            listeDownloads.add(datenDownload);
+        }
+    }
+
+    private @NotNull List<DatenDownload> addAllDownloadsToList()
+    {
+        final var rowCount = tabelle.getRowCount();
+        final var tableModel = tabelle.getModel();
+        List<DatenDownload> destList = new ArrayList<>();
+
+        for (int i = 0; i < rowCount; ++i) {
+            DatenDownload datenDownload = (DatenDownload) tableModel.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+            destList.add(datenDownload);
+        }
+        return destList;
+    }
+
     public void filmStartAtTime() {
         // bezieht sich immer auf "alle"
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
-        ArrayList<DatenDownload> listeAllDownloads = new ArrayList<>();
         ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
-        // ==========================
-        // erst mal die Liste nach der Tabelle sortieren
+
         if (tabelle.getRowCount() == 0) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -1042,16 +1070,15 @@ public class GuiDownloads extends AGuiTabPanel {
             });
             return;
         }
-        for (int i = 0; i < tabelle.getRowCount(); ++i) {
-            // um in der Reihenfolge zu starten
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-            listeAllDownloads.add(datenDownload);
-            daten.getListeDownloads().remove(datenDownload);
-            daten.getListeDownloads().add(datenDownload);
-        }
+
+        // ==========================
+        // erst mal die Liste nach der Tabelle sortieren
+        sortDownloadListByTableRows();
+        final var allDownloadsList = addAllDownloadsToList();
+
         // ========================
         // und jetzt abarbeiten
-        for (DatenDownload download : listeAllDownloads) {
+        for (DatenDownload download : allDownloadsList) {
             // ==========================================
             // starten
             if (download.start != null) {
@@ -1094,61 +1121,46 @@ public class GuiDownloads extends AGuiTabPanel {
         reloadTable();
     }
 
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */,
-                                               boolean fertige /*auch fertige wieder starten*/,
+    private void filmStartenWiederholenStoppen(boolean processAllDownloads, boolean starten /* starten/wiederstarten oder stoppen */,
+                                               boolean restartFinishedDownloads /*auch fertige wieder starten*/,
                                                boolean skipManualDownloads) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         // wird immer vom Benutzer aufgerufen
-        Stopwatch stopwatch = Stopwatch.createStarted();
         ArrayList<DatenDownload> listeDownloadsLoeschen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
-        ArrayList<DatenDownload> listeDownloadsMarkiert = new ArrayList<>();
 
         if (tabelle.getRowCount() == 0) {
             return;
         }
 
-        final var model = tabelle.getModel();
-        final var rowCount = tabelle.getRowCount();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
-        if (starten && alle) {
-            final var listeDownloads = daten.getListeDownloads();
-            //Liste in der Reihenfolge wie in der Tabelle sortieren
-            for (int i = 0; i < rowCount; ++i) {
-                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                listeDownloads.remove(datenDownload);
-                listeDownloads.add(datenDownload);
-            }
+        if (starten && processAllDownloads) {
+            sortDownloadListByTableRows();
         }
 
         // ==========================
         // die URLs sammeln
-        if (alle) {
-            for (int i = 0; i < rowCount; ++i) {
-                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                listeDownloadsMarkiert.add(datenDownload);
-            }
-        } else {
-            listeDownloadsMarkiert = getSelDownloads();
-        }
+        final var selectedDownloadsList = processAllDownloads ? addAllDownloadsToList() : getSelDownloads();
+
         if (!starten) {
             // dann das Starten von neuen Downloads etwas Pausieren
-            daten.starterClass.pause();
+            daten.starterClass.delayNewStarts();
         }
+
         // ========================
         // und jetzt abarbeiten
         int antwort = -1;
-        for (DatenDownload download : listeDownloadsMarkiert) {
+        for (DatenDownload download : selectedDownloadsList) {
             if (starten) {
                 // ==========================================
                 // starten
                 if (download.start != null) {
                     if (download.start.status == Start.STATUS_RUN
-                            || !fertige && download.start.status > Start.STATUS_RUN) {
+                            || !restartFinishedDownloads && download.start.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // fertige bleiben auch unverändert
                         continue;
@@ -1159,7 +1171,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         if (antwort == -1) {
                             // nur einmal fragen
                             String text;
-                            if (listeDownloadsMarkiert.size() > 1) {
+                            if (selectedDownloadsList.size() > 1) {
                                 text = "Es sind bereits fertige Filme dabei,\n"
                                         + "diese nochmal starten?";
                             } else {
@@ -1210,8 +1222,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
 
         reloadTable();
-        stopwatch.stop();
-        logger.trace("filmStartenWiederholenStoppen() took: {}", stopwatch);
     }
 
     public void stopAllWaitingDownloads() {
