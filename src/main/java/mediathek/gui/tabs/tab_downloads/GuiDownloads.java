@@ -860,9 +860,10 @@ public class GuiDownloads extends AGuiTabPanel {
     private ArrayList<DatenDownload> getSelDownloads() {
         ArrayList<DatenDownload> arrayDownloads = new ArrayList<>();
         final int[] rows = tabelle.getSelectedRows();
+        final var model = tabelle.getModel();
         if (rows.length > 0) {
             for (int row : rows) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 arrayDownloads.add(datenDownload);
             }
         } else {
@@ -1118,22 +1119,25 @@ public class GuiDownloads extends AGuiTabPanel {
             return;
         }
 
+        final var model = tabelle.getModel();
+        final var rowCount = tabelle.getRowCount();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (starten && alle) {
+            final var listeDownloads = daten.getListeDownloads();
             //Liste in der Reihenfolge wie in der Tabelle sortieren
-            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                daten.getListeDownloads().remove(datenDownload);
-                daten.getListeDownloads().add(datenDownload);
+            for (int i = 0; i < rowCount; ++i) {
+                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+                listeDownloads.remove(datenDownload);
+                listeDownloads.add(datenDownload);
             }
         }
 
         // ==========================
         // die URLs sammeln
         if (alle) {
-            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+            for (int i = 0; i < rowCount; ++i) {
+                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
                 listeDownloadsMarkiert.add(datenDownload);
             }
         } else {
