@@ -390,7 +390,7 @@ public class GuiDownloads extends AGuiTabPanel {
         miDownloadsStartAll.addActionListener(e -> starten(true));
 
         JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads zeitverzögert starten...");
-        miDownloadStartTimed.addActionListener(e -> filmStartAtTime());
+        miDownloadStartTimed.addActionListener(e -> startAllDownloadsAtSpecificTime());
 
         JMenuItem miStopAllDownloads = new JMenuItem("Alle Downloads stoppen");
         miStopAllDownloads.addActionListener(e -> stoppen(true));
@@ -1051,14 +1051,14 @@ public class GuiDownloads extends AGuiTabPanel {
         return destList;
     }
 
-    public void filmStartAtTime() {
+    /**
+     * starts all downloads at a specific time.
+     */
+    public void startAllDownloadsAtSpecificTime() {
         // bezieht sich immer auf "alle"
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
-        ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
-        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
-
         if (tabelle.getRowCount() == 0) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -1078,6 +1078,9 @@ public class GuiDownloads extends AGuiTabPanel {
 
         // ========================
         // und jetzt abarbeiten
+        ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
+
         for (DatenDownload download : allDownloadsList) {
             // ==========================================
             // starten

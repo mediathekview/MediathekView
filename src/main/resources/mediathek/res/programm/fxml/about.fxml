@@ -52,7 +52,7 @@
                     <Tab text="Ehemalige">
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                             <center>
-                                <TextArea editable="false" text="Gründer des Programms:&#10;Xaver W. (xaverW)&#10;&#10;Weitere Beteiligte:&#10;siedlerchr&#10;styrol&#10;zxsd&#10;siedlerchr&#10;apoleon&#10;hostis&#10;pmshell&#10;clel&#10;thausherr" BorderPane.alignment="CENTER" />
+                                <TextArea editable="false" text="Gründer des Programms:&#10;Xaver W. (xaverW)&#10;&#10;Weitere Beteiligte:&#10;siedlerchr&#10;styrol&#10;zxsd&#10;apoleon&#10;hostis&#10;pmshell&#10;clel&#10;thausherr" BorderPane.alignment="CENTER" />
                             </center>
                         </BorderPane>
                     </Tab>
