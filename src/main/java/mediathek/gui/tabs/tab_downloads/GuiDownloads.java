@@ -1024,7 +1024,7 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * Don´t know why this is actually called...
      */
-    private synchronized void sortDownloadListByTableRows()
+    public synchronized void sortDownloadListByTableRows()
     {
         final var rowCount = tabelle.getRowCount();
         final var tableModel = tabelle.getModel();
