@@ -1021,23 +1021,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    /**
-     * Don´t know why this is actually called...
-     */
-    public synchronized void sortDownloadListByTableRows()
-    {
-        final var rowCount = tabelle.getRowCount();
-        final var tableModel = tabelle.getModel();
-        final var listeDownloads = daten.getListeDownloads();
-
-        //Liste in der Reihenfolge wie in der Tabelle sortieren
-        for (int i = 0; i < rowCount; ++i) {
-            DatenDownload datenDownload = (DatenDownload) tableModel.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-            listeDownloads.remove(datenDownload);
-            listeDownloads.add(datenDownload);
-        }
-    }
-
     private @NotNull List<DatenDownload> addAllDownloadsToList()
     {
         final var rowCount = tabelle.getRowCount();
@@ -1073,7 +1056,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
-        sortDownloadListByTableRows();
+        tabelle.sortDownloadListByTableRows();
         final var allDownloadsList = addAllDownloadsToList();
 
         // ========================
@@ -1142,7 +1125,7 @@ public class GuiDownloads extends AGuiTabPanel {
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (starten && processAllDownloads) {
-            sortDownloadListByTableRows();
+            tabelle.sortDownloadListByTableRows();
         }
 
         // ==========================

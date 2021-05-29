@@ -17,9 +17,6 @@ import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 
 public class MVDownloadsTable extends ASelectableMVTable {
-    private static final long serialVersionUID = 6933494912098350123L;
-    private final Daten daten = Daten.getInstance();
-
     @Override
     protected void setupTableType() {
         maxSpalten = DatenDownload.MAX_ELEM;
@@ -53,40 +50,35 @@ public class MVDownloadsTable extends ASelectableMVTable {
         reihe[i] = i;
         breite[i] = 200;
         switch (i) {
-            case DatenDownload.DOWNLOAD_NR:
-            case DatenDownload.DOWNLOAD_FILM_NR:
-                breite[i] = 75;
-                break;
-            case DatenDownload.DOWNLOAD_BUTTON_START:
-            case DatenDownload.DOWNLOAD_BUTTON_DEL:
-            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
-            case DatenDownload.DOWNLOAD_UNTERBROCHEN:
-            case DatenDownload.DOWNLOAD_SPOTLIGHT:
-            case DatenDownload.DOWNLOAD_SUBTITLE:
-            case DatenDownload.DOWNLOAD_INFODATEI:
-            case DatenDownload.DOWNLOAD_HD:
-            case DatenDownload.DOWNLOAD_UT:
-                breite[i] = 50;
-                break;
-            case DatenDownload.DOWNLOAD_TITEL:
-                breite[i] = 250;
-                break;
-            case DatenDownload.DOWNLOAD_ABO:
-            case DatenDownload.DOWNLOAD_THEMA:
-                breite[i] = 150;
-                break;
-            case DatenDownload.DOWNLOAD_DATUM:
-            case DatenDownload.DOWNLOAD_ZEIT:
-            case DatenDownload.DOWNLOAD_GROESSE:
-            case DatenDownload.DOWNLOAD_BANDBREITE:
-            case DatenDownload.DOWNLOAD_SENDER:
-            case DatenDownload.DOWNLOAD_PROGRESS:
-            case DatenDownload.DOWNLOAD_RESTZEIT:
-            case DatenDownload.DOWNLOAD_DAUER:
-            case DatenDownload.DOWNLOAD_GEO:
-                breite[i] = 100;
-                break;
+            case DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_FILM_NR -> breite[i] = 75;
+            case DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
+                    DatenDownload.DOWNLOAD_PROGRAMM_RESTART, DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER,
+                    DatenDownload.DOWNLOAD_UNTERBROCHEN, DatenDownload.DOWNLOAD_SPOTLIGHT,
+                    DatenDownload.DOWNLOAD_SUBTITLE, DatenDownload.DOWNLOAD_INFODATEI,
+                    DatenDownload.DOWNLOAD_HD, DatenDownload.DOWNLOAD_UT -> breite[i] = 50;
+            case DatenDownload.DOWNLOAD_TITEL -> breite[i] = 250;
+            case DatenDownload.DOWNLOAD_ABO, DatenDownload.DOWNLOAD_THEMA -> breite[i] = 150;
+            case DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT, DatenDownload.DOWNLOAD_GROESSE,
+                    DatenDownload.DOWNLOAD_BANDBREITE, DatenDownload.DOWNLOAD_SENDER, DatenDownload.DOWNLOAD_PROGRESS,
+                    DatenDownload.DOWNLOAD_RESTZEIT, DatenDownload.DOWNLOAD_DAUER,
+                    DatenDownload.DOWNLOAD_GEO -> breite[i] = 100;
+        }
+    }
+
+    /**
+     * Don´t know exactly why this is actually called or needed...
+     * but it sorts the list of downloads to be the same as the view order of this table.
+     */
+    public synchronized void sortDownloadListByTableRows()
+    {
+        final var rowCount = getRowCount();
+        final var tableModel = getModel();
+        final var listeDownloads = Daten.getInstance().getListeDownloads();
+
+        for (int i = 0; i < rowCount; ++i) {
+            DatenDownload datenDownload = (DatenDownload) tableModel.getValueAt(convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+            listeDownloads.remove(datenDownload);
+            listeDownloads.add(datenDownload);
         }
     }
 
@@ -94,36 +86,23 @@ public class MVDownloadsTable extends ASelectableMVTable {
     protected void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (i) {
-                case DatenDownload.DOWNLOAD_FILM_URL:
-                case DatenDownload.DOWNLOAD_URL_RTMP:
-                case DatenDownload.DOWNLOAD_URL_SUBTITLE:
-                case DatenDownload.DOWNLOAD_PROGRAMM:
-                case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF:
-                case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY:
-                case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-                case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
-                case DatenDownload.DOWNLOAD_ZIEL_DATEINAME:
-                case DatenDownload.DOWNLOAD_ZIEL_PFAD:
-                case DatenDownload.DOWNLOAD_ART:
-                case DatenDownload.DOWNLOAD_QUELLE:
-                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
-                case DatenDownload.DOWNLOAD_HISTORY_URL:
-                case DatenDownload.DOWNLOAD_REF:
-                case DatenDownload.DOWNLOAD_SPOTLIGHT:
-                case DatenDownload.DOWNLOAD_INFODATEI:
-                case DatenDownload.DOWNLOAD_SUBTITLE:
-                case DatenDownload.DOWNLOAD_UNTERBROCHEN:
-                    breite[i] = 0;
-                    break;
+                case DatenDownload.DOWNLOAD_FILM_URL, DatenDownload.DOWNLOAD_URL_RTMP,
+                        DatenDownload.DOWNLOAD_URL_SUBTITLE, DatenDownload.DOWNLOAD_PROGRAMM,
+                        DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY,
+                        DatenDownload.DOWNLOAD_PROGRAMM_RESTART, DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER,
+                        DatenDownload.DOWNLOAD_ZIEL_DATEINAME, DatenDownload.DOWNLOAD_ZIEL_PFAD,
+                        DatenDownload.DOWNLOAD_ART, DatenDownload.DOWNLOAD_QUELLE, DatenDownload.DOWNLOAD_ZURUECKGESTELLT,
+                        DatenDownload.DOWNLOAD_HISTORY_URL, DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_SPOTLIGHT,
+                        DatenDownload.DOWNLOAD_INFODATEI, DatenDownload.DOWNLOAD_SUBTITLE,
+                        DatenDownload.DOWNLOAD_UNTERBROCHEN -> breite[i] = 0;
             }
         }
     }
 
     private class TableRowTransferHandlerDownload extends TransferHandler {
-        private static final long serialVersionUID = -2351971599010859779L;
         private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
         private final JTable table;
-        private int[] transferedRows = null;
+        private int[] transferedRows;
 
         public TableRowTransferHandlerDownload(JTable table) {
             this.table = table;
@@ -181,15 +160,11 @@ public class MVDownloadsTable extends ASelectableMVTable {
         private void reorder(int index, int[] rowFrom) {
             getSelected();
 
-            final TModel tModel = (TModelDownload) getModel();
+            final var daten = Daten.getInstance();
+            final var tModel = (TModelDownload) getModel();
             // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
-            for (int i = 0; i < getRowCount(); ++i) {
-                DatenDownload d = ((DatenDownload) tModel.getValueAt(convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF));
-                if (d != null) {
-                    daten.getListeDownloads().remove(d);
-                    daten.getListeDownloads().add(d);
-                }
-            }
+            sortDownloadListByTableRows();
+
             // Downloads zum Verschieben suchen
             ArrayList<DatenDownload> liste = new ArrayList<>();
             for (int row : rowFrom) {
@@ -200,7 +175,8 @@ public class MVDownloadsTable extends ASelectableMVTable {
                 liste.add(d);
                 daten.getListeDownloads().remove(d);
             }
-            // an der richtigen Stellei einfügen
+
+            // an der richtigen Stelle einfügen
             daten.getListeDownloads().addAll(index, liste);
             // die Tabellensortierung löschen, die wird jetzt mit der Liste wieder gefüllt
             getRowSorter().setSortKeys(null);
