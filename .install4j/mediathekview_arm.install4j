@@ -33,7 +33,7 @@
   <launchers>
     <launcher name="mediathekview arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
