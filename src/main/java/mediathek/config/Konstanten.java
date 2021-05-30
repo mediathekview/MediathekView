@@ -47,6 +47,7 @@ public class Konstanten {
     public static final short MAX_NUM_BACKUP_FILE_COPIES = 5;
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
+    public static final byte MAX_EXTERNAL_STARTS = 3;
     public static final byte CONTINUE_DOWNLOAD = 60; //seconds
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
