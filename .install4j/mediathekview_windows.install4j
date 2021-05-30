@@ -28,7 +28,7 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
