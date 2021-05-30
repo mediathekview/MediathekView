@@ -40,6 +40,7 @@ import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -48,6 +49,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Main {
@@ -491,7 +493,32 @@ public class Main {
             //TODO replace with JavaFX dialog!!
             var dialog = new DialogStarteinstellungen(null);
             dialog.setVisible(true);
-            dialog.toFront();
+            if (dialog.getResultCode() == DialogStarteinstellungen.ResultCode.CANCELLED)
+            {
+                //show termination dialog
+                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Einrichtung des Programms abgebrochen");
+                    alert.setContentText("Sie haben die Einrichtung des Programms abgebrochen.\n" +
+                            "MediathekView muss deswegen beendet werden.");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.showAndWait();
+                });
+
+                //delete directory
+                try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            //.peek(System.out::println)
+                            .forEach(File::delete);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                System.exit(1);
+            }
             MVConfig.loadSystemParameter();
         }
     }
