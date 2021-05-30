@@ -245,7 +245,7 @@ public class BookmarkNoteDialog implements Initializable
                             }
                         }
 
-                        if (a.length() > 0) {
+                        if (!a.isEmpty()) {
                             // 2.) use regex to extract date
                             for (int k = 0; k < DATE_PATTERNS.length; k++) {
                                 if (DATE_PATTERNS[k] == null) {   // compile pattern only once!

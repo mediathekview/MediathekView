@@ -1134,7 +1134,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (!starten) {
             // dann das Starten von neuen Downloads etwas Pausieren
-            daten.starterClass.delayNewStarts();
+            daten.getStarterClass().delayNewStarts();
         }
 
         // ========================
@@ -1515,7 +1515,7 @@ public class GuiDownloads extends AGuiTabPanel {
                                     filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
                                     filmDownload.setUrlKlein("");
                                     // und starten
-                                    daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                    daten.getStarterClass().urlMitProgrammStarten(gruppe, filmDownload, "");
                                 }
                                 catch (CloneNotSupportedException ex) {
                                     logger.error("Cloning is not supported", ex);

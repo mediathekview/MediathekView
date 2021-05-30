@@ -1,6 +1,7 @@
 package mediathek.tool;
 
 public enum ShutdownState {
+    TERMINATE_STARTER_THREAD("Downloadthread beenden..."),
     SHUTDOWN_NOTIFICATION_CENTER("Native Benachrichtigungen beenden..."),
     SHUTDOWN_THREAD_POOL("Beende Threadpools..."),
     PERFORM_SEEN_HISTORY_MAINTENANCE("Führe Wartung an der Download-Historie durch..."),

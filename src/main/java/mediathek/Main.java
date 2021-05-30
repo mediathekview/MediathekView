@@ -47,8 +47,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -241,9 +239,7 @@ public class Main {
     }
 
     private static void printVersionInformation() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-        logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
+        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Log.startZeit));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         logger.info("=== Java Information ===");

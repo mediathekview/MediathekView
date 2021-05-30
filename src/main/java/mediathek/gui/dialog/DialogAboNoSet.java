@@ -51,8 +51,8 @@ public class DialogAboNoSet extends JDialog {
     private void initComponents() {
         var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
-        jLabelIcon = new JLabel();
-        panel1 = new JPanel();
+        var jLabelIcon = new JLabel();
+        var panel1 = new JPanel();
         jButtonImport = new JButton();
         jButtonOk = new JButton();
 
@@ -108,8 +108,6 @@ public class DialogAboNoSet extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JTextArea jTextArea1;
-    private JLabel jLabelIcon;
-    private JPanel panel1;
     private JButton jButtonImport;
     private JButton jButtonOk;
     // End of variables declaration//GEN-END:variables

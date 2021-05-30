@@ -624,7 +624,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
             filmSelection.ifPresent(
-                    film -> daten.starterClass.urlMitProgrammStarten(pSet, film, aufloesung));
+                    film -> daten.getStarterClass().urlMitProgrammStarten(pSet, film, aufloesung));
         }
     }
 

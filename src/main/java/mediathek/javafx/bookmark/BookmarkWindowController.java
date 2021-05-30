@@ -677,7 +677,7 @@ public class BookmarkWindowController implements Initializable {
   private static final String ALERT_TITLE = "Merkliste";
 
   private void playAction(BookmarkData data) {
-    Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
+    Daten.getInstance().getStarterClass().urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
     tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
     tbBookmarks.getSelectionModel().select(data);
   }
