@@ -1,6 +1,7 @@
 <u>**13.8**</u>
 
 - **Java wurde auf Version 16 aktualisiert.**
+- **MediathekView verwendet eine neue Speicherverwaltung für die 64bit Programmversionen.** *Die Nutzung der vmoptions-Datei wird damit hinfällig.* Das Programm reserviert nun per Default maximal 50% des vorhandenen Arbeitspeichers und sorgt dafür dass zu jeder Zeit nur der wirklich notwendige Speicher belegt wird. Im Endeffekt verbraucht MediathekView nun deutlich weniger RAM über die Laufzeit als es bisher der Fall war, hat aber die Chance bei Bedarf kurzfristig mehr Speicher als bisher anzufordern. **Dies funktioniert nur mit den offiziellen MediathekView Packages.** Bei nicht-offizieller Anpassung der Startskripte muss darauf geachtet werden das **kein Oracle JDK** verwendet wird. Der neue Garbage Collector wird von Oracle nicht unterstützt. *Es wird empfohlen die vmoptions-Datei nicht mehr zu verwenden.*
 - **macOS:** MediathekView funktioniert in Zusammenarbeit mit **AltTab v6.15.1 und neuer.** In Zusammenarbeit mit dem Entwickler konnte eine Lösung für das Problem gefunden werden.**Die Nutzung des offiziellen App-Bundle ist dafür zwingend erforderlich!**
 - **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
 - **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben. Ansonsten wird sie gelöscht.
