@@ -1,6 +1,7 @@
 package mediathek.controller.starter;
 
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
@@ -129,7 +130,7 @@ public class ExternalProgramDownload extends Thread {
                                     filesize = file.length();
                                     stat = STAT_START;
                                 } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                    if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                    if (start.startcounter < Konstanten.MAX_EXTERNAL_STARTS) {
                                         // dann nochmal von vorne
                                         stat = STAT_START;
                                     } else {

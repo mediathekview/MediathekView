@@ -20,7 +20,6 @@
 package mediathek.controller.starter;
 
 import mediathek.controller.MVBandwidthCountingInputStream;
-import mediathek.tool.datum.Datum;
 
 import java.time.LocalDateTime;
 
@@ -39,12 +38,7 @@ public class Start {
     public boolean beginnAnschauen = false;
     public int countRestarted = 0;
 
-    /**
-     * legacy start time object. do not use in further development. use newStartZeit
-     */
-    @Deprecated
-    public Datum startZeit;
-    public LocalDateTime newStartZeit;
+    public LocalDateTime startTime;
     public long restSekunden = -1;
     public MVBandwidthCountingInputStream mVBandwidthCountingInputStream = null;
     // Stati
@@ -52,16 +46,9 @@ public class Start {
     public static final byte STATUS_RUN = 2;
     public static final byte STATUS_FERTIG = 3;
     public static final byte STATUS_ERR = 4;
-    //Download wird so oft gestartet, falls er beim ersten Mal nicht anspringt
-    public static final int STARTCOUNTER_MAX = 3;
-
-    public Start() {
-    }
 
     public static String getTextProgress(boolean dManager, Start s) {
         String ret = "";
-//        boolean dManager = download.isDownloadManager();
-//        Start s = download.start;
         if (s == null) {
             return ret;
         }

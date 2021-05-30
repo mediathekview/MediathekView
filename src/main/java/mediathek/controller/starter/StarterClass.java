@@ -12,7 +12,6 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
-import mediathek.tool.datum.Datum;
 import mediathek.tool.notification.MessageType;
 import mediathek.tool.notification.NotificationMessage;
 import org.apache.commons.io.FileUtils;
@@ -108,7 +107,7 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.newStartZeit));
+        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.startTime));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
@@ -149,10 +148,10 @@ public class StarterClass {
         }
 
         final var endZeit = LocalDateTime.now();
-        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.newStartZeit));
+        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.startTime));
         text.add("Endzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(endZeit));
         text.add("Restarts: " + start.countRestarted);
-        text.add("Dauer: " + Duration.between(start.newStartZeit, endZeit).toSeconds() + " s");
+        text.add("Dauer: " + Duration.between(start.startTime, endZeit).toSeconds() + " s");
 
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
@@ -361,8 +360,7 @@ public class StarterClass {
          * @param datenDownload The {@link mediathek.daten.DatenDownload} info object for download.
          */
         private void launchDownloadThread(DatenDownload datenDownload) {
-            datenDownload.start.startZeit = new Datum();
-            datenDownload.start.newStartZeit = LocalDateTime.now();
+            datenDownload.start.startTime = LocalDateTime.now();
             MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
 
             Thread downloadThread;
