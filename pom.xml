@@ -85,7 +85,7 @@
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
-        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+        <junit.jupiter.version>5.7.2</junit.jupiter.version>
         <javafx.version>16</javafx.version>
         <picocli.version>4.6.1</picocli.version>
         <miglayout.version>11.0</miglayout.version>
