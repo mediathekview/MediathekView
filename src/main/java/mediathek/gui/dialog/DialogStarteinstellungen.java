@@ -12,6 +12,8 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static mediathek.tool.Functions.getOs;
 
@@ -25,7 +27,6 @@ public class DialogStarteinstellungen extends JDialog {
         super(parent, true);
         parentComponent = parent;
         initComponents();
-        this.setTitle("Erster Start");
 
         jButtonStandard.addActionListener(e -> weiter());
         jButtonAnpassen.addActionListener(e -> {
@@ -50,6 +51,13 @@ public class DialogStarteinstellungen extends JDialog {
             jButtonStandard.setEnabled(false);
             anpassen = true;
         }
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                toFront();
+            }
+        });
     }
 
     private void createLayout() {
@@ -86,14 +94,29 @@ public class DialogStarteinstellungen extends JDialog {
         weiter();
     }
 
+    public enum ResultCode {
+        SUCCESS,
+        CANCELLED
+    }
+
+    public ResultCode getResultCode() {
+        if ( status != State.FERTIG)
+            return ResultCode.CANCELLED;
+        else
+        return ResultCode.SUCCESS;
+    }
+
     private void statusPfade() {
         // erst Programmpfad prüfen
         jButtonAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
+        boolean search_ffmpeg;
         switch (getOs()) {
-            case MAC, WIN32, WIN64 -> jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /*ffmpeg*/));
-            default -> jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /*ffmpeg*/));
+            case MAC, WIN32, WIN64 -> search_ffmpeg = false;
+            default -> search_ffmpeg = true;
         }
+        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true, search_ffmpeg));
+
         status = State.PSET;
         jButtonStandard.setText("Weiter");
     }
@@ -143,6 +166,7 @@ public class DialogStarteinstellungen extends JDialog {
         jPanelExtra = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Erster Start");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 3));
 
