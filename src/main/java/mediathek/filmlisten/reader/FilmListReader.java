@@ -446,8 +446,9 @@ public class FilmListReader implements AutoCloseable {
      * @param source     source url as string
      * @param listeFilme the list to read to
      */
+    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     private void processFromWeb(URL source, ListeFilme listeFilme) {
-        final String clientId = Konstanten.MVVERSION.toString() + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
+        final String clientId = Konstanten.MVVERSION + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
 
         final Request request = new Request.Builder()
                 .url(source)

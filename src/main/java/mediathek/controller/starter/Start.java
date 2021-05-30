@@ -22,6 +22,8 @@ package mediathek.controller.starter;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.tool.datum.Datum;
 
+import java.time.LocalDateTime;
+
 public class Start {
 
     public static final int PROGRESS_NICHT_GESTARTET = -1;
@@ -37,7 +39,12 @@ public class Start {
     public boolean beginnAnschauen = false;
     public int countRestarted = 0;
 
-    public Datum startZeit = null;
+    /**
+     * legacy start time object. do not use in further development. use newStartZeit
+     */
+    @Deprecated
+    public Datum startZeit;
+    public LocalDateTime newStartZeit;
     public long restSekunden = -1;
     public MVBandwidthCountingInputStream mVBandwidthCountingInputStream = null;
     // Stati

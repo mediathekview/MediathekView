@@ -947,6 +947,10 @@ public class MediathekGui extends JFrame {
         ShutdownDialog dialog = new ShutdownDialog(this);
         dialog.show();
 
+        // stop the download thread
+        dialog.setStatusText(ShutdownState.TERMINATE_STARTER_THREAD);
+        daten.getStarterClass().getStarterThread().interrupt();
+
         dialog.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
         closeNotificationCenter();
 

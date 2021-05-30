@@ -66,7 +66,7 @@ public class Daten {
     private final BookmarkDataList listeBookmarkList;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
-    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private INotificationCenter notificationCenter;
     /**
      * erfolgreich geladene Abos.
@@ -136,6 +136,10 @@ public class Daten {
      */
     public static Path getBookmarkFilePath() {
         return StandardLocations.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
+    }
+
+    public StarterClass getStarterClass() {
+        return starterClass;
     }
 
     /**
@@ -328,7 +332,7 @@ public class Daten {
                         alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
                         alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                                 + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                                + StandardLocations.getSettingsDirectory().toString() + '\n'
+                                + StandardLocations.getSettingsDirectory() + '\n'
                                 + "von Hand löschen und dann das Programm wieder starten.\n\n"
                                 + "Im Forum erhalten Sie weitere Hilfe.");
                         JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
