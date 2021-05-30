@@ -92,7 +92,7 @@
         <log4j2.version>2.14.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
         <okhttp.version>4.9.1</okhttp.version>
-        <jackson.version>2.11.4</jackson.version>
+        <jackson.version>2.12.3</jackson.version>
 
         <mainclass>mediathek.Main</mainclass>
         <!-- AdopOpenJDK is used for Windows and Linux 64bit -->
@@ -103,7 +103,7 @@
         <install4j.home>./install4j9.0.2</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
-        <kotlin.version>1.5.0</kotlin.version>
+        <kotlin.version>1.5.10</kotlin.version>
     </properties>
 
     <dependencies>
