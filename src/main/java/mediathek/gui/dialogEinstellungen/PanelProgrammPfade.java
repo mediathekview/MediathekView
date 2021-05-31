@@ -18,9 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class PanelProgrammPfade extends JPanel {
-    public JDialog dialog = null;
+    public JDialog dialog;
     private final boolean vlc, ffmpeg;
     private final JFrame parentComponent;
     private static final Logger logger = LogManager.getLogger();

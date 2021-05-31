@@ -95,10 +95,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
     private static final String ACTION_MAP_KEY_MAERK_AS_UNSEEN = "unseen";
     private static final String ACTION_MAP_KEY_START_DOWNLOAD = "dl_start";
-    private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
-            DatenDownload.DOWNLOAD_BUTTON_DEL,
-            DatenDownload.DOWNLOAD_REF,
-            DatenDownload.DOWNLOAD_URL_RTMP};
+    private final static int[] COLUMNS_DISABLED = {DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
+            DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_URL_RTMP};
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
     private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
             + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
