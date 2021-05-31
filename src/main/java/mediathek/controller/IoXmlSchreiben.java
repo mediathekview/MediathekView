@@ -216,7 +216,7 @@ public class IoXmlSchreiben {
     }
 
     public synchronized void writeConfigurationFile(Path xmlFilePath) {
-        logger.info("Daten Schreiben nach: {}", xmlFilePath.toString());
+        logger.debug("Daten Schreiben nach: {}", xmlFilePath.toString());
         xmlDatenSchreiben(xmlFilePath);
     }
 
@@ -227,21 +227,21 @@ public class IoXmlSchreiben {
         ) {
             XMLStreamWriter writer = outFactory.createXMLStreamWriter(out);
             logger.info("Pset exportieren nach: {}", xmlFilePath.toString());
-            logger.info("Start Schreiben nach: {}", xmlFilePath.toAbsolutePath());
+            logger.debug("Start Schreiben nach: {}", xmlFilePath.toAbsolutePath());
 
             writeFileHeader(writer);
 
             xmlSchreibenPset(writer, pSet);
 
             writeFileEnd(writer);
-            logger.info("geschrieben!");
+            logger.debug("geschrieben!");
         } catch (Exception ex) {
             logger.error("nach {}", datei, ex);
         }
     }
 
     private void xmlDatenSchreiben(Path xmlFilePath) {
-        logger.info("Config Schreiben nach: {} startet", xmlFilePath.toAbsolutePath());
+        logger.debug("Config Schreiben nach: {} startet", xmlFilePath.toAbsolutePath());
 
         try (OutputStream os = Files.newOutputStream(xmlFilePath);
              OutputStreamWriter out = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
@@ -265,7 +265,7 @@ public class IoXmlSchreiben {
 
             writeFileEnd(writer);
 
-            logger.info("Config Schreiben beendet");
+            logger.debug("Config Schreiben beendet");
         } catch (Exception ex) {
             logger.error("xmlDatenSchreiben", ex);
         }

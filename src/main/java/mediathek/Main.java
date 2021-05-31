@@ -94,13 +94,13 @@ public class Main {
     }
 
     private static void printJvmParameters() {
-        logger.info("=== JavaVM Parameter ===");
+        logger.debug("=== JavaVM Parameter ===");
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         var jvmArgs = runtimeMXBean.getInputArguments();
         for (var arg : jvmArgs) {
-            System.out.println(arg);
+            logger.debug(arg);
         }
-        logger.info("========================");
+        logger.debug("========================");
     }
 
     private static void printArguments(final String... aArguments) {
