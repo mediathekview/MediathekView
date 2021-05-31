@@ -74,11 +74,11 @@ public class GuiFilme extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein";
     private static final String ACTION_MAP_KEY_MARK_SEEN = "seen";
     private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
-    private static final int[] HIDDEN_COLUMNS =
-            new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN};
+    private static final int[] HIDDEN_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
+            DatenFilm.FILM_MERKEN};
     private static final Logger logger = LogManager.getLogger(GuiFilme.class);
-    private static final int[] BUTTON_COLUMNS =
-            new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN};
+    private static final int[] BUTTON_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
+            DatenFilm.FILM_MERKEN};
     public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     public final FilterFilmAction filterFilmAction = new FilterFilmAction();
     public final PlayFilmAction playAction = new PlayFilmAction();

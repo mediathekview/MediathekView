@@ -39,7 +39,7 @@ public class SplashScreen {
     @FXML
     private ProgressBar progressBar;
 
-    private double curSteps = 0d;
+    private double curSteps;
     private Stage window;
 
     /**
