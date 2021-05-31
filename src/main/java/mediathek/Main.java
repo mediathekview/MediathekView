@@ -500,8 +500,9 @@ public class Main {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle(Konstanten.PROGRAMMNAME);
                     alert.setHeaderText("Einrichtung des Programms abgebrochen");
-                    alert.setContentText("Sie haben die Einrichtung des Programms abgebrochen.\n" +
-                            "MediathekView muss deswegen beendet werden.");
+                    alert.setContentText("""
+                            Sie haben die Einrichtung des Programms abgebrochen.
+                            MediathekView muss deswegen beendet werden.""");
                     alert.initModality(Modality.APPLICATION_MODAL);
                     alert.showAndWait();
                 });
