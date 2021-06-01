@@ -483,6 +483,9 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
+                            <args>
+                                <arg>-Xuse-ir</arg>
+                            </args>
                         </configuration>
                     </execution>
                     <execution>
@@ -495,8 +498,10 @@
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
+                            <args>
+                                <arg>-Xuse-ir</arg>
+                            </args>
                         </configuration>
-
                     </execution>
                 </executions>
                 <configuration>

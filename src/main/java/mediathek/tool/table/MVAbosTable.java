@@ -44,7 +44,8 @@ public class MVAbosTable extends MVTable {
                 || i == DatenAbo.ABO_PSET
                 || i == DatenAbo.ABO_MINDESTDAUER
                 || i == DatenAbo.ABO_MIN
-                || i == DatenAbo.ABO_DOWN_DATUM) {
+                || i == DatenAbo.ABO_DOWN_DATUM
+                || i == DatenAbo.ABO_REF){
             breite[i] = 0;
         }
     }
