@@ -209,9 +209,7 @@ class SeenHistoryController : AutoCloseable {
      */
     @Throws(SQLException::class)
     private fun writeToDatabase(film: DatenFilm) {
-        insertStatement!!.setString(1, film.thema)
-        insertStatement!!.setString(2, film.title)
-        insertStatement!!.setString(3, film.url)
+        insertStatement!!.setString(1, film.url)
         // write each entry into database
         insertStatement!!.executeUpdate()
     }
@@ -242,7 +240,7 @@ class SeenHistoryController : AutoCloseable {
 
     companion object {
         private val logger = LogManager.getLogger()
-        private const val INSERT_SQL = "INSERT INTO seen_history(thema,titel,url) values (?,?,?)"
+        private const val INSERT_SQL = "INSERT INTO seen_history(url) values (?)"
         private const val DELETE_SQL = "DELETE FROM seen_history WHERE url = ?"
         private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE url = ?"
     }
