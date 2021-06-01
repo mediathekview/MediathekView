@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
 class CreateNewAboAction(private val listeAbo: ListeAbo) : AbstractAction() {
-    override fun actionPerformed(e: ActionEvent) {
+    override fun actionPerformed(e: ActionEvent?) {
         listeAbo.addAbo("Neu", "", "", "")
     }
 

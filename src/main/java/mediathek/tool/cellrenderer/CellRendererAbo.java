@@ -46,6 +46,7 @@ public class CellRendererAbo extends CellRendererBase {
                         break;
                     case MINDESTDAUER:
                         setHorizontalAlignment(SwingConstants.CENTER);
+                        setText(Integer.toString(abo.getMindestDauerMinuten()));
                         break;
                     case MIN:
                         setHorizontalAlignment(SwingConstants.CENTER);
@@ -54,11 +55,31 @@ public class CellRendererAbo extends CellRendererBase {
                         else
                             setText("max");
                         break;
+                    case DOWN_DATUM:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        setText(abo.getDownDatum());
+                        break;
 
                     case SENDER:
                         if (((MVTable) table).showSenderIcons()) {
                             setSenderIcon(abo.getSender(), ((MVTable) table).useSmallSenderIcons);
                         }
+                        break;
+
+                    case THEMA_TITEL:
+                        setText(abo.getThemaTitel());
+                        break;
+
+                    case IRGENDWO:
+                        setText(abo.getIrgendwo());
+                        break;
+
+                    case ZIELPFAD:
+                        setText(abo.getZielpfad());
+                        break;
+
+                    case PSET:
+                        setText(abo.getPsetName());
                         break;
                 }
             });

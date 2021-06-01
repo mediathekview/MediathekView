@@ -17,7 +17,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.cellrenderer.CellRendererAbo;
-import mediathek.tool.datum.Datum;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
 import mediathek.tool.table.MVAbosTable;
@@ -31,8 +30,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
@@ -79,28 +76,17 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_SENDER] = null;
                 object[DatenAbo.ABO_THEMA] = null;
                 object[DatenAbo.ABO_TITEL] = null;
-                object[DatenAbo.ABO_THEMA_TITEL] = abo.getThemaTitel();
-                object[DatenAbo.ABO_IRGENDWO] = abo.getIrgendwo();
-                object[DatenAbo.ABO_MINDESTDAUER] = abo.getMindestDauerMinuten();
+                object[DatenAbo.ABO_THEMA_TITEL] = null;
+                object[DatenAbo.ABO_IRGENDWO] = null;
+                object[DatenAbo.ABO_MINDESTDAUER] = null;
                 object[DatenAbo.ABO_MIN] = null;
-                object[DatenAbo.ABO_ZIELPFAD] = abo.getZielpfad();
-                object[DatenAbo.ABO_DOWN_DATUM] = getDatumForObject(abo.getDownDatum());
-                object[DatenAbo.ABO_PSET] = abo.getPsetName();
+                object[DatenAbo.ABO_ZIELPFAD] = null;
+                object[DatenAbo.ABO_DOWN_DATUM] = null;
+                object[DatenAbo.ABO_PSET] = null;
                 object[DatenAbo.ABO_REF] = abo;
                 model.addRow(object);
             }
         }
-    }
-
-    private Datum getDatumForObject(String datum) {
-        Datum tmp = new Datum(0);
-        if (!datum.isEmpty()) {
-            try {
-                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
-            } catch (ParseException ignore) {
-            }
-        }
-        return tmp;
     }
 
     private void setupInfoPanel() {
@@ -150,13 +136,6 @@ public class ManageAboPanel extends JPanel {
         if (tabelle != null) {
             tabelle.tabelleNachDatenSchreiben();
         }
-    }
-
-    private void setCellRenderer() {
-        final CellRendererAbo cellRenderer = new CellRendererAbo();
-        tabelle.setDefaultRenderer(Object.class, cellRenderer);
-        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
-        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
     @Handler
@@ -218,7 +197,7 @@ public class ManageAboPanel extends JPanel {
     private void initListeners() {
         tabelle.setComponentPopupMenu(createContextMenu());
 
-        setCellRenderer();
+        tabelle.setDefaultRenderer(Object.class, new CellRendererAbo());
 
         tabelle.setModel(new TModelAbo(new Object[][]{}));
         tabelle.setLineBreak(false);
