@@ -7,6 +7,7 @@ import mediathek.daten.ListeFilme;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import java.awt.*;
@@ -194,6 +195,7 @@ public class GuiFunktionen {
      *
      * @return an InputEvent modifier based on operating system.
      */
+    @MagicConstant(flagsFromClass = java.awt.event.InputEvent.class)
     public static int getPlatformControlKey() {
         int result;
 
