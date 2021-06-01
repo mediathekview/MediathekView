@@ -35,23 +35,13 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 
-public class ListeAbo extends LinkedList<DatenAbo> {
+public class ListeAbo extends ArrayList<DatenAbo> {
     private static final String[] LEER = {""};
-    private static final Logger logger = LogManager.getLogger(ListeAbo.class);
-    private final Daten daten;
+    private static final Logger logger = LogManager.getLogger();
     private int nr;
 
-    public ListeAbo(Daten ddaten) {
-        daten = ddaten;
-    }
-
-    public void addAbo(String aboName) {
-        addAbo(aboName, "", "", "");
-    }
-
-    public void addAbo(String aboname, String filmSender, String filmThema, String filmTitel) {
+    private int parseMinSize() {
         int min;
         try {
             min = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE));
@@ -59,34 +49,28 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             min = 0;
             MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, "0");
         }
-
-        addAbo(filmSender, filmThema, filmTitel, "", "", min, true, aboname);
+        return min;
     }
 
-    public void addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, boolean min, String namePfad) {
+    public void addAbo(String aboname, String filmSender, String filmThema, String filmTitel) {
         //abo anlegen, oder false wenns schon existiert
-        namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/,
+        aboname = FilenameUtils.replaceLeerDateiname(aboname, false /*nur ein Ordner*/,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
 
         DatenAbo datenAbo = new DatenAbo();
-        datenAbo.setName(namePfad);
+        datenAbo.setName(aboname);
         datenAbo.setSender(filmSender);
         datenAbo.setThema(filmThema);
         datenAbo.setTitle(filmTitel);
-        datenAbo.setThemaTitel(filmThemaTitel);
-        datenAbo.setIrgendwo(irgendwo);
-        datenAbo.setMindestDauerMinuten(mindestdauer);
-        FilmLengthState state;
-        if (min)
-            state = FilmLengthState.MINIMUM;
-        else
-            state = FilmLengthState.MAXIMUM;
-        datenAbo.setFilmLengthState(state);
-        datenAbo.setZielpfad(namePfad);
+        datenAbo.setThemaTitel("");
+        datenAbo.setIrgendwo("");
+        datenAbo.setMindestDauerMinuten(parseMinSize());
+        datenAbo.setFilmLengthState(FilmLengthState.MINIMUM);
+        datenAbo.setZielpfad(aboname);
         datenAbo.setPsetName("");
 
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), datenAbo, false /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), datenAbo, false);
         dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.successful()) {
@@ -94,7 +78,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, Integer.toString(datenAbo.getMindestDauerMinuten())); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
-                sort();
+                Collections.sort(this);
             } else {
                 MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -119,32 +103,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         aenderungMelden();
     }
 
-    /**
-     * Get the number of abos which are active and used.
-     *
-     * @return num of used abos
-     */
-    public long activeAbos() {
-        return stream().filter(DatenAbo::isActive).count();
-    }
-
-    /**
-     * Get the number of abos which are created but offline.
-     *
-     * @return number of abos which are offline
-     */
-    public long inactiveAbos() {
-        return stream().filter(abo -> !abo.isActive()).count();
-    }
-
     public void aenderungMelden() {
         // Filmliste anpassen
-        setAboFuerFilm(daten.getListeFilme(), true);
+        setAboFuerFilm(Daten.getInstance().getListeFilme(), true);
         MessageBus.getMessageBus().publishAsync(new AboListChangedEvent());
-    }
-
-    public void sort() {
-        Collections.sort(this);
     }
 
     public ArrayList<String> getPfade() {

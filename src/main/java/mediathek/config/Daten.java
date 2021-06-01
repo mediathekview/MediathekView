@@ -85,7 +85,7 @@ public class Daten {
 
         listePset = new ListePset();
 
-        listeAbo = new ListeAbo(this);
+        listeAbo = new ListeAbo();
 
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
