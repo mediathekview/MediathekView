@@ -48,6 +48,7 @@ import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
+import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
@@ -57,6 +58,7 @@ import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -418,10 +420,8 @@ public class MediathekGui extends JFrame {
     private void loadFilmlist() {
         Platform.runLater(() -> {
             //don´t write filmlist when we are reading only...
-            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
-                Daten.dontWriteFilmlistOnStartup.set(false);
-            } else
-                Daten.dontWriteFilmlistOnStartup.set(true);
+            var writeCondition = !(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate());
+            Daten.dontWriteFilmlistOnStartup.set(writeCondition);
 
             FXProgressPane progressPane = new FXProgressPane();
 
@@ -1004,6 +1004,9 @@ public class MediathekGui extends JFrame {
             shutdownComputer();
         }
 
+        var byteCounter = MVHttpClient.getInstance().getByteCounter();
+        logger.trace("total data sent: {} MByte", (byteCounter.totalBytesWritten() / (float)FileUtils.ONE_MB));
+        logger.trace("total data received: {} MByte", (byteCounter.totalBytesRead() / (float)FileUtils.ONE_MB));
         System.exit(0);
 
         return false;
