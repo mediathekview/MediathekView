@@ -25,6 +25,7 @@
 - **BUGFIX:** Datum wird in unterschiedlichen Zeitzonen wieder korrekt dargestellt.
 - **BUGFIX:** Manuell angelegte Downloads werden nicht mehr automatisch gestartet wenn in *"Einstellungen/Erweitert"* der automatische Start von Abos ausgewählt wurde.
 - **BUGFIX(Linux):** RPM-Signaturfehler von install4j behoben.
+- **BUGFIX:** In der *history.db* wird nur noch die URL hinterlegt. Titel und Thema werden nicht mehr gespeichert da sie unnötig sind.**Die Datenbank ist kein Nachschlagewerk und soll auch nicht von Hand modifiziert werden!**
 
 <u>**13.7.1**</u>
 
