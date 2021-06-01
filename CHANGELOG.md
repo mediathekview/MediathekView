@@ -8,6 +8,7 @@
 - Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen. **Aufgrund der Größe der Filmlisten wird dies nicht empfohlen!**
 - Menüeintrag *"Downloads/Alle Downloads um xx:yy Uhr starten"* in *"Downloads/Alle Downloads zeitverzögert starten..."* umbenannt.
 - Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
+- Der Dialog *Bandbreitennutzung* zeigt nun sämtlichen verursachten Netzwerktraffic von MV an, nicht mehr nur Downloads.
 - **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
 - **FEATURE:** Die Sender-Website zu einem Film kann nun per Kontextmenü im Film-Tab an JDownloader übergeben werden.
 - **FEATURE:** In den PSets kann der Parameter `%w` genutzt werden, um die Sender-Website-URL des Films an ein Programm zu übergeben.

@@ -11,17 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
-import mediathek.config.Daten;
-import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
-import mediathek.daten.ListeDownloads;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
+import mediathek.tool.http.MVHttpClient;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,14 +39,13 @@ public class BandwidthMonitorController {
     private static final String CONFIG_Y = "bandwidth_monitor.y";
     private static final String CONFIG_HEIGHT = "bandwidth_monitor.height";
     private static final String CONFIG_WIDTH = "bandwidth_monitor.width";
-    private final ListeDownloads listeDownloads;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private JDialog hudDialog;
     private Timeline updateMemoryTimer;
     private Tile bandwidthTile;
     private JFXPanel fxPanel;
+
     public BandwidthMonitorController(JFrame parent) {
-        listeDownloads = Daten.getInstance().getListeDownloads();
         createDialog(parent);
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             fxPanel.setScene(new Scene(createTile()));
@@ -131,18 +128,12 @@ public class BandwidthMonitorController {
      * @return Used bandwidth in Megabits per second.
      */
     private double calculateBandwidthUsage() {
-        double bandwidth = 0d; // bytes per second
-        //only count running/active downloads and calc accumulated progress..
-        var activeDownloadList = listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
-        for (DatenDownload download : activeDownloadList) {
-            if (download.start != null && download.start.status == Start.STATUS_RUN) {
-                bandwidth += download.start.bandbreite;
-            }
-        }
-        activeDownloadList.clear();
+        var byteCounter = MVHttpClient.getInstance().getByteCounter();
+        double bandwidth = byteCounter.bytesRead();
+        byteCounter.resetCounters();
 
         //convert to MBits per second
-        bandwidth = bandwidth * 8d / 1000d / 1000d;
+        bandwidth = bandwidth * 8d / FileUtils.ONE_MB;
         if (bandwidth < 0d)
             bandwidth = 0d;
 
@@ -195,8 +186,13 @@ public class BandwidthMonitorController {
      * Show/hide bandwidth display. Take also care about the used timer.
      */
     public void setVisibility() {
-        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
-        hudDialog.setVisible(vis);
+        final var visible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE,false);
+        // reset counters before otherwise huge spikes will appear
+        if (visible) {
+            var byteCounter = MVHttpClient.getInstance().getByteCounter();
+            byteCounter.resetCounters();
+        }
+        hudDialog.setVisible(visible);
     }
 
     private class WriteConfigComponentListener extends ComponentAdapter {
