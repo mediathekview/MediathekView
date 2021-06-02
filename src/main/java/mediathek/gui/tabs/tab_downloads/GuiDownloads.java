@@ -60,7 +60,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -992,7 +991,7 @@ public class GuiDownloads extends AGuiTabPanel {
             var zeit = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
             ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
-            LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
+            List<MVUsedUrl> urlAboList = new ArrayList<>();
 
             for (DatenDownload datenDownload : arrayDownloads) {
                 if (dauerhaft) {
