@@ -137,7 +137,7 @@ public class AboHistoryController {
     }
 
     // eigener Thread!!
-    public synchronized void createLineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
+    public synchronized void createLineWriterThread(List<MVUsedUrl> mvuuList) {
         Thread t = new LineWriterThread(mvuuList);
         t.start();
     }
