@@ -505,7 +505,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         if (liste.size() > 1) {
             if (pSet == null) {
-                pSet = Daten.listePset.getListeSpeichern().getFirst();
+                pSet = Daten.listePset.getListeSpeichern().get(0);
             }
             DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
             damd.setVisible(true);
@@ -534,7 +534,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             if (standard) {
                 if (pSet == null) {
-                    pSet = Daten.listePset.getListeSpeichern().getFirst();
+                    pSet = Daten.listePset.getListeSpeichern().get(0);
                 }
                 datenDownload = new DatenDownload(
                         pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "",

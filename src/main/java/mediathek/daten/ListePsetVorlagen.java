@@ -21,13 +21,13 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static mediathek.tool.Functions.getOsString;
 
-public class ListePsetVorlagen extends LinkedList<String[]> {
+public class ListePsetVorlagen extends ArrayList<String[]> {
     public static final String BS_WIN_32 = "Windows-32Bit";
     public static final String BS_WIN_64 = "Windows-64Bit";
     public static final String BS_LINUX = "Linux";

@@ -21,11 +21,10 @@ package mediathek.daten;
 
 import mediathek.tool.models.TModel;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
-@SuppressWarnings("serial")
-public class ListeProg extends LinkedList<DatenProg> {
+public class ListeProg extends ArrayList<DatenProg> {
     public DatenProg remove(String name) {
         DatenProg ret = null;
         Iterator<DatenProg> it = this.iterator();
