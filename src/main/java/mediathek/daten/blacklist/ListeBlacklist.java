@@ -16,11 +16,10 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ListeBlacklist extends LinkedList<BlacklistRule> {
+public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
     private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();

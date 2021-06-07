@@ -35,7 +35,7 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler;
@@ -753,7 +753,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setExport() {
-        LinkedList<DatenPset> liste = new LinkedList<>();
+        ArrayList<DatenPset> liste = new ArrayList<>();
         int[] rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
@@ -765,7 +765,8 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
 
-            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
+            final var entryName = liste.get(0).arr[DatenPset.PROGRAMMSET_NAME];
+            String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));

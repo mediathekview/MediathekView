@@ -22,7 +22,7 @@ package mediathek.config;
 import mediathek.tool.MVC;
 
 import java.awt.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class MVColor {
 
@@ -60,7 +60,7 @@ public class MVColor {
     public static final MVC DOWNLOAD_DATEINAME_NEU = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_NEU, new Color(0, 140, 0), "Download, Dateiname ist neu");
     public static final MVC DOWNLOAD_DATEINAME_ALT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_ALT, new Color(0, 0, 200), "Download, Dateiname ist der alte");
 
-    public LinkedList<MVC> liste = new LinkedList<>();
+    public ArrayList<MVC> liste = new ArrayList<>();
     public static final int MVC_TEXT = 0;
     public static final int MVC_COLOR = 1;
     public static final int MVC_MAX = 2;

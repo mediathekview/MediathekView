@@ -720,7 +720,7 @@ public class BookmarkWindowController implements Initializable {
     stage.hide();
 
     SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
-      DatenPset pSet = Daten.listePset.getListeSpeichern().getFirst();
+      DatenPset pSet = Daten.listePset.getListeSpeichern().get(0);
       final var ui = MediathekGui.ui();
       DialogAddMoreDownload damd = new DialogAddMoreDownload(ui, pSet);
       damd.setLocationRelativeTo(ui);

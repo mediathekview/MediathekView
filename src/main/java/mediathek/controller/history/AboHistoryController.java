@@ -30,7 +30,7 @@ public class AboHistoryController {
      * The actual storage for all history data.
      * Will be written to file.
      */
-    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
+    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new ArrayList<>());
     private Path urlPath;
 
     public AboHistoryController() {

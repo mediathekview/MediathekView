@@ -155,6 +155,30 @@ public class MVFilmTable extends ASelectableMVTable {
         }
     }
 
+    private void reorderColumns()
+    {
+        final TableColumnModel model = getColumnModel();
+        var numCols = getColumnCount();
+        for (int i = 0; i < reihe.length && i < numCols; ++i) {
+            //move only when there are changes...
+            if (reihe[i] != i)
+                model.moveColumn(convertColumnIndexToView(reihe[i]), i);
+        }
+    }
+
+    private void restoreSortKeys()
+    {
+        if (listeSortKeys != null) {
+            var rowSorter = getRowSorter();
+            var tblSortKeys = rowSorter.getSortKeys();
+            if (!(listeSortKeys == tblSortKeys)) {
+                if (!listeSortKeys.isEmpty()) {
+                    rowSorter.setSortKeys(listeSortKeys);
+                }
+            }
+        }
+    }
+
     /**
      * Setzt die gemerkte Position der Spalten in der Tabelle wieder.
      * Ziemlich ineffizient!
@@ -165,25 +189,11 @@ public class MVFilmTable extends ASelectableMVTable {
         try {
             changeColumnWidth();
 
-            final TableColumnModel model = getColumnModel();
             changeColumnWidth2();
 
-            for (int i = 0; i < reihe.length && i < getColumnCount(); ++i) {
-                //move only when there are changes...
-                if (reihe[i] != i)
-                    model.moveColumn(convertColumnIndexToView(reihe[i]), i);
-            }
+            reorderColumns();
 
-            // restore sort keys
-            var rowSorter = getRowSorter();
-            var tblSortKeys = rowSorter.getSortKeys();
-            if (listeSortKeys != null) {
-                if (!(listeSortKeys == tblSortKeys)) {
-                    if (!listeSortKeys.isEmpty()) {
-                        rowSorter.setSortKeys(listeSortKeys);
-                    }
-                }
-            }
+            restoreSortKeys();
 
             setSelected();
 
