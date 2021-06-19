@@ -1150,6 +1150,13 @@ public class GuiFilme extends AGuiTabPanel {
             miCopyClipboardThema.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getThema()));
             mCopyToClipboard.add(miCopyClipboardThema);
 
+            var miCopyTitleThemaToClipboard = new JMenuItem("Thema - Titel");
+            miCopyTitleThemaToClipboard.addActionListener(e -> {
+                var text = film.getThema() + " - " + film.getTitle();
+                GuiFunktionen.copyToClipboard(text);
+            });
+            mCopyToClipboard.add(miCopyTitleThemaToClipboard);
+
             setupFilmUrlCopyToClipboardEntries(mCopyToClipboard, film);
 
             popupMenu.add(mCopyToClipboard);
