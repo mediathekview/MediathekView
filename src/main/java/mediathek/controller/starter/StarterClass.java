@@ -88,7 +88,7 @@ public class StarterClass {
                     Files.delete(path);
             }
         } catch (IOException ex) {
-            logger.error("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
+            logger.trace("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
         }
     }
 
