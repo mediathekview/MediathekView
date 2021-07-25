@@ -75,6 +75,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>15</java.version>
         <jdk.language.version>15</jdk.language.version>
         <kotlin.language.target>15</kotlin.language.target>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -526,8 +527,8 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>15</source>
-                    <target>15</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
