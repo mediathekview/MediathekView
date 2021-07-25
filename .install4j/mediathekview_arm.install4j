@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.2" transformSequenceNumber="9">
+<install4j version="9.0.4" transformSequenceNumber="9">
   <directoryPresets config="${project.basedir}/.install4j" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-armhf" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
@@ -31,14 +31,28 @@
     </entries>
   </files>
   <launchers>
-    <launcher name="mediathekview arm" id="323" menuName="MediathekView">
+    <launcher name="mediathekview_arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED">
+      <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.linux.32}">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <desktopFile>Categories=Network;FileTransfer</desktopFile>
+      <iconImageFiles>
+        <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x48.png" />
+        <file path="${project.basedir}/.install4j/MediathekView@x128.png" />
+      </iconImageFiles>
+    </launcher>
+    <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
+      <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.linux.32}" arguments="Einstellungen/.mediathek3">
+        <classPath>
+          <archive location="MediathekView.jar" failOnError="false" />
+        </classPath>
+      </java>
       <iconImageFiles>
         <file path="${project.basedir}/.install4j/MediathekView@x16.png" />
         <file path="${project.basedir}/.install4j/MediathekView@x32.png" />
@@ -1004,5 +1018,12 @@ return true;</property>
         </modules>
       </jreBundle>
     </linuxDeb>
+    <unixArchive name="Unix Archive ARM32" id="679">
+      <jreBundle platform="linux-arm32-vfp-hflt">
+        <modules>
+          <defaultModules set="all" />
+        </modules>
+      </jreBundle>
+    </unixArchive>
   </mediaSets>
 </install4j>
