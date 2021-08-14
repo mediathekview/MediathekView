@@ -7,6 +7,7 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -28,7 +29,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
 
-@SuppressWarnings("serial")
 public class DialogFilmBeschreibung extends JDialog {
     private static final String TITLE = "Beschreibung ändern";
 
@@ -75,7 +75,7 @@ public class DialogFilmBeschreibung extends JDialog {
                 pfad = p.getZielPfad();
             }
             if (pfad.isEmpty()) {
-                pfad = GuiFunktionen.getStandardDownloadPath();
+                pfad = StandardLocations.getStandardDownloadPath();
             }
 
             if (titel.isEmpty()) {

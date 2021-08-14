@@ -23,6 +23,7 @@ import javax.swing.JPopupMenu
 
 class JDownloadHelper {
     private val historyController = SeenHistoryController()
+
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
         val formBody: RequestBody = FormBody.Builder()
                 .add("urls", url.toString())
@@ -92,6 +93,21 @@ class JDownloadHelper {
                 mJD.add(miLow)
             }
             jPopupMenu.add(mJD)
+        }
+
+        val miWebsiteToJd = JMenuItem("Webseiten-URL an JDownloader übergeben")
+        miWebsiteToJd.addActionListener {
+            try {
+                val webSiteUrl = film.websiteLink.toHttpUrl()
+                downloadUrl(webSiteUrl, film)
+            }
+            catch (e: IllegalArgumentException) {
+                logger.error("Illegal Website URL found: {}", film.websiteLink)
+            }
+        }
+        jPopupMenu.add(miWebsiteToJd)
+        if (film.websiteLink.isBlank()) {
+            miWebsiteToJd.isEnabled = false
         }
     }
 

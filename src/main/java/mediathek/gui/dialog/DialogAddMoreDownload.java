@@ -2,7 +2,6 @@ package mediathek.gui.dialog;
 
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
@@ -22,7 +21,6 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.util.Objects;
 
-@SuppressWarnings("serial")
 public class DialogAddMoreDownload extends JDialog {
     public boolean addAll;
     public boolean cancel;
@@ -79,7 +77,7 @@ public class DialogAddMoreDownload extends JDialog {
         });
 
 
-        jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonDelPath.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{pSet.getZielPfad()}));

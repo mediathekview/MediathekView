@@ -8,7 +8,7 @@ class TrailerTeaserChecker {
      * Check if a string might belong to a trailer, teaser, etc.
      */
     fun check(content: String): Boolean {
-        val lTitel = content.toLowerCase()
+        val lTitel = content.lowercase()
         return containsTrailer(lTitel) || containsTeaser(lTitel) || containsVorschau(lTitel)
     }
 

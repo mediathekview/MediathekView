@@ -30,7 +30,7 @@ public class AboHistoryController {
      * The actual storage for all history data.
      * Will be written to file.
      */
-    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new LinkedList<>());
+    private final List<MVUsedUrl> listeUrlsSortDate = Collections.synchronizedList(new ArrayList<>());
     private Path urlPath;
 
     public AboHistoryController() {
@@ -137,7 +137,7 @@ public class AboHistoryController {
     }
 
     // eigener Thread!!
-    public synchronized void createLineWriterThread(LinkedList<MVUsedUrl> mvuuList) {
+    public synchronized void createLineWriterThread(List<MVUsedUrl> mvuuList) {
         Thread t = new LineWriterThread(mvuuList);
         t.start();
     }

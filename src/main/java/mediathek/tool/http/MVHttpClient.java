@@ -5,6 +5,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.dns.DnsSelector;
 import mediathek.tool.dns.IPvPreferenceMode;
 import okhttp3.Authenticator;
+import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +84,7 @@ public class MVHttpClient {
             }
             interceptor.level(level);
             builder.addInterceptor(interceptor);
-            logger.debug("HTTP Logging interceptor installed");
+            builder.connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS));
         }
 
         var config = ApplicationConfiguration.getConfiguration();

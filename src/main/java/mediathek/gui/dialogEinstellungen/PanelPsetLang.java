@@ -30,13 +30,12 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class PanelPsetLang extends PanelVorlage {
     private int neuZaehler;
@@ -136,13 +135,69 @@ public class PanelPsetLang extends PanelVorlage {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
         });
-        jButtonProgMinus.addActionListener(new BeobProgLoeschen());
-        jButtonProgDuplizieren.addActionListener(new BeobProgDuplizieren());
-        jButtonProgAuf.addActionListener(new BeobProgAufAb(true));
-        jButtonProgAb.addActionListener(new BeobProgAufAb(false));
+
+        jButtonProgMinus.addActionListener(e -> {
+            final int[] rows = tabelleProgramme.getSelectedRows();
+            if (rows.length > 0) {
+                DatenPset pSet = getPset();
+                String text;
+                if (rows.length == 1) {
+                    final int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
+                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
+                } else {
+                    text = rows.length + " Programme löschen?";
+                }
+                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+                if (ret == JOptionPane.OK_OPTION) {
+                    for (int i = rows.length - 1; i >= 0; --i) {
+                        final int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
+                        pSet.getListeProg().remove(delRow);
+                    }
+                    tabelleProgramme();
+                }
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
+
+        jButtonProgDuplizieren.addActionListener(e -> {
+            final int rows = tabelleProgramme.getSelectedRow();
+            if (rows != -1) {
+                int row = tabelleProgramme.convertRowIndexToModel(rows);
+                DatenProg prog = getPset().getListeProg().get(row);
+                progNeueZeile(prog.copy());
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
+
+        jButtonProgAuf.addActionListener(e -> progAufAb(true));
+        jButtonProgAb.addActionListener(e -> progAufAb(false));
+
         jButtonProgPfad.setEnabled(false);
-        jCheckBoxRestart.addActionListener(new BeobProgRestart());
-        jCheckBoxRemoteDownload.addActionListener(new BeobProgRemoteDownload());
+        jCheckBoxRestart.addActionListener(e -> {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
+                }
+            }
+        });
+        jCheckBoxRemoteDownload.addActionListener(e -> {
+            if (!stopBeob) {
+                final int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    final int modelIndex = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(modelIndex);
+                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), modelIndex, DatenProg.PROGRAMM_DOWNLOADMANAGER);
+                }
+            }
+        });
+
         //Pset
         jButtonAbspielen.addActionListener(e -> {
             jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
@@ -233,9 +288,20 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jButtonGruppeNeu.addActionListener(new BeobGruppeNeu());
-        jButtonGruppeLoeschen.addActionListener(new BeobGruppeLoeschen());
-        jButtonGruppeFarbe.addActionListener(new BeobachterFarbe());
+
+        jButtonGruppeNeu.addActionListener(e -> setNeu());
+        jButtonGruppeLoeschen.addActionListener(e -> setLoeschen());
+        jButtonGruppeFarbe.addActionListener(e -> {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
+                if (selectedColor != null) {
+                    pSet.setFarbe(selectedColor);
+                    tabellePset();
+                    notifyProgramSetChanged();
+                }
+            }
+        });
         jButtonGruppeStandardfarbe.addActionListener(l -> {
             DatenPset pSet = getPset();
             if (pSet != null) {
@@ -245,18 +311,31 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonGruppeAuf.addActionListener(new BeobGruppeAufAb(true));
-        jButtonGruppeAb.addActionListener(new BeobGruppeAufAb(false));
-        jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
-        jButtonExport.addActionListener(new BeobGruppeExport());
+        jButtonGruppeAuf.addActionListener(e -> setAufAb(true));
+        jButtonGruppeAb.addActionListener(e -> setAufAb(false));
+
+        jButtonGruppeDuplizieren.addActionListener(e -> {
+            final int row = tabellePset.getSelectedRow();
+            if (row != -1) {
+                var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
+                listePset.addPset(gruppe.copy());
+                tabellePset();
+                notifyProgramSetChanged();
+            } else {
+                NoSelectionErrorDialog.show();
+            }
+        });
+
+        jButtonExport.addActionListener(e -> setExport());
+
         jButtonGruppePfad.addActionListener(l -> {
             var initialFile = "";
-            if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
-                initialFile = jTextFieldGruppeZielPfad.getText();
+            if (!tfGruppeZielPfad.getText().isEmpty()) {
+                initialFile = tfGruppeZielPfad.getText();
             }
             var destDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Filme speichern unter", initialFile);
             if (destDirectory != null) {
-                jTextFieldGruppeZielPfad.setText(destDirectory.getAbsolutePath());
+                tfGruppeZielPfad.setText(destDirectory.getAbsolutePath());
             }
         });
 
@@ -265,29 +344,31 @@ public class PanelPsetLang extends PanelVorlage {
         jTextAreaSetBeschreibung.setComponentPopupMenu(handler2.getPopupMenu());
 
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
-        jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
-                new BeobDoc(jTextFieldGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT));
-        jTextFieldGruppeDirektPraefix.getDocument().addDocumentListener(
-                new BeobDoc(jTextFieldGruppeDirektPraefix, DatenPset.PROGRAMMSET_PRAEFIX_DIREKT));
-        jTextFieldGruppeZielName.getDocument().addDocumentListener(new BeobDoc(jTextFieldGruppeZielName,
-                DatenPset.PROGRAMMSET_ZIEL_DATEINAME));
-        jTextFieldGruppeZielPfad.getDocument().addDocumentListener(
-                new BeobDoc(jTextFieldGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD));
+        tfGruppeDirektSuffix.getDocument().addDocumentListener(
+                new BeobDoc(tfGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT, false));
+        tfGruppeDirektPraefix.getDocument().addDocumentListener(
+                new BeobDoc(tfGruppeDirektPraefix, DatenPset.PROGRAMMSET_PRAEFIX_DIREKT, false));
+
+        tfGruppeZielName.getDocument().addDocumentListener(new BeobDoc(tfGruppeZielName,
+                DatenPset.PROGRAMMSET_ZIEL_DATEINAME, false));
+
+        tfGruppeZielPfad.getDocument().addDocumentListener(
+                new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
         handler = new TextCopyPasteHandler<>(jTextFieldSetName);
         jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
 
-        handler = new TextCopyPasteHandler<>(jTextFieldGruppeDirektSuffix);
-        jTextFieldGruppeDirektSuffix.setComponentPopupMenu(handler.getPopupMenu());
+        handler = new TextCopyPasteHandler<>(tfGruppeDirektSuffix);
+        tfGruppeDirektSuffix.setComponentPopupMenu(handler.getPopupMenu());
 
-        handler = new TextCopyPasteHandler<>(jTextFieldGruppeDirektPraefix);
-        jTextFieldGruppeDirektPraefix.setComponentPopupMenu(handler.getPopupMenu());
+        handler = new TextCopyPasteHandler<>(tfGruppeDirektPraefix);
+        tfGruppeDirektPraefix.setComponentPopupMenu(handler.getPopupMenu());
 
-        handler = new TextCopyPasteHandler<>(jTextFieldGruppeZielName);
-        jTextFieldGruppeZielName.setComponentPopupMenu(handler.getPopupMenu());
+        handler = new TextCopyPasteHandler<>(tfGruppeZielName);
+        tfGruppeZielName.setComponentPopupMenu(handler.getPopupMenu());
 
-        handler = new TextCopyPasteHandler<>(jTextFieldGruppeZielPfad);
-        jTextFieldGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
+        handler = new TextCopyPasteHandler<>(tfGruppeZielPfad);
+        tfGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
 
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
@@ -489,10 +570,10 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
-            jTextFieldGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT]);
-            jTextFieldGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT]);
-            jTextFieldGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME]);
-            jTextFieldGruppeZielPfad.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD]);
+            tfGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT]);
+            tfGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT]);
+            tfGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME]);
+            tfGruppeZielPfad.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD]);
             jTextAreaSetBeschreibung.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG]);
 
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
@@ -520,10 +601,10 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSubtitle.setSelected(false);
             jCheckBoxSpotlight.setSelected(false);
             jTextFieldSetName.setText("");
-            jTextFieldGruppeDirektSuffix.setText("");
-            jTextFieldGruppeDirektPraefix.setText("");
-            jTextFieldGruppeZielName.setText("");
-            jTextFieldGruppeZielPfad.setText("");
+            tfGruppeDirektSuffix.setText("");
+            tfGruppeDirektPraefix.setText("");
+            tfGruppeZielName.setText("");
+            tfGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
             tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
@@ -558,11 +639,9 @@ public class PanelPsetLang extends PanelVorlage {
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
-        int row = tabelleProgramme.getSelectedRow();
-        boolean letzteZeile = false;
-        if (tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1) {
-            letzteZeile = true;
-        }
+        final int row = tabelleProgramme.getSelectedRow();
+        final boolean letzteZeile = tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1;
+
         jTextFieldProgPfad.setEnabled(row != -1);
         jTextFieldProgSchalter.setEnabled(row != -1);
         jTextFieldProgZielDateiName.setEnabled(row != -1);
@@ -674,7 +753,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setExport() {
-        LinkedList<DatenPset> liste = new LinkedList<>();
+        ArrayList<DatenPset> liste = new ArrayList<>();
         int[] rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
@@ -686,7 +765,8 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
 
-            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
+            final var entryName = liste.get(0).arr[DatenPset.PROGRAMMSET_NAME];
+            String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
@@ -730,40 +810,6 @@ public class PanelPsetLang extends PanelVorlage {
 
     }
 
-    private class BeobProgRestart implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
-                }
-            }
-
-        }
-    }
-
-    private class BeobProgRemoteDownload implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER);
-                }
-            }
-
-        }
-    }
-
     private class BeobProgDoc implements DocumentListener {
 
         @Override
@@ -805,35 +851,20 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-    private class BeobProgDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int rows = tabelleProgramme.getSelectedRow();
-            if (rows != -1) {
-                int row = tabelleProgramme.convertRowIndexToModel(rows);
-                DatenProg prog = getPset().getListeProg().get(row);
-                progNeueZeile(prog.copy());
-            } else {
-                NoSelectionErrorDialog.show();
-            }
-        }
-    }
-
     private class BeobDoc implements DocumentListener {
 
-        JTextField textfeld;
-        JTextArea textArea;
-        int nr;
+        private final JTextComponent textComponent;
+        private final int psetIndex;
+        private final boolean fireUpdate;
 
-        public BeobDoc(JTextField ttextfeld, int nnr) {
-            textfeld = ttextfeld;
-            nr = nnr;
+        public BeobDoc(JTextComponent comp, int psetIndex, boolean fireUpdate) {
+            this.psetIndex = psetIndex;
+            textComponent = comp;
+            this.fireUpdate = fireUpdate;
         }
 
-        public BeobDoc(JTextArea tt, int nnr) {
-            textArea = tt;
-            nr = nnr;
+        public BeobDoc(JTextComponent comp, int psetIndex) {
+            this(comp, psetIndex, true);
         }
 
         @Override
@@ -848,146 +879,29 @@ public class PanelPsetLang extends PanelVorlage {
 
         @Override
         public void changedUpdate(DocumentEvent arg0) {
-            eingabe();
+            //unused in plaintext components
         }
 
         private void eingabe() {
             if (!stopBeob) {
-                DatenPset datenPset;
-                int row = tabellePset.getSelectedRow();
+                final int row = tabellePset.getSelectedRow();
                 if (row != -1) {
-                    datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
                     stopBeob = true;
-                    if (textfeld != null) {
-                        datenPset.arr[nr] = textfeld.getText();
-                    } else {
-                        datenPset.arr[nr] = textArea.getText();
-                    }
-                    if (nr == DatenPset.PROGRAMMSET_NAME) {
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
+                    final int modelIndex = tabellePset.convertRowIndexToModel(row);
+                    var datenPset = listePset.get(modelIndex);
+                    datenPset.arr[psetIndex] = textComponent.getText();
+                    if (psetIndex == DatenPset.PROGRAMMSET_NAME) {
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), modelIndex, DatenPset.PROGRAMMSET_NAME);
                         jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
                     }
-                    notifyProgramSetChanged();
+                    if (fireUpdate)
+                        notifyProgramSetChanged();
                     stopBeob = false;
                 } else {
                     NoSelectionErrorDialog.show();
                 }
             }
             setNamePruefen();
-        }
-    }
-
-    private class BeobGruppeDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset gruppe;
-            int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
-                listePset.addPset(gruppe.copy());
-                tabellePset();
-                notifyProgramSetChanged();
-            } else {
-                NoSelectionErrorDialog.show();
-            }
-        }
-    }
-
-    private class BeobProgLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int[] rows = tabelleProgramme.getSelectedRows();
-            if (rows.length > 0) {
-                DatenPset pSet = getPset();
-                String text;
-                if (rows.length == 1) {
-                    int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
-                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
-                } else {
-                    text = rows.length + " Programme löschen?";
-                }
-                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    for (int i = rows.length - 1; i >= 0; --i) {
-                        int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
-                        pSet.getListeProg().remove(delRow);
-                    }
-                    tabelleProgramme();
-                }
-            } else {
-                NoSelectionErrorDialog.show();
-            }
-        }
-    }
-
-    private class BeobProgAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobProgAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            progAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobGruppeAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeNeu implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setNeu();
-        }
-    }
-
-    private class BeobGruppeLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setLoeschen();
-        }
-    }
-
-    private class BeobGruppeExport implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setExport();
-        }
-    }
-
-    private class BeobachterFarbe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
-                if (selectedColor != null) {
-                    pSet.setFarbe(selectedColor);
-                    tabellePset();
-                    notifyProgramSetChanged();
-                }
-            }
-
         }
     }
 
@@ -1027,11 +941,11 @@ public class PanelPsetLang extends PanelVorlage {
         javax.swing.JPanel jPanel9 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
-        jTextFieldGruppeZielPfad = new javax.swing.JTextField();
+        tfGruppeZielPfad = new javax.swing.JTextField();
         jButtonGruppePfad = new javax.swing.JButton();
         jCheckBoxThema = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
-        jTextFieldGruppeZielName = new javax.swing.JTextField();
+        tfGruppeZielName = new javax.swing.JTextField();
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
@@ -1042,9 +956,9 @@ public class PanelPsetLang extends PanelVorlage {
         javax.swing.JPanel jPanel11 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
-        jTextFieldGruppeDirektPraefix = new javax.swing.JTextField();
+        tfGruppeDirektPraefix = new javax.swing.JTextField();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
+        tfGruppeDirektSuffix = new javax.swing.JTextField();
         javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
         javax.swing.JPanel jPanel12 = new javax.swing.JPanel();
         jRadioButtonAufloesungNormal = new javax.swing.JRadioButton();
@@ -1330,7 +1244,7 @@ public class PanelPsetLang extends PanelVorlage {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(56, 56, 56)
-                                .addComponent(jTextFieldGruppeZielPfad)
+                                .addComponent(tfGruppeZielPfad)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonGruppePfad))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1341,7 +1255,7 @@ public class PanelPsetLang extends PanelVorlage {
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldGruppeZielName)
+                            .addComponent(tfGruppeZielName)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1369,12 +1283,12 @@ public class PanelPsetLang extends PanelVorlage {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel7)
-                    .addComponent(jTextFieldGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonGruppePfad))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextFieldGruppeZielName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfGruppeZielName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxLaenge)
@@ -1388,7 +1302,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppePfad, jTextFieldGruppeZielName, jTextFieldGruppeZielPfad});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonGruppePfad, tfGruppeZielName, tfGruppeZielPfad});
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -1423,11 +1337,11 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektPraefix)
+                .addComponent(tfGruppeDirektPraefix)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldGruppeDirektSuffix)
+                .addComponent(tfGruppeDirektSuffix)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -1436,9 +1350,9 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)
-                    .addComponent(jTextFieldGruppeDirektPraefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfGruppeDirektPraefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextFieldGruppeDirektSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfGruppeDirektSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
 
@@ -1865,10 +1779,6 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JSpinner jSpinnerLaenge;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTextArea jTextAreaSetBeschreibung;
-    private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
-    private javax.swing.JTextField jTextFieldGruppeDirektSuffix;
-    private javax.swing.JTextField jTextFieldGruppeZielName;
-    private javax.swing.JTextField jTextFieldGruppeZielPfad;
     private javax.swing.JTextField jTextFieldProgName;
     private javax.swing.JTextField jTextFieldProgPfad;
     private javax.swing.JTextField jTextFieldProgPraefix;
@@ -1876,5 +1786,9 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgSuffix;
     private javax.swing.JTextField jTextFieldProgZielDateiName;
     private javax.swing.JTextField jTextFieldSetName;
+    private javax.swing.JTextField tfGruppeDirektPraefix;
+    private javax.swing.JTextField tfGruppeDirektSuffix;
+    private javax.swing.JTextField tfGruppeZielName;
+    private javax.swing.JTextField tfGruppeZielPfad;
     // End of variables declaration//GEN-END:variables
 }

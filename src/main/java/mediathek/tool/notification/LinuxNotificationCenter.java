@@ -2,7 +2,6 @@ package mediathek.tool.notification;
 
 import es.blackleg.jlibnotify.LibNotify;
 import es.blackleg.jlibnotify.core.DefaultLibNotifyLoader;
-import mediathek.tool.notification.thrift.NotificationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +37,7 @@ public class LinuxNotificationCenter implements INotificationCenter, Closeable {
 
     @Override
     public void displayNotification(NotificationMessage msg) {
-        var notification = libNotify.createNotification(msg.title, msg.message,"dialog-information");
+        var notification = libNotify.createNotification(msg.getTitle(), msg.message,"dialog-information");
         libNotify.showNotification(notification);
     }
 

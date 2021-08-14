@@ -1,6 +1,7 @@
 package mediathek.mainwindow;
 
 import mediathek.tool.ApplicationConfiguration;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
@@ -10,12 +11,12 @@ import java.awt.event.ComponentEvent;
 class WindowLocationConfigSaverListener extends ComponentAdapter {
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     @Override
     public void componentResized(ComponentEvent e) {
         JFrame mainWindow = (JFrame)e.getComponent(); //we know it´s our main window
 
-        var config = ApplicationConfiguration.getConfiguration();
         var dims = mainWindow.getSize();
 
         //safety check if the window gets too small..on some systems it is really hard to get it bigger again. (Linux)
@@ -40,7 +41,6 @@ class WindowLocationConfigSaverListener extends ComponentAdapter {
     public void componentMoved(ComponentEvent e) {
         JFrame mainWindow = (JFrame)e.getComponent(); //we know it´s our main window
 
-        var config = ApplicationConfiguration.getConfiguration();
         var pt = mainWindow.getLocation();
 
         try {

@@ -113,8 +113,9 @@ Diese Angaben werden durch die URL ersetzt:
 Zwei Sterne "**" werden durch den Zieldateinamen mit Pfad ersetzt.
 
 Zusätzlich ist im Schalter:
-%a  für den Pfad und
-%b  für den Dateinamen
+%a  für den Pfad,
+%b  für den Dateinamen und
+%w  für die URL der Sender-Website
 des Films möglich. Statt "**" wäre also auch "%a/%b" möglich.
 
 ==================================================

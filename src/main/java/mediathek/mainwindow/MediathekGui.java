@@ -15,12 +15,13 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mediathek.Main;
-import mediathek.config.*;
+import mediathek.config.Config;
+import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeMediaDB;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
@@ -33,14 +34,12 @@ import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
-import mediathek.gui.messages.mediadb.MediaDbDialogVisibleEvent;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.*;
@@ -49,7 +48,9 @@ import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
+import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.notification.GenericNotificationCenter;
+import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.AutomaticFilmlistUpdate;
@@ -57,6 +58,7 @@ import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +69,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -115,7 +118,6 @@ public class MediathekGui extends JFrame {
     private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
-    private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
     private final JFXPanel statusBarPanel = new JFXPanel();
     private final LoadFilmListAction loadFilmListAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
@@ -139,7 +141,6 @@ public class MediathekGui extends JFrame {
      * Progress indicator thread for OS X and windows.
      */
     private IndicatorThread progressIndicatorThread;
-    private DialogMediaDB dialogMediaDB;
     private ManageAboAction manageAboAction;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
 
@@ -180,9 +181,6 @@ public class MediathekGui extends JFrame {
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_MENUS));
         initMenus();
-
-        Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEDIADB_DIALOG));
-        initializeMediaDbDialog();
 
         //register message bus handler
         MessageBus.getMessageBus().subscribe(this);
@@ -267,17 +265,31 @@ public class MediathekGui extends JFrame {
     /**
      * Create either a native or a javafx notification center depending on platform
      */
-    protected void setupNotificationCenter() {
+    private void setupNotificationCenter() {
+        final var notificationCenter = daten.notificationCenter();
         final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
 
-        config.setProperty(ApplicationConfiguration.APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT, false);
-        config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NATIVE_NOTIFICATIONS, false);
+        if (notificationCenter != null) {
+            try {
+                notificationCenter.close();
+            } catch (IOException e) {
+                logger.error("Failed to close old notification center", e);
+            }
+        }
 
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
         } else {
-            daten.setNotificationCenter(new GenericNotificationCenter());
+            daten.setNotificationCenter(getNotificationCenter());
         }
+    }
+
+    /**
+     * Return the platform-specific notification implementation.
+     * @return generic or platform-specific notification implementation.
+     */
+    protected INotificationCenter getNotificationCenter() {
+        return new GenericNotificationCenter();
     }
 
     @Handler
@@ -408,10 +420,8 @@ public class MediathekGui extends JFrame {
     private void loadFilmlist() {
         Platform.runLater(() -> {
             //don´t write filmlist when we are reading only...
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
-                Daten.dontWriteFilmlistOnStartup.set(false);
-            } else
-                Daten.dontWriteFilmlistOnStartup.set(true);
+            var writeCondition = !(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate());
+            Daten.dontWriteFilmlistOnStartup.set(writeCondition);
 
             FXProgressPane progressPane = new FXProgressPane();
 
@@ -437,19 +447,6 @@ public class MediathekGui extends JFrame {
             //reset after first load has happened
             Daten.dontWriteFilmlistOnStartup.set(false);
         });
-    }
-
-    public DialogMediaDB getMediaDatabaseDialog() {
-        if (dialogMediaDB == null) {
-            dialogMediaDB = new DialogMediaDB(this);
-        }
-        return dialogMediaDB;
-    }
-
-    private void initializeMediaDbDialog() {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))) {
-            getMediaDatabaseDialog().setVis();
-        }
     }
 
     public IntegerProperty getSelectedItemsProperty() {
@@ -484,11 +481,6 @@ public class MediathekGui extends JFrame {
 
     public InfoDialog getFilmInfoDialog() {
         return filmInfo;
-    }
-
-    @Handler
-    private void handleMediaDbDialogEvent(MediaDbDialogVisibleEvent e) {
-        SwingUtilities.invokeLater(() -> cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN))));
     }
 
     @Handler
@@ -565,7 +557,6 @@ public class MediathekGui extends JFrame {
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
                 setupAutomaticFilmlistReload();
-                prepareMediaDb();
             }
         });
     }
@@ -575,7 +566,7 @@ public class MediathekGui extends JFrame {
      */
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
-            if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC) {
+            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
                     FilmeLaden filmeLaden = new FilmeLaden(daten);
@@ -599,12 +590,6 @@ public class MediathekGui extends JFrame {
                 }
             }
         });
-    }
-
-    private void prepareMediaDb() {
-        final ListeMediaDB mediaDb = daten.getListeMediaDB();
-        mediaDb.loadSavedList();
-        mediaDb.createMediaDB("");
     }
 
     @Handler
@@ -821,12 +806,6 @@ public class MediathekGui extends JFrame {
             getBandwidthMonitorController().setVisibility();
         });
 
-        cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        cbSearchMediaDb.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(cbSearchMediaDb.isSelected()));
-            getMediaDatabaseDialog().setVis();
-        });
-
         JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
         showFilmFilterDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         showFilmFilterDialog.addActionListener(l -> {
@@ -851,8 +830,6 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showBookmarkList);
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(cbSearchMediaDb);
     }
 
     private void createHelpMenu() {
@@ -915,7 +892,7 @@ public class MediathekGui extends JFrame {
 
     private void createAboMenu() {
         jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
-        jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui(), daten));
+        jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui()));
         jMenuAbos.addSeparator();
         manageAboAction = new ManageAboAction();
         tabFilme.fap.manageAboAction = manageAboAction;
@@ -923,7 +900,7 @@ public class MediathekGui extends JFrame {
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
-        if (manualMode || GuiFunktionen.getImportArtFilme() == FilmListUpdateType.MANUAL) {
+        if (manualMode || GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.MANUAL) {
             // Dialog zum Laden der Filme anzeigen
             LoadFilmListDialog dlg = new LoadFilmListDialog(this);
             dlg.setVisible(true);
@@ -940,16 +917,6 @@ public class MediathekGui extends JFrame {
         }
 
         return dialogEinstellungen;
-    }
-
-    private void writeOldConfiguration() {
-        // Infodialog/Bandwidth
-        if (bandwidthMonitor != null)
-            bandwidthMonitor.writeConfig();
-
-        // MediaDB
-        if (dialogMediaDB != null)
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, getMediaDatabaseDialog());
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
@@ -980,6 +947,10 @@ public class MediathekGui extends JFrame {
         ShutdownDialog dialog = new ShutdownDialog(this);
         dialog.show();
 
+        // stop the download thread
+        dialog.setStatusText(ShutdownState.TERMINATE_STARTER_THREAD);
+        daten.getStarterClass().getStarterThread().interrupt();
+
         dialog.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
         closeNotificationCenter();
 
@@ -1003,23 +974,11 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(ShutdownState.SAVE_MEDIA_DB);
-        if (dialogMediaDB != null)
-            getMediaDatabaseDialog().tabelleSpeichern();
-
         dialog.setStatusText(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
 
-        dialog.setStatusText(ShutdownState.SAVE_CONFIG);
-        writeOldConfiguration();
-
         dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
         daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
-
-        dialog.setStatusText(ShutdownState.CLOSE_DB);
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            DatenFilm.Database.closeDatabase();
-        }
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
@@ -1045,6 +1004,9 @@ public class MediathekGui extends JFrame {
             shutdownComputer();
         }
 
+        var byteCounter = MVHttpClient.getInstance().getByteCounter();
+        logger.trace("total data sent: {} MByte", (byteCounter.totalBytesWritten() / (float)FileUtils.ONE_MB));
+        logger.trace("total data received: {} MByte", (byteCounter.totalBytesRead() / (float)FileUtils.ONE_MB));
         System.exit(0);
 
         return false;

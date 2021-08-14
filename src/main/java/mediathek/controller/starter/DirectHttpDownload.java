@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -218,7 +220,7 @@ public class DirectHttpDownload extends Thread {
                         // Restzeit ermitteln
                         if (p > 2 && p > startProzent) {
                             // sonst macht es noch keinen Sinn
-                            final int diffZeit = start.startZeit.diffInSekunden();
+                            final var diffZeit = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                             final long restProzent = 1000L - p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
                             // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist

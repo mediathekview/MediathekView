@@ -20,6 +20,7 @@ package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -44,7 +45,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
 
     private static final Logger logger = LogManager.getLogger(TimedTextMarkupLanguageParser.class);
     private final SimpleDateFormat ttmlFormat = new SimpleDateFormat("HH:mm:ss.SS");
-    private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SS");
+    private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SSS");
     private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
@@ -72,10 +73,18 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         }
     }
 
+    private void checkHours(@NotNull Date date) {
+        //HACK:: Don´t know why this is set like this...
+        //but we have to subract 10 hours from the XML
+        final int hours = date.getHours();
+        if (hours >= 10) {
+            date.setHours(hours - 10);
+        }
+    }
+
     /**
      * Build the Subtitle objects from TTML content.
      */
-    @SuppressWarnings("deprecation")
     private void buildFilmList() throws Exception {
         final NodeList subtitleData = doc.getElementsByTagName("tt:p");
 
@@ -90,16 +99,10 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 final Node endNode = attrMap.getNamedItem("end");
                 if (beginNode != null && endNode != null) {
                     subtitle.begin = ttmlFormat.parse(beginNode.getNodeValue());
-                    //HACK:: Don´t know why this is set like this...
-                    //but we have to subract 10 hours from the XML
-                    if (subtitle.begin.getHours() >= 10) {
-                        subtitle.begin.setHours(subtitle.begin.getHours() - 10);
-                    }
-                    subtitle.end = ttmlFormat.parse(endNode.getNodeValue());
-                    if (subtitle.end.getHours() >= 10) {
-                        subtitle.end.setHours(subtitle.end.getHours() - 10);
-                    }
+                    checkHours(subtitle.begin);
 
+                    subtitle.end = ttmlFormat.parse(endNode.getNodeValue());
+                    checkHours(subtitle.end);
                 }
             }
 

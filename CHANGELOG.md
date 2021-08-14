@@ -1,3 +1,34 @@
+<u>**13.8**</u>
+
+- **Java wurde auf Version 16 aktualisiert.**
+- **MediathekView verwendet eine neue Speicherverwaltung für die 64bit Programmversionen.** *Die Nutzung der vmoptions-Datei wird damit hinfällig.* Das Programm reserviert nun per Default maximal 50% des vorhandenen Arbeitspeichers und sorgt dafür dass zu jeder Zeit nur der wirklich notwendige Speicher belegt wird. Im Endeffekt verbraucht MediathekView nun deutlich weniger RAM über die Laufzeit als es bisher der Fall war, hat aber die Chance bei Bedarf kurzfristig mehr Speicher als bisher anzufordern. **Dies funktioniert nur mit den offiziellen MediathekView Packages.** Bei nicht-offizieller Anpassung der Startskripte muss darauf geachtet werden das **kein Oracle JDK** verwendet wird. Der neue Garbage Collector wird von Oracle nicht unterstützt. *Es wird empfohlen die vmoptions-Datei nicht mehr zu verwenden.*
+- **macOS:** MediathekView funktioniert in Zusammenarbeit mit **AltTab v6.15.1 und neuer.** In Zusammenarbeit mit dem Entwickler konnte eine Lösung für das Problem gefunden werden.**Die Nutzung des offiziellen App-Bundle ist dafür zwingend erforderlich!**
+- **Die Mediensammlung wurde entfernt.** Es gibt deutlich bessere Alternativen dafür.
+- **mediadb.txt** (die alte Mediensammlung) wird beim Start (wenn vom OS unterstützt) in den Papierkorb verschoben. Ansonsten wird sie gelöscht.
+- Datenbanksupport für Nutzung auf Systemen mit wenig Arbeitsspeicher entfernt. MV benötigt mindestens 768MB RAM um halbwegs zu laufen. **Aufgrund der Größe der Filmlisten wird dies nicht empfohlen!**
+- Menüeintrag *"Downloads/Alle Downloads um xx:yy Uhr starten"* in *"Downloads/Alle Downloads zeitverzögert starten..."* umbenannt.
+- Infodialog hinzugefügt wenn keine Downloads für ein zeitverzögertes Starten vorliegen.
+- Der Dialog *Bandbreitennutzung* zeigt nun sämtlichen verursachten Netzwerktraffic von MV an, nicht mehr nur Downloads.
+- **FEATURE:** Online-Suche nach Thema oder Titel kann über das Kontextmenü im Filme-Tab mit verschiedenen Anbietern durchgeführt werden.
+- **FEATURE:** Die Sender-Website zu einem Film kann nun per Kontextmenü im Film-Tab an JDownloader übergeben werden.
+- **FEATURE:** In den PSets kann der Parameter `%w` genutzt werden, um die Sender-Website-URL des Films an ein Programm zu übergeben.
+- **FEATURE(macOS):** Download-Button im Update-Dialog hinzugefügt.
+- **FEATURE:** Im Tab "Filme" kann über das Kontext-Menü *"In Zwischenablage kopieren"* nun auch Film-Thema und Titel kopiert werden.
+- **FEATURE:** Im Tab "Filme" wurde das Kontextmenü übersichtlicher gegliedert.
+- **FEATURE(Linux/Windows):** MediathekView kann mittels portable Modus nun auf einem Rechner mit mehreren *unabhängigen* Instanzen betrieben werden.
+- **FEATURE:** Im Tab "Beschreibung" kann nun der Link zur Webseite mittels Kontextmenü *"URL kopieren"* extrahiert werden.  
+- **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
+- **BUGFIX:** In *"Einstellungen\Aufzeichnung & Abspielen\Set bearbeiten"* wurde das Springen des Cursor an das Textende in den Eingabefeldern behoben.
+- **BUGFIX:** Livestreams werden beim Abspielen nicht mehr als gesehen markiert.
+- **BUGFIX(macOS):** Im Tab "Beschreibung" werden Titel nun fett dargestellt.
+- **BUGFIX:** Weißer Hintergrund der Filminfo im "Film speichern" Dialog zeigt je nach Plattform nun korrekte Hintergrundfarbe an.
+- **BUGFIX:** Datum wird in unterschiedlichen Zeitzonen wieder korrekt dargestellt.
+- **BUGFIX:** Manuell angelegte Downloads werden nicht mehr automatisch gestartet wenn in *"Einstellungen/Erweitert"* der automatische Start von Abos ausgewählt wurde.
+- **BUGFIX(Linux):** RPM-Signaturfehler von install4j behoben.
+- **BUGFIX:** In der *history.db* wird nur noch die URL hinterlegt. Titel und Thema werden nicht mehr gespeichert da sie unnötig sind.**Die Datenbank ist kein Nachschlagewerk und soll auch nicht von Hand modifiziert werden!**
+- **BUGFIX:** SRT-Zeitangaben werden nun gemäß Spezifikation erstellt.
+- **BUGFIX:** Inkorrekte Fehlerausgabe während Wiedergabe eines Films korrigiert.
+
 <u>**13.7.1**</u>
 
 **ACHTUNG(macOS): Die Verwendung des Programms "AltTab" führt zu häufigen Programmfehler wie Einfrieren/Abstürze,etc. Es wird dringend davon abgeraten MediathekView und AltTab gleichzeitig zu betreiben.**

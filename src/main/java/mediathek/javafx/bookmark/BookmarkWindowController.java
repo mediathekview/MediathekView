@@ -677,7 +677,7 @@ public class BookmarkWindowController implements Initializable {
   private static final String ALERT_TITLE = "Merkliste";
 
   private void playAction(BookmarkData data) {
-    Daten.getInstance().starterClass.urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
+    Daten.getInstance().getStarterClass().urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
     tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
     tbBookmarks.getSelectionModel().select(data);
   }
@@ -720,7 +720,7 @@ public class BookmarkWindowController implements Initializable {
     stage.hide();
 
     SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
-      DatenPset pSet = Daten.listePset.getListeSpeichern().getFirst();
+      DatenPset pSet = Daten.listePset.getListeSpeichern().get(0);
       final var ui = MediathekGui.ui();
       DialogAddMoreDownload damd = new DialogAddMoreDownload(ui, pSet);
       damd.setLocationRelativeTo(ui);

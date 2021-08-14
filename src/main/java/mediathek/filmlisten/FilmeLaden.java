@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -106,7 +107,7 @@ public class FilmeLaden {
 
         boolean showDialogs = true;
 
-        if (GuiFunktionen.getImportArtFilme() == FilmListUpdateType.AUTOMATIC)
+        if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC)
             showDialogs = false;
 
         HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");
@@ -252,7 +253,7 @@ public class FilmeLaden {
             logger.info("Filmliste laden von: " + dateiUrl);
             final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
-                dateiUrl = GuiFunktionen.getFilmListUrl(FilmListDownloadType.FULL);
+                dateiUrl = StandardLocations.getFilmListUrl(FilmListDownloadType.FULL);
             }
             importFilmliste.importFromFile(dateiUrl, diffListe, num_days);
         }
@@ -307,7 +308,7 @@ public class FilmeLaden {
 
             try (FilmListReader reader = new FilmListReader()) {
                 final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, num_days);
+                reader.readFilmListe(StandardLocations.getFilmlistFilePath(), listeFilme, num_days);
             }
             logger.info("");
 

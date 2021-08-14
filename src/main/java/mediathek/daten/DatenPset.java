@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Iterator;
 
 public class DatenPset implements Comparable<DatenPset> {
 
@@ -82,9 +81,8 @@ public class DatenPset implements Comparable<DatenPset> {
         arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
     }
 
-    // public
-    public boolean addProg(DatenProg prog) {
-        return listeProg.add(prog);
+    public void addProg(DatenProg prog) {
+        listeProg.add(prog);
     }
 
     public ListeProg getListeProg() {
@@ -100,10 +98,7 @@ public class DatenPset implements Comparable<DatenPset> {
         // "**" (Pfad/Datei) oder %a (Pfad) oder %b (Datei)
         // damit ist es ein Set zum Speichern
         boolean ret = false;
-        Iterator<DatenProg> it = listeProg.iterator();
-        DatenProg prog;
-        while (it.hasNext()) {
-            prog = it.next();
+        for (DatenProg prog : listeProg) {
             if (prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("**")
                     || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("%a")
                     || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("%b")) {
@@ -188,19 +183,16 @@ public class DatenPset implements Comparable<DatenPset> {
             MVMessageDialog.showMessageDialog(null, "Programme einrichten!",
                     "Kein Programm", JOptionPane.INFORMATION_MESSAGE);
         } else if (listeProg.size() == 1) {
-            ret = listeProg.getFirst();
+            ret = listeProg.get(0);
         } else {
-            Iterator<DatenProg> it = listeProg.iterator();
-            DatenProg prog;
-            while (it.hasNext()) {
-                prog = it.next();
+            for (DatenProg prog : listeProg) {
                 if (prog.urlTesten(url)) {
                     ret = prog;
                     break;
                 }
             }
             if (!listeProg.isEmpty() && ret == null) {
-                ret = listeProg.getLast();
+                ret = listeProg.get(listeProg.size() - 1);
             }
         }
         return ret;

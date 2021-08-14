@@ -19,7 +19,6 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.Cleaner;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,10 +51,6 @@ public class Daten {
     public static ListePset listePset;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
-    /**
-     * The "garbage collector" mainly for cleaning up {@link DatenFilm} objects.
-     */
-    private final Cleaner cleaner = Cleaner.create();
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     /**
      * "source" list of all entries, contains everything
@@ -70,11 +64,9 @@ public class Daten {
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist;
     private final BookmarkDataList listeBookmarkList;
-    private final ListeMediaDB listeMediaDB;
-    private final ListeMediaPath listeMediaPath;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos;
-    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private INotificationCenter notificationCenter;
     /**
      * erfolgreich geladene Abos.
@@ -93,13 +85,10 @@ public class Daten {
 
         listePset = new ListePset();
 
-        listeAbo = new ListeAbo(this);
+        listeAbo = new ListeAbo();
 
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
-
-        listeMediaDB = new ListeMediaDB(this);
-        listeMediaPath = new ListeMediaPath();
 
         downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
@@ -120,29 +109,6 @@ public class Daten {
 
     public static Daten getInstance() {
         return DatenHolder.INSTANCE;
-    }
-
-    /**
-     * Liefert den Pfad zur Filmliste
-     *
-     * @return Den Pfad als String
-     */
-    public static String getDateiFilmliste() {
-        String strFile;
-        final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
-
-        if (Config.isPortableMode())
-            strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
-        else {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = SystemUtils.USER_HOME + File.separator + Konstanten.OSX_CACHE_DIRECTORY_NAME + filePart;
-            } else {
-                strFile = StandardLocations.getSettingsDirectory().toString() + filePart;
-            }
-        }
-
-        return strFile;
     }
 
     /**
@@ -172,6 +138,10 @@ public class Daten {
         return StandardLocations.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
     }
 
+    public StarterClass getStarterClass() {
+        return starterClass;
+    }
+
     /**
      * Load the stored bookmarkdata form JSON file
      * into memory
@@ -198,10 +168,6 @@ public class Daten {
 
     public void setNotificationCenter(INotificationCenter center) {
         notificationCenter = center;
-    }
-
-    public Cleaner getCleaner() {
-        return cleaner;
     }
 
     public void setAboHistoryList(AboHistoryController controller) {
@@ -366,7 +332,7 @@ public class Daten {
                         alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
                         alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                                 + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                                + StandardLocations.getSettingsDirectory().toString() + '\n'
+                                + StandardLocations.getSettingsDirectory() + '\n'
                                 + "von Hand löschen und dann das Programm wieder starten.\n\n"
                                 + "Im Forum erhalten Sie weitere Hilfe.");
                         JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
@@ -449,14 +415,6 @@ public class Daten {
         return listeBookmarkList;
     }
     
-    public ListeMediaDB getListeMediaDB() {
-        return listeMediaDB;
-    }
-
-    public ListeMediaPath getListeMediaPath() {
-        return listeMediaPath;
-    }
-
     public ListeAbo getListeAbo() {
         return listeAbo;
     }

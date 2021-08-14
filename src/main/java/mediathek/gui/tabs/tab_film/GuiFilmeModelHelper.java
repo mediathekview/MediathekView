@@ -148,7 +148,7 @@ public class GuiFilmeModelHelper {
         if (dontShowAudioVersions)
             stream = stream.filter(film -> !film.isAudioVersion());
         if (dontShowAbos)
-            stream = stream.filter(film -> film.getAboName().isEmpty());
+            stream = stream.filter(film -> film.getAbo() == null);
         if (showSubtitlesOnly) {
             stream = stream.filter(this::subtitleCheck);
         }

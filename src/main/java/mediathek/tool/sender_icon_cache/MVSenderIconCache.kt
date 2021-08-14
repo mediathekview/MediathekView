@@ -27,6 +27,7 @@ object MVSenderIconCache {
 
 
     @Handler
+    @Suppress("UNUSED_PARAMETER")
     private fun handleSenderIconStyleChangedEvent(e: SenderIconStyleChangedEvent) {
         logger.trace("invalidating caches due to sender icon style change")
         useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false))

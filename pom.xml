@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>13.7.1</version>
+    <version>13.8.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -56,6 +56,11 @@
     </scm>
 
     <repositories>
+    <repository>
+        <id>local-maven-repository</id>
+        <url>file:///${project.basedir}/maven-repository</url>
+    </repository>
+
         <repository>
             <id>oss.sonatype.org-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
@@ -75,40 +80,45 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>15</java.version>
-        <jdk.language.version>15</jdk.language.version>
+        <java.version>16</java.version>
+        <jdk.language.version>16</jdk.language.version>
         <kotlin.language.target>15</kotlin.language.target>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
-        <junit.jupiter.version>5.7.0</junit.jupiter.version>
-        <javafx.version>15.0.1</javafx.version>
+        <junit.jupiter.version>5.7.2</junit.jupiter.version>
+        <javafx.version>16</javafx.version>
         <picocli.version>4.6.1</picocli.version>
-        <miglayout.version>5.3-SNAPSHOT</miglayout.version>
+        <miglayout.version>11.0</miglayout.version>
         <log4j2.version>2.14.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
-        <okhttp.version>4.9.0</okhttp.version>
-        <jackson.version>2.11.4</jackson.version>
+        <okhttp.version>4.9.1</okhttp.version>
+        <jackson.version>2.12.3</jackson.version>
 
         <mainclass>mediathek.Main</mainclass>
+
         <!-- AdopOpenJDK is used for Windows and Linux 64bit -->
-        <install4j.adoptopenjdk.jdk.version>openjdk15/jdk-15.0.1+9</install4j.adoptopenjdk.jdk.version>
+        <install4j.adoptopenjdk.jdk.version>16/jdk-16.0.1+9</install4j.adoptopenjdk.jdk.version>
         <!-- Liberica includes JavaFX and is used for Arm and 32bit -->
-        <install4j.liberica.jdk.version>OpenJDK 15.0.1+9</install4j.liberica.jdk.version>
-        <install4j.jdk.min-version>15</install4j.jdk.min-version>
-        <install4j.home>./install4j8.0.9</install4j.home>
+        <install4j.liberica.jdk.version>16/16.0.1+9</install4j.liberica.jdk.version>
+        <install4j.jdk.min-version>16</install4j.jdk.min-version>
+
+        <!-- VM Parameters Windows x64 -->
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck</install4j.vmparameters.win.64>
+        <!-- VM Parameters Linux x64 -->
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <!-- VM Parameters Windows x32 -->
+        <install4j.vmparameters.win.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED</install4j.vmparameters.win.32>
+        <!-- VM Parameters Linux x32 -->
+        <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED</install4j.vmparameters.linux.32>
+
+        <install4j.home>./install4j9.0.2</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_8}</install4j.licenseKey>
-        <kotlin.version>1.4.21-2</kotlin.version>
+        <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
+        <kotlin.version>1.5.10</kotlin.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.posicks.mdnsjava</groupId>
-            <artifactId>mdnsjava</artifactId>
-            <version>16eafb3765</version>
-        </dependency>
-
         <dependency>
             <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
@@ -144,21 +154,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.thrift</groupId>
-            <artifactId>libthrift</artifactId>
-            <version>0.13.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>5.6.0</version>
+            <version>5.8.0</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>5.6.0</version>
+            <version>5.8.0</version>
         </dependency>
 
         <dependency>
@@ -183,13 +187,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>3.12.0</version>
         </dependency>
 
         <dependency>
@@ -213,7 +211,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1-jre</version>
+            <version>30.1.1-jre</version>
         </dependency>
 
         <dependency>
@@ -233,7 +231,7 @@
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>11.0.3</version>
+            <version>11.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.openjfx</groupId>
@@ -246,16 +244,46 @@
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-core</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-javafx</artifactId>
             <version>${miglayout.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -278,20 +306,6 @@
             <groupId>net.engio</groupId>
             <artifactId>mbassador</artifactId>
             <version>1.3.2</version>
-        </dependency>
-
-        <!-- Datenbank -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
-        </dependency>
-
-        <!-- Hikary Connection Pool -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>4.0.1</version>
         </dependency>
 
         <dependency>
@@ -404,24 +418,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.airsquared</groupId>
+            <artifactId>JMacNotification</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>MediathekView</finalName>
         <plugins>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.1.3</version>
-                <dependencies>
-                    <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
-                    <dependency>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs</artifactId>
-                        <version>4.2.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -451,7 +458,7 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <argLine>
-                        --illegal-access=deny --enable-preview
+                        --illegal-access=deny
                     </argLine>
                 </configuration>
             </plugin>
@@ -488,6 +495,9 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
+                            <args>
+                                <arg>-Xuse-ir</arg>
+                            </args>
                         </configuration>
                     </execution>
                     <execution>
@@ -500,8 +510,10 @@
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
+                            <args>
+                                <arg>-Xuse-ir</arg>
+                            </args>
                         </configuration>
-
                     </execution>
                 </executions>
                 <configuration>
@@ -518,7 +530,6 @@
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
-                        <arg>--enable-preview</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -527,8 +538,8 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>${jdk.language.version}</source>
+                    <target>${jdk.language.version}</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
@@ -1065,7 +1076,7 @@
                     <plugin>
                         <groupId>org.sonatype.install4j</groupId>
                         <artifactId>install4j-maven-plugin</artifactId>
-                        <version>1.1.1</version>
+                        <version>1.1.2</version>
                         <executions>
                             <execution>
                                 <id>compile-installers</id>

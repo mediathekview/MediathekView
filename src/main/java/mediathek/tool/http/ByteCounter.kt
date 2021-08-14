@@ -5,7 +5,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.InetAddress
 import java.net.Socket
-import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import javax.net.SocketFactory
 
@@ -13,6 +12,8 @@ class ByteCounter {
     private val socketFactory: SocketFactory = CountSocketFactory()
     private val bytesWritten = AtomicLong()
     private val bytesRead = AtomicLong()
+    private val totalBytesRead = AtomicLong()
+    private val totalBytesWritten = AtomicLong()
 
     fun resetCounters() {
         bytesWritten.set(0)
@@ -31,20 +32,22 @@ class ByteCounter {
         return bytesRead.get()
     }
 
+    fun totalBytesRead(): Long {
+        return totalBytesRead.get()
+    }
+
+    fun totalBytesWritten(): Long {
+        return totalBytesWritten.get()
+    }
+
     fun bytesRead(length: Int) {
-        while (true) {
-            val old = bytesRead.get()
-            val updated = old + length
-            if (bytesRead.compareAndSet(old, updated)) break
-        }
+        bytesRead.getAndAdd(length.toLong())
+        totalBytesRead.getAndAdd(length.toLong())
     }
 
     fun bytesWritten(length: Int) {
-        while (true) {
-            val old = bytesWritten.get()
-            val updated = old + length
-            if (bytesWritten.compareAndSet(old, updated)) break
-        }
+        bytesWritten.getAndAdd(length.toLong())
+        totalBytesWritten.getAndAdd(length.toLong())
     }
 
     internal inner class CountSocketFactory : SocketFactory() {

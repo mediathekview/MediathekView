@@ -1,24 +1,21 @@
 package mediathek.tool;
 
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import mediathek.daten.ListeFilme;
-import mediathek.filmlisten.FilmListDownloadType;
-import mediathek.mainwindow.MediathekGui;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.intellij.lang.annotations.MagicConstant;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
-import java.util.Objects;
 
-public class GuiFunktionen extends MVFunctionSys {
+public class GuiFunktionen {
 
     /**
      * legacy constant, used internally only
@@ -30,33 +27,6 @@ public class GuiFunktionen extends MVFunctionSys {
     private static final int UPDATE_FILME_AUTO = 2;
 
     private static final Logger logger = LogManager.getLogger();
-
-    /**
-     * Get the address of the used film list type as string.
-     *
-     * @param type which list to use.
-     * @return URL of filmlist as String.
-     */
-    public static String getFilmListUrl(FilmListDownloadType type) {
-        return switch (type) {
-            case FULL -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz")).toString();
-            case DIFF_ONLY -> Objects.requireNonNull(Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz")).toString();
-        };
-    }
-
-    public static void updateGui(MediathekGui mediathekGui) {
-        try {
-            SwingUtilities.updateComponentTreeUI(mediathekGui);
-            for (Frame f : Frame.getFrames()) {
-                SwingUtilities.updateComponentTreeUI(f);
-                for (Window w : f.getOwnedWindows()) {
-                    SwingUtilities.updateComponentTreeUI(w);
-                }
-            }
-        } catch (Exception ignored) {
-        }
-
-    }
 
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
@@ -81,24 +51,7 @@ public class GuiFunktionen extends MVFunctionSys {
         c.setLocation(x, y);
     }
 
-    public static void getSize(Configs nr, JFrame jFrame) {
-        if (jFrame != null) {
-            MVConfig.add(nr, jFrame.getSize().width + ":"
-                    + jFrame.getSize().height + ':'
-                    + jFrame.getLocation().x + ':'
-                    + jFrame.getLocation().y);
-        }
-    }
-
-    public static void getSize(Configs nr, JDialog jDialog) {
-        if (jDialog != null) {
-            MVConfig.add(nr, jDialog.getSize().width + ":"
-                    + jDialog.getSize().height + ':'
-                    + jDialog.getLocation().x + ':'
-                    + jDialog.getLocation().y);
-        }
-    }
-
+    @Deprecated
     public static boolean setSize(Configs nr, JDialog jDialog, Frame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
@@ -230,19 +183,6 @@ public class GuiFunktionen extends MVFunctionSys {
         return ret;
     }
 
-    /**
-     * Liefert den Standardpfad für Downloads.
-     *
-     * @return Standardpfad zu den Downloads.
-     */
-    public static String getStandardDownloadPath() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            return addsPfad(SystemUtils.USER_HOME, "Downloads");
-        } else {
-            return addsPfad(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS);
-        }
-    }
-
     public static ComboBoxModel<String> getSenderListComboBoxModel(ListeFilme listeFilme) {
         DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList(listeFilme.getBaseSenderList()));
         senderModel.setSelectedItem("");
@@ -255,6 +195,7 @@ public class GuiFunktionen extends MVFunctionSys {
      *
      * @return an InputEvent modifier based on operating system.
      */
+    @MagicConstant(flagsFromClass = java.awt.event.InputEvent.class)
     public static int getPlatformControlKey() {
         int result;
 
@@ -267,7 +208,11 @@ public class GuiFunktionen extends MVFunctionSys {
         return result;
     }
 
-    public static FilmListUpdateType getImportArtFilme() {
+    /**
+     * Get the the user set filmlist update type.
+     * @return MANUAL or AUTOMATIC based on config. Default is AUTOMATIC.
+     */
+    public static FilmListUpdateType getFilmListUpdateType() {
         FilmListUpdateType result;
 
         int ret;
@@ -287,7 +232,11 @@ public class GuiFunktionen extends MVFunctionSys {
         return result;
     }
 
-    public static void setImportArtFilme(FilmListUpdateType type) {
+    /**
+     * Store filmlist update mode in config.
+     * @param type MANUAL or AUTOMATIC mode.
+     */
+    public static void setFilmListUpdateType(FilmListUpdateType type) {
         final int value;
         if (type == FilmListUpdateType.MANUAL) {
             value = UPDATE_FILME_AUS;

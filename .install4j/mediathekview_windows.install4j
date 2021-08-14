@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="8.0.9" transformSequenceNumber="8">
+<install4j version="9.0.2" transformSequenceNumber="9">
   <directoryPresets config="${project.build.directory}/res" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" shortName="MediathekView" publisher="MediathekView Team"
-               mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-win" convertDotsToUnderscores="false"
-               publisherWeb="https://mediathekview.de" version="${project.version}" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-win" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
     <jreBundles jdkProviderId="AdoptOpenJDK" release="${install4j.adoptopenjdk.jdk.version}" />
   </application>
-  <files>
+  <files preserveSymlinks="false">
     <mountPoints>
       <mountPoint id="58" />
     </mountPoints>
@@ -30,9 +28,9 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G -XX:+UseG1GC -XX:+UseStringDeduplication --enable-preview -Dfile.encoding=UTF-8 -DexternalUpdateCheck">
+      <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.win.64}">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
@@ -44,10 +42,9 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xmx2G --enable-preview -DexternalUpdateCheck"
-            arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.win.64}" arguments="Einstellungen/.mediathek3">
         <classPath>
-          <archive location="MediathekView.jar" failOnError="false"/>
+          <archive location="MediathekView.jar" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
@@ -58,15 +55,13 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://download.mediathekview.de/stabil/updates-win.xml" useAutoUpdateBaseUrl="true"
-                autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
+  <installerGui autoUpdateDescriptorUrl="https://download.mediathekview.de/stabil/updates-win.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
           <screen id="1" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction"
-                      actionElevationType="none" rollbackBarrierExitCode="0"/>
+              <action id="22" beanClass="com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction" actionElevationType="none" rollbackBarrierExitCode="0" />
             </actions>
           </screen>
         </startup>
@@ -279,7 +274,7 @@ return console.askYesNo(message, true);
         <launcherIds>
           <launcher id="59" />
           <launcher id="60" />
-          <launcher id="61"/>
+          <launcher id="61" />
         </launcherIds>
         <startup>
           <screen id="320" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
@@ -806,11 +801,19 @@ return true;</property>
           <group id="42" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize banner image" externalParametrizationMode="include">
             <serializedBean>
               <property name="backgroundColor">
-                <object class="java.awt.Color">
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>49</int>
+                    <int>52</int>
+                    <int>53</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="borderSides">
@@ -819,11 +822,19 @@ return true;</property>
                 </object>
               </property>
               <property name="imageEdgeBackgroundColor">
-                <object class="java.awt.Color">
-                  <int>25</int>
-                  <int>143</int>
-                  <int>220</int>
-                  <int>255</int>
+                <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                  <object class="java.awt.Color">
+                    <int>25</int>
+                    <int>143</int>
+                    <int>220</int>
+                    <int>255</int>
+                  </object>
+                  <object class="java.awt.Color">
+                    <int>0</int>
+                    <int>74</int>
+                    <int>151</int>
+                    <int>255</int>
+                  </object>
                 </object>
               </property>
               <property name="imageEdgeBorder" type="boolean" value="true" />
@@ -877,11 +888,19 @@ return true;</property>
               <group id="49" beanClass="com.install4j.runtime.beans.groups.VerticalFormComponentGroup" useExternalParametrization="true" externalParametrizationName="Customize title bar" externalParametrizationMode="include">
                 <serializedBean>
                   <property name="backgroundColor">
-                    <object class="java.awt.Color">
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
-                      <int>255</int>
+                    <object class="com.install4j.runtime.beans.LightOrDarkColor">
+                      <object class="java.awt.Color">
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                        <int>255</int>
+                      </object>
+                      <object class="java.awt.Color">
+                        <int>49</int>
+                        <int>52</int>
+                        <int>53</int>
+                        <int>255</int>
+                      </object>
                     </object>
                   </property>
                   <property name="borderSides">
@@ -985,14 +1004,14 @@ return true;</property>
   </installerGui>
   <mediaSets>
     <windows name="Windows" id="63">
-      <jreBundle usePack200="false" jreBundleSource="generated">
+      <jreBundle usePack200="false">
         <modules>
           <defaultModules set="jre" />
         </modules>
       </jreBundle>
     </windows>
     <windowsArchive name="Windows Archive" id="65">
-      <jreBundle jreBundleSource="generated">
+      <jreBundle>
         <modules>
           <defaultModules set="jre" />
         </modules>
