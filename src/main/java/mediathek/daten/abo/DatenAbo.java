@@ -221,7 +221,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
      *
      * @return true wenn Abo leer.
      */
-    public boolean isEmpty() {
+    public boolean isInvalid() {
         return getSender().isEmpty()
                 && getThema().isEmpty()
                 && getTitle().isEmpty()

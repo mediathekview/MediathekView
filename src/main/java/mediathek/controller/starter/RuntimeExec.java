@@ -35,6 +35,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -192,7 +194,7 @@ public class RuntimeExec {
                         try {
                             final long aktSize = Integer.parseInt(StringUtils.replace(s, "kB", ""));
                             mVFilmSize.setAktSize(aktSize * 1_000);
-                            long akt = start.startZeit.diffInSekunden();
+                            final var akt = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                             if (oldSecs < akt - 5) {
                                 start.bandbreite = (aktSize - oldSize) * 1_000 / (akt - oldSecs);
                                 oldSecs = akt;
@@ -240,7 +242,7 @@ public class RuntimeExec {
                 }
                 if (percent > (percent_start + 5)) {
                     // sonst macht es noch keinen Sinn
-                    long diffZeit = start.startZeit.diffInSekunden();
+                    final var diffZeit = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                     int diffProzent = percent - percent_start;
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);

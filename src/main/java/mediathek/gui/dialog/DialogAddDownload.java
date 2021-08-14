@@ -2,7 +2,10 @@ package mediathek.gui.dialog;
 
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
@@ -73,6 +76,16 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void init() {
+        final var listeSpeichern = Daten.listePset.getListeSpeichern();
+        if (listeSpeichern.isEmpty()) {
+            logger.error("No PSets available, closing dialog.");
+            dispose();
+        }
+        else if (listeSpeichern.size() == 1) {
+            // macht dann keinen Sinn
+            jComboBoxPset.setEnabled(false);
+        }
+
         // launch async tasks first
         var pool = Executors.newWorkStealingPool();
         var hdFuture = pool.submit(() -> {
@@ -88,18 +101,11 @@ public class DialogAddDownload extends JDialog {
             return datenFilm.getDateigroesse(url);
         });
 
-        jButtonDelHistory.setIcon(Icons.ICON_BUTTON_DEL);
-        jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
-
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
+
         jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonZiel.setText("");
-        if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            // Satz mit x, war wohl nix
-            beenden(false);
-        }
-
         jButtonZiel.addActionListener(l -> {
             var initialDirectory = "";
             if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
@@ -116,29 +122,25 @@ public class DialogAddDownload extends JDialog {
 
         jButtonOk.addActionListener(e -> {
             if (check()) {
-                beenden(true);
+                saveDownload();
             }
         });
         getRootPane().setDefaultButton(jButtonOk);
 
-        EscapeKeyHandler.installHandler(this, () -> beenden(false));
+        EscapeKeyHandler.installHandler(this, this::dispose);
+        jButtonAbbrechen.addActionListener(e -> dispose());
 
-        jButtonAbbrechen.addActionListener(e -> beenden(false));
-
+        jComboBoxPset.setModel(new DefaultComboBoxModel<>(listeSpeichern.getObjectDataCombo()));
         if (pSet != null) {
             jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
         } else {
-            pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
+            pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
         }
-        if (Daten.listePset.getListeSpeichern().size() == 1) {
-            // macht dann keinen Sinn
-            jLabelSet.setVisible(false);
-            jComboBoxPset.setVisible(false);
-            jComboBoxPset.setEnabled(false);
-        } else {
-            jComboBoxPset.addActionListener(e -> setupResolutionButtons());
-        }
+        jComboBoxPset.addActionListener(e -> setupResolutionButtons());
+
         jTextFieldSender.setText(' ' + datenFilm.getSender() + ":   " + datenFilm.getTitle());
+        jTextFieldSender.setBackground(UIManager.getColor("Label.background"));
+
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -162,7 +164,7 @@ public class DialogAddDownload extends JDialog {
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
-                        jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
+                        jTextFieldName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                     }
                 }
 
@@ -256,6 +258,7 @@ public class DialogAddDownload extends JDialog {
         //not needed anymore
         pool.shutdown();
 
+        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jButtonDelHistory.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
@@ -508,24 +511,26 @@ public class DialogAddDownload extends JDialog {
         return ok;
     }
 
-    private void beenden(boolean ok) {
-        if (ok) {
-            // jetzt wird mit den angegebenen Pfaden gearbeitet
-            datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
-            datenDownload.setGroesse(getFilmSize());
-            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+    /**
+     * Store download in list and start immediately if requested.
+     */
+    private void saveDownload() {
+        // jetzt wird mit den angegebenen Pfaden gearbeitet
+        datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString(), getFilmResolution().toString());
+        datenDownload.setGroesse(getFilmSize());
+        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
 
-            final var daten = Daten.getInstance();
-            daten.getListeDownloads().addMitNummer(datenDownload);
-            MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-            if (jCheckBoxStarten.isSelected()) {
-                // und evtl. auch gleich starten
-                datenDownload.startDownload();
-            }
+        final var daten = Daten.getInstance();
+        daten.getListeDownloads().addMitNummer(datenDownload);
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (jCheckBoxStarten.isSelected()) {
+            // und evtl. auch gleich starten
+            datenDownload.startDownload();
         }
+
         saveComboPfad(jComboBoxPfad, orgPfad);
-        this.dispose();
+        dispose();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -544,7 +549,7 @@ public class DialogAddDownload extends JDialog {
         jButtonDelHistory = new javax.swing.JButton();
         jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
         jCheckBoxInfodatei = new javax.swing.JCheckBox();
-        jLabelSet = new javax.swing.JLabel();
+        javax.swing.JLabel jLabelSet = new javax.swing.JLabel();
         jComboBoxPset = new javax.swing.JComboBox<>();
         jCheckBoxSubtitle = new javax.swing.JCheckBox();
         jPanelSize = new javax.swing.JPanel();
@@ -579,7 +584,8 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
 
-        jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
+        jCheckBoxInfodatei.setText("Lege Infodatei  an");
+        jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
 
         jLabelSet.setText("Set:");
 
@@ -614,7 +620,7 @@ public class DialogAddDownload extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxInfodatei)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxPfadSpeichern))
                             .addComponent(jTextFieldName))))
                 .addContainerGap())
@@ -683,7 +689,7 @@ public class DialogAddDownload extends JDialog {
         );
 
         jTextFieldSender.setEditable(false);
-        jTextFieldSender.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jTextFieldSender.setFont(jTextFieldSender.getFont().deriveFont(jTextFieldSender.getFont().getStyle() | java.awt.Font.BOLD));
         jTextFieldSender.setText(" ARD: Tatort, ...");
         jTextFieldSender.setBorder(javax.swing.BorderFactory.createTitledBorder("Film"));
 
@@ -740,7 +746,6 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JComboBox<String> jComboBoxPfad;
     private javax.swing.JComboBox<String> jComboBoxPset;
-    private javax.swing.JLabel jLabelSet;
     private javax.swing.JPanel jPanelSize;
     private javax.swing.JRadioButton jRadioButtonAufloesungHd;
     private javax.swing.JRadioButton jRadioButtonAufloesungHoch;

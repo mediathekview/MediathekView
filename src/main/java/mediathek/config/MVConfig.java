@@ -4,11 +4,12 @@ import mediathek.tool.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 
 public class MVConfig {
 
@@ -16,7 +17,6 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
-    private static final int MAX_FILTER = 5; //old filter profile code setting
 
     public static void loadSystemParameter() {
         //einmal die leeren mit den inits füllen
@@ -28,20 +28,13 @@ public class MVConfig {
         }
 
         if (Config.isDebugModeEnabled()) {
-            logger.debug("Setting FilmList import mode to MANUAL");
-            GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+            logger.debug("Debug mode enabled - Setting FilmList import mode to MANUAL");
+            GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
         }
 
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
 
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-    }
-
-    public static void check(Configs key, int min, int max) {
-        int v = getInt(key);
-        if (v < min || v > max) {
-            add(key, key.initValue);
-        }
     }
 
     public static synchronized void add(String key, String value) {
@@ -50,27 +43,6 @@ public class MVConfig {
 
     public static synchronized void add(Configs key, String value) {
         HASHMAP.put(key.cValue, value);
-    }
-
-    public static synchronized void add(Configs key, String value, int i) {
-        boolean ok = false;
-        String[] sa = {""};
-        String s = HASHMAP.get(key.cValue);
-        if (s != null) {
-            sa = split(s);
-            if (sa.length == MAX_FILTER) {
-                sa[i] = value;
-                ok = true;
-            }
-        }
-        if (!ok) {
-            // dann anlegen
-            sa = initArray(key);
-            sa[i] = value;
-        }
-        // und jetzt eintragen
-        s = addArray(sa);
-        HASHMAP.put(key.cValue, s);
     }
 
     public static synchronized String get(Configs key) {
@@ -111,19 +83,17 @@ public class MVConfig {
         }
     }
 
-    public static synchronized String[][] getAll() {
-        final LinkedList<String[]> liste = new LinkedList<>();
-        final Set<String> strings = HASHMAP.keySet();
-        final String[] setArray = strings.toArray(new String[0]);
-        for (String entry : setArray) {
-            String[] s = new String[2];
-            s[0] = entry;
-            s[1] = HASHMAP.get(entry);
-            liste.add(s);
-        }
-        listeSort(liste);
+    public static synchronized List<String[]> getSortedKVList() {
+        final List<String[]> liste = new ArrayList<>();
 
-        return liste.toArray(new String[][]{});
+        for (String entry : HASHMAP.keySet()) {
+            liste.add(new String[]{entry, HASHMAP.get(entry)});
+        }
+
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        liste.sort((o1, o2) -> sorter.compare(o1[0],o2[0]));
+
+        return liste;
     }
 
     private static String[] split(String sIn) {
@@ -139,50 +109,6 @@ public class MVConfig {
 
     }
 
-    private static String addArray(String[] arr) {
-        if (arr == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int k = 0; k < arr.length; ++k) {
-            sb.append(arr[k]);
-            if (k < arr.length - 1) {
-                sb.append(TRENNER);
-            }
-        }
-        return sb.toString();
-    }
-
-    private static String[] initArray(Configs key) {
-        String[] sa = new String[MAX_FILTER];
-        for (int k = 0; k < MAX_FILTER; ++k) {
-            sa[k] = key.initValue;
-        }
-        return sa;
-    }
-
-    private static void listeSort(LinkedList<String[]> liste) {
-        //Stringliste alphabetisch sortieren
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
-        if (liste != null) {
-            String str1;
-            String str2;
-            for (int i = 1; i < liste.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    str1 = liste.get(k - 1)[0];
-                    str2 = liste.get(k)[0];
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (sorter.compare(str1, str2) > 0) {
-                        liste.add(k - 1, liste.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     public enum Configs {
         //Programm-Configs, änderbar über Gui
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
@@ -194,8 +120,6 @@ public class MVConfig {
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         // Fenstereinstellungen
-        SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
-        SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
 
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
@@ -213,8 +137,6 @@ public class MVConfig {
         SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
         SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein", Boolean.TRUE.toString()),
-        // Extrafenster
-        SYSTEM_GROESSE_MANAGE_ABO("manage-abo-dialog-size"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
@@ -231,20 +153,11 @@ public class MVConfig {
         SYSTEM_BLACKLIST_FILMLAENGE("Blacklist-Filmlaenge", "0"),
         // Download
         SYSTEM_DIALOG_DOWNLOAD_D_STARTEN("Dialog-Download-D-Starten", Boolean.TRUE.toString()), // DialogDownload: Download sofort starten
-        SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT("Dialog-Download-Starten-Zeit"),
-        SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
         SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten", Boolean.FALSE.toString()),
         SYSTEM_DOWNLOAD_ERRORMSG("download-error-msg", Boolean.TRUE.toString()),
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
         // Abo
         SYSTEM_ABO_MIN_SIZE("Abo-Mindestdauer-Minuten"),
-        // MediaDB
-        SYSTEM_MEDIA_DB_DIALOG_GROESSE("Media_DB_Dialog-Groesse"),
-        SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN("Media_DB_Dialog-anzeigen"),
-        SYSTEM_MEDIA_DB_ECHTZEITSUCHE("Media_DB_Echtzeitsuche", Boolean.TRUE.toString()),
-        SYSTEM_MEDIA_DB_SUFFIX("Media_DB_Suffix"),
-        SYSTEM_MEDIA_DB_SUFFIX_OHNE("Media_DB_ohne-Suffix"),
-        SYSTEM_MEDIA_DB_EXPORT_DATEI("Media_DB_export-datei"),
         //Farben
         FARBE__FILM_LIVESTREAM("FARBE_FILM_LIVESTREAM"),
         FARBE__FILM_HISTORY("FARBE_FILM_HISTORY"),
@@ -284,13 +197,10 @@ public class MVConfig {
             initValue = init;
         }
 
-        public static boolean find(String value) {
-            for (Configs conf : values()) {
-                if (conf.cValue.equals(value)) {
-                    return true;
-                }
-            }
-            return false;
+        private static final EnumSet<MVConfig.Configs> CONFIGS_ENUM_SET = EnumSet.allOf(MVConfig.Configs.class);
+
+        public static boolean find(@NotNull final String value) {
+            return CONFIGS_ENUM_SET.stream().anyMatch(e -> e.cValue.equals(value));
         }
     }
 }

@@ -22,7 +22,6 @@ class SeenHistoryController : AutoCloseable {
     private val dataSource: SQLiteDataSource = SqlDatabaseConfig.dataSource
     private var deleteStatement: PreparedStatement? = null
     private var seenStatement: PreparedStatement? = null
-    private var manualInsertStatement: PreparedStatement? = null
 
     /**
      * Remove all entries from the database.
@@ -93,18 +92,6 @@ class SeenHistoryController : AutoCloseable {
             sendChangeMessage()
         } catch (ex: SQLException) {
             logger.error("markSeen", ex)
-        }
-    }
-
-    fun writeManualEntry(thema: String?, title: String?, url: String?) {
-        try {
-            manualInsertStatement!!.setString(1, thema)
-            manualInsertStatement!!.setString(2, title)
-            manualInsertStatement!!.setString(3, url)
-            manualInsertStatement!!.executeUpdate()
-            sendChangeMessage()
-        } catch (ex: SQLException) {
-            logger.error("writeManualEntry", ex)
         }
     }
 
@@ -243,7 +230,6 @@ class SeenHistoryController : AutoCloseable {
             insertStatement?.close()
             deleteStatement?.close()
             seenStatement?.close()
-            manualInsertStatement?.close()
             connection?.close()
 
             // at this stage we have closed everything and we don´t need the shutdown hook to cleanup
@@ -259,7 +245,6 @@ class SeenHistoryController : AutoCloseable {
         private const val INSERT_SQL = "INSERT INTO seen_history(thema,titel,url) values (?,?,?)"
         private const val DELETE_SQL = "DELETE FROM seen_history WHERE url = ?"
         private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE url = ?"
-        private const val MANUAL_INSERT_SQL = "INSERT INTO seen_history(thema, titel, url) VALUES (?,?,?)"
     }
 
     private fun performSqliteSetup() {
@@ -296,7 +281,6 @@ class SeenHistoryController : AutoCloseable {
             insertStatement = connection?.prepareStatement(INSERT_SQL)
             deleteStatement = connection?.prepareStatement(DELETE_SQL)
             seenStatement = connection?.prepareStatement(SEEN_SQL)
-            manualInsertStatement = connection?.prepareStatement(MANUAL_INSERT_SQL)
 
             installShutdownHook()
         } catch (ex: SQLException) {

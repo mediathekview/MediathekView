@@ -2,9 +2,9 @@ package mediathek.gui.dialog;
 
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.FileSpecifier;
 import mediathek.tool.FilenameUtils;
@@ -25,8 +25,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
-@SuppressWarnings("serial")
+
 public class MVPanelDownloadZiel extends JPanel {
     public boolean nameGeaendert;
     private final DatenDownload datenDownload;
@@ -40,7 +41,7 @@ public class MVPanelDownloadZiel extends JPanel {
         datenDownload = download;
         letztenPfadAnzeigen = letzterPfad;
         jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonDelPath.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
          jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
@@ -172,7 +173,7 @@ public class MVPanelDownloadZiel extends JPanel {
 
         // zur Sicherheit bei Unsinn im Set
         if (pfad.isEmpty()) {
-            pfad = GuiFunktionen.getStandardDownloadPath();
+            pfad = StandardLocations.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
             name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
@@ -219,8 +220,9 @@ public class MVPanelDownloadZiel extends JPanel {
                 //use the cross-platform swing chooser
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jComboBoxPath.getSelectedItem().toString().equals("")) {
-                    chooser.setCurrentDirectory(new File(jComboBoxPath.getSelectedItem().toString()));
+                var selItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();
+                if (!selItem.isEmpty()) {
+                    chooser.setCurrentDirectory(new File(selItem));
                 }
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 returnVal = chooser.showOpenDialog(null);

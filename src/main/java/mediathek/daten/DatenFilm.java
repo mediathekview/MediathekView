@@ -1,18 +1,17 @@
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.javafx.bookmark.BookmarkData;
-import mediathek.tool.*;
-import mediathek.tool.sql.SqlAutoRollback;
-import mediathek.tool.sql.SqlAutoSetAutoCommit;
+import mediathek.tool.FileSize;
+import mediathek.tool.FilmSize;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.datum.DatumFilm;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.Cleaner;
-import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
-public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneable {
+public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
     public static final int FILM_SENDER = 1;
     public static final int FILM_THEMA = 2;
@@ -72,7 +71,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * Internal film number, used for storage in database
      */
     private int databaseFilmNumber;
-    private Cleaner.Cleanable cleaner;
     private String websiteLink;
     private String description;
     private String urlKlein = "";
@@ -80,7 +78,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      * High Quality (formerly known as HD) URL if available.
      */
     private Optional<String> highQuality_url = Optional.empty();
-    private String aboName = "";
     private String datumLong = "";
     private String sender = "";
     private String thema = "";
@@ -108,15 +105,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public DatenFilm() {
         filmSize = new FilmSize(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
-
-        setupDatabaseCleanup();
     }
 
     public int getDuration() {
         return duration;
     }
 
-    public DatenAbo getAbo() {
+    public @Nullable DatenAbo getAbo() {
         return abo;
     }
 
@@ -145,14 +140,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
             highQuality_url = Optional.of(urlHd);
         else
             highQuality_url = Optional.empty();
-    }
-
-    public String getAboName() {
-        return aboName;
-    }
-
-    public void setAboName(String aboName) {
-        this.aboName = aboName;
     }
 
     public String getDatumLong() {
@@ -222,19 +209,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         return databaseFilmNumber;
     }
 
-    private void setupDatabaseCleanup() {
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
-            if (useCleaner)
-                installCleanupTask();
-        }
-    }
-
-    private void installCleanupTask() {
-        DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
-        cleaner = Daten.getInstance().getCleaner().register(this, task);
-    }
-
     /**
      * Get the file size of this film.
      *
@@ -244,30 +218,13 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         return filmSize;
     }
 
-    @Override
-    public void close() {
-        if (cleaner != null)
-            cleaner.clean();
-    }
-
     /**
      * Get the film description from database.
      *
      * @return the film description.
      */
     public String getDescription() {
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                 var statement = connection.createStatement();
-                 var rs = statement.executeQuery("SELECT desc FROM mediathekview.description WHERE id = " + databaseFilmNumber)) {
-                return (rs.next() ? rs.getString(1) : "");
-            } catch (SQLException ex) {
-                logger.error(ex);
-                return "";
-            }
-        } else {
-            return StringUtils.defaultString(description);
-        }
+        return StringUtils.defaultString(description);
     }
 
     /**
@@ -278,56 +235,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
      */
     public void setDescription(final String desc) {
         if (desc != null && !desc.isEmpty()) {
-            if (MemoryUtils.isLowMemoryEnvironment()) {
-                try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                     var ignored = new SqlAutoSetAutoCommit(connection, false);
-                     var tm = new SqlAutoRollback(connection);
-                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")) {
-                    mergeStatement.setInt(1, databaseFilmNumber);
-                    mergeStatement.setString(2, desc);
-                    mergeStatement.executeUpdate();
-                    tm.commit();
-                } catch (SQLException ex) {
-                    logger.error(ex);
-                }
-            } else
-                description = desc;
+            description = desc;
         }
     }
 
     public String getWebsiteLink() {
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                 var statement = connection.createStatement();
-                 var rs = statement.executeQuery("SELECT link FROM mediathekview.website_links WHERE id = " + databaseFilmNumber)) {
-                return (rs.next() ? rs.getString(1) : "");
-            } catch (SQLException ex) {
-                logger.error(ex);
-                return "";
-            }
-        } else
-            return websiteLink != null ? websiteLink : "";
+        return StringUtils.defaultString(websiteLink);
     }
 
     public void setWebsiteLink(String link) {
         if (link != null && !link.isEmpty()) {
-            if (MemoryUtils.isLowMemoryEnvironment()) {
-                try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                     var ignored = new SqlAutoSetAutoCommit(connection, false);
-                     var tm = new SqlAutoRollback(connection);
-                     var mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)")
-                ){
-                    mergeStatement.setInt(1, databaseFilmNumber);
-                    mergeStatement.setString(2, link);
-                    mergeStatement.executeUpdate();
-                    tm.commit();
-                }
-                catch (SQLException ex) {
-                    logger.error(ex);
-                }
-            } else {
-                websiteLink = link;
-            }
+            websiteLink = link;
         }
     }
 
@@ -425,7 +343,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
         ret.abo = this.abo;
         ret.highQuality_url = this.highQuality_url;
         ret.urlKlein = this.urlKlein;
-        ret.aboName = this.aboName;
         ret.datumLong = this.datumLong;
         ret.sender = this.sender;
         ret.thema = this.thema;
@@ -672,58 +589,4 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm>, Cloneabl
     public boolean isBookmarked() {
         return this.bookmark != null;
     }
-
-
-    public static class Database {
-        private Database() {
-        }
-
-        public static void closeDatabase() {
-            var ds = PooledDatabaseConnection.INSTANCE.getDataSource();
-            ds.close();
-        }
-
-        public static void createIndices() {
-            logger.trace("Creating SQL indices");
-            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                 var ignored = new SqlAutoSetAutoCommit(connection, false);
-                 var tm = new SqlAutoRollback(connection);
-                 var statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
-                tm.commit();
-            } catch (SQLException ex) {
-                logger.error(ex);
-            }
-            logger.trace("Finished creating SQL indices");
-        }
-
-        public static void initializeDatabase() {
-            logger.debug("initializeDatabase()");
-            try (var connection = PooledDatabaseConnection.INSTANCE.getDataSource().getConnection();
-                 var ignored = new SqlAutoSetAutoCommit(connection, false);
-                 var tm = new SqlAutoRollback(connection);
-                 var statement = connection.createStatement()) {
-                statement.executeUpdate("SET WRITE_DELAY 5000");
-
-                statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS mediathekview");
-                statement.executeUpdate("SET SCHEMA mediathekview");
-
-                statement.executeUpdate("DROP INDEX IF EXISTS IDX_DESC_ID");
-                statement.executeUpdate("DROP INDEX IF EXISTS IDX_WEBSITE_LINKS_ID");
-
-                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.description");
-                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.website_links");
-
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY, desc VARCHAR(1024))");
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY, link VARCHAR(2048))");
-                tm.commit();
-            }
-            catch (SQLException ex) {
-                logger.error(ex);
-            }
-            logger.debug("initializeDatabase() done.");
-        }
-    }
-
 }

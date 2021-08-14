@@ -25,7 +25,6 @@ import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.net.URISyntaxException
-import java.util.*
 import javax.swing.ImageIcon
 import javax.swing.JDialog
 import javax.swing.SwingUtilities
@@ -44,7 +43,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     private val cbSubtitle = DisabledCheckBox()
     private val lblGeo = Label()
     private val lblAbo = Label()
-    private val hyperlink = Hyperlink("Hier klicken")
+    private val hyperlink = Hyperlink("Link zur Webseite")
     private val lblDescription = TextArea()
 
     private fun installContextMenu(component: Label) {
@@ -139,7 +138,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 cbSubtitle.isSelected = currentFilm!!.hasSubtitle()
                 hyperlink.tooltip = Tooltip(currentFilm!!.websiteLink)
                 hyperlink.isDisable = false
-                lblAbo.text = currentFilm!!.aboName
+                lblAbo.text = currentFilm!!.abo?.name
             }
         }
     }
@@ -155,7 +154,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     }
 
     private fun buildLayout() {
-        val contentPane = contentPane
         contentPane.layout = BorderLayout()
         val newFxPanel = JFXPanel()
         contentPane.add(newFxPanel, BorderLayout.CENTER)
@@ -207,7 +205,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             migPane.add(lblGeo, CC().cell(1, 9))
             migPane.add(RightOrientedLabel("Abo:"), CC().cell(0, 10))
             migPane.add(lblAbo, CC().cell(1, 10))
-            migPane.add(RightOrientedLabel("Website:"), CC().cell(0, 11))
             migPane.add(RightOrientedLabel("Beschreibung:"), CC().cell(0, 12))
 
             hyperlink.contextMenu = createCopyUrlContextMenu()
@@ -223,7 +220,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                     }
                 }
             }
-            migPane.add(hyperlink, CC().cell(1, 11))
+            migPane.add(hyperlink, CC().cell(0, 11).spanX(2))
 
             lblDescription.isWrapText = true
             lblDescription.prefRowCount = 4

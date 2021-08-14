@@ -2,13 +2,13 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GuiFunktionen;
+import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -21,7 +21,6 @@ public class DialogEinstellungen extends JFrame {
     public boolean ok;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
-    private PanelMediaDB panelMediaDB;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
     private PanelEinstellungenColor panelEinstellungenColor;
@@ -37,7 +36,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
     private static final String NAME_notifications = "Benachrichtigungen";
     private static final String NAME_bandwidth = "Download";
-    private static final String NAME_mediaDB = "Mediensammlung";
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
     private static final String NAME_allgemeineEinstellungenGeo = "Standort & Geoblocking";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
@@ -60,7 +58,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
     // ########### Programme ##############
     private final DefaultMutableTreeNode treeNodeBandwidth = new DefaultMutableTreeNode(NAME_bandwidth);
-    private final DefaultMutableTreeNode treeNodeMediaDB = new DefaultMutableTreeNode(NAME_mediaDB);
 
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
@@ -82,32 +79,32 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void restoreSizeFromConfig() {
-        int breite = 0,
-                hoehe = 0,
-                posX = 0,
-                posY = 0;
+        int width, height, x, y;
+        final var config = ApplicationConfiguration.getConfiguration();
 
-        String[] arr = MVConfig.get(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN).split(":");
+        config.lock(LockMode.READ);
         try {
-            if (arr.length == 4) {
-                breite = Integer.parseInt(arr[0]);
-                hoehe = Integer.parseInt(arr[1]);
-                posX = Integer.parseInt(arr[2]);
-                posY = Integer.parseInt(arr[3]);
-            }
-        } catch (Exception ex) {
-            breite = 0;
-            hoehe = 0;
-            posX = 0;
-            posY = 0;
+            width = config.getInt(ApplicationConfiguration.SettingsDialog.WIDTH);
+            height = config.getInt(ApplicationConfiguration.SettingsDialog.HEIGHT);
+            x = config.getInt(ApplicationConfiguration.SettingsDialog.X);
+            y = config.getInt(ApplicationConfiguration.SettingsDialog.Y);
+        }
+        catch (Exception e) {
+            width = 0;
+            height = 0;
+            x = 0;
+            y = 0;
+        }
+        finally {
+            config.unlock(LockMode.READ);
         }
 
-        if (breite > 0 && hoehe > 0) {
-            setSize(breite, hoehe);
+        if (width > 0 && height > 0) {
+            setSize(width, height);
         }
 
-        if (posX > 0 && posY > 0) {
-            setLocation(posX, posY);
+        if (x > 0 && y > 0) {
+            setLocation(x, y);
         } else {
             final var parentFrame = MediathekGui.ui();
             if (parentFrame != null)
@@ -118,7 +115,6 @@ public class DialogEinstellungen extends JFrame {
     private void initPanels() {
         panelEinstellungen = new PanelEinstellungen();
         panelDownload = new PanelDownload();
-        panelMediaDB = new PanelMediaDB(daten, this);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert();
         panelEinstellungenGeo = new PanelEinstellungenGeo(this);
         panelEinstellungenColor = new PanelEinstellungenColor();
@@ -140,7 +136,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
-        treeNodeEinstellungen.add(treeNodeMediaDB);
         treeNodeStart.add(treeNodeEinstellungen);
 
         // ######## Filme ###############
@@ -179,10 +174,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_bandwidth -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelDownload);
-                    }
-                    case NAME_mediaDB -> {
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelMediaDB);
                     }
                     case NAME_allgemeineEinstellungen -> {
                         jPanelExtra.removeAll();
@@ -240,9 +231,25 @@ public class DialogEinstellungen extends JFrame {
         jTree1.setSelectionPath(tp);
     }
 
+    private void storeSizeInConfig() {
+        final var size = getSize();
+        final var location = getLocation();
+        final var config = ApplicationConfiguration.getConfiguration();
+
+        config.lock(LockMode.WRITE);
+        try {
+            config.setProperty(ApplicationConfiguration.SettingsDialog.WIDTH, size.width);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.HEIGHT, size.height);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.X, location.x);
+            config.setProperty(ApplicationConfiguration.SettingsDialog.Y, location.y);
+        }
+        finally {
+            config.unlock(LockMode.WRITE);
+        }
+    }
+
     private void beenden() {
-        //save the dialog size when we are closing...
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this);
+        storeSizeInConfig();
 
         daten.allesSpeichern();
         dispose();

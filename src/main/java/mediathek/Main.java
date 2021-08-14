@@ -9,8 +9,6 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.PooledDatabaseConnection;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
@@ -42,6 +40,7 @@ import picocli.CommandLine;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -49,9 +48,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Security;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Main {
@@ -79,14 +77,30 @@ public class Main {
         }
     }
 
+    /**
+     * Remove the old and now unsupported mediafile to trash.
+     * CAUTION: At least some UI MUST BE INITILIZED, otherwise on macOS VM will crash in native code!!!!
+     */
+    private static void removeMediaDb() {
+        try {
+            var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
+            if (Files.exists(mediaDbPath)) {
+                logger.info("Moving old unsupported media database to trash.");
+                mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
+            }
+        }
+        catch (IOException ignored) {
+        }
+    }
+
     private static void printJvmParameters() {
-        logger.info("=== JavaVM Parameter ===");
+        logger.debug("=== JavaVM Parameter ===");
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         var jvmArgs = runtimeMXBean.getInputArguments();
         for (var arg : jvmArgs) {
-            System.out.println(arg);
+            logger.debug(arg);
         }
-        logger.info("========================");
+        logger.debug("========================");
     }
 
     private static void printArguments(final String... aArguments) {
@@ -102,7 +116,7 @@ public class Main {
         final String fileName = "/mediathekview.log";
 
         if (!Config.isPortableMode())
-            path = StandardLocations.getSettingsDirectory().toString() + fileName;
+            path = StandardLocations.getSettingsDirectory() + fileName;
         else
             path = Config.baseFilePath + fileName;
 
@@ -227,9 +241,7 @@ public class Main {
     }
 
     private static void printVersionInformation() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-        logger.info("Programmstart: {}", formatter.format(LocalDateTime.ofInstant(Log.startZeit, ZoneId.systemDefault())));
+        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Log.startZeit));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         logger.info("=== Java Information ===");
@@ -245,24 +257,6 @@ public class Main {
         logger.info("OS Version: {}", SystemUtils.OS_VERSION);
         logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
         logger.info("Available Processors: {}", runtime.availableProcessors());
-    }
-
-    /**
-     * Copy user agent database to cache directory.
-     * Unfortunately we cannot work from within jar :(
-     */
-    private static void copyUserAgentDatabase() {
-        var strDatabase = PooledDatabaseConnection.getDatabaseCacheDirectory();
-
-        Path p = Paths.get(strDatabase + Konstanten.USER_AGENT_DATABASE);
-        logger.trace("deleting user agent database");
-        try {
-            Files.deleteIfExists(p);
-            logger.trace("copy user agent database to cache directory");
-            FileUtils.copyToFile(Main.class.getResourceAsStream("/database/" + Konstanten.USER_AGENT_DATABASE), p.toFile());
-        } catch (IOException e) {
-            logger.error("copyUserAgentDatabase failed:", e);
-        }
     }
 
     /**
@@ -336,6 +330,8 @@ public class Main {
 
             initializeJavaFX();
 
+            removeMediaDb();
+
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
             installSingleInstanceHandler();
@@ -380,14 +376,6 @@ public class Main {
         Daten.getInstance().launchHistoryDataLoading();
         
         Daten.getInstance().loadBookMarkData();
-
-        deleteDatabase();
-
-        if (MemoryUtils.isLowMemoryEnvironment()) {
-            DatenFilm.Database.initializeDatabase();
-        }
-
-        copyUserAgentDatabase();
 
         if (!SystemUtils.IS_OS_MAC_OSX)
             changeGlobalFontSize();
@@ -505,32 +493,50 @@ public class Main {
             //TODO replace with JavaFX dialog!!
             var dialog = new DialogStarteinstellungen(null);
             dialog.setVisible(true);
-            dialog.toFront();
+            if (dialog.getResultCode() == DialogStarteinstellungen.ResultCode.CANCELLED)
+            {
+                //show termination dialog
+                JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Einrichtung des Programms abgebrochen");
+                    alert.setContentText("""
+                            Sie haben die Einrichtung des Programms abgebrochen.
+                            MediathekView muss deswegen beendet werden.""");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.showAndWait();
+                });
+
+                //delete directory
+                try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            //.peek(System.out::println)
+                            .forEach(File::delete);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                System.exit(1);
+            }
             MVConfig.loadSystemParameter();
         }
     }
 
     private static void printDirectoryPaths() {
-        logger.trace("Programmpfad: " + MVFunctionSys.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory().toString());
+        logger.trace("Programmpfad: " + GuiFunktionenProgramme.getPathToApplicationJar());
+        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
     }
 
-    private static void deleteDatabase() {
-        if (!MemoryUtils.isLowMemoryEnvironment()) {
-            //we can delete the database as it is not needed.
-            try {
-                final String dbLocation = PooledDatabaseConnection.getDatabaseLocation() + "/mediathekview.mv.db";
-                Files.deleteIfExists(Paths.get(dbLocation));
-            } catch (IOException e) {
-                logger.error("deleteDatabase()", e);
-            }
-        }
-    }
+    public static SingleInstance SINGLE_INSTANCE_WATCHER;
 
+    /**
+     * Prevent startup of multiple instances of the app.
+     */
     private static void installSingleInstanceHandler() {
-        //prevent startup of multiple instances...
-        var singleInstanceWatcher = new SingleInstance();
-        if (singleInstanceWatcher.isAppAlreadyActive()) {
+        SINGLE_INSTANCE_WATCHER = new SingleInstance();
+        if (SINGLE_INSTANCE_WATCHER.isAppAlreadyActive()) {
             JavaFxUtils.invokeInFxThreadAndWait(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle(Konstanten.PROGRAMMNAME);
@@ -559,7 +565,7 @@ public class Main {
                 alert.setTitle(Konstanten.PROGRAMMNAME);
                 alert.setHeaderText("Nicht genügend Arbeitsspeicher");
                 alert.setContentText("""
-                        Es werden mindestens 640MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
+                        Es werden mindestens 768MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
 
                         Das Programm wird nun beendet.""");
                 alert.showAndWait();

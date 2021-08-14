@@ -1,6 +1,7 @@
 package mediathek.controller.starter;
 
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
@@ -20,93 +21,94 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static mediathek.controller.starter.StarterClass.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Download files via an external program.
  */
 public class ExternalProgramDownload extends Thread {
 
-    private static final Logger logger = LogManager.getLogger(ExternalProgramDownload.class);
+    private static final Logger logger = LogManager.getLogger();
+    private static final int STAT_START = 0;
+    private static final int STAT_LAUFEN = 1;
+    private static final int STAT_RESTART = 3;
+    private static final int STAT_PRUEFEN = 4;
+    // ab hier ist schluss
+    private static final int STAT_FERTIG_OK = 10;
+    private static final int STAT_FERTIG_FEHLER = 11;
+    private static final int STAT_ENDE = 99;
     private final DatenDownload datenDownload;
     private final Start start;
     private File file;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
-
+    private CompletableFuture<Void> infoFuture;
+    private CompletableFuture<Void> subtitleFuture;
 
     public ExternalProgramDownload(DatenDownload d) {
-        super();
-        setName("PROGRAMM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
+        setName("EXTERNAL PROGRAM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
 
         datenDownload = d;
         start = datenDownload.start;
         start.status = Start.STATUS_RUN;
         file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        notifyStartEvent(datenDownload);
-        try {
-            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
-                MVInfoFile infoFile = new MVInfoFile();
-                infoFile.writeInfoFile(datenDownload);
-            }
-            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
-                MVSubtitle subtitleFile = new MVSubtitle();
-                subtitleFile.writeSubtitle(datenDownload);
-            }
+        StarterClass.notifyStartEvent(datenDownload);
 
+        try {
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
-        } catch (IOException ignored) {
-        } catch (Exception ex) {
-            logger.error("ExternalProgramDownload", ex);
+        } catch (IOException e) {
+            logger.error("Failed to create directories", e);
         }
     }
 
     @Override
     public synchronized void run() {
         long filesize = -1;
-        final int stat_start = 0;
-        final int stat_laufen = 1;
-        final int stat_restart = 3;
-        final int stat_pruefen = 4;
-        // ab hier ist schluss
-        final int stat_fertig_ok = 10;
-        final int stat_fertig_fehler = 11;
-        final int stat_ende = 99;
-        int stat = stat_start;
+        int stat = STAT_START;
 
         MessageBus.getMessageBus().publishAsync(new DownloadStartEvent());
+
+        startInfoFileDownload();
+
+        startSubtitleFileDownload();
+
         try {
             if (!cancelDownload()) {
-                while (stat < stat_ende) {
+                while (stat < STAT_ENDE) {
                     switch (stat) {
-                        case stat_start:
+                        case STAT_START:
                             // versuch das Programm zu Starten
                             if (starten()) {
                                 if (datenDownload.isDownloadManager()) {
-                                    stat = stat_fertig_ok;
+                                    stat = STAT_FERTIG_OK;
                                 } else {
-                                    stat = stat_laufen;
+                                    stat = STAT_LAUFEN;
                                 }
                             } else {
-                                stat = stat_restart;
+                                stat = STAT_RESTART;
                             }
                             break;
-                        case stat_laufen:
+                        case STAT_LAUFEN:
                             //hier läuft der Download bis zum Abbruch oder Ende
                             try {
                                 if (start.stoppen) {
-                                    stat = stat_fertig_ok;
+                                    stat = STAT_FERTIG_OK;
                                     if (start.process != null) {
                                         start.process.destroy();
                                     }
                                 } else {
-                                    int exitV = start.process.exitValue();
-                                    if (exitV != 0) {
-                                        stat = stat_restart;
+                                    if (start.process.exitValue() != 0) {
+                                        stat = STAT_RESTART;
                                     } else {
-                                        stat = stat_pruefen;
+                                        /*
+                                        in case of ffmpeg there may be frames skipped which prevents correct progress calculation,
+                                        we therefore make percent max when the process terminated without error.
+                                         */
+                                        if (start.percent > 990)
+                                            start.percent = 1000;
+                                        stat = STAT_PRUEFEN;
                                     }
                                 }
                             } catch (Exception ex) {
@@ -116,57 +118,57 @@ public class ExternalProgramDownload extends Thread {
                                 }
                             }
                             break;
-                        case stat_restart:
+                        case STAT_RESTART:
                             if (!datenDownload.isRestart()) {
                                 // dann wars das
-                                stat = stat_fertig_fehler;
+                                stat = STAT_FERTIG_FEHLER;
                             } else if (filesize == -1) {
                                 //noch nichts geladen
-                                deleteIfEmpty(file.toPath());
+                                StarterClass.deleteIfEmpty(file.toPath());
                                 if (file.exists()) {
                                     // dann bestehende Datei weitermachen
                                     filesize = file.length();
-                                    stat = stat_start;
+                                    stat = STAT_START;
                                 } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                    if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                    if (start.startcounter < Konstanten.MAX_EXTERNAL_STARTS) {
                                         // dann nochmal von vorne
-                                        stat = stat_start;
+                                        stat = STAT_START;
                                     } else {
                                         // dann wars das
-                                        stat = stat_fertig_fehler;
+                                        stat = STAT_FERTIG_FEHLER;
                                     }
                             } else //jetzt muss das File wachsen, sonst kein Restart
                                 if (!file.exists()) {
                                     // dann wars das
-                                    stat = stat_fertig_fehler;
+                                    stat = STAT_FERTIG_FEHLER;
                                 } else if (file.length() > filesize) {
                                     //nur weitermachen wenn die Datei tasächlich wächst
                                     filesize = file.length();
-                                    stat = stat_start;
+                                    stat = STAT_START;
                                 } else {
                                     // dann wars das
-                                    stat = stat_fertig_fehler;
+                                    stat = STAT_FERTIG_FEHLER;
                                 }
                             break;
-                        case stat_pruefen:
+                        case STAT_PRUEFEN:
                             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
                                 //für die direkten Starts mit dem Button und die remote downloads wars das dann
-                                stat = stat_fertig_ok;
-                            } else if (pruefen(Daten.getInstance(), datenDownload, start)) {
+                                stat = STAT_FERTIG_OK;
+                            } else if (StarterClass.pruefen(Daten.getInstance(), datenDownload, start)) {
                                 //fertig und OK
-                                stat = stat_fertig_ok;
+                                stat = STAT_FERTIG_OK;
                             } else {
                                 //fertig und fehlerhaft
-                                stat = stat_fertig_fehler;
+                                stat = STAT_FERTIG_FEHLER;
                             }
                             break;
-                        case stat_fertig_fehler:
+                        case STAT_FERTIG_FEHLER:
                             start.status = Start.STATUS_ERR;
-                            stat = stat_ende;
+                            stat = STAT_ENDE;
                             break;
-                        case stat_fertig_ok:
+                        case STAT_FERTIG_OK:
                             start.status = Start.STATUS_FERTIG;
-                            stat = stat_ende;
+                            stat = STAT_ENDE;
                             break;
                     }
                 }
@@ -176,15 +178,58 @@ public class ExternalProgramDownload extends Thread {
             SwingUtilities.invokeLater(() ->
                     new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
         }
-        finalizeDownload(datenDownload, start, state);
+
+        StarterClass.finalizeDownload(datenDownload, start, state);
+
+        waitForPendingDownloads();
+
         MessageBus.getMessageBus().publish(new DownloadFinishedEvent());
+    }
+
+    private void startInfoFileDownload() {
+        final boolean downloadInfoFile = Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]);
+        if (downloadInfoFile) {
+            logger.trace("Starting info file download");
+
+            infoFuture = CompletableFuture.runAsync(() -> {
+                try {
+                    MVInfoFile infoFile = new MVInfoFile();
+                    infoFile.writeInfoFile(datenDownload);
+                } catch (IOException ex) {
+                    logger.error("Failed to write info file", ex);
+                }
+            });
+        }
+    }
+
+    private void startSubtitleFileDownload() {
+        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
+            logger.trace("Starting subtitle file download");
+            subtitleFuture = CompletableFuture.runAsync(() -> {
+                MVSubtitle subtitleFile = new MVSubtitle();
+                subtitleFile.writeSubtitle(datenDownload);
+            });
+        }
+    }
+
+    private void waitForPendingDownloads() {
+        try {
+            if (infoFuture != null)
+                infoFuture.get();
+
+            if (subtitleFuture != null)
+                subtitleFuture.get();
+
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("waitForPendingDownloads().", e);
+        }
     }
 
     private boolean starten() {
         boolean ret = false;
         // die Reihenfolge: startcounter - startmeldung ist wichtig!
         start.startcounter++;
-        startmeldung(datenDownload, start);
+        StarterClass.startmeldung(datenDownload, start);
         RuntimeExec runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
                 datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         start.process = runtimeExec.exec(true);

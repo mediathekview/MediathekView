@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
+import javafx.stage.Modality;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
@@ -34,6 +35,7 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
+import mediathek.tool.datum.Datum;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelDownload;
 import mediathek.tool.table.MVDownloadsTable;
@@ -46,6 +48,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -57,7 +60,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -92,11 +94,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
     private static final String ACTION_MAP_KEY_MAERK_AS_UNSEEN = "unseen";
     private static final String ACTION_MAP_KEY_START_DOWNLOAD = "dl_start";
-    private static final String ACTION_MAP_KEY_SEARCH_MEDIADB = "search_in_mediadb";
-    private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
-            DatenDownload.DOWNLOAD_BUTTON_DEL,
-            DatenDownload.DOWNLOAD_REF,
-            DatenDownload.DOWNLOAD_URL_RTMP};
+    private final static int[] COLUMNS_DISABLED = {DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
+            DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_URL_RTMP};
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
     private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
             + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
@@ -387,8 +386,8 @@ public class GuiDownloads extends AGuiTabPanel {
         miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
         miDownloadsStartAll.addActionListener(e -> starten(true));
 
-        JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads um xx:yy Uhr starten");
-        miDownloadStartTimed.addActionListener(e -> startAtTime());
+        JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads zeitverzögert starten...");
+        miDownloadStartTimed.addActionListener(e -> startAllDownloadsAtSpecificTime());
 
         JMenuItem miStopAllDownloads = new JMenuItem("Alle Downloads stoppen");
         miStopAllDownloads.addActionListener(e -> stoppen(true));
@@ -451,10 +450,6 @@ public class GuiDownloads extends AGuiTabPanel {
         miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
         miPlayDownload.addActionListener(e -> filmAbspielen());
 
-        JMenuItem miSearchMediaDb = new JMenuItem("Titel in der Mediensammlung suchen");
-        miSearchMediaDb.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
-        miSearchMediaDb.addActionListener(e -> searchInMediaDb());
-
         JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
         miInvertSelection.addActionListener(e -> tabelle.invertSelection());
 
@@ -495,8 +490,6 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(miMarkFilmAsUnseen);
         menu.add(miPlayDownload);
         menu.addSeparator();
-        menu.add(miSearchMediaDb);
-        menu.addSeparator();
         menu.add(miInvertSelection);
         menu.addSeparator();
         menu.add(miShutdownAfterDownload);
@@ -532,28 +525,16 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     public void starten(boolean alle) {
-        filmStartenWiederholenStoppen(alle, true);
-    }
-
-    public void startAtTime() {
-        filmStartAtTime();
+        filmStartenWiederholenStoppen(alle, true, true, false);
     }
 
     public void stoppen(boolean alle) {
-        filmStartenWiederholenStoppen(alle, false);
+        filmStartenWiederholenStoppen(alle, false, true, false);
     }
 
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
 
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
-
-
-    private void searchInMediaDb(DatenDownload datenDownload) {
-        final var mediaDB = mediathekGui.getMediaDatabaseDialog();
-        mediaDB.setVis();
-        if (datenDownload != null)
-            mediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-    }
 
     private void setupKeyMappings() {
         final InputMap im = tabelle.getInputMap();
@@ -562,7 +543,6 @@ public class GuiDownloads extends AGuiTabPanel {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_AS_SEEN);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MAERK_AS_UNSEEN);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_START_DOWNLOAD);
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), ACTION_MAP_KEY_SEARCH_MEDIADB);
 
         final ActionMap am = tabelle.getActionMap();
         am.put(ACTION_MAP_KEY_EDIT_DOWNLOAD, new AbstractAction() {
@@ -582,10 +562,9 @@ public class GuiDownloads extends AGuiTabPanel {
         am.put(ACTION_MAP_KEY_START_DOWNLOAD, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                filmStartenWiederholenStoppen(false, true);
+                filmStartenWiederholenStoppen(false, true, true, false);
             }
         });
-        am.put(ACTION_MAP_KEY_SEARCH_MEDIADB, new SearchInMediaDbAction());
     }
 
     private void init() {
@@ -846,12 +825,6 @@ public class GuiDownloads extends AGuiTabPanel {
         SwingUtilities.invokeLater(this::reloadTable);
     }
 
-    private void searchInMediaDb() {
-        final DatenDownload datenDownload = getSelDownload();
-        MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        searchInMediaDb(datenDownload);
-    }
-
     public synchronized void updateDownloads() {
         if (loadFilmlist) {
             // wird danach automatisch gemacht
@@ -865,7 +838,8 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
-            filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/, false /*fertige wieder starten*/);
+            // Auto DL should NOT start manually created downloads
+            filmStartenWiederholenStoppen(true, true, false, true);
         }
     }
 
@@ -884,9 +858,10 @@ public class GuiDownloads extends AGuiTabPanel {
     private ArrayList<DatenDownload> getSelDownloads() {
         ArrayList<DatenDownload> arrayDownloads = new ArrayList<>();
         final int[] rows = tabelle.getSelectedRows();
+        final var model = tabelle.getModel();
         if (rows.length > 0) {
             for (int row : rows) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                DatenDownload datenDownload = (DatenDownload) model.getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 arrayDownloads.add(datenDownload);
             }
         } else {
@@ -1016,7 +991,7 @@ public class GuiDownloads extends AGuiTabPanel {
             var zeit = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
 
             ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
-            LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
+            List<MVUsedUrl> urlAboList = new ArrayList<>();
 
             for (DatenDownload datenDownload : arrayDownloads) {
                 if (dauerhaft) {
@@ -1043,29 +1018,50 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void filmStartAtTime() {
+    private @NotNull List<DatenDownload> addAllDownloadsToList()
+    {
+        final var rowCount = tabelle.getRowCount();
+        final var tableModel = tabelle.getModel();
+        List<DatenDownload> destList = new ArrayList<>();
+
+        for (int i = 0; i < rowCount; ++i) {
+            DatenDownload datenDownload = (DatenDownload) tableModel.getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
+            destList.add(datenDownload);
+        }
+        return destList;
+    }
+
+    /**
+     * starts all downloads at a specific time.
+     */
+    public void startAllDownloadsAtSpecificTime() {
         // bezieht sich immer auf "alle"
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
-        ArrayList<DatenDownload> listeAllDownloads = new ArrayList<>();
-        ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
-        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
-        // ==========================
-        // erst mal die Liste nach der Tabelle sortieren
         if (tabelle.getRowCount() == 0) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Keine Downloads vorhanden");
+                alert.setContentText("Es sind keine Downloads in der Liste zum Starten vorhanden.");
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.showAndWait();
+            });
             return;
         }
-        for (int i = 0; i < tabelle.getRowCount(); ++i) {
-            // um in der Reihenfolge zu starten
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-            listeAllDownloads.add(datenDownload);
-            daten.getListeDownloads().remove(datenDownload);
-            daten.getListeDownloads().add(datenDownload);
-        }
+
+        // ==========================
+        // erst mal die Liste nach der Tabelle sortieren
+        tabelle.sortDownloadListByTableRows();
+        final var allDownloadsList = addAllDownloadsToList();
+
         // ========================
         // und jetzt abarbeiten
-        for (DatenDownload download : listeAllDownloads) {
+        ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
+
+        for (DatenDownload download : allDownloadsList) {
             // ==========================================
             // starten
             if (download.start != null) {
@@ -1098,21 +1094,19 @@ public class GuiDownloads extends AGuiTabPanel {
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(mediathekGui, daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(mediathekGui, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            mediathekGui.beenden(false, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
     }
 
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
-        filmStartenWiederholenStoppen(alle, starten, true /*auch fertige wieder starten*/);
-    }
-
-    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */, boolean fertige /*auch fertige wieder starten*/) {
+    private void filmStartenWiederholenStoppen(boolean processAllDownloads, boolean starten /* starten/wiederstarten oder stoppen */,
+                                               boolean restartFinishedDownloads /*auch fertige wieder starten*/,
+                                               boolean skipManualDownloads) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
@@ -1120,7 +1114,6 @@ public class GuiDownloads extends AGuiTabPanel {
         // wird immer vom Benutzer aufgerufen
         ArrayList<DatenDownload> listeDownloadsLoeschen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
-        ArrayList<DatenDownload> listeDownloadsMarkiert = new ArrayList<>();
 
         if (tabelle.getRowCount() == 0) {
             return;
@@ -1128,39 +1121,29 @@ public class GuiDownloads extends AGuiTabPanel {
 
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
-        if (starten && alle) {
-            //Liste in der Reihenfolge wie in der Tabelle sortieren
-            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                daten.getListeDownloads().remove(datenDownload);
-                daten.getListeDownloads().add(datenDownload);
-            }
+        if (starten && processAllDownloads) {
+            tabelle.sortDownloadListByTableRows();
         }
 
         // ==========================
         // die URLs sammeln
-        if (alle) {
-            for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                listeDownloadsMarkiert.add(datenDownload);
-            }
-        } else {
-            listeDownloadsMarkiert = getSelDownloads();
-        }
+        final var selectedDownloadsList = processAllDownloads ? addAllDownloadsToList() : getSelDownloads();
+
         if (!starten) {
             // dann das Starten von neuen Downloads etwas Pausieren
-            daten.starterClass.pause();
+            daten.getStarterClass().delayNewStarts();
         }
+
         // ========================
         // und jetzt abarbeiten
         int antwort = -1;
-        for (DatenDownload download : listeDownloadsMarkiert) {
+        for (DatenDownload download : selectedDownloadsList) {
             if (starten) {
                 // ==========================================
                 // starten
                 if (download.start != null) {
                     if (download.start.status == Start.STATUS_RUN
-                            || !fertige && download.start.status > Start.STATUS_RUN) {
+                            || !restartFinishedDownloads && download.start.status > Start.STATUS_RUN) {
                         // wenn er noch läuft gibts nix
                         // fertige bleiben auch unverändert
                         continue;
@@ -1171,7 +1154,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         if (antwort == -1) {
                             // nur einmal fragen
                             String text;
-                            if (listeDownloadsMarkiert.size() > 1) {
+                            if (selectedDownloadsList.size() > 1) {
                                 text = "Es sind bereits fertige Filme dabei,\n"
                                         + "diese nochmal starten?";
                             } else {
@@ -1191,7 +1174,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         }
                         listeDownloadsLoeschen.add(download);
                         if (download.isFromAbo()) {
-                            // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                            // wenn er schon fertig ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
@@ -1211,10 +1194,16 @@ public class GuiDownloads extends AGuiTabPanel {
         // jetzt noch die Starts stoppen
         daten.getListeDownloads().downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
+
+        //do not start manual downloads, only downloads which were created from abos
+        if (skipManualDownloads)
+            listeDownloadsStarten.removeIf(item -> !item.isFromAbo());
+
         if (starten) {
             //alle Downloads starten/wiederstarten
             DatenDownload.startenDownloads(listeDownloadsStarten);
         }
+
         reloadTable();
     }
 
@@ -1295,19 +1284,6 @@ public class GuiDownloads extends AGuiTabPanel {
         return arrayFilme;
     }
 
-    private class SearchInMediaDbAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            final int row = tabelle.getSelectedRow();
-            if (row != -1) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
-                searchInMediaDb(datenDownload);
-            }
-        }
-    }
-
     public class BeobMausTabelle extends MouseAdapter {
 
         private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
@@ -1358,20 +1334,14 @@ public class GuiDownloads extends AGuiTabPanel {
             if (row != -1) {
                 datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START) {
-                    // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             filmAbspielen();
-                        } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                            // Download starten
-                            filmStartenWiederholenStoppen(false, true /*starten*/);
-                        } else {
-                            // Download stoppen
-                            filmStartenWiederholenStoppen(false, false /*starten*/);
-                        }
+                        } else
+                            filmStartenWiederholenStoppen(false, datenDownload.start.status == Start.STATUS_ERR, true, false);
                     } else {
                         // Download starten
-                        filmStartenWiederholenStoppen(false, true /*starten*/);
+                        filmStartenWiederholenStoppen(false, true, true, false);
                     }
                 } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL) {
                     if (datenDownload.start != null) {
@@ -1413,13 +1383,13 @@ public class GuiDownloads extends AGuiTabPanel {
             itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
-            itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, true /* starten */));
+            itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, true, true, false));
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
-            itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, false /* starten */));
+            itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, false, true, false));
 
             jPopupMenu.addSeparator();
 
@@ -1445,13 +1415,14 @@ public class GuiDownloads extends AGuiTabPanel {
 
             jPopupMenu.addSeparator();
 
-            JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
+            JMenuItem itemAlleStarten = new JMenuItem("Alle Downloads starten");
             itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
+            itemAlleStarten.addActionListener(arg0 -> starten(true));
             jPopupMenu.add(itemAlleStarten);
-            itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, true /* starten */));
-            JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
+
+            JMenuItem itemAlleStoppen = new JMenuItem("Alle Downloads stoppen");
+            itemAlleStoppen.addActionListener(arg0 -> stoppen(true));
             jPopupMenu.add(itemAlleStoppen);
-            itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, false /* starten */));
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
@@ -1525,11 +1496,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
             jPopupMenu.addSeparator();
 
-            // Film in der MediaDB suchen
-            JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-            itemDb.addActionListener(e -> searchInMediaDb());
-            jPopupMenu.add(itemDb);
-
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(e -> {
@@ -1546,7 +1512,7 @@ public class GuiDownloads extends AGuiTabPanel {
                                     filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
                                     filmDownload.setUrlKlein("");
                                     // und starten
-                                    daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "");
+                                    daten.getStarterClass().urlMitProgrammStarten(gruppe, filmDownload, "");
                                 }
                                 catch (CloneNotSupportedException ex) {
                                     logger.error("Cloning is not supported", ex);

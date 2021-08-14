@@ -1,7 +1,6 @@
 package mediathek.tool.models;
 
 import mediathek.daten.abo.DatenAbo;
-import mediathek.tool.Datum;
 
 public class TModelAbo extends NonEditableTableModel {
     public TModelAbo(Object[][] data) {
@@ -11,12 +10,15 @@ public class TModelAbo extends NonEditableTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
-            case DatenAbo.ABO_NR, DatenAbo.ABO_MINDESTDAUER -> Integer.class;
-            case DatenAbo.ABO_DOWN_DATUM -> Datum.class;
             case DatenAbo.ABO_EINGESCHALTET -> Boolean.class;
             case DatenAbo.ABO_REF -> DatenAbo.class;
             default -> String.class;
         };
+    }
+
+    @Override
+    public int getColumnCount() {
+        return DatenAbo.MAX_ELEM;
     }
 
     @Override

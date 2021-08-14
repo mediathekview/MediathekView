@@ -27,13 +27,10 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
-    public static final long MINIMUM_MEMORY_THRESHOLD = 640 * FileUtils.ONE_MB;
-    public static final long LOW_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(13,7,1);
+    public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
+    public static final Version MVVERSION = new Version(13,8,0);
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
-    public static final String OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView";
-    public static final String USER_AGENT_DATABASE = "user_agents.mv.db";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
     public static final String FORMAT_ZIP = ".zip";
@@ -48,9 +45,9 @@ public class Konstanten {
      * Maximum number of backup files to be stored.
      */
     public static final short MAX_NUM_BACKUP_FILE_COPIES = 5;
-    public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
+    public static final byte MAX_EXTERNAL_STARTS = 3;
     public static final byte CONTINUE_DOWNLOAD = 60; //seconds
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 

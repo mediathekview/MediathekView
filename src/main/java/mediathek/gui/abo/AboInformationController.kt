@@ -4,6 +4,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Label
 import mediathek.config.Daten
+import mediathek.daten.abo.DatenAbo
 import mediathek.gui.messages.AboListChangedEvent
 import mediathek.javafx.tool.JavaFxUtils
 import mediathek.tool.MessageBus
@@ -30,11 +31,31 @@ class AboInformationController : Initializable {
         } else {
             totalAbos.text = "Gesamt: $numAbos Abos"
         }
-        activeAbos.text = "${listeAbo.activeAbos()} eingeschaltet"
-        inactiveAbos.text = "${listeAbo.inactiveAbos()} ausgeschaltet"
+
+        activeAbos.text = "${numActiveAbos()} eingeschaltet"
+        inactiveAbos.text = "${numInactiveAbos()} ausgeschaltet"
+    }
+
+    /**
+     * Get the number of abos which are active and used.
+     *
+     * @return num of used abos
+     */
+    private fun numActiveAbos(): Long {
+        return Daten.getInstance().listeAbo.stream().filter { obj: DatenAbo -> obj.isActive }.count()
+    }
+
+    /**
+     * Get the number of abos which are created but offline.
+     *
+     * @return number of abos which are offline
+     */
+    private fun numInactiveAbos(): Long {
+        return Daten.getInstance().listeAbo.stream().filter { abo: DatenAbo -> !abo.isActive }.count()
     }
 
     @Handler
+    @Suppress("UNUSED_PARAMETER")
     private fun handleAboChangedEvent(e: AboListChangedEvent) {
         JavaFxUtils.invokeInFxThreadAndWait { updateDisplayText() }
     }

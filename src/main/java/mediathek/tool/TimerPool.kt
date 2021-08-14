@@ -31,7 +31,7 @@ object TimerPool {
      * Follows the java.util.concurrent.Executors.DefaultThreadFactory implementation for
      * setting up the threads.
      */
-    private class TimerPoolThreadFactory() : ThreadFactory {
+    private class TimerPoolThreadFactory : ThreadFactory {
         private val group: ThreadGroup
         private val threadNumber = AtomicInteger(1)
 

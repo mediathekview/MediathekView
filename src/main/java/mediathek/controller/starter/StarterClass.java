@@ -11,15 +11,14 @@ import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.Datum;
 import mediathek.tool.MessageBus;
-import mediathek.tool.notification.thrift.MessageType;
-import mediathek.tool.notification.thrift.NotificationMessage;
+import mediathek.tool.notification.MessageType;
+import mediathek.tool.notification.NotificationMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
@@ -27,20 +26,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StarterClass {
     private static final Logger logger = LogManager.getLogger(StarterClass.class);
     private final Daten daten;
-    private final Starten starten;
-    private boolean pause = false;
+    private final StarterThread starterThread;
+    private final AtomicBoolean pause = new AtomicBoolean(false);
 
     public StarterClass(Daten daten) {
         this.daten = daten;
-        starten = new Starten();
-        starten.start();
+        starterThread = new StarterThread();
+        starterThread.start();
     }
 
     static boolean pruefen(Daten daten, DatenDownload datenDownload, Start start) {
@@ -86,11 +88,9 @@ public class StarterClass {
                     Files.delete(path);
             }
         } catch (IOException ex) {
-            logger.error("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
+            logger.trace("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
         }
     }
-
-    private static final FastDateFormat formatter = FastDateFormat.getInstance("HH:mm:ss");
 
     static void startmeldung(DatenDownload datenDownload, Start start) {
         ArrayList<String> text = new ArrayList<>();
@@ -107,7 +107,7 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        text.add("Startzeit: " + formatter.format(start.startZeit));
+        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.startTime));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
@@ -147,16 +147,12 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
 
-        text.add("Startzeit: " + formatter.format(start.startZeit));
-        text.add("Endzeit: " + formatter.format(new Date().getTime()));
+        final var endZeit = LocalDateTime.now();
+        text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.startTime));
+        text.add("Endzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(endZeit));
         text.add("Restarts: " + start.countRestarted);
-        text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
-        long dauer = start.startZeit.diffInMinuten();
-        if (dauer == 0) {
-            text.add("Dauer: <1 Min.");
-        } else {
-            text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
-        }
+        text.add("Dauer: " + Duration.between(start.startTime, endZeit).toSeconds() + " s");
+
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
                 text.add("Bytes gelesen: " + FileUtils.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
@@ -181,28 +177,23 @@ public class StarterClass {
     /**
      * Post a notification dialog whether download was successful or not.
      */
-    private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        final String[] m = {
-                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + FileUtils.byteCountToDisplaySize(datenDownload.mVFilmSize.getSize())
-        };
-
-        StringBuilder meldung = new StringBuilder();
-        for (String s : m) {
-            meldung.append(s).append('\n');
-        }
-
+    private static void addNotification(@NotNull DatenDownload datenDownload, boolean erfolgreich) {
         final NotificationMessage msg = new NotificationMessage();
-        msg.setMessage(meldung.toString());
+        final String message;
+
         if (erfolgreich) {
             msg.setType(MessageType.INFO);
-            msg.setTitle("Download war erfolgreich");
+            msg.setTitle("Download erfolgreich");
+            message = String.format("\"%s\" vom %s wurde geladen.", datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_SENDER]);
         }
         else {
             msg.setType(MessageType.ERROR);
-            msg.setTitle("Download war fehlerhaft");
+            msg.setTitle("Download fehlerhaft");
+            message = String.format("Fehler beim Laden von \"%s\" des Senders %s aufgetreten.", datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_SENDER]);
         }
+        msg.setMessage(message);
 
         Daten.getInstance().notificationCenter().displayNotification(msg);
     }
@@ -272,30 +263,34 @@ public class StarterClass {
         }
     }
 
-    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
+    public StarterThread getStarterThread() {
+        return starterThread;
+    }
+
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = ersterFilm.getUrl();
+        String url = film.getUrl();
         if (!url.isEmpty()) {
-            DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
+            DatenDownload d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
-            starten.launchDownloadThread(d);
+            starterThread.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            try (var historyController = new SeenHistoryController()){
-                historyController.writeManualEntry(ersterFilm.getThema(), ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            try (var historyController = new SeenHistoryController()) {
+                historyController.markSeen(film);
             }
 
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
-            if (ersterFilm.isBookmarked()) {
-              ersterFilm.getBookmark().setSeen(true);
+            if (film.isBookmarked()) {
+                film.getBookmark().setSeen(true);
             }
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             daten.getListeDownloadsButton().addMitNummer(d);
         }
     }
 
-    public void pause() {
-        pause = true;
+    public void delayNewStarts() {
+        pause.set(true);
     }
 
     private void reStartmeldung(DatenDownload datenDownload) {
@@ -310,12 +305,10 @@ public class StarterClass {
     // Hier wird dann gestartet
     // Ewige Schleife die die Downloads startet
     // ********************************************
-    private class Starten extends Thread {
-
-        public Starten() {
-            super();
-            setName("StarterClass.Starten Thread");
-            setDaemon(true);
+    public class StarterThread extends Thread {
+        private static final long DOWNLOAD_DELAY = 2;
+        public StarterThread() {
+            setName(StarterThread.class.toString());
         }
 
         @Override
@@ -325,12 +318,15 @@ public class StarterClass {
                     DatenDownload datenDownload;
                     while ((datenDownload = getNextStart()) != null) {
                         launchDownloadThread(datenDownload);
-                        //alle 3 Sekunden einen Download starten
-                        TimeUnit.SECONDS.sleep(3);
+                        //alle 2 Sekunden einen Download starten
+                        TimeUnit.SECONDS.sleep(DOWNLOAD_DELAY);
                     }
                     daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (Exception ex) {
+                    TimeUnit.SECONDS.sleep(DOWNLOAD_DELAY);
+                }
+                catch (InterruptedException ignored) {
+                }
+                catch (Exception ex) {
                     logger.error("Fehler in Starten Thread:", ex);
                 }
             }
@@ -339,17 +335,18 @@ public class StarterClass {
         private synchronized DatenDownload getNextStart() throws InterruptedException {
             // get: erstes passendes Element der Liste zurückgeben oder null
             // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-            if (pause) {
+            if (pause.get()) {
                 // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
                 // damit ein zu Löschender Download nicht noch schnell gestartet wird
                 TimeUnit.SECONDS.sleep(5);
-                pause = false;
+                pause.set(false);
             }
 
-            DatenDownload download = daten.getListeDownloads().getNextStart();
+            final var listeDownloads = daten.getListeDownloads();
+            DatenDownload download = listeDownloads.getNextStart();
             if (download == null) {
                 // dann versuchen einen Fehlerhaften nochmal zu starten
-                download = daten.getListeDownloads().getRestartDownload();
+                download = listeDownloads.getRestartDownload();
                 if (download != null) {
                     reStartmeldung(download);
                 }
@@ -363,7 +360,7 @@ public class StarterClass {
          * @param datenDownload The {@link mediathek.daten.DatenDownload} info object for download.
          */
         private void launchDownloadThread(DatenDownload datenDownload) {
-            datenDownload.start.startZeit = new Datum();
+            datenDownload.start.startTime = LocalDateTime.now();
             MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
 
             Thread downloadThread;

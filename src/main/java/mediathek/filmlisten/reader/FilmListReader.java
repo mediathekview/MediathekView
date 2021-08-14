@@ -11,7 +11,10 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.tool.*;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.InputStreamProgressMonitor;
+import mediathek.tool.ProgressMonitorInputStream;
+import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -48,7 +51,6 @@ public class FilmListReader implements AutoCloseable {
     private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, false);
     private final int max;
     private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
-    private final SenderFilmlistLoadApprover senderApprover = SenderFilmlistLoadApprover.INSTANCE;
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
@@ -324,7 +326,7 @@ public class FilmListReader implements AutoCloseable {
                 checkPlayList(datenFilm);
 
                 //if user specified he doesn´t want to load this sender, skip...
-                if (!senderApprover.isApproved(datenFilm.getSender()))
+                if (!SenderFilmlistLoadApprover.isApproved(datenFilm.getSender()))
                     continue;
 
                 if (!loadTrailer) {
@@ -402,9 +404,6 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
-        if (MemoryUtils.isLowMemoryEnvironment())
-            DatenFilm.Database.createIndices();
-
         notifyFertig(source, listeFilme);
     }
 
@@ -447,8 +446,9 @@ public class FilmListReader implements AutoCloseable {
      * @param source     source url as string
      * @param listeFilme the list to read to
      */
+    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     private void processFromWeb(URL source, ListeFilme listeFilme) {
-        final String clientId = Konstanten.MVVERSION.toString() + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
+        final String clientId = Konstanten.MVVERSION + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
 
         final Request request = new Request.Builder()
                 .url(source)

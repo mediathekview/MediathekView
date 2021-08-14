@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.function.Predicate;
 
 class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
-    private static final String[] EMPTY_STRING = new String[]{""};
+    private static final String[] EMPTY_STRING = {""};
     private final boolean isWhitelist;
     private final ListeBlacklist listeBlacklist;
 

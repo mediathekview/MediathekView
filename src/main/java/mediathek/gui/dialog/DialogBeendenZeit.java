@@ -3,7 +3,6 @@ package mediathek.gui.dialog;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.javafx.AppTerminationIndefiniteProgress;
@@ -20,33 +19,30 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings("serial")
 public class DialogBeendenZeit extends JDialog {
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten und danach Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM = "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden";
     private static final String DONT_START = "Downloads nicht starten";
-    private final JFrame frameParent;
-    private final Daten daten;
     private final ArrayList<DatenDownload> listeDownloadsStarten;
     /**
      * Indicates whether the application can terminate.
      */
-    private boolean applicationCanTerminate = false;
+    private boolean applicationCanTerminate;
     /**
      * Indicate whether computer should be shut down.
      */
-    private boolean shutdown = false;
+    private boolean shutdown;
     /**
      * JPanel for displaying the glassPane with the busy indicator label.
      */
-    private JPanel glassPane = null;
+    private JPanel glassPane;
 
     private AppTerminationIndefiniteProgress progressPanel;
 
     /**
      * The download monitoring {@link javax.swing.SwingWorker}.
      */
-    private SwingWorker<Void, Void> downloadMonitorWorker = null;
+    private SwingWorker<Void, Void> downloadMonitorWorker;
 
     /**
      * Return whether the user still wants to terminate the application.
@@ -66,15 +62,12 @@ public class DialogBeendenZeit extends JDialog {
         return shutdown;
     }
 
-    public DialogBeendenZeit(JFrame pparent, final Daten daten_, final ArrayList<DatenDownload> listeDownloadsStarten_) {
-        super(pparent, true);
+    public DialogBeendenZeit(JFrame parent, final ArrayList<DatenDownload> listeDownloadsStarten_) {
+        super(parent, true);
         initComponents();
-        this.frameParent = pparent;
-        daten = daten_;
         listeDownloadsStarten = listeDownloadsStarten_;
-        this.setTitle("Zeitverzögerter Download-Start");
-        if (frameParent != null) {
-            setLocationRelativeTo(frameParent);
+        if (parent != null) {
+            setLocationRelativeTo(parent);
         }
 
         EscapeKeyHandler.installHandler(this, this::escapeHandler);
@@ -96,24 +89,6 @@ public class DialogBeendenZeit extends JDialog {
         Date endDate = cal.getTime();
         SpinnerDateModel model = new SpinnerDateModel(now, startDate, endDate, Calendar.MINUTE);
 
-        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
-            try {
-                String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                heute += MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
-                Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
-
-                if (start.after(startDate)) {
-                    // nur wenn start nach "jetzt" kommt
-                    model = new SpinnerDateModel(start, startDate, endDate, Calendar.MINUTE);
-                } else {
-                    // sonst 24h dazuzählen
-                    start = new Date(start.getTime() + 24 * 60 * 60 * 1000);
-                    model = new SpinnerDateModel(start, startDate, endDate, Calendar.MINUTE);
-                }
-            } catch (Exception ignored) {
-            }
-        }
-
         jSpinnerTime.setModel(model);
         JSpinner.DateEditor dEditor = new JSpinner.DateEditor(jSpinnerTime, "dd.MM.yyy  HH:mm");
         jSpinnerTime.setEditor(dEditor);
@@ -122,38 +97,32 @@ public class DialogBeendenZeit extends JDialog {
         comboActions.addActionListener(e -> setCbShutdownCoputer());
 
         jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(frameParent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         setCbShutdownCoputer();
 
         cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
-        cbShutdownComputer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
 
         btnContinue.addActionListener(e -> {
             final String strSelectedItem = Objects.requireNonNull(comboActions.getSelectedItem()).toString();
-            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
 
             SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
             format.applyPattern("HH:mm");
             Date sp = (Date) jSpinnerTime.getValue();
             String strDate = format.format(sp);
 
-            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
-
             switch (strSelectedItem) {
-                case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                case WAIT_FOR_DOWNLOADS_AND_TERMINATE -> {
                     applicationCanTerminate = true;
                     waitUntilDownloadsHaveFinished();
-                    break;
-
-                case WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM:
+                }
+                case WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM -> {
                     applicationCanTerminate = false;
                     waitUntilDownloadsHaveFinished();
-                    break;
-
-                case DONT_START:
+                }
+                case DONT_START -> {
                     applicationCanTerminate = false;
                     dispose();
-                    break;
+                }
             }
         });
 
@@ -222,7 +191,7 @@ public class DialogBeendenZeit extends JDialog {
         Date sp = (Date) jSpinnerTime.getValue();
         String strDate = format.format(sp);
 
-        String strMessage = "Downloads starten:" + strDate;
+        String strMessage = "Downloads starten: " + strDate;
         progressPanel.setMessage(strMessage);
     }
 
@@ -264,97 +233,107 @@ public class DialogBeendenZeit extends JDialog {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var jLabel1 = new JLabel();
+        comboActions = new JComboBox<>();
+        btnContinue = new JButton();
+        cbShutdownComputer = new JCheckBox();
+        btnCancel = new JButton();
+        jButtonHilfe = new JButton();
+        var jLabel2 = new JLabel();
+        jSpinnerTime = new JSpinner();
+        var jLabel3 = new JLabel();
 
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        comboActions = new javax.swing.JComboBox<>();
-        btnContinue = new javax.swing.JButton();
-        cbShutdownComputer = new javax.swing.JCheckBox();
-        btnCancel = new javax.swing.JButton();
-        jButtonHilfe = new javax.swing.JButton();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jSpinnerTime = new javax.swing.JSpinner();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        //======== this ========
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        setTitle("Zeitverz\u00f6gerter Download-Start"); //NON-NLS
+        var contentPane = getContentPane();
 
-        jLabel1.setText("<html>Wie möchten Sie fortfahren<br>\nwenn alle Downloads fertig sind?</html>");
+        //---- jLabel1 ----
+        jLabel1.setText("Wie m\u00f6chten Sie fortfahren wenn alle Downloads fertig sind?"); //NON-NLS
 
-        btnContinue.setText("Weiter");
+        //---- btnContinue ----
+        btnContinue.setText("Weiter"); //NON-NLS
 
-        cbShutdownComputer.setText("Rechner herunterfahren");
+        //---- cbShutdownComputer ----
+        cbShutdownComputer.setText("Rechner herunterfahren"); //NON-NLS
 
-        btnCancel.setText("Zurück");
+        //---- btnCancel ----
+        btnCancel.setText("Abbrechen"); //NON-NLS
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfe.setToolTipText("Hilfe anzeigen");
+        //---- jButtonHilfe ----
+        jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        jLabel2.setText("alle Downloads starten um: ");
+        //---- jLabel2 ----
+        jLabel2.setText("Alle Downloads starten um: "); //NON-NLS
 
-        jLabel3.setText("Uhr");
+        //---- jLabel3 ----
+        jLabel3.setText("Uhr"); //NON-NLS
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                                        .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButtonHilfe)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnCancel)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnContinue))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(cbShutdownComputer)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(jLabel2)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jLabel3)))
-                                                .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap())
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                        .addComponent(comboActions, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(jButtonHilfe)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnCancel)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnContinue))
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addGroup(contentPaneLayout.createParallelGroup()
+                                .addComponent(cbShutdownComputer)
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jSpinnerTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel3)))
+                            .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel3))
-                                .addGap(18, 18, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(comboActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(cbShutdownComputer)
-                                                .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(btnContinue)
-                                                        .addComponent(btnCancel)))
-                                        .addComponent(jButtonHilfe))
-                                .addContainerGap())
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jSpinnerTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3))
+                    .addGap(18, 18, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(comboActions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addComponent(cbShutdownComputer)
+                            .addGap(18, 18, 18)
+                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnContinue)
+                                .addComponent(btnCancel)))
+                        .addComponent(jButtonHilfe))
+                    .addContainerGap())
         );
-
         pack();
+        setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnContinue;
-    private javax.swing.JCheckBox cbShutdownComputer;
-    private javax.swing.JComboBox<String> comboActions;
-    private javax.swing.JButton jButtonHilfe;
-    private javax.swing.JSpinner jSpinnerTime;
+    // Generated using JFormDesigner non-commercial license
+    private JComboBox<String> comboActions;
+    private JButton btnContinue;
+    private JCheckBox cbShutdownComputer;
+    private JButton btnCancel;
+    private JButton jButtonHilfe;
+    private JSpinner jSpinnerTime;
     // End of variables declaration//GEN-END:variables
 }

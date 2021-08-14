@@ -2,12 +2,14 @@ package mediathek.daten;
 
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
+import mediathek.tool.datum.Datum;
 import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -105,6 +107,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public int nr;
     public byte quelle = QUELLE_ALLE;
     public byte art = ART_DOWNLOAD;
+    private String websiteUrl = "";
 
     public DatenDownload() {
         initialize();
@@ -138,6 +141,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
         arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
 
+        websiteUrl = film.getWebsiteLink();
+
         // und jetzt noch die Dateigröße für die entsp. URL
         setGroesse("");
 
@@ -149,7 +154,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
      * Read the download data from config.
      * @param parser The parser for the config file
      * @return A valid DatenDownload object when everything went smooth.
-     * @throws XMLStreamException
+     * @throws XMLStreamException when something went wrong
      */
     public static DatenDownload getFromConfig(XMLStreamReader parser) throws XMLStreamException {
         DatenDownload dl = new DatenDownload();
@@ -184,32 +189,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return dl;
     }
 
-    /**
-     * Store the download data in config file.
-     *
-     * @param writer  the writer to the config file.
-     */
-    public void writeConfigEntry(XMLStreamWriter writer) {
-        final int xmlMax = arr.length;
-        try {
-            writer.writeStartElement(TAG);
-            writer.writeCharacters("\n");
-            for (int i = 0; i < xmlMax; ++i) {
-                if (!arr[i].isEmpty()) {
-                    writer.writeCharacters("\t"); //Tab
-                    writer.writeStartElement(XML_NAMES[i]);
-                    writer.writeCharacters(arr[i]);
-                    writer.writeEndElement();
-                    writer.writeCharacters("\n");
-                }
-            }
-            writer.writeEndElement();
-            writer.writeCharacters("\n");
-        } catch (Exception ex) {
-            logger.error("writeConfigEntry", ex);
-        }
-    }
-
     public static boolean anzeigen(int i) {
         if (spaltenAnzeigen == null) {
             return true;
@@ -218,13 +197,27 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
+    public void startDownload() {
+        // Start erstellen und zur Liste hinzufügen
+        this.start = new Start();
+
+        try (var historyController = new SeenHistoryController()){
+            historyController.markSeen(film);
+        }
+
+        MessageBus.getMessageBus().publishAsync(new StartEvent());
+    }
+
+    /**
+     * Starts all downloads from list but fire only one update event.
+     * @param downloads the list of downloads
+     */
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
         try (var historyController = new SeenHistoryController()){
             for (DatenDownload d : downloads) {
                 d.start = new Start();
-                historyController.writeManualEntry(d.arr[DatenDownload.DOWNLOAD_THEMA],
-                        d.arr[DatenDownload.DOWNLOAD_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                historyController.markSeen(d.film);
             }
         }
         MessageBus.getMessageBus().publishAsync(new StartEvent());
@@ -246,19 +239,27 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    private static String getDMY(String s, String datum) {
-        // liefert das Datum: Jahr - Monat - Tag aus dd.MM.yyyy
-        // %1 - Tag
-        // %2 - Monat
-        // %3 - Jahr
+    private enum DMYTag {
+        DAY,
+        MONTH,
+        YEAR
+    }
+
+    /**
+     * Return a specific string based on the specified tag.
+     * @param tag Specifies what to return from the date string (xx.xx.xxxx)
+     * @param datum a date string
+     * @return Return the string part specified by tag
+     */
+    private String getDMY(DMYTag tag, String datum) {
         String ret = "";
         if (!datum.isEmpty()) {
             try {
                 if (datum.length() == 10) {
-                    switch (s) {
-                        case DMYHMSTags.DAY -> ret = datum.substring(0, 2);
-                        case DMYHMSTags.MONTH -> ret = datum.substring(3, 5);
-                        case DMYHMSTags.YEAR -> ret = datum.substring(6);
+                    switch (tag) {
+                        case DAY -> ret = datum.substring(0, 2);
+                        case MONTH -> ret = datum.substring(3, 5);
+                        case YEAR -> ret = datum.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -268,19 +269,27 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private static String getHMS(String s, String zeit) {
-        // liefert die Zeit: Stunde, Minute, Sekunde aus "HH:mm:ss"
-        // %4 - Stunde
-        // %5 - Minute
-        // %6 - Sekunde
+    private enum HMSTag {
+        HOUR,
+        MINUTE,
+        SECOND
+    }
+
+    /**
+     * Return a specific string based on the specified tag.
+     * @param tag Specifies what to return from the time string ("HH:mm:ss")
+     * @param zeit a time string
+     * @return Return the string part specified by tag
+     */
+    private String getHMS(HMSTag tag, String zeit) {
         String ret = "";
         if (!zeit.isEmpty()) {
             try {
                 if (zeit.length() == 8) {
-                    switch (s) {
-                        case DMYHMSTags.HOUR -> ret = zeit.substring(0, 2);
-                        case DMYHMSTags.MINUTE -> ret = zeit.substring(3, 5);
-                        case DMYHMSTags.SECOND -> ret = zeit.substring(6);
+                    switch (tag) {
+                        case HOUR -> ret = zeit.substring(0, 2);
+                        case MINUTE -> ret = zeit.substring(3, 5);
+                        case SECOND -> ret = zeit.substring(6);
                     }
                 }
             } catch (Exception ex) {
@@ -311,6 +320,32 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         String ret = StringUtils.replace(datum, ":", "");
         ret = StringUtils.replace(ret, ".", "");
         return ret;
+    }
+
+    /**
+     * Store the download data in config file.
+     *
+     * @param writer  the writer to the config file.
+     */
+    public void writeConfigEntry(XMLStreamWriter writer) {
+        final int xmlMax = arr.length;
+        try {
+            writer.writeStartElement(TAG);
+            writer.writeCharacters("\n");
+            for (int i = 0; i < xmlMax; ++i) {
+                if (!arr[i].isEmpty()) {
+                    writer.writeCharacters("\t"); //Tab
+                    writer.writeStartElement(XML_NAMES[i]);
+                    writer.writeCharacters(arr[i]);
+                    writer.writeEndElement();
+                    writer.writeCharacters("\n");
+                }
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        } catch (Exception ex) {
+            logger.error("writeConfigEntry", ex);
+        }
     }
 
     public void setGroesseFromFilm() {
@@ -402,18 +437,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public void resetDownload() {
         mVFilmSize.reset();
         start = null;
-    }
-
-    public void startDownload() {
-        // Start erstellen und zur Liste hinzufügen
-        this.start = new Start();
-
-        try (var historyController = new SeenHistoryController()){
-            historyController.writeManualEntry(arr[DatenDownload.DOWNLOAD_THEMA],
-                    arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-        }
-
-        MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
@@ -596,6 +619,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = StringUtils.replace(befehlsString, "%F", arr[DOWNLOAD_URL_RTMP]);
         befehlsString = StringUtils.replace(befehlsString, "%a", arr[DOWNLOAD_ZIEL_PFAD]);
         befehlsString = StringUtils.replace(befehlsString, "%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
+        befehlsString = StringUtils.replace(befehlsString, "%w", websiteUrl);
 
         return befehlsString;
     }
@@ -671,7 +695,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         } else {
             // Pfad sinnvoll belegen
             if (pSet.getZielPfad().isEmpty()) {
-                path = GuiFunktionen.getStandardDownloadPath();
+                path = StandardLocations.getStandardDownloadPath();
             } else {
                 path = pSet.getZielPfad();
             }
@@ -700,7 +724,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
         // zur Sicherheit bei Unsinn im Set
         if (path.isEmpty()) {
-            path = GuiFunktionen.getStandardDownloadPath();
+            path = StandardLocations.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
             name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
@@ -756,12 +780,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
         replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
-        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%1", getDMY(DMYTag.DAY, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%2", getDMY(DMYTag.MONTH, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%3", getDMY(DMYTag.YEAR, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = StringUtils.replace(replStr, "%4", getHMS(HMSTag.HOUR, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
+        replStr = StringUtils.replace(replStr, "%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
 
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
@@ -860,18 +884,5 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
         }
         return ret;
-    }
-
-    /**
-     * Tags for getDMY() and getHMS() functions.
-     */
-    private static class DMYHMSTags {
-        public static final String DAY = "%1";
-        public static final String MONTH = "%2";
-        public static final String YEAR = "%3";
-
-        public static final String HOUR = "%4";
-        public static final String MINUTE = "%5";
-        public static final String SECOND = "%6";
     }
 }

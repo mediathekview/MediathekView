@@ -14,9 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@SuppressWarnings("serial")
 public class DialogProgrammOrdnerOeffnen extends JDialog {
-    public boolean ok = false;
+    public boolean ok;
     public String ziel;
     private final Frame parentComponent;
     private static final Logger logger = LogManager.getLogger();
@@ -54,7 +53,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
     private boolean check() {
         boolean ret = false;
         String programm = jTextFieldProgramm.getText();
-        if (!programm.equals("")) {
+        if (!programm.isEmpty()) {
             try {
                 if (!new File(programm).exists()) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -94,8 +93,9 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldProgramm.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldProgramm.getText()));
+                var directory = jTextFieldProgramm.getText();
+                if (!directory.isEmpty()) {
+                    chooser.setCurrentDirectory(new File(directory));
                 } else {
                     chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }

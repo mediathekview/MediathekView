@@ -1,6 +1,8 @@
 package mediathek.windows;
 
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.notification.INotificationCenter;
+import mediathek.tool.notification.WinNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,5 +31,10 @@ public class MediathekGuiWindows extends MediathekGui {
     @Override
     protected IndicatorThread createProgressIndicatorThread() {
         return new TaskbarIndicatorThread(this);
+    }
+
+    @Override
+    protected INotificationCenter getNotificationCenter() {
+        return new WinNotificationCenter();
     }
 }

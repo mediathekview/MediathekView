@@ -27,7 +27,6 @@ import java.util.List;
 
 public class PanelFilmlisteLaden extends JPanel {
     private final List<JCheckBox> senderCbList = new ArrayList<>();
-    private final SenderFilmlistLoadApprover approver = SenderFilmlistLoadApprover.INSTANCE;
 
     public PanelFilmlisteLaden(boolean inSettingsDialog) {
         super();
@@ -46,13 +45,12 @@ public class PanelFilmlisteLaden extends JPanel {
 
         setupSenderList();
         //load initial settings
-        senderCbList.forEach(cb -> cb.setSelected(approver.isApproved(cb.getText())));
+        senderCbList.forEach(cb -> cb.setSelected(SenderFilmlistLoadApprover.isApproved(cb.getText())));
         //now add the item listeners for update
         senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
 
         jRadioButtonManuell.addChangeListener(l -> {
             final var selected = jRadioButtonManuell.isSelected();
-            System.out.println("ACTIVE: " + selected);
             jTextFieldUrl.setEnabled(selected);
             jButtonDateiAuswaehlen.setEnabled(selected);
             jCheckBoxUpdate.setEnabled(selected);
@@ -119,9 +117,9 @@ public class PanelFilmlisteLaden extends JPanel {
         var selected = cb.isSelected();
         var sender = cb.getText();
         if (selected)
-            approver.approve(sender);
+            SenderFilmlistLoadApprover.approve(sender);
         else
-            approver.deny(sender);
+            SenderFilmlistLoadApprover.deny(sender);
     }
 
     private void init() {
@@ -139,9 +137,9 @@ public class PanelFilmlisteLaden extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jRadioButtonManuell.isSelected())
-                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.MANUAL);
+                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
                 else
-                    GuiFunktionen.setImportArtFilme(FilmListUpdateType.AUTOMATIC);
+                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.AUTOMATIC);
 
                 MessageBus.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
             }
@@ -160,7 +158,7 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void initRadio() {
-        switch (GuiFunktionen.getImportArtFilme()) {
+        switch (GuiFunktionen.getFilmListUpdateType()) {
             case MANUAL -> jRadioButtonManuell.setSelected(true);
             case AUTOMATIC -> jRadioButtonAuto.setSelected(true);
         }

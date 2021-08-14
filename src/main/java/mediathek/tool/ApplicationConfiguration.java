@@ -9,6 +9,7 @@ import org.apache.commons.configuration2.event.ConfigurationEvent;
 import org.apache.commons.configuration2.event.EventListener;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,10 +47,6 @@ public class ApplicationConfiguration {
             "application.ui.download.tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
-    public static final String APPLICATION_SHOW_NATIVE_NOTIFICATIONS =
-            "application.notifications.show_native";
-    public static final String APPLICATION_NATIVE_NOTIFICATIONS_SUPPORT =
-            "application.notifications.native_support";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
     /**
      * can be BASIC, HEADERS, BODY
@@ -61,7 +59,6 @@ public class ApplicationConfiguration {
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
     public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
-    public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
     public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
@@ -91,6 +88,17 @@ public class ApplicationConfiguration {
 
         loadOrCreateConfiguration();
         initializeTimedEventWriting();
+
+        config.lock(LockMode.WRITE);
+        try {
+            var version = Konstanten.MVVERSION;
+            config.setProperty("config.major", version.getMajor());
+            config.setProperty("config.minor", version.getMinor());
+            config.setProperty("config.patch", version.getPatch());
+        }
+        finally {
+            config.unlock(LockMode.WRITE);
+        }
     }
 
     public static ApplicationConfiguration getInstance() {
@@ -214,6 +222,18 @@ public class ApplicationConfiguration {
         public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
     }
 
+    public static class SettingsDialog {
+        public static final String WIDTH = "application.ui.settings_dialog.width";
+        public static final String HEIGHT = "application.ui.settings_dialog.height";
+        public static final String X = "application.ui.settings_dialog.x";
+        public static final String Y = "application.ui.settings_dialog.y";
+    }
+
+    /**
+     * A custom small thread scheduler exclusively for config changes.
+     */
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+
     /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case
      * this listener is called several times in a row the timer will get reset in order to ensure that
@@ -221,7 +241,7 @@ public class ApplicationConfiguration {
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
-            future = TimerPool.getTimerPool().schedule(() -> {
+            future = executor.schedule(() -> {
                 try {
                     logger.trace("Writing app configuration file");
                     handler.save();

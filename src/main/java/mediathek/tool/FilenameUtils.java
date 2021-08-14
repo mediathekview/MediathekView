@@ -281,28 +281,24 @@ public class FilenameUtils {
         String ret = input;
 
         switch (Functions.getOs()) {
-            case MAC:
-            case LINUX:
+            case MAC, LINUX -> {
                 //On OSX the VFS take care of writing correct filenames to FAT filesystems...
                 //Just remove the default illegal characters
                 ret = removeStartingDots(ret);
                 ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
-                break;
-
-            case WIN64:
-            case WIN32:
+            }
+            case WIN64, WIN32 -> {
                 //we need to be more careful on Windows when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
                 ret = removeWindowsTrailingDots(ret);
                 ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-                break;
-
-            default:
+            }
+            default -> {
                 //we need to be more careful on Linux when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
                 ret = removeStartingDots(ret);
                 ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-                break;
+            }
         }
 
         return ret;

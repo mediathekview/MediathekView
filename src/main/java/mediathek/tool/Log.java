@@ -3,14 +3,16 @@ package mediathek.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Log {
 
     public final static String LINE = "################################################################################";
-    public static final Instant startZeit = Instant.now();
+    public static final LocalDateTime startZeit = LocalDateTime.now();
     private static final ArrayList<String> logList = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger();
     private static boolean progress;
@@ -20,15 +22,13 @@ public class Log {
      */
     public static void printRuntimeStatistics() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        var systemZone = ZoneId.systemDefault();
-        var endZeit = Instant.now();
-        long runtimeDuration = Duration.between(startZeit,endZeit).toSeconds();
-        var str = LocalTime.MIN.plusSeconds(runtimeDuration);
+        final var endZeit = LocalDateTime.now();
+        final var runTime = LocalTime.MIN.plusSeconds(Duration.between(startZeit,endZeit).toSeconds());
 
         logger.info(LINE);
-        logger.info("   --> Start: {}", formatter.format(LocalDateTime.ofInstant(startZeit, systemZone)));
-        logger.info("   --> Ende: {}", formatter.format(LocalDateTime.ofInstant(endZeit, systemZone)));
-        logger.info("   --> Laufzeit: {}h {}m {}s", str.getHour(),str.getMinute(),str.getSecond());
+        logger.info("   --> Start: {}", formatter.format(startZeit));
+        logger.info("   --> Ende:  {}", formatter.format(endZeit));
+        logger.info("   --> Laufzeit: {}h {}m {}s", runTime.getHour(),runTime.getMinute(),runTime.getSecond());
         logger.info(LINE);
     }
 

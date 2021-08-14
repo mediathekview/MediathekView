@@ -3,7 +3,6 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVC;
 import mediathek.tool.cellrenderer.CellRendererColor;
 import mediathek.tool.models.TModelColor;
@@ -26,13 +25,29 @@ public class PanelEinstellungenColor extends JPanel {
         init();
     }
 
+    /**
+     * Force update of the user interface.
+     */
+    public void updateGui() {
+        try {
+            SwingUtilities.updateComponentTreeUI(MediathekGui.ui());
+            for (Frame f : Frame.getFrames()) {
+                SwingUtilities.updateComponentTreeUI(f);
+                for (Window w : f.getOwnedWindows()) {
+                    SwingUtilities.updateComponentTreeUI(w);
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
     private void init() {
         jTable1.addMouseListener(new BeobMausTabelle());
         jTable1.setDefaultRenderer(MVC.class, new CellRendererColor());
         jTable1.setModel(getModel());
         jButtonReset.addActionListener(e -> {
             Daten.mVColor.reset();
-            GuiFunktionen.updateGui(MediathekGui.ui());
+            updateGui();
             Daten.mVColor.save();
         });
     }
@@ -43,7 +58,7 @@ public class PanelEinstellungenColor extends JPanel {
             if (!selectedColor.equals(mvc.color)) {
                 mvc.set(selectedColor);
                 jTable1.setModel(getModel());
-                GuiFunktionen.updateGui(MediathekGui.ui());
+                updateGui();
                 Daten.mVColor.save();
             }
         }
