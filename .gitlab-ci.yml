@@ -44,7 +44,7 @@ stages:
 Build and Deploy nightly Linux:
   stage: deploy-nightly-lin
   script:
-    - mvn clean install -Plinux,install4j $MAVEN_CLI_OPTS
+    - mvn -B package -Plinux,64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
     - scripte/appimage.sh
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
@@ -62,7 +62,7 @@ Build and Deploy nightly Linux ARM:
 Build and Deploy nightly Windows:
   stage: deploy-nightly-win
   script:
-    - mvn clean install -Pwindows,!linux,install4j $MAVEN_CLI_OPTS
+    - mvn clean install -Pwindows,64bit,install4j,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -70,7 +70,7 @@ Build and Deploy nightly Windows:
 Build and Deploy nightly Windows 32bit:
   stage: deploy-nightly-win32
   script:
-    - mvn clean install -Pwindows32,!64bit,32bit,!linux,install4j $MAVEN_CLI_OPTS
+    - mvn clean install -Pwindows32,!64bit,32bit,install4j,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -88,7 +88,7 @@ Build and Deploy nightly Mac:
 Build and Deploy Linux:
   stage: deploy-lin
   script:
-    - mvn clean install -Plinux,install4j $MAVEN_CLI_OPTS
+    - mvn clean install -Plinux,64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
     - scripte/appimage.sh
     - /skripte/deploy.sh release linux
@@ -106,7 +106,7 @@ Build and Deploy Linux ARM:
 Build and Deploy Windows:
   stage: deploy-win
   script:
-    - mvn clean install -Pwindows,!linux,install4j $MAVEN_CLI_OPTS
+    - mvn clean install -Pwindows,64bit,install4j,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh release win
   rules:
     - if: $CI_COMMIT_TAG
@@ -114,7 +114,7 @@ Build and Deploy Windows:
 Build and Deploy Windows 32bit:
   stage: deploy-win32
   script:
-    - mvn clean install -Pwindows32,!64bit,32bit,!linux,install4j $MAVEN_CLI_OPTS
+    - mvn clean install -Pwindows32,!64bit,32bit,install4j,!linux $MAVEN_CLI_OPTS
     - /skripte/deploy.sh release win32
   rules:
     - if: $CI_COMMIT_TAG
