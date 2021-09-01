@@ -40,8 +40,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
@@ -440,6 +443,13 @@ public class FilmListReader implements AutoCloseable {
         }
     }
 
+    private String buildClientInfo()
+    {
+        List<Object> clienData = Arrays.asList(Konstanten.PROGRAMMNAME, Konstanten.MVVERSION, SystemUtils.OS_ARCH,
+                SystemUtils.OS_NAME, SystemUtils.OS_VERSION);
+        return clienData.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
+    }
+
     /**
      * Download and process a filmliste from the web.
      *
@@ -448,11 +458,9 @@ public class FilmListReader implements AutoCloseable {
      */
     @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     private void processFromWeb(URL source, ListeFilme listeFilme) {
-        final String clientId = Konstanten.MVVERSION + "," + SystemUtils.OS_ARCH + "," + SystemUtils.OS_NAME + "," + SystemUtils.OS_VERSION;
-
         final Request request = new Request.Builder()
                 .url(source)
-                .header("MV-Client", clientId)
+                .header("MV-Client", buildClientInfo())
                 .get()
                 .build();
 
