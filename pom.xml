@@ -1079,7 +1079,9 @@
                         <configuration>
                             <finalName>MediathekView-${project.version}-mac</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
-                            <descriptor>src/assembly/dep_mac.xml</descriptor>
+                            <descriptors>
+                                <descriptor>src/assembly/dep_mac.xml</descriptor>
+                            </descriptors>
                         </configuration>
                         <executions>
                             <execution>
