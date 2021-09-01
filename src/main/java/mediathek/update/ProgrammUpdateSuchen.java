@@ -30,33 +30,34 @@ public class ProgrammUpdateSuchen {
     private static final String UPDATE_ERROR_MESSAGE = "Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.\n" +
             "Die aktuelle Version konnte nicht ermittelt werden.";
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
+    private static final String SPI_RECEPTION_ERROR_MSG = "Did not receive ServerProgramInformation";
+    private static final String PI_VERSION_INVALID_MSG = "progInfo.version() is invalid";
     private final ArrayList<String[]> listInfos = new ArrayList<>();
 
     /**
      * Prüft auf neue Version; Updates und Programminfos.
-     * @param anzeigen wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
+     * @param showAlert wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
      * @param showProgramInformation show program info dialog
      * @param showAllInformation show all(outdated) infos
      * @param silent If true, do not show no program info dialog
      */
-    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation,
+    public void checkVersion(boolean showAlert, boolean showProgramInformation, boolean showAllInformation,
                              boolean silent) {
-        Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        opt.ifPresentOrElse(remoteProgramInfo -> {
+        retrieveProgramInformation().ifPresentOrElse(remoteProgramInfo -> {
             // Update-Info anzeigen
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation, silent);
 
                 if (remoteProgramInfo.getVersion().isInvalid()) {
-                    Exception ex = new RuntimeException("progInfo.version() is invalid");
-                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
-                    logger.warn("progInfo.version() is invalid");
+                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE,
+                            UPDATE_ERROR_MESSAGE, new RuntimeException(PI_VERSION_INVALID_MSG)));
+                    logger.warn(PI_VERSION_INVALID_MSG);
                 } else {
                     if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.getVersion())) {
                         UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.getVersion());
                         dlg.setVisible(true);
-                    } else if (anzeigen) {
+                    } else if (showAlert) {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle(Konstanten.PROGRAMMNAME);
@@ -68,9 +69,9 @@ public class ProgrammUpdateSuchen {
                 }
             });
         }, () -> {
-            logger.warn("did not receive ServerProgramInformation");
-            Exception ex = new RuntimeException("Did not receive ServerProgramInformation");
-            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
+            logger.warn(SPI_RECEPTION_ERROR_MSG);
+            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
+                    UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, new RuntimeException(SPI_RECEPTION_ERROR_MSG)));
         });
     }
 
@@ -142,7 +143,7 @@ public class ProgrammUpdateSuchen {
         var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PROGRAM_VERSION_PATH);
         assert url != null;
         final Request request = new Request.Builder().url(url).get().build();
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 try (InputStream is = body.byteStream();
