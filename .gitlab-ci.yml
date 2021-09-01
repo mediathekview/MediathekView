@@ -22,8 +22,8 @@ default:
     - ssh-keyscan -p 52150 mediathekview.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 52150 5.1.76.243 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_2.tar.gz
-    - tar -zxf install4j_unix_9_0_2.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_4.tar.gz
+    - tar -zxf install4j_unix_9_0_4.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
