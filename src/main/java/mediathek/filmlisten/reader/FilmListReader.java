@@ -352,7 +352,8 @@ public class FilmListReader implements AutoCloseable {
                         continue;
                 }
 
-                listeFilme.addAndInitialize(datenFilm);
+                datenFilm.init();
+                listeFilme.add(datenFilm);
 
                 if (milliseconds > 0) {
                     if (!datenFilm.isLivestream()) {
