@@ -3,6 +3,7 @@ package mediathek.controller;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.TimerPool;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +45,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
+    public int read(byte @NotNull [] b) throws IOException {
         final int bytesRead = iStream.read(b);
         if (bytesRead != -1) {
             calculationTask.incrementBytesRead(bytesRead);

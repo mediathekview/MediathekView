@@ -368,7 +368,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public final void init() {
+    public void init() {
         datumFilm = getDatumForObject();
         try {
             art = Byte.parseByte(arr[DOWNLOAD_ART]);
