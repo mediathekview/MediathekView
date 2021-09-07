@@ -432,7 +432,9 @@ public class FilmActionPanel {
         .addListener(
             (ListChangeListener<String>)
                 change -> {
-                  if (change.wasUpdated() && !filterLoading && !senderLoading && !themaLoading) {
+                logger.warn("Trying to save sender {} - filter {} sender {} thema {}", change, filterLoading , senderLoading, themaLoading);
+                  if (!filterLoading && !senderLoading && !themaLoading) {
+                      logger.warn("Saving sender cause on change");
                     filterConfig.setSender(new ArrayList<>(change.getList()));
                   }
                 });

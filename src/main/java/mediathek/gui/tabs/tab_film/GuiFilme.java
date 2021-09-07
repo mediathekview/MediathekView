@@ -786,8 +786,6 @@ public class GuiFilme extends AGuiTabPanel {
     private void setupZeitraumListener() {
         PauseTransition trans = new PauseTransition(Duration.millis(250));
         trans.setOnFinished(evt -> {
-            // reset sender filter first
-            filmActionPanel.senderList.getCheckModel().clearChecks();
             SwingUtilities.invokeLater(() -> {
                 daten.getListeBlacklist().filterListe();
                 loadTable();
