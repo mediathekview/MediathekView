@@ -1,12 +1,17 @@
 <u>**13.8.1**</u>
 
+- **FEATURE:** Die Filter "Sender" und "Thema" werden nun gespeichert
+- **FEATURE:** In den Einstellungen unter Allgemein ist eine neue Option "Filter sofort speichern" die es erlaubt einzustellen,
+  ob Änderungen an einem Filter sofort gespeichert werden sollen oder erst beim manuellen Speichern mit dem neuen
+  "Filter Änderungen speichern" Knopf im Filter Dialog.
+- Ist "Filter sofort speichern" nicht aktiv werden Filter Änderungen zurückgesetzt, wenn MediathekView beendet wird oder der Filter gewechselt wird.
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
 - **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
 - **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele ggültige Ergebnisse heraus. Dies wurde behoben.
 - **BUGFIX:** Seltener Absturz des Programms beim Start im Zusammenhang mit Abos wurde behoben.
 - **BUGFIX:** Minimal- und Maximallänge im Filter lässt sich nun wieder vollständig einstellen.
 - Filtergeschwindigkeit beim Einlesen der Filmliste verbessert.
-  
+
 <u>**13.8**</u>
 
 - **Java wurde auf Version 16 aktualisiert.**
