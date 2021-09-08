@@ -1,3 +1,7 @@
+<u>**13.8.1**</u>
+
+- **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
+  
 <u>**13.8**</u>
 
 - **Java wurde auf Version 16 aktualisiert.**
