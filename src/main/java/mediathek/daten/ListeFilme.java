@@ -2,8 +2,9 @@ package mediathek.daten;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.javafx.EventObservableList;
+import ca.odell.glazedlists.event.ListEventListener;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
@@ -25,8 +26,22 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     /**
      * javafx proxy class to the sender list.
      */
-    private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
+    private final ObservableList<String> obs_senderList;
     public boolean neueFilme;
+
+    public ListeFilme() {
+        /**
+         * Nicklas 11.09.2021:
+         * This is needed so the filter sender list changes correctly.
+         * With other solutions after a sender list change no sender checks could be loaded anymore.
+         */
+        obs_senderList = FXCollections.observableArrayList();
+        m_senderList.addListEventListener((ListEventListener<? super String>)
+                        listChange -> {
+                            obs_senderList.clear();
+                            obs_senderList.addAll(m_senderList);
+                        });
+    }
 
     /**
      * Get the basic sender channel list, useful e.g. for swing models

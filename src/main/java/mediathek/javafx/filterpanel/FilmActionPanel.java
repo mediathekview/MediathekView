@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  */
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
-    private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
+  private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
@@ -155,7 +155,8 @@ public class FilmActionPanel {
         configurationEvent -> {
           String eventPropertyName = configurationEvent.getPropertyName();
           if (eventPropertyName != null
-              && eventPropertyName.startsWith(FilterConfiguration.FILTER_CONFIG_PROPERTIES_NAME_START)
+              && eventPropertyName.startsWith(
+                  FilterConfiguration.FILTER_CONFIG_PROPERTIES_NAME_START)
               && !FilterConfiguration.FILTER_CONFIG_PROPERTIES_NAME_START.equals(eventPropertyName)
               && !configurationEvent.isBeforeUpdate()) {
             viewSettingsPane.setSaveButtonDisabled(false);
@@ -276,7 +277,10 @@ public class FilmActionPanel {
     senderList
         .getItems()
         .addListener(
-            (ListChangeListener<? super String>) listChangeListener -> loadSavedSenderChecks());
+            (ListChangeListener<? super String>)
+                listChangeListener -> {
+                  loadSavedSenderChecks();
+                });
     senderList
         .getCheckModel()
         .getCheckedItems()
@@ -297,10 +301,11 @@ public class FilmActionPanel {
     }
 
     senderLoading = true;
-    IndexedCheckModel<String> senderCheckModel = senderList.getCheckModel();
     List<String> loadedSender = filterConfig.getSender();
+    IndexedCheckModel<String> senderCheckModel = senderList.getCheckModel();
     senderCheckModel.clearChecks();
     loadedSender.forEach(senderCheckModel::check);
+
     updateThemaBox();
     senderLoading = false;
   }
@@ -432,9 +437,14 @@ public class FilmActionPanel {
         .addListener(
             (ListChangeListener<String>)
                 change -> {
-                logger.warn("Trying to save sender {} - filter {} sender {} thema {}", change, filterLoading , senderLoading, themaLoading);
+                  logger.warn(
+                      "Trying to save sender {} - filter {} sender {} thema {}",
+                      change,
+                      filterLoading,
+                      senderLoading,
+                      themaLoading);
                   if (!filterLoading && !senderLoading && !themaLoading) {
-                      logger.warn("Saving sender cause on change");
+                    logger.warn("Saving sender cause on change");
                     filterConfig.setSender(new ArrayList<>(change.getList()));
                   }
                 });
