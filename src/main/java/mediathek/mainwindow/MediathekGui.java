@@ -567,11 +567,12 @@ public class MediathekGui extends JFrame {
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
             if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
+                loadFilmListAction.setEnabled(false);
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
-                    FilmeLaden filmeLaden = new FilmeLaden(daten);
-                    filmeLaden.loadFilmlist("", false);
+                    performFilmListLoadOperation(false);
                 }
+                loadFilmListAction.setEnabled(true);
             }
         };
 
