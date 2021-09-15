@@ -988,7 +988,7 @@ public class MediathekGui extends JFrame {
 
         tabFilme.fap.filterDialog.dispose();
 
-        Log.printRuntimeStatistics();
+        RuntimeStatistics.printRuntimeStatistics();
 
         dispose();
 
