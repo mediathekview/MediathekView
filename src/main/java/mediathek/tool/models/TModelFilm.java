@@ -112,12 +112,6 @@ public class TModelFilm extends AbstractTableModel {
     public void addAll(List<DatenFilm> listeFilme) {
         final int oldRowCount = dataList.size();
         dataList.addAll(listeFilme);
-        fireTableRowsInserted(oldRowCount, dataList.size());
-    }
-
-    public void addRow(DatenFilm film) {
-        dataList.add(film);
-        final int rowCount = dataList.size();
-        fireTableRowsInserted(rowCount, rowCount);
+        fireTableRowsInserted(oldRowCount, oldRowCount + dataList.size());
     }
 }
