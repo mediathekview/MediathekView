@@ -43,7 +43,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -59,7 +58,7 @@ public class FilmListReader implements AutoCloseable {
      */
     protected int DECOMPRESSOR_MEMORY_LIMIT = -1;
     private int progress;
-    private long milliseconds;
+    private IDateFilter dateFilter;
     private String sender = "";
     private String thema = "";
 
@@ -355,15 +354,7 @@ public class FilmListReader implements AutoCloseable {
                 datenFilm.init();
                 listeFilme.add(datenFilm);
 
-                if (milliseconds > 0) {
-                    if (!datenFilm.isLivestream()) {
-                        // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
-                        // wenns drin bleibt, kann mans noch ändern
-                        if (!checkDate(datenFilm)) {
-                            listeFilme.remove(datenFilm);
-                        }
-                    }
-                }
+                dateFilter.filter(datenFilm);
             }
         }
 
@@ -381,22 +372,18 @@ public class FilmListReader implements AutoCloseable {
             datenFilm.setPlayList(true);
     }
 
-    private void checkDays(long days) {
-        if (days > 0) {
-            milliseconds = System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS);
-        } else {
-            milliseconds = 0;
-        }
-    }
-
-    public void readFilmListe(String source, final ListeFilme listeFilme, int days) {
+    public void readFilmListe(String source, @NotNull ListeFilme listeFilme, int days) {
         try {
             logger.trace("Liste Filme lesen von: {}", source);
             listeFilme.clear();
 
-            notifyStart(source); // für die Progressanzeige
+            if (days == 0) {
+                dateFilter = new NoOpDateFilter();
+            } else {
+                dateFilter = new DateFilter(listeFilme, days);
+            }
 
-            checkDays(days);
+            notifyStart(source); // für die Progressanzeige
 
             if (source.startsWith("http")) {
                 final URL sourceUrl = new URL(source);
@@ -485,15 +472,6 @@ public class FilmListReader implements AutoCloseable {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
         }
-    }
-
-    /**
-     * @param film film to be checked.
-     * @return true if film should be displayed
-     */
-    private boolean checkDate(@NotNull DatenFilm film) {
-        final var time = film.getDatumFilm().getTime();
-        return time == 0 || time >= milliseconds;
     }
 
     private void notifyStart(String url) {
