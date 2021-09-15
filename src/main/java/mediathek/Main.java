@@ -241,7 +241,7 @@ public class Main {
     }
 
     private static void printVersionInformation() {
-        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Log.startZeit));
+        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(RuntimeStatistics.startZeit));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         logger.info("=== Java Information ===");
