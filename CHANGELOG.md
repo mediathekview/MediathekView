@@ -1,6 +1,7 @@
 <u>**13.8.1**</u>
 
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
+- **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
 - Filtergeschwindigkeit beim Einlesen der Filmliste verbessert.
   
 <u>**13.8**</u>

@@ -375,6 +375,9 @@ public class PanelEinstellungen extends JPanel {
 
                 //---- jSpinnerDays ----
                 jSpinnerDays.setToolTipText("<html>Es werden nur Filme der letzten <i>xx</i> Tage geladen.<br>Bei \"Alle\" werden alle Filme geladen.<br>(Eine kleinere Filmliste kann bei Rechnern mit wenig Speicher hilfreich sein.)<br><br>\nAuswirkung hat das erst <b>nach dem Neuladen der kompletten Filmliste</b>.</html>"); //NON-NLS
+                jSpinnerDays.setMinimumSize(new Dimension(100, 30));
+                jSpinnerDays.setPreferredSize(new Dimension(100, 30));
+                jSpinnerDays.setMaximumSize(new Dimension(150, 30));
 
                 //---- jButtonLoad ----
                 jButtonLoad.setText("Filmliste jetzt neu laden"); //NON-NLS

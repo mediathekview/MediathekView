@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.12" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -141,6 +141,9 @@ new FormModel {
 							}
 						}
 						"toolTipText": "<html>Es werden nur Filme der letzten <i>xx</i> Tage geladen.<br>Bei \"Alle\" werden alle Filme geladen.<br>(Eine kleinere Filmliste kann bei Rechnern mit wenig Speicher hilfreich sein.)<br><br>\nAuswirkung hat das erst <b>nach dem Neuladen der kompletten Filmliste</b>.</html>"
+						"minimumSize": new java.awt.Dimension( 100, 30 )
+						"preferredSize": new java.awt.Dimension( 100, 30 )
+						"maximumSize": new java.awt.Dimension( 150, 30 )
 						auxiliary() {
 							"model.noCode": true
 						}
