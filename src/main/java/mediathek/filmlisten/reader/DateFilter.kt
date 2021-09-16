@@ -19,14 +19,8 @@ internal class DateFilter(listeFilme: ListeFilme, days: Int) : IDateFilter {
 
     override fun filter(film: DatenFilm) {
         // do not filter livestreams
-        if (film.isLivestream)
-            return
-
-        // muss "rückwärts" laufen, da das Datum sonst 2x gebaut werden muss
-        // wenns drin bleibt, kann mans noch ändern
-        if (!checkDate(film)) {
-            listeFilme.remove(film)
-        }
+        if (film.isLivestream || checkDate(film))
+            listeFilme.add(film)
     }
 
     init {
