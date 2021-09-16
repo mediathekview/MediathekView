@@ -351,8 +351,8 @@ public class FilmListReader implements AutoCloseable {
                         continue;
                 }
 
+                //just initialize the film object, rest will be done in one of the filters
                 datenFilm.init();
-                listeFilme.add(datenFilm);
 
                 dateFilter.filter(datenFilm);
             }
@@ -378,7 +378,7 @@ public class FilmListReader implements AutoCloseable {
             listeFilme.clear();
 
             if (days == 0) {
-                dateFilter = new NoOpDateFilter();
+                dateFilter = new NoOpDateFilter(listeFilme);
             } else {
                 dateFilter = new DateFilter(listeFilme, days);
             }
