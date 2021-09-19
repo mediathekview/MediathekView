@@ -298,6 +298,14 @@ public class Main {
             logger.info("Configuring for non-portable mode");
     }
 
+    private static void setupCpuAffinity() {
+        final int numCpus = Config.getNumCpus();
+        if (numCpus != 0) {
+            var affinity = Affinity.getAffinityImpl();
+            affinity.setDesiredCpuAffinity(numCpus);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -324,12 +332,7 @@ public class Main {
 
             setupLogging();
             printPortableModeInfo();
-
-            final int numCpus = Config.getNumCpus();
-            if (numCpus != 0) {
-                var affinity = Affinity.getAffinityImpl();
-                affinity.setDesiredCpuAffinity(numCpus);
-            }
+            setupCpuAffinity();
 
             initializeJavaFX();
 
