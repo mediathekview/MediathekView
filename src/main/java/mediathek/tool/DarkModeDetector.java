@@ -104,7 +104,7 @@ public class DarkModeDetector {
     }
 
     public static Color getMacOSAccentColor() {
-        if (Functions.getOs() != Functions.OperatingSystemType.MAC)
+        if (Functions.getOs() != OperatingSystemType.MAC)
             return MacOSAccentColor.MULTI_COLOR.getColorAqua();
 
         final boolean isDarkMode = isMacOsDarkMode();
