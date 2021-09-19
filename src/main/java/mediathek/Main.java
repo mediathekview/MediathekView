@@ -256,7 +256,11 @@ public class Main {
         logger.info("Operating System: {}", SystemUtils.OS_NAME);
         logger.info("OS Version: {}", SystemUtils.OS_VERSION);
         logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
-        logger.info("Available Processors: {}", runtime.availableProcessors());
+        if (DarkModeDetector.hasDarkModeDetectionSupport())
+            logger.info("OS Dark Mode enabled: {}", DarkModeDetector.isDarkMode());
+        else
+            logger.info("OS Dark Mode detection not supported");
+        logger.info("OS Available Processors: {}", runtime.availableProcessors());
     }
 
     /**
@@ -298,7 +302,6 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        Functions.disableAccessWarnings();
         setupEnvironmentProperties();
 
         if (GraphicsEnvironment.isHeadless()) {
