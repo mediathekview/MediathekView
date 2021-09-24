@@ -253,6 +253,8 @@ public class FilmActionPanel {
         e -> {
           senderLoading = true;
           filterConfig.clearCurrentFilter();
+          //Sometimes the checks aren't reset right. This should do the trick
+          senderList.getCheckModel().clearChecks();
           restoreConfigSettings();
           senderLoading = false;
         });
