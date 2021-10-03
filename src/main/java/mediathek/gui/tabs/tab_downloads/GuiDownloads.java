@@ -5,6 +5,8 @@ import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TabPane;
 import javafx.stage.Modality;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -986,6 +988,25 @@ public class GuiDownloads extends AGuiTabPanel {
             ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
             if (arrayDownloads.isEmpty()) {
                 return;
+            } else if (dauerhaft) {
+                boolean confirmDeletion = JavaFxUtils.invokeInFxThreadAndWait(() -> {
+                    ButtonType buttonYes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType buttonNo = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    Alert alert = new Alert(
+                        Alert.AlertType.CONFIRMATION,
+                        "Sollen die ausgewählten Downloads wirklich entgültig entfernt werden?",
+                        buttonYes,
+                        buttonNo);
+                    alert.setTitle(Konstanten.PROGRAMMNAME);
+                    alert.setHeaderText("Downloads entgültig entfernen?");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    Optional<ButtonType> result = alert.showAndWait();
+
+                    return result.orElse(buttonNo) != buttonNo;
+                });
+                if (!confirmDeletion) {
+                    return;
+                }
             }
 
             var zeit = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
