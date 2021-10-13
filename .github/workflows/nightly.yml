@@ -85,7 +85,7 @@ jobs:
       - name: Download install4j
         uses: wei/curl@v1
         with:
-          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_4.tar.gz' --output install4j.tar.gz
+          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_5.tar.gz' --output install4j.tar.gz
       - name: Extract install4j
         run: tar -zxvf install4j.tar.gz
 
