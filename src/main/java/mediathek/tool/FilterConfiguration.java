@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 
 public class FilterConfiguration {
@@ -131,9 +130,8 @@ public class FilterConfiguration {
   @SafeVarargs
   private boolean migrateAll(Supplier<Boolean>... migrationSteps) {
     return !Arrays.stream(migrationSteps)
-        .map(Supplier::get)
-        .filter(Boolean::booleanValue)
-        .collect(Collectors.toUnmodifiableList())
+            .map(Supplier::get)
+            .filter(Boolean::booleanValue).toList()
         .isEmpty();
   }
 
@@ -178,7 +176,7 @@ public class FilterConfiguration {
     return this;
   }
 
-  private String toFilterConfigNameWithCurrentFilter(String filterConfigNamePattern) {
+  protected String toFilterConfigNameWithCurrentFilter(String filterConfigNamePattern) {
     return String.format(filterConfigNamePattern, getCurrentFilterID());
   }
 
@@ -428,14 +426,12 @@ public class FilterConfiguration {
 
   public List<UUID> getAvailableFilterIds() {
     return getAvailableFilters().stream()
-        .map(FilterDTO::id)
-        .collect(Collectors.toUnmodifiableList());
+            .map(FilterDTO::id).toList();
   }
 
   public List<String> getAvailableFilterNames() {
     return getAvailableFilters().stream()
-        .map(FilterDTO::name)
-        .collect(Collectors.toUnmodifiableList());
+            .map(FilterDTO::name).toList();
   }
 
   public List<FilterDTO> getAvailableFilters() {
@@ -449,12 +445,11 @@ public class FilterConfiguration {
               }
             });
     return availableFilterKeys.stream()
-        .map(
-            key ->
-                new FilterDTO(
-                    UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]),
-                    configuration.getProperty(key).toString()))
-        .collect(Collectors.toUnmodifiableList());
+            .map(
+                    key ->
+                            new FilterDTO(
+                                    UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]),
+                                    configuration.getProperty(key).toString())).toList();
   }
 
   public String getFilterName(UUID id) {

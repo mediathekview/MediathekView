@@ -6,7 +6,6 @@ import org.apache.commons.configuration2.event.ConfigurationEvent;
 import org.apache.commons.configuration2.event.EventListener;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CachedFilterConfiguration extends FilterConfiguration {
   private final XMLConfiguration cachedConfiguration;
@@ -35,6 +34,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     cachedConfiguration.addEventListener(ConfigurationEvent.ANY, eventListener);
   }
 
+  @Override
   public boolean isShowHdOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -42,6 +42,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowHdOnly(boolean showHdOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -50,10 +51,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
-  private String toFilterConfigNameWithCurrentFilter(String filterConfigNamePattern) {
-    return String.format(filterConfigNamePattern, getCurrentFilterID());
-  }
-
+  @Override
   public boolean isShowSubtitlesOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -61,6 +59,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowSubtitlesOnly(boolean showSubtitlesOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -69,6 +68,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isShowNewOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -76,6 +76,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowNewOnly(boolean showNewOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -84,6 +85,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public List<String> getSender() {
     return cachedConfiguration.getList(
         String.class,
@@ -91,6 +93,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         Collections.emptyList());
   }
 
+  @Override
   public CachedFilterConfiguration setSender(List<String> sender) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SENDER.getKey()),
@@ -98,12 +101,14 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public String getThema() {
     return cachedConfiguration.getString(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
         "");
   }
 
+  @Override
   public CachedFilterConfiguration setThema(String thema) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
@@ -111,6 +116,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isShowBookMarkedOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -118,6 +124,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowBookMarkedOnly(boolean showBookMarkedOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -126,6 +133,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isShowUnseenOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -133,6 +141,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowUnseenOnly(boolean showUnseenOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -141,6 +150,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isShowLivestreamsOnly() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -148,6 +158,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setShowLivestreamsOnly(boolean showLivestreamsOnly) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -156,6 +167,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isDontShowAbos() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -163,6 +175,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setDontShowAbos(boolean dontShowAbos) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -171,6 +184,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isDontShowTrailers() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -178,6 +192,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setDontShowTrailers(boolean dontShowTrailers) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -186,6 +201,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isDontShowSignLanguage() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -193,6 +209,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setDontShowSignLanguage(boolean dontShowSignLanguage) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -201,6 +218,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public boolean isDontShowAudioVersions() {
     return cachedConfiguration.getBoolean(
         toFilterConfigNameWithCurrentFilter(
@@ -208,6 +226,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         false);
   }
 
+  @Override
   public CachedFilterConfiguration setDontShowAudioVersions(boolean dontShowAudioVersions) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -216,6 +235,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public double getFilmLengthMin() {
     return cachedConfiguration.getDouble(
         toFilterConfigNameWithCurrentFilter(
@@ -223,6 +243,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         0.0d);
   }
 
+  @Override
   public CachedFilterConfiguration setFilmLengthMin(double filmLengthMin) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -231,6 +252,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public double getFilmLengthMax() {
     return cachedConfiguration.getDouble(
         toFilterConfigNameWithCurrentFilter(
@@ -238,6 +260,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         110.0d);
   }
 
+  @Override
   public CachedFilterConfiguration setFilmLengthMax(double filmLengthMax) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -246,12 +269,14 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public String getZeitraum() {
     return cachedConfiguration.getString(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()),
         ZeitraumSpinner.UNLIMITED_VALUE);
   }
 
+  @Override
   public CachedFilterConfiguration setZeitraum(String zeitraum) {
     cachedConfiguration.setProperty(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()),
@@ -259,6 +284,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public CachedFilterConfiguration clearCurrentFilter() {
     Arrays.stream(FilterConfigurationKeys.values())
         .map(FilterConfigurationKeys::getKey)
@@ -267,10 +293,12 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public UUID getCurrentFilterID() {
     return getCurrentFilter().id();
   }
 
+  @Override
   public FilterDTO getCurrentFilter() {
     if (!cachedConfiguration.containsKey(FILTER_CONFIG_PROPERTIES_NAME_START)
         || cachedConfiguration.get(UUID.class, FILTER_CONFIG_PROPERTIES_NAME_START) == null) {
@@ -288,30 +316,31 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return new FilterDTO(currentFilterId, getFilterName(currentFilterId));
   }
 
+  @Override
   public CachedFilterConfiguration setCurrentFilter(FilterDTO currentFilter) {
     return setCurrentFilter(currentFilter.id());
   }
 
+  @Override
   public CachedFilterConfiguration setCurrentFilter(UUID currentFilterID) {
     cachedConfiguration.setProperty(FILTER_CONFIG_PROPERTIES_NAME_START, currentFilterID);
-    //Persist the current filter. This should be always persisted.
+    // Persist the current filter. This should be always persisted.
     configuration.setProperty(FILTER_CONFIG_PROPERTIES_NAME_START, currentFilterID);
     currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
     return this;
   }
 
+  @Override
   public List<UUID> getAvailableFilterIds() {
-    return getAvailableFilters().stream()
-        .map(FilterDTO::id)
-        .collect(Collectors.toUnmodifiableList());
+    return getAvailableFilters().stream().map(FilterDTO::id).toList();
   }
 
+  @Override
   public List<String> getAvailableFilterNames() {
-    return getAvailableFilters().stream()
-        .map(FilterDTO::name)
-        .collect(Collectors.toUnmodifiableList());
+    return getAvailableFilters().stream().map(FilterDTO::name).toList();
   }
 
+  @Override
   public List<FilterDTO> getAvailableFilters() {
     List<String> availableFilterKeys = new ArrayList<>();
     cachedConfiguration
@@ -323,14 +352,14 @@ public class CachedFilterConfiguration extends FilterConfiguration {
               }
             });
     return availableFilterKeys.stream()
-        .map(
-            key ->
-                new FilterDTO(
-                    UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]),
-                    cachedConfiguration.getProperty(key).toString()))
-        .collect(Collectors.toUnmodifiableList());
+            .map(
+                    key ->
+                            new FilterDTO(
+                                    UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]),
+                                    cachedConfiguration.getProperty(key).toString())).toList();
   }
 
+  @Override
   public String getFilterName(UUID id) {
     return getAvailableFilters().stream()
         .filter(filter -> filter.id().equals(id))
@@ -339,6 +368,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
         .orElse("");
   }
 
+  @Override
   public CachedFilterConfiguration addNewFilter(FilterDTO filterDTO) {
     cachedConfiguration.addProperty(
         FILTER_PANEL_AVAILABLE_FILTERS + filterDTO.id(), filterDTO.name());
@@ -346,14 +376,17 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
+  @Override
   public CachedFilterConfiguration addNewFilter(UUID filterId, String filterName) {
     return addNewFilter(new FilterDTO(filterId, filterName));
   }
 
+  @Override
   public CachedFilterConfiguration deleteFilter(FilterDTO filterToDelete) {
     return deleteFilter(filterToDelete.id());
   }
 
+  @Override
   public CachedFilterConfiguration deleteFilter(UUID idToDelete) {
     boolean filterToDeleteIsCurrentFilter = idToDelete.equals(getCurrentFilterID());
     if (filterToDeleteIsCurrentFilter) {
@@ -361,7 +394,7 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     }
     cachedConfiguration
         .getKeys()
-        .forEachRemaining(key -> clearPropertyWithKeyIfContainsId(idToDelete, key));
+        .forEachRemaining(key -> clearPropertyWithKeyIfContainsIdCached(idToDelete, key));
     availableFiltersChangedCallbacks.forEach(Runnable::run);
     if (filterToDeleteIsCurrentFilter) {
       currentFilterChangedCallbacks.forEach(consumer -> consumer.accept(getCurrentFilter()));
@@ -369,12 +402,13 @@ public class CachedFilterConfiguration extends FilterConfiguration {
     return this;
   }
 
-  private void clearPropertyWithKeyIfContainsId(UUID idToDelete, String key) {
+  private void clearPropertyWithKeyIfContainsIdCached(UUID idToDelete, String key) {
     if (key.contains(idToDelete.toString())) {
       cachedConfiguration.clearProperty(key);
     }
   }
 
+  @Override
   public CachedFilterConfiguration renameCurrentFilter(String newName) {
     cachedConfiguration.setProperty(FILTER_PANEL_AVAILABLE_FILTERS + getCurrentFilterID(), newName);
     availableFiltersChangedCallbacks.forEach(Runnable::run);
