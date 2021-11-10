@@ -83,6 +83,7 @@
         <java.version>16</java.version>
         <jdk.language.version>16</jdk.language.version>
         <kotlin.language.target>16</kotlin.language.target>
+        <kotlin.version>1.5.31</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -140,7 +141,6 @@
         <install4j.home>./install4j9.0.5</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
-        <kotlin.version>1.5.30</kotlin.version>
     </properties>
 
     <dependencies>
