@@ -80,8 +80,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>16</java.version>
-        <jdk.language.version>16</jdk.language.version>
+        <java.version>17</java.version>
+        <jdk.language.version>17</jdk.language.version>
         <kotlin.language.target>16</kotlin.language.target>
         <kotlin.version>1.5.31</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -530,6 +530,7 @@
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
+                            <jvmTarget>${kotlin.language.target}</jvmTarget>
                             <args>
                                 <arg>-Xuse-ir</arg>
                             </args>
