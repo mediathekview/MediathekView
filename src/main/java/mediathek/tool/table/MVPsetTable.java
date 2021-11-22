@@ -4,8 +4,6 @@ import mediathek.daten.DatenPset;
 import mediathek.tool.models.TModel;
 
 public class MVPsetTable extends MVTable {
-    private static final long serialVersionUID = 7582553351667887172L;
-
     @Override
     protected void setupTableType() {
         maxSpalten = DatenPset.MAX_ELEM;

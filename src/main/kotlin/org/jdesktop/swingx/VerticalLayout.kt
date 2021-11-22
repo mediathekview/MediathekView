@@ -19,10 +19,6 @@ abstract class AbstractLayoutManager : LayoutManager, Serializable {
     override fun minimumLayoutSize(parent: Container): Dimension {
         return preferredLayoutSize(parent)
     }
-
-    companion object {
-        private const val serialVersionUID = 1446292747820044161L
-    }
 }
 
 /**

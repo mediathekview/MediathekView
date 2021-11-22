@@ -4,7 +4,6 @@ import mediathek.daten.DatenProg;
 import mediathek.tool.models.TModel;
 
 public class MVProgTable extends MVTable {
-    private static final long serialVersionUID = -2363550088890708511L;
 
     @Override
     protected void setupTableType() {
