@@ -142,9 +142,9 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     filterSelect.getSelectionModel().selectedItemProperty().addListener(changeListener);
   }
 
-  public FilterDTO getSelectedFilter() {
+  /*public FilterDTO getSelectedFilter() {
     return filterSelect.getValue();
-  }
+  }*/
 
   public void setAvailableFilters(ObservableList<FilterDTO> filters) {
     filterSelect.setItems(filters);

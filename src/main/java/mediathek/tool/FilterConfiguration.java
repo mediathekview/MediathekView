@@ -2,8 +2,8 @@ package mediathek.tool;
 
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.XMLConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 
 public class FilterConfiguration {
   public static final String FILTER_CONFIG_PROPERTIES_NAME_START = "filter.";
-  public static final String FILTER_PANEL_CURRENT_FILTER = FILTER_CONFIG_PROPERTIES_NAME_START+"current.filter";
+  //public static final String FILTER_PANEL_CURRENT_FILTER = FILTER_CONFIG_PROPERTIES_NAME_START+"current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = FILTER_CONFIG_PROPERTIES_NAME_START+"available.filters.filter_";
   protected static final String KEY_UUID_SPLITERATOR = "_";
-  private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
+  private static final Logger LOG = LogManager.getLogger();//LoggerFactory.getLogger(FilterConfiguration.class);
   protected static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks =
       new CopyOnWriteArraySet<>();
   protected static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks =
