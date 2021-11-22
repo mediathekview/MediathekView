@@ -10,11 +10,7 @@ import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -228,12 +224,17 @@ public class GuiFilmeModelHelper {
 
   
 
+  private static long filter_counter = 0;
+
   /**
    * Filter the filmlist.
    *
    * @return the filtered table model.
    */
   public TableModel getFilteredTableModel() {
+    filter_counter++;
+    System.out.println("GET FILTERED TABLE MODEL: " + filter_counter);
+
     if (!listeFilme.isEmpty()) {
             if (noFiltersAreSet()) {
                 //adjust initial capacity
