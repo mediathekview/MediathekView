@@ -87,9 +87,8 @@ public class FilmActionPanel {
     ApplicationConfiguration.getInstance()
         .addEventListener(
             ConfigurationEvent.SET_PROPERTY,
-            event -> {
-              setFilterConfiguration();
-            });
+            event -> setFilterConfiguration());
+
     setFilterConfiguration();
     setupSaveFilterSettingsButton();
     setupRestoreFilterSettingsButton();
@@ -276,17 +275,8 @@ public class FilmActionPanel {
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
     senderList = viewSettingsPane.senderBoxNode.senderBox;
-    senderList
-        .getItems()
-        .addListener(
-            (ListChangeListener<? super String>)
-                listChangeListener -> {
-                  loadSavedSenderChecks();
-                });
-    senderList
-        .getCheckModel()
-        .getCheckedItems()
-        .addListener((ListChangeListener<? super String>) listChangeListener -> updateThemaBox());
+    senderList.getItems().addListener((ListChangeListener<String>) listChangeListener -> loadSavedSenderChecks());
+    senderList.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) listChangeListener -> updateThemaBox());
 
     themaBox = viewSettingsPane.themaComboBox;
     themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
@@ -433,20 +423,11 @@ public class FilmActionPanel {
           }
         });
 
-    senderList
-        .getCheckModel()
-        .getCheckedItems()
-        .addListener(
-            (ListChangeListener<String>)
-                change -> {
-                  logger.warn(
-                      "Trying to save sender {} - filter {} sender {} thema {}",
-                      change,
-                      filterLoading,
-                      senderLoading,
-                      themaLoading);
+    senderList.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
+                  logger.debug("Trying to save sender {} - filter {} sender {} thema {}",
+                      change, filterLoading, senderLoading, themaLoading);
                   if (!filterLoading && !senderLoading && !themaLoading) {
-                    logger.warn("Saving sender cause on change");
+                    logger.debug("Saving sender cause on change");
                     filterConfig.setSender(new ArrayList<>(change.getList()));
                   }
                 });
