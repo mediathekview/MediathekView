@@ -2,7 +2,7 @@
 
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
 - **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
-- **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele ggültige Ergebnisse heraus. Dies wurde behoben.
+- **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele gültige Ergebnisse heraus. Dies wurde behoben.
 - **BUGFIX:** Seltener Absturz des Programms beim Start im Zusammenhang mit Abos wurde behoben.
 - **BUGFIX:** Minimal- und Maximallänge im Filter lässt sich nun wieder vollständig einstellen.
 - Filtergeschwindigkeit beim Einlesen der Filmliste verbessert.
