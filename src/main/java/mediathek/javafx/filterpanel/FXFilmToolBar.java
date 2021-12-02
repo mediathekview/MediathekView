@@ -59,9 +59,26 @@ public class FXFilmToolBar extends ToolBar {
     }
   }
 
+  /**
+   * Temporary storage for search field focus when disabled
+   */
+  private boolean searchfieldFocused;
+
   @Handler
   private void handleTableModelChangeEvent(TableModelChangeEvent e) {
-    Platform.runLater(() -> setDisable(e.active));
+    if (e.active) {
+      Platform.runLater(() -> {
+        searchfieldFocused = jfxSearchField.isFocused();
+        setDisable(true);
+      });
+    }
+    else {
+      Platform.runLater(() -> {
+        setDisable(false);
+        if (searchfieldFocused)
+          jfxSearchField.requestFocus();
+      });
+    }
   }
 
   private void setUpFilterSelect() {
