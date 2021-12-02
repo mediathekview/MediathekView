@@ -5,7 +5,10 @@
 - **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele gültige Ergebnisse heraus. Dies wurde behoben.
 - **BUGFIX:** Seltener Absturz des Programms beim Start im Zusammenhang mit Abos wurde behoben.
 - **BUGFIX:** Minimal- und Maximallänge im Filter lässt sich nun wieder vollständig einstellen.
-- Filtergeschwindigkeit beim Einlesen der Filmliste verbessert.
+- **BUGFIX:** Das Filmmodell wurde teilweise zu oft gefiltert und verlangsamte so das Programm.
+- **BUGFIX:** Das Programm deaktiviert während der Modellverarbeitung nun zuverlässiger relevante Steuerelemente.
+- **FEATURE:** Während der Modellverarbeitung wird nun rechts unten in der Statusleiste eine Fortschrittsanzeige eingeblendet.
+- Filtergeschwindigkeit beim Einlesen der Filmliste wurde verbessert.
   
 <u>**13.8**</u>
 

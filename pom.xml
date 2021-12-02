@@ -82,7 +82,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
         <jdk.language.version>17</jdk.language.version>
-        <kotlin.language.target>17</kotlin.language.target>
+        <kotlin.language.target>16</kotlin.language.target>
         <kotlin.version>1.6.0</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
