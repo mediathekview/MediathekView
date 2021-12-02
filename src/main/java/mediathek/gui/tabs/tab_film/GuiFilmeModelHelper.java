@@ -72,9 +72,7 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
-        boolean ret = false;
-
-        if (filmActionPanel.senderList.getCheckModel().isEmpty()
+        return filmActionPanel.senderList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && filmActionPanel.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
@@ -88,10 +86,7 @@ public class GuiFilmeModelHelper {
                 && !filmActionPanel.showBookMarkedOnly.getValue()
                 && !filmActionPanel.dontShowTrailers.getValue()
                 && !filmActionPanel.dontShowSignLanguage.getValue()
-                && !filmActionPanel.dontShowAudioVersions.getValue())
-            ret = true;
-
-        return ret;
+                && !filmActionPanel.dontShowAudioVersions.getValue();
     }
 
     private void updateFilterVars() {
