@@ -155,10 +155,8 @@ public class ProgrammUpdateSuchen {
                         final int event = parser.next();
                         if (event == XMLStreamConstants.START_ELEMENT) {
                             switch (parser.getLocalName()) {
-                                case ServerProgramInformation.ParserTags.VERSION:
-                                    version = parser.getElementText();
-                                    break;
-                                case ServerProgramInformation.ParserTags.INFO:
+                                case ServerProgramInformation.ParserTags.VERSION -> version = parser.getElementText();
+                                case ServerProgramInformation.ParserTags.INFO -> {
                                     int count = parser.getAttributeCount();
                                     String nummer = "";
                                     for (int i = 0; i < count; ++i) {
@@ -170,9 +168,7 @@ public class ProgrammUpdateSuchen {
                                     if (!nummer.isEmpty() && !info.isEmpty()) {
                                         listInfos.add(new String[]{nummer, info});
                                     }
-                                    break;
-                                default:
-                                    break;
+                                }
                             }
                         }
                     }
