@@ -840,7 +840,7 @@ public class MediathekGui extends JFrame {
         JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
         showFilmFilterDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         showFilmFilterDialog.addActionListener(l -> {
-            var dlg = tabFilme.fap.filterDialog;
+            var dlg = tabFilme.filmActionPanel.filterDialog;
             if (dlg != null) {
                 if (!dlg.isVisible()) {
                     dlg.setVisible(true);
@@ -926,7 +926,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui()));
         jMenuAbos.addSeparator();
         manageAboAction = new ManageAboAction();
-        tabFilme.fap.manageAboAction = manageAboAction;
+        tabFilme.filmActionPanel.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
     }
 
@@ -1017,7 +1017,7 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();
 
-        tabFilme.fap.filterDialog.dispose();
+        tabFilme.filmActionPanel.filterDialog.dispose();
 
         RuntimeStatistics.printRuntimeStatistics();
 
