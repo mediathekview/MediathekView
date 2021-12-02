@@ -807,7 +807,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
-                    final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(filmActionPanel, daten.getListeFilmeNachBlackList(), historyController);
+                    final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(filmActionPanel, historyController);
                     //Thread.sleep(5000);
                     return helper.getFilteredTableModel();
                 });
