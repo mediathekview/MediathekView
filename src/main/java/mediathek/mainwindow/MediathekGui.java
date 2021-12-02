@@ -12,6 +12,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mediathek.Main;
@@ -70,6 +73,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -146,6 +150,7 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         ui = this;
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
@@ -182,9 +187,6 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_MENUS));
         initMenus();
 
-        //register message bus handler
-        MessageBus.getMessageBus().subscribe(this);
-
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();
 
@@ -193,6 +195,11 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundJavaFxInitializationBug();
+
+        var messageBus = MessageBus.getMessageBus();
+        //send before subscribing
+        messageBus.publishAsync(new TableModelChangeEvent(true));
+        messageBus.subscribe(this);
 
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
@@ -491,6 +498,29 @@ public class MediathekGui extends JFrame {
         });
     }
 
+    /**
+     * A weak reference to the table data model filtering progress indicator(s).
+     */
+    private WeakReference<HBox> indicatorLayout;
+    @Handler
+    private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
+        Platform.runLater(() -> {
+            var statusBar = statusBarController.getStatusBar();
+            var rightItems = statusBar.getRightItems();
+            if (evt.active) {
+                HBox hb = new HBox();
+                var progressIndicator = new ProgressIndicator();
+                progressIndicator.setTooltip(new Tooltip("Filmdaten werden verarbeitet"));
+                hb.getChildren().add(progressIndicator);
+                rightItems.add(hb);
+                indicatorLayout = new WeakReference<>(hb);
+            }
+            else {
+                //hide progress and label
+                rightItems.remove(indicatorLayout.get());
+            }
+        });
+    }
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
         final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);

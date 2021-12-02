@@ -1,12 +1,16 @@
 package mediathek.javafx.filterpanel;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
+import mediathek.tool.MessageBus;
+import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +44,6 @@ public class FXFilmToolBar extends ToolBar {
   @FXML ComboBox<FilterDTO> filterSelect;
 
   public FXFilmToolBar() {
-    super();
     try {
       URL url = getClass().getResource("/mediathek/res/programm/fxml/film_toolbar.fxml");
       FXMLLoader fxmlLoader = new FXMLLoader(url);
@@ -48,10 +51,17 @@ public class FXFilmToolBar extends ToolBar {
       fxmlLoader.setController(this);
       fxmlLoader.load();
       setUpFilterSelect();
+
+      MessageBus.getMessageBus().subscribe(this);
     } catch (IOException e) {
       Logger logger = LogManager.getLogger(FXFilmToolBar.class);
       logger.error("Failed to load FXML!");
     }
+  }
+
+  @Handler
+  private void handleTableModelChangeEvent(TableModelChangeEvent e) {
+    Platform.runLater(() -> setDisable(e.active));
   }
 
   private void setUpFilterSelect() {
