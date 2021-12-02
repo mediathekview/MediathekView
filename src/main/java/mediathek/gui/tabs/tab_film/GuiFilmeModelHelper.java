@@ -219,23 +219,13 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean searchEntries(DatenFilm film) {
-        boolean result = false;
-        if (Filter.pruefen(arrIrgendwo, film.getThema())
-                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-            result = true;
-        }
-        return result;
+        return Filter.pruefen(arrIrgendwo, film.getThema())
+                || Filter.pruefen(arrIrgendwo, film.getTitle());
     }
 
     private boolean searchEntriesWithDescription(DatenFilm film) {
-        boolean result = false;
-
-        if (Filter.pruefen(arrIrgendwo, film.getDescription())
-                || searchEntries(film)) {
-            result = true;
-        }
-
-        return result;
+        return Filter.pruefen(arrIrgendwo, film.getDescription())
+                || searchEntries(film);
     }
 
     /**
