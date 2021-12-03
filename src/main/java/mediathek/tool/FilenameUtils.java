@@ -89,7 +89,7 @@ public class FilenameUtils {
      * @param fileName A filename string that might include trailing dots.
      * @return Cleanup string with no dots anymore.
      */
-    private static String removeWindowsTrailingDots(String fileName) {
+    protected static String removeWindowsTrailingDots(String fileName) {
         // machte unter Win noch Probleme, zB. bei dem Titel: "betrifft: ..."
         // "." und " " am Ende machen Probleme
         while (!fileName.isEmpty() && (fileName.endsWith(".") || fileName.endsWith(" "))) {
@@ -104,7 +104,7 @@ public class FilenameUtils {
      * @param fileName A filename string that might start with dots.
      * @return Cleanup string with no dots anymore.
      */
-    private static String removeStartingDots(String fileName) {
+    protected static String removeStartingDots(String fileName) {
         // machte unter OS X/Linux Probleme, zB. bei dem Titel: "....Paula"
         while (!fileName.isEmpty() && (fileName.startsWith("."))) {
             fileName = fileName.substring(1);
