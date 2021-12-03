@@ -4,7 +4,6 @@ import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import org.apache.commons.io.FileUtils
 import org.apache.commons.text.WordUtils
 import org.apache.logging.log4j.LogManager
 import java.io.*
@@ -30,7 +29,7 @@ open class MVInfoFile {
         sb = appendFormattedTableLine(sb, formatString, FILM_ZEIT, film.sendeZeit)
         sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.dauer)
         if (fileSize > FileSize.INVALID_SIZE)
-            sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, FileUtils.byteCountToDisplaySize(fileSize))
+            sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, FileUtils.humanReadableByteCountBinary(fileSize))
         else
             sb.append(System.lineSeparator())
 

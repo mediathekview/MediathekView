@@ -19,9 +19,9 @@
  */
 package mediathek.config;
 
+import mediathek.tool.FileUtils;
 import mediathek.tool.Version;
 import okhttp3.HttpUrl;
-import org.apache.commons.io.FileUtils;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;

@@ -14,12 +14,12 @@ import javafx.util.Duration;
 import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.FileUtils;
 import mediathek.tool.MessageBus;
 import mediathek.tool.http.MVHttpClient;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
