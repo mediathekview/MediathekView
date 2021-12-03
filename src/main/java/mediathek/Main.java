@@ -23,7 +23,6 @@ import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

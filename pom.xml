@@ -232,12 +232,6 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.tukaani</groupId>
             <artifactId>xz</artifactId>
             <version>${xz.version}</version>

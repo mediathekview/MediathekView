@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import mediathek.javafx.tool.JFXHiddenApplication;
-import org.apache.commons.io.FileUtils;
+import mediathek.tool.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;

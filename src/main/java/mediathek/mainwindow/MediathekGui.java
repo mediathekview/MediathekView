@@ -61,7 +61,6 @@ import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

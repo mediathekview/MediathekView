@@ -14,7 +14,6 @@ import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -343,7 +342,7 @@ public class DialogAddDownload extends JDialog {
             var filmBorder = (TitledBorder)jPanelSize.getBorder();
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.byteCountToDisplaySize(usableSpace) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.humanReadableByteCountBinary(usableSpace) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
