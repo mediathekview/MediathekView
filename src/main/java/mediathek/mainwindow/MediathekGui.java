@@ -875,7 +875,10 @@ public class MediathekGui extends JFrame {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
         jMenuHilfe.add(new ShowProgramInfosAction());
-        if (officialLauncherInUse()) {
+        /*
+        we use Shenandoah GC and a signed app on macOS. Therefore there is no need to modify vm settings.
+         */
+        if (officialLauncherInUse() && !SystemUtils.IS_OS_MAC_OSX) {
             jMenuHilfe.addSeparator();
             jMenuHilfe.add(new SetAppMemoryAction());
         }
