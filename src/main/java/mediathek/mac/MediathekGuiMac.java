@@ -14,6 +14,7 @@ import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.MacNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -71,20 +72,23 @@ public class MediathekGuiMac extends MediathekGui {
 
     @Override
     protected void installTouchBarSupport() {
-        logger.trace("install touch bar support");
-        if (TouchBarUtils.isTouchBarSupported()) {
-            tabbedPane.addChangeListener(e -> {
-                var comp = tabbedPane.getSelectedComponent();
-                if (comp.equals(tabFilme)) {
-                    tabDownloads.hideTouchBar();
-                    tabFilme.showTouchBar();
-                } else if (comp.equals(tabDownloads)) {
-                    tabFilme.hideTouchBar();
-                    tabDownloads.showTouchBar();
-                }
-            });
+        if (!SystemUtils.OS_ARCH.equals("aarch64")) {
+            if (TouchBarUtils.isTouchBarSupported()) {
+                logger.trace("installing touchbar support for INTEL architecture");
+                tabbedPane.addChangeListener(e -> {
+                    var comp = tabbedPane.getSelectedComponent();
+                    if (comp.equals(tabFilme)) {
+                        tabDownloads.hideTouchBar();
+                        tabFilme.showTouchBar();
+                    } else if (comp.equals(tabDownloads)) {
+                        tabFilme.hideTouchBar();
+                        tabDownloads.showTouchBar();
+                    }
+                });
+            }
         }
-
+        else
+            logger.trace("NOT installing touchbar support due to ARM architecture");
     }
 
     @Override

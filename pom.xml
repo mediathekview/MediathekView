@@ -148,6 +148,16 @@
             <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
             <version>0.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
