@@ -419,9 +419,10 @@ public class DialogAddDownload extends JDialog {
         }
         if (!pfade.isEmpty()) {
             s = pfade.get(0);
-            for (int i = 1; i < Konstanten.MAX_PFADE_DIALOG_DOWNLOAD && i < pfade.size(); ++i) {
-                if (!pfade.get(i).isEmpty()) {
-                    s += "<>" + pfade.get(i);
+            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
+                final var pfad = pfade.get(i);
+                if (!pfad.isEmpty()) {
+                    s += "<>" + pfad;
                 }
             }
         }
