@@ -94,7 +94,7 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.0</controlsfx.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <guava.version>31.0.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.12.5</jackson.version>
         <javafx.version>17.0.2-ea+1</javafx.version>
