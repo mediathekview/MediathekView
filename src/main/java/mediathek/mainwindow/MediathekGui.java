@@ -1035,8 +1035,8 @@ public class MediathekGui extends JFrame {
         }
 
         var byteCounter = MVHttpClient.getInstance().getByteCounter();
-        logger.trace("total data sent: {} MByte", (byteCounter.totalBytesWritten() / (float)FileUtils.ONE_MB));
-        logger.trace("total data received: {} MByte", (byteCounter.totalBytesRead() / (float)FileUtils.ONE_MB));
+        logger.trace("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
+        logger.trace("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
         System.exit(0);
 
         return false;
