@@ -16,13 +16,17 @@ internal class FileUtilsTest {
     fun humanReadableByteCountBinary_megabytes() {
         val bytes:Long = 25165824
         val result = FileUtils.humanReadableByteCountBinary(bytes)
-        assertEquals("24,0 MiB", result)
+
+        val expected = String.format("%.1f MiB", (bytes / FileUtils.ONE_MB.toDouble()));
+        assertEquals(expected, result)
     }
 
     @Test
     fun humanReadableByteCountBinary_kilobytes() {
         val bytes:Long = 24*1024
         val result = FileUtils.humanReadableByteCountBinary(bytes)
-        assertEquals("24,0 KiB", result)
+
+        val expected = String.format("%.1f KiB", (bytes / FileUtils.ONE_KB.toDouble()));
+        assertEquals(expected, result)
     }
 }
