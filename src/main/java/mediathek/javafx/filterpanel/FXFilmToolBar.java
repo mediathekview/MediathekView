@@ -75,8 +75,13 @@ public class FXFilmToolBar extends ToolBar {
     else {
       Platform.runLater(() -> {
         setDisable(false);
-        if (searchfieldFocused)
+        if (searchfieldFocused) {
           jfxSearchField.requestFocus();
+          var searchText = jfxSearchField.getText();
+          if (!searchText.isEmpty()) {
+            jfxSearchField.positionCaret(searchText.length());
+          }
+        }
       });
     }
   }
