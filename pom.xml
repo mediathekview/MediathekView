@@ -90,7 +90,7 @@
         <javafx.version>16</javafx.version>
         <picocli.version>4.6.1</picocli.version>
         <miglayout.version>11.0</miglayout.version>
-        <log4j2.version>2.14.0</log4j2.version>
+        <log4j2.version>2.15.0</log4j2.version>
         <mockito.version>3.3.3</mockito.version>
         <okhttp.version>4.9.1</okhttp.version>
         <jackson.version>2.12.3</jackson.version>
