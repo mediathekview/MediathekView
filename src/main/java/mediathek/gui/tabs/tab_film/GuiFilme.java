@@ -659,14 +659,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Override
-    public void showTouchBar() {
-    }
-
-    @Override
-    public void hideTouchBar() {
-    }
-
-    @Override
     protected List<DatenFilm> getSelFilme() {
         ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
         int[] rows = tabelle.getSelectedRows();

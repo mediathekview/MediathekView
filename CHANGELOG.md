@@ -8,9 +8,12 @@
 - **BUGFIX:** Minimal- und Maximallänge im Filter lässt sich nun wieder vollständig einstellen.
 - **BUGFIX:** Das Filmmodell wurde teilweise zu oft gefiltert und verlangsamte so unnötigerweise das Programm.
 - **BUGFIX:** Das Programm deaktiviert während der Modellverarbeitung nun zuverlässiger relevante Steuerelemente.
+- **BUGFIX:** Das Einlesen von fehlerhaften Aboeinträgen führt nicht mehr zum Einfrieren des Programms.
+- **BUGFIX:** Im Tab Filme wurde ein HQ-Download mit JDownloader angeboten, obwohl keine HQ-URL für den Film existierte.
 - **FEATURE:** Während der Modellverarbeitung wird nun rechts unten in der Statusleiste eine Fortschrittsanzeige eingeblendet.
 - Filtergeschwindigkeit beim Einlesen der Filmliste wurde verbessert.
-- Touchbar support wird für *Apple Silicon CPUs* deaktiviert da die notwendigen Bibliotheken nicht nativ vorhanden sind. 
+- TouchBar support wurde entfernt da die Bibliothek nicht mehr gepflegt wird.
+- Log4j2 Bibliothek wurde aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen. 
   
 <u>**13.8**</u>
 

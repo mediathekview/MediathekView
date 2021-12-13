@@ -19,3 +19,5 @@ RepoZugang.properties
 *.iml
 /install4j*/
 /res/macOS/bin
+/javafx_sdk/mac/aarch64/javafx-sdk-17.0.2/
+/.vs/
