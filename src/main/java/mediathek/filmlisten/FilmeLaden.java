@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class FilmeLaden {
 
@@ -350,7 +349,7 @@ public class FilmeLaden {
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrlNormalQuality).collect(Collectors.toList()));
+        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrlNormalQuality).toList());
     }
 
     /**

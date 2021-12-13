@@ -26,7 +26,7 @@ public class FilmListFilterTask extends Task<Void> {
         if (submitEvent)
             MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
 
-        updateMessage("Themen suchen");
+        updateMessage("Senderliste aktualisieren");
         updateProgress(-1, 4);
         daten.getListeFilme().fillSenderList();
 
