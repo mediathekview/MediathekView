@@ -395,19 +395,11 @@ public class BookmarkWindowController implements Initializable {
           checkBox = new CheckBox(column.getText());
         else {
           checkBox = new CheckBox(" ");
-          Node icon;
-          switch (column.getId()) {
-            case "colBtnPlay":
-              icon = new IconNode(FontAwesome.PLAY);
-              break;
-
-            case "colBtnDownload":
-              icon = new IconNode(FontAwesome.DOWNLOAD);
-              break;
-
-            default:
-              throw new IllegalStateException("unknown id");
-          }
+          Node icon = switch (column.getId()) {
+            case "colBtnPlay" -> new IconNode(FontAwesome.PLAY);
+            case "colBtnDownload" -> new IconNode(FontAwesome.DOWNLOAD);
+            default -> throw new IllegalStateException("unknown id");
+          };
           checkBox.setGraphic(icon);
         }
         // adds listener to the check box to change the size so the user
@@ -547,18 +539,13 @@ public class BookmarkWindowController implements Initializable {
       FilterState = 0;
     }
     switch (FilterState) {
-      case 0:
-        filteredBookmarkList.setPredicate(f -> true);  // show all
-        break;
-      case 1:
-        filteredBookmarkList.setPredicate(film -> { // show only unseen
-          return !film.getSeen();
-        });
-        break;
-      case 2:
-        // show only seen
-        filteredBookmarkList.setPredicate(BookmarkData::getSeen);
-        break;
+      case 0 -> filteredBookmarkList.setPredicate(f -> true);  // show all
+      case 1 -> filteredBookmarkList.setPredicate(film -> { // show only unseen
+        return !film.getSeen();
+      });
+      case 2 ->
+              // show only seen
+              filteredBookmarkList.setPredicate(BookmarkData::getSeen);
     }
     btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
     lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);

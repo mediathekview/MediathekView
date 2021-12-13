@@ -1,6 +1,5 @@
 package mediathek.gui.tabs;
 
-import com.thizzer.jtouchbar.JTouchBar;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
@@ -14,10 +13,6 @@ import java.util.Optional;
 public abstract class AGuiTabPanel extends JPanel {
     protected Daten daten;
     protected MediathekGui mediathekGui;
-    protected JTouchBar touchBar;
-
-    public abstract void showTouchBar();
-    public abstract void hideTouchBar();
 
     public abstract void tabelleSpeichern();
 

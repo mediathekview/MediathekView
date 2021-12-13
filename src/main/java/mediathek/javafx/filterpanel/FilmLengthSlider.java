@@ -12,7 +12,7 @@ public class FilmLengthSlider extends RangeSlider {
         setShowTickLabels(true);
         setBlockIncrement(1);
         setMajorTickUnit(10);
-        setSnapToTicks(true);
+        setSnapToTicks(false);
         setLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number object) {

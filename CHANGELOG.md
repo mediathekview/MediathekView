@@ -1,3 +1,21 @@
+<u>**13.8.1**</u>
+
+- **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
+- **BUGFIX (macOS):** möglicher Absturz der App unter macOS Monterey wurde behoben. 
+- **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
+- **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele gültige Ergebnisse heraus. Dies wurde behoben.
+- **BUGFIX:** Seltener Absturz des Programms beim Start im Zusammenhang mit Abos wurde behoben.
+- **BUGFIX:** Minimal- und Maximallänge im Filter lässt sich nun wieder vollständig einstellen.
+- **BUGFIX:** Das Filmmodell wurde teilweise zu oft gefiltert und verlangsamte so unnötigerweise das Programm.
+- **BUGFIX:** Das Programm deaktiviert während der Modellverarbeitung nun zuverlässiger relevante Steuerelemente.
+- **BUGFIX:** Das Einlesen von fehlerhaften Aboeinträgen führt nicht mehr zum Einfrieren des Programms.
+- **BUGFIX:** Im Tab Filme wurde ein HQ-Download mit JDownloader angeboten, obwohl keine HQ-URL für den Film existierte.
+- **FEATURE:** Während der Modellverarbeitung wird nun rechts unten in der Statusleiste eine Fortschrittsanzeige eingeblendet.
+- Filtergeschwindigkeit beim Einlesen der Filmliste wurde verbessert.
+- TouchBar support wurde entfernt da die Bibliothek nicht mehr gepflegt wird.
+- Log4j2 Bibliothek wurde aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
+- macOS **Apple Silicon** native Version als separater Download vorhanden (benötigt mindestens macOS BigSur). Diese wurde noch nicht so ausführlich getestet und kann Fehler beinhalten. 
+  
 <u>**13.8**</u>
 
 - **Java wurde auf Version 16 aktualisiert.**

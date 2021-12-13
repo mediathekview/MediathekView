@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * Perform one filmlist update automatically every 24 hours if program is running long enough.
  */
 public class AutomaticFilmlistUpdate implements Closeable {
-    private static final Logger logger = LogManager.getLogger(AutomaticFilmlistUpdate.class);
+    private static final Logger logger = LogManager.getLogger();
     private final IUpdateAction action;
     private ScheduledFuture<?> actionFuture;
 

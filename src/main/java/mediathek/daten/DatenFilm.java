@@ -219,7 +219,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     }
 
     /**
-     * Get the film description from database.
+     * Get the film description.
      *
      * @return the film description.
      */
@@ -228,8 +228,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     }
 
     /**
-     * Store description in database.
-     * Performs an UPSERT as we may want to update the description later again.
+     * Store film description.
      *
      * @param desc String to be stored.
      */

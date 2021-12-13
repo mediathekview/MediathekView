@@ -111,7 +111,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/mediat
 
 As MediathekView is written in java you need to have a JDK installed for the correct java version. You can find the currently used java version in the [pom.xml](https://github.com/mediathekview/MediathekView/blob/master/pom.xml) tag `jdk.language.version`.
 
-> We can recommend to use [SDKMan](https://sdkman.io/) to install the right [AdoptOpenJDK](https://adoptopenjdk.net/) version.
+> We recommend using [SDKMan](https://sdkman.io/) to install the right Eclipse [Temurin](https://adoptium.net/) version from Adoptium (formerly AdoptOpenJDK).
 
 **Building:**
 

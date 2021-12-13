@@ -12,6 +12,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mediathek.Main;
@@ -58,7 +61,6 @@ import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,6 +72,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -146,6 +149,7 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         ui = this;
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         loadFilmListAction = new LoadFilmListAction(this);
@@ -182,9 +186,6 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_MENUS));
         initMenus();
 
-        //register message bus handler
-        MessageBus.getMessageBus().subscribe(this);
-
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MEMORY_MONITOR));
         createMemoryMonitor();
 
@@ -193,6 +194,11 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundJavaFxInitializationBug();
+
+        var messageBus = MessageBus.getMessageBus();
+        //send before subscribing
+        messageBus.publishAsync(new TableModelChangeEvent(true));
+        messageBus.subscribe(this);
 
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
@@ -491,6 +497,29 @@ public class MediathekGui extends JFrame {
         });
     }
 
+    /**
+     * A weak reference to the table data model filtering progress indicator(s).
+     */
+    private WeakReference<HBox> indicatorLayout;
+    @Handler
+    private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
+        Platform.runLater(() -> {
+            var statusBar = statusBarController.getStatusBar();
+            var rightItems = statusBar.getRightItems();
+            if (evt.active) {
+                HBox hb = new HBox();
+                var progressIndicator = new ProgressIndicator();
+                progressIndicator.setTooltip(new Tooltip("Filmdaten werden verarbeitet"));
+                hb.getChildren().add(progressIndicator);
+                rightItems.add(hb);
+                indicatorLayout = new WeakReference<>(hb);
+            }
+            else {
+                //hide progress and label
+                rightItems.remove(indicatorLayout.get());
+            }
+        });
+    }
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
         final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);
@@ -567,11 +596,12 @@ public class MediathekGui extends JFrame {
     private void setupAutomaticFilmlistReload() {
         final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
             if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
+                loadFilmListAction.setEnabled(false);
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
-                    FilmeLaden filmeLaden = new FilmeLaden(daten);
-                    filmeLaden.loadFilmlist("", false);
+                    performFilmListLoadOperation(false);
                 }
+                loadFilmListAction.setEnabled(true);
             }
         };
 
@@ -649,17 +679,9 @@ public class MediathekGui extends JFrame {
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
         tabbedPane.setSelectedComponent(tabFilme);
 
-        installTouchBarSupport();
-
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
         configureTabIcons();
-    }
-
-    /**
-     * Install touch bar support on macOS
-     */
-    protected void installTouchBarSupport() {
     }
 
     /**
@@ -809,7 +831,7 @@ public class MediathekGui extends JFrame {
         JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
         showFilmFilterDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         showFilmFilterDialog.addActionListener(l -> {
-            var dlg = tabFilme.fap.filterDialog;
+            var dlg = tabFilme.filmActionPanel.filterDialog;
             if (dlg != null) {
                 if (!dlg.isVisible()) {
                     dlg.setVisible(true);
@@ -845,7 +867,10 @@ public class MediathekGui extends JFrame {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
         jMenuHilfe.add(new ShowProgramInfosAction());
-        if (officialLauncherInUse()) {
+        /*
+        we use Shenandoah GC and a signed app on macOS. Therefore there is no need to modify vm settings.
+         */
+        if (officialLauncherInUse() && !SystemUtils.IS_OS_MAC_OSX) {
             jMenuHilfe.addSeparator();
             jMenuHilfe.add(new SetAppMemoryAction());
         }
@@ -895,7 +920,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui()));
         jMenuAbos.addSeparator();
         manageAboAction = new ManageAboAction();
-        tabFilme.fap.manageAboAction = manageAboAction;
+        tabFilme.filmActionPanel.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
     }
 
@@ -986,9 +1011,9 @@ public class MediathekGui extends JFrame {
         dialog.setStatusText(ShutdownState.COMPLETE);
         dialog.hide();
 
-        tabFilme.fap.filterDialog.dispose();
+        tabFilme.filmActionPanel.filterDialog.dispose();
 
-        Log.printRuntimeStatistics();
+        RuntimeStatistics.printRuntimeStatistics();
 
         dispose();
 
@@ -1005,8 +1030,8 @@ public class MediathekGui extends JFrame {
         }
 
         var byteCounter = MVHttpClient.getInstance().getByteCounter();
-        logger.trace("total data sent: {} MByte", (byteCounter.totalBytesWritten() / (float)FileUtils.ONE_MB));
-        logger.trace("total data received: {} MByte", (byteCounter.totalBytesRead() / (float)FileUtils.ONE_MB));
+        logger.trace("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
+        logger.trace("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
         System.exit(0);
 
         return false;

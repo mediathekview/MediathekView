@@ -33,7 +33,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar. search is exposed via a readonly
@@ -71,9 +70,11 @@ public class FilmActionPanel {
 
   private FXFilmToolBar toolBar;
   private CommonViewSettingsPane viewSettingsPane;
+  private final PauseTransition reloadTableDataTransition;
 
-  public FilmActionPanel() {
+  public FilmActionPanel(PauseTransition reloadTableDataTransition) {
     this.filterConfig = new FilterConfiguration();
+    this.reloadTableDataTransition = reloadTableDataTransition;
 
     setupViewSettingsPane();
     setupDeleteFilterButton();
@@ -306,14 +307,19 @@ public class FilmActionPanel {
 
     private void searchFieldFinalAction() {
         final var text = toolBar.jfxSearchField.getText();
+        boolean invokeTableFiltering = false;
+
         if (Filter.isPattern(text)) {
             //only invoke filtering if we have regexp pattern and the pattern is valid
             if (Filter.makePatternNoCache(text) != null) {
-                invokeTableViewFiltering();
+                invokeTableFiltering = true;
             }
         } else {
-            invokeTableViewFiltering();
+            invokeTableFiltering = true;
         }
+
+        if (invokeTableFiltering)
+            reloadTableDataTransition.playFromStart();
     }
 
     private void setupSearchField() {
@@ -324,13 +330,6 @@ public class FilmActionPanel {
 
         finalActionTrans.setOnFinished(e -> searchFieldFinalAction());
         textProperty.addListener((observable, oldValue, newValue) -> finalActionTrans.playFromStart());
-    }
-
-    /**
-     * Reload table view to apply filter text.
-     */
-    private void invokeTableViewFiltering() {
-        SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null));
     }
 
     private void setupSearchThroughDescriptionButton() {
@@ -411,9 +410,8 @@ public class FilmActionPanel {
         }
 
         items.addAll(finalList.stream()
-                        .distinct()
-                        .sorted(GermanStringSorter.getInstance())
-                        .collect(Collectors.toList()));
+                .distinct()
+                .sorted(GermanStringSorter.getInstance()).toList());
         finalList.clear();
 
         themaSuggestionProvider.clearSuggestions();

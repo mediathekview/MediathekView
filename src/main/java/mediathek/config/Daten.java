@@ -191,11 +191,15 @@ public class Daten {
         return true;
     }
 
+    public ListeningExecutorService getDecoratedPool() {
+        return decoratedPool;
+    }
+
+    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+
     public void launchHistoryDataLoading() {
         logger.trace("launching async history data loading");
-        var decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
         aboHistoryFuture = launchAboHistoryController(decoratedPool);
-
     }
 
     private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {

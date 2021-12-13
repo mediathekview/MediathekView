@@ -116,7 +116,7 @@ public class IoXmlLesen {
             DatenAbo datenAbo = new DatenAbo();
             datenAbo.readFromConfig(parser);
             daten.getListeAbo().addAbo(datenAbo);
-        } catch (XMLStreamException e) {
+        } catch (XMLStreamException | AssertionError e) {
             logger.error("Failed to read abo entry", e);
         }
     }

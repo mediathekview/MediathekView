@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.2" transformSequenceNumber="9">
+<install4j version="9.0.5" transformSequenceNumber="9">
   <directoryPresets config="${project.basedir}/.install4j" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="${install4j.adoptopenjdk.jdk.version}" />
+    <jreBundles jdkProviderId="Adoptium" release="${install4j.adoptium.jdk.version}" />
   </application>
   <files preserveSymlinks="false">
     <mountPoints>
