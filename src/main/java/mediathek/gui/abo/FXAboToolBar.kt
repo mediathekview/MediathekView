@@ -7,7 +7,6 @@ import javafx.fxml.Initializable
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.ToolBar
-import mediathek.config.Daten
 import mediathek.tool.SenderList
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
@@ -28,8 +27,7 @@ class FXAboToolBar : ToolBar(), Initializable {
     @FXML lateinit var btnNewAbo: Button
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
-        val senderList = SenderList(Daten.getInstance().listeFilme.baseSenderList)
-        cbSender.items = EventObservableList(senderList)
+        cbSender.items = EventObservableList(SenderList())
         cbSender.selectionModel.select(0)
     }
 

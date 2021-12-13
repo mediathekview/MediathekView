@@ -41,7 +41,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return metaData;
     }
 
-    public ObservableList<String> getSenders() {
+    public ObservableList<String> getObservableSenderList() {
         return obs_senderList;
     }
 
