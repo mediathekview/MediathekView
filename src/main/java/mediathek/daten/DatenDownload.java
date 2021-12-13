@@ -368,7 +368,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public final void init() {
+    public void init() {
         datumFilm = getDatumForObject();
         try {
             art = Byte.parseByte(arr[DOWNLOAD_ART]);
@@ -767,7 +767,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                 final var segments = url.pathSegments();
                 final var segment = segments.get(segments.size() - 2);
                 field = getField(GuiFunktionen.getDateiName(segment), laenge);
-                field = org.apache.commons.io.FilenameUtils.removeExtension(field);
+                field = FileUtils.removeExtension(field);
             }
 
             replStr = StringUtils.replace(replStr, "%N", field);

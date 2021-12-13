@@ -1,5 +1,6 @@
 package mediathek.tool;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class FilenameUtils {
                 }
             }
         } else {
-            ret = removeStartingDots(ret);
+            ret = StringUtils.stripStart(ret, ".");
         }
 
         if (isPath && ret.contains(File.separator)) {
@@ -89,25 +90,11 @@ public class FilenameUtils {
      * @param fileName A filename string that might include trailing dots.
      * @return Cleanup string with no dots anymore.
      */
-    private static String removeWindowsTrailingDots(String fileName) {
+    protected static String removeWindowsTrailingDots(String fileName) {
         // machte unter Win noch Probleme, zB. bei dem Titel: "betrifft: ..."
         // "." und " " am Ende machen Probleme
         while (!fileName.isEmpty() && (fileName.endsWith(".") || fileName.endsWith(" "))) {
             fileName = fileName.substring(0, fileName.length() - 1);
-        }
-        return fileName;
-    }
-
-    /**
-     * Remove dots from string when we are on Linux/OS X
-     *
-     * @param fileName A filename string that might start with dots.
-     * @return Cleanup string with no dots anymore.
-     */
-    private static String removeStartingDots(String fileName) {
-        // machte unter OS X/Linux Probleme, zB. bei dem Titel: "....Paula"
-        while (!fileName.isEmpty() && (fileName.startsWith("."))) {
-            fileName = fileName.substring(1);
         }
         return fileName;
     }
@@ -284,7 +271,7 @@ public class FilenameUtils {
             case MAC, LINUX -> {
                 //On OSX the VFS take care of writing correct filenames to FAT filesystems...
                 //Just remove the default illegal characters
-                ret = removeStartingDots(ret);
+                ret = StringUtils.stripStart(ret, ".");
                 ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
             }
             case WIN64, WIN32 -> {
@@ -296,7 +283,7 @@ public class FilenameUtils {
             default -> {
                 //we need to be more careful on Linux when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
-                ret = removeStartingDots(ret);
+                ret = StringUtils.stripStart(ret, ".");
                 ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
             }
         }

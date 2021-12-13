@@ -11,10 +11,10 @@ import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.FileUtils;
 import mediathek.tool.MessageBus;
 import mediathek.tool.notification.MessageType;
 import mediathek.tool.notification.NotificationMessage;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -155,7 +155,7 @@ public class StarterClass {
 
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
-                text.add("Bytes gelesen: " + FileUtils.byteCountToDisplaySize(start.mVBandwidthCountingInputStream.getSumByte()));
+                text.add("Bytes gelesen: " + FileUtils.humanReadableByteCountBinary(start.mVBandwidthCountingInputStream.getSumByte()));
                 text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }

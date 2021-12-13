@@ -35,15 +35,8 @@ class MenuTabSwitchListener implements MenuListener {
 
     private void findTab(TABS state) {
         switch (state) {
-            case TAB_FILME:
-                setTabIfContain(mediathekGui.tabFilme);
-                break;
-            case TAB_DOWNLOADS:
-                setTabIfContain(mediathekGui.tabDownloads);
-                break;
-
-            default:
-                break;
+            case TAB_FILME -> setTabIfContain(mediathekGui.tabFilme);
+            case TAB_DOWNLOADS -> setTabIfContain(mediathekGui.tabDownloads);
         }
     }
 

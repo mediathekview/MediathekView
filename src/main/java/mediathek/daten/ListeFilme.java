@@ -74,12 +74,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
         hashNewFilms.clear();
 
-        newFilmsList.forEach(this::addAndInitialize);
-    }
-
-    public synchronized void addAndInitialize(DatenFilm film) {
-        film.init();
-        add(film);
+        newFilmsList.forEach(film -> {
+            film.init();
+            add(film);
+        });
     }
 
     @Override

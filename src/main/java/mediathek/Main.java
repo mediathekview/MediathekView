@@ -23,7 +23,6 @@ import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -241,7 +240,7 @@ public class Main {
     }
 
     private static void printVersionInformation() {
-        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Log.startZeit));
+        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(RuntimeStatistics.startZeit));
         logger.info("Version: {}", Konstanten.MVVERSION);
 
         logger.info("=== Java Information ===");
@@ -256,7 +255,11 @@ public class Main {
         logger.info("Operating System: {}", SystemUtils.OS_NAME);
         logger.info("OS Version: {}", SystemUtils.OS_VERSION);
         logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
-        logger.info("Available Processors: {}", runtime.availableProcessors());
+        if (DarkModeDetector.hasDarkModeDetectionSupport())
+            logger.info("OS Dark Mode enabled: {}", DarkModeDetector.isDarkMode());
+        else
+            logger.info("OS Dark Mode detection not supported");
+        logger.info("OS Available Processors: {}", runtime.availableProcessors());
     }
 
     /**
@@ -294,11 +297,18 @@ public class Main {
             logger.info("Configuring for non-portable mode");
     }
 
+    private static void setupCpuAffinity() {
+        final int numCpus = Config.getNumCpus();
+        if (numCpus != 0) {
+            var affinity = Affinity.getAffinityImpl();
+            affinity.setDesiredCpuAffinity(numCpus);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        Functions.disableAccessWarnings();
         setupEnvironmentProperties();
 
         if (GraphicsEnvironment.isHeadless()) {
@@ -321,12 +331,7 @@ public class Main {
 
             setupLogging();
             printPortableModeInfo();
-
-            final int numCpus = Config.getNumCpus();
-            if (numCpus != 0) {
-                var affinity = Affinity.getAffinityImpl();
-                affinity.setDesiredCpuAffinity(numCpus);
-            }
+            setupCpuAffinity();
 
             initializeJavaFX();
 

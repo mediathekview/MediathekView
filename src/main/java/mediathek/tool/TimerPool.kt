@@ -32,20 +32,14 @@ object TimerPool {
      * setting up the threads.
      */
     private class TimerPoolThreadFactory : ThreadFactory {
-        private val group: ThreadGroup
         private val threadNumber = AtomicInteger(1)
 
         override fun newThread(r: Runnable): Thread {
-            val t = Thread(group, r, "TimerPool-thread-${threadNumber.getAndIncrement()}", 0)
+            val t = Thread(Thread.currentThread().threadGroup, r, "TimerPool-thread-${threadNumber.getAndIncrement()}", 0)
             t.isDaemon = false
             t.priority = Thread.NORM_PRIORITY
 
             return t
-        }
-
-        init {
-            val s = System.getSecurityManager()
-            group = if (s != null) s.threadGroup else Thread.currentThread().threadGroup
         }
     }
 }

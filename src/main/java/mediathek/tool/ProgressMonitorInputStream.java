@@ -1,5 +1,7 @@
 package mediathek.tool;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +46,7 @@ public class ProgressMonitorInputStream extends FilterInputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
+    public int read(byte @NotNull [] b) throws IOException {
         final int read = super.read(b);
         if (read != -1) {
             bytesRead += read;
@@ -55,7 +57,7 @@ public class ProgressMonitorInputStream extends FilterInputStream {
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(byte @NotNull [] b, int off, int len) throws IOException {
         final int read = super.read(b, off, len);
         if (read != -1) {
             bytesRead += read;

@@ -1,6 +1,7 @@
 package mediathek.gui.tabs.tab_film;
 
 import javafx.collections.ObservableList;
+import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper {
-    private final FilmActionPanel fap;
+    private final FilmActionPanel filmActionPanel;
     private TModelFilm filmModel;
     private final ListeFilme listeFilme;
     private final SeenHistoryController historyController;
@@ -37,16 +38,16 @@ public class GuiFilmeModelHelper {
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
 
-    public GuiFilmeModelHelper(@NotNull FilmActionPanel fap, @NotNull ListeFilme filteredList,
+    public GuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
                                @NotNull SeenHistoryController historyController) {
-        this.fap = fap;
+        this.filmActionPanel = filmActionPanel;
         this.historyController = historyController;
 
-        listeFilme = filteredList;
+        listeFilme = Daten.getInstance().getListeFilmeNachBlackList();
     }
 
     private String getFilterThema() {
-        String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
+        String filterThema = filmActionPanel.themaBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
             filterThema = "";
         }
@@ -57,7 +58,7 @@ public class GuiFilmeModelHelper {
     private String[] evaluateThemaTitel() {
         String[] arrThemaTitel;
 
-        final String filterThemaTitel = fap.roSearchStringProperty.getValueSafe();
+        final String filterThemaTitel = filmActionPanel.roSearchStringProperty.getValueSafe();
         if (Filter.isPattern(filterThemaTitel)) {
             arrThemaTitel = new String[]{filterThemaTitel};
         } else {
@@ -71,47 +72,42 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
-        boolean ret = false;
-
-        if (fap.senderList.getCheckModel().isEmpty()
+        return filmActionPanel.senderList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
-                && fap.roSearchStringProperty.getValueSafe().isEmpty()
-                && ((int) fap.filmLengthSlider.getLowValue() == 0)
-                && ((int) fap.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
-                && !fap.dontShowAbos.getValue()
-                && !fap.showUnseenOnly.getValue()
-                && !fap.showOnlyHd.getValue()
-                && !fap.showSubtitlesOnly.getValue()
-                && !fap.showLivestreamsOnly.getValue()
-                && !fap.showNewOnly.getValue()
-                && !fap.showBookMarkedOnly.getValue()
-                && !fap.dontShowTrailers.getValue()
-                && !fap.dontShowSignLanguage.getValue()
-                && !fap.dontShowAudioVersions.getValue())
-            ret = true;
-
-        return ret;
+                && filmActionPanel.roSearchStringProperty.getValueSafe().isEmpty()
+                && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
+                && ((int) filmActionPanel.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && !filmActionPanel.dontShowAbos.getValue()
+                && !filmActionPanel.showUnseenOnly.getValue()
+                && !filmActionPanel.showOnlyHd.getValue()
+                && !filmActionPanel.showSubtitlesOnly.getValue()
+                && !filmActionPanel.showLivestreamsOnly.getValue()
+                && !filmActionPanel.showNewOnly.getValue()
+                && !filmActionPanel.showBookMarkedOnly.getValue()
+                && !filmActionPanel.dontShowTrailers.getValue()
+                && !filmActionPanel.dontShowSignLanguage.getValue()
+                && !filmActionPanel.dontShowAudioVersions.getValue();
     }
 
     private void updateFilterVars() {
-        showNewOnly = fap.showNewOnly.getValue();
-        showBookmarkedOnly = fap.showBookMarkedOnly.getValue();
-        showSubtitlesOnly = fap.showSubtitlesOnly.getValue();
-        showHqOnly = fap.showOnlyHd.getValue();
-        dontShowSeen = fap.showUnseenOnly.getValue();
-        dontShowAbos = fap.dontShowAbos.getValue();
-        showLivestreamsOnly = fap.showLivestreamsOnly.getValue();
-        dontShowTrailers = fap.dontShowTrailers.getValue();
-        dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
-        dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
-        searchThroughDescriptions = fap.searchThroughDescription.getValue();
+        showNewOnly = filmActionPanel.showNewOnly.getValue();
+        showBookmarkedOnly = filmActionPanel.showBookMarkedOnly.getValue();
+        showSubtitlesOnly = filmActionPanel.showSubtitlesOnly.getValue();
+        showHqOnly = filmActionPanel.showOnlyHd.getValue();
+        dontShowSeen = filmActionPanel.showUnseenOnly.getValue();
+        dontShowAbos = filmActionPanel.dontShowAbos.getValue();
+        showLivestreamsOnly = filmActionPanel.showLivestreamsOnly.getValue();
+        dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
+        dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
+        dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
+        searchThroughDescriptions = filmActionPanel.searchThroughDescription.getValue();
 
         arrIrgendwo = evaluateThemaTitel();
     }
 
     private void calculateFilmLengthSliderValues() {
-        final long minLength = (long) fap.filmLengthSlider.getLowValue();
-        maxLength = (long) fap.filmLengthSlider.getHighValue();
+        final long minLength = (long) filmActionPanel.filmLengthSlider.getLowValue();
+        maxLength = (long) filmActionPanel.filmLengthSlider.getHighValue();
         minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
     }
@@ -121,7 +117,7 @@ public class GuiFilmeModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
+        final ObservableList<String> selectedSenders = filmActionPanel.senderList.getCheckModel().getCheckedItems();
 
         if (dontShowSeen)
             historyController.prepareMemoryCache();
@@ -218,23 +214,13 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean searchEntries(DatenFilm film) {
-        boolean result = false;
-        if (Filter.pruefen(arrIrgendwo, film.getThema())
-                || Filter.pruefen(arrIrgendwo, film.getTitle())) {
-            result = true;
-        }
-        return result;
+        return Filter.pruefen(arrIrgendwo, film.getThema())
+                || Filter.pruefen(arrIrgendwo, film.getTitle());
     }
 
     private boolean searchEntriesWithDescription(DatenFilm film) {
-        boolean result = false;
-
-        if (Filter.pruefen(arrIrgendwo, film.getDescription())
-                || searchEntries(film)) {
-            result = true;
-        }
-
-        return result;
+        return Filter.pruefen(arrIrgendwo, film.getDescription())
+                || searchEntries(film);
     }
 
     /**
