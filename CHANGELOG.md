@@ -13,7 +13,8 @@
 - **FEATURE:** Während der Modellverarbeitung wird nun rechts unten in der Statusleiste eine Fortschrittsanzeige eingeblendet.
 - Filtergeschwindigkeit beim Einlesen der Filmliste wurde verbessert.
 - TouchBar support wurde entfernt da die Bibliothek nicht mehr gepflegt wird.
-- Log4j2 Bibliothek wurde aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen. 
+- Log4j2 Bibliothek wurde aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
+- macOS **Apple Silicon** native Version als separater Download vorhanden (benötigt mindestens macOS BigSur). Diese wurde noch nicht so ausführlich getestet und kann Fehler beinhalten. 
   
 <u>**13.8**</u>
 
