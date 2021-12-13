@@ -10,14 +10,8 @@ import java.awt.event.ActionListener;
  * Generic config writer for textfields.
  * Action will be performed on Swing EDT.
  */
-final class TextFieldConfigWriter implements ActionListener {
-    private final JTextField control;
-    private final String configPropertyKey;
-
-    public TextFieldConfigWriter(JTextField control, String configPropertyKey) {
-        this.control = control;
-        this.configPropertyKey = configPropertyKey;
-    }
+record TextFieldConfigWriter(JTextField control,
+                             String configPropertyKey) implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {

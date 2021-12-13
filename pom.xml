@@ -56,10 +56,10 @@
     </scm>
 
     <repositories>
-    <repository>
-        <id>local-maven-repository</id>
-        <url>file:///${project.basedir}/maven-repository</url>
-    </repository>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file:///${project.basedir}/maven-repository</url>
+        </repository>
 
         <repository>
             <id>oss.sonatype.org-snapshot</id>
@@ -70,11 +70,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -97,11 +92,11 @@
         <guava.version>31.0.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.12.5</jackson.version>
-        <javafx.version>17.0.2-ea+1</javafx.version>
+        <javafx.version>18-ea+8</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jna.version>5.10.0</jna.version>
         <junit.jupiter.version>5.8.0</junit.jupiter.version>
-        <log4j2.version>2.14.1</log4j2.version>
+        <log4j2.version>2.15.0</log4j2.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -130,13 +125,28 @@
         <install4j.jdk.min-version>17</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck</install4j.vmparameters.win.64>
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
+            -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
+        </install4j.vmparameters.win.64>
         <!-- VM Parameters Linux x64 -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
+            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
+            -Dfile.encoding=UTF-8 -DexternalUpdateCheck
+        </install4j.vmparameters.linux.64>
         <!-- VM Parameters Windows x32 -->
-        <install4j.vmparameters.win.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED</install4j.vmparameters.win.32>
+        <install4j.vmparameters.win.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
+            -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
+            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports
+            javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports
+            javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED
+        </install4j.vmparameters.win.32>
         <!-- VM Parameters Linux x32 -->
-        <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED</install4j.vmparameters.linux.32>
+        <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
+            -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
+            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports
+            javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports
+            javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
+        </install4j.vmparameters.linux.32>
 
         <install4j.home>./install4j9.0.5</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
@@ -164,12 +174,6 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>${picocli.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.thizzer.jtouchbar</groupId>
-            <artifactId>jtouchbar-javafx</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -663,14 +667,18 @@
 
     <profiles>
         <profile>
-            <id>64bit</id>
+            <id>windows_64bit</id>
             <activation>
-                <property>
-                    <name>!use32bit</name>
-                </property>
+                <os>
+                    <family>windows</family>
+                    <arch>amd64</arch>
+                </os>
             </activation>
+            <properties>
+                <javafx.platform>win</javafx.platform>
+                <install4j.platform>windows</install4j.platform>
+            </properties>
             <dependencies>
-                <!-- JavaFX -->
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-base</artifactId>
@@ -742,13 +750,57 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>res/*</exclude>
+                                            <exclude>*:*:*:linux</exclude>
+                                            <exclude>*:*:*:mac</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                                    <transformers>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>${mainclass}</mainClass>
+                                            <manifestEntries>
+                                                <Multi-Release>true</Multi-Release>
+                                            </manifestEntries>
+                                        </transformer>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
+
         <profile>
-            <id>32bit</id>
+            <id>windows_32bit</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <javafx.platform>win</javafx.platform>
+                <install4j.platform>windows32</install4j.platform>
+            </properties>
             <dependencies>
-                <!-- JavaFX -->
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-base</artifactId>
@@ -827,22 +879,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>win</javafx.platform>
-                <install4j.platform>windows</install4j.platform>
-            </properties>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
@@ -880,62 +916,64 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
-            <id>windows32</id>
-            <properties>
-                <javafx.platform>win</javafx.platform>
-                <install4j.platform>windows32</install4j.platform>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>linux</id>
+            <id>linux_64bit</id>
             <activation>
                 <os>
                     <family>unix</family>
+                    <name>Linux</name>
+                    <arch>amd64</arch>
                 </os>
             </activation>
             <properties>
                 <javafx.platform>linux</javafx.platform>
                 <install4j.platform>linux</install4j.platform>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-media</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -971,11 +1009,69 @@
             </build>
         </profile>
         <profile>
-            <id>arm</id>
+            <id>linux_arm_64bit</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
             <properties>
                 <javafx.platform>linux</javafx.platform>
                 <install4j.platform>arm</install4j.platform>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-media</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -1010,38 +1106,226 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
-            <id>mac</id>
+            <id>mac_intel</id>
             <activation>
                 <os>
                     <family>mac</family>
+                    <arch>x86_64</arch>
                 </os>
             </activation>
             <properties>
                 <javafx.platform>mac</javafx.platform>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-media</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
                         <version>${maven-resources-plugin.version}</version>
                         <executions>
-                        <execution>
-                            <id>copy-mac-binaries</id>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>${project.basedir}/res/macOS/bin</directory>
-                                        <filtering>false</filtering>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
+                            <execution>
+                                <id>copy-mac-binaries</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/res/macOS/bin</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>res/*</exclude>
+                                            <exclude>*:*:*:linux</exclude>
+                                            <exclude>*:*:*:win</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                                    <transformers>
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>${mainclass}</mainClass>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${maven-assembly-plugin.version}</version>
+                        <configuration>
+                            <finalName>MediathekView-${project.version}-mac</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/assembly/dep_mac.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>create-archive</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>mac_apple_silicon</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <javafx.platform>mac</javafx.platform>
+                <javafx.sdk>${project.basedir}/javafx_sdk/mac/aarch64/javafx-sdk-17.0.2/lib</javafx.sdk>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.base.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.controls.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-media</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.media.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.swing.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.web.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.fxml.jar</systemPath>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>system</scope>
+                    <systemPath>${javafx.sdk}/javafx.graphics.jar</systemPath>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-mac-binaries</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/res/macOS/bin</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>

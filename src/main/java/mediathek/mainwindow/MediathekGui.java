@@ -679,17 +679,9 @@ public class MediathekGui extends JFrame {
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
         tabbedPane.setSelectedComponent(tabFilme);
 
-        installTouchBarSupport();
-
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
         configureTabIcons();
-    }
-
-    /**
-     * Install touch bar support on macOS
-     */
-    protected void installTouchBarSupport() {
     }
 
     /**

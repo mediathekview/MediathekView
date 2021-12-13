@@ -285,7 +285,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
     }
 
-    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException, AssertionError {
         while (parser.hasNext()) {
             final int event = parser.next();
             if (event == XMLStreamConstants.END_ELEMENT) {

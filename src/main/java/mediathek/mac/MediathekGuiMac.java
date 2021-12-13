@@ -1,26 +1,19 @@
 package mediathek.mac;
 
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.ShowAboutAction;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
-import mediathek.mac.tabs.TabDownloadsMac;
-import mediathek.mac.tabs.TabFilmeMac;
-import mediathek.mac.touchbar.TouchBarUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.MacNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -34,20 +27,6 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-
-        if (TouchBarUtils.isTouchBarSupported()) {
-            var comp = tabbedPane.getSelectedComponent();
-            if (comp.equals(tabFilme)) {
-                // bugfix for macOS 11.1 Big Sur which otherwise wouldn´t show the touchbar on startup...
-                // window must be visible to activate touchbar
-                tabFilme.showTouchBar();
-            }
-        }
     }
 
     @Override
@@ -71,39 +50,8 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void installTouchBarSupport() {
-        if (!SystemUtils.OS_ARCH.equals("aarch64")) {
-            if (TouchBarUtils.isTouchBarSupported()) {
-                logger.trace("installing touchbar support for INTEL architecture");
-                tabbedPane.addChangeListener(e -> {
-                    var comp = tabbedPane.getSelectedComponent();
-                    if (comp.equals(tabFilme)) {
-                        tabDownloads.hideTouchBar();
-                        tabFilme.showTouchBar();
-                    } else if (comp.equals(tabDownloads)) {
-                        tabFilme.hideTouchBar();
-                        tabDownloads.showTouchBar();
-                    }
-                });
-            }
-        }
-        else
-            logger.trace("NOT installing touchbar support due to ARM architecture");
-    }
-
-    @Override
     protected INotificationCenter getNotificationCenter() {
         return new MacNotificationCenter();
-    }
-
-    @Override
-    protected JPanel createTabFilme(@NotNull Daten daten) {
-        return new TabFilmeMac(daten, this);
-    }
-
-    @Override
-    protected JPanel createTabDownloads(@NotNull Daten daten) {
-        return new TabDownloadsMac(daten, this);
     }
 
     @Override
