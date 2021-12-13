@@ -6,7 +6,7 @@ import org.controlsfx.control.CheckListView;
 
 public class SenderListBox extends CheckListView<String> {
     public SenderListBox() {
-        super(Daten.getInstance().getListeFilmeNachBlackList().getSenders());
+        super(Daten.getInstance().getListeFilmeNachBlackList().getObservableSenderList());
         setPrefHeight(150d);
         setMinHeight(100d);
 
@@ -15,7 +15,7 @@ public class SenderListBox extends CheckListView<String> {
         //->manually reset check list model after changes
         Daten.getInstance()
                 .getListeFilmeNachBlackList().
-                getSenders()
+                getObservableSenderList()
                 .addListener((ListChangeListener<String>) change -> getCheckModel().clearChecks());
     }
 }
