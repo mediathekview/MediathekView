@@ -70,13 +70,13 @@ class JDownloadHelper {
         if (film.isPlayList) {
             val miDownloadJD = JMenuItem(miText)
             miDownloadJD.addActionListener {
-                val url = film.url.toHttpUrl()
+                val url = film.urlNormalQuality.toHttpUrl()
                 downloadUrl(url, film)
             }
             jPopupMenu.add(miDownloadJD)
         } else {
             val mJD = JMenu(miText)
-            val uNormal = film.url.toHttpUrl()
+            val uNormal = film.urlNormalQuality.toHttpUrl()
             val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
             val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
             if (film.isHighQuality) {

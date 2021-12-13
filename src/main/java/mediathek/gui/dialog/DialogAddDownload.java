@@ -92,7 +92,7 @@ public class DialogAddDownload extends JDialog {
             return datenFilm.getDateigroesse(url);
         });
         var hochFuture = pool.submit(() -> {
-            var url = datenFilm.getUrl();
+            var url = datenFilm.getUrlNormalQuality();
             return datenFilm.getDateigroesse(url);
         });
         var kleinFuture = pool.submit(() -> {
@@ -215,7 +215,7 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd.setEnabled(!datenFilm.getUrlHighQuality().isEmpty());
 
         jRadioButtonAufloesungKlein.addActionListener(listener);
-        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getUrlKlein().isEmpty());
+        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getUrlLowQuality().isEmpty());
 
         jRadioButtonAufloesungHoch.addActionListener(listener);
         jRadioButtonAufloesungHoch.setSelected(true);
@@ -436,7 +436,7 @@ public class DialogAddDownload extends JDialog {
 
     private boolean isLowQualityRequested() {
         return pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(FilmResolution.Enum.LOW.toString()) &&
-                !datenFilm.getUrlKlein().isEmpty();
+                !datenFilm.getUrlLowQuality().isEmpty();
     }
 
     private boolean highQualityMandated;

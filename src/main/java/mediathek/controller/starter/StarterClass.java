@@ -270,7 +270,7 @@ public class StarterClass {
     public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = film.getUrl();
+        String url = film.getUrlNormalQuality();
         if (!url.isEmpty()) {
             DatenDownload d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();

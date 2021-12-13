@@ -102,7 +102,7 @@ public class DialogEditDownload extends JDialog {
                 }
             }
 
-            if (!datenDownload.film.getUrlKlein().isEmpty()) {
+            if (!datenDownload.film.getUrlLowQuality().isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
                 jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.LOW)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.LOW));
