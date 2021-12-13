@@ -90,7 +90,7 @@ public class DialogFilmBeschreibung extends JDialog {
                 final Path path = destFile.toPath();
                 try {
                     MVInfoFile file = new MVInfoFile();
-                    var url = HttpUrl.parse(datenFilm.getUrl());
+                    var url = HttpUrl.parse(datenFilm.getUrlNormalQuality());
                     file.writeInfoFile(datenFilm, path, url);
 
                     JavaFxUtils.invokeInFxThreadAndWait(() -> {

@@ -37,7 +37,7 @@ class SeenHistoryController : AutoCloseable {
 
     fun markUnseen(film: DatenFilm) {
         try {
-            deleteStatement!!.setString(1, film.url)
+            deleteStatement!!.setString(1, film.urlNormalQuality)
             deleteStatement!!.executeUpdate()
 
             Daten.getInstance().listeBookmarkList.updateSeen(false, film)
@@ -51,7 +51,7 @@ class SeenHistoryController : AutoCloseable {
     fun markUnseen(list: List<DatenFilm>) {
         try {
             for (film in list) {
-                deleteStatement!!.setString(1, film.url)
+                deleteStatement!!.setString(1, film.urlNormalQuality)
                 deleteStatement!!.executeUpdate()
             }
 
@@ -153,14 +153,14 @@ class SeenHistoryController : AutoCloseable {
         if (!memCachePrepared)
             prepareMemoryCache()
 
-        return urlCache.contains(film.url)
+        return urlCache.contains(film.urlNormalQuality)
     }
 
     fun hasBeenSeen(film: DatenFilm): Boolean {
         var result: Boolean
 
         try {
-            seenStatement!!.setString(1, film.url)
+            seenStatement!!.setString(1, film.urlNormalQuality)
             seenStatement!!.executeQuery().use {
                 it.next()
                 val total = it.getInt(1)
@@ -211,7 +211,7 @@ class SeenHistoryController : AutoCloseable {
     private fun writeToDatabase(film: DatenFilm) {
         insertStatement!!.setString(1, film.thema)
         insertStatement!!.setString(2, film.title)
-        insertStatement!!.setString(3, film.url)
+        insertStatement!!.setString(3, film.urlNormalQuality)
         // write each entry into database
         insertStatement!!.executeUpdate()
     }

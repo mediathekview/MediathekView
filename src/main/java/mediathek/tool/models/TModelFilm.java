@@ -103,7 +103,7 @@ public class TModelFilm extends AbstractTableModel {
             case DatenFilm.FILM_HD -> film.isHighQuality();
             case DatenFilm.FILM_UT -> film.hasSubtitle();
             case DatenFilm.FILM_GEO -> film.getGeo().orElse("");
-            case DatenFilm.FILM_URL -> film.getUrl();
+            case DatenFilm.FILM_URL -> film.getUrlNormalQuality();
             case DatenFilm.FILM_REF -> film;
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };

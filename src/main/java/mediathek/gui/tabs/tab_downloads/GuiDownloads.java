@@ -1498,17 +1498,12 @@ public class GuiDownloads extends AGuiTabPanel {
                         Optional<DatenDownload> optDL = Optional.ofNullable((DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF));
                         optDL.ifPresent(dl -> {
                             if (dl.film != null) {
-                                try {
-                                    DatenFilm filmDownload = (DatenFilm) dl.film.clone();
-                                    // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                    filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                    filmDownload.setUrlKlein("");
-                                    // und starten
-                                    daten.getStarterClass().urlMitProgrammStarten(gruppe, filmDownload, "");
-                                }
-                                catch (CloneNotSupportedException ex) {
-                                    logger.error("Cloning is not supported", ex);
-                                }
+                                DatenFilm filmClone = new DatenFilm(dl.film);
+                                // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                filmClone.setUrlNormalQuality(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                filmClone.setUrlLowQuality("");
+                                // und starten
+                                daten.getStarterClass().urlMitProgrammStarten(gruppe, filmClone, "");
                             }
                         });
                     }, () -> {

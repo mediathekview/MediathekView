@@ -682,7 +682,7 @@ public class BookmarkWindowController implements Initializable {
 
     refresh();
     datenFilm.ifPresent(film -> {
-      DatenDownload previouslyCreatedDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrl());
+      DatenDownload previouslyCreatedDownload = daten.getListeDownloads().getDownloadUrlFilm(film.getUrlNormalQuality());
       if (previouslyCreatedDownload == null) {
         createDownload(film);
       }

@@ -33,12 +33,12 @@ public class BookmarkData {
  
   public BookmarkData(DatenFilm filmdata) {
     this();
-    this.url = filmdata.getUrl();
+    this.url = filmdata.getUrlNormalQuality();
     this.sender = filmdata.getSender();
     this.titel = filmdata.getTitle();
     this.senddate = filmdata.getSendeDatum();
     this.highQualityUrl = filmdata.getUrlHighQuality();
-    this.urlKlein = filmdata.getUrlKlein();
+    this.urlKlein = filmdata.getUrlLowQuality();
     this.filmdata = filmdata; 
     this.willExpire = false;
   }
@@ -161,9 +161,9 @@ public class BookmarkData {
       Film = new DatenFilm();
       Film.setThema(getThema());
       Film.setTitle(getTitel());
-      Film.setUrl(getUrl());
+      Film.setUrlNormalQuality(getUrl());
       Film.setUrlHighQuality(getHighQualityUrl());
-      Film.setUrlKlein(getUrlKlein());
+      Film.setUrlLowQuality(getUrlKlein());
       Film.setSender(getSender());
       Film.setDauer(getDauer());
     }

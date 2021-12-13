@@ -139,11 +139,11 @@ public class FilmListWriter {
         jg.writeString(datenFilm.getDauer());
         jg.writeString(datenFilm.getSize());
         jg.writeString(datenFilm.getDescription());
-        jg.writeString(datenFilm.getUrl());
+        jg.writeString(datenFilm.getUrlNormalQuality());
         jg.writeString(datenFilm.getWebsiteLink());
         jg.writeString(datenFilm.getUrlSubtitle());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-        jg.writeString(datenFilm.getUrlKlein());
+        jg.writeString(datenFilm.getUrlLowQuality());
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
         jg.writeString(datenFilm.getUrlHighQuality());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD

@@ -517,7 +517,7 @@ public class GuiFilme extends AGuiTabPanel {
         for (DatenFilm datenFilm : liste) {
             // erst mal schauen obs den schon gibt
             DatenDownload datenDownload =
-                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrl());
+                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
             if (datenDownload != null) {
                 int ret = JOptionPane.showConfirmDialog(mediathekGui,
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
@@ -961,12 +961,12 @@ public class GuiFilme extends AGuiTabPanel {
                         filmSelection.ifPresent(datenFilm -> {
                             boolean stop = false;
                             final DatenDownload datenDownload =
-                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
                             if (datenDownload != null) {
                                 if (datenDownload.start != null) {
                                     if (datenDownload.start.status == Start.STATUS_RUN) {
                                         stop = true;
-                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
+                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrlNormalQuality());
                                     }
                                 }
                             }
