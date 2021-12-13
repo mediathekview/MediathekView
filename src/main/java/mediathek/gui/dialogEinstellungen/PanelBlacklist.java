@@ -214,7 +214,7 @@ public class PanelBlacklist extends JPanel {
             }
         });
 
-        jComboBoxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(daten.getListeFilme()));
+        jComboBoxSender.setModel(SenderList.getSenderListComboBoxModel());
 
         comboThemaLaden();
 

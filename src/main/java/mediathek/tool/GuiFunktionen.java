@@ -1,9 +1,7 @@
 package mediathek.tool;
 
-import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
-import mediathek.daten.ListeFilme;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -181,13 +179,6 @@ public class GuiFunktionen {
             logger.error("getFileNameWithoutSuffix({})", pfad);
         }
         return ret;
-    }
-
-    public static ComboBoxModel<String> getSenderListComboBoxModel(ListeFilme listeFilme) {
-        DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList(listeFilme.getBaseSenderList()));
-        senderModel.setSelectedItem("");
-
-        return senderModel;
     }
 
     /**
