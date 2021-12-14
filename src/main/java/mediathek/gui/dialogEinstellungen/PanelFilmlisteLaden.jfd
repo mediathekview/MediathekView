@@ -150,7 +150,7 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 5,hidemode 3,alignx left,gapx 10"
-				"$columnConstraints": "[fill][fill][fill][fill][fill][fill]"
+				"$columnConstraints": "[fill][fill][fill][fill][fill][fill][fill]"
 				"$rowConstraints": "[][][][]"
 			} ) {
 				name: "panel1"
@@ -196,6 +196,13 @@ new FormModel {
 					"value": "cell 5 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox25"
+					"text": "ARTE.IT"
+					"enabled": false
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 6 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "checkBox8"
 					"text": "ARD"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -230,6 +237,13 @@ new FormModel {
 					"text": "Funk.net"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 5 1"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox26"
+					"text": "ARTE.PL"
+					"enabled": false
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 6 1"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "checkBox9"
