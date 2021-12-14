@@ -1,23 +1,18 @@
 package mediathek.javafx.filterpanel;
 
+import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.animation.PauseTransition;
 import javafx.collections.ListChangeListener;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.controlsfx.control.CheckListView;
 
-public class SenderBoxNode extends VBox {
+public class SenderBoxNode extends CheckListView<String> {
     public final PauseTransition pauseTransition = new PauseTransition(Duration.millis(500d));
-    public SenderListBox senderBox;
 
     public SenderBoxNode() {
-        senderBox = new SenderListBox();
-        VBox.setVgrow(senderBox, Priority.ALWAYS);
-        getChildren().addAll(
-                new Label("Sender:"),
-                senderBox);
-        senderBox.getCheckModel().getCheckedItems().
+        setItems(new EventObservableList<>(SenderListBoxModel.SENDER_LIST));
+
+        getCheckModel().getCheckedItems().
                 addListener((ListChangeListener<String>) c -> pauseTransition.playFromStart());
     }
 }
