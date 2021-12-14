@@ -25,7 +25,6 @@ import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -62,7 +61,6 @@ public class FilmActionPanel {
   public ReadOnlyObjectProperty<String> zeitraumProperty;
   public ComboBox<String> themaBox;
   public RangeSlider filmLengthSlider;
-  public CheckListView<String> senderList;
   public JDialog filterDialog;
   public ManageAboAction manageAboAction;
   /** Stores the list of thema strings used for autocompletion. */
@@ -194,8 +192,7 @@ public class FilmActionPanel {
     dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
-    senderList = viewSettingsPane.senderBoxNode;
-    viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
+    viewSettingsPane.senderCheckList.pauseTransition.setOnFinished(e -> updateThemaBox());
 
     themaBox = viewSettingsPane.themaComboBox;
     themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
@@ -204,6 +201,10 @@ public class FilmActionPanel {
     filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
     zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
+  }
+
+  public CommonViewSettingsPane getViewSettingsPane() {
+      return viewSettingsPane;
   }
 
   private void restoreConfigSettings() {
@@ -394,7 +395,7 @@ public class FilmActionPanel {
         items.add("");
 
         List<String> finalList = new ArrayList<>();
-        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+        List<String> selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
 
         final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
         if (selectedSenders.isEmpty()) {

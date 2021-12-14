@@ -766,7 +766,7 @@ public class GuiFilme extends AGuiTabPanel {
         PauseTransition trans = new PauseTransition(Duration.millis(250));
         trans.setOnFinished(evt -> {
             // reset sender filter first
-            filmActionPanel.senderList.getCheckModel().clearChecks();
+            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {

@@ -72,7 +72,7 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
-        return filmActionPanel.senderList.getCheckModel().isEmpty()
+        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && filmActionPanel.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
@@ -117,7 +117,7 @@ public class GuiFilmeModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filmActionPanel.senderList.getCheckModel().getCheckedItems();
+        final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
         if (dontShowSeen)
             historyController.prepareMemoryCache();
