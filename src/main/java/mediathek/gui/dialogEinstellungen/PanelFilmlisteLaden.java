@@ -112,6 +112,8 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox22);
         senderCbList.add(checkBox23);
         senderCbList.add(checkBox24);
+        senderCbList.add(checkBox25);
+        senderCbList.add(checkBox26);
     }
 
     private void senderSelectionItemHandler(ItemEvent e) {
@@ -224,12 +226,14 @@ public class PanelFilmlisteLaden extends JPanel {
         checkBox4 = new JCheckBox();
         checkBox5 = new JCheckBox();
         checkBox6 = new JCheckBox();
+        checkBox25 = new JCheckBox();
         checkBox8 = new JCheckBox();
         checkBox11 = new JCheckBox();
         checkBox14 = new JCheckBox();
         checkBox17 = new JCheckBox();
         checkBox20 = new JCheckBox();
         checkBox7 = new JCheckBox();
+        checkBox26 = new JCheckBox();
         checkBox9 = new JCheckBox();
         checkBox12 = new JCheckBox();
         checkBox15 = new JCheckBox();
@@ -368,6 +372,7 @@ public class PanelFilmlisteLaden extends JPanel {
                     .fill().gap()
                     .fill().gap()
                     .fill().gap()
+                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
@@ -400,6 +405,11 @@ public class PanelFilmlisteLaden extends JPanel {
             checkBox6.setText("ZDF-tivi"); //NON-NLS
             panel1.add(checkBox6, new CC().cell(5, 0));
 
+            //---- checkBox25 ----
+            checkBox25.setText("ARTE.IT"); //NON-NLS
+            checkBox25.setEnabled(false);
+            panel1.add(checkBox25, new CC().cell(6, 0));
+
             //---- checkBox8 ----
             checkBox8.setText("ARD"); //NON-NLS
             panel1.add(checkBox8, new CC().cell(0, 1));
@@ -423,6 +433,11 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- checkBox7 ----
             checkBox7.setText("Funk.net"); //NON-NLS
             panel1.add(checkBox7, new CC().cell(5, 1));
+
+            //---- checkBox26 ----
+            checkBox26.setText("ARTE.PL"); //NON-NLS
+            checkBox26.setEnabled(false);
+            panel1.add(checkBox26, new CC().cell(6, 1));
 
             //---- checkBox9 ----
             checkBox9.setText("ARTE.DE"); //NON-NLS
@@ -498,12 +513,14 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox checkBox4;
     private JCheckBox checkBox5;
     private JCheckBox checkBox6;
+    private JCheckBox checkBox25;
     private JCheckBox checkBox8;
     private JCheckBox checkBox11;
     private JCheckBox checkBox14;
     private JCheckBox checkBox17;
     private JCheckBox checkBox20;
     private JCheckBox checkBox7;
+    private JCheckBox checkBox26;
     private JCheckBox checkBox9;
     private JCheckBox checkBox12;
     private JCheckBox checkBox15;
