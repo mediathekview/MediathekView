@@ -3,7 +3,6 @@ package mediathek.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -279,7 +278,6 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         JsonToken jsonToken;
 
         if (jp.nextToken() != JsonToken.START_OBJECT) {
@@ -357,9 +355,6 @@ public class FilmListReader implements AutoCloseable {
                 dateFilter.filter(datenFilm);
             }
         }
-
-        stopwatch.stop();
-        logger.debug("Reading filmlist took {}", stopwatch);
     }
 
     /**
@@ -433,9 +428,9 @@ public class FilmListReader implements AutoCloseable {
 
     private String buildClientInfo()
     {
-        List<Object> clienData = Arrays.asList(Konstanten.PROGRAMMNAME, Konstanten.MVVERSION, SystemUtils.OS_ARCH,
+        List<Object> clientData = Arrays.asList(Konstanten.PROGRAMMNAME, Konstanten.MVVERSION, SystemUtils.OS_ARCH,
                 SystemUtils.OS_NAME, SystemUtils.OS_VERSION);
-        return clienData.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
+        return clientData.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
     }
 
     /**
