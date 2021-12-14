@@ -36,7 +36,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
   @FXML public CheckBox cbDontShowGebaerdensprache;
   @FXML public CheckBox cbDontShowTrailers;
   @FXML public CheckBox cbDontShowAudioVersions;
-  @FXML public SenderBoxNode senderBoxNode;
+  @FXML public SenderBoxNode senderCheckList;
   @FXML public ThemaComboBox themaComboBox;
   @FXML public FilmLenghtSliderNode filmLengthSliderNode;
   @FXML public ZeitraumSpinner zeitraumSpinner;
@@ -81,7 +81,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
           cbDontShowGebaerdensprache.setDisable(disable);
           cbDontShowTrailers.setDisable(disable);
           cbDontShowAudioVersions.setDisable(disable);
-          senderBoxNode.setDisable(disable);
+          senderCheckList.setDisable(disable);
           themaComboBox.setDisable(disable);
           filmLengthSliderNode.setDisable(disable);
           zeitraumSpinner.setDisable(disable);

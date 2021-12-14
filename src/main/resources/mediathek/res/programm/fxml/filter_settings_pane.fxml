@@ -57,7 +57,7 @@
     <Separator/>
     <VBox VBox.vgrow="ALWAYS">
         <Label text="Sender:"/>
-        <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderBoxNode" prefHeight="150" minHeight="100"/>
+        <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderCheckList" prefHeight="150" minHeight="100"/>
     </VBox>
     <Separator/>
     <HBox spacing="4.0" maxWidth="Infinity">
