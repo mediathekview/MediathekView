@@ -1,8 +1,8 @@
 <u>**13.8.2**</u>
 
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
-- **FEATURE:** ARTE.EN wurde hinzugefügt
-- **FEATURE:** ARTE.ES wurde hinzugefügt
+- **FEATURE:** ARTE.EN wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
+- **FEATURE:** ARTE.ES wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
 
 <u>**13.8.1**</u>
 
