@@ -87,8 +87,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
         ImageIcon icon = switch (sender) {
             case "3Sat" -> getIcon(WIKI_BASE_URL + "/f/f2/3sat-Logo.svg/775px-3sat-Logo.svg.png", "/mediathek/res/sender/3sat.png");
             case "ARD", "ARD.Podcast" -> getIcon(WIKI_BASE_URL + "/6/68/ARD_logo.svg/320px-ARD_logo.svg.png", "/mediathek/res/sender/ard.png");
-            case "ARTE.DE" -> getIcon(WIKI_BASE_URL + "/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png", "/mediathek/res/sender/arte-de.png");
-            case "ARTE.FR" -> scaleImageFromResource("/mediathek/res/sender/arte-fr.png", iconSize);
+            case "ARTE.DE", "ARTE.EN", "ARTE.FR" -> getIcon(WIKI_BASE_URL + "/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png", "/mediathek/res/sender/arte-de.png");
             case "BR" -> getIcon(WIKI_BASE_URL + "/9/98/BR_Dachmarke.svg/320px-BR_Dachmarke.svg.png", "/mediathek/res/sender/br.png");
             case "HR" -> getIcon(WIKI_BASE_URL + "/6/63/HR_Logo.svg/519px-HR_Logo.svg.png", "/mediathek/res/sender/hr.png");
             case "KiKA" -> getIcon(WIKI_BASE_URL + "/f/f5/Kika_2012.svg/320px-Kika_2012.svg.png", "/mediathek/res/sender/kika.png");
