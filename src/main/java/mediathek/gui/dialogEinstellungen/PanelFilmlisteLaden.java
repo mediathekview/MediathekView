@@ -110,6 +110,7 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox20);
         senderCbList.add(checkBox21);
         senderCbList.add(checkBox22);
+        senderCbList.add(checkBox23);
     }
 
     private void senderSelectionItemHandler(ItemEvent e) {
@@ -233,6 +234,7 @@ public class PanelFilmlisteLaden extends JPanel {
         checkBox15 = new JCheckBox();
         checkBox18 = new JCheckBox();
         checkBox21 = new JCheckBox();
+        checkBox23 = new JCheckBox();
         checkBox10 = new JCheckBox();
         checkBox13 = new JCheckBox();
         checkBox16 = new JCheckBox();
@@ -440,6 +442,10 @@ public class PanelFilmlisteLaden extends JPanel {
             checkBox21.setText("WDR"); //NON-NLS
             panel1.add(checkBox21, new CC().cell(4, 2));
 
+            //---- checkBox23 ----
+            checkBox23.setText("ARTE.EN"); //NON-NLS
+            panel1.add(checkBox23, new CC().cell(5, 2));
+
             //---- checkBox10 ----
             checkBox10.setText("ARTE.FR"); //NON-NLS
             panel1.add(checkBox10, new CC().cell(0, 3));
@@ -497,6 +503,7 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox checkBox15;
     private JCheckBox checkBox18;
     private JCheckBox checkBox21;
+    private JCheckBox checkBox23;
     private JCheckBox checkBox10;
     private JCheckBox checkBox13;
     private JCheckBox checkBox16;
