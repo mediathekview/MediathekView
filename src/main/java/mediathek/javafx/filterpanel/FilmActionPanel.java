@@ -194,7 +194,7 @@ public class FilmActionPanel {
     dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
-    senderList = viewSettingsPane.senderBoxNode.senderBox;
+    senderList = viewSettingsPane.senderBoxNode;
     viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
 
     themaBox = viewSettingsPane.themaComboBox;
