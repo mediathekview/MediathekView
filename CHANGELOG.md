@@ -1,3 +1,9 @@
+<u>**13.8.2**</u>
+
+- **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
+- **FEATURE:** ARTE.EN wurde hinzugefügt
+- **FEATURE:** ARTE.ES wurde hinzugefügt
+
 <u>**13.8.1**</u>
 
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
