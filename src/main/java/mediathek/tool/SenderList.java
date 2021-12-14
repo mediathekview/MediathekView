@@ -3,14 +3,14 @@ package mediathek.tool;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mediathek.config.Daten;
+import mediathek.javafx.filterpanel.SenderListBoxModel;
 
 import javax.swing.*;
 
 public class SenderList extends TransformedList<String, String> {
 
     public SenderList() {
-        super(Daten.getInstance().getListeFilme().getBaseSenderList());
+        super(SenderListBoxModel.SENDER_LIST);
     }
 
     public static ComboBoxModel<String> getSenderListComboBoxModel() {

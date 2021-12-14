@@ -141,9 +141,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
             completeFilmList.parallelStream().filter(pred).forEachOrdered(filteredList::add);
 
             setupNewEntries();
-
-            // Array mit Sendernamen/Themen füllen
-            filteredList.fillSenderList();
         }
         stopwatch.stop();
         logger.trace("Complete filtering took: {}", stopwatch);
