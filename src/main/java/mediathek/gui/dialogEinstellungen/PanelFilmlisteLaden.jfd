@@ -297,6 +297,12 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 4 3"
 				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox24"
+					"text": "ARTE.ES"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 5 3"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 4 2 1,growx"
 			} )

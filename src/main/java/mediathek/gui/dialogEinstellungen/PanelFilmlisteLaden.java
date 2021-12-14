@@ -111,6 +111,7 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox21);
         senderCbList.add(checkBox22);
         senderCbList.add(checkBox23);
+        senderCbList.add(checkBox24);
     }
 
     private void senderSelectionItemHandler(ItemEvent e) {
@@ -240,6 +241,7 @@ public class PanelFilmlisteLaden extends JPanel {
         checkBox16 = new JCheckBox();
         checkBox19 = new JCheckBox();
         checkBox22 = new JCheckBox();
+        checkBox24 = new JCheckBox();
 
         //======== this ========
         setMinimumSize(null);
@@ -465,6 +467,10 @@ public class PanelFilmlisteLaden extends JPanel {
             //---- checkBox22 ----
             checkBox22.setText("ZDF"); //NON-NLS
             panel1.add(checkBox22, new CC().cell(4, 3));
+
+            //---- checkBox24 ----
+            checkBox24.setText("ARTE.ES"); //NON-NLS
+            panel1.add(checkBox24, new CC().cell(5, 3));
         }
         add(panel1, new CC().cell(0, 4, 2, 1).growX());
 
@@ -509,5 +515,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox checkBox16;
     private JCheckBox checkBox19;
     private JCheckBox checkBox22;
+    private JCheckBox checkBox24;
     // End of variables declaration//GEN-END:variables
 }
