@@ -12,9 +12,9 @@ public class SenderListBoxModel {
         SENDER_LIST.add("ARD.Podcast");
         SENDER_LIST.add("ARTE.DE");
         SENDER_LIST.add("ARTE.EN");
-        //FIXME implement missing ARTE sender
-        //SENDER_LIST.add("ARTE.ES");
+        SENDER_LIST.add("ARTE.ES");
         SENDER_LIST.add("ARTE.FR");
+        //FIXME implement missing ARTE sender
         //SENDER_LIST.add("ARTE.IT");
         //SENDER_LIST.add("ARTE.PL");
         SENDER_LIST.add("BR");
