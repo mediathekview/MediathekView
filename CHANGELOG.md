@@ -3,6 +3,7 @@
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
 - **FEATURE:** ARTE.EN wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
 - **FEATURE:** ARTE.ES wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
+- Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
 
 <u>**13.8.1**</u>
 
