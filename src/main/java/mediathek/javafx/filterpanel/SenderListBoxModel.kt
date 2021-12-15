@@ -6,6 +6,9 @@ import ca.odell.glazedlists.TransformedList
 import ca.odell.glazedlists.event.ListEvent
 import mediathek.tool.GermanStringSorter
 
+/**
+ * The base model object for all available senders that the client can process.
+ */
 object SenderListBoxModel {
     private val providedSenderList: EventList<String> = BasicEventList()
 

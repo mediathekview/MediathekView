@@ -214,7 +214,7 @@ public class PanelBlacklist extends JPanel {
             }
         });
 
-        jComboBoxSender.setModel(SenderList.getSenderListComboBoxModel());
+        jComboBoxSender.setModel(new SenderListComboBoxModel());
 
         comboThemaLaden();
 

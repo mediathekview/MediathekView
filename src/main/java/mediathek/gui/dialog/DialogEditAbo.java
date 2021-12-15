@@ -63,7 +63,7 @@ public class DialogEditAbo extends JDialog {
 
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(SenderList.getSenderListComboBoxModel());
+        comboboxSender.setModel(new SenderListComboBoxModel());
 
         // Zielpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
