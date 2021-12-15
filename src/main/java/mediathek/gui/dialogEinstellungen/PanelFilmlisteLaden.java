@@ -443,7 +443,6 @@ public class PanelFilmlisteLaden extends JPanel {
 
             //---- checkBox25 ----
             checkBox25.setText("ARTE.IT"); //NON-NLS
-            checkBox25.setEnabled(false);
             panel1.add(checkBox25, new CC().cell(1, 2));
 
             //---- checkBox7 ----
@@ -468,7 +467,6 @@ public class PanelFilmlisteLaden extends JPanel {
 
             //---- checkBox26 ----
             checkBox26.setText("ARTE.PL"); //NON-NLS
-            checkBox26.setEnabled(false);
             panel1.add(checkBox26, new CC().cell(1, 3));
 
             //---- checkBox12 ----
