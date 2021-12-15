@@ -134,11 +134,12 @@
             -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
         <!-- VM Parameters Windows x32 -->
-        <install4j.vmparameters.win.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
-            -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
-            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports
-            javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports
-            javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED
+        <install4j.vmparameters.win.32>-Xmx1G -Xss1048576 -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=100.0
+            -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
+            --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
+            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED
+            --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED
+            --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED
         </install4j.vmparameters.win.32>
         <!-- VM Parameters Linux x32 -->
         <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
