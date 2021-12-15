@@ -1,8 +1,8 @@
-<u>**13.8.2**</u>
+<u>**13.9.0**</u>
 
+- **Dies ist die letzte Version mit Unterstützung für 32-Bit Betriebssysteme. Aber Version 14 werden nur noch 64-Bit Betriebssysteme unterstützt. (Minimum: Windows 10, macOS 10.14 (Mojave), Ubuntu 18.04 LTS, Debian 8, centOS 7)**
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
-- **FEATURE:** ARTE.EN wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
-- **FEATURE:** ARTE.ES wurde hinzugefügt. Sender muss in den Einstellungen aktiviert werden bei vorhandenen Installationen.
+- **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden.
 - Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
 
 <u>**13.8.1**</u>
