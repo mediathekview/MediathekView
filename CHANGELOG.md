@@ -5,6 +5,7 @@
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
 - **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.
 - Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
+- Geschwindigkeit der Blacklistfilterung wurde für *große* Blacklisten teils erheblich gesteigert (macOS 12.1 Intel i9 -16%, macOS 12.0.1 Apple M1 -27%, Windows 10 AMD Ryzen 4700U -36%, Ubuntu 21.04 AMD Ryzen 4700U -31%). Testfall war eine Filmliste mit 500k Filmen und reale Blacklisten mit ca. 2500 Einträgen. Alle Betriebssysteme waren 64bit.
 
 <u>**13.8.1**</u>
 
