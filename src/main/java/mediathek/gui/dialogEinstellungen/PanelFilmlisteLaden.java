@@ -362,7 +362,7 @@ public class PanelFilmlisteLaden extends JPanel {
         //======== panel1 ========
         {
             panel1.setBorder(new TitledBorder("Diese Sender laden (\u00c4nderungen erfordern Programmneustart)")); //NON-NLS
-            panel1.setToolTipText("<html>Die Einstellung bezieht sich auf den n\u00e4chsten <b>vollst\u00e4ndigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms sichtbar wird.</html>"); //NON-NLS
+            panel1.setToolTipText("<html>Die Einstellung bezieht sich auf den n\u00e4chsten <b>vollst\u00e4ndigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms sichtbar wird.<br><br>Hier ge\u00e4nderte Einstellungen werden in der Senderliste des Filterdialogs <b>erst nach Neustart</b> sichtbar!</html>"); //NON-NLS
             panel1.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).alignX("left").gridGapX("10"), //NON-NLS
                 // columns
