@@ -11,10 +11,13 @@ import mediathek.tool.EscapeKeyHandler;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
@@ -256,64 +259,81 @@ public class DialogEinstellungen extends JFrame {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jButtonBeenden = new JButton();
+        var jSplitPane1 = new JSplitPane();
+        var jScrollPane2 = new JScrollPane();
+        jPanelExtra = new JPanel();
+        var jScrollPane1 = new JScrollPane();
+        jTree1 = new JTree();
 
-        jButtonBeenden = new javax.swing.JButton();
-        javax.swing.JSplitPane jSplitPane1 = new javax.swing.JSplitPane();
-        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-        jPanelExtra = new javax.swing.JPanel();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        //======== this ========
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Einstellungen"); //NON-NLS
+        var contentPane = getContentPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Einstellungen");
+        //---- jButtonBeenden ----
+        jButtonBeenden.setText("Schlie\u00dfen"); //NON-NLS
 
-        jButtonBeenden.setText("Schließen");
+        //======== jSplitPane1 ========
+        {
+            jSplitPane1.setBorder(new EtchedBorder());
+            jSplitPane1.setDividerLocation(250);
+            jSplitPane1.setContinuousLayout(true);
+            jSplitPane1.setOneTouchExpandable(true);
 
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jSplitPane1.setDividerLocation(250);
-        jSplitPane1.setContinuousLayout(true);
-        jSplitPane1.setOneTouchExpandable(true);
+            //======== jScrollPane2 ========
+            {
 
-        jPanelExtra.setLayout(new java.awt.BorderLayout());
-        jScrollPane2.setViewportView(jPanelExtra);
+                //======== jPanelExtra ========
+                {
+                    jPanelExtra.setLayout(new BorderLayout());
+                }
+                jScrollPane2.setViewportView(jPanelExtra);
+            }
+            jSplitPane1.setRightComponent(jScrollPane2);
 
-        jSplitPane1.setRightComponent(jScrollPane2);
+            //======== jScrollPane1 ========
+            {
 
-        jTree1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jTree1.setRootVisible(false);
-        jScrollPane1.setViewportView(jTree1);
+                //---- jTree1 ----
+                jTree1.setBorder(new EmptyBorder(5, 5, 5, 5));
+                jTree1.setRootVisible(false);
+                jScrollPane1.setViewportView(jTree1);
+            }
+            jSplitPane1.setLeftComponent(jScrollPane1);
+        }
 
-        jSplitPane1.setLeftComponent(jScrollPane1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 965, Short.MAX_VALUE)
-                        .addComponent(jButtonBeenden)))
-                .addContainerGap())
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addComponent(jSplitPane1, GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addGap(12, 965, Short.MAX_VALUE)
+                            .addComponent(jButtonBeenden)))
+                    .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonBeenden)
-                .addGap(6, 6, 6))
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jSplitPane1, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jButtonBeenden)
+                    .addGap(6, 6, 6))
         );
-
         pack();
+        setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBeenden;
-    private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JTree jTree1;
+    // Generated using JFormDesigner non-commercial license
+    private JButton jButtonBeenden;
+    private JPanel jPanelExtra;
+    private JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
