@@ -2,22 +2,15 @@ package mediathek.tool;
 
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import mediathek.javafx.filterpanel.SenderListBoxModel;
 
-import javax.swing.*;
+/**
+ * Read-only model of sender also containing an " " for all sender selection.
+ */
+public class SenderListModel extends TransformedList<String, String> {
 
-public class SenderList extends TransformedList<String, String> {
-
-    public SenderList() {
+    public SenderListModel() {
         super(SenderListBoxModel.getReadOnlySenderList());
-    }
-
-    public static ComboBoxModel<String> getSenderListComboBoxModel() {
-        DefaultEventComboBoxModel<String> senderModel = new DefaultEventComboBoxModel<>(new SenderList());
-        senderModel.setSelectedItem("");
-
-        return senderModel;
     }
 
     @Override

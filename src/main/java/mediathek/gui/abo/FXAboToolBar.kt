@@ -7,7 +7,7 @@ import javafx.fxml.Initializable
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.ToolBar
-import mediathek.tool.SenderList
+import mediathek.tool.SenderListModel
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.net.URL
@@ -27,7 +27,7 @@ class FXAboToolBar : ToolBar(), Initializable {
     @FXML lateinit var btnNewAbo: Button
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
-        cbSender.items = EventObservableList(SenderList())
+        cbSender.items = EventObservableList(SenderListModel())
         cbSender.selectionModel.select(0)
     }
 
