@@ -2,11 +2,24 @@ package mediathek.javafx.filterpanel
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
+import ca.odell.glazedlists.TransformedList
+import ca.odell.glazedlists.event.ListEvent
 import mediathek.tool.GermanStringSorter
 
 object SenderListBoxModel {
+    private val providedSenderList: EventList<String> = BasicEventList()
+
     @JvmStatic
-    val providedSenderList: EventList<String> = BasicEventList()
+    val readOnlySenderList = ReadOnlySenderListBoxModel()
+
+    class ReadOnlySenderListBoxModel : TransformedList<String, String>(providedSenderList) {
+        override fun isWritable(): Boolean {
+            return false
+        }
+
+        override fun listChanged(listChanges: ListEvent<String>?) {
+        }
+    }
 
     init {
         providedSenderList.add("3Sat")
