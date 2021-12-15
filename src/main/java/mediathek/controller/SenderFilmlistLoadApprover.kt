@@ -17,7 +17,7 @@ object SenderFilmlistLoadApprover {
         val storedSenderList = config.getList(String::class.java, SENDER_KEY)
         if (storedSenderList == null || storedSenderList.isEmpty()) {
             //manually approve all of them and store in config :(
-            senderSet.addAll(SenderListBoxModel.providedSenderList)
+            senderSet.addAll(SenderListBoxModel.readOnlySenderList)
             config.setProperty(SENDER_KEY, senderSet)
         } else {
             senderSet.addAll(storedSenderList)

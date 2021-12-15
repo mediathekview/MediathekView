@@ -10,7 +10,7 @@ import javax.swing.*;
 public class SenderList extends TransformedList<String, String> {
 
     public SenderList() {
-        super(SenderListBoxModel.getProvidedSenderList());
+        super(SenderListBoxModel.getReadOnlySenderList());
     }
 
     public static ComboBoxModel<String> getSenderListComboBoxModel() {
