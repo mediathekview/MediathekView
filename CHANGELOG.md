@@ -3,6 +3,7 @@
 - **Dies ist die letzte Version mit Unterstützung für 32-Bit Betriebssysteme. Ab Version 14 werden nur noch 64-Bit Betriebssysteme unterstützt. (Minimum: Windows 10, macOS 10.14 (Mojave), Ubuntu 18.04 LTS, Debian 8, centOS 7)**
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
+- **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.
 - Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
 
 <u>**13.8.1**</u>

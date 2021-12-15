@@ -1,34 +1,29 @@
-package mediathek.javafx.filterpanel;
+package mediathek.javafx.filterpanel
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.collections.FXCollections
+import javafx.scene.control.Spinner
+import javafx.scene.control.SpinnerValueFactory
+import javafx.scene.control.SpinnerValueFactory.ListSpinnerValueFactory
+import javafx.scene.control.Tooltip
 
-public class ZeitraumSpinner extends Spinner<String> {
-    public static final String UNLIMITED_VALUE = "∞";
+class ZeitraumSpinner : Spinner<String?>() {
+    init {
+        val days = FXCollections.observableArrayList(UNLIMITED_VALUE)
+        for (i in 1..365)
+            days.add(i.toString())
+        val valueFactory: SpinnerValueFactory<String?> = ListSpinnerValueFactory(days)
+        setValueFactory(valueFactory)
+        valueFactory.value = UNLIMITED_VALUE
+        isEditable = true
+        tooltip = Tooltip(
+            """
+                Geben Sie Werte von 1-365 manuell ein plus ENTER-Taste.
+                Für unbegrenzten Zeitraum das "∞"-Symbol eingeben.
+                """.trimIndent()
+        )
+    }
 
-    public ZeitraumSpinner() {
-        super();
-        ObservableList<String> days = FXCollections.observableArrayList(UNLIMITED_VALUE);
-        for (int i = 1; i <= 30; i++)
-            days.add(String.valueOf(i));
-
-        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(days);
-        valueFactory.setWrapAround(true);
-        setValueFactory(valueFactory);
-        valueFactory.setValue(UNLIMITED_VALUE);
-        setEditable(true);
-        getEditor().textProperty().addListener(((observable, oldValue, newValue) -> {
-            boolean found = false;
-            for (var item : days) {
-                if (item.startsWith(newValue)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                getEditor().setText(oldValue);
-        }));
+    companion object {
+        const val UNLIMITED_VALUE = "∞"
     }
 }
