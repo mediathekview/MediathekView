@@ -10,7 +10,7 @@ public class SenderBoxNode extends CheckListView<String> {
     public final PauseTransition pauseTransition = new PauseTransition(Duration.millis(500d));
 
     public SenderBoxNode() {
-        setItems(new EventObservableList<>(SenderListBoxModel.SENDER_LIST));
+        setItems(new EventObservableList<>(SenderListBoxModel.getProvidedSenderList()));
 
         getCheckModel().getCheckedItems().
                 addListener((ListChangeListener<String>) c -> pauseTransition.playFromStart());

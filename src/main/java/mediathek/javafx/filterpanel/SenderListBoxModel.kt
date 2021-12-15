@@ -1,38 +1,42 @@
-package mediathek.javafx.filterpanel;
+package mediathek.javafx.filterpanel
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.BasicEventList
+import ca.odell.glazedlists.EventList
+import mediathek.tool.GermanStringSorter
 
-public class SenderListBoxModel {
-    public static final EventList<String> SENDER_LIST = new BasicEventList<>();
+object SenderListBoxModel {
+    @JvmStatic
+    val providedSenderList: EventList<String> = BasicEventList()
 
-    static {
-        SENDER_LIST.add("3Sat");
-        SENDER_LIST.add("ARD");
-        SENDER_LIST.add("ARD.Podcast");
-        SENDER_LIST.add("ARTE.DE");
-        SENDER_LIST.add("ARTE.EN");
-        SENDER_LIST.add("ARTE.ES");
-        SENDER_LIST.add("ARTE.FR");
-        SENDER_LIST.add("ARTE.IT");
-        SENDER_LIST.add("ARTE.PL");
-        SENDER_LIST.add("BR");
-        SENDER_LIST.add("DW");
-        SENDER_LIST.add("Funk.net");
-        SENDER_LIST.add("HR");
-        SENDER_LIST.add("KiKa");
-        SENDER_LIST.add("MDR");
-        SENDER_LIST.add("NDR");
-        SENDER_LIST.add("ORF");
-        SENDER_LIST.add("PHOENIX");
-        SENDER_LIST.add("Radio Bremen TV");
-        SENDER_LIST.add("RBB");
-        SENDER_LIST.add("SR");
-        SENDER_LIST.add("SRF");
-        SENDER_LIST.add("SRF.Podcast");
-        SENDER_LIST.add("SWR");
-        SENDER_LIST.add("WDR");
-        SENDER_LIST.add("ZDF");
-        SENDER_LIST.add("ZDF-tivi");
+    init {
+        providedSenderList.add("3Sat")
+        providedSenderList.add("ARD")
+        providedSenderList.add("ARD.Podcast")
+        providedSenderList.add("ARTE.DE")
+        providedSenderList.add("ARTE.EN")
+        providedSenderList.add("ARTE.ES")
+        providedSenderList.add("ARTE.FR")
+        providedSenderList.add("ARTE.IT")
+        providedSenderList.add("ARTE.PL")
+        providedSenderList.add("BR")
+        providedSenderList.add("DW")
+        providedSenderList.add("Funk.net")
+        providedSenderList.add("HR")
+        providedSenderList.add("KiKa")
+        providedSenderList.add("MDR")
+        providedSenderList.add("NDR")
+        providedSenderList.add("ORF")
+        providedSenderList.add("PHOENIX")
+        providedSenderList.add("Radio Bremen TV")
+        providedSenderList.add("RBB")
+        providedSenderList.add("SR")
+        providedSenderList.add("SRF")
+        providedSenderList.add("SRF.Podcast")
+        providedSenderList.add("SWR")
+        providedSenderList.add("WDR")
+        providedSenderList.add("ZDF")
+        providedSenderList.add("ZDF-tivi")
+
+        providedSenderList.sortWith(GermanStringSorter.getInstance())
     }
 }
