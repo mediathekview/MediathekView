@@ -9,6 +9,7 @@
 
 <u>**13.8.1**</u>
 
+- **Java wurde auf Version 17 aktualisiert.**
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
 - **BUGFIX (macOS):** möglicher Absturz der App unter macOS Monterey wurde behoben. 
 - **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
