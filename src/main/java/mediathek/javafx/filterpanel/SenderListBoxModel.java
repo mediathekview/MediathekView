@@ -14,9 +14,8 @@ public class SenderListBoxModel {
         SENDER_LIST.add("ARTE.EN");
         SENDER_LIST.add("ARTE.ES");
         SENDER_LIST.add("ARTE.FR");
-        //FIXME enable ARTE.IT and ARTE.PL here
-//        SENDER_LIST.add("ARTE.IT");
-//        SENDER_LIST.add("ARTE.PL");
+        SENDER_LIST.add("ARTE.IT");
+        SENDER_LIST.add("ARTE.PL");
         SENDER_LIST.add("BR");
         SENDER_LIST.add("DW");
         SENDER_LIST.add("Funk.net");
