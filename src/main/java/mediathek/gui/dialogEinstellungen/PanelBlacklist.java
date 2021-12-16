@@ -5,7 +5,6 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.blacklist.BlacklistRule;
-import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -20,7 +19,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -247,57 +245,8 @@ public class PanelBlacklist extends JPanel {
         lst.clear();
     }
 
-    class BlacklistTableModel extends AbstractTableModel {
-        private final ListeBlacklist blacklist;
-
-        public BlacklistTableModel() {
-            this.blacklist = Daten.getInstance().getListeBlacklist();
-        }
-
-        @Override
-        public int getRowCount() {
-            return blacklist.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return 5;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            var rule = blacklist.get(rowIndex);
-            return switch(columnIndex) {
-                case BlacklistRule.BLACKLIST_NR -> rule.arr[BlacklistRule.BLACKLIST_NR];
-                case BlacklistRule.BLACKLIST_SENDER -> rule.arr[BlacklistRule.BLACKLIST_SENDER];
-                case BlacklistRule.BLACKLIST_THEMA -> rule.arr[BlacklistRule.BLACKLIST_THEMA];
-                case BlacklistRule.BLACKLIST_TITEL -> rule.arr[BlacklistRule.BLACKLIST_TITEL];
-                case BlacklistRule.BLACKLIST_THEMA_TITEL -> rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL];
-                //case 5 -> rule;
-                default -> throw new IllegalStateException("Unexpected value: " + columnIndex);
-            };
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return switch(column) {
-                case BlacklistRule.BLACKLIST_NR -> "Nr";
-                case BlacklistRule.BLACKLIST_SENDER -> "Sender";
-                case BlacklistRule.BLACKLIST_THEMA -> "Thema";
-                case BlacklistRule.BLACKLIST_TITEL -> "Titel";
-                case BlacklistRule.BLACKLIST_THEMA_TITEL -> "Thema-Titel";
-                default -> throw new IllegalStateException("Unexpected value: " + column);
-            };
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
-        }
-    }
-
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new BlacklistTableModel());
+        jTableBlacklist.setModel(new BlacklistRuleTableModel());
     }
 
     private void tableSelect() {
