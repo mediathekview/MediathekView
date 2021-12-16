@@ -60,6 +60,12 @@ public class PanelBlacklist extends JPanel {
             }
         });
 
+        jCheckBoxGeo.addActionListener(e -> {
+            ApplicationConfiguration.getConfiguration().
+                    setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
+            notifyBlacklistChanged();
+        });
+
         init_();
         init();
 
@@ -111,10 +117,6 @@ public class PanelBlacklist extends JPanel {
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxGeo.setSelected(config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false));
-        jCheckBoxGeo.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
-            notifyBlacklistChanged();
-        });
 
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
@@ -130,7 +132,7 @@ public class PanelBlacklist extends JPanel {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
         jTableBlacklist.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                tableSelect();
+                fillControlsWithRuleData();
             }
         });
 
@@ -245,10 +247,10 @@ public class PanelBlacklist extends JPanel {
             if (selectedTableRow != -1) {
                 int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                 var bl = tableModel.get(modelIndex);
-                bl.arr[BlacklistRule.BLACKLIST_SENDER] = strSender;
-                bl.arr[BlacklistRule.BLACKLIST_THEMA] = strThema;
-                bl.arr[BlacklistRule.BLACKLIST_TITEL] = strTitel;
-                bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = strThemaTitel;
+                bl.setSender(strSender);
+                bl.setThema(strThema);
+                bl.setTitel(strTitel);
+                bl.setThemaTitel(strThemaTitel);
 
                 tableModel.fireTableRowsUpdated(modelIndex, modelIndex);
 
@@ -278,19 +280,15 @@ public class PanelBlacklist extends JPanel {
         lst.clear();
     }
 
-    private void tableSelect() {
-        BlacklistRule bl = null;
+    private void fillControlsWithRuleData() {
         int selectedTableRow = jTableBlacklist.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
-            bl = daten.getListeBlacklist().getRuleByNr(delNr);
-        }
-        if (bl != null) {
-            jComboBoxSender.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_SENDER]);
-            jComboBoxThema.setSelectedItem(bl.arr[BlacklistRule.BLACKLIST_THEMA]);
-            jTextFieldTitel.setText(bl.arr[BlacklistRule.BLACKLIST_TITEL]);
-            jTextFieldThemaTitel.setText(bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
+        if (selectedTableRow != -1) {
+            int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+            var bl = tableModel.get(modelIndex);
+            jComboBoxSender.setSelectedItem(bl.getSender());
+            jComboBoxThema.setSelectedItem(bl.getThema());
+            jTextFieldTitel.setText(bl.getTitel());
+            jTextFieldThemaTitel.setText(bl.getThemaTitel());
         }
     }
 

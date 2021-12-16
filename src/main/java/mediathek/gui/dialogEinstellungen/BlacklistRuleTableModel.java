@@ -9,6 +9,11 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class BlacklistRuleTableModel extends AbstractTableModel {
+    private static final int BLACKLIST_NR = 0;
+    private static final int BLACKLIST_SENDER = 1;
+    private static final int BLACKLIST_THEMA = 2;
+    private static final int BLACKLIST_TITEL = 3;
+    private static final int BLACKLIST_THEMA_TITEL = 4;
     private final ListeBlacklist blacklist;
 
     public BlacklistRuleTableModel() {
@@ -29,11 +34,11 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         var rule = blacklist.get(rowIndex);
         return switch (columnIndex) {
-            case BlacklistRule.BLACKLIST_NR -> rule.arr[BlacklistRule.BLACKLIST_NR];
-            case BlacklistRule.BLACKLIST_SENDER -> rule.arr[BlacklistRule.BLACKLIST_SENDER];
-            case BlacklistRule.BLACKLIST_THEMA -> rule.arr[BlacklistRule.BLACKLIST_THEMA];
-            case BlacklistRule.BLACKLIST_TITEL -> rule.arr[BlacklistRule.BLACKLIST_TITEL];
-            case BlacklistRule.BLACKLIST_THEMA_TITEL -> rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL];
+            case BLACKLIST_NR -> rule.getNr();
+            case BLACKLIST_SENDER -> rule.getSender();
+            case BLACKLIST_THEMA -> rule.getThema();
+            case BLACKLIST_TITEL -> rule.getTitel();
+            case BLACKLIST_THEMA_TITEL -> rule.getThemaTitel();
             default -> throw new IllegalStateException("Unexpected value: " + columnIndex);
         };
     }
@@ -41,11 +46,11 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case BlacklistRule.BLACKLIST_NR -> "Nr";
-            case BlacklistRule.BLACKLIST_SENDER -> "Sender";
-            case BlacklistRule.BLACKLIST_THEMA -> "Thema";
-            case BlacklistRule.BLACKLIST_TITEL -> "Titel";
-            case BlacklistRule.BLACKLIST_THEMA_TITEL -> "Thema-Titel";
+            case BLACKLIST_NR -> "Nr";
+            case BLACKLIST_SENDER -> "Sender";
+            case BLACKLIST_THEMA -> "Thema";
+            case BLACKLIST_TITEL -> "Titel";
+            case BLACKLIST_THEMA_TITEL -> "Thema-Titel";
             default -> throw new IllegalStateException("Unexpected value: " + column);
         };
     }
@@ -57,16 +62,18 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
 
     /**
      * Remove a BlacklistRule from model
+     *
      * @param modelIndex index from blacklist to delete
      */
     public void removeRow(int modelIndex) {
         blacklist.remove(modelIndex);
-        fireTableRowsDeleted(modelIndex,modelIndex);
+        fireTableRowsDeleted(modelIndex, modelIndex);
     }
 
     /**
      * Remove a collection of rules.
      * Fire update after all rules have been removed.
+     *
      * @param list of objects to be deleted
      */
     public void removeRules(@NotNull List<BlacklistRule> list) {
@@ -84,6 +91,7 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
 
     /**
      * Add a rule to the blacklist store.
+     *
      * @param rule to be added.
      */
     public void addRule(@NotNull BlacklistRule rule) {
@@ -93,10 +101,11 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
 
     /**
      * Get a blacklist rule based on model index.
+     *
      * @param fromModelIndex the index.
      * @return the rule.
      */
     public BlacklistRule get(int fromModelIndex) {
-       return blacklist.get(fromModelIndex);
+        return blacklist.get(fromModelIndex);
     }
 }
