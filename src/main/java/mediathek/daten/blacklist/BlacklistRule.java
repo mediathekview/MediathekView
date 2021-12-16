@@ -11,11 +11,6 @@ public class BlacklistRule {
     public static final int BLACKLIST_THEMA = 2;
     public static final int BLACKLIST_TITEL = 3;
     public static final int BLACKLIST_THEMA_TITEL = 4;
-    /**
-     * selector for receiving object from BlacklistRuleTableModel.
-     * DO NOT use otherwise!
-     */
-    public static final int BLACKLIST_OBJECT_REF = 5;
     public static final int MAX_ELEM = 5;
 
     public static final String TAG = "Blacklist";

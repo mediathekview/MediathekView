@@ -244,7 +244,7 @@ public class PanelBlacklist extends JPanel {
             int selectedTableRow = jTableBlacklist.getSelectedRow();
             if (selectedTableRow != -1) {
                 int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-                BlacklistRule bl = (BlacklistRule) tableModel.getValueAt(modelIndex, BlacklistRule.BLACKLIST_OBJECT_REF);
+                var bl = tableModel.get(modelIndex);
                 bl.arr[BlacklistRule.BLACKLIST_SENDER] = strSender;
                 bl.arr[BlacklistRule.BLACKLIST_THEMA] = strThema;
                 bl.arr[BlacklistRule.BLACKLIST_TITEL] = strTitel;
@@ -322,7 +322,7 @@ public class PanelBlacklist extends JPanel {
             List<BlacklistRule> tempStore = new ArrayList<>();
             for (var selectedRow : selectedIndices) {
                 int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow);
-                BlacklistRule rule = (BlacklistRule) tableModel.getValueAt(modelIndex, BlacklistRule.BLACKLIST_OBJECT_REF);
+                var rule = tableModel.get(modelIndex);
                 tempStore.add(rule);
             }
             tableModel.removeRules(tempStore);

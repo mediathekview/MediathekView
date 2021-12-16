@@ -34,7 +34,6 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
             case BlacklistRule.BLACKLIST_THEMA -> rule.arr[BlacklistRule.BLACKLIST_THEMA];
             case BlacklistRule.BLACKLIST_TITEL -> rule.arr[BlacklistRule.BLACKLIST_TITEL];
             case BlacklistRule.BLACKLIST_THEMA_TITEL -> rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL];
-            case 5 -> rule;
             default -> throw new IllegalStateException("Unexpected value: " + columnIndex);
         };
     }
@@ -90,5 +89,14 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
     public void addRule(@NotNull BlacklistRule rule) {
         blacklist.add(rule);
         fireTableDataChanged();
+    }
+
+    /**
+     * Get a blacklist rule based on model index.
+     * @param fromModelIndex the index.
+     * @return the rule.
+     */
+    public BlacklistRule get(int fromModelIndex) {
+       return blacklist.get(fromModelIndex);
     }
 }
