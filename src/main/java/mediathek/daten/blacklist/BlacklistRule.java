@@ -11,10 +11,9 @@ public class BlacklistRule {
     public static final int BLACKLIST_THEMA = 2;
     public static final int BLACKLIST_TITEL = 3;
     public static final int BLACKLIST_THEMA_TITEL = 4;
-
     public static final int MAX_ELEM = 5;
+
     public static final String TAG = "Blacklist";
-    public static final String[] COLUMN_NAMES = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
     public static final String[] XML_NAMES = {"black-nr", "black-sender", "black-thema", "black-titel", "black-thema-titel"};
     public String[] arr;
     private boolean patternTitle = true;

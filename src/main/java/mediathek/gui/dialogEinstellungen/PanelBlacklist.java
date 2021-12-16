@@ -236,7 +236,7 @@ public class PanelBlacklist extends JPanel {
         if (filterSender.isEmpty())
             filterSender = "";
 
-        java.util.List<String> lst = daten.getListeFilmeNachBlackList().getThemen(filterSender);
+        java.util.List<String> lst = daten.getListeFilme().getThemen(filterSender);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addElement("");
         for (String item : lst)
@@ -258,8 +258,10 @@ public class PanelBlacklist extends JPanel {
         return object;
     }
 
+    public static final String[] BLACKLIST_COLUMN_NAMES = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
+
     private void tabelleLaden() {
-        var model = new DefaultTableModel(createBlacklistObjectData(), BlacklistRule.COLUMN_NAMES);
+        var model = new DefaultTableModel(createBlacklistObjectData(), BLACKLIST_COLUMN_NAMES);
         jTableBlacklist.setModel(model);
     }
 
