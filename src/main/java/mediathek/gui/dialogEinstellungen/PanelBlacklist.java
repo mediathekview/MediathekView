@@ -44,6 +44,18 @@ public class PanelBlacklist extends JPanel {
         name = nname;
         jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
         jButtonTabelleLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+
+        jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
+
+        jTableBlacklist.setModel(tableModel);
+
+        tableModel.addTableModelListener(l -> jButtonTabelleLoeschen.setEnabled(tableModel.getRowCount() != 0));
+        jTableBlacklist.getSelectionModel().addListSelectionListener(l -> {
+            if (!l.getValueIsAdjusting()) {
+                jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
+            }
+        });
+
         init_();
         init();
 
@@ -100,7 +112,7 @@ public class PanelBlacklist extends JPanel {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
 
-        jTableBlacklist.setModel(tableModel);
+        tableModel.fireTableDataChanged();
     }
 
     private void init() {
