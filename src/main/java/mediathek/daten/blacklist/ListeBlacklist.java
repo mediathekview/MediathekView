@@ -43,13 +43,13 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param b {@link BlacklistRule} item.
      */
     public synchronized void addWithoutNotification(BlacklistRule b) {
-        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
+        b.setNr(Integer.toString(nr++));
         super.add(b);
     }
 
     @Override
     public synchronized boolean add(BlacklistRule b) {
-        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
+        b.setNr(Integer.toString(nr++));
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;
@@ -80,32 +80,9 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         return ret;
     }
 
-    public synchronized BlacklistRule remove(String ruleNumber) {
-        BlacklistRule bl;
-        if ((bl = getRuleByNr(ruleNumber)) != null) {
-            remove(bl);
-        }
-        filterListAndNotifyListeners();
-        return bl;
-    }
-
     @Override
     public synchronized BlacklistRule get(int idx) {
         return super.get(idx);
-    }
-
-    /**
-     * Return the element at the specified {@link String} position.
-     *
-     * @param ruleNumber Index string of the specified element
-     * @return the specified element in the list
-     */
-    public synchronized BlacklistRule getRuleByNr(final String ruleNumber) {
-        return stream()
-                .filter(e -> e.arr[BlacklistRule.BLACKLIST_NR].equals(ruleNumber))
-                .findFirst()
-                .orElse(null);
-
     }
 
     @Override
@@ -289,10 +266,10 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
         for (BlacklistRule rule : this) {
-            if (Filter.filterAufFilmPruefenWithLength(rule.arr[BlacklistRule.BLACKLIST_SENDER],
-                    rule.arr[BlacklistRule.BLACKLIST_THEMA],
-                    makePattern(rule.arr[BlacklistRule.BLACKLIST_TITEL]),
-                    makePattern(rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]),
+            if (Filter.filterAufFilmPruefenWithLength(rule.getSender(),
+                    rule.getThema(),
+                    makePattern(rule.getTitel()),
+                    makePattern(rule.getThemaTitel()),
                     EMPTY_STRING_ARRAY, 0, true, film, true)) {
                 return bl_is_whitelist;
             }

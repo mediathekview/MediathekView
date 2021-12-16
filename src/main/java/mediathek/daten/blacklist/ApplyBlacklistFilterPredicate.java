@@ -30,8 +30,8 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
      */
     private void createPatterns() {
         listeBlacklist.parallelStream().forEach(entry -> {
-            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[BlacklistRule.BLACKLIST_TITEL]);
-            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
+            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.getTitel());
+            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.getThemaTitel());
             var blPattern = new BlacklistPattern(pTitel, pThema);
             rulePatternMap.putIfAbsent(entry, blPattern);
         });
@@ -80,8 +80,8 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
         final String title = film.getTitle();
 
 
-        final String senderSuchen = entry.arr[BlacklistRule.BLACKLIST_SENDER];
-        final String themaSuchen = entry.arr[BlacklistRule.BLACKLIST_THEMA];
+        final String senderSuchen = entry.getSender();
+        final String themaSuchen = entry.getThema();
 
         if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
