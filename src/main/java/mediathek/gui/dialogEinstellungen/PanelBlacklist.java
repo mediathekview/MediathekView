@@ -22,6 +22,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PanelBlacklist extends JPanel {
@@ -68,6 +70,11 @@ public class PanelBlacklist extends JPanel {
         SwingUtilities.invokeLater(this::init_);
     }
 
+    /**
+     * TableModel which syncs table view with ListBlacklist entries.
+     */
+    private final BlacklistRuleTableModel tableModel = new BlacklistRuleTableModel();
+
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)));
         jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
@@ -88,7 +95,8 @@ public class PanelBlacklist extends JPanel {
             jSliderMinuten.setValue(0);
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
-        tabelleLaden();
+
+        jTableBlacklist.setModel(tableModel);
     }
 
     private void init() {
@@ -245,8 +253,9 @@ public class PanelBlacklist extends JPanel {
         lst.clear();
     }
 
+    @Deprecated
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new BlacklistRuleTableModel());
+        //FIXME this must be removed AND logic corrected
     }
 
     private void tableSelect() {
@@ -265,13 +274,23 @@ public class PanelBlacklist extends JPanel {
         }
     }
 
-    private void removeTableRow() {
-        int selectedTableRow = jTableBlacklist.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-            String delNr = jTableBlacklist.getModel().getValueAt(del, BlacklistRule.BLACKLIST_NR).toString();
-            daten.getListeBlacklist().remove(Integer.parseInt(delNr));
-            tabelleLaden();
+    /**
+     * Remove one or more selected BlacklistRule objects from model.
+     */
+    private void onRemoveBlacklistRules() {
+        var selectedIndices = jTableBlacklist.getSelectionModel().getSelectedIndices();
+        if (selectedIndices.length == 1) {
+            int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedIndices[0]);
+            tableModel.removeRow(modelIndex);
+        }
+        else {
+            List<BlacklistRule> tempStore = new ArrayList<>();
+            for (var selectedRow : selectedIndices) {
+                int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow);
+                BlacklistRule rule = (BlacklistRule) tableModel.getValueAt(modelIndex, 5);
+                tempStore.add(rule);
+            }
+            tableModel.removeRows(tempStore);
         }
     }
 
@@ -292,16 +311,15 @@ public class PanelBlacklist extends JPanel {
         }
 
         private void showMenu(MouseEvent evt) {
-            int nr;
-            Point p = evt.getPoint();
-            nr = jTableBlacklist.rowAtPoint(p);
-            if (nr >= 0) {
-                jTableBlacklist.setRowSelectionInterval(nr, nr);
-            }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
-            JMenuItem item = new JMenuItem("Zeile löschen");
-            item.addActionListener(l -> removeTableRow());
+            String menuText;
+            if (jTableBlacklist.getSelectedRowCount() > 1)
+                menuText = "Zeilen löschen";
+            else
+                menuText = "Zeile löschen";
+            JMenuItem item = new JMenuItem(menuText);
+            item.addActionListener(l -> onRemoveBlacklistRules());
             jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

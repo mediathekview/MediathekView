@@ -62,6 +62,17 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         return ret;
     }
 
+    /**
+     * Remove a list of rules and filter after all objects have been removed.
+     * @param ruleList a list of objects that need to be deleted.
+     */
+    public synchronized void remove(List<BlacklistRule> ruleList) {
+        for (var rule : ruleList) {
+            super.remove(rule);
+        }
+        filterListAndNotifyListeners();
+    }
+
     @Override
     public synchronized BlacklistRule remove(int idx) {
         BlacklistRule ret = super.remove(idx);
