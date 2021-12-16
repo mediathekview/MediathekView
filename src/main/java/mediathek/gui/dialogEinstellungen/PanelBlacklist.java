@@ -141,7 +141,7 @@ public class PanelBlacklist extends JPanel {
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
                 daten.getListeBlacklist().add(new BlacklistRule(se, th, ti, thti));
-                tabelleLaden();
+                tableModel.fireTableDataChanged();
             }
         });
         jButtonAendern.addActionListener(e -> {
@@ -159,7 +159,7 @@ public class PanelBlacklist extends JPanel {
                     bl.arr[BlacklistRule.BLACKLIST_THEMA] = th;
                     bl.arr[BlacklistRule.BLACKLIST_TITEL] = ti;
                     bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = thti;
-                    tabelleLaden();
+                    tableModel.fireTableDataChanged();
                     jTableBlacklist.addRowSelectionInterval(row, row);
                     notifyBlacklistChanged();
                 }
@@ -171,7 +171,7 @@ public class PanelBlacklist extends JPanel {
             int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 daten.getListeBlacklist().clear();
-                tabelleLaden();
+                tableModel.fireTableDataChanged();
             }
         });
         jComboBoxSender.addActionListener(e -> comboThemaLaden());
@@ -251,11 +251,6 @@ public class PanelBlacklist extends JPanel {
         jComboBoxThema.setModel(model);
 
         lst.clear();
-    }
-
-    @Deprecated
-    private void tabelleLaden() {
-        //FIXME this must be removed AND logic corrected
     }
 
     private void tableSelect() {
