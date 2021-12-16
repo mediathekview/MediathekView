@@ -246,7 +246,7 @@ public class PanelBlacklist extends JPanel {
         lst.clear();
     }
 
-    public synchronized Object[][] createBlacklistObjectData() {
+    public Object[][] createBlacklistObjectData() {
         var blacklist = Daten.getInstance().getListeBlacklist();
         Object[][] object = new Object[blacklist.size()][BlacklistRule.MAX_ELEM];
 
