@@ -305,7 +305,6 @@ public class PanelBlacklist extends JPanel {
 
         if (!strSender.isEmpty() || !strThema.isEmpty() || !strTitel.isEmpty() || !strThemaTitel.isEmpty()) {
             var rule = new BlacklistRule(strSender, strThema, strTitel, strThemaTitel);
-            //TODO check if rule already exists
             tableModel.addRule(rule);
             resetRuleEntryFields();
         }
