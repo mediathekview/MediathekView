@@ -12,6 +12,10 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -353,9 +357,11 @@ public class PanelBlacklist extends JPanel {
         var jLabel2 = new JLabel();
         jTextFieldThemaTitel = new JTextField();
         jButtonAendern = new JButton();
+        panel2 = new JPanel();
         jRadioButtonBlacklist = new JRadioButton();
         jRadioButtonWhitelist = new JRadioButton();
         jButtonHilfe = new JButton();
+        panel1 = new JPanel();
         var jLabel10 = new JLabel();
         jButtonTabelleLoeschen = new JButton();
         var jPanel8 = new JPanel();
@@ -412,7 +418,7 @@ public class PanelBlacklist extends JPanel {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jTextFieldMinuten, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE))
                                             .addComponent(jLabel13))
-                                        .addGap(0, 405, Short.MAX_VALUE)))
+                                        .addGap(0, 412, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     jPanel6Layout.setVerticalGroup(
@@ -547,23 +553,55 @@ public class PanelBlacklist extends JPanel {
                     jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jComboBoxSender, jComboBoxThema, jTextFieldThemaTitel, jTextFieldTitel});
                 }
 
-                //---- jRadioButtonBlacklist ----
-                jRadioButtonBlacklist.setSelected(true);
-                jRadioButtonBlacklist.setText("\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"); //NON-NLS
+                //======== panel2 ========
+                {
+                    panel2.setLayout(new MigLayout(
+                        new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                        // columns
+                        new AC()
+                            .fill().gap()
+                            .grow().align("right"), //NON-NLS
+                        // rows
+                        new AC()
+                            .fill().gap()
+                            .fill()));
 
-                //---- jRadioButtonWhitelist ----
-                jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"); //NON-NLS
+                    //---- jRadioButtonBlacklist ----
+                    jRadioButtonBlacklist.setSelected(true);
+                    jRadioButtonBlacklist.setText("\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"); //NON-NLS
+                    panel2.add(jRadioButtonBlacklist, new CC().cell(0, 0));
 
-                //---- jButtonHilfe ----
-                jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-                jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+                    //---- jRadioButtonWhitelist ----
+                    jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"); //NON-NLS
+                    panel2.add(jRadioButtonWhitelist, new CC().cell(0, 1));
 
-                //---- jLabel10 ----
-                jLabel10.setText("Alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
+                    //---- jButtonHilfe ----
+                    jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
+                    jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+                    panel2.add(jButtonHilfe, new CC().cell(1, 0, 1, 2).alignX("right").alignY("center").grow(0, 0)); //NON-NLS
+                }
 
-                //---- jButtonTabelleLoeschen ----
-                jButtonTabelleLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); //NON-NLS
-                jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
+                //======== panel1 ========
+                {
+                    panel1.setLayout(new MigLayout(
+                        new LC().insets("0").hideMode(3).gridGap("5", "0"), //NON-NLS
+                        // columns
+                        new AC()
+                            .grow().fill().gap()
+                            .fill(),
+                        // rows
+                        new AC()
+                            .grow().align("center"))); //NON-NLS
+
+                    //---- jLabel10 ----
+                    jLabel10.setText("Alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
+                    jLabel10.setHorizontalAlignment(SwingConstants.RIGHT);
+                    panel1.add(jLabel10, new CC().cell(0, 0));
+
+                    //---- jButtonTabelleLoeschen ----
+                    jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
+                    panel1.add(jButtonTabelleLoeschen, new CC().cell(1, 0));
+                }
 
                 GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -572,38 +610,21 @@ public class PanelBlacklist extends JPanel {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(jPanel1Layout.createParallelGroup()
-                                .addComponent(jScrollPane1, GroupLayout.Alignment.TRAILING)
+                                .addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
                                 .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup()
-                                        .addComponent(jRadioButtonWhitelist)
-                                        .addComponent(jRadioButtonBlacklist))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 373, Short.MAX_VALUE)
-                                    .addComponent(jButtonHilfe))
-                                .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addGap(0, 0, Short.MAX_VALUE)
-                                    .addComponent(jLabel10)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jButtonTabelleLoeschen)))
+                                .addComponent(panel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addContainerGap())
                 );
                 jPanel1Layout.setVerticalGroup(
                     jPanel1Layout.createParallelGroup()
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(jPanel1Layout.createParallelGroup()
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jRadioButtonBlacklist)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jRadioButtonWhitelist))
-                                .addComponent(jButtonHilfe))
+                            .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addGap(12, 12, 12)
+                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                            .addGap(8, 8, 8)
+                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                .addComponent(jLabel10)
-                                .addComponent(jButtonTabelleLoeschen))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap())
                 );
@@ -670,9 +691,11 @@ public class PanelBlacklist extends JPanel {
     private JTextField jTextFieldTitel;
     private JTextField jTextFieldThemaTitel;
     private JButton jButtonAendern;
+    private JPanel panel2;
     private JRadioButton jRadioButtonBlacklist;
     private JRadioButton jRadioButtonWhitelist;
     private JButton jButtonHilfe;
+    private JPanel panel1;
     private JButton jButtonTabelleLoeschen;
     private JCheckBox jCheckBoxStart;
     private JCheckBox jCheckBoxBlacklistEingeschaltet;

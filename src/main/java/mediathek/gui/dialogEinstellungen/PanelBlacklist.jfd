@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.5.0.404" Java: "11.0.13" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -30,7 +30,7 @@ new FormModel {
 						"toolTipText": "<html>Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp jSliderMinuten::l:::x, seq {par l {seq l {comp jLabel1:::p::p, space :::p, comp jTextFieldMinuten:::p:81:p}, comp jLabel13::l:p::p}, space :0:405:x}}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp jSliderMinuten::l:::x, seq {par l {seq l {comp jLabel1:::p::p, space :::p, comp jTextFieldMinuten:::p:81:p}, comp jLabel13::l:p::p}, space :0:412:x}}, space :::p}}"
 						"$verticalGroup": "par l {seq t {space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldMinuten::b:p::p}, space u:p::p, comp jLabel13:::p::p, space :::x, comp jSliderMinuten:::p::p, space :::p}}"
 					} ) {
 						name: "jPanel6"
@@ -65,8 +65,8 @@ new FormModel {
 					"title": "Blacklist allgemein"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, comp jPanel4::l:::x, seq {par l {comp jRadioButtonWhitelist:::p::p, comp jRadioButtonBlacklist::l:p::p}, space ::373:x, comp jButtonHilfe:::p::p}, seq t {space :0:0:x, comp jLabel10:::p::p, space :::p, comp jButtonTabelleLoeschen:::p::p}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :p::p, par l {seq {comp jRadioButtonBlacklist:::p::p, space :::p, comp jRadioButtonWhitelist:::p::p}, comp jButtonHilfe::l:p::p}, space :p::p, comp jScrollPane1::::113:x, space :p::p, par c {comp jLabel10::c:p::p, comp jButtonTabelleLoeschen::c:p::p}, space u:p::p, comp jPanel4:::p::p, space :p::p}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp panel2:::::x, comp jScrollPane1::t::846:x, comp jPanel4::l:::x, comp panel1::t:::x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {comp panel2:::p::p, space :p:12:p, comp jScrollPane1::::118:x, space :p:8:p, comp panel1:::p::p, space :::p, comp jPanel4:::p::p, space :p::p}}"
 				} ) {
 					name: "jPanel1"
 					auxiliary() {
@@ -155,33 +155,57 @@ new FormModel {
 							"text": "Ändern"
 						} )
 					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "jRadioButtonBlacklist"
-						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"selected": true
-						"text": "\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
+						"$columnConstraints": "[fill][grow,right]"
+						"$rowConstraints": "[fill][fill]"
+					} ) {
+						name: "panel2"
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "jRadioButtonBlacklist"
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							"selected": true
+							"text": "\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "jRadioButtonWhitelist"
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							"text": "nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonHilfe"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+							"toolTipText": "Hilfe anzeigen"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0 1 2,align right center,grow 0 0"
+						} )
 					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "jRadioButtonWhitelist"
-						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "jButtonHilfe"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-						"toolTipText": "Hilfe anzeigen"
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "jLabel10"
-						"text": "Alle Einträge löschen:"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "jButtonTabelleLoeschen"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
-						"toolTipText": "Alle Einträge löschen"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
+						"$columnConstraints": "[grow,fill][fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "panel1"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel10"
+							"text": "Alle Einträge löschen:"
+							"horizontalAlignment": 4
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonTabelleLoeschen"
+							"toolTipText": "Alle Einträge löschen"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Sender-Thema-Titel"
