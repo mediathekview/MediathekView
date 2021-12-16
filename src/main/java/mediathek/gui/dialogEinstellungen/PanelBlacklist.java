@@ -53,6 +53,10 @@ public class PanelBlacklist extends JPanel {
         jTableBlacklist.getSelectionModel().addListSelectionListener(l -> {
             if (!l.getValueIsAdjusting()) {
                 jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
+
+                if (jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 0){
+                    resetRuleEntryFields();
+                }
             }
         });
 
@@ -79,6 +83,13 @@ public class PanelBlacklist extends JPanel {
                 comboThemaLaden();
             }
         });
+    }
+
+    private void resetRuleEntryFields() {
+        jTextFieldTitel.setText("");
+        jTextFieldThemaTitel.setText("");
+        jComboBoxThema.setSelectedItem("");
+        jComboBoxSender.setSelectedItem("");
     }
 
     @Handler
@@ -150,38 +161,10 @@ public class PanelBlacklist extends JPanel {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
             notifyBlacklistChanged();
         });
-        jButtonHinzufuegen.addActionListener(e -> {
-            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
-            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
-            String ti = jTextFieldTitel.getText().trim();
-            String thti = jTextFieldThemaTitel.getText().trim();
-            if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
-                daten.getListeBlacklist().add(new BlacklistRule(se, th, ti, thti));
-                tableModel.fireTableDataChanged();
-            }
-        });
-        jButtonAendern.addActionListener(e -> {
-            String se = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
-            String th = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
-            String ti = jTextFieldTitel.getText().trim();
-            String thti = jTextFieldThemaTitel.getText().trim();
-            if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
-                int selectedTableRow = jTableBlacklist.getSelectedRow();
-                if (selectedTableRow >= 0) {
-                    int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-                    String delNr = jTableBlacklist.getModel().getValueAt(row, BlacklistRule.BLACKLIST_NR).toString();
-                    BlacklistRule bl = daten.getListeBlacklist().getRuleByNr(delNr);
-                    bl.arr[BlacklistRule.BLACKLIST_SENDER] = se;
-                    bl.arr[BlacklistRule.BLACKLIST_THEMA] = th;
-                    bl.arr[BlacklistRule.BLACKLIST_TITEL] = ti;
-                    bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = thti;
-                    tableModel.fireTableDataChanged();
-                    jTableBlacklist.addRowSelectionInterval(row, row);
-                    notifyBlacklistChanged();
-                }
-            }
+        jButtonHinzufuegen.addActionListener(e -> onAddBlacklistRule());
 
-        });
+        jButtonAendern.addActionListener(e -> onChangeBlacklistRule());
+
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
         jButtonTabelleLoeschen.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parentComponent,
@@ -249,6 +232,31 @@ public class PanelBlacklist extends JPanel {
         jTextFieldTitel.setComponentPopupMenu(handler.getPopupMenu());
     }
 
+    /**
+     * Apply changes to an existing rule.
+     */
+    private void onChangeBlacklistRule() {
+        String strSender = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+        String strThema = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
+        String strTitel = jTextFieldTitel.getText().trim();
+        String strThemaTitel = jTextFieldThemaTitel.getText().trim();
+        if (!strSender.isEmpty() || !strThema.isEmpty() || !strTitel.isEmpty() || !strThemaTitel.isEmpty()) {
+            int selectedTableRow = jTableBlacklist.getSelectedRow();
+            if (selectedTableRow != -1) {
+                int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+                BlacklistRule bl = (BlacklistRule) tableModel.getValueAt(modelIndex, BlacklistRule.BLACKLIST_OBJECT_REF);
+                bl.arr[BlacklistRule.BLACKLIST_SENDER] = strSender;
+                bl.arr[BlacklistRule.BLACKLIST_THEMA] = strThema;
+                bl.arr[BlacklistRule.BLACKLIST_TITEL] = strTitel;
+                bl.arr[BlacklistRule.BLACKLIST_THEMA_TITEL] = strThemaTitel;
+
+                tableModel.fireTableRowsUpdated(modelIndex, modelIndex);
+
+                notifyBlacklistChanged();
+            }
+        }
+    }
+
     private void notifyBlacklistChanged() {
         daten.getListeBlacklist().filterListe();
         MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
@@ -287,6 +295,22 @@ public class PanelBlacklist extends JPanel {
     }
 
     /**
+     * Add a new blacklist rule to the model
+     */
+    private void onAddBlacklistRule() {
+        String strSender = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
+        String strThema = Objects.requireNonNull(jComboBoxThema.getSelectedItem()).toString();
+        String strTitel = jTextFieldTitel.getText().trim();
+        String strThemaTitel = jTextFieldThemaTitel.getText().trim();
+
+        if (!strSender.isEmpty() || !strThema.isEmpty() || !strTitel.isEmpty() || !strThemaTitel.isEmpty()) {
+            var rule = new BlacklistRule(strSender, strThema, strTitel, strThemaTitel);
+            //TODO check if rule already exists
+            tableModel.addRule(rule);
+            resetRuleEntryFields();
+        }
+    }
+    /**
      * Remove one or more selected BlacklistRule objects from model.
      */
     private void onRemoveBlacklistRules() {
@@ -299,10 +323,10 @@ public class PanelBlacklist extends JPanel {
             List<BlacklistRule> tempStore = new ArrayList<>();
             for (var selectedRow : selectedIndices) {
                 int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow);
-                BlacklistRule rule = (BlacklistRule) tableModel.getValueAt(modelIndex, 5);
+                BlacklistRule rule = (BlacklistRule) tableModel.getValueAt(modelIndex, BlacklistRule.BLACKLIST_OBJECT_REF);
                 tempStore.add(rule);
             }
-            tableModel.removeRows(tempStore);
+            tableModel.removeRules(tempStore);
         }
     }
 
