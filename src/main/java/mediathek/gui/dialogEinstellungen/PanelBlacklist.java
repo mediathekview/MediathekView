@@ -246,8 +246,20 @@ public class PanelBlacklist extends JPanel {
         lst.clear();
     }
 
+    public synchronized Object[][] createBlacklistObjectData() {
+        var blacklist = Daten.getInstance().getListeBlacklist();
+        Object[][] object = new Object[blacklist.size()][BlacklistRule.MAX_ELEM];
+
+        int i = 0;
+        for (BlacklistRule rule : blacklist) {
+            object[i] = rule.arr;
+            ++i;
+        }
+        return object;
+    }
+
     private void tabelleLaden() {
-        var model = new DefaultTableModel(daten.getListeBlacklist().getObjectData(), BlacklistRule.COLUMN_NAMES);
+        var model = new DefaultTableModel(createBlacklistObjectData(), BlacklistRule.COLUMN_NAMES);
         jTableBlacklist.setModel(model);
     }
 

@@ -103,17 +103,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         filterListAndNotifyListeners();
     }
 
-    public synchronized Object[][] getObjectData() {
-        Object[][] object = new Object[size()][BlacklistRule.MAX_ELEM];
-
-        int i = 0;
-        for (BlacklistRule blacklist : this) {
-            object[i] = blacklist.arr;
-            ++i;
-        }
-        return object;
-    }
-
     /**
      * Main filtering routine
      */
