@@ -385,11 +385,11 @@ public class PanelBlacklist extends JPanel {
         var jLabel2 = new JLabel();
         jTextFieldThemaTitel = new JTextField();
         jButtonAendern = new JButton();
-        panel2 = new JPanel();
+        var panel2 = new JPanel();
         jRadioButtonBlacklist = new JRadioButton();
         jRadioButtonWhitelist = new JRadioButton();
         jButtonHilfe = new JButton();
-        panel1 = new JPanel();
+        var panel1 = new JPanel();
         var jLabel10 = new JLabel();
         jButtonTabelleLoeschen = new JButton();
         var jPanel3 = new JPanel();
@@ -685,11 +685,9 @@ public class PanelBlacklist extends JPanel {
     private JTextField jTextFieldTitel;
     private JTextField jTextFieldThemaTitel;
     private JButton jButtonAendern;
-    private JPanel panel2;
     private JRadioButton jRadioButtonBlacklist;
     private JRadioButton jRadioButtonWhitelist;
     private JButton jButtonHilfe;
-    private JPanel panel1;
     private JButton jButtonTabelleLoeschen;
     private JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private JCheckBox jCheckBoxGeo;
