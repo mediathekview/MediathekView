@@ -172,10 +172,11 @@ public class PanelBlacklist extends JPanel {
         });
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
         jButtonTabelleLoeschen.addActionListener(e -> {
-            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            int ret = JOptionPane.showConfirmDialog(parentComponent,
+                    "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",
+                    "Blacklist Regeln", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                daten.getListeBlacklist().clear();
-                tableModel.fireTableDataChanged();
+                tableModel.removeAll();
             }
         });
         jComboBoxSender.addActionListener(e -> comboThemaLaden());

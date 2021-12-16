@@ -73,4 +73,12 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
         blacklist.remove(list);
         fireTableDataChanged();
     }
+
+    /**
+     * Remove all blacklist rules.
+     */
+    public void removeAll() {
+        blacklist.clear();
+        fireTableDataChanged();
+    }
 }
