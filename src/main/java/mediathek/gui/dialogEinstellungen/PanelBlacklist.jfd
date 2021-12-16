@@ -107,6 +107,9 @@ new FormModel {
 						"$rowConstraints": "[fill][fill]"
 					} ) {
 						name: "panel2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "jRadioButtonBlacklist"
 							"$buttonGroup": new FormReference( "buttonGroup1" )
@@ -137,6 +140,9 @@ new FormModel {
 						"$rowConstraints": "[grow,center]"
 					} ) {
 						name: "panel1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel10"
 							"text": "Alle Einträge löschen:"
