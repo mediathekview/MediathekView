@@ -427,7 +427,8 @@ public class PanelBlacklist extends JPanel {
 
                 //======== jScrollPane1 ========
                 {
-                    jScrollPane1.setMaximumSize(new Dimension(32767, 250));
+                    jScrollPane1.setMinimumSize(new Dimension(22, 50));
+                    jScrollPane1.setPreferredSize(new Dimension(454, 200));
 
                     //---- jTableBlacklist ----
                     jTableBlacklist.setAutoCreateRowSorter(true);
@@ -481,7 +482,7 @@ public class PanelBlacklist extends JPanel {
                                             .addComponent(jLabel5))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(jPanel4Layout.createParallelGroup()
-                                            .addComponent(jComboBoxSender)
+                                            .addComponent(jComboBoxSender, GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
                                             .addComponent(jComboBoxThema)))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
@@ -490,20 +491,19 @@ public class PanelBlacklist extends JPanel {
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(jPanel4Layout.createParallelGroup()
                                             .addComponent(jTextFieldTitel)
-                                            .addComponent(jTextFieldThemaTitel))))
-                                .addGap(12, 12, 12))
-                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addContainerGap(626, Short.MAX_VALUE)
-                                .addComponent(jButtonAendern)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHinzufuegen)
+                                            .addComponent(jTextFieldThemaTitel)))
+                                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                        .addGap(0, 620, Short.MAX_VALUE)
+                                        .addComponent(jButtonAendern)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonHinzufuegen)))
                                 .addContainerGap())
                     );
                     jPanel4Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonAendern, jButtonHinzufuegen});
                     jPanel4Layout.setVerticalGroup(
                         jPanel4Layout.createParallelGroup()
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(45, 45, 45)
+                                .addContainerGap()
                                 .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel5)
                                     .addComponent(jComboBoxSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -519,11 +519,11 @@ public class PanelBlacklist extends JPanel {
                                 .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel2)
                                     .addComponent(jTextFieldThemaTitel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(jButtonHinzufuegen)
                                     .addComponent(jButtonAendern))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(51, Short.MAX_VALUE))
                     );
                     jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jComboBoxSender, jComboBoxThema, jTextFieldThemaTitel, jTextFieldTitel});
                 }

@@ -22,7 +22,8 @@ new FormModel {
 					}
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "jScrollPane1"
-						"maximumSize": new java.awt.Dimension( 32767, 250 )
+						"minimumSize": new java.awt.Dimension( 22, 50 )
+						"preferredSize": new java.awt.Dimension( 454, 200 )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -34,8 +35,8 @@ new FormModel {
 						"value": "cell 0 1"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :p::p, par l {seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l:::x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}}, space :p:12:p}, seq t {space ::626:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :p:45:p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space u:::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space :::x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l::714:x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}, seq t {space :0:620:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space :::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space ::51:x}}"
 					} ) {
 						name: "jPanel4"
 						"border": new javax.swing.border.TitledBorder( "Sender, Thema, Titel oder Thema/Titel:" )
