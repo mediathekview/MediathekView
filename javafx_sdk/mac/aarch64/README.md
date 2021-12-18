@@ -1,0 +1,1 @@
+For Apple Silicon build you **must download and install** a JavaFX SDK as `javafx-sdk` folder here". Otherwise it will not build.
