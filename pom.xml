@@ -1249,7 +1249,7 @@
             </activation>
             <properties>
                 <javafx.platform>mac</javafx.platform>
-                <javafx.sdk>${project.basedir}/javafx_sdk/mac/aarch64/javafx-sdk-17.0.2/lib</javafx.sdk>
+                <javafx.sdk>${project.basedir}/javafx_sdk/mac/aarch64/javafx-sdk/lib</javafx.sdk>
             </properties>
             <dependencies>
                 <dependency>
