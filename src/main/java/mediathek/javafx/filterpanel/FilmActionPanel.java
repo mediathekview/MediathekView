@@ -39,7 +39,7 @@ import java.util.UUID;
  */
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
-  private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
+  private final PauseTransition finalActionTrans = new PauseTransition(Duration.seconds(1));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
