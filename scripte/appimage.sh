@@ -105,6 +105,7 @@ delete_blacklisted
 
 cd .. # Go out of AppImage
 
+echo generate_type2_appimage -u ${UPDATESTR}
 generate_type2_appimage -u ${UPDATESTR}
 
 cd .. # Go out of AppImage
