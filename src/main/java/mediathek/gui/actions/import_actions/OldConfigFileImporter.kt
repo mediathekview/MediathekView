@@ -43,8 +43,15 @@ class OldConfigFileImporter {
                                 if (importAboEntry(parser!!))
                                     foundAbos++
                             } else if (importBlacklist && parser!!.localName == BlacklistRule.TAG) {
-                                if (importBlacklistEntry(parser!!))
+                                try {
+                                    val rule = BlacklistRule()
+                                    rule.readFromConfig(parser!!)
+                                    daten.listeBlacklist.addWithoutNotification(rule)
                                     foundBlacklistEntries++
+                                }
+                                catch (e: Exception) {
+                                    logger.error("Failed to read blacklist rule", e)
+                                }
                             } else if (importReplaceList && parser!!.localName == ReplaceList.REPLACELIST) {
                                 if (importReplaceList(parser!!))
                                     foundReplaceListEntries++
@@ -82,17 +89,6 @@ class OldConfigFileImporter {
             logger.error("Error importing abo entry")
             false
         }
-    }
-
-    private fun importBlacklistEntry(parser: XMLStreamReader): Boolean {
-        val blacklist = daten.listeBlacklist
-        val blacklistRule = BlacklistRule()
-        val success = get(parser, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklistRule.arr)
-        return if (success) {
-            blacklist.addWithoutNotification(blacklistRule)
-            true
-        } else
-            false
     }
 
     private fun importReplaceList(parser: XMLStreamReader): Boolean {

@@ -9,76 +9,75 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 public class BlacklistRule {
 
-    public static final int MAX_ELEM = 5;
     public static final String TAG = "Blacklist";
-    public static final String[] XML_NAMES = {"black-nr", "black-sender", "black-thema", "black-titel", "black-thema-titel"};
-    private static final int BLACKLIST_NR = 0;
-    private static final int BLACKLIST_THEMA_TITEL = 4;
-    private static final int BLACKLIST_TITEL = 3;
-    private static final int BLACKLIST_THEMA = 2;
-    private static final int BLACKLIST_SENDER = 1;
     private static final Logger logger = LogManager.getLogger();
-    public String[] arr;
     private boolean patternTitle = true;
     private boolean patternThema = true;
 
+    private String nr;
+    private String sender;
+    private String thema;
+    private String titel;
+    private String thema_titel;
+
     public BlacklistRule() {
-        arr = new String[MAX_ELEM];
-        Arrays.fill(arr, "");
+        nr = "";
+        sender = "";
+        thema = "";
+        titel = "";
+        thema_titel = "";
     }
 
     public BlacklistRule(String sender, String thema, String titel, String themaTitel) {
         this();
-
-        arr[BLACKLIST_SENDER] = sender;
-        arr[BLACKLIST_THEMA] = thema;
-        arr[BLACKLIST_TITEL] = titel;
-        arr[BLACKLIST_THEMA_TITEL] = themaTitel;
+        this.sender = sender;
+        this.thema = thema;
+        this.titel = titel;
+        this.thema_titel = themaTitel;
     }
 
     public @NotNull String getNr() {
-        return arr[BLACKLIST_NR];
+        return nr;
     }
 
     public void setNr(@NotNull String s) {
-        arr[BLACKLIST_NR] = s;
+        nr = s;
     }
 
     public @NotNull String getThemaTitel() {
-        return arr[BLACKLIST_THEMA_TITEL];
+        return thema_titel;
     }
 
     public void setThemaTitel(@NotNull String s) {
-        arr[BLACKLIST_THEMA_TITEL] = s;
+        thema_titel = s;
     }
 
     public @NotNull String getSender() {
-        return arr[BLACKLIST_SENDER];
+        return sender;
     }
 
     public void setSender(@NotNull String s) {
-        arr[BLACKLIST_SENDER] = s;
+        sender = s;
     }
 
     public @NotNull String getThema() {
-        return arr[BLACKLIST_THEMA];
+        return thema;
     }
 
     public void setThema(@NotNull String s) {
-        arr[BLACKLIST_THEMA] = s;
+        thema = s;
     }
 
     public @NotNull String getTitel() {
-        return arr[BLACKLIST_TITEL];
+        return titel;
     }
 
     public void setTitel(@NotNull String s) {
-        arr[BLACKLIST_TITEL] = s;
+        titel = s;
     }
 
     /**
@@ -86,15 +85,15 @@ public class BlacklistRule {
      * operations a bit.
      */
     public void checkPatterns() {
-        patternTitle = Filter.isPattern(arr[BLACKLIST_TITEL]);
-        patternThema = Filter.isPattern(arr[BLACKLIST_THEMA_TITEL]);
+        patternTitle = Filter.isPattern(titel);
+        patternThema = Filter.isPattern(thema_titel);
 
         //precompile and cache the regexp patterns if needed...
         if (patternTitle)
-            Filter.makePattern(arr[BLACKLIST_TITEL]);
+            Filter.makePattern(titel);
 
         if (patternThema)
-            Filter.makePattern(arr[BLACKLIST_THEMA_TITEL]);
+            Filter.makePattern(thema_titel);
     }
 
     public boolean hasTitlePattern() {
@@ -106,8 +105,8 @@ public class BlacklistRule {
     }
 
     public void convertToLowerCase() {
-        arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
-        arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
+        titel = titel.toLowerCase();
+        thema_titel = thema_titel.toLowerCase();
     }
 
     /**
