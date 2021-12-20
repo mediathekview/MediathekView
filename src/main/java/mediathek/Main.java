@@ -1,6 +1,7 @@
 package mediathek;
 
 import com.google.common.base.Stopwatch;
+import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
@@ -331,6 +332,12 @@ public class Main {
 
             setupLogging();
             printPortableModeInfo();
+
+            if (SystemUtils.IS_OS_WINDOWS) {
+                if (!VersionHelpers.IsWindows10OrGreater())
+                    logger.warn("This Operating System configuration is too old and will be unsupported in the next update.");
+            }
+
             setupCpuAffinity();
 
             initializeJavaFX();
