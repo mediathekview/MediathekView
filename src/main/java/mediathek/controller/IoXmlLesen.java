@@ -121,6 +121,16 @@ public class IoXmlLesen {
         }
     }
 
+    private void readBlacklistRuleEntry(XMLStreamReader parser) {
+        try {
+            BlacklistRule rule = new BlacklistRule();
+            rule.readFromConfig(parser);
+            daten.getListeBlacklist().addWithoutNotification(rule);
+        } catch (XMLStreamException | AssertionError e) {
+            logger.error("Failed to read blacklist rule", e);
+        }
+    }
+
     private void readDownloadEntry(XMLStreamReader parser) {
         try {
             var dl = DatenDownload.getFromConfig(parser);
@@ -129,14 +139,6 @@ public class IoXmlLesen {
                 daten.getListeDownloads().add(dl);
         } catch (Exception e) {
             logger.error("readDownloadEntry", e);
-        }
-    }
-
-    private void readBlacklist(XMLStreamReader parser) {
-        // Blacklist
-        BlacklistRule blacklistRule = new BlacklistRule();
-        if (get(parser, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklistRule.arr)) {
-            daten.getListeBlacklist().addWithoutNotification(blacklistRule);
         }
     }
 
@@ -171,7 +173,7 @@ public class IoXmlLesen {
                             case ReplaceList.REPLACELIST -> readReplacementList(parser);
                             case DatenAbo.TAG -> readAboEntry(parser);
                             case DatenDownload.TAG -> readDownloadEntry(parser);
-                            case BlacklistRule.TAG -> readBlacklist(parser);
+                            case BlacklistRule.TAG -> readBlacklistRuleEntry(parser);
                         }
                     }
                 }

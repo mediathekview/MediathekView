@@ -1,9 +1,16 @@
 package mediathek.daten.blacklist;
 
 import mediathek.tool.Filter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 
 public class BlacklistRule {
 
@@ -15,6 +22,7 @@ public class BlacklistRule {
     private static final int BLACKLIST_TITEL = 3;
     private static final int BLACKLIST_THEMA = 2;
     private static final int BLACKLIST_SENDER = 1;
+    private static final Logger logger = LogManager.getLogger();
     public String[] arr;
     private boolean patternTitle = true;
     private boolean patternThema = true;
@@ -100,5 +108,74 @@ public class BlacklistRule {
     public void convertToLowerCase() {
         arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
         arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
+    }
+
+    /**
+     * Write all data to config.
+     *
+     * @param writer the writer used.
+     */
+    public void writeToConfig(@NotNull XMLStreamWriter writer) {
+        final BiConsumer<String, String> writeElement = (tagName, content) -> {
+            try {
+                writer.writeCharacters("\t");
+                writer.writeStartElement(tagName);
+                writer.writeCharacters(content);
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+            } catch (XMLStreamException e) {
+                logger.error("writeElement failed", e);
+            }
+        };
+
+        try {
+            writer.writeStartElement(TAG);
+            writer.writeCharacters("\n");
+
+
+            writeElement.accept(BlacklistTags.NR.getXmlName(), getNr());
+            writeElement.accept(BlacklistTags.SENDER.getXmlName(), getSender());
+            writeElement.accept(BlacklistTags.THEMA.getXmlName(), getThema());
+            writeElement.accept(BlacklistTags.TITEL.getXmlName(), getTitel());
+            writeElement.accept(BlacklistTags.THEMA_TITEL.getXmlName(), getThemaTitel());
+
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        } catch (Exception ex) {
+            logger.error("writeToConfig", ex);
+        }
+    }
+
+    /**
+     * Read data from config.
+     *
+     * @param parser the xml file parser.
+     */
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException, AssertionError {
+        while (parser.hasNext()) {
+            final int event = parser.next();
+            if (event == XMLStreamConstants.END_ELEMENT) {
+                if (parser.getLocalName().equals(TAG)) {
+                    break;
+                }
+            }
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                BlacklistTags.fromXmlTag(parser.getLocalName()).ifPresent(tag -> {
+                    try {
+                        final var text = parser.getElementText();
+                        switch (tag) {
+                            case NR -> setNr(text);
+                            case SENDER -> setSender(text);
+                            case THEMA -> setThema(text);
+                            case TITEL -> setTitel(text);
+                            case THEMA_TITEL -> setThemaTitel(text);
+                            default -> throw new AssertionError("Illegal tag detected");
+                        }
+                    } catch (XMLStreamException e) {
+                        logger.error("Error reading abo entry", e);
+                    }
+                });
+            }
+        }
     }
 }
