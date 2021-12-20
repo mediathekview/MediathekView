@@ -172,7 +172,7 @@ public class BlacklistRule {
                             default -> throw new AssertionError("Illegal tag detected");
                         }
                     } catch (XMLStreamException e) {
-                        logger.error("Error reading abo entry", e);
+                        logger.error("Error reading blacklist rule entry", e);
                     }
                 });
             }
