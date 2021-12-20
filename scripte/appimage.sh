@@ -10,9 +10,11 @@ export ARCH=$(arch)
 
 APP=MediathekView
 LOWERAPP=${APP,,}
-if [ "$1" == "release" ]; then
+if [ "$1" = "release" ]; then
+  echo "Baue AppImage Release Version"
   UPDATESTR="zsync|https://download.mediathekview.de/stabil/MediathekView.AppImage.zsync"
 else
+  echo "Baue AppImage Nightly Version"
   UPDATESTR="zsync|https://download.mediathekview.de/unstabil/MediathekView.AppImage.zsync"
 fi
 
