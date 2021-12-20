@@ -38,7 +38,7 @@ object SenderListBoxModel {
         providedSenderList.add("DW")
         providedSenderList.add("Funk.net")
         providedSenderList.add("HR")
-        providedSenderList.add("KiKa")
+        providedSenderList.add("KiKA")
         providedSenderList.add("MDR")
         providedSenderList.add("NDR")
         providedSenderList.add("ORF")
