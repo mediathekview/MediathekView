@@ -244,7 +244,7 @@ generate_type2_appimage()
     VERSION_EXPANDED=$VERSION
   fi
 
-  set +x
+#  set +x
 
   GLIBC_NEEDED=$(glibc_needed)
   _APP_DIR="${PWD}/$APP.AppDir/"
@@ -268,7 +268,7 @@ generate_type2_appimage()
       VERSION=$VERSION_EXPANDED "$appimagetool" $@ -n --bintray-user $BINTRAY_USER --bintray-repo $BINTRAY_REPO -v "${_APP_DIR}"
     fi
   fi
-  set -x
+#  set -x
   mkdir -p ../out/ || true
   mv *.AppImage* ../out/
 }
