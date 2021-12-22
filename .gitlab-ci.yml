@@ -47,7 +47,6 @@ Build and Deploy nightly Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
-    - printenv
     - scripte/appimage.sh nightly
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
   rules:
@@ -100,10 +99,12 @@ Build and Deploy Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
+    - printenv
     - scripte/appimage.sh release
-    - /skripte/deploy.sh release linux
+#    - /skripte/deploy.sh release linux
   rules:
-    - if: $CI_COMMIT_TAG
+     - if: $CI_COMMIT_BRANCH == "master"
+#    - if: $CI_COMMIT_TAG
 
 Build and Deploy Linux ARM:
   stage: deploy-linarm
