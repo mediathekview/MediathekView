@@ -104,9 +104,21 @@ delete_blacklisted
 ########################################################################
 
 cd .. # Go out of AppImage
+echo "--------------------------------------------------------------------------------------------------------"
+echo "generate_type2_appimage -u ${UPDATESTR}"
 
-echo generate_type2_appimage -u ${UPDATESTR}
+tmp_v1=$CI_COMMIT_REF_NAME
+tmp_v2=$CI_JOB_NAME
+tmp_v3=$CI_PROJECT_URL
+unset CI_COMMIT_REF_NAME
+unset CI_JOB_NAME
+unset CI_PROJECT_URL
+
 generate_type2_appimage -u ${UPDATESTR}
+
+export CI_COMMIT_REF_NAME=$tmp_v1
+export CI_JOB_NAME=$tmp_v2
+export CI_PROJECT_URL=$tmp_v3
 
 cd .. # Go out of AppImage
 
