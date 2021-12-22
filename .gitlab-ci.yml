@@ -15,7 +15,7 @@ default:
     - mvrunner1
   before_script:
     - apt-get update -qq
-    - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar > /dev/null
+    - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 > /dev/null
     - source /private/ENVS
     - whoami
     - mkdir ~/.ssh
@@ -47,7 +47,7 @@ Build and Deploy nightly Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
-    - scripte/appimage.sh
+    - scripte/appimage.sh nightly
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -99,7 +99,7 @@ Build and Deploy Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
-    - scripte/appimage.sh
+    - scripte/appimage.sh release
     - /skripte/deploy.sh release linux
   rules:
     - if: $CI_COMMIT_TAG

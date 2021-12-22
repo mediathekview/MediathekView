@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ########################################################################
-# Package the binaries built on Travis-CI as an AppImage
+# Package the binaries built on Gitlab-CI as an AppImage
 # By Alexander Finkhaeuser 2019
 # For more information, see http://appimage.org/
 ########################################################################
@@ -10,6 +10,13 @@ export ARCH=$(arch)
 
 APP=MediathekView
 LOWERAPP=${APP,,}
+if [ "$1" = "release" ]; then
+  echo "Baue AppImage Release Version"
+  UPDATESTR="zsync|https://download.mediathekview.de/stabil/MediathekView.AppImage.zsync"
+else
+  echo "Baue AppImage Nightly Version"
+  UPDATESTR="zsync|https://download.mediathekview.de/unstabil/MediathekView.AppImage.zsync"
+fi
 
 NO_GLIBC_VERSION=true
 
@@ -98,7 +105,8 @@ delete_blacklisted
 
 cd .. # Go out of AppImage
 
-generate_type2_appimage
+echo generate_type2_appimage -u ${UPDATESTR}
+generate_type2_appimage -u ${UPDATESTR}
 
 cd .. # Go out of AppImage
 
