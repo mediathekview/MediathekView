@@ -38,9 +38,8 @@ rm ./MediathekView*.tar.gz
 
 #wget javadl.oracle.com/webapps/download/AutoDL?BundleId=220305_d54c1d3a095b4ff2b6607d096fa80163 -O jre-linux-x64.tar.gz
 
-# wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
-#. ./functions.sh
-. ../scripte/functions.sh
+wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
+. ./functions.sh
 
 cd $APP.AppDir
 
@@ -107,9 +106,19 @@ delete_blacklisted
 cd .. # Go out of AppImage
 echo "--------------------------------------------------------------------------------------------------------"
 echo "generate_type2_appimage -u ${UPDATESTR}"
-set -x
+
+tmp_v1=$CI_COMMIT_REF_NAME
+tmp_v2=$CI_JOB_NAME
+tmp_v3=$CI_PROJECT_URL
+unset CI_COMMIT_REF_NAME
+unset CI_JOB_NAME
+unset CI_PROJECT_URL
+
 generate_type2_appimage -u ${UPDATESTR}
-set +x
+
+export CI_COMMIT_REF_NAME=$tmp_v1
+export CI_JOB_NAME=$tmp_v2
+export CI_PROJECT_URL=$tmp_v3
 
 cd .. # Go out of AppImage
 
