@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 ########################################################################
 # Package the binaries built on Gitlab-CI as an AppImage
 # By Alexander Finkhaeuser 2019
@@ -104,8 +104,8 @@ delete_blacklisted
 ########################################################################
 
 cd .. # Go out of AppImage
-
-echo generate_type2_appimage -u ${UPDATESTR}
+echo "--------------------------------------------------------------------------------------------------------"
+echo "generate_type2_appimage -u ${UPDATESTR}"
 generate_type2_appimage -u ${UPDATESTR}
 
 cd .. # Go out of AppImage
