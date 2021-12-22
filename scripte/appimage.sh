@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 ########################################################################
 # Package the binaries built on Gitlab-CI as an AppImage
 # By Alexander Finkhaeuser 2019
@@ -38,8 +38,9 @@ rm ./MediathekView*.tar.gz
 
 #wget javadl.oracle.com/webapps/download/AutoDL?BundleId=220305_d54c1d3a095b4ff2b6607d096fa80163 -O jre-linux-x64.tar.gz
 
-wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
-. ./functions.sh
+# wget -q https://github.com/probonopd/AppImages/raw/master/functions.sh -O ./functions.sh
+#. ./functions.sh
+. ../scripte/functions.sh
 
 cd $APP.AppDir
 
@@ -106,7 +107,9 @@ delete_blacklisted
 cd .. # Go out of AppImage
 echo "--------------------------------------------------------------------------------------------------------"
 echo "generate_type2_appimage -u ${UPDATESTR}"
+set -x
 generate_type2_appimage -u ${UPDATESTR}
+set +x
 
 cd .. # Go out of AppImage
 

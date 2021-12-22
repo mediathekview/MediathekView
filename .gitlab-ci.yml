@@ -99,7 +99,6 @@ Build and Deploy Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
-    - printenv
     - scripte/appimage.sh release
 #    - /skripte/deploy.sh release linux
   rules:
