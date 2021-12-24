@@ -16,6 +16,8 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -23,12 +25,14 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.PatternSyntaxException;
 
 public class PanelBlacklist extends JPanel {
     public boolean ok;
@@ -87,6 +91,28 @@ public class PanelBlacklist extends JPanel {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 comboThemaLaden();
+            }
+        });
+
+        //Table filtering
+        setupTableFilter();
+    }
+
+    private static final Logger logger = LogManager.getLogger();
+
+    private void setupTableFilter() {
+        final TableRowSorter<BlacklistRuleTableModel> sorter = new TableRowSorter<>(tableModel);
+        jTableBlacklist.setRowSorter(sorter);
+        btnFilterTable.addActionListener(l -> {
+            String text = tfFilter.getText();
+            if(text.isEmpty()) {
+                sorter.setRowFilter(null);
+            } else {
+                try {
+                    sorter.setRowFilter(RowFilter.regexFilter(text));
+                } catch(PatternSyntaxException pse) {
+                    logger.error("Bad regex pattern", pse);
+                }
             }
         });
     }
@@ -386,6 +412,9 @@ public class PanelBlacklist extends JPanel {
         jRadioButtonBlacklist = new JRadioButton();
         jRadioButtonWhitelist = new JRadioButton();
         jButtonHilfe = new JButton();
+        var label1 = new JLabel();
+        tfFilter = new JTextField();
+        btnFilterTable = new JButton();
         var panel1 = new JPanel();
         var jLabel10 = new JLabel();
         jButtonTabelleLoeschen = new JButton();
@@ -419,6 +448,8 @@ public class PanelBlacklist extends JPanel {
                     // rows
                     new AC()
                         .gap()
+                        .gap()
+                        .gap()
                         .grow().fill().gap()
                         .gap()
                         ));
@@ -432,7 +463,7 @@ public class PanelBlacklist extends JPanel {
                     jTableBlacklist.setAutoCreateRowSorter(true);
                     jScrollPane1.setViewportView(jTableBlacklist);
                 }
-                jPanel1.add(jScrollPane1, new CC().cell(0, 1));
+                jPanel1.add(jScrollPane1, new CC().cell(0, 3));
 
                 //======== jPanel4 ========
                 {
@@ -521,11 +552,11 @@ public class PanelBlacklist extends JPanel {
                                 .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(jButtonHinzufuegen)
                                     .addComponent(jButtonAendern))
-                                .addContainerGap(51, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                     jPanel4Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jComboBoxSender, jComboBoxThema, jTextFieldThemaTitel, jTextFieldTitel});
                 }
-                jPanel1.add(jPanel4, new CC().cell(0, 3));
+                jPanel1.add(jPanel4, new CC().cell(0, 5));
 
                 //======== panel2 ========
                 {
@@ -555,6 +586,18 @@ public class PanelBlacklist extends JPanel {
                 }
                 jPanel1.add(panel2, new CC().cell(0, 0));
 
+                //---- label1 ----
+                label1.setText("Suchstring:"); //NON-NLS
+                jPanel1.add(label1, new CC().cell(0, 2).alignX("center").growX(0)); //NON-NLS
+
+                //---- tfFilter ----
+                tfFilter.setToolTipText("Suchtext"); //NON-NLS
+                jPanel1.add(tfFilter, new CC().cell(0, 2));
+
+                //---- btnFilterTable ----
+                btnFilterTable.setText("Filtern"); //NON-NLS
+                jPanel1.add(btnFilterTable, new CC().cell(0, 2).alignX("center").growX(0)); //NON-NLS
+
                 //======== panel1 ========
                 {
                     panel1.setLayout(new MigLayout(
@@ -576,7 +619,7 @@ public class PanelBlacklist extends JPanel {
                     jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
                     panel1.add(jButtonTabelleLoeschen, new CC().cell(1, 0));
                 }
-                jPanel1.add(panel1, new CC().cell(0, 2));
+                jPanel1.add(panel1, new CC().cell(0, 4));
             }
             jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1); //NON-NLS
 
@@ -685,6 +728,8 @@ public class PanelBlacklist extends JPanel {
     private JRadioButton jRadioButtonBlacklist;
     private JRadioButton jRadioButtonWhitelist;
     private JButton jButtonHilfe;
+    private JTextField tfFilter;
+    private JButton btnFilterTable;
     private JButton jButtonTabelleLoeschen;
     private JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private JCheckBox jCheckBoxGeo;
