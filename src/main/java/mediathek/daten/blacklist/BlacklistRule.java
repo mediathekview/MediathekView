@@ -18,14 +18,12 @@ public class BlacklistRule {
     private boolean patternTitle = true;
     private boolean patternThema = true;
 
-    private String nr;
     private String sender;
     private String thema;
     private String titel;
     private String thema_titel;
 
     public BlacklistRule() {
-        nr = "";
         sender = "";
         thema = "";
         titel = "";
@@ -33,19 +31,10 @@ public class BlacklistRule {
     }
 
     public BlacklistRule(String sender, String thema, String titel, String themaTitel) {
-        this();
         this.sender = sender;
         this.thema = thema;
         this.titel = titel;
         this.thema_titel = themaTitel;
-    }
-
-    public @NotNull String getNr() {
-        return nr;
-    }
-
-    public void setNr(@NotNull String s) {
-        nr = s;
     }
 
     public @NotNull String getThemaTitel() {
@@ -132,7 +121,6 @@ public class BlacklistRule {
             writer.writeCharacters("\n");
 
 
-            writeElement.accept(BlacklistTags.NR.getXmlName(), getNr());
             writeElement.accept(BlacklistTags.SENDER.getXmlName(), getSender());
             writeElement.accept(BlacklistTags.THEMA.getXmlName(), getThema());
             writeElement.accept(BlacklistTags.TITEL.getXmlName(), getTitel());
@@ -163,12 +151,10 @@ public class BlacklistRule {
                     try {
                         final var text = parser.getElementText();
                         switch (tag) {
-                            case NR -> setNr(text);
                             case SENDER -> setSender(text);
                             case THEMA -> setThema(text);
                             case TITEL -> setTitel(text);
                             case THEMA_TITEL -> setThemaTitel(text);
-                            default -> throw new AssertionError("Illegal tag detected");
                         }
                     } catch (XMLStreamException e) {
                         logger.error("Error reading blacklist rule entry", e);

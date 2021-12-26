@@ -9,11 +9,10 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class BlacklistRuleTableModel extends AbstractTableModel {
-    private static final int BLACKLIST_NR = 0;
-    private static final int BLACKLIST_SENDER = 1;
-    private static final int BLACKLIST_THEMA = 2;
-    private static final int BLACKLIST_TITEL = 3;
-    private static final int BLACKLIST_THEMA_TITEL = 4;
+    private static final int BLACKLIST_SENDER = 0;
+    private static final int BLACKLIST_THEMA = 1;
+    private static final int BLACKLIST_TITEL = 2;
+    private static final int BLACKLIST_THEMA_TITEL = 3;
     private final ListeBlacklist blacklist;
 
     public BlacklistRuleTableModel() {
@@ -27,14 +26,13 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 4;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var rule = blacklist.get(rowIndex);
         return switch (columnIndex) {
-            case BLACKLIST_NR -> rule.getNr();
             case BLACKLIST_SENDER -> rule.getSender();
             case BLACKLIST_THEMA -> rule.getThema();
             case BLACKLIST_TITEL -> rule.getTitel();
@@ -46,7 +44,6 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case BLACKLIST_NR -> "Nr";
             case BLACKLIST_SENDER -> "Sender";
             case BLACKLIST_THEMA -> "Thema";
             case BLACKLIST_TITEL -> "Titel";
