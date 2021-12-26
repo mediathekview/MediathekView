@@ -78,7 +78,7 @@
         <java.version>17</java.version>
         <jdk.language.version>17</jdk.language.version>
         <kotlin.language.target>16</kotlin.language.target>
-        <kotlin.version>1.6.0</kotlin.version>
+        <kotlin.version>1.6.10</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -110,7 +110,7 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.0</miglayout.version>
         <mockito.version>3.12.4</mockito.version>
-        <okhttp.version>4.9.1</okhttp.version>
+        <okhttp.version>4.9.3</okhttp.version>
         <picocli.version>4.6.1</picocli.version>
         <sqlite-jdbc.version>3.36.0.3</sqlite-jdbc.version>
         <tilesfx.version>17.0.11</tilesfx.version>
