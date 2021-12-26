@@ -35,7 +35,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * Configuration in Settings/Blacklist panel.
      */
     private long minimumFilmLength;
-    private int nr;
 
     /**
      * Add item without notifying registered listeners.
@@ -43,13 +42,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param b {@link BlacklistRule} item.
      */
     public synchronized void addWithoutNotification(BlacklistRule b) {
-        b.setNr(Integer.toString(nr++));
         super.add(b);
     }
 
     @Override
     public synchronized boolean add(BlacklistRule b) {
-        b.setNr(Integer.toString(nr++));
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;

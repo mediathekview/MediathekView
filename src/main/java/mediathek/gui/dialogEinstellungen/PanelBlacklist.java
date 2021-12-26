@@ -96,6 +96,9 @@ public class PanelBlacklist extends JPanel {
 
         //Table filtering
         setupTableFilter();
+
+        lblNumEntries.setText(Integer.toString(jTableBlacklist.getRowCount()));
+        jTableBlacklist.getModel().addTableModelListener(e -> lblNumEntries.setText(Integer.toString(jTableBlacklist.getRowCount())));
     }
 
     private static final Logger logger = LogManager.getLogger();
@@ -416,6 +419,9 @@ public class PanelBlacklist extends JPanel {
         tfFilter = new JTextField();
         btnFilterTable = new JButton();
         var panel1 = new JPanel();
+        var panel3 = new JPanel();
+        var label2 = new JLabel();
+        lblNumEntries = new JLabel();
         var jLabel10 = new JLabel();
         jButtonTabelleLoeschen = new JButton();
         var jPanel3 = new JPanel();
@@ -591,7 +597,7 @@ public class PanelBlacklist extends JPanel {
                 jPanel1.add(label1, new CC().cell(0, 2).alignX("center").growX(0)); //NON-NLS
 
                 //---- tfFilter ----
-                tfFilter.setToolTipText("Suchtext"); //NON-NLS
+                tfFilter.setToolTipText("<html>Hier wird der Suchtext als RegExp eingegeben.<br>Zum Zur\u00fccksetzen des Filters den Suchtext <b>l\u00f6schen</b> und erneut <i>\"Filtern\"</i> dr\u00fccken.</html>"); //NON-NLS
                 jPanel1.add(tfFilter, new CC().cell(0, 2));
 
                 //---- btnFilterTable ----
@@ -604,20 +610,43 @@ public class PanelBlacklist extends JPanel {
                         new LC().insets("0").hideMode(3).gridGap("5", "0"), //NON-NLS
                         // columns
                         new AC()
+                            .fill().gap()
                             .grow().fill().gap()
                             .fill(),
                         // rows
                         new AC()
                             .grow().align("center"))); //NON-NLS
 
+                    //======== panel3 ========
+                    {
+                        panel3.setLayout(new MigLayout(
+                            new LC().insets("0").hideMode(3).gridGap("5", "0"), //NON-NLS
+                            // columns
+                            new AC()
+                                .fill().gap()
+                                .fill(),
+                            // rows
+                            new AC()
+                                .grow().align("center"))); //NON-NLS
+
+                        //---- label2 ----
+                        label2.setText("Eintr\u00e4ge:"); //NON-NLS
+                        panel3.add(label2, new CC().cell(0, 0));
+
+                        //---- lblNumEntries ----
+                        lblNumEntries.setText("0"); //NON-NLS
+                        panel3.add(lblNumEntries, new CC().cell(1, 0));
+                    }
+                    panel1.add(panel3, new CC().cell(0, 0));
+
                     //---- jLabel10 ----
                     jLabel10.setText("Alle Eintr\u00e4ge l\u00f6schen:"); //NON-NLS
                     jLabel10.setHorizontalAlignment(SwingConstants.RIGHT);
-                    panel1.add(jLabel10, new CC().cell(0, 0));
+                    panel1.add(jLabel10, new CC().cell(1, 0));
 
                     //---- jButtonTabelleLoeschen ----
                     jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen"); //NON-NLS
-                    panel1.add(jButtonTabelleLoeschen, new CC().cell(1, 0));
+                    panel1.add(jButtonTabelleLoeschen, new CC().cell(2, 0));
                 }
                 jPanel1.add(panel1, new CC().cell(0, 4));
             }
@@ -730,6 +759,7 @@ public class PanelBlacklist extends JPanel {
     private JButton jButtonHilfe;
     private JTextField tfFilter;
     private JButton btnFilterTable;
+    private JLabel lblNumEntries;
     private JButton jButtonTabelleLoeschen;
     private JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private JCheckBox jCheckBoxGeo;
