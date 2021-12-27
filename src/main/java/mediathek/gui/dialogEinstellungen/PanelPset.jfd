@@ -3,18 +3,22 @@ JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.13" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanelPset:::::x, seq {comp jCheckBoxAlleEinstellungen:::p::p, space :0:189:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :p::p, comp jCheckBoxAlleEinstellungen:::p::p, space u:p::p, comp jPanelPset:::::x, space :p::p}}"
+		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[fill][grow,fill]"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "jPanelPset"
-				"border": new javax.swing.border.EtchedBorder( 1, null, null )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "jCheckBoxAlleEinstellungen"
 				"text": "alle Einstellungen anzeigen"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 400, 300 )
