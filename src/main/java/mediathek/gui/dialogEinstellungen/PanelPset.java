@@ -3,9 +3,12 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class PanelPset extends PanelVorlage {
@@ -40,38 +43,25 @@ public class PanelPset extends PanelVorlage {
         jCheckBoxAlleEinstellungen = new JCheckBox();
 
         //======== this ========
+        setLayout(new MigLayout(
+            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+            // columns
+            new AC()
+                .grow().fill(),
+            // rows
+            new AC()
+                .fill().gap()
+                .grow().fill()));
 
         //======== jPanelPset ========
         {
-            jPanelPset.setBorder(new EtchedBorder());
             jPanelPset.setLayout(new BorderLayout());
         }
+        add(jPanelPset, new CC().cell(0, 1));
 
         //---- jCheckBoxAlleEinstellungen ----
         jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen"); //NON-NLS
-
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(jPanelPset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jCheckBoxAlleEinstellungen)
-                            .addGap(0, 189, Short.MAX_VALUE)))
-                    .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jCheckBoxAlleEinstellungen)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(jPanelPset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap())
-        );
+        add(jCheckBoxAlleEinstellungen, new CC().cell(0, 0));
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
