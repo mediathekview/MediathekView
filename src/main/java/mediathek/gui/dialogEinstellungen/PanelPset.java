@@ -25,7 +25,6 @@ public class PanelPset extends PanelVorlage {
      */
     private void setupPSetVisiblePanels() {
         jPanelPset.removeAll();
-        jPanelPset.setLayout(new BorderLayout());
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jPanelPset.add(new PanelPsetLang(daten, parentComponent, Daten.listePset), BorderLayout.CENTER);
         } else {
@@ -45,17 +44,7 @@ public class PanelPset extends PanelVorlage {
         //======== jPanelPset ========
         {
             jPanelPset.setBorder(new EtchedBorder());
-
-            GroupLayout jPanelPsetLayout = new GroupLayout(jPanelPset);
-            jPanelPset.setLayout(jPanelPsetLayout);
-            jPanelPsetLayout.setHorizontalGroup(
-                jPanelPsetLayout.createParallelGroup()
-                    .addGap(0, 466, Short.MAX_VALUE)
-            );
-            jPanelPsetLayout.setVerticalGroup(
-                jPanelPsetLayout.createParallelGroup()
-                    .addGap(0, 308, Short.MAX_VALUE)
-            );
+            jPanelPset.setLayout(new BorderLayout());
         }
 
         //---- jCheckBoxAlleEinstellungen ----
@@ -71,7 +60,7 @@ public class PanelPset extends PanelVorlage {
                         .addComponent(jPanelPset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jCheckBoxAlleEinstellungen)
-                            .addGap(0, 248, Short.MAX_VALUE)))
+                            .addGap(0, 189, Short.MAX_VALUE)))
                     .addContainerGap())
         );
         layout.setVerticalGroup(

@@ -4,14 +4,11 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanelPset:::::x, seq {comp jCheckBoxAlleEinstellungen:::p::p, space :0:248:x}}, space :::p}}"
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanelPset:::::x, seq {comp jCheckBoxAlleEinstellungen:::p::p, space :0:189:x}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :p::p, comp jCheckBoxAlleEinstellungen:::p::p, space u:p::p, comp jPanelPset:::::x, space :p::p}}"
 		} ) {
 			name: "this"
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {space :0:466:x}"
-				"$verticalGroup": "par l {space :0:308:x}"
-			} ) {
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "jPanelPset"
 				"border": new javax.swing.border.EtchedBorder( 1, null, null )
 			} )
@@ -21,6 +18,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 400, 300 )
+			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
 }
