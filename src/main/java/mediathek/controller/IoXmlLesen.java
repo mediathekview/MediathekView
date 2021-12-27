@@ -126,7 +126,7 @@ public class IoXmlLesen {
             BlacklistRule rule = new BlacklistRule();
             rule.readFromConfig(parser);
             daten.getListeBlacklist().addWithoutNotification(rule);
-        } catch (XMLStreamException | AssertionError e) {
+        } catch (XMLStreamException e) {
             logger.error("Failed to read blacklist rule", e);
         }
     }

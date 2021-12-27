@@ -348,10 +348,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
                             case PSET:
                                 setPsetName(text);
                                 break;
-
-                            default:
-                                logger.warn("Illegal tag detected: {}", text);
-                                break;
                         }
                     } catch (XMLStreamException e) {
                         logger.error("Error reading abo entry", e);
