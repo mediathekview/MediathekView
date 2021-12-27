@@ -106,7 +106,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
             case "SRF.Podcast" -> scaleImageFromResource("/mediathek/res/sender/srf-podcast.png", iconSize);
             case "SWR" -> getIcon(WIKI_BASE_URL + "/6/6f/SWR_Dachmarke.svg/320px-SWR_Dachmarke.svg.png", "/mediathek/res/sender/swr.png");
             case "WDR" -> getIcon(WIKI_BASE_URL + "/9/9b/WDR_Dachmarke.svg/320px-WDR_Dachmarke.svg.png", "/mediathek/res/sender/wdr.png");
-            case "ZDF" -> getIcon(WIKI_BASE_URL + "/c/c1/ZDF_logo.svg/320px-ZDF_logo.svg.png", "/mediathek/res/sender/zdf.png");
+            case "ZDF" -> getIcon(WIKI_BASE_URL + "/c/c1/ZDF_logo.svg/200px-ZDF_logo.svg.png", "/mediathek/res/sender/zdf.png");
             case "ZDF-tivi" -> scaleImageFromResource("/mediathek/res/sender/zdf-tivi.png", iconSize);
             case "PHOENIX" -> getIcon(WIKI_BASE_URL + "/d/de/Phoenix_Logo_2018_ohne_Claim.svg/640px-Phoenix_Logo_2018_ohne_Claim.svg.png", "/mediathek/res/sender/phoenix.png");
             case "Funk.net" -> getIcon(WIKI_BASE_URL + "/9/99/Funk_Logo.svg/454px-Funk_Logo.svg.png", "/mediathek/res/sender/funk_net.png");
