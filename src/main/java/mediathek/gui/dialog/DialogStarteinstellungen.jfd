@@ -1,0 +1,48 @@
+JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.13" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::::791:x, comp jPanel2::t:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane1:::::x, space s:p::p, comp jPanel2:::p::p, space :p::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Erster Start"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space :::p, comp jCheckBoxAlleEinstellungen:::p::p, space :::x, comp jButtonAnpassen:::p::p, space :::p, comp jButtonStandard:2::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par b {comp jButtonStandard::b:p::p, comp jCheckBoxAlleEinstellungen::b:p::p, comp jButtonAnpassen::b:p::p}, space :::x}}"
+			} ) {
+				name: "jPanel2"
+				"border": new javax.swing.border.LineBorder( new java.awt.Color( 153, 153, 255, 255 ), 3, false )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonStandard"
+					"text": "Mit Standardeinstellungen starten"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxAlleEinstellungen"
+					"text": "alle Einstellungen anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonAnpassen"
+					"text": "Einstellungen anpassen"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:788:x}"
+					"$verticalGroup": "par l {space :0:510:x}"
+				} ) {
+					name: "jPanelExtra"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}
