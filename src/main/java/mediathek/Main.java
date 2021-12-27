@@ -519,20 +519,23 @@ public class Main {
                     alert.showAndWait();
                 });
 
-                //delete directory
-                try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
-                    walk.sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            //.peek(System.out::println)
-                            .forEach(File::delete);
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                deleteSettingsDirectory();
 
                 System.exit(1);
             }
             MVConfig.loadSystemParameter();
+        }
+    }
+
+    private static void deleteSettingsDirectory() {
+        try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
+            walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    //.peek(System.out::println)
+                    .forEach(File::delete);
+        }
+        catch (Exception ex) {
+            logger.error("Got an error deleting settings directory", ex);
         }
     }
 
