@@ -5,23 +5,25 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class PanelPset extends PanelVorlage {
     public PanelPset(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
-            pset();
+            setupPSetVisiblePanels();
         });
         jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG)));
-        pset();
+        setupPSetVisiblePanels();
     }
 
-    private void pset() {
-        // Einstellungen zum Ansehen und Speichern der Filme anpassen
+    /**
+     * Einstellungen zum Ansehen und Speichern der Filme anpassen.
+     */
+    private void setupPSetVisiblePanels() {
         jPanelPset.removeAll();
         jPanelPset.setLayout(new BorderLayout());
         if (jCheckBoxAlleEinstellungen.isSelected()) {
@@ -33,52 +35,59 @@ public class PanelPset extends PanelVorlage {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jPanelPset = new JPanel();
+        jCheckBoxAlleEinstellungen = new JCheckBox();
 
-        jPanelPset = new javax.swing.JPanel();
-        jCheckBoxAlleEinstellungen = new javax.swing.JCheckBox();
+        //======== this ========
 
-        jPanelPset.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        //======== jPanelPset ========
+        {
+            jPanelPset.setBorder(new EtchedBorder());
 
-        javax.swing.GroupLayout jPanelPsetLayout = new javax.swing.GroupLayout(jPanelPset);
-        jPanelPset.setLayout(jPanelPsetLayout);
-        jPanelPsetLayout.setHorizontalGroup(
-                jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 466, Short.MAX_VALUE)
-        );
-        jPanelPsetLayout.setVerticalGroup(
-                jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 308, Short.MAX_VALUE)
-        );
+            GroupLayout jPanelPsetLayout = new GroupLayout(jPanelPset);
+            jPanelPset.setLayout(jPanelPsetLayout);
+            jPanelPsetLayout.setHorizontalGroup(
+                jPanelPsetLayout.createParallelGroup()
+                    .addGap(0, 466, Short.MAX_VALUE)
+            );
+            jPanelPsetLayout.setVerticalGroup(
+                jPanelPsetLayout.createParallelGroup()
+                    .addGap(0, 308, Short.MAX_VALUE)
+            );
+        }
 
-        jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen");
+        //---- jCheckBoxAlleEinstellungen ----
+        jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen"); //NON-NLS
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(jPanelPset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jCheckBoxAlleEinstellungen)
-                                                .addGap(0, 248, Short.MAX_VALUE)))
-                                .addContainerGap())
+                            .addComponent(jCheckBoxAlleEinstellungen)
+                            .addGap(0, 248, Short.MAX_VALUE)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jCheckBoxAlleEinstellungen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
+            layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jCheckBoxAlleEinstellungen)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanelPset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxAlleEinstellungen;
-    private javax.swing.JPanel jPanelPset;
+    // Generated using JFormDesigner non-commercial license
+    private JPanel jPanelPset;
+    private JCheckBox jCheckBoxAlleEinstellungen;
     // End of variables declaration//GEN-END:variables
 }
