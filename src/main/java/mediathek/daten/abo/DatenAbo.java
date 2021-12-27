@@ -285,7 +285,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
     }
 
-    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException, AssertionError {
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
         while (parser.hasNext()) {
             final int event = parser.next();
             if (event == XMLStreamConstants.END_ELEMENT) {
@@ -350,7 +350,8 @@ public class DatenAbo implements Comparable<DatenAbo> {
                                 break;
 
                             default:
-                                throw new AssertionError("Illegal tag detected");
+                                logger.warn("Illegal tag detected: {}", text);
+                                break;
                         }
                     } catch (XMLStreamException e) {
                         logger.error("Error reading abo entry", e);
