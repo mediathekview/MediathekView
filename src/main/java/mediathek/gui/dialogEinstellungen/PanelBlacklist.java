@@ -25,7 +25,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.table.TableStringConverter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -105,6 +107,13 @@ public class PanelBlacklist extends JPanel {
 
     private void setupTableFilter() {
         final TableRowSorter<BlacklistRuleTableModel> sorter = new TableRowSorter<>(tableModel);
+        // make search case-insensitive
+        sorter.setStringConverter(new TableStringConverter() {
+            @Override
+            public String toString(TableModel model, int row, int column) {
+                return model.getValueAt(row, column).toString().toLowerCase();
+            }
+        });
         jTableBlacklist.setRowSorter(sorter);
         btnFilterTable.addActionListener(l -> {
             String text = tfFilter.getText();
@@ -112,7 +121,7 @@ public class PanelBlacklist extends JPanel {
                 sorter.setRowFilter(null);
             } else {
                 try {
-                    sorter.setRowFilter(RowFilter.regexFilter(text));
+                    sorter.setRowFilter(RowFilter.regexFilter(text.toLowerCase()));
                 } catch(PatternSyntaxException pse) {
                     logger.error("Bad regex pattern", pse);
                 }
