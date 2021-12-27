@@ -14,7 +14,7 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 					"$columnConstraints": "[grow,fill]"
-					"$rowConstraints": "[][][][grow,fill][][]"
+					"$rowConstraints": "[][][][][grow,fill][][][]"
 				} ) {
 					name: "jPanel1"
 					auxiliary() {
@@ -32,7 +32,7 @@ new FormModel {
 							"autoCreateRowSorter": true
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 3"
+						"value": "cell 0 4"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l::714:x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}, seq t {space :0:620:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p}}, space :::p}}"
@@ -100,7 +100,7 @@ new FormModel {
 							"text": "Ändern"
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 5"
+						"value": "cell 0 7"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 						"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
@@ -135,6 +135,14 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
 					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
 						"text": "Suchstring:"
@@ -142,19 +150,19 @@ new FormModel {
 							"JavaCodeGenerator.variableLocal": true
 						}
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 2,alignx center,growx 0"
+						"value": "cell 0 3,alignx center,growx 0"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfFilter"
 						"toolTipText": "<html>Hier wird der Suchtext als RegExp eingegeben.<br>Zum Zurücksetzen des Filters den Suchtext <b>löschen</b> und erneut <i>\"Filtern\"</i> drücken.</html>"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 2"
+						"value": "cell 0 3"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnFilterTable"
 						"text": "Filtern"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 2,alignx center,growx 0"
+						"value": "cell 0 3,alignx center,growx 0"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 						"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
@@ -209,7 +217,15 @@ new FormModel {
 							"value": "cell 2 0"
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 4"
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Sender-Thema-Titel"
