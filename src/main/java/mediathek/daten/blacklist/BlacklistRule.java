@@ -138,7 +138,7 @@ public class BlacklistRule {
      *
      * @param parser the xml file parser.
      */
-    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException, AssertionError {
+    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
         while (parser.hasNext()) {
             final int event = parser.next();
             if (event == XMLStreamConstants.END_ELEMENT) {
