@@ -29,7 +29,14 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - SRF (Schweizer Rundfunk) inkl. Podcasts
 
 # Installation
-MediathekView wird in mehreren Paketen auf der [Webseite](https://mediathekview.de/download/) angeboten. Darunter Installer für Windows & Linux so wie eine macOS DMG. Zusätzlich zu den Installern sind auch Portable Varianten vorhanden z.B. als [Zip](https://download.mediathekview.de/stabil/MediathekView-latest-win.zip) oder [tar.gz](https://download.mediathekview.de/stabil/MediathekView-latest-linux.tar.gz). Diese Pakete beinhalten bereits die benötigte Java Version, Java muss also nicht installiert sein.
+MediathekView wird in mehreren Paketen auf der [Webseite](https://mediathekview.de/download/) angeboten. , darunter Installer für Windows & Linux.
+Zusätzlich zu den Installern sind auch Portable Varianten vorhanden z.B. als [Zip](https://download.mediathekview.de/stabil/MediathekView-latest-win.zip) oder [tar.gz](https://download.mediathekview.de/stabil/MediathekView-latest-linux.tar.gz). Diese Pakete beinhalten bereits die benötigte Java Version, Java muss also nicht installiert sein.  
+Für RPM-basierte Linux Pakete steht auch ein [GPG Key](https://download.mediathekview.de/stabil/MediathekView-rpm-signature-2021.pub) zur Verfügung, mit dem das RPM-Pakete anhand seiner Signatur verifiziert werden kann. Dieser kann mit diesem Kommando importiert werden:
+```bash
+sudo rpm --import https://download.mediathekview.de/stabil/MediathekView-rpm-signature-2021.pub
+```
+
+**macOS:** Für macOS werden fertige DMG-Images sowohl für Intel als auch Apple Silicon Rechner angeboten.
 
 # Bedienung
 Siehe [Anleitung](https://mediathekview.de/anleitung/)
