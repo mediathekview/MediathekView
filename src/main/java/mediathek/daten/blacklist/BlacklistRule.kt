@@ -91,11 +91,10 @@ data class BlacklistRule(
     fun readFromConfig(parser: XMLStreamReader) {
         while (parser.hasNext()) {
             val event = parser.next()
-            if (event == XMLStreamConstants.END_ELEMENT) {
-                if (parser.localName == TAG) {
-                    break
-                }
+            if (event == XMLStreamConstants.END_ELEMENT && parser.localName == TAG) {
+                break
             }
+
             if (event == XMLStreamConstants.START_ELEMENT) {
                 fromXmlTag(parser.localName).ifPresent { tag: BlacklistTags ->
                     try {
