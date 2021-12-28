@@ -356,25 +356,6 @@ public class PanelBlacklist extends JPanel {
             }
         }
     }
-    /**
-     * Remove one or more selected BlacklistRule objects from model.
-     */
-    private void onRemoveBlacklistRules() {
-        var selectedIndices = jTableBlacklist.getSelectionModel().getSelectedIndices();
-        if (selectedIndices.length == 1) {
-            int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedIndices[0]);
-            tableModel.removeRow(modelIndex);
-        }
-        else {
-            List<BlacklistRule> tempStore = new ArrayList<>();
-            for (var selectedRow : selectedIndices) {
-                int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow);
-                var rule = tableModel.get(modelIndex);
-                tempStore.add(rule);
-            }
-            tableModel.removeRules(tempStore);
-        }
-    }
 
     private class BeobMausTabelle extends MouseAdapter {
 
@@ -389,6 +370,26 @@ public class PanelBlacklist extends JPanel {
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
+            }
+        }
+
+        /**
+         * Remove one or more selected BlacklistRule objects from model.
+         */
+        private void onRemoveBlacklistRules() {
+            var selectedIndices = jTableBlacklist.getSelectionModel().getSelectedIndices();
+            if (selectedIndices.length == 1) {
+                int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedIndices[0]);
+                tableModel.removeRow(modelIndex);
+            }
+            else {
+                List<BlacklistRule> tempStore = new ArrayList<>();
+                for (var selectedRow : selectedIndices) {
+                    int modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow);
+                    var rule = tableModel.get(modelIndex);
+                    tempStore.add(rule);
+                }
+                tableModel.removeRules(tempStore);
             }
         }
 
