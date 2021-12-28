@@ -79,7 +79,9 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n\n");
         writeNewLine(writer);
 
-        for (var rule : Daten.getInstance().getListeBlacklist()) {
+        // remove duplicates
+        var distinctBlacklistRules = Daten.getInstance().getListeBlacklist().stream().distinct().toList();
+        for (var rule : distinctBlacklistRules) {
             rule.writeToConfig(writer);
         }
     }
