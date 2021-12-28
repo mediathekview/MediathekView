@@ -3,6 +3,7 @@ package mediathek.gui.dialogEinstellungen;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.file.GetFile;
@@ -288,7 +289,7 @@ public class PanelBlacklist extends JPanel {
                 bl.setSender(strSender);
                 bl.setThema(strThema);
                 bl.setTitel(strTitel);
-                bl.setThemaTitel(strThemaTitel);
+                bl.setThema_titel(strThemaTitel);
 
                 tableModel.fireTableRowsUpdated(modelIndex, modelIndex);
 
@@ -326,7 +327,7 @@ public class PanelBlacklist extends JPanel {
             jComboBoxSender.setSelectedItem(bl.getSender());
             jComboBoxThema.setSelectedItem(bl.getThema());
             jTextFieldTitel.setText(bl.getTitel());
-            jTextFieldThemaTitel.setText(bl.getThemaTitel());
+            jTextFieldThemaTitel.setText(bl.getThema_titel());
         }
     }
 
@@ -341,8 +342,18 @@ public class PanelBlacklist extends JPanel {
 
         if (!strSender.isEmpty() || !strThema.isEmpty() || !strTitel.isEmpty() || !strThemaTitel.isEmpty()) {
             var rule = new BlacklistRule(strSender, strThema, strTitel, strThemaTitel);
-            tableModel.addRule(rule);
-            resetRuleEntryFields();
+            if (!tableModel.contains(rule)) {
+                tableModel.addRule(rule);
+                resetRuleEntryFields();
+            }
+            else {
+                //duplicate rule
+                var msg = """
+                        Es existiert bereits eine gleichlautende Regel.
+                        Es dürfen keine Duplikate in der Liste vorkommen.
+                        """;
+                MVMessageDialog.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     /**

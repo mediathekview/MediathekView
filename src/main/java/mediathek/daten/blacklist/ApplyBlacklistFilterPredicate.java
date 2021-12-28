@@ -31,7 +31,7 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
     private void createPatterns() {
         listeBlacklist.parallelStream().forEach(entry -> {
             final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.getTitel());
-            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.getThemaTitel());
+            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.getThema_titel());
             var blPattern = new BlacklistPattern(pTitel, pThema);
             rulePatternMap.putIfAbsent(entry, blPattern);
         });

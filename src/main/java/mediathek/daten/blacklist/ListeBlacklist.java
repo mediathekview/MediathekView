@@ -266,7 +266,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
             if (Filter.filterAufFilmPruefenWithLength(rule.getSender(),
                     rule.getThema(),
                     makePattern(rule.getTitel()),
-                    makePattern(rule.getThemaTitel()),
+                    makePattern(rule.getThema_titel()),
                     EMPTY_STRING_ARRAY, 0, true, film, true)) {
                 return bl_is_whitelist;
             }
