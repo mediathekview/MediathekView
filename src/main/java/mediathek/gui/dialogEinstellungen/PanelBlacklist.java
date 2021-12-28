@@ -488,9 +488,6 @@ public class PanelBlacklist extends JPanel {
                 {
                     jScrollPane1.setMinimumSize(new Dimension(22, 50));
                     jScrollPane1.setPreferredSize(new Dimension(454, 200));
-
-                    //---- jTableBlacklist ----
-                    jTableBlacklist.setAutoCreateRowSorter(true);
                     jScrollPane1.setViewportView(jTableBlacklist);
                 }
                 jPanel1.add(jScrollPane1, new CC().cell(0, 4));

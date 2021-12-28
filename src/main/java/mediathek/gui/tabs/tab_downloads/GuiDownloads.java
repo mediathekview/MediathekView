@@ -1,5 +1,8 @@
 package mediathek.gui.tabs.tab_downloads;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -70,9 +73,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-    private static final int INDEX_COMBO_DISPLAY_ALL = 0;
-    private static final int INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY = 1;
-    private static final int INDEX_COMBO_DISPLAY_ABOS_ONLY = 2;
 
     private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
@@ -80,13 +80,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
-    private static final int INDEX_COMBO_VIEW_ALL = 0;
-    private static final int INDEX_COMBO_VIEW_NOT_STARTED = 1;
-    private static final int INDEX_COMBO_VIEW_STARTED = 2;
-    private static final int INDEX_COMBO_VIEW_WAITING = 3;
-    private static final int INDEX_COMBO_VIEW_RUN_ONLY = 4;
-    private static final int INDEX_COMBO_VIEW_FINISHED_ONLY = 5;
-
 
     private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
@@ -266,12 +259,17 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setupDisplayCategories() {
-        cbDisplayCategories.setModel(getDisplaySelectionModel());
+        final EventList<String> displaySelectionList = GlazedLists.eventListOf(COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY);
+        cbDisplayCategories.setModel(GlazedListsSwing.eventComboBoxModelWithThreadProxyList(displaySelectionList));
+        cbDisplayCategories.getModel().setSelectedItem(COMBO_DISPLAY_ALL);
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
     }
 
     private void setupCheckboxView() {
-        cbView.setModel(getViewModel());
+        EventList<String> viewSelectionList = GlazedLists.eventListOf(COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED,
+                COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY);
+        cbView.setModel(GlazedListsSwing.eventComboBoxModelWithThreadProxyList(viewSelectionList));
+        cbView.getModel().setSelectedItem(COMBO_VIEW_ALL);
         cbView.addActionListener(new ViewCategoryListener());
     }
 
@@ -1225,23 +1223,6 @@ public class GuiDownloads extends AGuiTabPanel {
         MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
-    /**
-     * Return the model used for the display categories {@link javax.swing.JComboBox}.
-     *
-     * @return The selection model.
-     */
-    private DefaultComboBoxModel<String> getDisplaySelectionModel() {
-        return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
-    }
-
-    /**
-     * Return the model used for the view categories {@link javax.swing.JComboBox}.
-     *
-     * @return The selection model.
-     */private DefaultComboBoxModel<String> getViewModel() {
-        return new DefaultComboBoxModel<>(new String[]{COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED, COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY});
-    }
-
     private void updateFilmData() {
         if (isShowing()) {
             DatenFilm aktFilm = null;
@@ -1546,43 +1527,43 @@ public class GuiDownloads extends AGuiTabPanel {
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
-            switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_VIEW_ALL -> {
+            switch ((String)source.getModel().getSelectedItem()) {
+                case COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_NOT_STARTED -> {
+                case COMBO_VIEW_NOT_STARTED -> {
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_STARTED -> {
+                case COMBO_VIEW_STARTED -> {
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_WAITING -> {
+                case COMBO_VIEW_WAITING -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_FINISHED_ONLY -> {
+                case COMBO_VIEW_FINISHED_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_RUN_ONLY -> {
+                case COMBO_VIEW_RUN_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1602,17 +1583,16 @@ public class GuiDownloads extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
-
-            switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_DISPLAY_ALL -> {
+            switch ((String)source.getModel().getSelectedItem()) {
+                case COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
                 }
-                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY -> {
+                case COMBO_DISPLAY_DOWNLOADS_ONLY -> {
                     onlyAbos = false;
                     onlyDownloads = true;
                 }
-                case INDEX_COMBO_DISPLAY_ABOS_ONLY -> {
+                case COMBO_DISPLAY_ABOS_ONLY -> {
                     onlyAbos = true;
                     onlyDownloads = false;
                 }
