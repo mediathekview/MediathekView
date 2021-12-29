@@ -115,7 +115,8 @@ public class AboHistoryController {
 
         listeBauen();
 
-        sendChangeMessage();
+        if (gefunden)
+            sendChangeMessage();
     }
 
     public synchronized void add(@NotNull MVUsedUrl usedUrl) {
