@@ -6,6 +6,7 @@
 - **BUGFIX(Windows 32bit):** Möglicher Absturz mit Stack Overflow Error der JVM wurde behoben.
 - **BUGFIX:** Das mehrfach hintereinander durchgeführte Löschen von einzelnen Blacklist-Regeln löscht nun nicht mehr die falschen Regeln. Die Dateninkonsistenz wurde beseitigt.
 - **BUGFIX:** Aktualisierung von Bibliotheken die Abstürze vor allem in Verbindung mit Apple Silicon CPUs verursachen konnten.
+- **BUGFIX:** Diverse Fehler im Dialog für Abo-Historie wurden beseitigt.
 - **FEATURE:** Im Einstellungen-Dialog können in Blacklist-Dialog nun gleichzeitig mehrere Regeln gelöscht werden.
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
 - **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.
