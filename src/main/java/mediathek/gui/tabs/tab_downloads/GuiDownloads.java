@@ -977,9 +977,9 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     /**
-     * @param dauerhaft false werden Downloads zurück gestellt. true löscht permanent.
+     * @param permanentDeletion false werden Downloads zurück gestellt. true löscht permanent.
      */
-    public void downloadLoeschen(boolean dauerhaft) {
+    public void downloadLoeschen(boolean permanentDeletion) {
         try {
             ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
             if (arrayDownloads.isEmpty()) {
@@ -992,7 +992,7 @@ public class GuiDownloads extends AGuiTabPanel {
             List<MVUsedUrl> urlAboList = new ArrayList<>();
 
             for (DatenDownload datenDownload : arrayDownloads) {
-                if (dauerhaft) {
+                if (permanentDeletion) {
                     arrayDownloadsLoeschen.add(datenDownload);
                     if (datenDownload.isFromAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
@@ -1006,9 +1006,11 @@ public class GuiDownloads extends AGuiTabPanel {
                     datenDownload.zurueckstellen();
                 }
             }
+
             if (!urlAboList.isEmpty()) {
-                daten.getAboHistoryController().createLineWriterThread(urlAboList);
+                daten.getAboHistoryController().add(urlAboList);
             }
+
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
         } catch (Exception ex) {

@@ -7,20 +7,18 @@ import mediathek.tool.MessageBus;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class AboHistoryController {
     private static final String FILENAME = "downloadAbos.txt";
     private static final Logger logger = LogManager.getLogger(AboHistoryController.class);
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     /**
      * Quick lookup list for history checks.
      * Stores only URLs
@@ -53,13 +51,17 @@ public class AboHistoryController {
         MessageBus.getMessageBus().publishAsync(new AboHistoryChangedEvent());
     }
 
+    private void clearLists() {
+        listeUrls.clear();
+        listeUrlsSortDate.clear();
+    }
+
     /**
      * Remove all stored entries.
      * Also deletes the used text file. When supported it will be moved to trash, otherwise deleted.
      */
     public synchronized void removeAll() {
-        listeUrls.clear();
-        listeUrlsSortDate.clear();
+        clearLists();
 
         try {
             FileUtils.moveToTrash(urlPath);
@@ -109,18 +111,15 @@ public class AboHistoryController {
             }
         }
 
-        listeUrls.clear();
-        listeUrlsSortDate.clear();
+        clearLists();
 
         listeBauen();
 
         sendChangeMessage();
     }
 
-    public synchronized void zeileSchreiben(String thema, String titel, String url) {
-        var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
-        listeUrls.add(url);
-        final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
+    public synchronized void add(@NotNull MVUsedUrl usedUrl) {
+        listeUrls.add(usedUrl.getUrl());
         listeUrlsSortDate.add(usedUrl);
 
         checkUrlFilePath();
@@ -130,16 +129,10 @@ public class AboHistoryController {
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
             bufferedWriter.write(usedUrl.getPreparedRowString());
         } catch (Exception ex) {
-            logger.error("zeileSchreiben(...)", ex);
+            logger.error("Single add failed", ex);
         }
 
         sendChangeMessage();
-    }
-
-    // eigener Thread!!
-    public synchronized void createLineWriterThread(List<MVUsedUrl> mvuuList) {
-        Thread t = new LineWriterThread(mvuuList);
-        t.start();
     }
 
     private void checkUrlFilePath() {
@@ -151,7 +144,7 @@ public class AboHistoryController {
         }
     }
 
-    private void listeBauen() {
+    private synchronized void listeBauen() {
         //LinkedList mit den URLs aus dem Logfile bauen
         checkUrlFilePath();
 
@@ -185,16 +178,44 @@ public class AboHistoryController {
             logger.error("listeBauen()", ex);
         }
 
+        checkBadEntries(badEntriesList);
+
+        logger.trace("listeUrls size: {} for file {}", listeUrls.size(), urlPath);
+        logger.trace("listeUrlsSortDate size: {} for file {}", listeUrlsSortDate.size(), urlPath);
+    }
+
+    private void checkBadEntries(@NotNull List<String> badEntriesList) {
         if (!badEntriesList.isEmpty()) {
             logger.warn("File {} contains {} invalid entries ", urlPath, badEntriesList.size());
             removeIllegalEntries(badEntriesList);
             badEntriesList.clear();
         }
-        logger.debug("listeUrls size: {} for file {}", listeUrls.size(), urlPath);
-        logger.debug("listeUrlsSortDate size: {} for file {}", listeUrlsSortDate.size(), urlPath);
     }
 
-    private void removeIllegalEntries(List<String> badEntriesList) {
+    /**
+     * Append multiple urls to history file.
+     *
+     * @param mvuuList the items to add.
+     */
+    public synchronized void add(@NotNull List<MVUsedUrl> mvuuList) {
+        checkUrlFilePath();
+
+        try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
+             OutputStreamWriter osw = new OutputStreamWriter(os);
+             BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
+            for (MVUsedUrl mvuu : mvuuList) {
+                listeUrls.add(mvuu.getUrl());
+                listeUrlsSortDate.add(mvuu);
+
+                bufferedWriter.write(mvuu.getPreparedRowString());
+            }
+        } catch (Exception ex) {
+            logger.error("zeilenSchreiben()", ex);
+        }
+        sendChangeMessage();
+    }
+
+    private synchronized void removeIllegalEntries(@NotNull List<String> badEntriesList) {
         logger.trace("Cleaning entries for {}", urlPath);
 
         final List<String> cleanedEntriesList = new ArrayList<>();
@@ -223,38 +244,4 @@ public class AboHistoryController {
         cleanedEntriesList.clear();
         logger.trace("Finished cleaning entries for {}", urlPath);
     }
-
-    class LineWriterThread extends Thread {
-
-        private final List<MVUsedUrl> mvuuList;
-
-        public LineWriterThread(List<MVUsedUrl> mvuuList) {
-            this.mvuuList = mvuuList;
-            setName(LineWriterThread.class.getName());
-        }
-
-        @Override
-        public void run() {
-            zeilenSchreiben();
-        }
-
-        private void zeilenSchreiben() {
-            checkUrlFilePath();
-
-            try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
-                 OutputStreamWriter osw = new OutputStreamWriter(os);
-                 BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-                for (MVUsedUrl mvuu : mvuuList) {
-                    listeUrls.add(mvuu.getUrl());
-                    listeUrlsSortDate.add(mvuu);
-
-                    bufferedWriter.write(mvuu.getPreparedRowString());
-                }
-            } catch (Exception ex) {
-                logger.error("zeilenSchreiben()", ex);
-            }
-            sendChangeMessage();
-        }
-    }
-
 }
