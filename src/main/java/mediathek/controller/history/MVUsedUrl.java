@@ -106,7 +106,7 @@ public class MVUsedUrl {
      * @return one row with data.
      */
     public String getPreparedRowString() {
-        return datum + PAUSE
+        return getDatum() + PAUSE
                 + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
                 + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(titel), false, false) + TRENNER
                 + url + '\n';
