@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -551,19 +552,24 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
-        //FIXME remove for production!!!
-        /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
-        dlg.setVisible(true);
-        if (dlg.controller.success())
-            System.out.println("SUCCESS");
-        else
-            System.out.println("NO SUCCESS");*/
-
-        // dann alle Downloads im Dialog abfragen
-        Optional<FilmResolution.Enum> res =
-                filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-        DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
-        dialog.setVisible(true);
+        if (Daten.listePset.getListeSpeichern().isEmpty()) {
+            MVMessageDialog.showMessageDialog(this,
+                    "Ohne Programm-Sets können keine Downloads gestartet werden.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+        } else {
+            //FIXME remove for production!!!
+            /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
+            dlg.setVisible(true);
+            if (dlg.controller.success())
+                System.out.println("SUCCESS");
+            else
+                System.out.println("NO SUCCESS");*/
+            // dann alle Downloads im Dialog abfragen
+            Optional<FilmResolution.Enum> res =
+                    filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+            DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
+            dialog.setVisible(true);
+        }
     }
 
     private synchronized void bookmarkFilm() {
