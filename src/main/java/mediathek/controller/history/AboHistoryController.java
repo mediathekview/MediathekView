@@ -71,15 +71,19 @@ public class AboHistoryController {
         sendChangeMessage();
     }
 
-    public boolean urlPruefen(String urlFilm) {
+    public boolean urlPruefen(@NotNull String urlFilm) {
         //wenn url gefunden, dann true zurück
         return listeUrls.contains(urlFilm);
     }
 
-    public synchronized void urlAusLogfileLoeschen(String urlFilm) {
+    public synchronized void removeUrl(@NotNull String urlFilm) {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
         //wenn die URL im Logfile ist, dann true zurück
-        boolean gefunden = false;
+        boolean entryFound = false;
+
+        // if the url is NOT in our list, it won´t be in the file...bail out
+        if (!urlPruefen(urlFilm))
+            return;
 
         checkUrlFilePath();
 
@@ -90,7 +94,7 @@ public class AboHistoryController {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 if (MVUsedUrl.getUrlAusZeile(zeile).getUrl().equals(urlFilm)) {
-                    gefunden = true; //nur dann muss das Logfile auch geschrieben werden
+                    entryFound = true; //nur dann muss das Logfile auch geschrieben werden
                 } else {
                     liste.add(zeile);
                 }
@@ -100,7 +104,7 @@ public class AboHistoryController {
         }
 
         //und jetzt wieder schreiben, wenn nötig
-        if (gefunden) {
+        if (entryFound) {
             try (OutputStream os = Files.newOutputStream(urlPath);
                  OutputStreamWriter osw = new OutputStreamWriter(os);
                  BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
@@ -109,14 +113,13 @@ public class AboHistoryController {
             } catch (Exception ex) {
                 logger.error("urlAusLogfileLoeschen(String)", ex);
             }
-        }
 
-        clearLists();
+            clearLists();
 
-        listeBauen();
+            listeBauen();
 
-        if (gefunden)
             sendChangeMessage();
+        }
     }
 
     public synchronized void add(@NotNull MVUsedUrl usedUrl) {

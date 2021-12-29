@@ -109,7 +109,7 @@ public class PanelErledigteUrls extends JPanel {
                 urlList.remove(obj);
                 //we have to unsubscribe/subscribe otherwise we are going to reload the whole list again
                 MessageBus.getMessageBus().unsubscribe(this);
-                workList.urlAusLogfileLoeschen(obj.getUrl());
+                workList.removeUrl(obj.getUrl());
                 MessageBus.getMessageBus().subscribe(this);
             }
             finally {

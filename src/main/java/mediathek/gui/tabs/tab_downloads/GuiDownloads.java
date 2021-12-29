@@ -1082,7 +1082,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.isFromAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                        daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
             }
@@ -1175,7 +1175,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         listeDownloadsLoeschen.add(download);
                         if (download.isFromAbo()) {
                             // wenn er schon fertig ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                            daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
                 }
