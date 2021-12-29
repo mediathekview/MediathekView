@@ -1,54 +1,37 @@
-JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.13" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-			"$layoutConstraints": "insets 5,hidemode 3,gap 0 0"
+			"$layoutConstraints": "insets 5,hidemode 3,gap 0 5"
 			"$columnConstraints": "[grow,fill]"
 			"$rowConstraints": "[grow,fill][fill]"
 		} ) {
 			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelSum"
+				"horizontalAlignment": 4
+				"text": "0"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1,alignx trailing,growx 0"
+			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane1"
+				"preferredSize": new java.awt.Dimension( 640, 480 )
+				"minimumSize": new java.awt.Dimension( 150, 150 )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JTable" ) {
 					name: "jTable1"
+					"selectionMode": 0
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0"
-			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "insets 5 5 0 5,hidemode 3,gap 5 5"
-				"$columnConstraints": "[fill][grow,fill]"
-				"$rowConstraints": "[fill]"
-			} ) {
-				name: "panel1"
-				auxiliary() {
-					"JavaCodeGenerator.variableLocal": true
-				}
-				add( new FormComponent( "javax.swing.JToggleButton" ) {
-					name: "jToggleButtonLaden"
-					"text": "Laden"
-					auxiliary() {
-						"JavaCodeGenerator.variableModifiers": 4
-					}
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0"
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "jLabelSum"
-					"horizontalAlignment": 4
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0"
-				} )
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 400, 300 )

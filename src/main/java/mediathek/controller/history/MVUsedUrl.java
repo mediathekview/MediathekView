@@ -89,7 +89,11 @@ public class MVUsedUrl {
         return titel;
     }
 
-    public String getUsedUrl() {
+    /**
+     * Creates the string for one row in the data file.
+     * @return one row with data.
+     */
+    public String getPreparedRowString() {
         return datum + PAUSE
                 + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
                 + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(titel), false, false) + TRENNER

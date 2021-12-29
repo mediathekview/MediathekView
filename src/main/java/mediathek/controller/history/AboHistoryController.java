@@ -120,15 +120,15 @@ public class AboHistoryController {
     public synchronized void zeileSchreiben(String thema, String titel, String url) {
         var datum = DATE_TIME_FORMATTER.format(LocalDate.now());
         listeUrls.add(url);
-        listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
+        final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
+        listeUrlsSortDate.add(usedUrl);
 
         checkUrlFilePath();
 
         try (OutputStream os = Files.newOutputStream(urlPath, StandardOpenOption.APPEND);
              OutputStreamWriter osw = new OutputStreamWriter(os);
              BufferedWriter bufferedWriter = new BufferedWriter(osw)) {
-            final MVUsedUrl usedUrl = new MVUsedUrl(datum, thema, titel, url);
-            bufferedWriter.write(usedUrl.getUsedUrl());
+            bufferedWriter.write(usedUrl.getPreparedRowString());
         } catch (Exception ex) {
             logger.error("zeileSchreiben(...)", ex);
         }
@@ -248,7 +248,7 @@ public class AboHistoryController {
                     listeUrls.add(mvuu.getUrl());
                     listeUrlsSortDate.add(mvuu);
 
-                    bufferedWriter.write(mvuu.getUsedUrl());
+                    bufferedWriter.write(mvuu.getPreparedRowString());
                 }
             } catch (Exception ex) {
                 logger.error("zeilenSchreiben()", ex);

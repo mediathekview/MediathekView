@@ -1,127 +1,148 @@
 package mediathek.gui.history;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.AdvancedTableModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.config.Daten;
 import mediathek.controller.history.AboHistoryController;
-import mediathek.controller.history.MVUsedUrlModelHelper;
+import mediathek.controller.history.MVUsedUrl;
+import mediathek.gui.messages.history.AboHistoryChangedEvent;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.models.NonEditableTableModel;
+import mediathek.tool.MessageBus;
+import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public abstract class PanelErledigteUrls extends JPanel {
-    protected final Daten daten;
-    protected AboHistoryController workList;
+public class PanelErledigteUrls extends JPanel {
+    private final AboHistoryController workList = Daten.getInstance().getAboHistoryController();
+    private final EventList<MVUsedUrl> urlList = new BasicEventList<>();
+    private final AdvancedTableModel<MVUsedUrl> urlTableModel =
+            GlazedListsSwing.eventTableModelWithThreadProxyList(urlList, new MVUsedUrlTableFormat());
 
     public PanelErledigteUrls() {
-        this.daten = Daten.getInstance();
-
         initComponents();
-        jTable1.addMouseListener(new BeobMausTabelle());
-        initListeners();
+
+        jTable1.setModel(urlTableModel);
+        urlTableModel.addTableModelListener(e -> updateRowDisplay());
+        jTable1.setComponentPopupMenu(createContextMenu());
+
+        loadData();
+
+        MessageBus.getMessageBus().subscribe(this);
     }
 
-    protected void changeListHandler() {
-        if (jToggleButtonLaden.isSelected())
-            updateModelAndRecalculate(createDataModel());
-    }
+    private JPopupMenu createContextMenu() {
+        var popupMenu = new JPopupMenu();
+        //löschen
+        var item = new JMenuItem("Eintrag löschen");
+        item.addActionListener(e -> deleteUrl());
+        popupMenu.add(item);
+        //Url
+        item = new JMenuItem("URL kopieren");
+        item.addActionListener(e -> copyUrl());
+        popupMenu.add(item);
 
-    private void initListeners() {
-        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
-            if (jToggleButtonLaden.isSelected()) {
-                updateModelAndRecalculate(createDataModel());
-            } else {
-                updateModelAndRecalculate(new NonEditableTableModel(null, MVUsedUrlModelHelper.TITLE_HEADER));
+        popupMenu.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    var pt = SwingUtilities.convertPoint(popupMenu, new Point(0, 0), jTable1);
+                    int rowAtPoint = jTable1.rowAtPoint(pt);
+                    if (rowAtPoint != -1) {
+                        jTable1.setRowSelectionInterval(rowAtPoint, rowAtPoint);
+                    }
+                });
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
             }
         });
+
+        return popupMenu;
     }
 
-    private void updateModelAndRecalculate(@NotNull TableModel model) {
-        jTable1.setModel(model);
-        setsum();
+    @Handler
+    private void handleAboHistoryChangeEvent(AboHistoryChangedEvent e) {
+        SwingUtilities.invokeLater(this::loadData);
     }
 
-    protected TableModel createDataModel() {
-        final var data = MVUsedUrlModelHelper.getObjectData(workList.getListeUrlsSortDate());
-        return new NonEditableTableModel(data, MVUsedUrlModelHelper.TITLE_HEADER);
+    private void updateRowDisplay() {
+        var text = "";
+        if (urlTableModel.getRowCount() > 0) {
+            text = "Anzahl: " + urlTableModel.getRowCount();
+        }
+        jLabelSum.setText(text);
     }
 
-    private void setsum() {
-        if (jTable1.getRowCount() <= 0) {
-            jLabelSum.setText("");
-        } else {
-            jLabelSum.setText("Anzahl: " + jTable1.getRowCount());
+    private void loadData() {
+        try {
+            urlList.getReadWriteLock().writeLock().lock();
+            urlList.clear();
+            urlList.addAll(workList.getListeUrlsSortDate());
+        }
+        finally {
+            urlList.getReadWriteLock().writeLock().unlock();
         }
     }
 
-    class BeobMausTabelle extends MouseAdapter {
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
+    private void deleteUrl() {
+        final int selectedTableRow = jTable1.getSelectedRow();
+        if (selectedTableRow != -1) {
+            try {
+                urlList.getReadWriteLock().writeLock().lock();
+                var modelIndex = jTable1.convertRowIndexToModel(selectedTableRow);
+                var obj = urlList.get(modelIndex);
+                urlList.remove(obj);
+                //we have to unsubscribe/subscribe otherwise we are going to reload the whole list again
+                MessageBus.getMessageBus().unsubscribe(this);
+                workList.urlAusLogfileLoeschen(obj.getUrl());
+                MessageBus.getMessageBus().subscribe(this);
+            }
+            finally {
+                urlList.getReadWriteLock().writeLock().unlock();
             }
         }
+    }
 
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
+    private void copyUrl() {
+        final int selectedTableRow = jTable1.getSelectedRow();
+        if (selectedTableRow != -1) {
+            try {
+                urlList.getReadWriteLock().readLock().lock();
+                var modelIndex = jTable1.convertRowIndexToModel(selectedTableRow);
+                var obj = urlList.get(modelIndex);
+                GuiFunktionen.copyToClipboard(obj.getUrl());
             }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            Point p = evt.getPoint();
-            int nr = jTable1.rowAtPoint(p);
-            if (nr >= 0) {
-                jTable1.setRowSelectionInterval(nr, nr);
+            finally {
+                urlList.getReadWriteLock().readLock().unlock();
             }
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            //löschen
-            JMenuItem item = new JMenuItem("Url aus der Liste löschen");
-            item.addActionListener(e -> {
-                final int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow != -1) {
-                    String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
-                    workList.urlAusLogfileLoeschen(del);
-                }
-            });
-            jPopupMenu.add(item);
-            //Url
-            item = new JMenuItem("URL kopieren");
-            item.addActionListener(e -> {
-                final int selectedTableRow = jTable1.getSelectedRow();
-                if (selectedTableRow != -1) {
-                    String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrlModelHelper.USED_URL_URL).toString();
-                    GuiFunktionen.copyToClipboard(url);
-                }
-            });
-            jPopupMenu.add(item);
-
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jLabelSum = new JLabel();
         var jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
-        var panel1 = new JPanel();
-        jToggleButtonLaden = new JToggleButton();
-        jLabelSum = new JLabel();
 
         //======== this ========
         setLayout(new MigLayout(
-            new LC().insets("5").hideMode(3).gridGap("0", "0"), //NON-NLS
+            new LC().insets("5").hideMode(3).gridGap("0", "5"), //NON-NLS
             // columns
             new AC()
                 .grow().fill(),
@@ -130,38 +151,25 @@ public abstract class PanelErledigteUrls extends JPanel {
                 .grow().fill().gap()
                 .fill()));
 
+        //---- jLabelSum ----
+        jLabelSum.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabelSum.setText("0"); //NON-NLS
+        add(jLabelSum, new CC().cell(0, 1).alignX("trailing").growX(0)); //NON-NLS
+
         //======== jScrollPane1 ========
         {
+            jScrollPane1.setPreferredSize(new Dimension(640, 480));
+            jScrollPane1.setMinimumSize(new Dimension(150, 150));
+
+            //---- jTable1 ----
+            jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             jScrollPane1.setViewportView(jTable1);
         }
         add(jScrollPane1, new CC().cell(0, 0));
-
-        //======== panel1 ========
-        {
-            panel1.setLayout(new MigLayout(
-                new LC().insets("5 5 0 5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                // columns
-                new AC()
-                    .fill().gap()
-                    .grow().fill(),
-                // rows
-                new AC()
-                    .fill()));
-
-            //---- jToggleButtonLaden ----
-            jToggleButtonLaden.setText("Laden"); //NON-NLS
-            panel1.add(jToggleButtonLaden, new CC().cell(0, 0));
-
-            //---- jLabelSum ----
-            jLabelSum.setHorizontalAlignment(SwingConstants.RIGHT);
-            panel1.add(jLabelSum, new CC().cell(1, 0));
-        }
-        add(panel1, new CC().cell(0, 1));
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    protected JTable jTable1;
-    protected JToggleButton jToggleButtonLaden;
     private JLabel jLabelSum;
+    protected JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
