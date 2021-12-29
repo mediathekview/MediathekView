@@ -584,7 +584,7 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
 
-        jCheckBoxInfodatei.setText("Lege Infodatei  an");
+        jCheckBoxInfodatei.setText("Lege Infodatei an");
         jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
 
         jLabelSet.setText("Set:");
@@ -620,7 +620,7 @@ public class DialogAddDownload extends JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxInfodatei)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxPfadSpeichern))
                             .addComponent(jTextFieldName))))
                 .addContainerGap())
