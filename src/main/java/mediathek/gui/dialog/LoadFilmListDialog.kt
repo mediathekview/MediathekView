@@ -13,7 +13,6 @@ import java.awt.BorderLayout
 import java.awt.Frame
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
-import java.util.*
 import javax.swing.JButton
 import javax.swing.JDialog
 import javax.swing.JOptionPane
@@ -34,9 +33,11 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
         val btn = JButton("Filmliste laden")
         btn.addActionListener {
             val filmeLaden = Daten.getInstance().filmeLaden
+            val immerNeuLaden = contentPanel.hasSenderSelectionChanged()
+
             if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
-                filmeLaden.loadFilmlist("", false)
+                filmeLaden.loadFilmlist("", immerNeuLaden)
             } else {
                 //manual or extend
                 val strUrl = contentPanel.jTextFieldUrl.text
@@ -54,7 +55,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                 if (contentPanel.jCheckBoxUpdate.isSelected)
                     filmeLaden.updateFilmlist(strUrl)
                 else
-                    filmeLaden.loadFilmlist(strUrl, false)
+                    filmeLaden.loadFilmlist(strUrl, immerNeuLaden)
             }
             dispose()
         }

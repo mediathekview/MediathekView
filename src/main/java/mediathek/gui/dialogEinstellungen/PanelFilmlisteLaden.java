@@ -42,6 +42,12 @@ public class PanelFilmlisteLaden extends JPanel {
         if (inSettingsDialog) {
             prepareSettingsLayout();
         }
+        else {
+            //we are in LoadFilmListDialog integrated...
+            panel1.setToolTipText("<html>Bei Änderungen wird eine komplette Filmliste vom Server geladen.<br>" +
+                    "Dies funktioniert <b>NICHT im Erweiterungsmodus</b>!!!</html>");
+            panel1.setBorder(new TitledBorder("Ausgewählte Sender laden:"));
+        }
 
         setupSenderList();
         //load initial settings
@@ -124,6 +130,14 @@ public class PanelFilmlisteLaden extends JPanel {
             SenderFilmlistLoadApprover.approve(sender);
         else
             SenderFilmlistLoadApprover.deny(sender);
+
+        senderSelectionChanged = true;
+    }
+
+    private boolean senderSelectionChanged;
+
+    public boolean hasSenderSelectionChanged() {
+        return senderSelectionChanged;
     }
 
     private void init() {
@@ -219,7 +233,7 @@ public class PanelFilmlisteLaden extends JPanel {
         cbTrailer = new JCheckBox();
         cbAudio = new JCheckBox();
         cbLivestreams = new JCheckBox();
-        var panel1 = new JPanel();
+        panel1 = new JPanel();
         checkBox1 = new JCheckBox();
         checkBox24 = new JCheckBox();
         checkBox2 = new JCheckBox();
@@ -505,6 +519,7 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox cbTrailer;
     private JCheckBox cbAudio;
     private JCheckBox cbLivestreams;
+    private JPanel panel1;
     private JCheckBox checkBox1;
     private JCheckBox checkBox24;
     private JCheckBox checkBox2;

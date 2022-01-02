@@ -156,9 +156,6 @@ new FormModel {
 				name: "panel1"
 				"border": new javax.swing.border.TitledBorder( "Diese Sender laden (Änderungen erfordern Programmneustart und eine vollständig neue Filmliste)" )
 				"toolTipText": "<html>Die Einstellungen beziehen sich auf den nächsten <b>vollständigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms <br><b>und dem Laden einer kompletten Liste vom Server</b> (keine DIFF-Liste!) sichtbar wird.<br><br>Hier geänderte Einstellungen werden in der Senderliste des Filterdialogs <b>erst nach Neustart</b> sichtbar!</html>"
-				auxiliary() {
-					"JavaCodeGenerator.variableLocal": true
-				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "checkBox1"
 					"text": "3Sat"
