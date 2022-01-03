@@ -83,7 +83,7 @@
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
         <annotations.version>22.0.0</annotations.version>
-        <assertj-core.version>3.20.2</assertj-core.version>
+        <assertj-core.version>3.21.0</assertj-core.version>
         <commons-configuration2.version>2.7</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
@@ -91,11 +91,11 @@
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <guava.version>31.0.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
-        <jackson.version>2.12.5</jackson.version>
+        <jackson.version>2.13.1</jackson.version>
         <javafx.version>18-ea+8</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jna.version>5.10.0</jna.version>
-        <junit.jupiter.version>5.8.0</junit.jupiter.version>
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <log4j2.version>2.17.0</log4j2.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -109,7 +109,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.0</miglayout.version>
-        <mockito.version>3.12.4</mockito.version>
+        <mockito.version>4.2.0</mockito.version>
         <okhttp.version>4.9.3</okhttp.version>
         <okio.version>2.10.0</okio.version>
         <picocli.version>4.6.1</picocli.version>
