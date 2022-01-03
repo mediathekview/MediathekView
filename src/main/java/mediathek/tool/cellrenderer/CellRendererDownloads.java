@@ -195,6 +195,15 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     break;
             }
 
+            if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
+                if (datenDownload.film != null) {
+                    var title = datenDownload.film.getTitle();
+                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                        setToolTipText(title);
+                }
+            }
+
             setBackgroundColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
