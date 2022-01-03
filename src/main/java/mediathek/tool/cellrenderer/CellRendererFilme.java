@@ -116,6 +116,13 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                         setSenderIcon(value.toString(), mvTable.useSmallSenderIcons);
                     }
                     break;
+
+                    case DatenFilm.FILM_TITEL:
+                        var title = datenFilm.getTitle();
+                        var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                        if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                            setToolTipText(title);
+                        break;
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
