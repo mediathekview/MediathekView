@@ -9,14 +9,13 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import static mediathek.tool.Functions.getOs;
 
 public class DialogStarteinstellungen extends JDialog {
     private enum State { START, PFAD, PSET, FERTIG}
@@ -111,12 +110,10 @@ public class DialogStarteinstellungen extends JDialog {
         // erst Programmpfad prüfen
         jButtonAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        boolean search_ffmpeg;
-        switch (getOs()) {
-            case MAC, WIN32, WIN64 -> search_ffmpeg = false;
-            default -> search_ffmpeg = true;
-        }
-        jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true, search_ffmpeg));
+        boolean search_ffmpeg = !SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_WINDOWS;
+
+        var programPathsPanel = new PanelProgrammPfade(parentComponent, true, search_ffmpeg);
+        jScrollPane1.setViewportView(programPathsPanel);
 
         status = State.PSET;
         jButtonStandard.setText("Weiter");
