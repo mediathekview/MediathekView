@@ -14,26 +14,6 @@ public class Functions {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
     }
 
-    public static String textLaenge(int max, String text, boolean mitte, boolean addVorne) {
-        if (text.length() > max) {
-            if (mitte) {
-                text = text.substring(0, 25) + " .... " + text.substring(text.length() - (max - 31));
-            } else {
-                text = text.substring(0, max - 1);
-            }
-        }
-        StringBuilder textBuilder = new StringBuilder(text);
-        while (textBuilder.length() < max) {
-            if (addVorne) {
-                textBuilder.insert(0, ' ');
-            } else {
-                textBuilder.append(' ');
-            }
-        }
-        text = textBuilder.toString();
-        return text;
-    }
-
     /**
      * Detect and return the currently used operating system.
      *

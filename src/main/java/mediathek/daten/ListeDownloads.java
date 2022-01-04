@@ -370,7 +370,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
-            if (aboHistoryController.urlPruefen(film.getUrlNormalQuality())) {
+            if (aboHistoryController.urlExists(film.getUrlNormalQuality())) {
                 // ist schon mal geladen worden
                 continue;
             }

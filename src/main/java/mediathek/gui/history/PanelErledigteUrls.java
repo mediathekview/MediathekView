@@ -92,7 +92,7 @@ public class PanelErledigteUrls extends JPanel {
         try {
             urlList.getReadWriteLock().writeLock().lock();
             urlList.clear();
-            urlList.addAll(workList.getListeUrlsSortDate());
+            urlList.addAll(workList.getDataList());
         }
         finally {
             urlList.getReadWriteLock().writeLock().unlock();

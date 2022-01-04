@@ -19,7 +19,6 @@
  */
 package mediathek.controller.history;
 
-import mediathek.tool.Functions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,8 +31,6 @@ import java.time.format.DateTimeFormatter;
  * Should NOT be used in further developments.
  */
 public class MVUsedUrl {
-    public static final int MAX_TITLE_LENGTH = 40;
-    public static final int MAX_THEMA_LENGTH = 25;
     private static final Logger logger = LogManager.getLogger(MVUsedUrl.class);
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
@@ -106,10 +103,11 @@ public class MVUsedUrl {
      * @return one row with data.
      */
     public String getPreparedRowString() {
-        return getDatum() + PAUSE
-                + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
-                + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(titel), false, false) + TRENNER
-                + url + '\n';
+        return String.format("%s%s%s%s%s%s%s\n",
+                getDatum(), PAUSE,
+                putzen(thema), PAUSE,
+                putzen(titel), TRENNER,
+                url);
     }
 
     public String getUrl() {
