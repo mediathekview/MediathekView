@@ -9,8 +9,10 @@ import mediathek.tool.models.TModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
@@ -24,8 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static mediathek.tool.Functions.getOsString;
 
 public class ListePsetVorlagen extends ArrayList<String[]> {
     public static final String BS_WIN_32 = "Windows-32Bit";
@@ -72,13 +72,24 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
         }
     }
 
+    private static @NotNull String getOperatingSystemString() {
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return "Mac";
+        else if (SystemUtils.IS_OS_WINDOWS)
+            return "Windows";
+        else if (SystemUtils.IS_OS_LINUX)
+            return "Linux";
+        else
+            return "";
+    }
+
     public static ListePset getStandarset(JFrame parent, boolean replaceMuster) {
         ListePset listePset = null;
         String[] vorlage = null;
         ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
         if (listePsetVorlagen.loadListOfSets()) {
             for (String[] ar : listePsetVorlagen) {
-                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + getOsString())) {
+                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + getOperatingSystemString())) {
                     vorlage = ar;
                     break;
                 }

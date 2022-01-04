@@ -2,6 +2,8 @@ package mediathek.tool;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -27,6 +29,7 @@ public class FilenameUtils {
      */
     public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
     public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH = "[:\\\\*|<>]";
+    private static final Logger logger = LogManager.getLogger();
 
     public static String checkDateiname(final String name, final boolean isPath) {
         // dient nur zur Anzeige für Probleme (Textfeld wird rot)
@@ -267,25 +270,22 @@ public class FilenameUtils {
     public static String removeIllegalCharacters(final String input, boolean isPath) {
         String ret = input;
 
-        switch (Functions.getOs()) {
-            case MAC, LINUX -> {
-                //On OSX the VFS take care of writing correct filenames to FAT filesystems...
-                //Just remove the default illegal characters
-                ret = StringUtils.stripStart(ret, ".");
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
-            }
-            case WIN64, WIN32 -> {
-                //we need to be more careful on Windows when using e.g. FAT32
-                //Therefore be more conservative by default and replace more characters.
-                ret = removeWindowsTrailingDots(ret);
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-            }
-            default -> {
-                //we need to be more careful on Linux when using e.g. FAT32
-                //Therefore be more conservative by default and replace more characters.
-                ret = StringUtils.stripStart(ret, ".");
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-            }
+        if (SystemUtils.IS_OS_WINDOWS) {
+            //we need to be more careful on Windows when using e.g. FAT32
+            //Therefore be more conservative by default and replace more characters.
+            ret = removeWindowsTrailingDots(ret);
+            ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+        } else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
+            //On OSX the VFS take care of writing correct filenames to FAT filesystems...
+            //Just remove the default illegal characters
+            ret = StringUtils.stripStart(ret, ".");
+            ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
+        } else {
+            logger.warn("This code path should NOT have been taken");
+            //we need to be more careful on Linux when using e.g. FAT32
+            //Therefore be more conservative by default and replace more characters.
+            ret = StringUtils.stripStart(ret, ".");
+            ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
         }
 
         return ret;
@@ -294,7 +294,7 @@ public class FilenameUtils {
     /**
      * Entferne verbotene Zeichen aus Dateiname.
      *
-     * @param name        Dateiname
+     * @param name Dateiname
      * @return Bereinigte Fassung
      */
     public static String replaceLeerDateiname(String name, boolean isPath, boolean userReplace, boolean onlyAscii) {
