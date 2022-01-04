@@ -369,13 +369,13 @@ public class Main {
 
         setSystemLookAndFeel();
 
-        if (!Functions.isDebuggerAttached()) {
+        if (!isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
-            splashScreen.ifPresent(SplashScreen::show);
         }
         else {
             logger.warn("Debugger detected -> Splash screen disabled...");
         }
+        splashScreen.ifPresent(SplashScreen::show);
 
         migrateOldConfigSettings();
 
@@ -393,6 +393,14 @@ public class Main {
             changeGlobalFontSize();
 
         startGuiMode();
+    }
+
+    /**
+     * Checks if the application has an debugger attached to it.
+     * @return true if debugger was detected, false othewise.
+     */
+    private static boolean isDebuggerAttached() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
     }
 
     private static void changeGlobalFontSize() {
