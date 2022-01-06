@@ -178,22 +178,6 @@ public class Main {
         loggerContext.updateLoggers();
     }
 
-    /**
-     * Set the look and feel for various OS.
-     * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
-     * On all other OS use FlatLAF.
-     */
-    private static void setSystemLookAndFeel() {
-        //don´t set L&F on macOS...
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            FlatLightLaf.setup();
-        else {
-            // install by default for M1 macs...
-            if (SystemUtils.OS_ARCH.equals("aarch64"))
-                FlatLightLaf.setup();
-        }
-    }
-
     private static void setupEnvironmentProperties() {
         System.setProperty("file.encoding", "UTF-8");
 
@@ -328,7 +312,7 @@ public class Main {
 
         printDirectoryPaths();
 
-        setSystemLookAndFeel();
+        FlatLightLaf.setup();
 
         if (!isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
@@ -411,82 +395,19 @@ public class Main {
     private static void loadConfigurationData() {
         var daten = Daten.getInstance();
 
-        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var btn1 = new CommandLinksDialog.CommandLinksButtonType(
-                    "Add a network that is NOT in range",
-                    "That will show you a list of networks that are currently NOT available and lets you connect to one.",
-                    false);
-
-            List<CommandLinksDialog.CommandLinksButtonType> links = Arrays.asList(
-                    new CommandLinksDialog.CommandLinksButtonType(
-                            "Add a network that is in range",
-                            "this shows you a list of networks that are currently available and lets you connect to one.",
-                            false),
-                    new CommandLinksDialog.CommandLinksButtonType(
-                            "Manually create a network profile",
-                            "This creates a new network profile or locates an existing one and saves it on your computer.",
-                            true),
-                    btn1
-                    );
-
-            CommandLinksDialog dlg = new CommandLinksDialog(links);
-            dlg.setTitle("Manually connect to wireless network");
-            String optionalMasthead = "Manually connect to wireless network";
-            dlg.getDialogPane().setContentText(optionalMasthead);
-            dlg.showAndWait().ifPresent(result -> System.out.println("Result is " + dlg.getResult()));
-            System.exit(2);
-        });*/
-
-        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var page1 = new WizardPane() {
-                @Override public void onEnteringPage(Wizard wizard) {
-                    String first = (String) wizard.getSettings().get("first");
-                    setContentText("Hello " + first);
-                }
-            };
-
-            var page2 = new WizardPane();
-            page2.setContentText("Please locate apps");
-
-            var page3 = new WizardPane();
-            page3.setContentText("Please set geographic location");
-            //page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
-
-            var wizard = new Wizard();
-            wizard.getSettings().put("first","MyName");
-            wizard.setTitle("New first launch wizard sample");
-            wizard.setFlow(new Wizard.LinearFlow(page1,page2,page3));
-            wizard.showAndWait().ifPresent(r -> {
-                if (r == ButtonType.FINISH) {
-                    System.out.println("Wizard finished, settings: " + wizard.getSettings());
-                }
-                if (r == ButtonType.CANCEL){
-                    System.exit(2);
-                    //delete incomplete settings dir!
-                }
-            });
-        });*/
-
         if (!daten.allesLaden()) {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             Main.splashScreen.ifPresent(SplashScreen::close);
-            //TODO replace with JavaFX dialog!!
+
             var dialog = new DialogStarteinstellungen(null);
             dialog.setVisible(true);
             if (dialog.getResultCode() == DialogStarteinstellungen.ResultCode.CANCELLED)
             {
                 //show termination dialog
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Einrichtung des Programms abgebrochen");
-                    alert.setContentText("""
-                            Sie haben die Einrichtung des Programms abgebrochen.
-                            MediathekView muss deswegen beendet werden.""");
-                    alert.initModality(Modality.APPLICATION_MODAL);
-                    alert.showAndWait();
-                });
+                JOptionPane.showMessageDialog(null,
+                        "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
+                                "MediathekView muss deshalb beendet werden.</html>", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
                 deleteSettingsDirectory();
 
