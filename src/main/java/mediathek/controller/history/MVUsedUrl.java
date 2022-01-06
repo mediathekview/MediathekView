@@ -103,7 +103,7 @@ public class MVUsedUrl {
      * @return one row with data.
      */
     public String getPreparedRowString() {
-        return String.format("%s%s%s%s%s%s%s\n",
+        return String.format("%s%s%s%s%s%s%s%n",
                 getDatum(), PAUSE,
                 putzen(thema), PAUSE,
                 putzen(titel), TRENNER,
