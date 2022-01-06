@@ -20,8 +20,7 @@ import javax.swing.ImageIcon
  */
 object MVSenderIconCache {
     private val useLocalIcons = AtomicBoolean(false)
-    private val smallSenderCache: LoadingCache<String, Optional<ImageIcon>>
-    private val largeSenderCache: LoadingCache<String, Optional<ImageIcon>>
+    private val senderCache: LoadingCache<String, Optional<ImageIcon>>
     private val logger = LogManager.getLogger()
     const val CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
 
@@ -31,15 +30,13 @@ object MVSenderIconCache {
     private fun handleSenderIconStyleChangedEvent(e: SenderIconStyleChangedEvent) {
         logger.trace("invalidating caches due to sender icon style change")
         useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false))
-        smallSenderCache.invalidateAll()
-        largeSenderCache.invalidateAll()
+        senderCache.invalidateAll()
     }
 
     private fun setupCleanupScheduler() {
         TimerPool.timerPool.scheduleAtFixedRate({
             logger.trace("Cleaning sender icon caches")
-            largeSenderCache.cleanUp()
-            smallSenderCache.cleanUp()
+            senderCache.cleanUp()
         }, 5, 5, TimeUnit.MINUTES)
     }
 
@@ -47,16 +44,12 @@ object MVSenderIconCache {
      * Get the icon for a specific sender.
      *
      * @param sender The name of the supported sender.
-     * @param small  large or small icon requested.
      * @return The [javax.swing.ImageIcon] for the sender or null.
      */
     @JvmStatic
-    operator fun get(sender: String, small: Boolean): Optional<ImageIcon> {
+    operator fun get(sender: String): Optional<ImageIcon> {
         return try {
-            if (small)
-                smallSenderCache[sender]
-            else
-                largeSenderCache[sender]
+                senderCache[sender]
         } catch (ex: InvalidCacheLoadException) {
             Optional.empty()
         } catch (ex: ExecutionException) {
@@ -68,12 +61,9 @@ object MVSenderIconCache {
         logger.trace("Initializing sender icon cache...")
         setupCleanupScheduler()
 
-        largeSenderCache = CacheBuilder.newBuilder()
+        senderCache = CacheBuilder.newBuilder()
             .expireAfterAccess(2, TimeUnit.HOURS)
-            .build(SenderIconCacheLoader(SenderIconSize.LARGE, useLocalIcons))
-        smallSenderCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(2, TimeUnit.HOURS)
-            .build(SenderIconCacheLoader(SenderIconSize.SMALL, useLocalIcons))
+            .build(SenderIconCacheLoader(useLocalIcons))
 
         MessageBus.messageBus.subscribe(this)
         useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false))

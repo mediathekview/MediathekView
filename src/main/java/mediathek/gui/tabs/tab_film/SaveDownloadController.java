@@ -57,7 +57,7 @@ public class SaveDownloadController implements Initializable {
     }
 
     private void setupSenderLogo() {
-        var icn = MVSenderIconCache.get(film.getSender(), false);
+        var icn = MVSenderIconCache.get(film.getSender());
         icn.ifPresentOrElse(icon -> {
             var image = SwingFXUtils.toFXImage(JavaFxUtils.toBufferedImage(icon),null);
             ivSender.setImage(image);

@@ -113,7 +113,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     
                 case DatenFilm.FILM_SENDER:
                     if (mvTable.showSenderIcons()) {
-                        setSenderIcon(value.toString(), mvTable.useSmallSenderIcons);
+                        Dimension targetDim = getSenderCellDimension(table, row,columnModelIndex);
+                        setSenderIcon(value.toString(), targetDim);
                     }
                     break;
 

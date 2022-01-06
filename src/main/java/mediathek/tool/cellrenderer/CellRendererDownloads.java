@@ -190,7 +190,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 case DatenDownload.DOWNLOAD_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
+                        Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
+                        setSenderIcon(value.toString(), targetDim);
                     }
                     break;
             }

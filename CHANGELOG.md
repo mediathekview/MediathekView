@@ -7,6 +7,8 @@
 - **BUGFIX:** Das mehrfach hintereinander durchgeführte Löschen von einzelnen Blacklist-Regeln löscht nun nicht mehr die falschen Regeln. Die Dateninkonsistenz wurde beseitigt.
 - **BUGFIX:** Aktualisierung von Bibliotheken die Abstürze vor allem in Verbindung mit Apple Silicon CPUs verursachen konnten.
 - **BUGFIX:** Diverse Fehler im Dialog für Abo-Historie wurden beseitigt.
+- **BUGFIX:** Algorithmus für Skalierung der Sendericons funktioniert nun richtig.
+- **BUGFIX(Windows):** Sendericons sehen nun nicht mehr so bescheiden unter Windows 10 aus.
 - **FEATURE:** Im Einstellungen-Dialog können in Blacklist-Dialog nun gleichzeitig mehrere Regeln gelöscht werden.
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
 - **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.
@@ -15,6 +17,7 @@
 - **FEATURE:** Das Anlegen von Blacklist-Regel-Duplikaten in den Einstellungen wird nun verhindert.
 - **FEATUER:** Im Download-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
 - **FEATURE:** Im Filme-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
+- **FEATURE(Windows/Linux/macOS Apple Silicon):** MediathekView nutzt nun das moderne FlatLaf Look&Feel zur Darstellung der Oberfläche. Dies verbessert die Darstellung des Programms unter Windows und Linux erheblich. *Es ist nun nicht mehr möglich, ein anderes L&F zu verwenden da diese veraltet und eine bescheidene Darstellung (v.a. unter Windows) verursachen.* **In diesem Zusammenhang ist auch die Einstellungsmöglichkeit einer globalen Skalierung entfallen. Der entsprechende Menüpunkt wurde wieder entfernt.**
 - Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
 - Geschwindigkeit der Blacklistfilterung wurde für *große* Blacklisten teils erheblich gesteigert (macOS 12.1 Intel i9 -16%, macOS 12.0.1 Apple M1 -27%, Windows 10 AMD Ryzen 4700U -36%, Ubuntu 21.04 AMD Ryzen 4700U -31%). Testfall war eine Filmliste mit 500k Filmen und reale Blacklisten mit ca. 2500 Einträgen. Alle Betriebssysteme waren 64bit.
 - Textlängenbegrenzung für Thema und Titel in Abo-Historie wurde entfernt.

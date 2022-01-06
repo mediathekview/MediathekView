@@ -9,42 +9,20 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
     private static final String WIKI_BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb";
-    private final SenderIconSize iconSize;
     private final AtomicBoolean useLocalIcons;
 
-    public SenderIconCacheLoader(@NotNull SenderIconSize senderIconSize, @NotNull AtomicBoolean useLocalIcons) {
-        this.iconSize = senderIconSize;
+    public SenderIconCacheLoader(@NotNull AtomicBoolean useLocalIcons) {
         this.useLocalIcons = useLocalIcons;
     }
 
-    private ImageIcon scaleImageFromResource(String source, SenderIconSize iconSize) {
-        final int maxHeight = iconSize.getHeight();
-
-        var image = new ImageIcon(MVSenderIconCache.class.getResource(source)).getImage();
-        var sizeImage = new ImageIcon(image);
-
-        final int priorHeight = sizeImage.getIconHeight();
-        final int priorWidth = sizeImage.getIconWidth();
-        final int newWidth = (int) (((float) priorWidth / (float) priorHeight) * (float) maxHeight);
-
-        return new ImageIcon(image.getScaledInstance(newWidth, maxHeight, Image.SCALE_SMOOTH));
-    }
-
-    private ImageIcon scaleImage(@NotNull BufferedImage b_img, SenderIconSize iconSize) {
-        final int maxHeight = iconSize.getHeight();
-        final float priorHeight = (float) b_img.getHeight();
-        final float priorWidth = (float) b_img.getWidth();
-        final int newWidth = Math.round(((priorWidth / priorHeight) * (float) maxHeight));
-        final Image scaledImage = b_img.getScaledInstance(newWidth, maxHeight, Image.SCALE_SMOOTH);
-
-        return new ImageIcon(scaledImage);
+    private ImageIcon scaleImageFromResource(String source) {
+        return new ImageIcon(MVSenderIconCache.class.getResource(source));
     }
 
     /**
@@ -67,9 +45,8 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
                     BufferedImage b_img = ImageIO.read(body.byteStream());
-                    icon = scaleImage(b_img, iconSize);
-                } else
-                    icon = null;
+                    icon = new ImageIcon(b_img);
+                }
             } catch (Exception ex) {
                 icon = null;
             }
@@ -77,7 +54,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
 
         //if network is unreachable we get an image with size -1...
         if (icon == null || icon.getIconWidth() < 0 || icon.getIconHeight() < 0)
-            icon = scaleImageFromResource(localResource, iconSize);
+            icon = scaleImageFromResource(localResource);
 
         return icon;
     }
@@ -103,11 +80,11 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
             case "RBB" -> getIcon(WIKI_BASE_URL + "/7/79/Rbb_Logo_2017.08.svg/320px-Rbb_Logo_2017.08.svg.png", "/mediathek/res/sender/rbb.png");
             case "SR" -> getIcon(WIKI_BASE_URL + "/8/83/SR_Dachmarke.svg/602px-SR_Dachmarke.svg.png", "/mediathek/res/sender/sr.png");
             case "SRF" -> getIcon(WIKI_BASE_URL + "/8/84/Schweizer_Radio_und_Fernsehen_Logo.svg/559px-Schweizer_Radio_und_Fernsehen_Logo.svg.png", "/mediathek/res/sender/srf.png");
-            case "SRF.Podcast" -> scaleImageFromResource("/mediathek/res/sender/srf-podcast.png", iconSize);
+            case "SRF.Podcast" -> scaleImageFromResource("/mediathek/res/sender/srf-podcast.png");
             case "SWR" -> getIcon(WIKI_BASE_URL + "/6/6f/SWR_Dachmarke.svg/320px-SWR_Dachmarke.svg.png", "/mediathek/res/sender/swr.png");
             case "WDR" -> getIcon(WIKI_BASE_URL + "/9/9b/WDR_Dachmarke.svg/320px-WDR_Dachmarke.svg.png", "/mediathek/res/sender/wdr.png");
             case "ZDF" -> getIcon(WIKI_BASE_URL + "/c/c1/ZDF_logo.svg/200px-ZDF_logo.svg.png", "/mediathek/res/sender/zdf.png");
-            case "ZDF-tivi" -> scaleImageFromResource("/mediathek/res/sender/zdf-tivi.png", iconSize);
+            case "ZDF-tivi" -> scaleImageFromResource("/mediathek/res/sender/zdf-tivi.png");
             case "PHOENIX" -> getIcon(WIKI_BASE_URL + "/d/de/Phoenix_Logo_2018_ohne_Claim.svg/640px-Phoenix_Logo_2018_ohne_Claim.svg.png", "/mediathek/res/sender/phoenix.png");
             case "Funk.net" -> getIcon(WIKI_BASE_URL + "/9/99/Funk_Logo.svg/454px-Funk_Logo.svg.png", "/mediathek/res/sender/funk_net.png");
             case "Radio Bremen TV" -> getIcon(WIKI_BASE_URL + "/7/73/Logo_Radio_Bremen_TV.svg/320px-Logo_Radio_Bremen_TV.svg.png", "/mediathek/res/sender/rbtv.jpg");

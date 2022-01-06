@@ -24,6 +24,7 @@ import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.awt.image.BufferedImage
 import java.net.URISyntaxException
 import javax.swing.ImageIcon
 import javax.swing.JDialog
@@ -113,6 +114,17 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         }
     }
 
+    /**
+     * A sender icon with a fixed height of 32 pixel while maintaining aspect ratio.
+     */
+    internal class SenderIcon(b_img: BufferedImage) : ImageView() {
+        init {
+            fitHeight = 32.0
+            isPreserveRatio = true
+            image = SwingFXUtils.toFXImage(b_img, null)
+        }
+    }
+
     private fun updateTextFields() {
         if (currentFilm == null) {
             clearControls()
@@ -122,10 +134,9 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 lblDescription.text = desc
                 lblDescription.scrollTop = 0.0
                 lblDescription.scrollLeft = 0.0
-                MVSenderIconCache[currentFilm!!.sender, true].ifPresent { icon: ImageIcon? ->
+                MVSenderIconCache[currentFilm!!.sender].ifPresent { icon: ImageIcon? ->
                     lblSender.text = ""
-                    lblSender.graphic = ImageView(
-                            SwingFXUtils.toFXImage(JavaFxUtils.toBufferedImage(icon), null))
+                    lblSender.graphic = SenderIcon(JavaFxUtils.toBufferedImage(icon))
                 }
                 lblGeo.text = currentFilm!!.geo.orElse("")
                 lblSize.text = currentFilm!!.size

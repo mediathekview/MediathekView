@@ -892,10 +892,10 @@ public class MediathekGui extends JFrame {
     }
 
     protected void installAdditionalHelpEntries() {
-        jMenuHilfe.addSeparator();
+        /*jMenuHilfe.addSeparator();
         var action = new ChangeGlobalFontSetting();
         var item = jMenuHilfe.add(action);
-        action.setMenuItem(item);
+        action.setMenuItem(item);*/
 
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ShowAboutAction());
