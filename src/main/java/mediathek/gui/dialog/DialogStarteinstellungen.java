@@ -110,9 +110,9 @@ public class DialogStarteinstellungen extends JDialog {
         // erst Programmpfad prüfen
         jButtonAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
-        boolean search_ffmpeg = !SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_WINDOWS;
+        boolean searchFfmpeg = !SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_WINDOWS;
 
-        var programPathsPanel = new PanelProgrammPfade(parentComponent, true, search_ffmpeg);
+        var programPathsPanel = new PanelProgrammPfade(parentComponent, true, searchFfmpeg);
         jScrollPane1.setViewportView(programPathsPanel);
 
         status = State.PSET;

@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListePsetVorlagen extends ArrayList<String[]> {
-    public static final String BS_WIN_32 = "Windows-32Bit";
-    public static final String BS_WIN_64 = "Windows-64Bit";
-    public static final String BS_LINUX = "Linux";
-    public static final String BS_MAC = "Mac";
+    private static final String BS_WIN_32 = "Windows-32Bit";
+    private static final String BS_WIN_64 = "Windows-64Bit";
+    private static final String BS_LINUX = "Linux";
+    private static final String BS_MAC = "Mac";
     public static final String[] BS = {"", BS_WIN_32, BS_WIN_64, BS_LINUX, BS_MAC};
     public static final String PGR = "Vorlage";
     public static final String PGR_NAME = "Name";
