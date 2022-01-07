@@ -1,13 +1,11 @@
 package mediathek.tool.table;
 
-import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmSize;
 import mediathek.tool.models.TModelFilm;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,14 +32,6 @@ public class MVFilmTable extends ASelectableMVTable {
             setRowSorter(sorter);
             sorter.setModel(getModel());
         });
-
-        // Windows 7 used to have grid lines therefore simulate behaviour
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (!VersionHelpers.IsWindows8OrGreater()) {
-                setShowHorizontalLines(true);
-                setShowVerticalLines(true);
-            }
-        }
     }
 
     @Override

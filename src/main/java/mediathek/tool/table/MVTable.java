@@ -1,6 +1,7 @@
 package mediathek.tool.table;
 
 import mediathek.config.MVConfig;
+import mediathek.tool.GuiFunktionen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,6 +64,8 @@ public abstract class MVTable extends JTable {
 
         loadDefaultFontSize();
         setHeight();
+
+        GuiFunktionen.applyTableGridLines(this);
     }
 
     /**
