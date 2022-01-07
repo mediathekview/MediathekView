@@ -1,7 +1,7 @@
 <u>**13.9.0**</u>
 
 - **Dies ist die letzte Version mit Unterstützung für 32-Bit Betriebssysteme. Ab Version 14 werden nur noch 64-Bit Betriebssysteme unterstützt. (Minimum: Windows 10, macOS 10.14 (Mojave), Ubuntu 18.04 LTS, Debian 8, centOS 7)**
-- **`ACHTUNG:` Auf den meisten Betriebssystemen wird ein neues "Look&Feel" für die Oberfläche verwendet, welches für eine deutlich bessere Lesbarkeit und Schärfe der Anwendung sorgt. Wer irgendwelche "Skalierungstricks" mittels `-Dsun.java2d.uiScale=`, etc. verwendet hat MUSS diese entfernen!** 
+- **`ACHTUNG:` Auf macOS und Windows (nicht Linux) wird ein neues "Look&Feel" für die Oberfläche verwendet, welches für eine deutlich bessere Lesbarkeit und Schärfe der Anwendung sorgt. Wer irgendwelche "Skalierungstricks" mittels `-Dsun.java2d.uiScale=`, etc. verwendet hat MUSS diese entfernen!** 
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
 - **BUGFIX:** Themen-ComboBox im Blacklist-Bearbeitungsdialog zeigt nun wieder alle Themen ungefiltert an.
 - **BUGFIX(Windows 32bit):** Möglicher Absturz mit Stack Overflow Error der JVM wurde behoben.
@@ -10,7 +10,7 @@
 - **BUGFIX:** Diverse Fehler im Dialog für Abo-Historie wurden beseitigt.
 - **BUGFIX:** Algorithmus für Skalierung der Sendericons funktioniert nun richtig.
 - **BUGFIX(Windows):** Sendericons sehen nun nicht mehr so bescheiden unter Windows 10 aus.
-- **FEATURE:** MediathekView nutzt nun das moderne FlatLaf Look&Feel zur Darstellung der Oberfläche. Dies verbessert die Darstellung des Programms unter Windows und Linux erheblich. *Es ist nun nicht mehr möglich, ein anderes L&F zu verwenden da diese veraltet sind und eine bescheidene Darstellung (v.a. unter Windows) verursachen.* **In diesem Zusammenhang ist auch die Einstellungsmöglichkeit einer globalen Skalierung entfallen. Der entsprechende Menüpunkt wurde wieder entfernt.**
+- **FEATURE(macOS, Windows):** MediathekView nutzt nun das moderne FlatLaf Look&Feel zur Darstellung der Oberfläche. Dies verbessert die Darstellung des Programms unter Windows und Linux erheblich. *Es ist nun nicht mehr möglich, ein anderes L&F zu verwenden da diese veraltet sind und eine bescheidene Darstellung (v.a. unter Windows) verursachen.* **In diesem Zusammenhang ist auch die Einstellungsmöglichkeit einer globalen Skalierung entfallen. Der entsprechende Menüpunkt wurde wieder entfernt.**
 - **FEATURE:** Im Einstellungen-Dialog können in Blacklist-Dialog nun gleichzeitig mehrere Regeln gelöscht werden.
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
 - **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.

@@ -21,6 +21,7 @@ import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
+import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -252,6 +253,41 @@ public class Main {
     }
 
     /**
+     * Query the class name for Nimbus L&F.
+     *
+     * @return the class name for Nimbus, otherwise return the system default l&f class name.
+     */
+    private static String queryNimbusLaFName() {
+        String systemLaF = UIManager.getSystemLookAndFeelClassName();
+
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    systemLaF = info.getClassName();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            systemLaF = UIManager.getSystemLookAndFeelClassName();
+        }
+
+        return systemLaF;
+    }
+
+    private static void setupLookAndFeel() {
+        //on linux, use Nimbus L&F as FlatLAF crashes...
+        if (SystemUtils.IS_OS_LINUX) {
+            try {
+                UIManager.setLookAndFeel(queryNimbusLaFName());
+            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+                logger.error("L&F error: ", e);
+            }
+        }
+        else
+            FlatLightLaf.setup();
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
@@ -312,7 +348,7 @@ public class Main {
 
         printDirectoryPaths();
 
-        FlatLightLaf.setup();
+        setupLookAndFeel();
 
         if (!isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
@@ -334,8 +370,8 @@ public class Main {
         
         Daten.getInstance().loadBookMarkData();
 
-        //if (!SystemUtils.IS_OS_MAC_OSX)
-        //    changeGlobalFontSize();
+        if (SystemUtils.IS_OS_LINUX)
+            changeGlobalFontSize();
 
         startGuiMode();
     }
@@ -348,7 +384,7 @@ public class Main {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
     }
 
-    /*private static void changeGlobalFontSize() {
+    private static void changeGlobalFontSize() {
         try {
             var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
             logger.info("Custom font size found, changing global UI settings");
@@ -358,7 +394,7 @@ public class Main {
         catch (Exception e) {
             logger.info("No custom font size found.");
         }
-    }*/
+    }
 
     /**
      * Migrate the old text file history to new database format
