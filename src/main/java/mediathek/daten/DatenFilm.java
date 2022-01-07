@@ -391,7 +391,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         long seconds = 0;
         final String[] split = StringUtils.split(dauer, ':');
         // if empty, don't try to split and return early...
-        if (split.length == 0) {
+        if (split == null || split.length == 0) {
             return 0;
         }
         else {
@@ -527,7 +527,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.dauer = dauer;
 
         //bail out early if there is nothing to split...
-        if (dauer.isEmpty()) {
+        if (dauer == null || dauer.isEmpty()) {
             duration = 0;
         }
         else {
