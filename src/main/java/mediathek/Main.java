@@ -401,8 +401,7 @@ public class Main {
             Main.splashScreen.ifPresent(SplashScreen::close);
 
             var dialog = new DialogStarteinstellungen(null);
-            dialog.setVisible(true);
-            if (dialog.getResultCode() == DialogStarteinstellungen.ResultCode.CANCELLED)
+            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED)
             {
                 //show termination dialog
                 JOptionPane.showMessageDialog(null,

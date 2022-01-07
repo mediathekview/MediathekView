@@ -60,6 +60,14 @@ public class DialogStarteinstellungen extends JDialog {
         });
     }
 
+    public ResultCode showDialog() {
+        setVisible(true);
+        if ( status != State.FERTIG)
+            return ResultCode.CANCELLED;
+        else
+            return ResultCode.SUCCESS;
+    }
+
     private void createLayout() {
         PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(parentComponent);
         jPanelExtra.setLayout(new BorderLayout());
@@ -97,13 +105,6 @@ public class DialogStarteinstellungen extends JDialog {
     public enum ResultCode {
         SUCCESS,
         CANCELLED
-    }
-
-    public ResultCode getResultCode() {
-        if ( status != State.FERTIG)
-            return ResultCode.CANCELLED;
-        else
-        return ResultCode.SUCCESS;
     }
 
     private void statusPfade() {
