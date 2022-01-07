@@ -389,17 +389,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
      */
     private long parseTimeToSeconds() {
         long seconds = 0;
-        final String[] split = StringUtils.split(getDauer(), ':');
-
-        try {
-            seconds += Long.parseLong(split[0]) * 3600; //hour
-            seconds += Long.parseLong(split[1]) * 60; //minute
-            seconds += Long.parseLong(split[2]); //second
-        } catch (Exception e) {
-            seconds = 0;
+        final String[] split = StringUtils.split(dauer, ':');
+        // if empty, don't try to split and return early...
+        if (split.length == 0) {
+            return 0;
         }
+        else {
+            try {
+                seconds += Long.parseLong(split[0]) * 3600; //hour
+                seconds += Long.parseLong(split[1]) * 60; //minute
+                seconds += Long.parseLong(split[2]); //second
+            } catch (Exception e) {
+                seconds = 0;
+            }
 
-        return seconds;
+            return seconds;
+        }
     }
 
     private void setDatum() {
@@ -521,15 +526,21 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public void setDauer(String dauer) {
         this.dauer = dauer;
 
-        //FIXME gefällt mir nicht
-        final String[] split = StringUtils.split(getDauer(), ':');
-
-        try {
-            duration += Integer.parseInt(split[0]) * 3600; //hour
-            duration += Integer.parseInt(split[1]) * 60; //minute
-            duration += Integer.parseInt(split[2]); //second
-        } catch (Exception e) {
+        //bail out early if there is nothing to split...
+        if (dauer.isEmpty()) {
             duration = 0;
+        }
+        else {
+            //FIXME gefällt mir nicht
+            final String[] split = StringUtils.split(this.dauer, ':');
+
+            try {
+                duration += Integer.parseInt(split[0]) * 3600; //hour
+                duration += Integer.parseInt(split[1]) * 60; //minute
+                duration += Integer.parseInt(split[2]); //second
+            } catch (Exception e) {
+                duration = 0;
+            }
         }
     }
 
