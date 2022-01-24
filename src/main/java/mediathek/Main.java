@@ -5,7 +5,6 @@ import com.google.common.base.Stopwatch;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.control.Alert;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
@@ -13,7 +12,6 @@ import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -336,6 +334,9 @@ public class Main {
             setupLogging();
             printPortableModeInfo();
 
+            setupDockIcon();
+            setupLookAndFeel();
+
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (!VersionHelpers.IsWindows10OrGreater())
                     logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
@@ -350,7 +351,6 @@ public class Main {
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
 
-            setupDockIcon();
             installSingleInstanceHandler();
 
             printVersionInformation();
@@ -371,8 +371,6 @@ public class Main {
         }
 
         printDirectoryPaths();
-
-        setupLookAndFeel();
 
         if (!isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
@@ -519,16 +517,10 @@ public class Main {
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
         if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("Nicht genügend Arbeitsspeicher");
-                alert.setContentText("""
-                        Es werden mindestens 768MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
-
-                        Das Programm wird nun beendet.""");
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(null,
+                    "Es werden mindestens 768MB RAM zum Betrieb benötigt.\n" +
+                            "Das Programm wird nun beendet.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
             System.exit(3);
         }
