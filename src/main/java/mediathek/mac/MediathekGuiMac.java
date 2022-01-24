@@ -13,21 +13,12 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 
 public class MediathekGuiMac extends MediathekGui {
     protected static final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     private final OsxPowerManager powerManager = new OsxPowerManager();
-
-    public MediathekGuiMac() {
-        super();
-
-        setupDockIcon();
-    }
 
     @Override
     protected boolean officialLauncherInUse() {
@@ -138,23 +129,5 @@ public class MediathekGuiMac extends MediathekGui {
         });
         desktop.setAboutHandler(e -> new ShowAboutAction().actionPerformed(null));
         desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
-    }
-
-    /**
-     * Install MediathekView app icon in dock
-     */
-    private void setupDockIcon() {
-        try {
-            if (Taskbar.isTaskbarSupported()) {
-                var taskbar = Taskbar.getTaskbar();
-                if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
-                    final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
-                    final BufferedImage appImage = ImageIO.read(url);
-                    Taskbar.getTaskbar().setIconImage(appImage);
-                }
-            }
-        } catch (IOException ex) {
-            logger.error("OS X Application image could not be loaded", ex);
-        }
     }
 }

@@ -458,13 +458,11 @@ public class GuiDownloads extends AGuiTabPanel {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
                 mediathekGui.beenden(true, false);
             } else {
-                Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Keine laufenden Downloads!");
-                    alert.setContentText("Die Downloads müssen zuerst gestartet werden.");
-                    alert.showAndWait();
-                });
+                JOptionPane.showMessageDialog(this,
+                        "Die Downloads müssen zuerst gestartet werden.",
+                        "Keine laufenden Downloads",
+                        JOptionPane.ERROR_MESSAGE);
+
             }
         });
 

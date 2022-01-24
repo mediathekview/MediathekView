@@ -6,7 +6,6 @@ import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
@@ -39,12 +38,15 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import picocli.CommandLine;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -288,6 +290,26 @@ public class Main {
     }
 
     /**
+     * Install dock icon when supported.
+     */
+    private static void setupDockIcon() {
+        try {
+            if (Taskbar.isTaskbarSupported()) {
+                var taskbar = Taskbar.getTaskbar();
+                if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                    final URL url = Main.class.getResource("/mediathek/res/MediathekView.png");
+                    if (url != null) {
+                        final BufferedImage appImage = ImageIO.read(url);
+                        Taskbar.getTaskbar().setIconImage(appImage);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            logger.error("OS X Application image could not be loaded", ex);
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
@@ -316,7 +338,7 @@ public class Main {
 
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (!VersionHelpers.IsWindows10OrGreater())
-                    logger.warn("This Operating System configuration is too old and will be unsupported in the next update.");
+                    logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
             }
 
             setupCpuAffinity();
@@ -327,6 +349,8 @@ public class Main {
 
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
+
+            setupDockIcon();
             installSingleInstanceHandler();
 
             printVersionInformation();
@@ -477,15 +501,10 @@ public class Main {
     private static void installSingleInstanceHandler() {
         SINGLE_INSTANCE_WATCHER = new SingleInstance();
         if (SINGLE_INSTANCE_WATCHER.isAppAlreadyActive()) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("MediathekView wird bereits ausgeführt");
-                alert.setContentText("Es dürfen nicht mehrere Programme gleichzeitig laufen.\n" +
-                        "Bitte beenden Sie die andere Instanz.");
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(null,
+                    "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" +
+                            "Bitte beenden Sie zuerst das andere Programm.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
     }

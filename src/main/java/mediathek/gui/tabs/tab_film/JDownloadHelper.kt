@@ -1,11 +1,11 @@
 package mediathek.gui.tabs.tab_film
 
 import javafx.application.Platform
-import javafx.scene.control.Alert
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.mainwindow.MediathekGui
 import mediathek.tool.http.MVHttpClient
 import mediathek.tool.javafx.FXErrorDialog
 import okhttp3.FormBody
@@ -19,6 +19,7 @@ import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 import javax.swing.JMenu
 import javax.swing.JMenuItem
+import javax.swing.JOptionPane
 import javax.swing.JPopupMenu
 
 class JDownloadHelper {
@@ -55,13 +56,12 @@ class JDownloadHelper {
     }
 
     private fun showErrorMessage() {
-        Platform.runLater {
-            val alert = Alert(Alert.AlertType.ERROR)
-            alert.headerText = "Verbindung mit JDownloader nicht möglich"
-            alert.contentText = "Bitte stellen Sie sicher dass JDownloader gestartet ist."
-            alert.title = Konstanten.PROGRAMMNAME
-            alert.show()
-        }
+        JOptionPane.showMessageDialog(
+            MediathekGui.ui(),
+            "Verbindung mit JDownloader nicht möglich.\n" +
+                    "Bitte stellen Sie sicher, dass JDownloader gestartet wurde.",
+            Konstanten.PROGRAMMNAME,
+            JOptionPane.ERROR_MESSAGE)
     }
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {

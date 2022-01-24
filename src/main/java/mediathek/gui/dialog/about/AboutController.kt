@@ -41,8 +41,7 @@ class AboutController : AnchorPane() {
     private fun homepageLinkClicked() {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI(Konstanten.ADRESSE_WEBSITE)
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_WEBSITE))
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -64,8 +63,7 @@ class AboutController : AnchorPane() {
     private fun serverDonationLinkClicked() {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI(Konstanten.ADRESSE_DONATION)
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_DONATION))
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -76,8 +74,7 @@ class AboutController : AnchorPane() {
     private fun forumLinkClicked() {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI(Konstanten.ADRESSE_FORUM)
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_FORUM))
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }
@@ -88,8 +85,7 @@ class AboutController : AnchorPane() {
     private fun anleitungLinkClicked() {
         SwingUtilities.invokeLater {
             try {
-                val uri = URI(Konstanten.ADRESSE_ANLEITUNG)
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_ANLEITUNG))
             } catch (uriSyntaxException: URISyntaxException) {
                 uriSyntaxException.printStackTrace()
             }

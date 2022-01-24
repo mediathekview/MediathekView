@@ -731,12 +731,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
@@ -851,13 +845,6 @@
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
                     <scope>provided</scope>
@@ -983,12 +970,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
@@ -1078,13 +1059,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
@@ -1166,12 +1140,6 @@
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
                 </dependency>
@@ -1305,13 +1273,6 @@
                     <version>${javafx.version}</version>
                     <scope>system</scope>
                     <systemPath>${javafx.sdk}/javafx.swing.jar</systemPath>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-web</artifactId>
-                    <version>${javafx.version}</version>
-                    <scope>system</scope>
-                    <systemPath>${javafx.sdk}/javafx.web.jar</systemPath>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
