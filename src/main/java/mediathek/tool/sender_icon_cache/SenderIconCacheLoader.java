@@ -5,7 +5,10 @@ import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,14 +18,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
     private static final String WIKI_BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb";
+    private static final Logger logger = LogManager.getLogger();
     private final AtomicBoolean useLocalIcons;
 
     public SenderIconCacheLoader(@NotNull AtomicBoolean useLocalIcons) {
         this.useLocalIcons = useLocalIcons;
     }
 
-    private ImageIcon scaleImageFromResource(String source) {
-        return new ImageIcon(MVSenderIconCache.class.getResource(source));
+    private @Nullable ImageIcon getLocalImageIcon(@NotNull String source) {
+        var url = SenderIconCacheLoader.class.getResource(source);
+        if (url != null) {
+            return new ImageIcon(url);
+        } else
+            return null;
     }
 
     /**
@@ -32,7 +40,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
      * @param localResource   resource address
      * @return the scaled image
      */
-    private ImageIcon getIcon(@NotNull String networkResource, @NotNull String localResource) {
+    private @Nullable ImageIcon getIcon(@NotNull String networkResource, @NotNull String localResource) {
         ImageIcon icon = null;
 
         if (!useLocalIcons.get()) {
@@ -53,8 +61,15 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
         }
 
         //if network is unreachable we get an image with size -1...
-        if (icon == null || icon.getIconWidth() < 0 || icon.getIconHeight() < 0)
-            icon = scaleImageFromResource(localResource);
+        if (icon == null || icon.getIconWidth() < 0 || icon.getIconHeight() < 0) {
+            var url = SenderIconCacheLoader.class.getResource(localResource);
+            if (url != null)
+                icon = new ImageIcon(url);
+            else {
+                logger.error("Could not load icon from local jar");
+                icon = null;
+            }
+        }
 
         return icon;
     }
@@ -80,11 +95,11 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
             case "RBB" -> getIcon(WIKI_BASE_URL + "/7/79/Rbb_Logo_2017.08.svg/320px-Rbb_Logo_2017.08.svg.png", "/mediathek/res/sender/rbb.png");
             case "SR" -> getIcon(WIKI_BASE_URL + "/8/83/SR_Dachmarke.svg/602px-SR_Dachmarke.svg.png", "/mediathek/res/sender/sr.png");
             case "SRF" -> getIcon(WIKI_BASE_URL + "/8/84/Schweizer_Radio_und_Fernsehen_Logo.svg/559px-Schweizer_Radio_und_Fernsehen_Logo.svg.png", "/mediathek/res/sender/srf.png");
-            case "SRF.Podcast" -> scaleImageFromResource("/mediathek/res/sender/srf-podcast.png");
+            case "SRF.Podcast" -> getLocalImageIcon("/mediathek/res/sender/srf-podcast.png");
             case "SWR" -> getIcon(WIKI_BASE_URL + "/6/6f/SWR_Dachmarke.svg/320px-SWR_Dachmarke.svg.png", "/mediathek/res/sender/swr.png");
             case "WDR" -> getIcon(WIKI_BASE_URL + "/9/9b/WDR_Dachmarke.svg/320px-WDR_Dachmarke.svg.png", "/mediathek/res/sender/wdr.png");
             case "ZDF" -> getIcon(WIKI_BASE_URL + "/c/c1/ZDF_logo.svg/200px-ZDF_logo.svg.png", "/mediathek/res/sender/zdf.png");
-            case "ZDF-tivi" -> scaleImageFromResource("/mediathek/res/sender/zdf-tivi.png");
+            case "ZDF-tivi" -> getLocalImageIcon("/mediathek/res/sender/zdf-tivi.png");
             case "PHOENIX" -> getIcon(WIKI_BASE_URL + "/d/de/Phoenix_Logo_2018_ohne_Claim.svg/640px-Phoenix_Logo_2018_ohne_Claim.svg.png", "/mediathek/res/sender/phoenix.png");
             case "Funk.net" -> getIcon(WIKI_BASE_URL + "/9/99/Funk_Logo.svg/454px-Funk_Logo.svg.png", "/mediathek/res/sender/funk_net.png");
             case "Radio Bremen TV" -> getIcon(WIKI_BASE_URL + "/7/73/Logo_Radio_Bremen_TV.svg/320px-Logo_Radio_Bremen_TV.svg.png", "/mediathek/res/sender/rbtv.jpg");
