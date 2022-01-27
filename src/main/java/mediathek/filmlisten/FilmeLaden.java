@@ -47,7 +47,7 @@ public class FilmeLaden {
     private static final Logger logger = LogManager.getLogger(FilmeLaden.class);
     private static final String NETWORK_NOT_AVAILABLE = "Netzwerk nicht verfügbar";
     private static final String DIALOG_TITLE = "Filmliste laden";
-    private static final String NO_UPDATE_AVAILABLE = "Keine aktuellere Liste verfügbar";
+    private static final String NO_UPDATE_AVAILABLE = "Es ist keine aktuellere Filmliste verfügbar.";
     /**
      * HTTP error code for not found.
      */
@@ -84,13 +84,9 @@ public class FilmeLaden {
     }
 
     private void showNoUpdateAvailableDialog() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText(DIALOG_TITLE);
-            alert.setContentText(NO_UPDATE_AVAILABLE);
-            alert.showAndWait();
-        });
+        JOptionPane.showMessageDialog(MediathekGui.ui(),
+                NO_UPDATE_AVAILABLE,
+                DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -103,11 +99,7 @@ public class FilmeLaden {
         logger.trace("hasNewRemoteFilmList()");
 
         final String id = Daten.getInstance().getListeFilme().metaData().getId();
-
-        boolean showDialogs = true;
-
-        if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC)
-            showDialogs = false;
+        boolean showDialogs = GuiFunktionen.getFilmListUpdateType() != FilmListUpdateType.AUTOMATIC;
 
         HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");
         final Request request = new Request.Builder().url(Objects.requireNonNull(filmListUrl)).build();
