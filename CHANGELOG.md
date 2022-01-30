@@ -19,6 +19,7 @@
 - **FEATURE:** Das Anlegen von Blacklist-Regel-Duplikaten in den Einstellungen wird nun verhindert.
 - **FEATUER:** Im Download-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
 - **FEATURE:** Im Filme-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
+- Im Beschreibungsfeld wird das Thema wieder mit angezeigt.
 - Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
 - Geschwindigkeit der Blacklistfilterung wurde für *große* Blacklisten teils erheblich gesteigert (macOS 12.1 Intel i9 -16%, macOS 12.0.1 Apple M1 -27%, Windows 10 AMD Ryzen 4700U -36%, Ubuntu 21.04 AMD Ryzen 4700U -31%). Testfall war eine Filmliste mit 500k Filmen und reale Blacklisten mit ca. 2500 Einträgen. Alle Betriebssysteme waren 64bit.
 - Textlängenbegrenzung für Thema und Titel in Abo-Historie wurde entfernt.
