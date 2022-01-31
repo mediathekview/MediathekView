@@ -5,6 +5,8 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.javafx.EventObservableList;
 import javafx.animation.PauseTransition;
 import javafx.collections.ListChangeListener;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.util.Duration;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import org.controlsfx.control.CheckListView;
@@ -22,5 +24,11 @@ public class SenderBoxNode extends CheckListView<String> {
 
         getCheckModel().getCheckedItems().
                 addListener((ListChangeListener<String>) c -> pauseTransition.playFromStart());
+
+        var contextMenu = new ContextMenu();
+        var miClearChecks = new MenuItem("Alle Senderfilter zurücksetzen");
+        miClearChecks.setOnAction(e -> getCheckModel().clearChecks());
+        contextMenu.getItems().add(miClearChecks);
+        setContextMenu(contextMenu);
     }
 }
