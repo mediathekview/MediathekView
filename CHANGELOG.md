@@ -27,6 +27,7 @@
 - Textlängenbegrenzung für Thema und Titel in Abo-Historie wurde entfernt.
 - generelle Optimierungen der Abo-Historie
 - Java Version wurde auf 17.0.2 erhöht um Fehler v.a. unter macOS zu beseitigen.
+- ffmpeg 5.0 wird für macOS mitgeliefert.
 
 <u>**13.8.1**</u>
 
