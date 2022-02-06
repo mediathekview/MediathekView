@@ -27,7 +27,6 @@ object SenderListBoxModel {
     init {
         providedSenderList.add("3Sat")
         providedSenderList.add("ARD")
-        providedSenderList.add("ARD.Podcast")
         providedSenderList.add("ARTE.DE")
         providedSenderList.add("ARTE.EN")
         providedSenderList.add("ARTE.ES")

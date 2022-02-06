@@ -78,7 +78,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
     public @NotNull Optional<ImageIcon> load(@NotNull String sender) {
         ImageIcon icon = switch (sender) {
             case "3Sat" -> getIcon(WIKI_BASE_URL + "/f/f2/3sat-Logo.svg/775px-3sat-Logo.svg.png", "/mediathek/res/sender/3sat.png");
-            case "ARD", "ARD.Podcast" -> getIcon(WIKI_BASE_URL + "/6/68/ARD_logo.svg/320px-ARD_logo.svg.png", "/mediathek/res/sender/ard.png");
+            case "ARD" -> getIcon(WIKI_BASE_URL + "/6/68/ARD_logo.svg/320px-ARD_logo.svg.png", "/mediathek/res/sender/ard.png");
             case "ARTE.DE" -> getIcon(WIKI_BASE_URL + "/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png", "/mediathek/res/sender/arte-de.png");
             case "ARTE.EN" -> getIcon(WIKI_BASE_URL + "/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png", "/mediathek/res/sender/arte-en.png");
             case "ARTE.ES" -> getIcon(WIKI_BASE_URL + "/0/0e/Arte_Logo_2011.svg/320px-Arte_Logo_2011.svg.png", "/mediathek/res/sender/arte-es.png");
