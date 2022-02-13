@@ -185,7 +185,9 @@ public class GuiFilmeModelHelper {
     }
 
     private Predicate<DatenFilm> createFinalStageFilter() {
-        boolean isPattern = Filter.isPattern(arrIrgendwo[0]);
+        //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
+        //otherwise use more optimized search
+        boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
         Predicate<DatenFilm> filter;
         if (searchThroughDescriptions) {
             if (isPattern)
