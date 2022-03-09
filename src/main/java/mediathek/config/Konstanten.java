@@ -32,7 +32,7 @@ public class Konstanten {
     /**
      * Is this a nightly or a production build?
      */
-    public static final boolean APP_IS_NIGHTLY = true;
+    public static final boolean APP_IS_NIGHTLY = false;
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
