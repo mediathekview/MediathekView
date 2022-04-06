@@ -1,7 +1,8 @@
 package mediathek.tool.table;
 
+import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
-import mediathek.tool.GuiFunktionen;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("serial")
 public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
@@ -65,7 +65,33 @@ public abstract class MVTable extends JTable {
         loadDefaultFontSize();
         setHeight();
 
-        GuiFunktionen.applyTableGridLines(this);
+        applyTableEffects();
+    }
+
+    /**
+     * Show JTable grid lines on Windows 7 only.
+     * Otherwise set alternating row colors.
+     */
+    private void applyTableEffects() {
+        // Windows 7 used to have grid lines therefore simulate behaviour
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (!VersionHelpers.IsWindows8OrGreater()) {
+                setShowHorizontalLines(true);
+                setShowVerticalLines(true);
+            }
+            else
+                applyTableAlternatingRowColor();
+        }
+        else {
+            // set alternating row color for all other OS
+            applyTableAlternatingRowColor();
+        }
+    }
+
+    private void applyTableAlternatingRowColor() {
+        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        if (defaults.get("Table.alternateRowColor") == null)
+            defaults.put("Table.alternateRowColor", new Color(247, 247, 247));
     }
 
     /**

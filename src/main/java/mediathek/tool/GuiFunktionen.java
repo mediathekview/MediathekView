@@ -1,13 +1,11 @@
 package mediathek.tool;
 
-import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,20 +28,6 @@ public class GuiFunktionen {
 
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
-    }
-
-    /**
-     * Show JTable grid lines on Windows 7 only.
-     * @param table JTable which shall be modified.
-     */
-    public static void applyTableGridLines(@NotNull JTable table) {
-        // Windows 7 used to have grid lines therefore simulate behaviour
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (!VersionHelpers.IsWindows8OrGreater()) {
-                table.setShowHorizontalLines(true);
-                table.setShowVerticalLines(true);
-            }
-        }
     }
 
     /**
