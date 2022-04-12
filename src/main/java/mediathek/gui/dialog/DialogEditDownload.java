@@ -396,7 +396,8 @@ public class DialogEditDownload extends JDialog {
                             }
                             break;
                         case DatenDownload.DOWNLOAD_URL:
-                            if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                            if (datenDownload.art == DatenDownload.ART_DOWNLOAD ||
+                                    datenDownload.art == DatenDownload.ART_PROGRAMM) {
                                 // nur bei direkten Downloads
                                 labelListe[i].setForeground(Color.BLUE);
                                 textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
