@@ -178,7 +178,7 @@ public class BookmarkDataList
     }
     catch (Exception e)
     {
-      LogManager.getLogger(Daten.class).warn("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.getMessage());
+      logger.warn("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.getMessage());
     }
 
     //sanity check if someone added way too many bookmarks
@@ -206,7 +206,7 @@ public class BookmarkDataList
     }
     catch (IOException e)
     {
-      LogManager.getLogger(Daten.class).warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
+      logger.warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
     }
   }
   
