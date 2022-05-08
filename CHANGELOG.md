@@ -28,6 +28,7 @@
 - generelle Optimierungen der Abo-Historie
 - Java Version wurde auf 17.0.2 erhöht um Fehler v.a. unter macOS zu beseitigen.
 - ffmpeg 5.0 wird für macOS mitgeliefert.
+- Livestreams können nicht mehr der Merkliste hinzugefügt werden.
 
 <u>**13.8.1**</u>
 
