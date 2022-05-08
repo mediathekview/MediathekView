@@ -108,7 +108,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
                     
                 case DatenFilm.FILM_MERKEN:
-                    handleButtonBookmarkColumn(isBookMarked, isSelected);
+                    handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
                     break;
                     
                 case DatenFilm.FILM_SENDER:
@@ -210,9 +210,15 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
     
-    private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected) {
-        // Button Merken
-        setToolTipText(isBookMarked ? "Film aus Merkliste entfernen": "Film merken");
-        setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
+    private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected, boolean isLivestream) {
+        if (isLivestream) {
+            setIcon(null);
+            setToolTipText("");
+        }
+        else {
+            // Button Merken
+            setToolTipText(isBookMarked ? "Film aus Merkliste entfernen" : "Film merken");
+            setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
+        }
     }
 }

@@ -983,7 +983,12 @@ public class GuiFilme extends AGuiTabPanel {
                         });
                     }
                     case DatenFilm.FILM_AUFZEICHNEN -> saveFilm(null);
-                    case DatenFilm.FILM_MERKEN -> bookmarkFilm();
+                    case DatenFilm.FILM_MERKEN -> {
+                        getCurrentlySelectedFilm().ifPresent(film -> {
+                            if (!film.isLivestream())
+                                bookmarkFilm();
+                        });
+                    }
                 }
             }
         }
