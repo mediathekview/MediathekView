@@ -7,6 +7,7 @@
 ########################################################################
 
 export ARCH=$(arch)
+export APPIMAGE_EXTRACT_AND_RUN=1
 
 APP=MediathekView
 LOWERAPP=${APP,,}
