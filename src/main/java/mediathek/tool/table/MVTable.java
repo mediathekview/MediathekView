@@ -300,8 +300,12 @@ public abstract class MVTable extends JTable {
                 i = rowCount - 1;
             }
 
-            scrollRectToVisible(getCellRect(i, 0, true));
+            scrollToIndexDelegate(i);
         }
+    }
+
+    protected void scrollToIndexDelegate(int index) {
+        scrollRectToVisible(getCellRect(index, 0, true));
     }
 
     public void getSelected() {

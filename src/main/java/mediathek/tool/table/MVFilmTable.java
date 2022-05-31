@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -219,6 +220,32 @@ public class MVFilmTable extends MVTable {
         }
     }
 
+    /**
+     * Scroll to a selected row, but center it in the middle of the visible rectangle.
+     * @param rowIndex The row to be displayed centered.
+     */
+    private void scrollToSelectionCentered(int rowIndex) {
+        Rectangle rect = getCellRect(rowIndex, 0, true);
+        Rectangle viewRect = getVisibleRect();
+        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
+
+        int centerX = (viewRect.width - rect.width) / 2;
+        int centerY = (viewRect.height - rect.height) / 2;
+        if (rect.x < centerX) {
+            centerX = -centerX;
+        }
+        if (rect.y < centerY) {
+            centerY = -centerY;
+        }
+        rect.translate(centerX, centerY);
+        scrollRectToVisible(rect);
+    }
+
+    @Override
+    protected void scrollToIndexDelegate(int index) {
+        // film list moves selected entried into center of JTable view
+        scrollToSelectionCentered(index);
+    }
     @Override
     protected void setSelected() {
         if (!selectedFilmNumbers.isEmpty()) {
