@@ -16,7 +16,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 
-public class MVDownloadsTable extends ASelectableMVTable {
+public class MVDownloadsTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenDownload.MAX_ELEM;

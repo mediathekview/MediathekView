@@ -15,7 +15,7 @@ import javax.swing.table.TableRowSorter;
 import java.util.Comparator;
 import java.util.List;
 
-public class MVFilmTable extends ASelectableMVTable {
+public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
 
@@ -32,34 +32,6 @@ public class MVFilmTable extends ASelectableMVTable {
             setRowSorter(sorter);
             sorter.setModel(getModel());
         });
-    }
-
-    @Override
-    protected void setSelected() {
-        boolean found = false;
-
-        if (selIndexes != null) {
-            int r;
-            selectionModel.setValueIsAdjusting(true);
-            final var tModel = (TModelFilm) getModel();
-            for (int i : selIndexes) {
-                r = tModel.getModelRowForFilmNumber(i);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = convertRowIndexToView(r);
-                    addRowSelectionInterval(r, r);
-                    found = true;
-                }
-            }
-            if (!found && selRow >= 0 && this.getRowCount() > selRow) {
-                setRowSelectionInterval(selRow,selRow);
-            } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
-                final var rowCount = tModel.getRowCount() - 1;
-                setRowSelectionInterval(rowCount, rowCount);
-            }
-            selectionModel.setValueIsAdjusting(false);
-        }
-        selIndexes = null;
     }
 
     @Override
@@ -242,6 +214,53 @@ public class MVFilmTable extends ASelectableMVTable {
                 }
             }
 */
+        }
+    }
+
+    @Override
+    protected void setSelected() {
+        boolean found = false;
+
+        if (selIndexes != null) {
+            selectionModel.setValueIsAdjusting(true);
+            final var tModel = (TModelFilm) getModel();
+            for (int i : selIndexes) {
+                int r = tModel.getModelRowForFilmNumber(i);
+                if (r >= 0) {
+                    // ansonsten gibts die Zeile nicht mehr
+                    r = convertRowIndexToView(r);
+                    addRowSelectionInterval(r, r);
+                    found = true;
+                }
+            }
+            if (!found && selRow >= 0 && getRowCount() > selRow) {
+                setRowSelectionInterval(selRow,selRow);
+            } else if (!found && selRow >= 0 && getRowCount() > 0) {
+                final var rowCount = tModel.getRowCount() - 1;
+                setRowSelectionInterval(rowCount, rowCount);
+            }
+            selectionModel.setValueIsAdjusting(false);
+        }
+        selIndexes = null;
+    }
+
+    @Override
+    public void getSelected() {
+        super.getSelected();
+
+        int selIndex = -1;
+        if (selRow >= 0) {
+            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), indexSpalte);
+        }
+
+        if (selIndex >= 0) {
+            selIndexes = new int[selRows.length];
+            int k = 0;
+            for (int i : selRows) {
+                selIndexes[k++] = (int) getModel().getValueAt(convertRowIndexToModel(i), indexSpalte);
+            }
+        } else {
+            selIndexes = null;
         }
     }
 }
