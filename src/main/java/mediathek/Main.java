@@ -253,41 +253,6 @@ public class Main {
     }
 
     /**
-     * Query the class name for Nimbus L&F.
-     *
-     * @return the class name for Nimbus, otherwise return the system default l&f class name.
-     */
-    private static String queryNimbusLaFName() {
-        String systemLaF = UIManager.getSystemLookAndFeelClassName();
-
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    systemLaF = info.getClassName();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            systemLaF = UIManager.getSystemLookAndFeelClassName();
-        }
-
-        return systemLaF;
-    }
-
-    private static void setupLookAndFeel() {
-        //on linux, use Nimbus L&F as FlatLAF crashes...
-        if (SystemUtils.IS_OS_LINUX) {
-            try {
-                UIManager.setLookAndFeel(queryNimbusLaFName());
-            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
-                logger.error("L&F error: ", e);
-            }
-        }
-        else
-            FlatLightLaf.setup();
-    }
-
-    /**
      * Install dock icon when supported.
      */
     private static void setupDockIcon() {
@@ -335,7 +300,7 @@ public class Main {
             printPortableModeInfo();
 
             setupDockIcon();
-            setupLookAndFeel();
+            FlatLightLaf.setup();
 
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (!VersionHelpers.IsWindows10OrGreater())

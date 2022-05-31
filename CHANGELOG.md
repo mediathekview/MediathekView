@@ -1,7 +1,7 @@
 <u>**13.9.0**</u>
 
 - **Dies ist die letzte Version mit Unterstützung für 32-Bit Betriebssysteme. Ab Version 14 werden nur noch 64-Bit Betriebssysteme unterstützt. (Minimum: Windows 10, macOS 10.14 (Mojave), Ubuntu 18.04 LTS, Debian 8, centOS 7)**
-- **`ACHTUNG:` Auf macOS und Windows (nicht Linux) wird ein neues "Look&Feel" für die Oberfläche verwendet, welches für eine deutlich bessere Lesbarkeit und Schärfe der Anwendung sorgt. Wer irgendwelche "Skalierungstricks" mittels `-Dsun.java2d.uiScale=`, etc. verwendet hat MUSS diese entfernen!** 
+- **`ACHTUNG:` Es wird ein neues "Look&Feel" für die Oberfläche verwendet, welches für eine deutlich bessere Lesbarkeit und Schärfe der Anwendung sorgt. Wer irgendwelche "Skalierungstricks" mittels `-Dsun.java2d.uiScale=`, etc. verwendet hat MUSS diese entfernen!** 
 - **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
 - **BUGFIX:** Themen-ComboBox im Blacklist-Bearbeitungsdialog zeigt nun wieder alle Themen ungefiltert an.
 - **BUGFIX(Windows 32bit):** Möglicher Absturz mit Stack Overflow Error der JVM wurde behoben.
