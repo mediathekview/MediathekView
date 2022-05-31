@@ -184,6 +184,11 @@ public class Main {
 
         //enable full strength crypto if not already done
         Security.setProperty("crypto.policy", "unlimited");
+
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            System.setProperty("apple.awt.application.name", Konstanten.PROGRAMMNAME);
+            System.setProperty("apple.awt.application.appearance", "system");
+        }
     }
 
     private static void printVersionInformation() {
