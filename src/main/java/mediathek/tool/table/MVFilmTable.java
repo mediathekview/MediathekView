@@ -243,7 +243,7 @@ public class MVFilmTable extends MVTable {
 
     @Override
     protected void scrollToIndexDelegate(int index) {
-        // film list moves selected entried into center of JTable view
+        // film list moves selected entries into center of JTable view
         scrollToSelectionCentered(index);
     }
     @Override
