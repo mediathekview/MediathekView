@@ -26,7 +26,7 @@ public abstract class MVTable extends JTable {
     protected int maxSpalten;
     protected int indexSpalte;
     protected int[] selRows;
-    protected int[] selIndexes;
+    protected int[] selectedTableIndices;
     protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
     protected MVConfig.Configs nrDatenSystem;
@@ -294,35 +294,16 @@ public abstract class MVTable extends JTable {
 
         if (rowCount > 0) {
             int i = getSelectedRow();
-            if (i < 0) {
+            if (i == -1) {
                 i = 0;
-                setRowSelectionInterval(i, i);
+                getSelectionModel().setSelectionInterval(0, 0);
             }
             if (i >= rowCount) {
                 i = rowCount - 1;
             }
-            scrollToSelection(i);
-        }
-    }
 
-    private void scrollToSelection(int rowIndex) {
-        if (!(getParent() instanceof JViewport viewport)) {
-            return;
+            scrollRectToVisible(getCellRect(i, 0, true));
         }
-        Rectangle rect = getCellRect(rowIndex, 0, true);
-        Rectangle viewRect = viewport.getViewRect();
-        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
-
-        int centerX = (viewRect.width - rect.width) / 2;
-        int centerY = (viewRect.height - rect.height) / 2;
-        if (rect.x < centerX) {
-            centerX = -centerX;
-        }
-        if (rect.y < centerY) {
-            centerY = -centerY;
-        }
-        rect.translate(centerX, centerY);
-        viewport.scrollRectToVisible(rect);
     }
 
     public void getSelected() {

@@ -221,10 +221,10 @@ public class MVFilmTable extends MVTable {
     protected void setSelected() {
         boolean found = false;
 
-        if (selIndexes != null) {
+        if (selectedTableIndices != null) {
             selectionModel.setValueIsAdjusting(true);
             final var tModel = (TModelFilm) getModel();
-            for (int i : selIndexes) {
+            for (int i : selectedTableIndices) {
                 int r = tModel.getModelRowForFilmNumber(i);
                 if (r >= 0) {
                     // ansonsten gibts die Zeile nicht mehr
@@ -241,7 +241,7 @@ public class MVFilmTable extends MVTable {
             }
             selectionModel.setValueIsAdjusting(false);
         }
-        selIndexes = null;
+        selectedTableIndices = null;
     }
 
     @Override
@@ -254,13 +254,13 @@ public class MVFilmTable extends MVTable {
         }
 
         if (selIndex >= 0) {
-            selIndexes = new int[selRows.length];
+            selectedTableIndices = new int[selRows.length];
             int k = 0;
             for (int i : selRows) {
-                selIndexes[k++] = (int) getModel().getValueAt(convertRowIndexToModel(i), indexSpalte);
+                selectedTableIndices[k++] = (int) getModel().getValueAt(convertRowIndexToModel(i), indexSpalte);
             }
         } else {
-            selIndexes = null;
+            selectedTableIndices = null;
         }
     }
 }
