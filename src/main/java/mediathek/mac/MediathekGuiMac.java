@@ -120,14 +120,20 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupUserInterfaceForOsx() {
         Desktop desktop = Desktop.getDesktop();
         desktop.disableSuddenTermination();
-        desktop.setQuitHandler((e, response) -> {
-            if (!beenden(false, false)) {
-                response.cancelQuit();
-            } else {
-                response.performQuit();
-            }
-        });
-        desktop.setAboutHandler(e -> new ShowAboutAction().actionPerformed(null));
-        desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
+
+        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER))
+            desktop.setQuitHandler((e, response) -> {
+                if (!beenden(false, false)) {
+                    response.cancelQuit();
+                } else {
+                    response.performQuit();
+                }
+            });
+
+        if (desktop.isSupported(Desktop.Action.APP_ABOUT))
+            desktop.setAboutHandler(e -> new ShowAboutAction().actionPerformed(null));
+
+        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES))
+            desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
     }
 }
