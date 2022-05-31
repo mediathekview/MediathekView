@@ -272,6 +272,12 @@ public class Main {
         }
     }
 
+    private static void setupFlatLaf() {
+        FlatLightLaf.setup();
+
+        UIManager.put( "TabbedPane.showTabSeparators", true );
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -300,7 +306,7 @@ public class Main {
             printPortableModeInfo();
 
             setupDockIcon();
-            FlatLightLaf.setup();
+            setupFlatLaf();
 
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (!VersionHelpers.IsWindows10OrGreater())
