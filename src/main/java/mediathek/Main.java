@@ -272,10 +272,20 @@ public class Main {
         }
     }
 
+    private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
     private static void setupFlatLaf() {
         FlatLightLaf.setup();
 
-        UIManager.put( "TabbedPane.showTabSeparators", true );
+        UIManager.put("TabbedPane.showTabSeparators", true );
+        // install alternate row color only for windows >8 and macOS, Linux
+        boolean installAlternateRowColor;
+        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
+            installAlternateRowColor = true;
+        }
+        else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+
+        if (installAlternateRowColor)
+            UIManager.put("Table.alternateRowColor", JTABLE_ALTERNATE_ROW_COLOR);
     }
 
     /**

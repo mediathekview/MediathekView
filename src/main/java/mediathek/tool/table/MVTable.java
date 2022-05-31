@@ -63,33 +63,18 @@ public abstract class MVTable extends JTable {
         loadDefaultFontSize();
         setHeight();
 
-        applyTableEffects();
+        applyWindowsSevenTableEffects();
     }
 
     /**
      * Show JTable grid lines on Windows 7 only.
-     * Otherwise set alternating row colors.
      */
-    private void applyTableEffects() {
+    private void applyWindowsSevenTableEffects() {
         // Windows 7 used to have grid lines therefore simulate behaviour
-        if (SystemUtils.IS_OS_WINDOWS) {
-            if (!VersionHelpers.IsWindows8OrGreater()) {
-                setShowHorizontalLines(true);
-                setShowVerticalLines(true);
-            }
-            else
-                applyTableAlternatingRowColor();
+        if (SystemUtils.IS_OS_WINDOWS && !VersionHelpers.IsWindows8OrGreater()) {
+            setShowHorizontalLines(true);
+            setShowVerticalLines(true);
         }
-        else {
-            // set alternating row color for all other OS
-            applyTableAlternatingRowColor();
-        }
-    }
-
-    private void applyTableAlternatingRowColor() {
-        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        if (defaults.get("Table.alternateRowColor") == null)
-            defaults.put("Table.alternateRowColor", new Color(247, 247, 247));
     }
 
     /**
