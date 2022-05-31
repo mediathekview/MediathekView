@@ -12,12 +12,17 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
+    /**
+     * Stores the selected FILM NUMBERS that need to be restored after updates.
+     */
+    private final List<Integer> selectedFilmNumbers = new ArrayList<>();
 
     public MVFilmTable() {
         super();
@@ -58,12 +63,9 @@ public class MVFilmTable extends MVTable {
 
         maxSpalten = DatenFilm.MAX_ELEM;
         spaltenAnzeigen = getSpaltenEinAus(GuiFilme.VISIBLE_COLUMNS, DatenFilm.MAX_ELEM);
-        indexSpalte = DatenFilm.FILM_NR;
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
-
-        //setModel(new TModelFilm());
     }
 
     private void resetFilmeTab(int i) {
@@ -219,12 +221,12 @@ public class MVFilmTable extends MVTable {
 
     @Override
     protected void setSelected() {
-        boolean found = false;
+        if (!selectedFilmNumbers.isEmpty()) {
+            boolean found = false;
 
-        if (selectedTableIndices != null) {
             selectionModel.setValueIsAdjusting(true);
             final var tModel = (TModelFilm) getModel();
-            for (int i : selectedTableIndices) {
+            for (var i : selectedFilmNumbers) {
                 int r = tModel.getModelRowForFilmNumber(i);
                 if (r >= 0) {
                     // ansonsten gibts die Zeile nicht mehr
@@ -241,7 +243,8 @@ public class MVFilmTable extends MVTable {
             }
             selectionModel.setValueIsAdjusting(false);
         }
-        selectedTableIndices = null;
+
+        selectedFilmNumbers.clear();
     }
 
     @Override
@@ -250,17 +253,14 @@ public class MVFilmTable extends MVTable {
 
         int selIndex = -1;
         if (selRow >= 0) {
-            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), indexSpalte);
+            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), DatenFilm.FILM_NR);
         }
 
+        selectedFilmNumbers.clear();
         if (selIndex >= 0) {
-            selectedTableIndices = new int[selRows.length];
-            int k = 0;
             for (int i : selRows) {
-                selectedTableIndices[k++] = (int) getModel().getValueAt(convertRowIndexToModel(i), indexSpalte);
+                selectedFilmNumbers.add((int) getModel().getValueAt(convertRowIndexToModel(i), DatenFilm.FILM_NR));
             }
-        } else {
-            selectedTableIndices = null;
         }
     }
 }

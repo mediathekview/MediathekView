@@ -24,9 +24,7 @@ public abstract class MVTable extends JTable {
     protected final int[] reihe;
     public boolean useSmallSenderIcons;
     protected int maxSpalten;
-    protected int indexSpalte;
     protected int[] selRows;
-    protected int[] selectedTableIndices;
     protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
     protected MVConfig.Configs nrDatenSystem;
