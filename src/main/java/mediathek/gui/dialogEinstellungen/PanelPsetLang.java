@@ -351,7 +351,6 @@ public class PanelPsetLang extends PanelVorlage {
         var handler2 = new TextCopyPasteHandler<>(jTextAreaSetBeschreibung);
         jTextAreaSetBeschreibung.setComponentPopupMenu(handler2.getPopupMenu());
 
-        jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
         tfGruppeDirektSuffix.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT, false));
         tfGruppeDirektPraefix.getDocument().addDocumentListener(
@@ -363,6 +362,7 @@ public class PanelPsetLang extends PanelVorlage {
         tfGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
+        jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
         handler = new TextCopyPasteHandler<>(jTextFieldSetName);
         jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
 
@@ -697,24 +697,6 @@ public class PanelPsetLang extends PanelVorlage {
         return ret;
     }
 
-    private void setNamePruefen() {
-        //doppelte Gruppennamen suchen
-        int row = tabellePset.getSelectedRow();
-        if (row != -1) {
-            int foundgruppe = 0;
-            for (DatenPset gruppe : listePset) {
-                if (jTextFieldSetName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME])) {
-                    ++foundgruppe;
-                }
-            }
-            if (foundgruppe > 1) {
-                jTextFieldSetName.setBackground(Color.ORANGE);
-            } else {
-                jTextFieldSetName.setBackground(Color.WHITE);
-            }
-        }
-    }
-
     private void setAufAb(boolean auf) {
         int row = tabellePset.getSelectedRow();
         if (row != -1) {
@@ -888,6 +870,24 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void changedUpdate(DocumentEvent arg0) {
             //unused in plaintext components
+        }
+
+        private void setNamePruefen() {
+            //doppelte Gruppennamen suchen
+            int row = tabellePset.getSelectedRow();
+            if (row != -1) {
+                int foundgruppe = 0;
+                for (DatenPset gruppe : listePset) {
+                    if (jTextFieldSetName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME])) {
+                        ++foundgruppe;
+                    }
+                }
+                if (foundgruppe > 1) {
+                    jTextFieldSetName.setBackground(Color.ORANGE);
+                } else {
+                    jTextFieldSetName.setBackground(Color.WHITE);
+                }
+            }
         }
 
         private void eingabe() {
