@@ -6,12 +6,11 @@ import mediathek.tool.models.TModelAbo;
 
 public class MVAbosTable extends MVTable {
     public MVAbosTable() {
-        super(DatenAbo.MAX_ELEM);
+        super(DatenAbo.MAX_ELEM, DatenAbo.spaltenAnzeigen);
     }
 
     @Override
     protected void setupTableType() {
-        spaltenAnzeigen = activateAllColumns(DatenAbo.spaltenAnzeigen);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN;

@@ -7,13 +7,11 @@ public class MVPsetTable extends MVTable {
     private static final long serialVersionUID = 7582553351667887172L;
 
     public MVPsetTable() {
-        super(DatenPset.MAX_ELEM);
+        super(DatenPset.MAX_ELEM, DatenPset.spaltenAnzeigen);
     }
 
     @Override
     protected void setupTableType() {
-        spaltenAnzeigen = activateAllColumns(DatenPset.spaltenAnzeigen);
-
         setModel(new TModel(new Object[][]{}, DatenPset.COLUMN_NAMES));
         setRowSorter(null);
         setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!

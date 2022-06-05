@@ -26,7 +26,7 @@ public class MVFilmTable extends MVTable {
     private final List<Integer> selectedFilmNumbers = new ArrayList<>();
 
     public MVFilmTable() {
-        super(DatenFilm.MAX_ELEM);
+        super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS);
 
         setAutoCreateRowSorter(false);
 
@@ -61,9 +61,6 @@ public class MVFilmTable extends MVTable {
 
     @Override
     protected void setupTableType() {
-        //logger.debug("setupTableType()");
-
-        spaltenAnzeigen = activateAllColumns(GuiFilme.VISIBLE_COLUMNS);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
@@ -95,7 +92,7 @@ public class MVFilmTable extends MVTable {
 
         getRowSorter().setSortKeys(null); // empty sort keys
         spaltenAusschalten();
-        setSpaltenEinAus(breite, spaltenAnzeigen);
+        setSpaltenEinAus(breite);
         setSpalten();
         setHeight();
     }

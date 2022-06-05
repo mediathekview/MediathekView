@@ -5,6 +5,7 @@ import mediathek.config.MVConfig;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -26,7 +27,7 @@ public abstract class MVTable extends JTable {
     protected final int maxSpalten;
     protected int[] selRows;
     protected int selRow = -1;
-    protected boolean[] spaltenAnzeigen;
+    protected final boolean[] spaltenAnzeigen;
     protected MVConfig.Configs nrDatenSystem;
     protected MVConfig.Configs iconAnzeigenStr;
     protected MVConfig.Configs iconKleinStr;
@@ -38,8 +39,10 @@ public abstract class MVTable extends JTable {
     private boolean showSenderIcon;
     private boolean lineBreak = true;
 
-    public MVTable(int maxColumns) {
+    public MVTable(int maxColumns, boolean @NotNull [] visibleColumStore) {
         maxSpalten = maxColumns;
+        spaltenAnzeigen = visibleColumStore;
+        activateAllColumns();
 
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -236,7 +239,7 @@ public abstract class MVTable extends JTable {
                 }
             }
             if (ok) {
-                setSpaltenEinAus(breite, spaltenAnzeigen);
+                setSpaltenEinAus(breite);
                 setSpalten();
                 setHeight();
             } else {
@@ -246,25 +249,21 @@ public abstract class MVTable extends JTable {
         }
     }
 
-    private boolean anzeigen(int i, boolean[] spaltenAnzeigen) {
-        return spaltenAnzeigen[i];
+    private boolean isColumnVisible(int index) {
+        return spaltenAnzeigen[index];
     }
 
-    protected void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
+    protected void setSpaltenEinAus(int[] nr) {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
     }
 
     /**
-     * Set all columns to visible.
-     * @param spaltenAnzeigen The storage variable for all columns.
-     * @return the modified column storage variable.
+     * Set column store to all columns visible.
      */
-    boolean[] activateAllColumns(boolean[] spaltenAnzeigen) {
+    private void activateAllColumns() {
         Arrays.fill(spaltenAnzeigen, true);
-
-        return spaltenAnzeigen;
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
@@ -337,7 +336,7 @@ public abstract class MVTable extends JTable {
 
     protected void changeColumnWidth() {
         for (int i = 0; i < breite.length && i < getColumnCount(); ++i) {
-            if (!anzeigen(i, spaltenAnzeigen)) {
+            if (!isColumnVisible(i)) {
                 // geänderte Ansicht der Spalten abfragen
                 breite[i] = 0;
             } else if (breite[i] == 0) {
@@ -408,7 +407,7 @@ public abstract class MVTable extends JTable {
         setRowSorter(null);
         setAutoCreateRowSorter(true);
         spaltenAusschalten();
-        setSpaltenEinAus(breite, spaltenAnzeigen);
+        setSpaltenEinAus(breite);
         setSpalten();
         setHeight();
     }

@@ -7,13 +7,11 @@ public class MVProgTable extends MVTable {
     private static final long serialVersionUID = -2363550088890708511L;
 
     public MVProgTable() {
-        super(DatenProg.MAX_ELEM);
+        super(DatenProg.MAX_ELEM, DatenProg.spaltenAnzeigen);
     }
 
     @Override
     protected void setupTableType() {
-        spaltenAnzeigen = activateAllColumns(DatenProg.spaltenAnzeigen);
-
         setModel(new TModel(new Object[][]{}, DatenProg.COLUMN_NAMES));
     }
 
