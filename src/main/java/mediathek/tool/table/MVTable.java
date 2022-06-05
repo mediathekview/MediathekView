@@ -23,7 +23,7 @@ public abstract class MVTable extends JTable {
     protected final int[] breite;
     protected final int[] reihe;
     public boolean useSmallSenderIcons;
-    protected int maxSpalten;
+    protected final int maxSpalten;
     protected int[] selRows;
     protected int selRow = -1;
     protected boolean[] spaltenAnzeigen;
@@ -38,7 +38,9 @@ public abstract class MVTable extends JTable {
     private boolean showSenderIcon;
     private boolean lineBreak = true;
 
-    public MVTable() {
+    public MVTable(int maxColumns) {
+        maxSpalten = maxColumns;
+
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 

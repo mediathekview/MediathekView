@@ -26,7 +26,8 @@ public class MVFilmTable extends MVTable {
     private final List<Integer> selectedFilmNumbers = new ArrayList<>();
 
     public MVFilmTable() {
-        super();
+        super(DatenFilm.MAX_ELEM);
+
         setAutoCreateRowSorter(false);
 
         addPropertyChangeListener("model", evt -> {
@@ -62,7 +63,6 @@ public class MVFilmTable extends MVTable {
     protected void setupTableType() {
         //logger.debug("setupTableType()");
 
-        maxSpalten = DatenFilm.MAX_ELEM;
         spaltenAnzeigen = activateAllColumns(GuiFilme.VISIBLE_COLUMNS);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;

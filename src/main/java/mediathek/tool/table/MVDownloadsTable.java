@@ -17,9 +17,12 @@ import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 
 public class MVDownloadsTable extends MVTable {
+    public MVDownloadsTable() {
+        super(DatenDownload.MAX_ELEM);
+    }
+
     @Override
     protected void setupTableType() {
-        maxSpalten = DatenDownload.MAX_ELEM;
         spaltenAnzeigen = activateAllColumns(DatenDownload.spaltenAnzeigen);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
