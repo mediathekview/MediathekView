@@ -9,7 +9,7 @@ public class MVPsetTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenPset.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
+        spaltenAnzeigen = activateAllColumns(DatenPset.spaltenAnzeigen);
 
         setModel(new TModel(new Object[][]{}, DatenPset.COLUMN_NAMES));
         setRowSorter(null);

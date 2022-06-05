@@ -8,7 +8,7 @@ public class MVAbosTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenAbo.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
+        spaltenAnzeigen = activateAllColumns(DatenAbo.spaltenAnzeigen);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN;

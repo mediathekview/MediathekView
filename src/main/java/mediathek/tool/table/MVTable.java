@@ -254,10 +254,14 @@ public abstract class MVTable extends JTable {
         }
     }
 
-    boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
-        for (int i = 0; i < MAX_ELEM; ++i) {
-            spaltenAnzeigen[i] = true;
-        }
+    /**
+     * Set all columns to visible.
+     * @param spaltenAnzeigen The storage variable for all columns.
+     * @return the modified column storage variable.
+     */
+    boolean[] activateAllColumns(boolean[] spaltenAnzeigen) {
+        Arrays.fill(spaltenAnzeigen, true);
+
         return spaltenAnzeigen;
     }
 

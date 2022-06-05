@@ -9,7 +9,7 @@ public class MVProgTable extends MVTable {
     @Override
     protected void setupTableType() {
         maxSpalten = DatenProg.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
+        spaltenAnzeigen = activateAllColumns(DatenProg.spaltenAnzeigen);
 
         setModel(new TModel(new Object[][]{}, DatenProg.COLUMN_NAMES));
     }

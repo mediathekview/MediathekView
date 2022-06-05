@@ -63,7 +63,7 @@ public class MVFilmTable extends MVTable {
         //logger.debug("setupTableType()");
 
         maxSpalten = DatenFilm.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(GuiFilme.VISIBLE_COLUMNS, DatenFilm.MAX_ELEM);
+        spaltenAnzeigen = activateAllColumns(GuiFilme.VISIBLE_COLUMNS);
         nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
         iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
         iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
