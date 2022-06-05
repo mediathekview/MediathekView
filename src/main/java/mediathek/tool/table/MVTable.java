@@ -42,7 +42,8 @@ public abstract class MVTable extends JTable {
     public MVTable(int maxColumns, boolean @NotNull [] visibleColumStore) {
         maxSpalten = maxColumns;
         spaltenAnzeigen = visibleColumStore;
-        activateAllColumns();
+        // make all columns visible by default in column store
+        Arrays.fill(spaltenAnzeigen, true);
 
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -257,13 +258,6 @@ public abstract class MVTable extends JTable {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
-    }
-
-    /**
-     * Set column store to all columns visible.
-     */
-    private void activateAllColumns() {
-        Arrays.fill(spaltenAnzeigen, true);
     }
 
     public void fireTableDataChanged(boolean setSpalten) {
