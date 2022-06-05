@@ -7,7 +7,7 @@ public class MVPsetTable extends MVTable {
     private static final long serialVersionUID = 7582553351667887172L;
 
     public MVPsetTable() {
-        super(DatenPset.MAX_ELEM, DatenPset.spaltenAnzeigen);
+        super(DatenPset.MAX_ELEM, new boolean[DatenPset.MAX_ELEM]);
     }
 
     @Override

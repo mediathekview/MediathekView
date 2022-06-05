@@ -7,7 +7,7 @@ public class MVProgTable extends MVTable {
     private static final long serialVersionUID = -2363550088890708511L;
 
     public MVProgTable() {
-        super(DatenProg.MAX_ELEM, DatenProg.spaltenAnzeigen);
+        super(DatenProg.MAX_ELEM, new boolean[DatenProg.MAX_ELEM]);
     }
 
     @Override

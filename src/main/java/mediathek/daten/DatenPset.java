@@ -66,7 +66,6 @@ public class DatenPset implements Comparable<DatenPset> {
             "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
             "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
     private static final Logger logger = LogManager.getLogger();
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private final ListeProg listeProg = new ListeProg();
     public String[] arr;
 
