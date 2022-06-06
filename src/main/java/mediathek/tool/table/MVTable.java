@@ -2,6 +2,7 @@ package mediathek.tool.table;
 
 import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -450,7 +451,7 @@ public abstract class MVTable extends JTable {
 
     private boolean arrLesen(String s, int[] arr) {
         String sub;
-        if (maxSpalten != countString(s)) {
+        if (maxSpalten != countNumberOfColumns(s)) {
             // dann hat sich die Anzahl der Spalten der Tabelle geändert: Versionswechsel
             return false;
         } else {
@@ -474,14 +475,14 @@ public abstract class MVTable extends JTable {
         return true;
     }
 
-    private int countString(String s) {
-        int ret = 0;
-        for (int i = 0; i < s.length(); ++i) {
-            if (s.charAt(i) == ',') {
-                ++ret;
-            }
-        }
-        return ++ret;
+    /**
+     * Count the number of saved columns within the string.
+     * Counts the number of comma separated entries.
+     * @param s The string to be processed.
+     * @return The number of columns included.
+     */
+    private int countNumberOfColumns(String s) {
+        // add plus one to satisfy saved data requirements...
+        return StringUtils.countMatches(s,',') + 1;
     }
-
 }
