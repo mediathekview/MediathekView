@@ -68,7 +68,7 @@ public abstract class MVTable extends JTable {
         }
 
         loadDefaultFontSize();
-        setHeight();
+        calculateRowHeight();
 
         applyWindowsSevenTableEffects();
     }
@@ -174,28 +174,27 @@ public abstract class MVTable extends JTable {
     /**
      * Calculate the row height in a table based on icon display,etc.
      */
-    public void setHeight() {
-        final int sizeArea = getSizeArea();
+    public void calculateRowHeight() {
+        var sizeArea = getSizeArea();
         var fm = getFontMetrics(getDefaultFont());
-        int size;
 
-        size = fm.getHeight() + 5; // add some extra spacing for the height
+        var height = fm.getHeight() + 5; // add some extra spacing for the height
 
         // check some minimum height requirements
         if (showSenderIcon) {
             if (useSmallSenderIcons) {
                 // small icons
-                if (size < 18)
-                    size = 20;
+                if (height < 18)
+                    height = 20;
             }
             else {
                 //large icons
-                if (size < 30)
-                    size = 36;
+                if (height < 30)
+                    height = 36;
             }
         }
 
-        setRowHeight(Math.max(size, sizeArea));
+        setRowHeight(Math.max(height, sizeArea));
     }
 
     public void initTabelle() {
@@ -243,7 +242,7 @@ public abstract class MVTable extends JTable {
             if (ok) {
                 setSpaltenEinAus(breite);
                 setSpalten();
-                setHeight();
+                calculateRowHeight();
             } else {
                 resetTabelle();
             }
@@ -317,14 +316,15 @@ public abstract class MVTable extends JTable {
         final TableColumnModel model = getColumnModel();
         for (int i = 0; i < breite.length && i < getColumnCount(); ++i) {
             final int colIndex = convertColumnIndexToView(i);
+            var column = model.getColumn(colIndex);
             if (breite[i] == 0) {
-                model.getColumn(colIndex).setMinWidth(0);
-                model.getColumn(colIndex).setPreferredWidth(0);
-                model.getColumn(colIndex).setMaxWidth(0);
+                column.setMinWidth(0);
+                column.setPreferredWidth(0);
+                column.setMaxWidth(0);
             } else {
-                model.getColumn(colIndex).setMinWidth(10);
-                model.getColumn(colIndex).setMaxWidth(3000);
-                model.getColumn(colIndex).setPreferredWidth(breite[i]);
+                column.setMinWidth(10);
+                column.setMaxWidth(3000);
+                column.setPreferredWidth(breite[i]);
             }
         }
     }
@@ -352,11 +352,13 @@ public abstract class MVTable extends JTable {
         // Einstellungen der Tabelle merken
         getSelected();
 
-        for (int i = 0; i < reihe.length && i < getModel().getColumnCount(); ++i) {
+        var columnCount = getModel().getColumnCount();
+
+        for (int i = 0; i < reihe.length && i < columnCount; ++i) {
             reihe[i] = convertColumnIndexToModel(i);
         }
 
-        for (int i = 0; i < breite.length && i < getModel().getColumnCount(); ++i) {
+        for (int i = 0; i < breite.length && i < columnCount; ++i) {
             breite[i] = getColumnModel().getColumn(convertColumnIndexToView(i)).getWidth();
         }
         if (this.getRowSorter() != null) {
@@ -404,7 +406,7 @@ public abstract class MVTable extends JTable {
         spaltenAusschalten();
         setSpaltenEinAus(breite);
         setSpalten();
-        setHeight();
+        calculateRowHeight();
     }
 
     protected abstract void spaltenAusschalten();

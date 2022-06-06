@@ -82,7 +82,7 @@ public class BeobTableHeader extends MouseAdapter {
             final var oldSize = oldFont.getSize2D();
             final var newSize = oldSize - FONT_SIZE_FACTOR;
             tabelle.setDefaultFont(oldFont.deriveFont(newSize));
-            tabelle.setHeight();
+            tabelle.calculateRowHeight();
         });
 
         miIncreaseFont = new JMenuItem("Schrift vergrößern");
@@ -92,13 +92,13 @@ public class BeobTableHeader extends MouseAdapter {
             final var oldSize = oldFont.getSize2D();
             final var newSize = oldSize + FONT_SIZE_FACTOR;
             tabelle.setDefaultFont(oldFont.deriveFont(newSize));
-            tabelle.setHeight();
+            tabelle.calculateRowHeight();
         });
 
         miResetFontSize = new JMenuItem("Schriftgröße zurücksetzen");
         miResetFontSize.addActionListener(e -> {
             tabelle.setDefaultFont(UIManager.getDefaults().getFont("Table.font"));
-            tabelle.setHeight();
+            tabelle.calculateRowHeight();
         });
     }
 
@@ -231,7 +231,7 @@ public class BeobTableHeader extends MouseAdapter {
             }
         }
         tabelle.spaltenEinAus();
-        tabelle.setHeight();
+        tabelle.calculateRowHeight();
     }
 
     protected void setSpalten(int k, boolean anz) {

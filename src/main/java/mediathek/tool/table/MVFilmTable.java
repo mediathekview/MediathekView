@@ -94,7 +94,7 @@ public class MVFilmTable extends MVTable {
         spaltenAusschalten();
         setSpaltenEinAus(breite);
         setSpalten();
-        setHeight();
+        calculateRowHeight();
     }
 
     @Override
