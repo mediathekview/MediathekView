@@ -262,12 +262,12 @@ public abstract class MVTable extends JTable {
 
     public void fireTableDataChanged(boolean setSpalten) {
         if (setSpalten) {
-            getSelected();
+            saveSelectedTableRows();
         }
         var model = (AbstractTableModel)getModel();
         model.fireTableDataChanged();
         if (setSpalten) {
-            setSelected();
+            restoreSelectedTableRows();
         }
     }
 
@@ -292,13 +292,13 @@ public abstract class MVTable extends JTable {
         scrollRectToVisible(getCellRect(index, 0, true));
     }
 
-    public void getSelected() {
+    public void saveSelectedTableRows() {
         // Einstellungen der Tabelle merken
         selRow = getSelectedRow();
         selRows = getSelectedRows();
     }
 
-    protected void setSelected() {
+    protected void restoreSelectedTableRows() {
         if (selRows != null) {
             if (selRows.length > 0) {
                 selectionModel.setValueIsAdjusting(true);
@@ -350,7 +350,7 @@ public abstract class MVTable extends JTable {
 
     public void getSpalten() {
         // Einstellungen der Tabelle merken
-        getSelected();
+        saveSelectedTableRows();
 
         var columnCount = getModel().getColumnCount();
 
@@ -386,7 +386,7 @@ public abstract class MVTable extends JTable {
                 }
             }
 
-            setSelected();
+            restoreSelectedTableRows();
 
             validate();
         } catch (Exception ex) {

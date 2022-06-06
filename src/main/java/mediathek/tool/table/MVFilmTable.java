@@ -107,7 +107,7 @@ public class MVFilmTable extends MVTable {
         //logger.debug("getSpalten()");
 
         // Einstellungen der Tabelle merken
-        getSelected();
+        saveSelectedTableRows();
 
         for (int i = 0; i < reihe.length && i < getModel().getColumnCount(); ++i) {
             reihe[i] = convertColumnIndexToModel(i);
@@ -166,7 +166,7 @@ public class MVFilmTable extends MVTable {
 
             restoreSortKeys();
 
-            setSelected();
+            restoreSelectedTableRows();
 
             validate();
         } catch (Exception ex) {
@@ -244,7 +244,7 @@ public class MVFilmTable extends MVTable {
         scrollToSelectionCentered(index);
     }
     @Override
-    protected void setSelected() {
+    protected void restoreSelectedTableRows() {
         if (!selectedFilmNumbers.isEmpty()) {
             boolean found = false;
 
@@ -272,8 +272,8 @@ public class MVFilmTable extends MVTable {
     }
 
     @Override
-    public void getSelected() {
-        super.getSelected();
+    public void saveSelectedTableRows() {
+        super.saveSelectedTableRows();
 
         int selIndex = -1;
         if (selRow >= 0) {

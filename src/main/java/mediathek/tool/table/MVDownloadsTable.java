@@ -159,7 +159,7 @@ public class MVDownloadsTable extends MVTable {
         }
 
         private void reorder(int index, int[] rowFrom) {
-            getSelected();
+            saveSelectedTableRows();
 
             final var daten = Daten.getInstance();
             final var tModel = (TModelDownload) getModel();
@@ -183,7 +183,7 @@ public class MVDownloadsTable extends MVTable {
             getRowSorter().setSortKeys(null);
             setRowSorter(null);
             setAutoCreateRowSorter(true);
-            setSelected();
+            restoreSelectedTableRows();
 
             MessageBus.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
         }
