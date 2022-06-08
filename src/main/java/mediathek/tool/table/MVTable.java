@@ -56,9 +56,6 @@ public abstract class MVTable extends JTable {
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        getTableHeader().addMouseListener(new WidthAdjuster(this));
-
-
         breite = new int[maxSpalten];
         Arrays.fill(breite,-1);
 
