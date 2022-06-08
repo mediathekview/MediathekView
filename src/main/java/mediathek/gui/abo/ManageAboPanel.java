@@ -109,7 +109,7 @@ public class ManageAboPanel extends JPanel {
 
     private void initializeTable() {
         tabelleLaden();
-        tabelle.initTabelle();
+        tabelle.readColumnConfigurationData();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
@@ -134,7 +134,7 @@ public class ManageAboPanel extends JPanel {
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
+            tabelle.writeTableConfigurationData();
         }
     }
 

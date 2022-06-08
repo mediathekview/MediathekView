@@ -152,7 +152,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
+            tabelle.writeTableConfigurationData();
         }
     }
 
@@ -434,7 +434,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupHeaderPopupMenu();
 
-        tabelle.initTabelle();
+        tabelle.readColumnConfigurationData();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }

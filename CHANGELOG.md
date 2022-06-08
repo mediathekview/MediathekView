@@ -10,6 +10,9 @@
 - **BUGFIX:** Diverse Fehler im Dialog für Abo-Historie wurden beseitigt.
 - **BUGFIX:** Algorithmus für Skalierung der Sendericons funktioniert nun richtig.
 - **BUGFIX(Windows):** Sendericons sehen nun nicht mehr so bescheiden unter Windows 10 aus.
+- **BUGFIX:** Seltener Fehler beim Speichern der Tabellenkonfiguration wurde behoben.
+- **BUGFIX:** Die Höhe der Tabelleneinträge für Hilfsprogramme wurde korrigiert.
+- **BUGFIX:** Die Höhe der Tabelleneinträge für Programmsets wurde korrigiert.
 - **FEATURE(macOS, Windows):** MediathekView nutzt nun das moderne FlatLaf Look&Feel zur Darstellung der Oberfläche. Dies verbessert die Darstellung des Programms unter Windows und Linux erheblich. *Es ist nun nicht mehr möglich, ein anderes L&F zu verwenden da diese veraltet sind und eine bescheidene Darstellung (v.a. unter Windows) verursachen.* **In diesem Zusammenhang ist auch die Einstellungsmöglichkeit einer globalen Skalierung entfallen. Der entsprechende Menüpunkt wurde wieder entfernt.**
 - **FEATURE:** Im Einstellungen-Dialog können in Blacklist-Dialog nun gleichzeitig mehrere Regeln gelöscht werden.
 - **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.

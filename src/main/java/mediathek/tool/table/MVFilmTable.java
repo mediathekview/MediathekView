@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
@@ -26,7 +27,10 @@ public class MVFilmTable extends MVTable {
     private final List<Integer> selectedFilmNumbers = new ArrayList<>();
 
     public MVFilmTable() {
-        super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS);
+        super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS,
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
+                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME));
 
         setAutoCreateRowSorter(false);
 
@@ -57,13 +61,6 @@ public class MVFilmTable extends MVTable {
         var config = ApplicationConfiguration.getConfiguration();
         final var fontSize = getDefaultFont().getSize2D();
         config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
-    }
-
-    @Override
-    protected void setupTableType() {
-        nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
-        iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
-        iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
     }
 
     private void resetFilmeTab(int i) {
@@ -158,9 +155,9 @@ public class MVFilmTable extends MVTable {
     public void setSpalten() {
         //logger.debug("setSpalten()");
         try {
-            changeColumnWidth();
+            changeInternalColumnWidths();
 
-            changeColumnWidth2();
+            changeTableModelColumnWidths();
 
             reorderColumns();
 

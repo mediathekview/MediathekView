@@ -157,7 +157,7 @@ public class GuiDownloads extends AGuiTabPanel {
     @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
+            tabelle.writeTableConfigurationData();
         }
     }
 
@@ -274,7 +274,7 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void initTable() {
-        tabelle.initTabelle();
+        tabelle.readColumnConfigurationData();
         tabelle.setSpalten();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);

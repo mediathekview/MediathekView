@@ -1,11 +1,11 @@
-JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.13" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.14.1" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {par l {comp jSplitPane1::::926:x, seq t {space :::x, comp jButtonPruefen:::p:84:p, space :::p, comp jButtonHilfe:::p::p}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :p::p, comp jSplitPane1:::::x, space u:p::p, par c {comp jButtonPruefen::c:p::p, comp jButtonHilfe::c:p::p}, space :p::p}}"
+			"$horizontalGroup": "par l {seq {par l {comp jSplitPane1::::926:x, seq t {space ::742:x, comp jButtonPruefen:::p:100:p, space :::p, comp jButtonHilfe:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, comp jSplitPane1:::::x, space u:p::p, par c {comp jButtonHilfe::c:p::p, comp jButtonPruefen::c:p::p}, space :p::p}}"
 		} ) {
 			name: "this"
 			add( new FormComponent( "javax.swing.JButton" ) {
@@ -55,7 +55,7 @@ new FormModel {
 								name: "jTextFieldSetName"
 							} )
 							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-								"$horizontalGroup": "par l {seq {space :::p, comp jScrollPane2::::577:x, space :::p}}"
+								"$horizontalGroup": "par l {seq {space :::p, comp jScrollPane2::::567:x, space :::p}}"
 								"$verticalGroup": "par l {seq l {comp jScrollPane2::::211:x, space :p::p}}"
 							} ) {
 								name: "jPanel4"
@@ -78,7 +78,7 @@ new FormModel {
 								} )
 							} )
 							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-								"$horizontalGroup": "par l {seq {space :::p, comp jButtonAbspielen:::p::p, space u:::p, comp jCheckBoxSpeichern:::p::p, space u:::p, comp jCheckBoxButton:::p::p, space u:::p, comp jCheckBoxAbo:::p::p, space ::81:x}}"
+								"$horizontalGroup": "par l {seq {space :::p, comp jButtonAbspielen:::p::p, space u:::p, comp jCheckBoxSpeichern:::p::p, space u:::p, comp jCheckBoxButton:::p::p, space u:::p, comp jCheckBoxAbo:::p::p, space ::71:x}}"
 								"$verticalGroup": "par l {seq l {space :::p, par b {comp jCheckBoxSpeichern::b:p::p, comp jCheckBoxButton::b:p::p, comp jCheckBoxAbo::b:p::p, comp jButtonAbspielen::b:p::p}, space :::x}}"
 							} ) {
 								name: "jPanel6"
@@ -124,7 +124,7 @@ new FormModel {
 							"JavaCodeGenerator.variableLocal": true
 						}
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-							"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp jButtonGruppeFarbe:5::p::p, space :::p, comp jButtonGruppeStandardfarbe:5::p::p}, comp jLabel11::l:p::p, comp jLabel13::l:p::p}, space ::327:x}}"
+							"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp jButtonGruppeFarbe:5::p::p, space :::p, comp jButtonGruppeStandardfarbe:5::p::p}, comp jLabel11::l:p::p, comp jLabel13::l:p::p}, space ::317:x}}"
 							"$verticalGroup": "par l {seq l {space :::p, comp jLabel11:::p::p, space :::p, comp jLabel13:::p::p, space u:::p, par b {comp jButtonGruppeFarbe::b:p::p, comp jButtonGruppeStandardfarbe:6:b:p::p}, space :::x}}"
 						} ) {
 							name: "jPanel5"
@@ -169,7 +169,7 @@ new FormModel {
 							"JavaCodeGenerator.variableLocal": true
 						}
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-							"$horizontalGroup": "par l {seq l {space :::p, par l {seq {space :21:21:p, comp jLabel15:::p::p, space :0:0:x}, seq l {par l {seq l {comp jLabel7:::p::p, space :p:56:p, comp tfGruppeZielPfad:::::x, space :::p, comp jButtonGruppePfad:::p::p:1}, seq l {comp jCheckBoxThema:::p::p, space :0:215:x}}, space :p:16:p}, seq l {comp jLabel8:::p::p, space :::p, par l {comp tfGruppeZielName::l:::x, seq {par l:::p {seq {comp jCheckBoxLaenge:::p::p, space :p::p, comp jSpinnerLaenge:::p::p, space :::p, comp jLabel12:::p::p}, seq {comp jCheckBoxField:::p::p, space :::x, comp jSpinnerField:::p::p, space :::p, comp jLabel16:::p::p}}, space :0:0:x}}, space :::p}}}}"
+							"$horizontalGroup": "par l {seq l {space :::p, par l {seq {space :21:21:p, comp jLabel15:::p::p, space :0:0:x}, seq l {par l {seq l {comp jLabel7:::p::p, space :p:56:p, comp tfGruppeZielPfad:::::x, space :::p, comp jButtonGruppePfad:::p::p:1}, seq l {comp jCheckBoxThema:::p::p, space :0:205:x}}, space :p:16:p}, seq l {comp jLabel8:::p::p, space :::p, par l {comp tfGruppeZielName::l:::x, seq {par l:::p {seq {comp jCheckBoxLaenge:::p::p, space :p::p, comp jSpinnerLaenge:::p::p, space :::p, comp jLabel12:::p::p}, seq {comp jCheckBoxField:::p::p, space :::x, comp jSpinnerField:::p::p, space :::p, comp jLabel16:::p::p}}, space :0:0:x}}, space :::p}}}}"
 							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxThema:::p::p, space :::p, comp jLabel15:::p::p, space s:p::p, par c {comp jLabel7::c:p::p, comp tfGruppeZielPfad:3:c:p::p, comp jButtonGruppePfad:3:c:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp tfGruppeZielName:3:b:p::p}, space u:::p, par b {comp jCheckBoxLaenge::b:p::p, comp jSpinnerLaenge::b:p::p, comp jLabel12::b:p::p}, space :::p, par b {comp jCheckBoxField::b:p::p, comp jSpinnerField::b:p::p, comp jLabel16::b:p::p}, space :::x}}"
 						} ) {
 							name: "jPanel1"
@@ -413,7 +413,7 @@ new FormModel {
 							} )
 						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-							"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {par l {comp jLabel2::l:p::p, comp jLabel9::l:p::p}, space :p:24:p, par l {comp jTextFieldProgZielDateiName:::::x, comp jTextFieldProgName:::::x}}, seq l {par l {comp jLabel3::l:p::p, comp jLabel1::l:p::p, comp jLabel::l:p::p}, space :p::p, par l {comp jTextFieldProgSchalter::l:::x, seq t {comp jTextFieldProgPfad:::::x, space :::p, comp jButtonProgPfad:::p::p:1}, seq l {comp jTextFieldProgPraefix:::p:146:p:2, space :::p, comp jLabel4:::p::p, space :::p, comp jTextFieldProgSuffix::::193:x:2}, seq {par l {comp jCheckBoxRemoteDownload:::p::p, comp jCheckBoxRestart:::p::p}, space :0:204:x}}}}, space :::p}}"
+							"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {par l {comp jLabel2::l:p::p, comp jLabel9::l:p::p}, space :p:24:p, par l {comp jTextFieldProgZielDateiName:::::x, comp jTextFieldProgName:::::x}}, seq l {par l {comp jLabel3::l:p::p, comp jLabel1::l:p::p, comp jLabel::l:p::p}, space :p::p, par l {comp jTextFieldProgSchalter::l:::x, seq t {comp jTextFieldProgPfad:::::x, space :::p, comp jButtonProgPfad:::p::p:1}, seq l {comp jTextFieldProgPraefix:::p:146:p:2, space :::p, comp jLabel4:::p::p, space :::p, comp jTextFieldProgSuffix::::183:x:2}, seq {par l {comp jCheckBoxRemoteDownload:::p::p, comp jCheckBoxRestart:::p::p}, space :0:194:x}}}}, space :::p}}"
 							"$verticalGroup": "par l {seq l {space :p::p, par b {comp jLabel2::b:p::p, comp jTextFieldProgName:4:b:p::p}, space :::p, par b {comp jLabel9::b:p::p, comp jTextFieldProgZielDateiName:4:b:p::p}, space :::p, par c {comp jLabel::c:p::p, comp jTextFieldProgPfad:4:c:p:12:p, comp jButtonProgPfad:4:c:p::p}, space :p::p, par b {comp jLabel1::b:p::p, comp jTextFieldProgSchalter:4:b:p:15:p}, space :p::p, par b:::p {comp jTextFieldProgPraefix:4:b:p::p, comp jLabel3::b:p::p, comp jTextFieldProgSuffix:4:b:p::p, comp jLabel4::b:p::p}, space u:::p, comp jCheckBoxRestart:::p::p, space u:::p, comp jCheckBoxRemoteDownload:::p::p, space :::x}}"
 						} ) {
 							name: "jPanelProgrammDetails"

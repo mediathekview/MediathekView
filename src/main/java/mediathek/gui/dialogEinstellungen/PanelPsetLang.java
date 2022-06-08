@@ -1061,7 +1061,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 jPanel4Layout.createParallelGroup()
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addContainerGap()
-                                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
                                         .addContainerGap())
                             );
                             jPanel4Layout.setVerticalGroup(
@@ -1101,7 +1101,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jCheckBoxButton)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jCheckBoxAbo)
-                                        .addContainerGap(81, Short.MAX_VALUE))
+                                        .addContainerGap(71, Short.MAX_VALUE))
                             );
                             jPanel6Layout.setVerticalGroup(
                                 jPanel6Layout.createParallelGroup()
@@ -1214,7 +1214,7 @@ public class PanelPsetLang extends PanelVorlage {
                                             .addComponent(jButtonGruppeStandardfarbe))
                                         .addComponent(jLabel11)
                                         .addComponent(jLabel13))
-                                    .addContainerGap(327, Short.MAX_VALUE))
+                                    .addContainerGap(317, Short.MAX_VALUE))
                         );
                         jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
                         jPanel5Layout.setVerticalGroup(
@@ -1315,7 +1315,7 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addComponent(jButtonGruppePfad))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                     .addComponent(jCheckBoxThema)
-                                                    .addGap(0, 215, Short.MAX_VALUE)))
+                                                    .addGap(0, 205, Short.MAX_VALUE)))
                                             .addGap(16, 16, 16))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addComponent(jLabel8)
@@ -1682,12 +1682,12 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(jLabel4)
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))
+                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
                                                 .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                                                     .addGroup(jPanelProgrammDetailsLayout.createParallelGroup()
                                                         .addComponent(jCheckBoxRemoteDownload)
                                                         .addComponent(jCheckBoxRestart))
-                                                    .addGap(0, 204, Short.MAX_VALUE)))))
+                                                    .addGap(0, 194, Short.MAX_VALUE)))))
                                     .addContainerGap())
                         );
                         jPanelProgrammDetailsLayout.setVerticalGroup(
@@ -1831,8 +1831,8 @@ public class PanelPsetLang extends PanelVorlage {
                     .addGroup(layout.createParallelGroup()
                         .addComponent(jSplitPane1, GroupLayout.DEFAULT_SIZE, 926, Short.MAX_VALUE)
                         .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonPruefen, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(742, Short.MAX_VALUE)
+                            .addComponent(jButtonPruefen, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButtonHilfe)))
                     .addContainerGap())
@@ -1844,8 +1844,8 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jSplitPane1)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(jButtonPruefen)
-                        .addComponent(jButtonHilfe))
+                        .addComponent(jButtonHilfe)
+                        .addComponent(jButtonPruefen))
                     .addContainerGap())
         );
 

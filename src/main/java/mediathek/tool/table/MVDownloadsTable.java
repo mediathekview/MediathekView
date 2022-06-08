@@ -15,17 +15,14 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class MVDownloadsTable extends MVTable {
     public MVDownloadsTable() {
-        super(DatenDownload.MAX_ELEM, DatenDownload.spaltenAnzeigen);
-    }
-
-    @Override
-    protected void setupTableType() {
-        nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
-        iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
-        iconKleinStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
+        super(DatenDownload.MAX_ELEM, DatenDownload.spaltenAnzeigen,
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN),
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
+                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS));
 
         setupDragnDrop();
 
