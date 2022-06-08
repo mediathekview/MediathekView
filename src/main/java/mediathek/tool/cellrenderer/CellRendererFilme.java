@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
@@ -48,15 +50,37 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         var textArea = new JTextArea();
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        textArea.setText(content);
+        textArea.setText(Objects.toString(content, ""));
         textArea.setForeground(getForeground());
         textArea.setBackground(getBackground());
+        textArea.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
         var fontSize = textArea.getFont().getSize2D();
         var labelFont = UIManager.getFont("Label.font");
         textArea.setFont(labelFont.deriveFont(fontSize));
 
         return textArea;
+    }
+
+    private final java.util.List<java.util.List<Integer>> rowAndCellHeightList = new ArrayList<>();
+
+    private void adjustRowHeight(JComponent comp, JTable table, int row, int column) {
+        int cWidth = table.getCellRect(row, column, false).width;
+        comp.setSize(new Dimension(cWidth, 1000));
+
+        int preferredHeight = comp.getPreferredSize().height;
+        while (rowAndCellHeightList.size() <= row) {
+            rowAndCellHeightList.add(new ArrayList<>(column));
+        }
+        var cellHeightList = rowAndCellHeightList.get(row);
+        while (cellHeightList.size() <= column) {
+            cellHeightList.add(0);
+        }
+        cellHeightList.set(column, preferredHeight);
+        int max = cellHeightList.stream().max(Integer::compare).get();
+        if (table.getRowHeight(row) != max) {
+            table.setRowHeight(row, max);
+        }
     }
 
     @Override
@@ -75,19 +99,19 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-            final boolean isBookMarked =  datenFilm.isBookmarked();
-            final var mvTable = (MVTable)table;
+            final boolean isBookMarked = datenFilm.isBookmarked();
+            final var mvTable = (MVTable) table;
 
             setFont((mvTable.getDefaultFont()));
 
-            //shortcut if we want to have line breaks, use text areas and skip the rest
-            if (mvTable.isLineBreak()) {
-                switch (columnModelIndex) {
-                    case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
-                        var textArea = createTextArea(value.toString());
-                        applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
-                        return textArea;
-                    }
+            //for thema, titel and URL we will auto adjust row height
+            switch (columnModelIndex) {
+                case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
+                    var textArea = createTextArea(value.toString());
+                    applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
+                    textArea.validate();
+                    adjustRowHeight(textArea, table, row, column);
+                    return textArea;
                 }
             }
 
@@ -106,24 +130,24 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_AUFZEICHNEN:
                     handleButtonDownloadColumn(isSelected);
                     break;
-                    
+
                 case DatenFilm.FILM_MERKEN:
                     handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
                     break;
-                    
+
                 case DatenFilm.FILM_SENDER:
                     if (mvTable.showSenderIcons()) {
-                        Dimension targetDim = getSenderCellDimension(table, row,columnModelIndex);
+                        Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
                     break;
 
-                    case DatenFilm.FILM_TITEL:
-                        var title = datenFilm.getTitle();
-                        var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
-                        if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
-                            setToolTipText(title);
-                        break;
+                case DatenFilm.FILM_TITEL:
+                    var title = datenFilm.getTitle();
+                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                        setToolTipText(title);
+                    break;
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
@@ -136,11 +160,13 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     /**
      * Apply the specific horizontal alignment to the cell based on column
+     *
      * @param columnModelIndex the current column index
      */
     private void applyHorizontalAlignment(final int columnModelIndex) {
         switch (columnModelIndex) {
-            case DatenFilm.FILM_NR, DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_DAUER, DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> setHorizontalAlignment(SwingConstants.CENTER);
+            case DatenFilm.FILM_NR, DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_DAUER, DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN ->
+                    setHorizontalAlignment(SwingConstants.CENTER);
             case DatenFilm.FILM_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
@@ -173,7 +199,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (geoMelden) {
                 //only apply geo block colors when we haven´t changed the background for seen history
                 if (!hasBeenSeen) {
-                        setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
+                    setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
                 }
             }
         }
@@ -209,13 +235,12 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         // Button Aufzeichnen
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
-    
+
     private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected, boolean isLivestream) {
         if (isLivestream) {
             setIcon(null);
             setToolTipText("");
-        }
-        else {
+        } else {
             // Button Merken
             setToolTipText(isBookMarked ? "Film aus Merkliste entfernen" : "Film merken");
             setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);

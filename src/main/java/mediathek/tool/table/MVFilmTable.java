@@ -63,6 +63,11 @@ public class MVFilmTable extends MVTable {
         config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
     }
 
+    @Override
+    public void calculateRowHeight() {
+        // do nothing, cell renderer will adjust row height...
+    }
+
     private void resetFilmeTab(int i) {
         //logger.debug("resetFilmeTab()");
 
