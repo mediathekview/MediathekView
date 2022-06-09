@@ -1,8 +1,7 @@
 package mediathek.gui.actions;
 
+import com.formdev.flatlaf.icons.FlatHelpButtonIcon;
 import javafx.application.Platform;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.javafx.FXErrorDialog;
@@ -15,7 +14,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
-        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        putValue(SMALL_ICON, new FlatHelpButtonIcon());
     }
 
     @Override
