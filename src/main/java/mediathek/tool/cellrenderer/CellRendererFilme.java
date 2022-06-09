@@ -1,13 +1,13 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,30 +18,42 @@ import java.awt.*;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
-    private final Icon selectedStopIcon;
-    private final Icon normalStopIcon;
+    private final FlatSVGIcon selectedStopIcon;
+    private final FlatSVGIcon normalStopIcon;
     private final SeenHistoryController history = new SeenHistoryController();
-    private final Icon selectedDownloadIcon;
-    private final Icon normalDownloadIcon;
-    private final Icon selectedPlayIcon;
-    private final Icon normalPlayIcon;
-    private final Icon selectedBookmarkIcon;
-    private final Icon normalBookmarkIcon;
-    private final Icon selectedBookmarkIconHighlighted;
+    private final FlatSVGIcon selectedDownloadIcon;
+    private final FlatSVGIcon normalDownloadIcon;
+    private final FlatSVGIcon selectedPlayIcon;
+    private final FlatSVGIcon normalPlayIcon;
+    private final FlatSVGIcon selectedBookmarkIcon;
+    private final FlatSVGIcon normalBookmarkIcon;
+    private final FlatSVGIcon selectedBookmarkIconHighlighted;
 
     public CellRendererFilme() {
-        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, Color.WHITE);
-        normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
+        var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
-        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
-        normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
+        selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
+        selectedDownloadIcon.setColorFilter(whiteColorFilter);
 
-        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
-        normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
+        normalDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
 
-        selectedBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.BLUE);
-        selectedBookmarkIconHighlighted = IconFontSwing.buildIcon(FontAwesome.BOOKMARK, 16, Color.yellow);
-        normalBookmarkIcon = IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16);
+        selectedPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+        selectedPlayIcon.setColorFilter(whiteColorFilter);
+
+        normalPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+
+        selectedStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+        selectedStopIcon.setColorFilter(whiteColorFilter);
+
+        normalStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+
+        selectedBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
+        selectedBookmarkIcon.setColorFilter(whiteColorFilter);
+
+        selectedBookmarkIconHighlighted = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
+        selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.ORANGE));
+
+        normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
     }
 
     private JTextArea createTextArea(String content) {
@@ -75,8 +87,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-            final boolean isBookMarked =  datenFilm.isBookmarked();
-            final var mvTable = (MVTable)table;
+            final boolean isBookMarked = datenFilm.isBookmarked();
+            final var mvTable = (MVTable) table;
 
             setFont((mvTable.getDefaultFont()));
 
@@ -106,24 +118,24 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_AUFZEICHNEN:
                     handleButtonDownloadColumn(isSelected);
                     break;
-                    
+
                 case DatenFilm.FILM_MERKEN:
                     handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
                     break;
-                    
+
                 case DatenFilm.FILM_SENDER:
                     if (mvTable.showSenderIcons()) {
-                        Dimension targetDim = getSenderCellDimension(table, row,columnModelIndex);
+                        Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
                     break;
 
-                    case DatenFilm.FILM_TITEL:
-                        var title = datenFilm.getTitle();
-                        var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
-                        if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
-                            setToolTipText(title);
-                        break;
+                case DatenFilm.FILM_TITEL:
+                    var title = datenFilm.getTitle();
+                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                        setToolTipText(title);
+                    break;
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
@@ -136,11 +148,13 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     /**
      * Apply the specific horizontal alignment to the cell based on column
+     *
      * @param columnModelIndex the current column index
      */
     private void applyHorizontalAlignment(final int columnModelIndex) {
         switch (columnModelIndex) {
-            case DatenFilm.FILM_NR, DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_DAUER, DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> setHorizontalAlignment(SwingConstants.CENTER);
+            case DatenFilm.FILM_NR, DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_DAUER, DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN ->
+                    setHorizontalAlignment(SwingConstants.CENTER);
             case DatenFilm.FILM_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
@@ -173,7 +187,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (geoMelden) {
                 //only apply geo block colors when we haven´t changed the background for seen history
                 if (!hasBeenSeen) {
-                        setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
+                    setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
                 }
             }
         }
@@ -209,16 +223,25 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         // Button Aufzeichnen
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
-    
+
     private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected, boolean isLivestream) {
         if (isLivestream) {
             setIcon(null);
             setToolTipText("");
-        }
-        else {
+        } else {
             // Button Merken
             setToolTipText(isBookMarked ? "Film aus Merkliste entfernen" : "Film merken");
-            setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
+            if (isBookMarked) {
+                if (isSelected) {
+                    setIcon(selectedBookmarkIconHighlighted);
+                } else
+                    setIcon(selectedBookmarkIconHighlighted);
+            } else {
+                if (isSelected) {
+                    setIcon(selectedBookmarkIcon);
+                } else
+                    setIcon(normalBookmarkIcon);
+            }
         }
     }
 }
