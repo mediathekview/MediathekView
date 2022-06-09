@@ -106,6 +106,12 @@ public class GuiDownloads extends AGuiTabPanel {
     protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
     protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
     protected InvertSelectionAction invertSelectionAction = new InvertSelectionAction(this);
+    protected ShutdownAfterDownloadAction shutdownAfterDownloadAction = new ShutdownAfterDownloadAction(mediathekGui);
+    protected PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
+    protected StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
+    protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
+    protected DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
+    protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -415,21 +421,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         });
 
-        JMenuItem miStartDownloads = new JMenuItem("Ausgewählte Downloads starten");
-        miStartDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
-        miStartDownloads.addActionListener(e -> starten(false));
-
-        JMenuItem miStopDownloads = new JMenuItem("Ausgewählte Downloads stoppen");
-        miStopDownloads.addActionListener(e -> stoppen(false));
-
-        JMenuItem miDownloadsVorziehen = new JMenuItem("Downloads vorziehen");
-        miDownloadsVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
-        miDownloadsVorziehen.addActionListener(e -> downloadsVorziehen());
-
-        JMenuItem miDownloadsZurueckstellen = new JMenuItem("Downloads zurückstellen");
-        miDownloadsZurueckstellen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
-        miDownloadsZurueckstellen.addActionListener(e -> downloadLoeschen(false));
-
         JMenuItem miDownloadsLoeschen = new JMenuItem("Downloads aus Liste entfernen");
         miDownloadsLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         miDownloadsLoeschen.addActionListener(e -> downloadLoeschen(true));
@@ -446,25 +437,6 @@ public class GuiDownloads extends AGuiTabPanel {
         miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
-        JMenuItem miPlayDownload = new JMenuItem("Gespeicherten Film abspielen");
-        miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-        miPlayDownload.addActionListener(e -> filmAbspielen());
-
-        JMenuItem miShutdownAfterDownload = new JMenuItem("Aktion nach abgeschlossenen Downloads...");
-        miShutdownAfterDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
-        miShutdownAfterDownload.addActionListener(e -> {
-            if (daten.getListeDownloads().unfinishedDownloads() > 0) {
-                // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                mediathekGui.beenden(true, false);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Die Downloads müssen zuerst gestartet werden.",
-                        "Keine laufenden Downloads",
-                        JOptionPane.ERROR_MESSAGE);
-
-            }
-        });
-
         menu.add(startAllDownloadsAction);
         menu.add(startAllDownloadsTimedAction);
         menu.add(stopAllDownloadsAction);
@@ -472,10 +444,10 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(refreshDownloadListAction);
         menu.add(cleanupDownloadListAction);
         menu.addSeparator();
-        menu.add(miStartDownloads);
-        menu.add(miStopDownloads);
-        menu.add(miDownloadsVorziehen);
-        menu.add(miDownloadsZurueckstellen);
+        menu.add(startDownloadsAction);
+        menu.add(stopDownloadsAction);
+        menu.add(advanceDownloadsAction);
+        menu.add(deferDownloadsAction);
         menu.add(miDownloadsLoeschen);
         menu.add(miEditDownload);
         menu.addSeparator();
@@ -483,11 +455,11 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.addSeparator();
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
-        menu.add(miPlayDownload);
+        menu.add(playDownloadAction);
         menu.addSeparator();
         menu.add(invertSelectionAction);
         menu.addSeparator();
-        menu.add(miShutdownAfterDownload);
+        menu.add(shutdownAfterDownloadAction);
     }
 
     private void setupDescriptionPanel() {
@@ -909,7 +881,7 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void downloadsVorziehen() {
+    public void downloadsVorziehen() {
         ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
         if (arrayDownloads.isEmpty()) {
             return;
@@ -1483,7 +1455,7 @@ public class GuiDownloads extends AGuiTabPanel {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
+            itemStarten.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, true, true, false));
@@ -1495,16 +1467,8 @@ public class GuiDownloads extends AGuiTabPanel {
             itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, false, true, false));
 
             jPopupMenu.addSeparator();
-
-            JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
-            itemVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
-            jPopupMenu.add(itemVorziehen);
-            itemVorziehen.addActionListener(arg0 -> downloadsVorziehen());
-
-            JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
-            jPopupMenu.add(itemLoeschen);
-            itemLoeschen.addActionListener(arg0 -> downloadLoeschen(false /* dauerhaft */));
+            jPopupMenu.add(advanceDownloadsAction);
+            jPopupMenu.add(deferDownloadsAction);
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
             itemDauerhaftLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
@@ -1527,13 +1491,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(refreshDownloadListAction);
             jPopupMenu.add(cleanupDownloadListAction);
             jPopupMenu.addSeparator();
-
-            // Film abspielen
-            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-
-            itemPlayerDownload.addActionListener(e -> filmAbspielen());
-            jPopupMenu.add(itemPlayerDownload);
+            jPopupMenu.add(playDownloadAction);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
             itemDeleteDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
