@@ -112,6 +112,7 @@ public class GuiDownloads extends AGuiTabPanel {
     protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
     protected DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
     protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
+    protected DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -421,10 +422,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         });
 
-        JMenuItem miDownloadsLoeschen = new JMenuItem("Downloads aus Liste entfernen");
-        miDownloadsLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-        miDownloadsLoeschen.addActionListener(e -> downloadLoeschen(true));
-
         JMenuItem miEditDownload = new JMenuItem("Download ändern");
         miEditDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         miEditDownload.addActionListener(e -> editDownload());
@@ -448,7 +445,7 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(stopDownloadsAction);
         menu.add(advanceDownloadsAction);
         menu.add(deferDownloadsAction);
-        menu.add(miDownloadsLoeschen);
+        menu.add(deleteDownloadsAction);
         menu.add(miEditDownload);
         menu.addSeparator();
         menu.add(cbShowDownloadDescription);
@@ -1469,11 +1466,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.addSeparator();
             jPopupMenu.add(advanceDownloadsAction);
             jPopupMenu.add(deferDownloadsAction);
-            //dauerhaft löschen
-            JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
-            itemDauerhaftLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-            jPopupMenu.add(itemDauerhaftLoeschen);
-            itemDauerhaftLoeschen.addActionListener(arg0 -> downloadLoeschen(true /* dauerhaft */));
+            jPopupMenu.add(deleteDownloadsAction);
             //Download ändern
             JMenuItem itemAendern = new JMenuItem("Download ändern");
             itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
