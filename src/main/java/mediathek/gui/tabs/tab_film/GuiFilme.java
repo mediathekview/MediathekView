@@ -243,30 +243,35 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
+        KeyStroke keyStroke;
+
         JMenuItem miPlayFilm = new JMenuItem("Film abspielen");
         if (SystemUtils.IS_OS_MAC_OSX)
-            miPlayFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.META_DOWN_MASK));
-        else miPlayFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
-        miPlayFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F6, GuiFunktionen.getPlatformControlKey());
+        else
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, GuiFunktionen.getPlatformControlKey());
+        miPlayFilm.setAccelerator(keyStroke);
+        miPlayFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
         miPlayFilm.addActionListener(playAction);
 
         JMenuItem miRecordFilm = new JMenuItem("Film aufzeichnen");
-        if (SystemUtils.IS_OS_MAC_OSX)
-            miRecordFilm.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.META_DOWN_MASK));
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
+        }
         else
-            miRecordFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
-        miRecordFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, GuiFunktionen.getPlatformControlKey());
+        miRecordFilm.setAccelerator(keyStroke);
+        miRecordFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
         miRecordFilm.addActionListener(saveFilmAction);
 
         JMenuItem miBookmarkFilm = new JMenuItem("Film merken");
         if (SystemUtils.IS_OS_MAC_OSX) {
-            miBookmarkFilm.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_DOWN_MASK));
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F8, GuiFunktionen.getPlatformControlKey());
         } else {
-            miBookmarkFilm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
+            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey());
         }
-        miBookmarkFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
+        miBookmarkFilm.setAccelerator(keyStroke);
+        miBookmarkFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
         miBookmarkFilm.addActionListener(bookmarkFilmAction);
 
         if (!SystemUtils.IS_OS_MAC_OSX)
