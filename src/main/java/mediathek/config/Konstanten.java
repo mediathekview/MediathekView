@@ -28,11 +28,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(13,9,1);
+    public static final Version MVVERSION = new Version(14,0,0);
     /**
      * Is this a nightly or a production build?
      */
-    public static final boolean APP_IS_NIGHTLY = false;
+    public static final boolean APP_IS_NIGHTLY = true;
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
     public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
