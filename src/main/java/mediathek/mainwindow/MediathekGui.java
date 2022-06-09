@@ -133,7 +133,7 @@ public class MediathekGui extends JFrame {
      * the global configuration for this app.
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
-    protected EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     /**

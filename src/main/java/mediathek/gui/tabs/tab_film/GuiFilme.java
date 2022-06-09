@@ -24,7 +24,6 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
-import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
@@ -270,15 +269,6 @@ public class GuiFilme extends AGuiTabPanel {
         miBookmarkFilm.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
         miBookmarkFilm.addActionListener(bookmarkFilmAction);
 
-        JMenuItem miOpenBlacklist = new JMenuItem("Blacklist öffnen");
-        if (SystemUtils.IS_OS_MAC_OSX)
-            miOpenBlacklist.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_DOWN_MASK));
-        else
-            miOpenBlacklist.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
-        miOpenBlacklist.setAction(new ShowBlacklistDialogAction(mediathekGui, daten));
-
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
 
@@ -298,7 +288,7 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.addSeparator();
-        menu.add(miOpenBlacklist);
+        menu.add(mediathekGui.editBlacklistAction);
         menu.addSeparator();
         menu.add(cbkShowDescription);
     }
