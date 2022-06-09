@@ -408,7 +408,8 @@ public abstract class MVTable extends JTable {
      * @return the configuration data as string.
      */
     private String prepareTableConfigurationData() {
-        String b, r;
+        StringBuilder b;
+        StringBuilder r;
         int[] reihe_ = new int[maxSpalten];
         int[] breite_ = new int[maxSpalten];
         for (int i = 0; i < reihe_.length && i < getModel().getColumnCount(); ++i) {
@@ -420,11 +421,11 @@ public abstract class MVTable extends JTable {
             breite_[i] = model.getColumn(convertColumnIndexToView(i)).getWidth();
         }
 
-        b = Integer.toString(breite_[0]);
-        r = Integer.toString(reihe_[0]);
+        b = new StringBuilder(Integer.toString(breite_[0]));
+        r = new StringBuilder(Integer.toString(reihe_[0]));
         for (int i = 1; i < breite.length; i++) {
-            b = b + ',' + breite_[i];
-            r = r + ',' + reihe_[i];
+            b.append(',').append(breite_[i]);
+            r.append(',').append(reihe_[i]);
         }
 
         listeSortKeys = this.getRowSorter().getSortKeys();
