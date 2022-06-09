@@ -113,6 +113,7 @@ public class GuiDownloads extends AGuiTabPanel {
     protected DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
     protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
     protected DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
+    protected EditDownloadAction editDownloadAction = new EditDownloadAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -422,10 +423,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         });
 
-        JMenuItem miEditDownload = new JMenuItem("Download ändern");
-        miEditDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-        miEditDownload.addActionListener(e -> editDownload());
-
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
@@ -446,7 +443,7 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(advanceDownloadsAction);
         menu.add(deferDownloadsAction);
         menu.add(deleteDownloadsAction);
-        menu.add(miEditDownload);
+        menu.add(editDownloadAction);
         menu.addSeparator();
         menu.add(cbShowDownloadDescription);
         menu.addSeparator();
@@ -1467,11 +1464,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(advanceDownloadsAction);
             jPopupMenu.add(deferDownloadsAction);
             jPopupMenu.add(deleteDownloadsAction);
-            //Download ändern
-            JMenuItem itemAendern = new JMenuItem("Download ändern");
-            itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-            jPopupMenu.add(itemAendern);
-            itemAendern.addActionListener(arg0 -> editDownload());
+            jPopupMenu.add(editDownloadAction);
 
             jPopupMenu.addSeparator();
             jPopupMenu.add(startAllDownloadsAction);
