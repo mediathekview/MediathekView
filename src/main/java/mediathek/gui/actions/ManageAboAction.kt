@@ -1,9 +1,8 @@
 package mediathek.gui.actions
 
-import jiconfont.icons.font_awesome.FontAwesome
-import jiconfont.swing.IconFontSwing
 import mediathek.gui.abo.ManageAboDialog
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
@@ -22,7 +21,7 @@ class ManageAboAction : AbstractAction() {
 
     init {
         putValue(NAME, "Abos verwalten...")
-        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.DATABASE, 16f))
+        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/database.svg"))
         putValue(SHORT_DESCRIPTION, "Abos verwalten")
     }
 }

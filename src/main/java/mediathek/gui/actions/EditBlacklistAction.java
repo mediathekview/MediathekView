@@ -5,6 +5,7 @@ import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.tool.SVGIconUtilities;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ public class EditBlacklistAction extends AbstractAction {
 
         putValue(NAME, "Blacklist bearbeiten...");
         putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.SKYATLAS, 16f));
+        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/skyatlas.svg"));
         putValue(SHORT_DESCRIPTION, "Blacklist bearbeiten");
     }
 
