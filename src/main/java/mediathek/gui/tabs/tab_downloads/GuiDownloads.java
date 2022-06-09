@@ -25,10 +25,7 @@ import mediathek.daten.abo.DatenAbo;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
-import mediathek.gui.actions.ShowFilmInformationAction;
-import mediathek.gui.actions.StartAllDownloadsAction;
-import mediathek.gui.actions.StartAllDownloadsTimedAction;
-import mediathek.gui.actions.StopAllDownloadsAction;
+import mediathek.gui.actions.*;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
@@ -106,6 +103,8 @@ public class GuiDownloads extends AGuiTabPanel {
     protected StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
     protected StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
     protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
+    protected StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
+    protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -399,22 +398,15 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miStopWaitingDownloads = new JMenuItem("Wartende Downloads stoppen");
-        miStopWaitingDownloads.addActionListener(e -> stopAllWaitingDownloads());
-
-        JMenuItem miUpdateDownloads = new JMenuItem("Liste der Downloads aktualisieren");
-        miUpdateDownloads.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
-        miUpdateDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-        miUpdateDownloads.addActionListener(e -> updateDownloads());
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                miUpdateDownloads.setEnabled(false);
+                refreshDownloadListAction.setEnabled(false);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                miUpdateDownloads.setEnabled(true);
+                refreshDownloadListAction.setEnabled(true);
             }
         });
 
@@ -478,8 +470,8 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(startAllDownloadsAction);
         menu.add(startAllDownloadsTimedAction);
         menu.add(stopAllDownloadsAction);
-        menu.add(miStopWaitingDownloads);
-        menu.add(miUpdateDownloads);
+        menu.add(stopAllWaitingDownloadsAction);
+        menu.add(refreshDownloadListAction);
         menu.add(miCleanupDownloads);
         menu.addSeparator();
         menu.add(miStartDownloads);
