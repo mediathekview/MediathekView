@@ -1,7 +1,5 @@
 package mediathek.gui.actions;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
@@ -20,8 +18,7 @@ public class EditBlacklistAction extends AbstractAction {
         this.parent = parent;
 
         putValue(NAME, "Blacklist bearbeiten...");
-        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.SKYATLAS, 16f));
-        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/skyatlas.svg"));
+        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/rectangle-list.svg"));
         putValue(SHORT_DESCRIPTION, "Blacklist bearbeiten");
         KeyStroke keyStroke;
         if (SystemUtils.IS_OS_MAC_OSX)
