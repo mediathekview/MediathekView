@@ -106,6 +106,7 @@ public class MediathekGui extends JFrame {
     protected final Daten daten = Daten.getInstance();
     protected final JTabbedPane tabbedPane = new JTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
+    protected final SettingsAction settingsAction = new SettingsAction(this);
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -252,6 +253,7 @@ public class MediathekGui extends JFrame {
         commonToolBar.addSeparator();
         commonToolBar.add(manageAboAction);
         commonToolBar.addSeparator();
+        commonToolBar.add(settingsAction);
 
         getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
     }
@@ -830,7 +832,7 @@ public class MediathekGui extends JFrame {
         //on macOS we will use native handlers instead...
         if (!SystemUtils.IS_OS_MAC_OSX) {
             jMenuDatei.addSeparator();
-            jMenuDatei.add(new SettingsAction(this));
+            jMenuDatei.add(settingsAction);
             jMenuDatei.addSeparator();
             jMenuDatei.add(new QuitAction(this));
         }
