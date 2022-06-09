@@ -81,7 +81,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
 
-    private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
@@ -105,6 +104,8 @@ public class GuiDownloads extends AGuiTabPanel {
     protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
     protected StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
     protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
+    protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
+    protected InvertSelectionAction invertSelectionAction = new InvertSelectionAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -396,6 +397,10 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
+    public MVDownloadsTable getTableComponent() {
+        return tabelle;
+    }
+
     @Override
     public void installMenuEntries(JMenu menu) {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -409,10 +414,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 refreshDownloadListAction.setEnabled(true);
             }
         });
-
-        JMenuItem miCleanupDownloads = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
-        miCleanupDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
-        miCleanupDownloads.addActionListener(e -> cleanupDownloads());
 
         JMenuItem miStartDownloads = new JMenuItem("Ausgewählte Downloads starten");
         miStartDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
@@ -449,9 +450,6 @@ public class GuiDownloads extends AGuiTabPanel {
         miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
         miPlayDownload.addActionListener(e -> filmAbspielen());
 
-        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
-        miInvertSelection.addActionListener(e -> tabelle.invertSelection());
-
         JMenuItem miShutdownAfterDownload = new JMenuItem("Aktion nach abgeschlossenen Downloads...");
         miShutdownAfterDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
         miShutdownAfterDownload.addActionListener(e -> {
@@ -472,7 +470,7 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(stopAllDownloadsAction);
         menu.add(stopAllWaitingDownloadsAction);
         menu.add(refreshDownloadListAction);
-        menu.add(miCleanupDownloads);
+        menu.add(cleanupDownloadListAction);
         menu.addSeparator();
         menu.add(miStartDownloads);
         menu.add(miStopDownloads);
@@ -487,7 +485,7 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(miMarkFilmAsUnseen);
         menu.add(miPlayDownload);
         menu.addSeparator();
-        menu.add(miInvertSelection);
+        menu.add(invertSelectionAction);
         menu.addSeparator();
         menu.add(miShutdownAfterDownload);
     }
@@ -1519,27 +1517,15 @@ public class GuiDownloads extends AGuiTabPanel {
             itemAendern.addActionListener(arg0 -> editDownload());
 
             jPopupMenu.addSeparator();
-
             jPopupMenu.add(startAllDownloadsAction);
-
-            JMenuItem itemAlleStoppen = new JMenuItem("Alle Downloads stoppen");
-            itemAlleStoppen.addActionListener(arg0 -> stoppen(true));
-            jPopupMenu.add(itemAlleStoppen);
+            jPopupMenu.add(stopAllDownloadsAction);
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(arg0 -> stopAllWaitingDownloads());
 
-            JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-            jPopupMenu.add(itemAktualisieren);
-            itemAktualisieren.addActionListener(arg0 -> updateDownloads());
-
-            JMenuItem itemAufraeumen = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
-            itemAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
-            jPopupMenu.add(itemAufraeumen);
-            itemAufraeumen.addActionListener(arg0 -> cleanupDownloads());
-
+            jPopupMenu.add(refreshDownloadListAction);
+            jPopupMenu.add(cleanupDownloadListAction);
             jPopupMenu.addSeparator();
 
             // Film abspielen
