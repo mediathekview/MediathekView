@@ -130,13 +130,13 @@ public class MediathekGui extends JFrame {
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    public ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
     /**
      * the global configuration for this app.
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
-    protected ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
     /**
      * Bandwidth monitoring for downloads.
      */

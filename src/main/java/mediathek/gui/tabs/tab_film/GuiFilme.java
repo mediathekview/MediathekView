@@ -288,6 +288,7 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.addSeparator();
+        menu.add(mediathekGui.toggleBlacklistAction);
         menu.add(mediathekGui.editBlacklistAction);
         menu.addSeparator();
         menu.add(cbkShowDescription);
