@@ -135,6 +135,7 @@ public class MediathekGui extends JFrame {
     protected Configuration config = ApplicationConfiguration.getConfiguration();
     protected EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     protected JToolBar commonToolBar = new JToolBar();
+    protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -153,6 +154,7 @@ public class MediathekGui extends JFrame {
      * A weak reference to the table data model filtering progress indicator(s).
      */
     private WeakReference<HBox> indicatorLayout;
+
     public MediathekGui() {
         ui = this;
 
@@ -252,6 +254,8 @@ public class MediathekGui extends JFrame {
         commonToolBar.add(editBlacklistAction);
         commonToolBar.addSeparator();
         commonToolBar.add(manageAboAction);
+        commonToolBar.addSeparator();
+        commonToolBar.add(manageBookmarkAction);
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
 
@@ -537,6 +541,7 @@ public class MediathekGui extends JFrame {
             }
         });
     }
+
     @Handler
     private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
         final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);
@@ -857,9 +862,6 @@ public class MediathekGui extends JFrame {
 
         });
 
-        JMenuItem showBookmarkList = new JMenuItem("Merkliste anzeigen");
-        showBookmarkList.addActionListener(l -> JavaFxUtils.invokeInFxThreadAndWait(() -> tabFilme.showBookmarkWindow()));
-
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
@@ -868,7 +870,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(new ShowFilmInformationAction(true));
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showBookmarkList);
+        jMenuAnsicht.add(manageBookmarkAction);
     }
 
     private void createHelpMenu() {
@@ -1117,4 +1119,5 @@ public class MediathekGui extends JFrame {
             Log4jShutdownCallbackRegistry.Companion.execute();
         }
     }
+
 }
