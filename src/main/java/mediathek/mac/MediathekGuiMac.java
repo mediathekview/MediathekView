@@ -1,5 +1,6 @@
 package mediathek.mac;
 
+import com.formdev.flatlaf.util.SystemInfo;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.ShowAboutAction;
 import mediathek.gui.messages.DownloadFinishedEvent;
@@ -13,6 +14,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
@@ -135,5 +137,15 @@ public class MediathekGuiMac extends MediathekGui {
 
         if (desktop.isSupported(Desktop.Action.APP_PREFERENCES))
             desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
+
+        getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
+        System.setProperty("apple.awt.application.appearance", "system");
+
+        if (SystemInfo.isMacFullWindowContentSupported) {
+            getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
+            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+
+            commonToolBar.add(Box.createHorizontalStrut(70),0);
+        }
     }
 }

@@ -122,7 +122,7 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JFXPanel statusBarPanel = new JFXPanel();
-    private final LoadFilmListAction loadFilmListAction;
+    protected final LoadFilmListAction loadFilmListAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction();
     private final InfoDialog filmInfo;
@@ -151,6 +151,13 @@ public class MediathekGui extends JFrame {
      */
     private WeakReference<HBox> indicatorLayout;
 
+    protected JToolBar commonToolBar = new JToolBar();
+    protected void createCommonToolBar() {
+        commonToolBar.add(loadFilmListAction);
+
+        getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+    }
+
     public MediathekGui() {
         ui = this;
 
@@ -163,6 +170,9 @@ public class MediathekGui extends JFrame {
 
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
+
+        createCommonToolBar();
+
         contentPane.add(statusBarPanel, BorderLayout.PAGE_END);
 
         setIconAndWindowImage();
