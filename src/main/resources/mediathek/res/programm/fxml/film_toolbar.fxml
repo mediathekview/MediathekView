@@ -9,17 +9,6 @@
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
-    <Button mnemonicParsing="false" fx:id="btnDownloadFilmList">
-        <tooltip>
-            <Tooltip text="Neue Filmliste laden"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="CLOUD_DOWNLOAD" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <VerticalSeparator/>
-
     <Button mnemonicParsing="false" fx:id="btnFilmInfo">
         <tooltip>
             <Tooltip text="Filminformation anzeigen"/>

@@ -298,12 +298,12 @@ public class FilmActionPanel {
 
   @Handler
   private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
-    Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(true));
+      SwingUtilities.invokeLater(() -> MediathekGui.ui().loadFilmListAction.setEnabled(false));
   }
 
   @Handler
   private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
-    Platform.runLater(() -> toolBar.btnDownloadFilmList.setDisable(false));
+      SwingUtilities.invokeLater(() -> MediathekGui.ui().loadFilmListAction.setEnabled(true));
   }
 
     private void searchFieldFinalAction() {
@@ -422,8 +422,6 @@ public class FilmActionPanel {
 
   private void setupToolBar() {
     toolBar = new FXFilmToolBar();
-    toolBar.btnDownloadFilmList.setOnAction(e -> SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().performFilmListLoadOperation(false)));
     toolBar.btnFilmInfo.setOnAction(
         e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
     toolBar.btnPlay.setOnAction(evt ->
