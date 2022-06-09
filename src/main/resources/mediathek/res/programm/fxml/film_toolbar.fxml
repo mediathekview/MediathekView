@@ -61,17 +61,6 @@
         </graphic>
     </ToggleButton>
     
-    <Button mnemonicParsing="false" fx:id="btnManageBookMarks">
-        <tooltip>
-            <Tooltip text="Merkliste verwalten"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="FILE_TEXT" fontSize="16"/>
-        </graphic>
-    </Button>
-    
-    <Separator orientation="VERTICAL" />
-    
     <Region HBox.hgrow="ALWAYS"/>
 
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">

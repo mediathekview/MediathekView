@@ -433,9 +433,6 @@ public class FilmActionPanel {
     toolBar.btnBookmark.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkFilmAction.actionPerformed(null)));
-    toolBar.btnManageBookMarks.setOnAction(e ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.bookmarkManageListAction.actionPerformed(null)));
     toolBar.btnShowFilter.setOnAction(e ->
             SwingUtilities.invokeLater(() -> {
                   if (filterDialog != null) {

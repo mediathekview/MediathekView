@@ -139,7 +139,6 @@ public class MediathekGuiMac extends MediathekGui {
             desktop.setPreferencesHandler(e -> getSettingsDialog().setVisible(true));
 
         getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
-        System.setProperty("apple.awt.application.appearance", "system");
 
         if (SystemInfo.isMacFullWindowContentSupported) {
             getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
