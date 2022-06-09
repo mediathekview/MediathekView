@@ -1,8 +1,7 @@
 package mediathek.gui.actions
 
-import jiconfont.icons.font_awesome.FontAwesome
-import jiconfont.swing.IconFontSwing
 import mediathek.daten.ListeAbo
+import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
@@ -13,6 +12,6 @@ class CreateNewAboAction(private val listeAbo: ListeAbo) : AbstractAction() {
 
     init {
         putValue(NAME, "Abo anlegen...")
-        putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.PLUS, 16f))
+        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"))
     }
 }
