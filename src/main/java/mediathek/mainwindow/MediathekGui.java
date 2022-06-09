@@ -129,13 +129,14 @@ public class MediathekGui extends JFrame {
     private final InfoDialog filmInfo;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
+    public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     /**
      * the global configuration for this app.
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
-    public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
+    protected ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -250,7 +251,10 @@ public class MediathekGui extends JFrame {
 
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
+        commonToolBar.addSeparator();
+        commonToolBar.add(toggleBlacklistAction);
         commonToolBar.add(editBlacklistAction);
+        commonToolBar.addSeparator();
         commonToolBar.add(manageAboAction);
         commonToolBar.add(manageBookmarkAction);
         commonToolBar.add(settingsAction);

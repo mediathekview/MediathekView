@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import mediathek.javafx.filterpanel.BlacklistButton?>
 <?import mediathek.javafx.filterpanel.FXSearchControl?>
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
@@ -36,7 +35,9 @@
             <Glyph fontFamily="FontAwesome" icon="DOWNLOAD" fontSize="16"/>
         </graphic>
     </Button>
-    
+
+    <VerticalSeparator/>
+
     <Button mnemonicParsing="false" fx:id="btnBookmark">
         <tooltip>
             <Tooltip text="Film merken"/>
@@ -45,12 +46,6 @@
             <Glyph fontFamily="FontAwesome" icon="BOOKMARK_ALT" fontSize="16"/>
         </graphic>
     </Button>
-
-    <Separator orientation="VERTICAL" />
-
-    <BlacklistButton mnemonicParsing="false"/>
-
-    <VerticalSeparator/>
 
     <ToggleButton mnemonicParsing="false" fx:id="btnShowBookmarkedMovies">
         <tooltip>
