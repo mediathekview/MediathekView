@@ -436,10 +436,6 @@ public class FilmActionPanel {
     toolBar.btnManageBookMarks.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.bookmarkManageListAction.actionPerformed(null)));
-    toolBar.btnManageAbos.setOnAction(e ->
-            SwingUtilities.invokeLater(() -> {
-                  if (manageAboAction.isEnabled()) manageAboAction.actionPerformed(null);
-                }));
     toolBar.btnShowFilter.setOnAction(e ->
             SwingUtilities.invokeLater(() -> {
                   if (filterDialog != null) {

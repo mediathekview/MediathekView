@@ -23,5 +23,6 @@ class ManageAboAction : AbstractAction() {
     init {
         putValue(NAME, "Abos verwalten...")
         putValue(SMALL_ICON, IconFontSwing.buildIcon(FontAwesome.DATABASE, 16f))
+        putValue(SHORT_DESCRIPTION, "Abos verwalten")
     }
 }

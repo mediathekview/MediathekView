@@ -155,6 +155,8 @@ public class MediathekGui extends JFrame {
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.addSeparator();
+        commonToolBar.add(manageAboAction);
+        commonToolBar.addSeparator();
 
         getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
     }
@@ -171,8 +173,6 @@ public class MediathekGui extends JFrame {
 
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-
-        createCommonToolBar();
 
         contentPane.add(statusBarPanel, BorderLayout.PAGE_END);
 
@@ -205,6 +205,8 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         setupNotificationCenter();
+
+        createCommonToolBar();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 

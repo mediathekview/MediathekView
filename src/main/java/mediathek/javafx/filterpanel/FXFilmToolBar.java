@@ -26,8 +26,6 @@ public class FXFilmToolBar extends ToolBar {
 
   @FXML Button btnBookmark;
 
-  @FXML Button btnManageAbos;
-
   @FXML ToggleButton btnShowBookmarkedMovies;
 
   @FXML Button btnManageBookMarks;

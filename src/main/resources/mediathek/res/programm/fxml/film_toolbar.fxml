@@ -54,17 +54,6 @@
 
     <VerticalSeparator/>
 
-    <Button mnemonicParsing="false" fx:id="btnManageAbos">
-        <tooltip>
-            <Tooltip text="Abos verwalten"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="DATABASE" fontSize="16"/>
-        </graphic>
-    </Button>
-    
-   <Separator orientation="VERTICAL" /> 
-    
     <ToggleButton mnemonicParsing="false" fx:id="btnShowBookmarkedMovies">
         <tooltip>
             <Tooltip text="gemerkte Filme"/>
