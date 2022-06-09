@@ -1,9 +1,9 @@
 package mediathek.gui.actions;
 
-import com.formdev.flatlaf.icons.FlatHelpButtonIcon;
 import javafx.application.Platform;
 import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.javafx.FXErrorDialog;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
-        putValue(SMALL_ICON, new FlatHelpButtonIcon());
+        putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
     }
 
     @Override
