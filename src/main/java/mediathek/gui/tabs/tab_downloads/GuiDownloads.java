@@ -10,8 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
 import javafx.stage.Modality;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
@@ -114,6 +112,8 @@ public class GuiDownloads extends AGuiTabPanel {
     protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
     protected DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
     protected EditDownloadAction editDownloadAction = new EditDownloadAction(this);
+    protected DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
+    protected OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -883,7 +883,7 @@ public class GuiDownloads extends AGuiTabPanel {
         daten.getListeDownloads().downloadsVorziehen(arrayDownloads);
     }
 
-    private void zielordnerOeffnen() {
+    public void zielordnerOeffnen() {
         DatenDownload datenDownload = getSelDownload();
         if (datenDownload == null) {
             return;
@@ -901,7 +901,7 @@ public class GuiDownloads extends AGuiTabPanel {
         OpenPlayerAction.filmAbspielen(mediathekGui, s);
     }
 
-    private void filmLoeschen_() {
+    public void filmLoeschen_() {
         DatenDownload datenDownload = getSelDownload();
         if (datenDownload == null) {
             return;
@@ -1427,7 +1427,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         }
-
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1478,18 +1477,8 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(cleanupDownloadListAction);
             jPopupMenu.addSeparator();
             jPopupMenu.add(playDownloadAction);
-            // Film löschen
-            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
-
-            itemDeleteDownload.addActionListener(e -> filmLoeschen_());
-            jPopupMenu.add(itemDeleteDownload);
-            // Zielordner öffnen
-            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-            jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(e -> zielordnerOeffnen());
-
+            jPopupMenu.add(deleteDownloadAction);
+            jPopupMenu.add(openTargetFolderAction);
             jPopupMenu.addSeparator();
 
             //Abo ändern
