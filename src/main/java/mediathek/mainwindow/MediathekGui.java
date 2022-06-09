@@ -98,6 +98,7 @@ public class MediathekGui extends JFrame {
      * "Pointer" to UI
      */
     private static MediathekGui ui;
+    public final LoadFilmListAction loadFilmListAction;
     /**
      * Number of active downloads
      */
@@ -122,7 +123,6 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final JFXPanel statusBarPanel = new JFXPanel();
-    public final LoadFilmListAction loadFilmListAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction();
     private final InfoDialog filmInfo;
@@ -132,6 +132,8 @@ public class MediathekGui extends JFrame {
      * the global configuration for this app.
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
+    protected EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    protected JToolBar commonToolBar = new JToolBar();
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -150,17 +152,6 @@ public class MediathekGui extends JFrame {
      * A weak reference to the table data model filtering progress indicator(s).
      */
     private WeakReference<HBox> indicatorLayout;
-
-    protected JToolBar commonToolBar = new JToolBar();
-    protected void createCommonToolBar() {
-        commonToolBar.add(loadFilmListAction);
-        commonToolBar.addSeparator();
-        commonToolBar.add(manageAboAction);
-        commonToolBar.addSeparator();
-
-        getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
-    }
-
     public MediathekGui() {
         ui = this;
 
@@ -252,6 +243,17 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    protected void createCommonToolBar() {
+        commonToolBar.add(loadFilmListAction);
+        commonToolBar.addSeparator();
+        commonToolBar.add(editBlacklistAction);
+        commonToolBar.addSeparator();
+        commonToolBar.add(manageAboAction);
+        commonToolBar.addSeparator();
+
+        getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
     }
 
     /**

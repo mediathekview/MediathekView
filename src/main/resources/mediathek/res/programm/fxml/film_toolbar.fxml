@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import mediathek.javafx.filterpanel.BlacklistButton?>
-<?import mediathek.javafx.filterpanel.EditBlacklistButton?>
 <?import mediathek.javafx.filterpanel.FXSearchControl?>
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
@@ -50,7 +49,6 @@
     <Separator orientation="VERTICAL" />
 
     <BlacklistButton mnemonicParsing="false"/>
-    <EditBlacklistButton mnemonicParsing="false" />
 
     <VerticalSeparator/>
 
