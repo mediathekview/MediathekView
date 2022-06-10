@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+<?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
     <Button mnemonicParsing="false" fx:id="btnFilmInfo">
@@ -68,7 +67,7 @@
         </graphic>
     </Button>
 
-    <Region HBox.hgrow="ALWAYS"/>
+    <VerticalSeparator/>
 
     <Button mnemonicParsing="false" fx:id="btnFilter">
         <tooltip>

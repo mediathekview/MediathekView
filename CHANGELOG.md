@@ -1,9 +1,10 @@
 <u>**14.0.0**</u>
 
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
+- Im Download-Tab wurde der "Filter anzeigen/ausblenden"-Button an die anderen ToolBar-Buttons angegliedert.
 
 <u>**13.9.1**</u>
-- 
+
 - Die Binaries für macOS waren beschädigt und mussten erneuert werden.
 
 <u>**13.9.0**</u>
