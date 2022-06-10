@@ -22,7 +22,6 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
-import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -834,6 +833,11 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class PlayFilmAction extends AbstractAction {
+        public PlayFilmAction() {
+            putValue(Action.NAME, "Film abspielen");
+            putValue(Action.SHORT_DESCRIPTION, "Film abspielen");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
+        }
 
         @Override
         public synchronized void actionPerformed(ActionEvent e) {
@@ -890,11 +894,8 @@ public class GuiFilme extends AGuiTabPanel {
         private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
-        private final JMenuItem miPlay = createPlayItem();
         private final JMenuItem miSave = createSaveFilmItem();
         private final JMenuItem miBookmark = createBookmarkFilmItem();
-        private final ShowFilmInformationAction showFilmInformationAction =
-                new ShowFilmInformationAction();
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
@@ -979,13 +980,6 @@ public class GuiFilme extends AGuiTabPanel {
             }
         }
 
-        private JMenuItem createPlayItem() {
-            JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
-            item.addActionListener(playAction);
-            return item;
-        }
-
         private JMenuItem createSaveFilmItem() {
             JMenuItem item = new JMenuItem("Film aufzeichnen");
             item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
@@ -1010,7 +1004,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(miPlay);
+            jPopupMenu.add(playAction);
             jPopupMenu.add(miSave);
             jPopupMenu.add(miBookmark);
             jPopupMenu.addSeparator();
@@ -1105,7 +1099,7 @@ public class GuiFilme extends AGuiTabPanel {
             // Drucken
             jPopupMenu.add(miPrintTable);
 
-            jPopupMenu.add(showFilmInformationAction);
+            jPopupMenu.add(mediathekGui.showFilmInformationAction);
             // History
             res.ifPresent(film -> setupHistoryContextActions(jPopupMenu, film));
             // anzeigen

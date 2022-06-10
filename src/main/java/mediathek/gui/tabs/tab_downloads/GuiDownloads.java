@@ -1351,9 +1351,7 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     public class BeobMausTabelle extends MouseAdapter {
-
-        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
-        DatenDownload datenDownload;
+        private DatenDownload datenDownload;
         private Point p;
 
         @Override
@@ -1558,7 +1556,7 @@ public class GuiDownloads extends AGuiTabPanel {
             });
             jPopupMenu.add(itemUrl);
 
-            jPopupMenu.add(showFilmInformationAction);
+            jPopupMenu.add(mediathekGui.showFilmInformationAction);
 
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }

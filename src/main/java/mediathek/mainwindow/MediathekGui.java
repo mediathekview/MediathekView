@@ -131,6 +131,7 @@ public class MediathekGui extends JFrame {
     public GuiDownloads tabDownloads;
     public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     public ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
+    public ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
     /**
      * the global configuration for this app.
      */
@@ -874,7 +875,6 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
-    protected ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();
