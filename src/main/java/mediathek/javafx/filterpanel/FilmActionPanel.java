@@ -424,7 +424,7 @@ public class FilmActionPanel {
     toolBar = new FXFilmToolBar();
     toolBar.btnPlay.setOnAction(evt ->
             SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
+                () -> MediathekGui.ui().tabFilme.playFilmAction.actionPerformed(null)));
     toolBar.btnRecord.setOnAction(e ->
             SwingUtilities.invokeLater(
                 () -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));

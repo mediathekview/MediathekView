@@ -22,6 +22,7 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.TabPaneIndex;
+import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -81,7 +82,7 @@ public class GuiFilme extends AGuiTabPanel {
     private static final int[] BUTTON_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
             DatenFilm.FILM_MERKEN};
     public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
-    public final PlayFilmAction playAction = new PlayFilmAction();
+    public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -241,15 +242,6 @@ public class GuiFilme extends AGuiTabPanel {
     public void installMenuEntries(JMenu menu) {
         KeyStroke keyStroke;
 
-        JMenuItem miPlayFilm = new JMenuItem("Film abspielen");
-        if (SystemUtils.IS_OS_MAC_OSX)
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F6, GuiFunktionen.getPlatformControlKey());
-        else
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_P, GuiFunktionen.getPlatformControlKey());
-        miPlayFilm.setAccelerator(keyStroke);
-        miPlayFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
-        miPlayFilm.addActionListener(playAction);
-
         JMenuItem miRecordFilm = new JMenuItem("Film aufzeichnen");
         if (SystemUtils.IS_OS_MAC_OSX) {
             keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
@@ -282,7 +274,7 @@ public class GuiFilme extends AGuiTabPanel {
                 KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
-        menu.add(miPlayFilm);
+        menu.add(playFilmAction);
         menu.add(miRecordFilm);
         menu.add(miBookmarkFilm);
         menu.addSeparator();
@@ -383,7 +375,7 @@ public class GuiFilme extends AGuiTabPanel {
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN);
 
         final ActionMap actionMap = tabelle.getActionMap();
-        actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playAction);
+        actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playFilmAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
         actionMap.put(ACTION_MAP_KEY_BOOKMARK_FILM, bookmarkFilmAction);
         actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL));
@@ -832,27 +824,6 @@ public class GuiFilme extends AGuiTabPanel {
                 decoratedPool);
     }
 
-    public class PlayFilmAction extends AbstractAction {
-        public PlayFilmAction() {
-            putValue(Action.NAME, "Film abspielen");
-            putValue(Action.SHORT_DESCRIPTION, "Film abspielen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
-        }
-
-        @Override
-        public synchronized void actionPerformed(ActionEvent e) {
-            DatenPset pset = Daten.listePset.getPsetAbspielen();
-            if (pset != null) {
-                playerStarten(pset);
-            } else {
-                MVMessageDialog.showMessageDialog(mediathekGui,
-                        "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
-                        "kein Videoplayer!",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }
-
     public class SaveFilmAction extends AbstractAction {
 
         @Override
@@ -965,7 +936,7 @@ public class GuiFilme extends AGuiTabPanel {
                                 }
                             }
                             if (!stop) {
-                                playAction.actionPerformed(null);
+                                playFilmAction.actionPerformed(null);
                             }
                         });
                     }
@@ -1004,7 +975,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(playAction);
+            jPopupMenu.add(playFilmAction);
             jPopupMenu.add(miSave);
             jPopupMenu.add(miBookmark);
             jPopupMenu.addSeparator();
