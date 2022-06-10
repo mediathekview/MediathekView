@@ -1,6 +1,7 @@
 <u>**14.0.0**</u>
 
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
+- **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
 - Im Download-Tab wurde der "Filter anzeigen/ausblenden"-Button an die anderen ToolBar-Buttons angegliedert.
 
 <u>**13.9.1**</u>
