@@ -3,8 +3,6 @@ package mediathek.gui.dialog;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
@@ -321,7 +319,7 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void setupDeleteHistoryButton() {
-        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonDelHistory.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
         jButtonDelHistory.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));

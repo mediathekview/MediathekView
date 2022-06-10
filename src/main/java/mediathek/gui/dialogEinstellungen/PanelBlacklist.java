@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -50,7 +48,7 @@ public class PanelBlacklist extends JPanel {
         initComponents();
         name = nname;
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonTabelleLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonTabelleLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
 
         jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
 
