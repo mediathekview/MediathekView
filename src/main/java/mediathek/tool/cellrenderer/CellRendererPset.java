@@ -1,6 +1,5 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.config.Icons;
 import mediathek.daten.DatenPset;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.logging.log4j.LogManager;
@@ -12,7 +11,6 @@ import java.awt.*;
 
 public class CellRendererPset extends DefaultTableCellRenderer {
     private static final ImageIcon ja_16 = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg");
-    private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
     private static final Logger logger = LogManager.getLogger();
 
     public CellRendererPset() {
@@ -49,7 +47,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 if (datenPset.istAbspielen()) {
                     setIcon(ja_16);
                 } else {
-                    setIcon(nein_12);
+                    setIcon(null);
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN) {
@@ -58,7 +56,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 if (datenPset.istSpeichern()) {
                     setIcon(ja_16);
                 } else {
-                    setIcon(nein_12);
+                    setIcon(null);
                 }
             }
         } catch (Exception ex) {

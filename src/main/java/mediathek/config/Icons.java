@@ -25,8 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
-
     // Icons TABBED_PANE
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", 32, 32);
     public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", 32, 32);
