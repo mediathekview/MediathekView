@@ -1,12 +1,11 @@
 package mediathek.gui.dialog
 
-import jiconfont.icons.font_awesome.FontAwesome
-import jiconfont.swing.IconFontSwing
 import mediathek.config.Daten
 import mediathek.file.GetFile
 import mediathek.javafx.AppTerminationIndefiniteProgress
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.SVGIconUtilities
 import java.awt.BorderLayout
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -39,7 +38,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     private val btnContinue: JButton = JButton("Weiter")
     private val cbShutdownComputer: JCheckBox = JCheckBox("Rechner herunterfahren")
     private val btnCancel: JButton = JButton("Abbrechen")
-    private val jButtonHilfe: JButton = JButton(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16f))
+    private val jButtonHilfe: JButton = JButton(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
 
     /**
      * Return whether the user still wants to terminate the application.

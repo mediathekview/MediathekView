@@ -11,8 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.util.Duration;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -991,21 +989,21 @@ public class GuiFilme extends AGuiTabPanel {
 
         private JMenuItem createPlayItem() {
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
+            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
             item.addActionListener(playAction);
             return item;
         }
 
         private JMenuItem createSaveFilmItem() {
             JMenuItem item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
+            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
             item.addActionListener(saveFilmAction);
             return item;
         }
 
         private JMenuItem createBookmarkFilmItem() {
             JMenuItem item = new JMenuItem("Film merken");
-            item.setIcon(IconFontSwing.buildIcon(FontAwesome.BOOKMARK_O, 16));
+            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
             item.addActionListener(bookmarkFilmAction);
             return item;
         }
