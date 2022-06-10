@@ -1,10 +1,10 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,34 +22,41 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
     private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
-    private final Icon film_start_tab;
+    private final FlatSVGIcon film_start_tab;
     private final Icon film_start_sw_tab;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
-    private final Icon download_stop_tab;
-    private final Icon download_stop_sw_tab;
-    private final Icon download_start_tab;
+    private final FlatSVGIcon download_stop_tab;
+    private final FlatSVGIcon download_stop_sw_tab;
+    private final FlatSVGIcon download_start_tab;
     private final Icon download_start_sw_tab;
-    private final Icon download_clear_tab_selected;
+    private final FlatSVGIcon download_clear_tab_selected;
     private final Icon download_clear_sw_tab;
-    private final Icon download_del_tab_selected;
+    private final FlatSVGIcon download_del_tab_selected;
     private final Icon download_del_sw_tab;
     private JProgressBar progressBar;
 
     public CellRendererDownloads() {
-        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
-        download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
-        download_start_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16, Color.WHITE);
-        download_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16);
-        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, Color.WHITE);
-        download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
+        var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
-        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, Color.WHITE);
-        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TRASH, 16);
+        download_stop_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+        download_stop_tab.setColorFilter(whiteColorFilter);
+        download_stop_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+        download_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
+        download_start_tab.setColorFilter(whiteColorFilter);
+        download_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
+        download_clear_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
+        download_clear_tab_selected.setColorFilter(whiteColorFilter);
+        download_clear_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
 
-        film_start_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
-        film_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
+        download_del_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
+        download_del_tab_selected.setColorFilter(whiteColorFilter);
+        download_del_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
+
+        film_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+        film_start_tab.setColorFilter(whiteColorFilter);
+        film_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
 
         setupProgressBar();
 
