@@ -85,7 +85,6 @@ public class GuiFilme extends AGuiTabPanel {
     public final PlayFilmAction playAction = new PlayFilmAction();
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
-    public final BookmarkManageListAction bookmarkManageListAction = new BookmarkManageListAction();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
@@ -863,13 +862,6 @@ public class GuiFilme extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             bookmarkFilm();
-        }
-    }
-
-    public class BookmarkManageListAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            showBookmarkWindow();
         }
     }
 
