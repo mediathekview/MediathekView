@@ -6,6 +6,7 @@ import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +37,7 @@ public class PanelProgrammPfade extends JPanel {
     private void init() {
         jButtonVlcPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
         jButtonFFmpegPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jPanelVlc.setVisible(vlc);
 
         jPanelFFmpeg.setVisible(ffmpeg);

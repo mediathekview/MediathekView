@@ -2,8 +2,6 @@ package mediathek.gui.dialog;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -51,7 +49,7 @@ public class DialogFilmBeschreibung extends JDialog {
             dispose();
         });
 
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Hilfe zu " + TITLE);

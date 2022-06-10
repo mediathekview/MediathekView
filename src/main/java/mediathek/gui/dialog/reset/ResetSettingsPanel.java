@@ -1,7 +1,5 @@
 package mediathek.gui.dialog.reset;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
@@ -10,6 +8,7 @@ import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.swing.MultilineLabel;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -25,7 +24,7 @@ public class ResetSettingsPanel extends JPanel {
     public ResetSettingsPanel(JFrame parent) {
         initComponents();
 
-        jButtonHilfeReset.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHilfeReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();

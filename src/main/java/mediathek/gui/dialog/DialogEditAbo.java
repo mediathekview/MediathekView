@@ -1,7 +1,5 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.abo.AboTags;
@@ -91,7 +89,7 @@ public class DialogEditAbo extends JDialog {
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 
-        jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
 
         if (comboboxPSet.getModel().getSize() == 0) {

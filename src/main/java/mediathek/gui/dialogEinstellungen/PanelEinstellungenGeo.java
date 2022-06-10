@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.daten.GeoblockingField;
 import mediathek.file.GetFile;
@@ -10,6 +8,7 @@ import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -62,7 +61,7 @@ public class PanelEinstellungenGeo extends JPanel {
             config.setProperty(ApplicationConfiguration.GEO_REPORT, jCheckBoxMarkieren.isSelected());
             filterBlacklistAndNotifyChanges();
         });
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 

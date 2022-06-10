@@ -1,16 +1,14 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.SVGIconUtilities;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class DialogNewSet extends JDialog {
     public boolean ok;
     public boolean morgen = true;
@@ -64,7 +62,7 @@ public class DialogNewSet extends JDialog {
                 beenden();
             }
         });
-        jButtonSetHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonSetHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonSetHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
 
         EscapeKeyHandler.installHandler(this, () -> {

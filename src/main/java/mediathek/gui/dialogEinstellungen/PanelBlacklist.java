@@ -49,7 +49,7 @@ public class PanelBlacklist extends JPanel {
 
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonTabelleLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
 
         jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);

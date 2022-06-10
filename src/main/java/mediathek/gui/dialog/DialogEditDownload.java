@@ -10,6 +10,7 @@ import mediathek.daten.FilmResolution;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -354,7 +355,7 @@ public class DialogEditDownload extends JDialog {
                             jButtonReset.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
                             jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
-                            jButtonHelp.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
+                            jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
                             jButtonHelp.setToolTipText("Hilfe anzeigen");
                             jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
 
