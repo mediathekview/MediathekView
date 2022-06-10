@@ -13,6 +13,7 @@ public class RefreshDownloadListAction extends AbstractAction {
     public RefreshDownloadListAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Liste der Downloads aktualisieren");
+        putValue(Action.SHORT_DESCRIPTION, "Downloadliste aktualisieren");
         putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
     }
