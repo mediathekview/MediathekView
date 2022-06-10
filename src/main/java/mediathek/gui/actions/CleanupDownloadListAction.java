@@ -12,6 +12,7 @@ public class CleanupDownloadListAction extends AbstractAction {
     public CleanupDownloadListAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Liste säubern");
+        putValue(Action.SHORT_DESCRIPTION, "Liste säubern");
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg"));
     }
 

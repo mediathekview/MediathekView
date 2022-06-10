@@ -28,10 +28,8 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
-import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -113,6 +111,8 @@ public class GuiDownloads extends AGuiTabPanel {
     protected EditDownloadAction editDownloadAction = new EditDownloadAction(this);
     protected DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
     protected OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
+    protected ToggleFilterPanelAction toggleFilterPanelAction = new ToggleFilterPanelAction();
+    protected JToolBar swingToolBar = new JToolBar();
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -139,7 +139,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JEditorPane txtDownload;
     private JScrollPane downloadListScrollPane;
     private JFXPanel fxDescriptionPanel;
-    private JFXPanel toolBarPanel;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -168,8 +167,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupCheckboxView();
 
-        setupToolBar();
-
         setupDownloadRateLimitSpinner();
 
         setupFilterPanel();
@@ -185,29 +182,6 @@ public class GuiDownloads extends AGuiTabPanel {
         if (tabelle != null) {
             tabelle.writeTableConfigurationData();
         }
-    }
-
-    private void setupToolBar() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var toolBar = new FXDownloadToolBar();
-            toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
-            toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
-            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> MessageBus.getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
-
-            Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-                @Override
-                public void start(ListenerFilmeLadenEvent event) {
-                    SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
-                }
-
-                @Override
-                public void fertig(ListenerFilmeLadenEvent event) {
-                    SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
-                }
-            });
-
-            toolBarPanel.setScene(new Scene(toolBar));
-        });
     }
 
     private void setupF4Key(MediathekGui mediathekGui) {
@@ -339,13 +313,10 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
-    @Handler
-    private void handleDownloadFilterVisibilityChanged(DownloadFilterVisibilityChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            boolean visibility = !jPanelFilterExtern.isVisible();
-            updateFilterVisibility(visibility);
-            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(visibility));
-        });
+    protected void toggleDownloadFilterPanel() {
+        boolean visibility = !jPanelFilterExtern.isVisible();
+        updateFilterVisibility(visibility);
+        MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(visibility));
     }
 
     private void updateFilterVisibility(boolean visible) {
@@ -1231,7 +1202,6 @@ public class GuiDownloads extends AGuiTabPanel {
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
         fxDescriptionPanel = new JFXPanel();
-        toolBarPanel = new JFXPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1343,22 +1313,49 @@ public class GuiDownloads extends AGuiTabPanel {
             jSplitPane1.setRightComponent(downloadListArea);
         }
         add(jSplitPane1, BorderLayout.CENTER);
-        JPanel inprogressWorkPanel = new JPanel();
-        inprogressWorkPanel.setLayout(new BorderLayout());
-        inprogressWorkPanel.add(swingToolBar, BorderLayout.NORTH);
-        inprogressWorkPanel.add(toolBarPanel, BorderLayout.SOUTH);
-        add(inprogressWorkPanel, BorderLayout.NORTH);
+        add(swingToolBar, BorderLayout.NORTH);
 
         createSwingToolBar();
     }
 
     protected void createSwingToolBar() {
+        swingToolBar.setFloatable(true);
+        swingToolBar.setName("Downloads");
+
         swingToolBar.add(refreshDownloadListAction);
         swingToolBar.add(startAllDownloadsAction);
         swingToolBar.add(playDownloadAction);
         swingToolBar.add(deferDownloadsAction);
+        swingToolBar.add(deleteDownloadsAction);
+        swingToolBar.add(cleanupDownloadListAction);
+        swingToolBar.addSeparator();
+        swingToolBar.add(toggleFilterPanelAction);
+
+        Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
+            }
+        });
     }
-    protected JToolBar swingToolBar = new JToolBar();
+
+    class ToggleFilterPanelAction extends AbstractAction {
+        public ToggleFilterPanelAction() {
+            putValue(Action.NAME, "Filter anzeigen/ausblenden");
+            putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen/ausblenden");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleDownloadFilterPanel();
+        }
+    }
 
     public class BeobMausTabelle extends MouseAdapter {
         private DatenDownload datenDownload;

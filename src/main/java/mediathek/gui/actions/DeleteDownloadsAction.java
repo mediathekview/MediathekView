@@ -12,6 +12,7 @@ public class DeleteDownloadsAction extends AbstractAction {
     public DeleteDownloadsAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Downloads aus Liste entfernen");
+        putValue(Action.SHORT_DESCRIPTION, "Downloads entfernen");
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
     }
 
