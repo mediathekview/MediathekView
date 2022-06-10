@@ -1,11 +1,10 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.SVGIconUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +31,7 @@ public class MeldungDownloadfehler extends JDialog {
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         jButtonOk.addActionListener(e -> dispose());
         jLabelIcon.setText("");
-        jLabelIcon.setIcon(IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 32));
+        jLabelIcon.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg", 32f));
 
         //start the countdown...
         countdownTimer = new Timer(0, new CountdownAction());

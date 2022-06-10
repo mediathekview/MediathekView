@@ -1,16 +1,11 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
-import mediathek.tool.MessageBus;
-import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.ReplaceList;
-import mediathek.tool.TextCopyPasteHandler;
+import mediathek.tool.*;
 import mediathek.tool.models.NonEditableTableModel;
 import net.engio.mbassy.listener.Handler;
 
@@ -24,10 +19,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class PanelDateinamen extends PanelVorlage {
     public boolean ok;
-    public String ziel = "";
 
     @Handler
     private void handleReplaceListChange(ReplaceListChangedEvent e) {
@@ -44,7 +37,7 @@ public class PanelDateinamen extends PanelVorlage {
 
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
-        jLabelAlert.setIcon(IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 32));
+        jLabelAlert.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg", 32f));
         jButtonPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
