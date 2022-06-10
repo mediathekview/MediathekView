@@ -1,6 +1,5 @@
 package mediathek.gui.dialog;
 
-import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
@@ -52,7 +51,7 @@ public class DialogEditDownload extends JDialog {
         datenDownload = ddownload;
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
-        ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
+        ja_sw_16 = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg");
         columnModel = colModel;
 
         orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];

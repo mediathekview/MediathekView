@@ -25,9 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    public static final ImageIcon ICON_DIALOG_EIN_SW = GetIcon.getProgramIcon("dialog-ein-sw.png", 16, 16);
-
-    public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
 
     // Icons TABBED_PANE
