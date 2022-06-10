@@ -4,8 +4,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.daten.abo.AboTags;
 import mediathek.daten.abo.DatenAbo;
@@ -16,6 +14,7 @@ import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
@@ -165,19 +164,19 @@ public class ManageAboPanel extends JPanel {
 
     private JPopupMenu createContextMenu() {
         JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
-        itemEinschalten.setIcon(IconFontSwing.buildIcon(FontAwesome.CHECK, 16));
+        itemEinschalten.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg"));
         itemEinschalten.addActionListener(e -> changeAboActiveState(true));
 
         JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
-        itemDeaktivieren.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
+        itemDeaktivieren.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/xmark.svg"));
         itemDeaktivieren.addActionListener(e -> changeAboActiveState(false));
 
         JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-        itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
+        itemLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         itemLoeschen.addActionListener(e -> aboLoeschen());
 
         JMenuItem itemAendern = new JMenuItem("Abo ändern");
-        itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
+        itemAendern.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
         itemAendern.addActionListener(e -> editAbo());
 
         JMenuItem itemNeu = new JMenuItem();
