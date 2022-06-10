@@ -11,7 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
 import javafx.stage.Modality;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.MVUsedUrl;
@@ -550,7 +549,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
                 true, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
 
-        btnClear.setIcon(Icons.ICON_BUTTON_CLEAR);
         btnClear.addActionListener(l -> {
             cbDisplayCategories.setSelectedIndex(0);
             cbView.setSelectedIndex(0);
@@ -1287,7 +1285,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     panel3.add(cbView, new CC().cell(1, 1));
 
                     //---- btnClear ----
-                    btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
+                    btnClear.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/broom.svg")); //NON-NLS
                     btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
                     panel3.add(btnClear, new CC().cell(0, 2, 2, 1).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
                 }
@@ -1542,7 +1540,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         } else {
                             menuPath = "Datei->Einstellungen->Set bearbeiten";
                         }
-                        MVMessageDialog.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
+                        JOptionPane.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                 "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                     });
                 }
