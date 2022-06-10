@@ -74,12 +74,12 @@ public class PanelPsetLang extends PanelVorlage {
     private void init() {
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonGruppePfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonProgPlus.setIcon(Icons.ICON_BUTTON_ADD);
+        jButtonProgPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
         jButtonProgPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonGruppeNeu.setIcon(Icons.ICON_BUTTON_ADD);
+        jButtonGruppeNeu.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
