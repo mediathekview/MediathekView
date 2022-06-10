@@ -1,9 +1,8 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +23,7 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
          setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(l -> {

@@ -6,10 +6,7 @@ import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.FileDialogs;
-import mediathek.tool.FilenameUtils;
+import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -61,7 +58,7 @@ public class DialogAddMoreDownload extends JDialog {
             beenden();
         });
 
-        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonPath.addActionListener(l -> {
             var initialDirectory = "";
             var cbItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();

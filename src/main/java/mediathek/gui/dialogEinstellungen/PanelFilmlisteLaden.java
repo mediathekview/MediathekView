@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
@@ -143,7 +141,7 @@ public class PanelFilmlisteLaden extends JPanel {
     private void init() {
         initRadio();
 
-        jButtonDateiAuswaehlen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonDateiAuswaehlen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonDateiAuswaehlen.addActionListener(l -> {
             var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
             if (loadFile != null) {

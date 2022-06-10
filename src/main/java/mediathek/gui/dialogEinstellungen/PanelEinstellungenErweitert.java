@@ -1,13 +1,12 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
@@ -94,7 +93,7 @@ public class PanelEinstellungenErweitert extends JPanel {
     }
 
     private void setIcon() {
-        var icon = IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16);
+        var icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg");
         jButtonProgrammDateimanager.setIcon(icon);
         jButtonProgrammVideoplayer.setIcon(icon);
         jButtonProgrammUrl.setIcon(icon);

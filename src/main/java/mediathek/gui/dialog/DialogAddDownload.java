@@ -303,7 +303,7 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void setupZielButton() {
-        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonZiel.setText("");
         jButtonZiel.addActionListener(l -> {
             var initialDirectory = "";

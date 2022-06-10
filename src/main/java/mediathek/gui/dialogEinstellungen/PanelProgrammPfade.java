@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -35,8 +33,8 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void init() {
-        jButtonVlcPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonFFmpegPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonVlcPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
+        jButtonFFmpegPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jPanelVlc.setVisible(vlc);
 
