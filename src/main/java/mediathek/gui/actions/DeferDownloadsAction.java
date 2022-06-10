@@ -12,6 +12,7 @@ public class DeferDownloadsAction extends AbstractAction {
     public DeferDownloadsAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Downloads zurückstellen");
+        putValue(Action.SHORT_DESCRIPTION, "Downloads zurückstellen");
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/clock.svg"));
     }
 

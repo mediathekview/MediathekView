@@ -13,14 +13,6 @@ import java.net.URL;
 public class FXDownloadToolBar extends ToolBar {
     private static final Logger logger = LogManager.getLogger(FXDownloadToolBar.class);
     @FXML
-    public Button btnUpdateDownloads;
-    @FXML
-    public Button btnStartAllDownloads;
-    @FXML
-    public Button btnPlayFilm;
-    @FXML
-    public Button btnZurueckstellen;
-    @FXML
     public Button btnRemoveDownload;
     @FXML
     public Button btnCleanup;

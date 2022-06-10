@@ -190,10 +190,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private void setupToolBar() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             var toolBar = new FXDownloadToolBar();
-            toolBar.btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(this::updateDownloads));
-            toolBar.btnStartAllDownloads.setOnAction(e -> SwingUtilities.invokeLater(() -> starten(true)));
-            toolBar.btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(this::filmAbspielen));
-            toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
             toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
             toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
             toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> MessageBus.getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
@@ -201,12 +197,12 @@ public class GuiDownloads extends AGuiTabPanel {
             Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
                 public void start(ListenerFilmeLadenEvent event) {
-                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(true));
+                    SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
                 }
 
                 @Override
                 public void fertig(ListenerFilmeLadenEvent event) {
-                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(false));
+                    SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
                 }
             });
 
@@ -1347,8 +1343,22 @@ public class GuiDownloads extends AGuiTabPanel {
             jSplitPane1.setRightComponent(downloadListArea);
         }
         add(jSplitPane1, BorderLayout.CENTER);
-        add(toolBarPanel, BorderLayout.NORTH);
+        JPanel inprogressWorkPanel = new JPanel();
+        inprogressWorkPanel.setLayout(new BorderLayout());
+        inprogressWorkPanel.add(swingToolBar, BorderLayout.NORTH);
+        inprogressWorkPanel.add(toolBarPanel, BorderLayout.SOUTH);
+        add(inprogressWorkPanel, BorderLayout.NORTH);
+
+        createSwingToolBar();
     }
+
+    protected void createSwingToolBar() {
+        swingToolBar.add(refreshDownloadListAction);
+        swingToolBar.add(startAllDownloadsAction);
+        swingToolBar.add(playDownloadAction);
+        swingToolBar.add(deferDownloadsAction);
+    }
+    protected JToolBar swingToolBar = new JToolBar();
 
     public class BeobMausTabelle extends MouseAdapter {
         private DatenDownload datenDownload;

@@ -12,6 +12,7 @@ public class PlayDownloadAction extends AbstractAction {
     public PlayDownloadAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Gespeicherten Film abspielen");
+        putValue(Action.SHORT_DESCRIPTION, "Film abspielen");
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
     }
 

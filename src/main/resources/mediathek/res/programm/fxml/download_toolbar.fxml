@@ -2,44 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import mediathek.javafx.VerticalSeparator?>
-<?import org.controlsfx.glyphfont.*?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
-    <Button mnemonicParsing="false" fx:id="btnUpdateDownloads">
-        <tooltip>
-            <Tooltip text="Downloadliste aktualisieren"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="REFRESH" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <Button mnemonicParsing="false" fx:id="btnStartAllDownloads">
-        <tooltip>
-            <Tooltip text="Alle Downloads starten"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="ANGLE_DOUBLE_DOWN" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <Button mnemonicParsing="false" fx:id="btnPlayFilm">
-        <tooltip>
-            <Tooltip text="Film abspielen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="PLAY" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <Button mnemonicParsing="false" fx:id="btnZurueckstellen">
-        <tooltip>
-            <Tooltip text="Downloads zurückstellen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="CLOCK_ALT" fontSize="16"/>
-        </graphic>
-    </Button>
-
     <Button mnemonicParsing="false" fx:id="btnRemoveDownload">
         <tooltip>
             <Tooltip text="Downloads entfernen"/>
