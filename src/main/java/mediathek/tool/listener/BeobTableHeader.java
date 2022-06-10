@@ -1,8 +1,7 @@
 package mediathek.tool.listener;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVConfig;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,7 @@ public class BeobTableHeader extends MouseAdapter {
         miResetColumns.addActionListener(e -> tabelle.resetTabelle());
 
         miDecreaseFont = new JMenuItem("Schrift verkleinern");
-        miDecreaseFont.setIcon(IconFontSwing.buildIcon(FontAwesome.MINUS, 16));
+        miDecreaseFont.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         miDecreaseFont.addActionListener(e -> {
             var oldFont = tabelle.getDefaultFont();
             final var oldSize = oldFont.getSize2D();
@@ -86,7 +85,7 @@ public class BeobTableHeader extends MouseAdapter {
         });
 
         miIncreaseFont = new JMenuItem("Schrift vergrößern");
-        miIncreaseFont.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
+        miIncreaseFont.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         miIncreaseFont.addActionListener(e -> {
             var oldFont = tabelle.getDefaultFont();
             final var oldSize = oldFont.getSize2D();

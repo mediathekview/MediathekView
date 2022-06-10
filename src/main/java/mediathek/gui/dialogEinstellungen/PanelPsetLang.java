@@ -1,8 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javafx.scene.control.Alert;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
@@ -86,7 +84,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
 
-        var exclamationIcon = IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 16);
+        var exclamationIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg");
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
 
