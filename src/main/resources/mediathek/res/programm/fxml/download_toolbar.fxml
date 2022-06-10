@@ -4,15 +4,6 @@
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
-    <Button mnemonicParsing="false" fx:id="btnFilmInfo">
-        <tooltip>
-            <Tooltip text="Filminformation anzeigen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
-        </graphic>
-    </Button>
-
     <Button mnemonicParsing="false" fx:id="btnUpdateDownloads">
         <tooltip>
             <Tooltip text="Downloadliste aktualisieren"/>

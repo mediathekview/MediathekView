@@ -7,17 +7,6 @@
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.*?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
-    <Button mnemonicParsing="false" fx:id="btnFilmInfo">
-        <tooltip>
-            <Tooltip text="Filminformation anzeigen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="INFO_CIRCLE" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <VerticalSeparator/>
-
     <Button mnemonicParsing="false" fx:id="btnPlay">
         <tooltip>
             <Tooltip text="Film abspielen"/>

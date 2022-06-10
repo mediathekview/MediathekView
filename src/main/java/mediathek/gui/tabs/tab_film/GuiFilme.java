@@ -894,7 +894,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final JMenuItem miSave = createSaveFilmItem();
         private final JMenuItem miBookmark = createBookmarkFilmItem();
         private final ShowFilmInformationAction showFilmInformationAction =
-                new ShowFilmInformationAction(false);
+                new ShowFilmInformationAction();
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();

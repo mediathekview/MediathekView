@@ -251,6 +251,7 @@ public class MediathekGui extends JFrame {
 
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
+        commonToolBar.add(showFilmInformationAction);
         commonToolBar.addSeparator();
         commonToolBar.add(toggleBlacklistAction);
         commonToolBar.add(editBlacklistAction);
@@ -868,11 +869,12 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showFilmFilterDialog);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(new ShowFilmInformationAction(true));
+        jMenuAnsicht.add(showFilmInformationAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
+    protected ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();

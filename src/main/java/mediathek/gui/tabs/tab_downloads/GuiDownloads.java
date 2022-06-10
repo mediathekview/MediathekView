@@ -190,7 +190,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private void setupToolBar() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             var toolBar = new FXDownloadToolBar();
-            toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
             toolBar.btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(this::updateDownloads));
             toolBar.btnStartAllDownloads.setOnAction(e -> SwingUtilities.invokeLater(() -> starten(true)));
             toolBar.btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(this::filmAbspielen));
@@ -1353,7 +1352,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
     public class BeobMausTabelle extends MouseAdapter {
 
-        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
+        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
         DatenDownload datenDownload;
         private Point p;
 

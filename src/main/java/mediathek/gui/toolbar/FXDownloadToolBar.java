@@ -15,8 +15,6 @@ public class FXDownloadToolBar extends ToolBar {
     @FXML
     public Button btnUpdateDownloads;
     @FXML
-    public Button btnFilmInfo;
-    @FXML
     public Button btnStartAllDownloads;
     @FXML
     public Button btnPlayFilm;
