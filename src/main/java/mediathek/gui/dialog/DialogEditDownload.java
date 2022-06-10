@@ -1,7 +1,5 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -352,7 +350,7 @@ public class DialogEditDownload extends JDialog {
 
                             JButton jButtonReset = new JButton("");
                             jButtonReset.setToolTipText("Reset");
-                            jButtonReset.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
+                            jButtonReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
                             jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
                             jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));

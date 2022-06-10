@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
@@ -37,7 +35,7 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
+        jButtonAktualisieren.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
         jButtonPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(e -> tabelleLaden());
