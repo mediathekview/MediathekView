@@ -1,7 +1,10 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javafx.scene.control.Alert;
-import mediathek.config.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
@@ -76,13 +79,13 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonProgPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         jButtonProgMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonProgAuf.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
+        jButtonProgAb.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
         jButtonProgPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonGruppeNeu.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         jButtonGruppeLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonGruppeAuf.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
+        jButtonGruppeAb.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
 
         var exclamationIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg");
         jLabelMeldungAbspielen.setIcon(exclamationIcon);

@@ -1,7 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ReplaceListChangedEvent;
@@ -40,8 +39,8 @@ public class PanelDateinamen extends PanelVorlage {
         jLabelAlert.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg", 32f));
         jButtonPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
         jButtonMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonDown.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonUp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
+        jButtonDown.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
         jButtonReset.addActionListener(e -> {
             ReplaceList.init();
             tabelleLaden();
