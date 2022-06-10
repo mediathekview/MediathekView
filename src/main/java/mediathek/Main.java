@@ -5,8 +5,6 @@ import com.google.common.base.Stopwatch;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.gui.dialog.DialogStarteinstellungen;
@@ -367,9 +365,6 @@ public class Main {
         splashScreen.ifPresent(SplashScreen::show);
 
         migrateOldConfigSettings();
-
-        //register FontAwesome font here as it may already be used at first start dialog..
-        IconFontSwing.register(FontAwesome.getIconFont());
 
         loadConfigurationData();
 
