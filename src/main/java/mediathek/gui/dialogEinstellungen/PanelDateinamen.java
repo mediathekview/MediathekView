@@ -39,7 +39,7 @@ public class PanelDateinamen extends PanelVorlage {
         jLabelAlert.setText("");
         jLabelAlert.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg", 32f));
         jButtonPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
-        jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
+        jButtonMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonDown.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
         jButtonReset.addActionListener(e -> {

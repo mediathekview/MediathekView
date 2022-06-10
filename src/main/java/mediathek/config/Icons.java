@@ -30,7 +30,6 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
 
-    public static final ImageIcon ICON_BUTTON_REMOVE = GetIcon.getProgramIcon("button-remove.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_DOWN = GetIcon.getProgramIcon("button-move-down.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
 
