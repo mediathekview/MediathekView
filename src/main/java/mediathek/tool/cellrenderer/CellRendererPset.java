@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererPset extends DefaultTableCellRenderer {
     private static final ImageIcon ja_16 = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg");
     private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
