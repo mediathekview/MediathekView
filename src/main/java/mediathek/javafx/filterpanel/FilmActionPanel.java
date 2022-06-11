@@ -42,8 +42,6 @@ public class FilmActionPanel {
   private final PauseTransition finalActionTrans = new PauseTransition(Duration.seconds(1));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
-  private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
-  private final Tooltip bookmarklistDeselected = new Tooltip("Gemerkte Filme anzeigen");
   private final FilterConfiguration filterConfig;
   private final ObservableList<FilterDTO> availableFilters;
   public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
@@ -369,26 +367,6 @@ public class FilmActionPanel {
     toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchIrgendwo);
   }
 
-  private void setupShowBookmarkedMoviesButton() {
-    toolBar.btnShowBookmarkedMovies.setSelected(false);
-    toolBar.btnShowBookmarkedMovies.setTooltip(bookmarklistDeselected);
-    toolBar.btnShowBookmarkedMovies.setOnAction(
-        event ->
-            viewSettingsPane
-                .cbShowBookMarkedOnly
-                .selectedProperty()
-                .set(toolBar.btnShowBookmarkedMovies.isSelected()));
-    showBookMarkedOnly.addListener(
-        (observable, oldValue, benabled) -> {
-          toolBar.btnShowBookmarkedMovies.setTooltip(
-              benabled ? bookmarklistSelected : bookmarklistDeselected);
-          toolBar.btnShowBookmarkedMovies.setSelected(benabled);
-          if (benabled) {
-            toolBar.jfxSearchField.clear();
-          }
-        });
-  }
-
     public void updateThemaBox() {
         final var items = themaBox.getItems();
         items.clear();
@@ -446,8 +424,6 @@ public class FilmActionPanel {
         setupSearchField();
 
         setupSearchThroughDescriptionButton();
-
-        setupShowBookmarkedMoviesButton();
 
         Daten.getInstance().getFilmeLaden().addAdListener(
                 new ListenerFilmeLaden() {

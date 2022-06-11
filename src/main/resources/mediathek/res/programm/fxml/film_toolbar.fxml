@@ -36,15 +36,6 @@
         </graphic>
     </Button>
 
-    <ToggleButton mnemonicParsing="false" fx:id="btnShowBookmarkedMovies">
-        <tooltip>
-            <Tooltip text="gemerkte Filme"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="INBOX" fontSize="16"/>
-        </graphic>
-    </ToggleButton>
-    
     <Region HBox.hgrow="ALWAYS"/>
 
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">
