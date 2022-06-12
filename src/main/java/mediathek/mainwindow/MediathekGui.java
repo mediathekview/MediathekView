@@ -253,12 +253,12 @@ public class MediathekGui extends JFrame {
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.add(showFilmInformationAction);
-        commonToolBar.addSeparator();
         commonToolBar.add(toggleBlacklistAction);
-        commonToolBar.add(editBlacklistAction);
         commonToolBar.addSeparator();
+        commonToolBar.add(editBlacklistAction);
         commonToolBar.add(manageAboAction);
         commonToolBar.add(manageBookmarkAction);
+        commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
 
         getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
