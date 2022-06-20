@@ -261,6 +261,11 @@ public class MediathekGui extends JFrame {
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
 
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            commonToolBar.setFloatable(true);
+            commonToolBar.setName("Allgemein");
+        }
+
         getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
     }
 
