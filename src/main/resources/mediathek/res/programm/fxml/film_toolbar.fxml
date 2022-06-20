@@ -2,13 +2,10 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import mediathek.javafx.filterpanel.FXSearchControl?>
 <?import mediathek.javafx.VerticalSeparator?>
 <?import org.controlsfx.glyphfont.Glyph?>
-<fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
-    <Region HBox.hgrow="ALWAYS"/>
-
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">
         <tooltip>
             <Tooltip text="Aktiver Filter"/>

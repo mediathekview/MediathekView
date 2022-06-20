@@ -175,6 +175,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void createFilmActionPanel() {
         fxFilmActionPanel = new JFXPanel();
+        toolBar.addSeparator();
         toolBar.add(fxFilmActionPanel);
     }
 
