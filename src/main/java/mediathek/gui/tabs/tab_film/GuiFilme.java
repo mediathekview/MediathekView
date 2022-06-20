@@ -147,6 +147,8 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void createToolBar() {
+        add(toolBar, BorderLayout.NORTH);
+
         toolBar.setFloatable(true);
         toolBar.setName("Filme");
 
@@ -172,12 +174,8 @@ public class GuiFilme extends AGuiTabPanel {
     private final JToolBar toolBar = new JToolBar();
 
     private void createFilmActionPanel() {
-        var tempPanel = new JPanel();
-        tempPanel.setLayout(new BorderLayout());
         fxFilmActionPanel = new JFXPanel();
-        tempPanel.add(toolBar, BorderLayout.NORTH);
-        tempPanel.add(fxFilmActionPanel, BorderLayout.SOUTH);
-        add(tempPanel, BorderLayout.NORTH);
+        toolBar.add(fxFilmActionPanel);
     }
 
     /**

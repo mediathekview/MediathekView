@@ -18,12 +18,6 @@ import java.io.IOException;
 import java.net.URL;
 
 public class FXFilmToolBar extends ToolBar {
-  @FXML Button btnPlay;
-
-  @FXML Button btnRecord;
-
-  @FXML Button btnBookmark;
-
   @FXML Button btnShowFilter;
 
   @FXML

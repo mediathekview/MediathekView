@@ -5,37 +5,8 @@
 <?import javafx.scene.layout.Region?>
 <?import mediathek.javafx.filterpanel.FXSearchControl?>
 <?import mediathek.javafx.VerticalSeparator?>
-<?import org.controlsfx.glyphfont.*?>
+<?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="ToolBar" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
-    <Button mnemonicParsing="false" fx:id="btnPlay">
-        <tooltip>
-            <Tooltip text="Film abspielen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="PLAY" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <Button mnemonicParsing="false" fx:id="btnRecord">
-        <tooltip>
-            <Tooltip text="Film aufzeichnen"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="DOWNLOAD" fontSize="16"/>
-        </graphic>
-    </Button>
-
-    <VerticalSeparator/>
-
-    <Button mnemonicParsing="false" fx:id="btnBookmark">
-        <tooltip>
-            <Tooltip text="Film merken"/>
-        </tooltip>
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="BOOKMARK_ALT" fontSize="16"/>
-        </graphic>
-    </Button>
-
     <Region HBox.hgrow="ALWAYS"/>
 
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">

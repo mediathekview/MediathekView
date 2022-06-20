@@ -400,15 +400,6 @@ public class FilmActionPanel {
 
   private void setupToolBar() {
     toolBar = new FXFilmToolBar();
-    toolBar.btnPlay.setOnAction(evt ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.playFilmAction.actionPerformed(null)));
-    toolBar.btnRecord.setOnAction(e ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
-    toolBar.btnBookmark.setOnAction(e ->
-            SwingUtilities.invokeLater(
-                () -> MediathekGui.ui().tabFilme.bookmarkFilmAction.actionPerformed(null)));
     toolBar.btnShowFilter.setOnAction(e ->
             SwingUtilities.invokeLater(() -> {
                   if (filterDialog != null) {
