@@ -123,7 +123,6 @@ public class GuiFilme extends AGuiTabPanel {
         createFilmListArea();
         createExtensionArea();
         createToolBar();
-        createFilmActionPanel();
 
         // add film description panel
         extensionArea.add(fxDescriptionPanel);
@@ -146,6 +145,26 @@ public class GuiFilme extends AGuiTabPanel {
         setupActionListeners();
     }
 
+    public class ShowFilterDialogAction extends AbstractAction {
+        public ShowFilterDialogAction() {
+            putValue(Action.NAME, "Filterdialog anzeigen");
+            putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            var dlg = filmActionPanel.filterDialog;
+            if (dlg != null) {
+                if (!dlg.isVisible()) {
+                    dlg.setVisible(true);
+                }
+            }
+        }
+    }
+    protected ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
+
     private void createToolBar() {
         add(toolBar, BorderLayout.NORTH);
 
@@ -156,7 +175,13 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(saveFilmAction);
         toolBar.addSeparator();
         toolBar.add(bookmarkFilmAction);
-
+        toolBar.addSeparator();
+        toolBar.add(showFilterDialogAction);
+        fxFilmActionPanel = new JFXPanel();
+        toolBar.addSeparator();
+        toolBar.add(fxFilmActionPanel);
+        toolBar.addSeparator();
+        toolBar.add("test", new JButton("a"));
     }
 
     @Override
@@ -172,12 +197,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private final JToolBar toolBar = new JToolBar();
-
-    private void createFilmActionPanel() {
-        fxFilmActionPanel = new JFXPanel();
-        toolBar.addSeparator();
-        toolBar.add(fxFilmActionPanel);
-    }
 
     /**
      * Update the property with the current number of selected entries from the JTable.

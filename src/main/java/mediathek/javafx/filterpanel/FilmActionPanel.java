@@ -398,19 +398,8 @@ public class FilmActionPanel {
         themaBox.getSelectionModel().select(0);
     }
 
-  private void setupToolBar() {
-    toolBar = new FXFilmToolBar();
-    toolBar.btnShowFilter.setOnAction(e ->
-            SwingUtilities.invokeLater(() -> {
-                  if (filterDialog != null) {
-                    filterDialog.setVisible(
-                        !filterDialog.isVisible()); // Toggle Dialog display on button press
-                  }
-                }));
-  }
-
     public Scene getFilmActionPanelScene() {
-        setupToolBar();
+        toolBar = new FXFilmToolBar();
 
         setupSearchField();
 
