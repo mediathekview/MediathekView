@@ -180,8 +180,8 @@ public class GuiFilme extends AGuiTabPanel {
         fxFilmActionPanel = new JFXPanel();
         toolBar.addSeparator();
         toolBar.add(fxFilmActionPanel);
-        toolBar.addSeparator();
-        toolBar.add("test", new JButton("a"));
+        //toolBar.addSeparator();
+        //toolBar.add("test", new JButton("a"));
 
         Daten.getInstance().getFilmeLaden().addAdListener(
                 new ListenerFilmeLaden() {
