@@ -68,7 +68,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -857,23 +856,11 @@ public class MediathekGui extends JFrame {
             getBandwidthMonitorController().setVisibility();
         });
 
-        JMenuItem showFilmFilterDialog = new JMenuItem("Filterdialog anzeigen");
-        showFilmFilterDialog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
-        showFilmFilterDialog.addActionListener(l -> {
-            var dlg = tabFilme.filmActionPanel.filterDialog;
-            if (dlg != null) {
-                if (!dlg.isVisible()) {
-                    dlg.setVisible(true);
-                }
-            }
-
-        });
-
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showFilmFilterDialog);
+        jMenuAnsicht.add(tabFilme.showFilterDialogAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showFilmInformationAction);
         jMenuAnsicht.addSeparator();

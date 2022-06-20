@@ -163,7 +163,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
         }
     }
-    protected ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
+    public ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
 
     private void createToolBar() {
         add(toolBar, BorderLayout.NORTH);
@@ -182,6 +182,25 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(fxFilmActionPanel);
         toolBar.addSeparator();
         toolBar.add("test", new JButton("a"));
+
+        Daten.getInstance().getFilmeLaden().addAdListener(
+                new ListenerFilmeLaden() {
+                    @Override
+                    public void start(ListenerFilmeLadenEvent event) {
+                        playFilmAction.setEnabled(false);
+                        saveFilmAction.setEnabled(false);
+                        bookmarkFilmAction.setEnabled(false);
+                        showFilterDialogAction.setEnabled(false);
+                    }
+
+                    @Override
+                    public void fertig(ListenerFilmeLadenEvent event) {
+                        playFilmAction.setEnabled(true);
+                        saveFilmAction.setEnabled(true);
+                        bookmarkFilmAction.setEnabled(true);
+                        showFilterDialogAction.setEnabled(true);
+                    }
+                });
     }
 
     @Override
