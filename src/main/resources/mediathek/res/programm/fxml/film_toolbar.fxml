@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
 <?import mediathek.javafx.filterpanel.FXSearchControl?>
-<?import org.controlsfx.glyphfont.Glyph?>
 <fx:root type="javafx.scene.layout.HBox" spacing="5" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">
         <tooltip>
@@ -14,10 +12,4 @@
     </ComboBox>
 
     <FXSearchControl fx:id="jfxSearchField"/>
-
-    <ToggleButton mnemonicParsing="false" fx:id="btnSearchThroughDescription">
-        <graphic>
-            <Glyph fontFamily="FontAwesome" icon="BOOK"/>
-        </graphic>
-    </ToggleButton>
 </fx:root>

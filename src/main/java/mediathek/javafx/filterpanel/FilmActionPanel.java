@@ -8,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
@@ -37,8 +36,6 @@ import java.util.UUID;
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
   private final PauseTransition finalActionTrans = new PauseTransition(Duration.seconds(1));
-  private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
-  private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final FilterConfiguration filterConfig;
   private final ObservableList<FilterDTO> availableFilters;
   public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
@@ -332,18 +329,12 @@ public class FilmActionPanel {
         final boolean enabled =
                 ApplicationConfiguration.getConfiguration()
                         .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        toolBar.btnSearchThroughDescription.setSelected(enabled);
-
         if (enabled)
             setupForIrgendwoSearch();
         else
             setupForRegularSearch();
 
-        toolBar.btnSearchThroughDescription.setOnAction(e -> toggleSearchThroughDescriptionButton());
-        boolean bSearchThroughDescription =
-                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        toolBar.btnSearchThroughDescription.setSelected(bSearchThroughDescription);
-        searchThroughDescriptionProperty.setValue(bSearchThroughDescription);
+        searchThroughDescriptionProperty.setValue(enabled);
     }
 
     public void toggleSearchThroughDescriptionButton() {
@@ -363,14 +354,10 @@ public class FilmActionPanel {
 
   private void setupForRegularSearch() {
     toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
-
-    toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchRegular);
   }
 
   private void setupForIrgendwoSearch() {
     toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.IRGENDWO);
-
-    toolBar.btnSearchThroughDescription.setTooltip(tooltipSearchIrgendwo);
   }
 
     public void updateThemaBox() {

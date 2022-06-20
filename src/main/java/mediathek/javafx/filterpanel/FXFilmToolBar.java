@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.FilterConfiguration;
@@ -23,8 +22,6 @@ import java.net.URL;
 public class FXFilmToolBar extends HBox {
   @FXML
   FXSearchControl jfxSearchField;
-
-  @FXML ToggleButton btnSearchThroughDescription;
 
   @FXML ComboBox<FilterDTO> filterSelect;
 

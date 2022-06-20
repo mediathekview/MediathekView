@@ -212,7 +212,7 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.addSeparator();
         toolBar.add(showFilterDialogAction);
         fxFilmActionPanel = new JFXPanel();
-        fxFilmActionPanel.setMaximumSize(new Dimension(500,100));
+        fxFilmActionPanel.setMaximumSize(new Dimension(450,100));
         toolBar.addSeparator();
         toolBar.add(fxFilmActionPanel);
         toolBar.addSeparator();
