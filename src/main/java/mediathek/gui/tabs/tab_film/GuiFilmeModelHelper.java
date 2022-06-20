@@ -105,7 +105,7 @@ public class GuiFilmeModelHelper {
         dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
         dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
         dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
-        searchThroughDescriptions = filmActionPanel.searchThroughDescription.getValue();
+        searchThroughDescriptions = filmActionPanel.searchThroughDescriptionProperty.getValue();
 
         arrIrgendwo = evaluateThemaTitel();
     }

@@ -3,10 +3,7 @@ package mediathek.javafx.filterpanel;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -55,7 +52,7 @@ public class FilmActionPanel {
   public BooleanProperty dontShowTrailers;
   public BooleanProperty dontShowSignLanguage;
   public BooleanProperty dontShowAudioVersions;
-  public BooleanProperty searchThroughDescription;
+  public BooleanProperty searchThroughDescriptionProperty = new SimpleBooleanProperty();
   public ReadOnlyObjectProperty<String> zeitraumProperty;
   public ComboBox<String> themaBox;
   public RangeSlider filmLengthSlider;
@@ -332,28 +329,37 @@ public class FilmActionPanel {
     }
 
     private void setupSearchThroughDescriptionButton() {
-    final boolean enabled =
+        final boolean enabled =
+                ApplicationConfiguration.getConfiguration()
+                        .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+        toolBar.btnSearchThroughDescription.setSelected(enabled);
+
+        if (enabled)
+            setupForIrgendwoSearch();
+        else
+            setupForRegularSearch();
+
+        toolBar.btnSearchThroughDescription.setOnAction(e -> toggleSearchThroughDescriptionButton());
+        boolean bSearchThroughDescription =
+                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+        toolBar.btnSearchThroughDescription.setSelected(bSearchThroughDescription);
+        searchThroughDescriptionProperty.setValue(bSearchThroughDescription);
+    }
+
+    public void toggleSearchThroughDescriptionButton() {
+        boolean bSearchThroughDescription =
+                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+        bSearchThroughDescription = !bSearchThroughDescription;
         ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-    toolBar.btnSearchThroughDescription.setSelected(enabled);
+                .setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, bSearchThroughDescription);
 
-    if (enabled) setupForIrgendwoSearch();
-    else setupForRegularSearch();
+        if (bSearchThroughDescription)
+            setupForIrgendwoSearch();
+        else
+            setupForRegularSearch();
 
-    toolBar.btnSearchThroughDescription.setOnAction(
-        e -> {
-          final boolean bSearchThroughDescription =
-              toolBar.btnSearchThroughDescription.isSelected();
-          ApplicationConfiguration.getConfiguration()
-              .setProperty(
-                  ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, bSearchThroughDescription);
-
-          if (bSearchThroughDescription) setupForIrgendwoSearch();
-          else setupForRegularSearch();
-        });
-
-    searchThroughDescription = toolBar.btnSearchThroughDescription.selectedProperty();
-  }
+        searchThroughDescriptionProperty.setValue(bSearchThroughDescription);
+    }
 
   private void setupForRegularSearch() {
     toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);

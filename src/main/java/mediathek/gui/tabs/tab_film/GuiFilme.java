@@ -165,6 +165,40 @@ public class GuiFilme extends AGuiTabPanel {
     }
     public ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
 
+    public class ToggleSearchThroughDescriptionAction extends AbstractAction {
+        public ToggleSearchThroughDescriptionAction() {
+            boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+            setupToolTip(bSearchThroughDescription);
+            //putValue(Action.NAME, "Beschreibung");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg"));
+        }
+
+        private void setupToolTip(boolean active) {
+            if (active)
+                putValue(Action.SHORT_DESCRIPTION, "Suche in Beschreibung aktiviert");
+            else
+                putValue(Action.SHORT_DESCRIPTION, "Suche in Beschreibung deaktiviert");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JavaFxUtils.invokeInFxThreadAndWait(() -> filmActionPanel.toggleSearchThroughDescriptionButton());
+
+            boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+            JToggleButton source = (JToggleButton) e.getSource();
+            source.setSelected(bSearchThroughDescription);
+            setupToolTip(bSearchThroughDescription);
+        }
+    }
+    protected ToggleSearchThroughDescriptionAction toggleSearchThroughDescriptionAction = new ToggleSearchThroughDescriptionAction();
+
+    private void addSearchThroughDescriptionToolBarButton() {
+        JToggleButton searchThroughDescriptionButton = new JToggleButton(toggleSearchThroughDescriptionAction);
+        boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+        searchThroughDescriptionButton.setSelected(bSearchThroughDescription);
+        toolBar.add(searchThroughDescriptionButton);
+    }
+
     private void createToolBar() {
         add(toolBar, BorderLayout.NORTH);
 
@@ -178,10 +212,11 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.addSeparator();
         toolBar.add(showFilterDialogAction);
         fxFilmActionPanel = new JFXPanel();
+        fxFilmActionPanel.setMaximumSize(new Dimension(500,100));
         toolBar.addSeparator();
         toolBar.add(fxFilmActionPanel);
-        //toolBar.addSeparator();
-        //toolBar.add("test", new JButton("a"));
+        toolBar.addSeparator();
+        addSearchThroughDescriptionToolBarButton();
 
         Daten.getInstance().getFilmeLaden().addAdListener(
                 new ListenerFilmeLaden() {
@@ -745,7 +780,7 @@ public class GuiFilme extends AGuiTabPanel {
             filmActionPanel.showLivestreamsOnly.addListener(reloadTableListener);
             filmActionPanel.filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmActionPanel.filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
-            filmActionPanel.searchThroughDescription.addListener((os, o, n) -> {
+            filmActionPanel.searchThroughDescriptionProperty.addListener((os, o, n) -> {
                 if (!filmActionPanel.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
                     reloadTableDataTransition.playFromStart();
             });
