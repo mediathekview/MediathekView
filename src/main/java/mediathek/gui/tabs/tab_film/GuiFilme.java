@@ -122,6 +122,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         createFilmListArea();
         createExtensionArea();
+        createToolBar();
         createFilmActionPanel();
 
         // add film description panel
@@ -145,6 +146,17 @@ public class GuiFilme extends AGuiTabPanel {
         setupActionListeners();
     }
 
+    private void createToolBar() {
+        toolBar.setFloatable(true);
+        toolBar.setName("Filme");
+
+        toolBar.add(playFilmAction);
+        toolBar.add(saveFilmAction);
+        toolBar.addSeparator();
+        toolBar.add(bookmarkFilmAction);
+
+    }
+
     @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -157,9 +169,15 @@ public class GuiFilme extends AGuiTabPanel {
         filmListScrollPane.setViewportView(tabelle);
     }
 
+    private final JToolBar toolBar = new JToolBar();
+
     private void createFilmActionPanel() {
+        var tempPanel = new JPanel();
+        tempPanel.setLayout(new BorderLayout());
         fxFilmActionPanel = new JFXPanel();
-        add(fxFilmActionPanel, BorderLayout.NORTH);
+        tempPanel.add(toolBar, BorderLayout.NORTH);
+        tempPanel.add(fxFilmActionPanel, BorderLayout.SOUTH);
+        add(tempPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -242,26 +260,6 @@ public class GuiFilme extends AGuiTabPanel {
     public void installMenuEntries(JMenu menu) {
         KeyStroke keyStroke;
 
-        JMenuItem miRecordFilm = new JMenuItem("Film aufzeichnen");
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
-        }
-        else
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, GuiFunktionen.getPlatformControlKey());
-        miRecordFilm.setAccelerator(keyStroke);
-        miRecordFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
-        miRecordFilm.addActionListener(saveFilmAction);
-
-        JMenuItem miBookmarkFilm = new JMenuItem("Film merken");
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F8, GuiFunktionen.getPlatformControlKey());
-        } else {
-            keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey());
-        }
-        miBookmarkFilm.setAccelerator(keyStroke);
-        miBookmarkFilm.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
-        miBookmarkFilm.addActionListener(bookmarkFilmAction);
-
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
 
@@ -275,8 +273,8 @@ public class GuiFilme extends AGuiTabPanel {
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
         menu.add(playFilmAction);
-        menu.add(miRecordFilm);
-        menu.add(miBookmarkFilm);
+        menu.add(saveFilmAction);
+        menu.add(bookmarkFilmAction);
         menu.addSeparator();
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
@@ -825,6 +823,18 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class SaveFilmAction extends AbstractAction {
+        public SaveFilmAction() {
+            putValue(Action.SHORT_DESCRIPTION,"Film downloaden");
+            putValue(Action.NAME, "Film downloaden");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
+            KeyStroke keyStroke;
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
+            }
+            else
+                keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_D, GuiFunktionen.getPlatformControlKey());
+            putValue(Action.ACCELERATOR_KEY, keyStroke);
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -833,6 +843,18 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class BookmarkFilmAction extends AbstractAction {
+        public BookmarkFilmAction() {
+            KeyStroke keyStroke;
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F8, GuiFunktionen.getPlatformControlKey());
+            } else {
+                keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey());
+            }
+            putValue(Action.ACCELERATOR_KEY, keyStroke);
+            putValue(Action.SHORT_DESCRIPTION, "Film merken");
+            putValue(Action.NAME, "Film merken");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
