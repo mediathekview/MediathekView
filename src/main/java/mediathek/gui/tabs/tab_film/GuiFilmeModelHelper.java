@@ -9,6 +9,7 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
+import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
@@ -42,11 +43,14 @@ public class GuiFilmeModelHelper {
     private String[] arrIrgendwo;
     private long minLengthInSeconds;
     private long maxLengthInSeconds;
+    private final GuiFilme.SearchField newSearchField;
 
     public GuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
-                               @NotNull SeenHistoryController historyController) {
+                               @NotNull SeenHistoryController historyController,
+                               @NotNull GuiFilme.SearchField newSearchField) {
         this.filmActionPanel = filmActionPanel;
         this.historyController = historyController;
+        this.newSearchField = newSearchField;
 
         listeFilme = Daten.getInstance().getListeFilmeNachBlackList();
     }
@@ -63,7 +67,7 @@ public class GuiFilmeModelHelper {
     private String[] evaluateThemaTitel() {
         String[] arrThemaTitel;
 
-        final String filterThemaTitel = filmActionPanel.roSearchStringProperty.getValueSafe();
+        final String filterThemaTitel = newSearchField.getText();
         if (Filter.isPattern(filterThemaTitel)) {
             arrThemaTitel = new String[]{filterThemaTitel};
         } else {
@@ -79,7 +83,7 @@ public class GuiFilmeModelHelper {
     private boolean noFiltersAreSet() {
         return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
-                && filmActionPanel.roSearchStringProperty.getValueSafe().isEmpty()
+                && newSearchField.getText().isEmpty()
                 && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
                 && ((int) filmActionPanel.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !filmActionPanel.dontShowAbos.getValue()
@@ -105,7 +109,7 @@ public class GuiFilmeModelHelper {
         dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
         dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
         dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
-        searchThroughDescriptions = filmActionPanel.searchThroughDescriptionProperty.getValue();
+        searchThroughDescriptions = newSearchField.getSearchMode() == FXSearchControlFieldMode.IRGENDWO;
 
         arrIrgendwo = evaluateThemaTitel();
     }

@@ -3,13 +3,10 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.HBox?>
-<?import mediathek.javafx.filterpanel.FXSearchControl?>
 <fx:root type="javafx.scene.layout.HBox" spacing="5" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" stylesheets="mediathek/res/css/toolpanel.css">
     <ComboBox fx:id="filterSelect" promptText="Filter Auswahl">
         <tooltip>
             <Tooltip text="Aktiver Filter"/>
         </tooltip>
     </ComboBox>
-
-    <FXSearchControl fx:id="jfxSearchField"/>
 </fx:root>

@@ -1,14 +1,15 @@
 package mediathek.javafx.filterpanel;
 
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -17,7 +18,10 @@ import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
+import mediathek.tool.FilterConfiguration;
+import mediathek.tool.FilterDTO;
+import mediathek.tool.GermanStringSorter;
+import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +39,6 @@ import java.util.UUID;
  */
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
-  private final PauseTransition finalActionTrans = new PauseTransition(Duration.seconds(1));
   private final FilterConfiguration filterConfig;
   private final ObservableList<FilterDTO> availableFilters;
   public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
@@ -60,11 +63,9 @@ public class FilmActionPanel {
 
   private FXFilmToolBar toolBar;
   private CommonViewSettingsPane viewSettingsPane;
-  private final PauseTransition reloadTableDataTransition;
 
-  public FilmActionPanel(PauseTransition reloadTableDataTransition) {
+  public FilmActionPanel() {
     this.filterConfig = new FilterConfiguration();
-    this.reloadTableDataTransition = reloadTableDataTransition;
 
     setupViewSettingsPane();
     setupDeleteFilterButton();
@@ -298,68 +299,6 @@ public class FilmActionPanel {
       SwingUtilities.invokeLater(() -> MediathekGui.ui().loadFilmListAction.setEnabled(true));
   }
 
-    private void searchFieldFinalAction() {
-        final var text = toolBar.jfxSearchField.getText();
-        boolean invokeTableFiltering = false;
-
-        if (Filter.isPattern(text)) {
-            //only invoke filtering if we have regexp pattern and the pattern is valid
-            if (Filter.makePatternNoCache(text) != null) {
-                invokeTableFiltering = true;
-            }
-        } else {
-            invokeTableFiltering = true;
-        }
-
-        if (invokeTableFiltering)
-            reloadTableDataTransition.playFromStart();
-    }
-
-    private void setupSearchField() {
-        toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
-
-        final StringProperty textProperty = toolBar.jfxSearchField.textProperty();
-        roSearchStringProperty.bind(textProperty);
-
-        finalActionTrans.setOnFinished(e -> searchFieldFinalAction());
-        textProperty.addListener((observable, oldValue, newValue) -> finalActionTrans.playFromStart());
-    }
-
-    private void setupSearchThroughDescriptionButton() {
-        final boolean enabled =
-                ApplicationConfiguration.getConfiguration()
-                        .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        if (enabled)
-            setupForIrgendwoSearch();
-        else
-            setupForRegularSearch();
-
-        searchThroughDescriptionProperty.setValue(enabled);
-    }
-
-    public void toggleSearchThroughDescriptionButton() {
-        boolean bSearchThroughDescription =
-                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        bSearchThroughDescription = !bSearchThroughDescription;
-        ApplicationConfiguration.getConfiguration()
-                .setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, bSearchThroughDescription);
-
-        if (bSearchThroughDescription)
-            setupForIrgendwoSearch();
-        else
-            setupForRegularSearch();
-
-        searchThroughDescriptionProperty.setValue(bSearchThroughDescription);
-    }
-
-  private void setupForRegularSearch() {
-    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.THEMA_TITEL);
-  }
-
-  private void setupForIrgendwoSearch() {
-    toolBar.jfxSearchField.setMode(FXSearchControlFieldMode.IRGENDWO);
-  }
-
     public void updateThemaBox() {
         final var items = themaBox.getItems();
         items.clear();
@@ -393,10 +332,6 @@ public class FilmActionPanel {
 
     public Scene getFilmActionPanelScene() {
         toolBar = new FXFilmToolBar();
-
-        setupSearchField();
-
-        setupSearchThroughDescriptionButton();
 
         Daten.getInstance().getFilmeLaden().addAdListener(
                 new ListenerFilmeLaden() {

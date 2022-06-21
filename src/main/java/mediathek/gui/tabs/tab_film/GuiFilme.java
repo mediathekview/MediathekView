@@ -1,5 +1,8 @@
 package mediathek.gui.tabs.tab_film;
 
+import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -35,6 +38,7 @@ import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.buttonsPanel.ButtonsPanelController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filmtab.FilmTabInfoPane;
+import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
@@ -52,10 +56,14 @@ import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -64,6 +72,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -165,40 +174,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
     public ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
 
-    public class ToggleSearchThroughDescriptionAction extends AbstractAction {
-        public ToggleSearchThroughDescriptionAction() {
-            boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-            setupToolTip(bSearchThroughDescription);
-            //putValue(Action.NAME, "Beschreibung");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg"));
-        }
-
-        private void setupToolTip(boolean active) {
-            if (active)
-                putValue(Action.SHORT_DESCRIPTION, "Suche in Beschreibung aktiviert");
-            else
-                putValue(Action.SHORT_DESCRIPTION, "Suche in Beschreibung deaktiviert");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> filmActionPanel.toggleSearchThroughDescriptionButton());
-
-            boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-            JToggleButton source = (JToggleButton) e.getSource();
-            source.setSelected(bSearchThroughDescription);
-            setupToolTip(bSearchThroughDescription);
-        }
-    }
-    protected ToggleSearchThroughDescriptionAction toggleSearchThroughDescriptionAction = new ToggleSearchThroughDescriptionAction();
-
-    private void addSearchThroughDescriptionToolBarButton() {
-        JToggleButton searchThroughDescriptionButton = new JToggleButton(toggleSearchThroughDescriptionAction);
-        boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
-        searchThroughDescriptionButton.setSelected(bSearchThroughDescription);
-        toolBar.add(searchThroughDescriptionButton);
-    }
-
     private void createToolBar() {
         add(toolBar, BorderLayout.NORTH);
 
@@ -212,31 +187,251 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.addSeparator();
         toolBar.add(showFilterDialogAction);
         fxFilmActionPanel = new JFXPanel();
-        fxFilmActionPanel.setMaximumSize(new Dimension(450,100));
+        fxFilmActionPanel.setMaximumSize(new Dimension(100,100));
         toolBar.addSeparator();
         toolBar.add(fxFilmActionPanel);
-        toolBar.addSeparator();
-        addSearchThroughDescriptionToolBarButton();
-
-        Daten.getInstance().getFilmeLaden().addAdListener(
-                new ListenerFilmeLaden() {
-                    @Override
-                    public void start(ListenerFilmeLadenEvent event) {
-                        playFilmAction.setEnabled(false);
-                        saveFilmAction.setEnabled(false);
-                        bookmarkFilmAction.setEnabled(false);
-                        showFilterDialogAction.setEnabled(false);
-                    }
-
-                    @Override
-                    public void fertig(ListenerFilmeLadenEvent event) {
-                        playFilmAction.setEnabled(true);
-                        saveFilmAction.setEnabled(true);
-                        bookmarkFilmAction.setEnabled(true);
-                        showFilterDialogAction.setEnabled(true);
-                    }
-                });
+        toolBar.add(new JLabel("Suche:"));
+        toolBar.add(searchField);
     }
+
+    @Handler
+    private void handleTableModelChange(TableModelChangeEvent e) {
+        if (e.active) {
+            try {
+                SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> fxFilmActionPanel.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> searchField.setEnabled(false));
+            } catch (InterruptedException | InvocationTargetException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        else {
+            try {
+                SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> fxFilmActionPanel.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> searchField.setEnabled(true));
+            } catch (InterruptedException | InvocationTargetException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+    public class SearchField extends JTextField {
+        private final SearchHistoryButton searchHistoryButton = new SearchHistoryButton();
+        private FXSearchControlFieldMode searchMode;
+        private static final String SEARCHMODE_PROPERTY_STRING = "searchMode";
+        private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+        public void setSearchMode(FXSearchControlFieldMode mode) {
+            var oldValue = searchMode;
+            searchMode = mode;
+            pcs.firePropertyChange(SEARCHMODE_PROPERTY_STRING, oldValue, mode);
+        }
+
+        public FXSearchControlFieldMode getSearchMode() {
+            return searchMode;
+        }
+
+        public SearchField() {
+            super("", 20);
+            setMaximumSize(new Dimension(500, 100));
+
+            pcs.addPropertyChangeListener(SEARCHMODE_PROPERTY_STRING, evt -> setupHelperTexts());
+
+            //show clear icon when text is entered
+            putClientProperty(FlatClientProperties.TEXT_FIELD_SHOW_CLEAR_BUTTON, true);
+            //put placeholder text
+            boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+            if (bSearchThroughDescription)
+                setSearchMode(FXSearchControlFieldMode.IRGENDWO);
+            else
+                setSearchMode(FXSearchControlFieldMode.THEMA_TITEL);
+
+            addActionListener(l -> {
+                //System.out.println("SEARCH FIRED FROM NEW SEARCH FIELD");
+                String searchText = getText();
+                if (!searchText.isEmpty()) {
+                    var historyList = searchHistoryButton.getSearchHistory();
+                    if (!historyList.contains(searchText))
+                        historyList.add(searchText);
+                }
+
+                loadTable();
+            });
+
+            addKeyListener(new EscapeKeyAdapter());
+
+            installDocumentListener();
+
+            createTrailingComponents();
+
+            putClientProperty( FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, searchHistoryButton );
+            putClientProperty("JTextField.clearCallback", (Consumer<JTextComponent>) textField -> clearSearchField());
+        }
+
+        private void installDocumentListener() {
+            getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    doCheck();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    doCheck();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    doCheck();
+                }
+
+                private void doCheck() {
+                    var searchText = getText();
+                    checkPatternValidity(searchText);
+                    setForegroundTextColor(searchText);
+                }
+            });
+        }
+
+        private final Color DEFAULT_FOREGROUND_COLOR = (Color)UIManager.get("TextField.foreground");
+        private void setForegroundTextColor(String text) {
+            if (Filter.isPattern(text))
+                setForeground(Color.BLUE);
+            else
+                setForeground(DEFAULT_FOREGROUND_COLOR);
+        }
+        private boolean isPatternValid(String text) {
+            return Filter.makePatternNoCache(text) != null;
+        }
+        private void checkPatternValidity(String text) {
+            if (Filter.isPattern(text))
+                showErrorIndication(!isPatternValid(text));
+            else
+                showErrorIndication(false);
+        }
+
+        private void showErrorIndication(boolean hasError) {
+            if (hasError)
+                putClientProperty("JComponent.outline", "error");
+            else
+                putClientProperty("JComponent.outline", "");
+        }
+        /**
+         * Clear searchfield on escape key press.
+         */
+        class EscapeKeyAdapter extends KeyAdapter {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
+                    clearSearchField();
+                }
+            }
+        }
+        private void clearSearchField() {
+            setText("");
+            fireActionPerformed();
+        }
+
+        /**
+         * Sets tooltip and placeholder texts according to {@link SearchField#searchMode}.
+         */
+        private void setupHelperTexts() {
+            String text;
+            if (searchMode == FXSearchControlFieldMode.THEMA_TITEL)
+                text = "Thema/Titel";
+            else
+                text = "Thema/Titel/Beschreibung";
+            putClientProperty( FlatClientProperties.PLACEHOLDER_TEXT, text);
+
+            setToolTipText(text + " durchsuchen");
+        }
+
+        class ToggleSearchFieldToggleButton extends JToggleButton {
+            public ToggleSearchFieldToggleButton() {
+                FlatSVGIcon selectedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
+                selectedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.BLUE));
+                FlatSVGIcon normalIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
+                normalIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.GRAY));
+                setIcon(normalIcon);
+                setSelectedIcon(selectedIcon);
+
+                boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+                setSelected(bSearchThroughDescription);
+                setupToolTip(bSearchThroughDescription);
+
+                addActionListener(l -> {
+                    switch (getSearchMode()) {
+                        case IRGENDWO -> {
+                            setSearchMode(FXSearchControlFieldMode.THEMA_TITEL);
+                            setupToolTip(false);
+                        }
+                        case THEMA_TITEL -> {
+                            setSearchMode(FXSearchControlFieldMode.IRGENDWO);
+                            setupToolTip(true);
+                        }
+                    }
+                    //update config
+                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, getSearchMode() == FXSearchControlFieldMode.IRGENDWO);
+
+                    loadTable();
+                });
+            }
+
+            private void setupToolTip(boolean active) {
+                if (active)
+                    setToolTipText("Suche in Beschreibung aktiviert");
+                else
+                    setToolTipText("Suche in Beschreibung deaktiviert");
+            }
+        }
+        private void createTrailingComponents() {
+            JToolBar searchToolbar = new JToolBar();
+            searchToolbar.addSeparator();
+
+            searchToolbar.add(new ToggleSearchFieldToggleButton());
+            putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar);
+        }
+
+        public class SearchHistoryButton extends JButton {
+            private final List<String> historyList = new ArrayList<>();
+
+            private final JMenuItem miClearHistory = new JMenuItem("(Historie löschen)");
+
+            public SearchHistoryButton() {
+                super(new FlatSearchWithHistoryIcon( true ));
+                setToolTipText("Vorherige Suchen");
+
+                miClearHistory.addActionListener(l -> historyList.clear());
+                addActionListener(l -> {
+                    JPopupMenu popupMenu = new JPopupMenu();
+                    popupMenu.add(miClearHistory);
+                    if (!historyList.isEmpty()) {
+                        popupMenu.addSeparator();
+                        for (var item : historyList) {
+                            JMenuItem historyItem = new JMenuItem(item);
+                            historyItem.addActionListener(li -> {
+                                searchField.setText(item);
+                                searchField.fireActionPerformed();
+                            });
+                            popupMenu.add(historyItem);
+                        }
+                    }
+                    popupMenu.show( this, 0, this.getHeight() );
+                });
+            }
+
+            public List<String> getSearchHistory() {
+                return historyList;
+            }
+        }
+    }
+
+    protected SearchField searchField = new SearchField();
 
     @Override
     public void tabelleSpeichern() {
@@ -330,8 +525,6 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        KeyStroke keyStroke;
-
         if (!SystemUtils.IS_OS_MAC_OSX)
             cbkShowDescription.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
 
@@ -358,7 +551,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel(reloadTableDataTransition);
+        filmActionPanel = new FilmActionPanel();
         JavaFxUtils.invokeInFxThreadAndWait(
                 () -> fxFilmActionPanel.setScene(filmActionPanel.getFilmActionPanelScene()));
     }
@@ -860,7 +1053,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
-                    final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(filmActionPanel, historyController);
+                    final GuiFilmeModelHelper helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchField);
                     //Thread.sleep(5000);
                     return helper.getFilteredTableModel();
                 });
