@@ -2,10 +2,9 @@
 
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
 - **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
-- **FEATURE:** Die ToolBar im Download-Tab kann nun zum Schweben abgetrennt werden.
+- **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
 - **FEATURE:** Neues Suchfeld inklusive Suchhistorie.
-- Im Download-Tab wurde der "Filter anzeigen/ausblenden"-Button an die anderen ToolBar-Buttons angegliedert.
 
 <u>**13.9.1**</u>
 
