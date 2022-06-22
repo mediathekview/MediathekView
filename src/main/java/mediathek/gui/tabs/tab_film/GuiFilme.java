@@ -27,6 +27,7 @@ import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -180,6 +181,10 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(fxFilmActionPanel);
         toolBar.add(new JLabel("Suche:"));
         toolBar.add(searchField);
+        toolBar.addSeparator();
+        var filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
+        filterSelectionComboBox.setMaximumSize(new Dimension(150,100));
+        toolBar.add(filterSelectionComboBox);
     }
 
     @Handler
