@@ -26,7 +26,7 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
     public FilterSelectionComboBoxModel() {
         availableFilters.addAll(filterConfiguration.getAvailableFilters());
         FilterConfiguration.addAvailableFiltersObserver(() -> {
-            System.out.println("FILTER LIST CHANGED");
+            //System.out.println("FILTER LIST CHANGED");
             SwingUtilities.invokeLater(() -> {
                 availableFilters.clear();
                 availableFilters.addAll(filterConfiguration.getAvailableFilters());
@@ -36,7 +36,7 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
         FilterConfiguration.addCurrentFiltersObserver(filterDTO -> {
             SwingUtilities.invokeLater(() -> {
                 if (getSelectedItem() != filterDTO) {
-                    System.out.println("CURRENT FILTER CHANGED");
+                    //System.out.println("CURRENT FILTER CHANGED");
                     fireContentsChanged(this, 0, availableFilters.size());
                 }
             });
