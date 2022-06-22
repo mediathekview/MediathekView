@@ -82,8 +82,8 @@
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
-        <annotations.version>22.0.0</annotations.version>
-        <assertj-core.version>3.21.0</assertj-core.version>
+        <annotations.version>23.0.0</annotations.version>
+        <assertj-core.version>3.23.1</assertj-core.version>
         <commons-configuration2.version>2.7</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
@@ -110,9 +110,9 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.0</miglayout.version>
-        <mockito.version>4.2.0</mockito.version>
-        <okhttp.version>4.9.3</okhttp.version>
-        <okio.version>3.0.0</okio.version>
+        <mockito.version>4.6.1</mockito.version>
+        <okhttp.version>4.10.0</okhttp.version>
+        <okio.version>3.1.0</okio.version>
         <picocli.version>4.6.3</picocli.version>
         <sqlite-jdbc.version>3.36.0.3</sqlite-jdbc.version>
         <tilesfx.version>17.1.6</tilesfx.version>
