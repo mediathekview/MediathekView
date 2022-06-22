@@ -33,15 +33,12 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
                 this.fireContentsChanged(this, 0, availableFilters.size());
             });
         });
-        FilterConfiguration.addCurrentFiltersObserver(filterDTO -> {
-            SwingUtilities.invokeLater(() -> {
-                if (getSelectedItem() != filterDTO) {
-                    //System.out.println("CURRENT FILTER CHANGED");
-                    fireContentsChanged(this, 0, availableFilters.size());
-                }
-            });
-
-        });
+        FilterConfiguration.addCurrentFiltersObserver(filterDTO -> SwingUtilities.invokeLater(() -> {
+            if (getSelectedItem() != filterDTO) {
+                //System.out.println("CURRENT FILTER CHANGED");
+                fireContentsChanged(this, 0, availableFilters.size());
+            }
+        }));
     }
 
     @Override
