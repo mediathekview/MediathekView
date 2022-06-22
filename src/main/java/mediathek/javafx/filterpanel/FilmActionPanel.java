@@ -1,19 +1,15 @@
 package mediathek.javafx.filterpanel;
 
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
-import mediathek.filmeSuchen.ListenerFilmeLaden;
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.ManageAboAction;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
@@ -61,7 +57,6 @@ public class FilmActionPanel {
   /** Stores the list of thema strings used for autocompletion. */
   private SuggestionProvider<String> themaSuggestionProvider;
 
-  private FXFilmToolBar toolBar;
   private CommonViewSettingsPane viewSettingsPane;
 
   public FilmActionPanel() {
@@ -328,24 +323,5 @@ public class FilmActionPanel {
         themaSuggestionProvider.clearSuggestions();
         themaSuggestionProvider.addPossibleSuggestions(items);
         themaBox.getSelectionModel().select(0);
-    }
-
-    public Scene getFilmActionPanelScene() {
-        toolBar = new FXFilmToolBar();
-
-        Daten.getInstance().getFilmeLaden().addAdListener(
-                new ListenerFilmeLaden() {
-                    @Override
-                    public void start(ListenerFilmeLadenEvent event) {
-                        Platform.runLater(() -> toolBar.setDisable(true));
-                    }
-
-                    @Override
-                    public void fertig(ListenerFilmeLadenEvent event) {
-                        Platform.runLater(() -> toolBar.setDisable(false));
-                    }
-                });
-
-        return new Scene(toolBar);
     }
 }

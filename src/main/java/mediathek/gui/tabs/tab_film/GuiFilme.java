@@ -114,10 +114,7 @@ public class GuiFilme extends AGuiTabPanel {
     protected SearchField searchField = new SearchField();
     protected PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
-    /**
-     * The swing helper panel FilmAction bar.
-     */
-    private JFXPanel fxFilmActionPanel;
+
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
     private JCheckBoxMenuItem cbShowButtons;
@@ -175,16 +172,13 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(bookmarkFilmAction);
         toolBar.addSeparator();
         toolBar.add(showFilterDialogAction);
-        fxFilmActionPanel = new JFXPanel();
-        fxFilmActionPanel.setMaximumSize(new Dimension(100,100));
-        toolBar.addSeparator();
-        toolBar.add(fxFilmActionPanel);
-        toolBar.add(new JLabel("Suche:"));
-        toolBar.add(searchField);
         toolBar.addSeparator();
         var filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
         filterSelectionComboBox.setMaximumSize(new Dimension(150,100));
         toolBar.add(filterSelectionComboBox);
+        toolBar.addSeparator();
+        toolBar.add(new JLabel("Suche:"));
+        toolBar.add(searchField);
     }
 
     @Handler
@@ -195,7 +189,6 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> fxFilmActionPanel.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(false));
             } catch (InterruptedException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
@@ -207,7 +200,6 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> fxFilmActionPanel.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(true));
             } catch (InterruptedException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
@@ -332,8 +324,6 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void setupFilmActionPanel() {
         filmActionPanel = new FilmActionPanel();
-        JavaFxUtils.invokeInFxThreadAndWait(
-                () -> fxFilmActionPanel.setScene(filmActionPanel.getFilmActionPanelScene()));
     }
 
     private void setupPsetButtonsPanel() {
