@@ -112,6 +112,8 @@ public class GuiFilme extends AGuiTabPanel {
     public FilmActionPanel filmActionPanel;
     public ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
     protected SearchField searchField = new SearchField();
+    protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
+
     protected PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
 
@@ -173,7 +175,6 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.addSeparator();
         toolBar.add(showFilterDialogAction);
         toolBar.addSeparator();
-        var filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
         filterSelectionComboBox.setMaximumSize(new Dimension(150,100));
         toolBar.add(filterSelectionComboBox);
         toolBar.addSeparator();
@@ -190,6 +191,7 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(false));
             } catch (InterruptedException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
@@ -201,6 +203,7 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(true));
             } catch (InterruptedException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
