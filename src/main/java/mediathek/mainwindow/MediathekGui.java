@@ -867,6 +867,16 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
+    @Handler
+    private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
+        SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(false));
+    }
+
+    @Handler
+    private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
+        SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(true));
+    }
+
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.addSeparator();

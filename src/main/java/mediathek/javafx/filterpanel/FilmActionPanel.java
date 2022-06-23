@@ -11,14 +11,10 @@ import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.gui.actions.ManageAboAction;
-import mediathek.gui.messages.FilmListWriteStartEvent;
-import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.GermanStringSorter;
-import mediathek.tool.MessageBus;
-import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
@@ -75,8 +71,6 @@ public class FilmActionPanel {
     setupFilterSelection();
     setupDeleteCurrentFilterButton();
     setupAddNewFilterButton();
-
-      MessageBus.getMessageBus().subscribe(this);
   }
 
   private void setupAddNewFilterButton() {
@@ -282,16 +276,6 @@ public class FilmActionPanel {
         .zeitraumSpinner
         .valueProperty()
         .addListener(((observable, oldValue, newValue) -> filterConfig.setZeitraum(newValue)));
-  }
-
-  @Handler
-  private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
-      SwingUtilities.invokeLater(() -> MediathekGui.ui().loadFilmListAction.setEnabled(false));
-  }
-
-  @Handler
-  private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
-      SwingUtilities.invokeLater(() -> MediathekGui.ui().loadFilmListAction.setEnabled(true));
   }
 
     public void updateThemaBox() {

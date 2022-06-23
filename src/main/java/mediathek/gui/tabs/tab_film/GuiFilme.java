@@ -170,16 +170,15 @@ public class GuiFilme extends AGuiTabPanel {
 
         toolBar.add(playFilmAction);
         toolBar.add(saveFilmAction);
-        toolBar.addSeparator();
         toolBar.add(bookmarkFilmAction);
-        toolBar.addSeparator();
-        toolBar.add(showFilterDialogAction);
         toolBar.addSeparator();
         filterSelectionComboBox.setMaximumSize(new Dimension(150,100));
         toolBar.add(filterSelectionComboBox);
         toolBar.addSeparator();
         toolBar.add(new JLabel("Suche:"));
         toolBar.add(searchField);
+        toolBar.addSeparator();
+        toolBar.add(showFilterDialogAction);
     }
 
     @Handler
