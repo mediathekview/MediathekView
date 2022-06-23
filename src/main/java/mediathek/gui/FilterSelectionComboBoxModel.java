@@ -13,6 +13,7 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
 
     @Override
     public void setSelectedItem(Object anObject) {
+        super.setSelectedItem(anObject);
         if (anObject != null) {
             filterConfiguration.setCurrentFilter((FilterDTO) anObject);
         }
