@@ -1026,7 +1026,7 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux</javafx.platform>
+                <javafx.platform>linux-aarch64</javafx.platform>
                 <install4j.platform>arm</install4j.platform>
             </properties>
             <dependencies>
@@ -1035,42 +1035,36 @@
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-controls</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-media</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-graphics</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
             </dependencies>
             <build>
