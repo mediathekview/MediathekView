@@ -1,10 +1,12 @@
 <u>**14.0.0**</u>
 
+- User Interface für macOS überarbeitet
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
 - **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
 - **FEATURE:** Neues Suchfeld inklusive Suchhistorie.
+- **FEATURE:** Geoinformationen werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
 
 <u>**13.9.1**</u>
 
