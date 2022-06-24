@@ -1,12 +1,16 @@
 package mediathek.tool.cellrenderer;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
+import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +20,53 @@ import java.awt.*;
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
+    protected final FlatSVGIcon lockedIcon;
+    protected final FlatSVGIcon lockedIconSelected;
+    protected final FlatSVGIcon unlockedIcon;
+    protected final FlatSVGIcon unlockedIconSelected;
     protected boolean geoMelden;
+    protected FlatSVGIcon.ColorFilter whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
     public CellRendererBaseWithStart() {
         MessageBus.getMessageBus().subscribe(this);
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
+
+        lockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
+
+        lockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
+        lockedIconSelected.setColorFilter(whiteColorFilter);
+
+        unlockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
+
+        unlockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
+        unlockedIconSelected.setColorFilter(whiteColorFilter);
+    }
+
+    protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setText("");
+        film.getGeo().ifPresentOrElse(geoString -> {
+            setToolTipText(geoString);
+            if (geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
+                // we are unlocked
+                if (isSelected)
+                    setIcon(unlockedIconSelected);
+                else
+                    setIcon(unlockedIcon);
+            } else {
+                //locked
+                if (isSelected)
+                    setIcon(lockedIconSelected);
+                else
+                    setIcon(lockedIcon);
+            }
+        }, () -> {
+            setToolTipText("Keine Geoinformationen vorhanden");
+            if (isSelected)
+                setIcon(unlockedIconSelected);
+            else
+                setIcon(unlockedIcon);
+        });
     }
 
     @Handler

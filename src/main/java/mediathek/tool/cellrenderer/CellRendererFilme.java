@@ -7,7 +7,6 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
@@ -30,14 +29,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final FlatSVGIcon normalBookmarkIcon;
     private final FlatSVGIcon selectedBookmarkIconHighlighted;
 
-    private final FlatSVGIcon lockedIcon;
-    private final FlatSVGIcon lockedIconSelected;
-    private final FlatSVGIcon unlockedIcon;
-    private final FlatSVGIcon unlockedIconSelected;
-
     public CellRendererFilme() {
-        var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
-
         selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
         selectedDownloadIcon.setColorFilter(whiteColorFilter);
 
@@ -60,16 +52,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.ORANGE));
 
         normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-
-        lockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
-
-        lockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
-        lockedIconSelected.setColorFilter(whiteColorFilter);
-
-        unlockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
-
-        unlockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
-        unlockedIconSelected.setColorFilter(whiteColorFilter);
     }
 
     private JTextArea createTextArea(String content) {
@@ -153,9 +135,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                         setToolTipText(title);
                     break;
 
-                    case DatenFilm.FILM_GEO:
-                        drawGeolocationIcons(datenFilm, isSelected);
-                        break;
+                case DatenFilm.FILM_GEO:
+                    drawGeolocationIcons(datenFilm, isSelected);
+                    break;
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
@@ -166,33 +148,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         return this;
     }
 
-    private void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setText("");
-        film.getGeo().ifPresentOrElse(geoString -> {
-            setToolTipText(geoString);
-            if (geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
-                // we are unlocked
-                if (isSelected)
-                    setIcon(unlockedIconSelected);
-                else
-                    setIcon(unlockedIcon);
-            }
-            else {
-                //locked
-                if (isSelected)
-                    setIcon(lockedIconSelected);
-                else
-                    setIcon(lockedIcon);
-            }
-        }, () -> {
-            setToolTipText("Keine Geoinformationen vorhanden");
-            if (isSelected)
-                setIcon(unlockedIconSelected);
-            else
-                setIcon(unlockedIcon);
-        });
-    }
     /**
      * Apply the specific horizontal alignment to the cell based on column
      *

@@ -201,6 +201,10 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                         setSenderIcon(value.toString(), targetDim);
                     }
                     break;
+
+                case DatenDownload.DOWNLOAD_GEO:
+                    drawGeolocationIcons(datenDownload.film, isSelected);
+                    break;
             }
 
             if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
