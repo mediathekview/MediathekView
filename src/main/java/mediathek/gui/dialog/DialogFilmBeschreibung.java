@@ -1,7 +1,5 @@
 package mediathek.gui.dialog;
 
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -9,11 +7,8 @@ import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import mediathek.tool.javafx.FXErrorDialog;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -50,15 +45,14 @@ public class DialogFilmBeschreibung extends JDialog {
         });
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(e -> Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Hilfe zu " + TITLE);
-            alert.setContentText("""
+        jButtonHilfe.addActionListener(e -> {
+            var message = """
                     Diese Funktion richtet sich z.B. an Benutzer,welche eine angepasste Beschreibung der Sendung in Form der Infodatei ("Filmname.txt") anlegen und durch Drittprogramme einlesen lassen wollen.
 
-                    Achtung: Diese Änderungen gehen nach dem Neuladen einer Filmliste verloren.""");
-            JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-        }));
+                    Achtung: Diese Änderungen gehen nach dem Neuladen einer Filmliste verloren.
+                    """;
+            JOptionPane.showMessageDialog(this, message, Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
+        });
 
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());
@@ -91,15 +85,11 @@ public class DialogFilmBeschreibung extends JDialog {
                     var url = HttpUrl.parse(datenFilm.getUrlNormalQuality());
                     file.writeInfoFile(datenFilm, path, url);
 
-                    JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setHeaderText("Infodatei schreiben");
-                        alert.setContentText("Infodatei wurde erfolgreich geschrieben.");
-                        JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-                    });
+                    JOptionPane.showMessageDialog(this, "Infodatei wurde erfolgreich geschrieben.",
+                            Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
                 }
                 catch (IOException ex) {
-                    JavaFxUtils.invokeInFxThreadAndWait(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Infodatei schreiben", "Ein unbekannter Fehler ist aufgetreten!", ex));
+                    SwingErrorDialog.showExceptionMessage(this,"Ein unbekannter Fehler ist aufgetreten!", ex);
                     logger.error("Ziel: {}", path.toAbsolutePath().toString(), ex);
                 }
             }
