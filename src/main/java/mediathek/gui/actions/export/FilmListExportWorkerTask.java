@@ -22,6 +22,9 @@ class FilmListExportWorkerTask extends Task<Void> {
     @Override
     protected Void call() {
         FilmListWriter writer = new FilmListWriter(readable);
+        // do not "compress" the sender tag
+        writer.setCompressSenderTag(false);
+        writer.setCompressThemaTag(false);
         writer.writeFilmList(selectedFile.getAbsolutePath(),
                 Daten.getInstance().getListeFilme(),
                 prog -> updateProgress(prog, 1d));

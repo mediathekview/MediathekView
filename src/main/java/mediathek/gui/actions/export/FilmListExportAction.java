@@ -1,7 +1,5 @@
 package mediathek.gui.actions.export;
 
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import mediathek.config.Konstanten;
 import mediathek.javafx.tool.FXProgressPane;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -49,21 +47,17 @@ public class FilmListExportAction extends AbstractAction {
     }
 
     private void showError() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(Konstanten.PROGRAMMNAME);
-        alert.setHeaderText(HEADER);
-        alert.setContentText("Es gab einen Fehler beim Export der Filmliste.");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.showAndWait();
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(MediathekGui.ui(),
+                "Es gab einen Fehler beim Export der Filmliste.",
+                Konstanten.PROGRAMMNAME,
+                JOptionPane.ERROR_MESSAGE));
     }
 
     private void showSuccess() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Konstanten.PROGRAMMNAME);
-        alert.setHeaderText(HEADER);
-        alert.setContentText("Der Export wurde erfolgreich beendet.");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.showAndWait();
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(MediathekGui.ui(),
+                "Der Export wurde erfolgreich abgeschlossen.",
+                Konstanten.PROGRAMMNAME,
+                JOptionPane.INFORMATION_MESSAGE));
     }
 
     @Override

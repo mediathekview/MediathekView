@@ -25,9 +25,11 @@ public class FilmListWriter {
 
     private static final Logger logger = LogManager.getLogger(FilmListWriter.class);
     private static final String TAG_JSON_LIST = "X";
+    private final boolean readable;
     private String sender = "";
     private String thema = "";
-    private final boolean readable;
+    private boolean compressSenderTag = true;
+    private boolean compressThemaTag = true;
 
     public FilmListWriter(boolean readable) {
         this.readable = readable;
@@ -166,21 +168,37 @@ public class FilmListWriter {
     private void writeSender(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
         String tempSender = datenFilm.getSender();
 
-        if (tempSender.equals(sender)) {
-            jg.writeString("");
-        } else {
-            sender = tempSender;
-            jg.writeString(tempSender);
+        if (compressSenderTag) {
+            if (tempSender.equals(sender)) {
+                jg.writeString("");
+            } else {
+                sender = tempSender;
+                jg.writeString(tempSender);
+            }
         }
+        else
+            jg.writeString(tempSender);
+    }
+
+    public void setCompressThemaTag(boolean compressThemaTag) {
+        this.compressThemaTag = compressThemaTag;
+    }
+
+    public void setCompressSenderTag(boolean compress) {
+        compressSenderTag = compress;
     }
 
     private void writeThema(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
-        if (datenFilm.getThema().equals(thema)) {
-            jg.writeString("");
-        } else {
-            thema = datenFilm.getThema();
-            jg.writeString(datenFilm.getThema());
+        if (compressThemaTag) {
+            if (datenFilm.getThema().equals(thema)) {
+                jg.writeString("");
+            } else {
+                thema = datenFilm.getThema();
+                jg.writeString(datenFilm.getThema());
+            }
         }
+        else
+            jg.writeString(datenFilm.getThema());
     }
 
     private void writeZeit(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
