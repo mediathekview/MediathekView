@@ -56,6 +56,15 @@ public class Config {
     private static boolean helpRequested;
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
     private static boolean fileLoggingDisabled;
+    /**
+     * Disable JVM parameter checks on startup.
+     */
+    @CommandLine.Option(names = {"-nj", "--no-jvm-param-checks"}, description = "JVM Parameter-Prüfung deaktivieren")
+    private static boolean disableJvmParameterChecks;
+
+    public static boolean isDisableJvmParameterChecks() {
+        return disableJvmParameterChecks;
+    }
 
     public static boolean isInstallThreadCheckingRepaintManager() {
         return installThreadCheckingRepaintManager;

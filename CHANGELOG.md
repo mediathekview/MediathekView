@@ -1,6 +1,7 @@
 <u>**14.0.0**</u>
 
 - User Interface für macOS überarbeitet
+- Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
 - **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.

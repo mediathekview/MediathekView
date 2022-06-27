@@ -292,6 +292,50 @@ public class Main {
     }
 
     /**
+     * Check if Shenandoah GC settings are supplied to JVM.
+     * Otherwise display warning dialog.
+     */
+    private static void checkJVMSettings() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        boolean correctParameters = false;
+        var paramList = runtimeMXBean.getInputArguments();
+
+        var useShenandoahGC = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseShenandoahGC")).findAny().stream().count();
+        var shenandoahHeuristics = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:ShenandoahGCHeuristics=compact")).findAny().stream().count();
+        var stringDedup = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseStringDeduplication")).findAny().stream().count();
+        var maxRamPct = paramList.stream().filter(s -> s.startsWith("-XX:MaxRAMPercentage=")).findAny().stream().count();
+
+        //Incorrect VM params
+        var mxParamCount = paramList.stream().filter(s -> s.startsWith("-Xmx")).findAny().stream().count();
+
+        if ((useShenandoahGC > 0)
+                && (shenandoahHeuristics > 0)
+                && (stringDedup > 0)
+                && (maxRamPct > 0)
+                && (mxParamCount == 0))
+            correctParameters = true;
+
+        if (!correctParameters) {
+            //show error dialog
+            logger.warn("Detected incorrect JVM parameters! Please modify your settings");
+            JOptionPane.showMessageDialog(null,
+                    "<html>" +
+                            "<b>Inkorrekte JVM Parameter erkannt</b><br/><br/>" +
+                            "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
+                            "<ul>" +
+                            "<li>-XX:+UseShenandoahGC</li>" +
+                            "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
+                            "<li>-XX:+UseStringDeduplication</li>" +
+                            "<li>-XX:MaxRAMPercentage=<b>xx.x</b></li>" +
+                            "</ul><br/>" +
+                            "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                            "</html>",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
@@ -320,6 +364,9 @@ public class Main {
 
             setupDockIcon();
             setupFlatLaf();
+
+            if (!Config.isDisableJvmParameterChecks())
+                checkJVMSettings();
 
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (!VersionHelpers.IsWindows10OrGreater())
