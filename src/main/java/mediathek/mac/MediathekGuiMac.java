@@ -1,7 +1,6 @@
 package mediathek.mac;
 
 import com.formdev.flatlaf.util.SystemInfo;
-import mediathek.config.Konstanten;
 import mediathek.gui.actions.ShowAboutAction;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
@@ -21,16 +20,6 @@ import java.io.IOException;
 public class MediathekGuiMac extends MediathekGui {
     protected static final Logger logger = LogManager.getLogger(MediathekGuiMac.class);
     private final OsxPowerManager powerManager = new OsxPowerManager();
-
-    @Override
-    protected boolean officialLauncherInUse() {
-        boolean macOSBinaryInuse = true;
-        final var osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP);
-        if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
-            macOSBinaryInuse = false;
-        }
-        return macOSBinaryInuse;
-    }
 
     @Override
     protected void installAdditionalHelpEntries() {

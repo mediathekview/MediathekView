@@ -893,28 +893,8 @@ public class MediathekGui extends JFrame {
             jMenuHilfe.add(searchProgramUpdateAction);
         }
         jMenuHilfe.add(new ShowProgramInfosAction());
-        /*
-        we use Shenandoah GC and a signed app on macOS. Therefore there is no need to modify vm settings.
-         */
-        if (officialLauncherInUse() && !SystemUtils.IS_OS_MAC_OSX) {
-            jMenuHilfe.addSeparator();
-            jMenuHilfe.add(new SetAppMemoryAction());
-        }
+
         installAdditionalHelpEntries();
-    }
-
-    /**
-     * Test if MediathekView is launched by our official downloads.
-     * @return true if official binary is used, false otherwise.
-     */
-    protected boolean officialLauncherInUse() {
-        boolean winBinaryInUse = true;
-        final var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
-        if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
-            winBinaryInUse = false;
-        }
-
-        return winBinaryInUse;
     }
 
     protected void installChangeGlobalFontSettingMenuEntry() {
