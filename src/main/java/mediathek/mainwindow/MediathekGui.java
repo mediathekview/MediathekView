@@ -885,6 +885,8 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ResetAboHistoryAction(this));
         jMenuHilfe.add(new DeleteLocalFilmlistAction(this));
         jMenuHilfe.addSeparator();
+        jMenuHilfe.add(new ResetFilterDialogPosition(this));
+        jMenuHilfe.addSeparator();
         //do not show menu entry if we have external update support
         var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
         if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {

@@ -7,6 +7,7 @@
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
 - **FEATURE:** Neues Suchfeld inklusive Suchhistorie.
 - **FEATURE:** Geoinformationen werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
+- **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
 
 <u>**13.9.1**</u>
 
