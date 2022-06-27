@@ -78,7 +78,7 @@
         <java.version>18</java.version>
         <jdk.language.version>18</jdk.language.version>
         <kotlin.language.target>18</kotlin.language.target>
-        <kotlin.version>1.6.21</kotlin.version>
+        <kotlin.version>1.7.0</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -550,9 +550,6 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
-                            <args>
-                                <arg>-Xuse-ir</arg>
-                            </args>
                         </configuration>
                     </execution>
                     <execution>
@@ -566,9 +563,6 @@
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
-                            <args>
-                                <arg>-Xuse-ir</arg>
-                            </args>
                         </configuration>
                     </execution>
                 </executions>
