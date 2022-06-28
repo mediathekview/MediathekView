@@ -875,13 +875,7 @@ public class GuiFilme extends AGuiTabPanel {
                 var visible = dlg.isVisible();
                 visible = !visible;
 
-                if (e.getSource() instanceof JToggleButton btn) {
-                    dlg.setVisible(visible);
-                    btn.setSelected(visible);
-                } else {
-                    dlg.setVisible(visible);
-                }
-            }
+                dlg.setVisible(visible);            }
         }
     }
 
