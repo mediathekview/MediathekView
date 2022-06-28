@@ -11,6 +11,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +21,12 @@ import java.util.NoSuchElementException;
 
 public class SwingFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
+    private final JToggleButton filterToggleButton;
 
-    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content) {
+    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content, @NotNull JToggleButton filterToggleButton) {
         super(owner);
+        this.filterToggleButton = filterToggleButton;
+
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setTitle("Filter");
         setType(Type.UTILITY);
@@ -33,7 +37,7 @@ public class SwingFilterDialog extends JDialog {
                 pack();
                 restoreWindowSizeFromConfig();
                 restoreDialogVisibility();
-                registerWindowSizeListener();
+                addComponentListener(new FilterDialogComponentListener());
             });
         });
 
@@ -90,46 +94,46 @@ public class SwingFilterDialog extends JDialog {
 
     }
 
-    private void registerWindowSizeListener() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                storeWindowPosition(e);
+    public class FilterDialogComponentListener extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        @Override
+        public void componentShown(ComponentEvent e) {
+            storeDialogVisibility();
+            filterToggleButton.setSelected(true);
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
+            storeWindowPosition(e);
+            storeDialogVisibility();
+
+            filterToggleButton.setSelected(false);
+        }
+
+        private void storeWindowPosition(ComponentEvent e) {
+            var config = ApplicationConfiguration.getConfiguration();
+            var component = e.getComponent();
+
+            var dims = component.getSize();
+            var loc = component.getLocation();
+            try {
+                config.lock(LockMode.WRITE);
+                config.setProperty(ApplicationConfiguration.FilterDialog.WIDTH, dims.width);
+                config.setProperty(ApplicationConfiguration.FilterDialog.HEIGHT, dims.height);
+                config.setProperty(ApplicationConfiguration.FilterDialog.X, loc.x);
+                config.setProperty(ApplicationConfiguration.FilterDialog.Y, loc.y);
+            } finally {
+                config.unlock(LockMode.WRITE);
             }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                storeWindowPosition(e);
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-                storeDialogVisibility();
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                storeWindowPosition(e);
-                storeDialogVisibility();
-            }
-
-            private void storeWindowPosition(ComponentEvent e) {
-                var config = ApplicationConfiguration.getConfiguration();
-                var component = e.getComponent();
-
-                var dims = component.getSize();
-                var loc = component.getLocation();
-                try {
-                    config.lock(LockMode.WRITE);
-                    config.setProperty(ApplicationConfiguration.FilterDialog.WIDTH, dims.width);
-                    config.setProperty(ApplicationConfiguration.FilterDialog.HEIGHT, dims.height);
-                    config.setProperty(ApplicationConfiguration.FilterDialog.X, loc.x);
-                    config.setProperty(ApplicationConfiguration.FilterDialog.Y, loc.y);
-                } finally {
-                    config.unlock(LockMode.WRITE);
-                }
-            }
-        });
-
+        }
     }
 }

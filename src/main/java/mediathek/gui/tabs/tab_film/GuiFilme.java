@@ -178,8 +178,16 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(new JLabel("Suche:"));
         toolBar.add(searchField);
         toolBar.addSeparator();
-        toolBar.add(showFilterDialogAction);
+
+        //disable text
+        showFilterToggleBtn.setText("");
+        final boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
+        showFilterToggleBtn.setSelected(visible);
+
+        toolBar.add(showFilterToggleBtn);
     }
+
+    protected JToggleButton showFilterToggleBtn = new JToggleButton(showFilterDialogAction);
 
     @Handler
     private void handleTableModelChange(TableModelChangeEvent e) {
@@ -325,7 +333,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel();
+        filmActionPanel = new FilmActionPanel(showFilterToggleBtn);
     }
 
     private void setupPsetButtonsPanel() {
@@ -864,8 +872,14 @@ public class GuiFilme extends AGuiTabPanel {
         public void actionPerformed(ActionEvent e) {
             var dlg = filmActionPanel.filterDialog;
             if (dlg != null) {
-                if (!dlg.isVisible()) {
-                    dlg.setVisible(true);
+                var visible = dlg.isVisible();
+                visible = !visible;
+
+                if (e.getSource() instanceof JToggleButton btn) {
+                    dlg.setVisible(visible);
+                    btn.setSelected(visible);
+                } else {
+                    dlg.setVisible(visible);
                 }
             }
         }

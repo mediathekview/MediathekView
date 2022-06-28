@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -55,14 +56,14 @@ public class FilmActionPanel {
 
   private CommonViewSettingsPane viewSettingsPane;
 
-  public FilmActionPanel() {
+  public FilmActionPanel(@NotNull JToggleButton filterToggleBtn) {
     this.filterConfig = new FilterConfiguration();
 
     setupViewSettingsPane();
     setupDeleteFilterButton();
 
     SwingUtilities.invokeLater(
-        () -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), viewSettingsPane));
+        () -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
 
     restoreConfigSettings();
 
