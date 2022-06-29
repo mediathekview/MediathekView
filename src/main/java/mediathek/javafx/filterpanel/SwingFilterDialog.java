@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.util.NoSuchElementException;
 
 public class SwingFilterDialog extends JDialog {
@@ -26,6 +27,9 @@ public class SwingFilterDialog extends JDialog {
     public SwingFilterDialog(Frame owner, CommonViewSettingsPane content, @NotNull JToggleButton filterToggleButton) {
         super(owner);
         this.filterToggleButton = filterToggleButton;
+
+        ToggleVisibilityKeyHandler handler = new ToggleVisibilityKeyHandler(this);
+        handler.installHandler(filterToggleButton.getAction());
 
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setTitle("Filter");
@@ -92,6 +96,20 @@ public class SwingFilterDialog extends JDialog {
             config.unlock(LockMode.READ);
         }
 
+    }
+
+    static class ToggleVisibilityKeyHandler {
+        private static final String TOGGLE_FILTER_VISIBILITY = "toggle_dialog_visibility";
+        private final JRootPane rootPane;
+        public ToggleVisibilityKeyHandler(JDialog dlg) {
+            this.rootPane = dlg.getRootPane();
+        }
+
+        public void installHandler(Action action) {
+            final var inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), TOGGLE_FILTER_VISIBILITY);
+            rootPane.getActionMap().put(TOGGLE_FILTER_VISIBILITY, action);
+        }
     }
 
     public class FilterDialogComponentListener extends ComponentAdapter {

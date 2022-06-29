@@ -860,7 +860,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(cbBandwidthDisplay);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(tabFilme.showFilterDialogAction);
+        jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showFilmInformationAction);
         jMenuAnsicht.addSeparator();

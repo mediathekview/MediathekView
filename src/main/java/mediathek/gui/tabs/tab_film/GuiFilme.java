@@ -110,13 +110,13 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     public FilmActionPanel filmActionPanel;
-    public ShowFilterDialogAction showFilterDialogAction = new ShowFilterDialogAction();
+    public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField = new SearchField();
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
 
     protected PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
+    protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
-
     private boolean stopBeob;
     private FilmTabInfoPane filmInfoLabel;
     private JCheckBoxMenuItem cbShowButtons;
@@ -130,6 +130,7 @@ public class GuiFilme extends AGuiTabPanel {
      * We perform model filtering in the background the keep UI thread alive.
      */
     private ListenableFuture<TableModel> modelFuture;
+
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
@@ -179,15 +180,8 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(searchField);
         toolBar.addSeparator();
 
-        //disable text
-        showFilterToggleBtn.setText("");
-        final boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
-        showFilterToggleBtn.setSelected(visible);
-
-        toolBar.add(showFilterToggleBtn);
+        toolBar.add(btnToggleFilterDialogVisibility);
     }
-
-    protected JToggleButton showFilterToggleBtn = new JToggleButton(showFilterDialogAction);
 
     @Handler
     private void handleTableModelChange(TableModelChangeEvent e) {
@@ -196,7 +190,7 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(false));
+                SwingUtilities.invokeAndWait(() -> toggleFilterDialogVisibilityAction.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(false));
                 SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(false));
             } catch (InterruptedException | InvocationTargetException ex) {
@@ -208,7 +202,7 @@ public class GuiFilme extends AGuiTabPanel {
                 SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> showFilterDialogAction.setEnabled(true));
+                SwingUtilities.invokeAndWait(() -> toggleFilterDialogVisibilityAction.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> searchField.setEnabled(true));
                 SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(true));
             } catch (InterruptedException | InvocationTargetException ex) {
@@ -333,7 +327,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel(showFilterToggleBtn);
+        filmActionPanel = new FilmActionPanel(btnToggleFilterDialogVisibility);
     }
 
     private void setupPsetButtonsPanel() {
@@ -860,8 +854,17 @@ public class GuiFilme extends AGuiTabPanel {
                 decoratedPool);
     }
 
-    public class ShowFilterDialogAction extends AbstractAction {
-        public ShowFilterDialogAction() {
+    static class FilterVisibilityToggleButton extends JToggleButton {
+        public FilterVisibilityToggleButton(Action a) {
+            super(a);
+            setText("");
+            final boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
+            setSelected(visible);
+        }
+    }
+
+    public class ToggleFilterDialogVisibilityAction extends AbstractAction {
+        public ToggleFilterDialogVisibilityAction() {
             putValue(Action.NAME, "Filterdialog anzeigen");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen");
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
@@ -875,7 +878,8 @@ public class GuiFilme extends AGuiTabPanel {
                 var visible = dlg.isVisible();
                 visible = !visible;
 
-                dlg.setVisible(visible);            }
+                dlg.setVisible(visible);
+            }
         }
     }
 
