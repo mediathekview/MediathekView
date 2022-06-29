@@ -26,7 +26,7 @@ public class SwingErrorDialog {
         text.setCaretPosition(0);
 
         JScrollPane scroller = new JScrollPane(text);
-        scroller.setPreferredSize(new Dimension(400, 200));
+        scroller.setPreferredSize(new Dimension(640, 350));
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
