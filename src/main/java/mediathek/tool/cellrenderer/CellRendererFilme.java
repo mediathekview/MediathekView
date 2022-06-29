@@ -29,6 +29,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final FlatSVGIcon normalBookmarkIcon;
     private final FlatSVGIcon selectedBookmarkIconHighlighted;
 
+    private final FlatSVGIcon subtitleIcon;
+    private final FlatSVGIcon subtitleIconSelected;
     public CellRendererFilme() {
         selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
         selectedDownloadIcon.setColorFilter(whiteColorFilter);
@@ -52,6 +54,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.ORANGE));
 
         normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
+
+        subtitleIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
+        subtitleIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
+        subtitleIconSelected.setColorFilter(whiteColorFilter);
     }
 
     private JTextArea createTextArea(String content) {
@@ -133,6 +139,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
                     if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
                         setToolTipText(title);
+                    setText(title);
+                    setSubtitleIcon(datenFilm, isSelected);
                     break;
 
                 case DatenFilm.FILM_GEO:
@@ -146,6 +154,22 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
 
         return this;
+    }
+
+    /**
+     * Show "cc" icon when subtitle is available
+     * @param datenFilm film information
+     * @param isSelected is row selected.
+     */
+    private void setSubtitleIcon(@NotNull DatenFilm datenFilm, boolean isSelected) {
+        if (datenFilm.hasSubtitle()) {
+            Icon icon;
+            if (isSelected)
+                icon = subtitleIconSelected;
+            else
+                icon = subtitleIcon;
+            setIcon(icon);
+        }
     }
 
     /**
