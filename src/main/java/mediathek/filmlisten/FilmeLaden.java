@@ -1,8 +1,6 @@
 package mediathek.filmlisten;
 
 import com.google.common.base.Stopwatch;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
@@ -14,14 +12,13 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.tool.FXProgressPane;
-import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmListUpdateType;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.http.MVHttpClient;
-import mediathek.tool.javafx.FXErrorDialog;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -46,7 +43,6 @@ public class FilmeLaden {
 
     private static final Logger logger = LogManager.getLogger(FilmeLaden.class);
     private static final String NETWORK_NOT_AVAILABLE = "Netzwerk nicht verfügbar";
-    private static final String DIALOG_TITLE = "Filmliste laden";
     private static final String NO_UPDATE_AVAILABLE = "Es ist keine aktuellere Filmliste verfügbar.";
     /**
      * HTTP error code for not found.
@@ -86,7 +82,7 @@ public class FilmeLaden {
     private void showNoUpdateAvailableDialog() {
         JOptionPane.showMessageDialog(MediathekGui.ui(),
                 NO_UPDATE_AVAILABLE,
-                DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -125,23 +121,20 @@ public class FilmeLaden {
             }
         } catch (UnknownHostException ex) {
             logger.debug(ex);
-            if (showDialogs)
-                Platform.runLater(() ->
-                        FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE, NETWORK_NOT_AVAILABLE, ex));
+            if (showDialogs) {
+                SwingErrorDialog.showExceptionMessage(MediathekGui.ui(), NETWORK_NOT_AVAILABLE, ex);
+            }
             else
                 logger.warn(NETWORK_NOT_AVAILABLE);
 
         } catch (IOException ex) {
             logger.error("IOxception:", ex);
-            Platform.runLater(() ->
-                    FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE,
-                            "Netzwerkfehler aufgetreten!", ex));
+            SwingErrorDialog.showExceptionMessage(MediathekGui.ui(), "Netzwerkfehler aufgetreten!", ex);
         } catch (Exception ex) {
             logger.error("check for filmliste.id failed", ex);
-            if (showDialogs)
-                Platform.runLater(() ->
-                        FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, DIALOG_TITLE,
-                                "Ein unbekannter Fehler ist aufgetreten.", ex));
+            if (showDialogs) {
+                SwingErrorDialog.showExceptionMessage(MediathekGui.ui(), "Ein unbekannter Fehler ist aufgetreten.", ex);
+            }
         }
 
         return result;
@@ -287,12 +280,10 @@ public class FilmeLaden {
         if (event.fehler) {
             logger.info("");
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Fehler");
-                alert.setContentText("Das Laden der Filmliste hat nicht geklappt!");
-                JFXHiddenApplication.showAlert(alert, ui);
-            });
+            JOptionPane.showMessageDialog(MediathekGui.ui(),
+                    "Das Laden der Filmliste hat nicht geklappt!",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.ERROR_MESSAGE);
 
             // dann die alte Liste wieder laden
             listeFilme.clear();
