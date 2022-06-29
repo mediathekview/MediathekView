@@ -122,9 +122,11 @@
 
         <!-- Adoptium (Eclipse Temurin runtime, formerly AdoptOpenJDK) is used for Windows and Linux 64bit -->
         <install4j.adoptium.jdk.version>17/jdk-17.0.2+8</install4j.adoptium.jdk.version>
-        <!-- Liberica includes JavaFX and is used for Arm and 32bit -->
+        <!-- Liberica includes JavaFX and is used for 32bit windows -->
         <install4j.liberica.jdk.version>17/17.0.2+9</install4j.liberica.jdk.version>
-        <install4j.jdk.min-version>17</install4j.jdk.min-version>
+        <!-- Zulu without JavaFX is used on AArch64 ARM 64 bit linux -->
+        <install4j.zulu.jdk.version>18/18.0.1</install4j.zulu.jdk.version>
+        <install4j.jdk.min-version>18</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0

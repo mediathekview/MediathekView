@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="${install4j.liberica.jdk.version}">
+    <jreBundles jdkProviderId="Zulu" release="${install4j.zulu.jdk.version}">
       <modules>
         <defaultModules set="all" />
       </modules>
