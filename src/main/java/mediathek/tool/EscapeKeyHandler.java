@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-@SuppressWarnings("serial")
 public class EscapeKeyHandler {
 
     private static final String CANCEL_KEY_HANDLER = "key_cancel";
