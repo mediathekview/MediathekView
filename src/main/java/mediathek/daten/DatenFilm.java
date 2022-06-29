@@ -47,6 +47,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_REF = 16; // no getter/setter access // Referenz auf this
     public static final int MAX_ELEM = 17;
     /**
+     * Compressed URLs are missing the base normal quality URL and are indicated by the pipe-symbol.
+     */
+    public static final char COMPRESSION_MARKER = '|';
+    /**
      * The database instance for all descriptions.
      */
     private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
@@ -444,13 +448,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
             ret = getUrlNormalQuality();
         else {
             try {
-                // check if url contains pipe symbol...
-                final int indexPipe = requestedUrl.indexOf('|');
-                if (indexPipe == -1) { //No
+                if (isUrlCompressed(requestedUrl))
+                    ret = decompressUrl(requestedUrl);
+                else
                     ret = requestedUrl;
-                } else { //Yes
-                    ret = decompressUrl(requestedUrl, indexPipe);
-                }
             } catch (Exception e) {
                 ret = "";
                 logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", resolution, requestedUrl, e);
@@ -460,7 +461,19 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    private String decompressUrl(@NotNull final String requestedUrl, final int indexPipe) {
+    /**
+     * URLs are considered compressed if they contain a '|'-symbol in the text.
+     * They need to be decompressed before use.
+     * @param requestedUrl the string to be checked.
+     * @return true if url is compressed, false otherwise.
+     */
+    public boolean isUrlCompressed(@NotNull String requestedUrl) {
+        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
+        return indexPipe != -1;
+    }
+
+    private String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
+        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
         return getUrlNormalQuality().substring(0, i) + requestedUrl.substring(indexPipe + 1);
     }
