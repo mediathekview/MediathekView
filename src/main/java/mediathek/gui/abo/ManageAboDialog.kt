@@ -36,7 +36,7 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
             setSize(width, height)
             setLocation(x,y)
         }
-        catch(e: NoSuchElementException) {
+        catch(_: NoSuchElementException) {
         }
         finally {
             config.unlock(LockMode.READ)
