@@ -122,8 +122,6 @@
 
         <!-- Adoptium (Eclipse Temurin runtime, formerly AdoptOpenJDK) is used for Windows and Linux 64bit -->
         <install4j.adoptium.jdk.version>17/jdk-17.0.2+8</install4j.adoptium.jdk.version>
-        <!-- Liberica includes JavaFX and is used for 32bit windows -->
-        <install4j.liberica.jdk.version>17/17.0.2+9</install4j.liberica.jdk.version>
         <!-- Zulu without JavaFX is used on AArch64 ARM 64 bit linux -->
         <install4j.zulu.jdk.version>18/18.0.1</install4j.zulu.jdk.version>
         <install4j.jdk.min-version>18</install4j.jdk.min-version>
@@ -137,21 +135,6 @@
             -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
             -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
-        <!-- VM Parameters Windows x32 -->
-        <install4j.vmparameters.win.32>-Xmx1G -Xss1048576 -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=100.0
-            -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
-            --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
-            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED
-            --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED
-            --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED
-        </install4j.vmparameters.win.32>
-        <!-- VM Parameters Linux x32 -->
-        <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
-            -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
-            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports
-            javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports
-            javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
-        </install4j.vmparameters.linux.32>
 
         <install4j.home>./install4j9.0.5</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
@@ -760,128 +743,6 @@
                                         </fileSet>
                                         <fileSet>
                                             <sourceFile>res/bin/ffmpeg.txt</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.txt</destinationFile>
-                                        </fileSet>
-                                    </fileSets>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>windows_32bit</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                    <arch>x86</arch>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>win</javafx.platform>
-                <install4j.platform>windows32</install4j.platform>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>${copy-rename-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy-file</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg32.exe</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.exe</destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg32.txt</sourceFile>
                                             <destinationFile>target/res/bin/ffmpeg.txt</destinationFile>
                                         </fileSet>
                                     </fileSets>
