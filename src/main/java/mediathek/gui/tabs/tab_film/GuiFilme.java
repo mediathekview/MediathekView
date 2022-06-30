@@ -13,9 +13,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -587,26 +584,18 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private synchronized void bookmarkFilm() {
+    private void bookmarkFilm() {
         var movies = getSelFilme();
         final long size = movies.size();
         if (size > 250) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                ButtonType yes = new ButtonType("Ja", ButtonBar.ButtonData.YES);
-                ButtonType no = new ButtonType("Nein", ButtonBar.ButtonData.NO);
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                        String.format(
-                                "Möchten Sie wirklich %d Einträge bearbeiten?%nDas Programm könnte während der Operation nicht reagieren.",
-                                size),
-                        yes,
-                        no);
-                alert.setTitle("Merkliste");
-                alert.showAndWait().filter(r -> r == yes).ifPresent(response ->
-                        SwingUtilities.invokeLater(() -> {
-                            daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
-                            repaint();
-                        }));
-            });
+            var reply = JOptionPane.showConfirmDialog(this,
+                    String.format("Möchten Sie wirklich %d Einträge der Merkliste bearbeiten?%nDas Programm könnte während der Operation nicht reagieren.", size),
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
+                repaint();
+            }
         } else {
             daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
             repaint();
