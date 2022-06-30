@@ -25,6 +25,7 @@ class FilmListExportWorkerTask extends Task<Void> {
         // do not "compress" the sender tag
         writer.setCompressSenderTag(false);
         writer.setCompressThemaTag(false);
+        writer.setDecompressUrls(true);
         writer.writeFilmList(selectedFile.getAbsolutePath(),
                 Daten.getInstance().getListeFilme(),
                 prog -> updateProgress(prog, 1d));

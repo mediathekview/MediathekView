@@ -11,6 +11,7 @@ import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -145,9 +146,9 @@ public class FilmListWriter {
         jg.writeString(datenFilm.getWebsiteLink());
         jg.writeString(datenFilm.getUrlSubtitle());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-        jg.writeString(datenFilm.getUrlLowQuality());
+        writeLowQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        jg.writeString(datenFilm.getUrlHighQuality());
+        writeHighQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
@@ -156,6 +157,34 @@ public class FilmListWriter {
 
         jg.writeEndArray();
     }
+
+    private void writeLowQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
+        String url = datenFilm.getUrlLowQuality();
+        if (decompressUrls) {
+            if (DatenFilm.isUrlCompressed(url)) {
+                url = datenFilm.decompressUrl(url);
+            }
+        }
+
+        jg.writeString(url);
+    }
+
+    private void writeHighQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
+        String url = datenFilm.getUrlHighQuality();
+        if (decompressUrls) {
+            if (DatenFilm.isUrlCompressed(url)) {
+                url = datenFilm.decompressUrl(url);
+            }
+        }
+
+        jg.writeString(url);
+    }
+
+    public void setDecompressUrls(boolean decompressUrls) {
+        this.decompressUrls = decompressUrls;
+    }
+
+    private boolean decompressUrls;
 
     private void skipEntry(JsonGenerator jg) throws IOException {
         jg.writeString("");

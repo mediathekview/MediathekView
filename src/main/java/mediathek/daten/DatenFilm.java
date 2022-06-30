@@ -467,12 +467,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param requestedUrl the string to be checked.
      * @return true if url is compressed, false otherwise.
      */
-    public boolean isUrlCompressed(@NotNull String requestedUrl) {
+    public static boolean isUrlCompressed(@NotNull String requestedUrl) {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         return indexPipe != -1;
     }
 
-    private String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
+    public String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
         return getUrlNormalQuality().substring(0, i) + requestedUrl.substring(indexPipe + 1);
