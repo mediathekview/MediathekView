@@ -7,9 +7,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TabPane;
-import javafx.stage.Modality;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -963,14 +961,10 @@ public class GuiDownloads extends AGuiTabPanel {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
         if (tabelle.getRowCount() == 0) {
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("Keine Downloads vorhanden");
-                alert.setContentText("Es sind keine Downloads in der Liste zum Starten vorhanden.");
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(this,
+                    "Es sind keine Downloads in der Liste zum Starten vorhanden.",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 

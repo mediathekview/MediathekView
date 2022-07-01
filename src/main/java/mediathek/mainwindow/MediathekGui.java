@@ -11,11 +11,9 @@ import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mediathek.Main;
 import mediathek.config.Config;
@@ -287,16 +285,12 @@ public class MediathekGui extends JFrame {
                         """, regexStr);
                 Filter.regExpErrorList.clear();
 
-                Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Ungültige reguläre Ausdrücke gefunden");
-                    alert.setContentText(message);
-                    alert.initModality(Modality.APPLICATION_MODAL);
-                    alert.show();
-                });
+                JOptionPane.showMessageDialog(this,
+                        message,
+                        Konstanten.PROGRAMMNAME,
+                        JOptionPane.ERROR_MESSAGE);
             }
-        }, 30, TimeUnit.SECONDS);
+        }, 15, TimeUnit.SECONDS);
     }
 
     /**
