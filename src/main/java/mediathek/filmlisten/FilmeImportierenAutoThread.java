@@ -27,7 +27,7 @@ class FilmeImportierenAutoThread extends Thread {
     @Override
     public void run() {
         boolean ret;
-        if (listeFilme.isEmpty() || !listeFilme.metaData().canUseDiffList()) {
+        if (listeFilme.isEmpty() || !listeFilme.getMetaData().canUseDiffList()) {
             // dann eine komplette Liste laden
             listeFilme.clear();
             ret = downloadAction.performDownload(StandardLocations.getFilmListUrl(FilmListDownloadType.FULL), listeFilme, days);

@@ -27,7 +27,6 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
-import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -44,6 +43,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.JXStatusBar;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -92,6 +92,15 @@ public class GuiDownloads extends AGuiTabPanel {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private final JXStatusBar statusBar = new JXStatusBar();
+    private final DownloadStartInfoProperty startInfoProperty = new DownloadStartInfoProperty();
+    private final AboLabel lblAbos = new AboLabel(startInfoProperty);
+    private final TotalDownloadsLabel totalDownloadsLabel = new TotalDownloadsLabel(startInfoProperty);
+    private final ManualDownloadsInfoLabel manualDownloadsInfoLabel = new ManualDownloadsInfoLabel(startInfoProperty);
+    private final WaitingDownloadsInfoLabel waitingDownloadsInfoLabel = new WaitingDownloadsInfoLabel(startInfoProperty);
+    private final ActiveDownloadsInfoLabel activeDownloadsInfoLabel = new ActiveDownloadsInfoLabel(startInfoProperty);
+    private final FinishedDownloadsInfoLabel finishedDownloadsInfoLabel = new FinishedDownloadsInfoLabel(startInfoProperty);
+    private final FailedDownloadsInfoLabel failedDownloadsInfoLabel = new FailedDownloadsInfoLabel(startInfoProperty);
     protected StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
     protected StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
     protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
@@ -123,7 +132,6 @@ public class GuiDownloads extends AGuiTabPanel {
      * The internally used model.
      */
     private TModelDownload model;
-    private DownloadTabInformationLabel filmInfoLabel;
     private MVDownloadsTable tabelle;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -144,6 +152,7 @@ public class GuiDownloads extends AGuiTabPanel {
         this.mediathekGui = mediathekGui;
 
         initComponents();
+        setupDownloadListStatusBar();
 
         setupF4Key(mediathekGui);
 
@@ -153,8 +162,6 @@ public class GuiDownloads extends AGuiTabPanel {
         showDescriptionPanel();
 
         init();
-
-        installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
@@ -173,6 +180,16 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
+
+    private void setupDownloadListStatusBar() {
+        statusBar.add(totalDownloadsLabel);
+        statusBar.add(lblAbos);
+        statusBar.add(manualDownloadsInfoLabel);
+        statusBar.add(activeDownloadsInfoLabel);
+        statusBar.add(waitingDownloadsInfoLabel);
+        statusBar.add(finishedDownloadsInfoLabel);
+        statusBar.add(failedDownloadsInfoLabel);
     }
 
     @Override
@@ -204,44 +221,15 @@ public class GuiDownloads extends AGuiTabPanel {
         tabelle.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
             }
         });
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
                 onComponentShown();
-            }
-        });
-    }
-
-    @Override
-    protected void installTabInfoStatusBarControl() {
-        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
-
-        Platform.runLater(() -> {
-            filmInfoLabel = new DownloadTabInformationLabel(daten);
-            if (isVisible())
-                leftItems.add(filmInfoLabel);
-        });
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(true);
-                    leftItems.add(filmInfoLabel);
-                });
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(false);
-                    leftItems.remove(filmInfoLabel);
-                });
             }
         });
     }
@@ -1301,7 +1289,11 @@ public class GuiDownloads extends AGuiTabPanel {
             //======== downloadListArea ========
             {
                 downloadListArea.setLayout(new BorderLayout());
-                downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
+                JPanel tempPanel = new JPanel();
+                tempPanel.setLayout(new BorderLayout());
+                tempPanel.add(downloadListScrollPane, BorderLayout.CENTER);
+                tempPanel.add(statusBar, BorderLayout.SOUTH);
+                downloadListArea.add(tempPanel, BorderLayout.CENTER);
                 downloadListArea.add(fxDescriptionPanel, BorderLayout.SOUTH);
             }
             jSplitPane1.setRightComponent(downloadListArea);

@@ -26,7 +26,6 @@ public abstract class AGuiTabPanel extends JPanel {
     protected abstract Optional<DatenFilm> getCurrentlySelectedFilm();
 
     public abstract void installMenuEntries(JMenu menu);
-    protected abstract void installTabInfoStatusBarControl();
 
     public class MarkFilmAsSeenAction extends AbstractAction {
 

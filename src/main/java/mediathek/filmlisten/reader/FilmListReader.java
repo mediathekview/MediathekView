@@ -163,7 +163,7 @@ public class FilmListReader implements AutoCloseable {
                 break;
             }
             if (jp.isExpectedStartArrayToken()) {
-                var meta = listeFilme.metaData();
+                var meta = listeFilme.getMetaData();
                 jp.nextTextValue();
                 meta.setDatum(jp.nextTextValue());
                 jp.nextTextValue();
@@ -492,7 +492,7 @@ public class FilmListReader implements AutoCloseable {
     private void notifyFertig(String url, ListeFilme liste) {
         logger.info("Liste Filme gelesen am: {}", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
                 .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
-        logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTimeAsString());
+        logger.info("  erstellt am: {}", liste.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             progressEvent.senderUrl = url;

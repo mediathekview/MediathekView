@@ -9,15 +9,12 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.reader.FilmListReader;
-import mediathek.gui.actions.FilmListWriteWorkerTask;
-import mediathek.javafx.FilmListFilterTask;
-import mediathek.javafx.tool.FXProgressPane;
-import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.gui.messages.FilmListReadStopEvent;
+import mediathek.gui.tasks.BlacklistFilterWorker;
+import mediathek.gui.tasks.FilmlistWriterWorker;
+import mediathek.gui.tasks.RefreshAboWorker;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.FilmListUpdateType;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.SwingErrorDialog;
+import mediathek.tool.*;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -29,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -94,7 +92,7 @@ public class FilmeLaden {
         boolean result = false;
         logger.trace("hasNewRemoteFilmList()");
 
-        final String id = Daten.getInstance().getListeFilme().metaData().getId();
+        final String id = Daten.getInstance().getListeFilme().getMetaData().getId();
         boolean showDialogs = GuiFunktionen.getFilmListUpdateType() != FilmListUpdateType.AUTOMATIC;
 
         HttpUrl filmListUrl = Konstanten.ROUTER_BASE_URL.resolve("filmliste.id");
@@ -160,7 +158,7 @@ public class FilmeLaden {
             //or somebody put a web adress into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
                 //perform check only if we don´t want to use DIFF list...
-                if (!listeFilme.metaData().canUseDiffList()) {
+                if (!listeFilme.getMetaData().canUseDiffList()) {
                     if (!hasNewRemoteFilmlist())
                         result = false;
                 }
@@ -185,7 +183,7 @@ public class FilmeLaden {
 
         logger.trace("loadFilmlist(String,boolean)");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
+        logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
@@ -222,7 +220,7 @@ public class FilmeLaden {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().metaData().getGenerationDateTimeAsString());
+        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
         logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
         if (!istAmLaufen) {
@@ -258,16 +256,16 @@ public class FilmeLaden {
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
             logger.info("Liste Diff gelesen am: {}", readDate);
-            logger.info("  Liste Diff erstellt am: {}", diffListe.metaData().getGenerationDateTimeAsString());
+            logger.info("  Liste Diff erstellt am: {}", diffListe.getMetaData().getGenerationDateTimeAsString());
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
             listeFilme.updateFromFilmList(diffListe);
-            listeFilme.setMetaData(diffListe.metaData());
+            listeFilme.setMetaData(diffListe.getMetaData());
             Collections.sort(listeFilme);
             diffListe.clear();
         } else {
             logger.info("Liste Kompl. gelesen am: {}", readDate);
-            logger.info("  Liste Kompl erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
+            logger.info("  Liste Kompl erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
             logger.info("  Anzahl Filme: {}", listeFilme.size());
         }
 
@@ -300,35 +298,34 @@ public class FilmeLaden {
         }
 
         logger.info("");
-        logger.info("Jetzige Liste erstellt am: {}", listeFilme.metaData().getGenerationDateTimeAsString());
+        logger.info("Jetzige Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms());
         logger.info("");
 
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            FXProgressPane hb = new FXProgressPane();
+        MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
+        JLabel progLabel = MediathekGui.ui().progressLabel;
+        JProgressBar progressBar = MediathekGui.ui().progressBar;
 
-            FilmListFilterTask task = new FilmListFilterTask(true);
-            task.setOnRunning(e -> {
-                ui.getStatusBarController().getStatusBar().getRightItems().add(hb);
-                hb.lb.textProperty().bind(task.messageProperty());
-                hb.prog.progressProperty().bind(task.progressProperty());
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                ui.swingStatusBar.getStatusBar().add(progLabel);
+                ui.swingStatusBar.getStatusBar().add(progressBar);
             });
+        } catch (InterruptedException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        var workerTask = CompletableFuture.runAsync(new RefreshAboWorker(progLabel, progressBar))
+                .thenRun(new BlacklistFilterWorker(progLabel, progressBar))
+                .thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))));
 
-            CompletableFuture<Void> workerTask = CompletableFuture.runAsync(task);
-            if (writeFilmList) {
-                FilmListWriteWorkerTask writerTask = new FilmListWriteWorkerTask(Daten.getInstance());
-                writerTask.setOnRunning(e -> {
-                    hb.lb.textProperty().bind(writerTask.messageProperty());
-                    hb.prog.progressProperty().bind(writerTask.progressProperty());
-                });
-                workerTask = workerTask.thenRun(writerTask);
-            }
-
-            workerTask.thenRun(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                ui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
-            }));
-        });
+        if (writeFilmList) {
+            workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));
+        }
+        workerTask.thenRun(() -> SwingUtilities.invokeLater(() -> {
+            ui.swingStatusBar.getStatusBar().remove(progLabel);
+            ui.swingStatusBar.getStatusBar().remove(progressBar);
+        }));
     }
 
     private void fillHash(ListeFilme listeFilme) {

@@ -57,7 +57,7 @@ public class FilmListWriter {
     }
 
     private void writeFormatHeader(JsonGenerator jg, ListeFilme listeFilme) throws IOException {
-        final var meta = listeFilme.metaData();
+        final var meta = listeFilme.getMetaData();
 
         jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
         jg.writeString(""); //ListeFilme.FILMLISTE_DATUM_NR unused in newer versions

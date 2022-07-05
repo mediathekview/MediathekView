@@ -102,7 +102,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         loadCurrentFilterSettings();
 
         if (completeFilmList != null && !completeFilmList.isEmpty()) { // Check if there are any movies
-            filteredList.setMetaData(completeFilmList.metaData());
+            filteredList.setMetaData(completeFilmList.getMetaData());
 
             this.parallelStream().forEach(entry -> {
                 entry.convertToLowerCase();

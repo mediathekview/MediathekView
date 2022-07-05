@@ -41,7 +41,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
     private final Daten daten;
 
@@ -415,6 +414,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized DownloadStartInfo getStarts() {
         final DownloadStartInfo info = new DownloadStartInfo();
+        info.total_num_download_list_entries = size();
 
         for (DatenDownload download : this) {
             if (!download.istZurueckgestellt()) {

@@ -136,7 +136,7 @@ public final class MVTray {
     private String getTextInfos() {
         String strText = "";
 
-        strText += "Filmliste erstellt: " + daten.getListeFilme().metaData().getGenerationDateTimeAsString() + " Uhr  ";
+        strText += "Filmliste erstellt: " + daten.getListeFilme().getMetaData().getGenerationDateTimeAsString() + " Uhr  ";
         strText += "\n";
         strText += "Anz. Filme: " + daten.getListeFilme().size();
         strText += "\n";

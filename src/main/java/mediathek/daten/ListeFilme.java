@@ -4,6 +4,8 @@ import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
 import org.jetbrains.annotations.NotNull;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,13 +14,24 @@ import java.util.stream.Stream;
 
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
-    private final FilmListMetaData metaData = new FilmListMetaData();
+    private static final String PCS_METADATA = "metaData";
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     public boolean neueFilme;
+    private FilmListMetaData metaData = new FilmListMetaData();
 
-    public FilmListMetaData metaData() {
+    public FilmListMetaData getMetaData() {
         return metaData;
     }
 
+    public void setMetaData(FilmListMetaData meta) {
+        var oldValue = metaData;
+        metaData = meta;
+        this.pcs.firePropertyChange(PCS_METADATA, oldValue, metaData);
+    }
+
+    public void addMetaDataChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(PCS_METADATA, listener);
+    }
     /**
      * Search all themas within list based on sender.
      * If sender is empty, return full list of themas.
@@ -60,11 +73,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         neueFilme = false;
     }
 
-    public synchronized void setMetaData(FilmListMetaData meta) {
-        metaData.setDatum(meta.getDatum());
-        metaData.setId(meta.getId());
-    }
-
     /**
      * Find movie with given url and sendername
      * @param url    String wiht URL
@@ -100,7 +108,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return true if we need an update.
      */
     public boolean needsUpdate() {
-        return (isEmpty()) || (metaData().isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
+        return (isEmpty()) || (getMetaData().isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
     }
 
     public synchronized long countNewFilms() {

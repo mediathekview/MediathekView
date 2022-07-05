@@ -1,35 +1,21 @@
 package mediathek.mainwindow;
 
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import mediathek.Main;
-import mediathek.config.Config;
-import mediathek.config.Daten;
-import mediathek.config.Icons;
-import mediathek.config.Konstanten;
+import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
-import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
 import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
@@ -43,8 +29,9 @@ import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
-import mediathek.javafx.*;
-import mediathek.javafx.tool.FXProgressPane;
+import mediathek.gui.tasks.BlacklistFilterWorker;
+import mediathek.gui.tasks.RefreshAboWorker;
+import mediathek.javafx.ShutdownDialog;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
@@ -69,7 +56,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -111,24 +97,32 @@ public class MediathekGui extends JFrame {
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
     /**
-     * this property keeps track how many items are currently selected in the active table view
-     */
-    private final IntegerProperty selectedItemsProperty = new SimpleIntegerProperty(0);
-    /**
      * Helper to determine what tab is currently active
      */
     private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
-    private final JFXPanel statusBarPanel = new JFXPanel();
     private final SearchProgramUpdateAction searchProgramUpdateAction;
-    private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction();
+    private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final InfoDialog filmInfo;
+    public StatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     public ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
     public ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+    /**
+     * this property keeps track how many items are currently selected in the active table view
+     */
+    public ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
+    /**
+     * Used for status bar progress.
+     */
+    public JLabel progressLabel = new JLabel();
+    /**
+     * Used for status bar progress.
+     */
+    public JProgressBar progressBar = new JProgressBar();
     /**
      * the global configuration for this app.
      */
@@ -141,7 +135,6 @@ public class MediathekGui extends JFrame {
     private BandwidthMonitorController bandwidthMonitor;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
-    private StatusBarController statusBarController;
     private ProgramUpdateCheck programUpdateChecker;
     /**
      * Progress indicator thread for OS X and windows.
@@ -149,10 +142,6 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private ManageAboAction manageAboAction;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
-    /**
-     * A weak reference to the table data model filtering progress indicator(s).
-     */
-    private WeakReference<HBox> indicatorLayout;
 
     public MediathekGui() {
         ui = this;
@@ -164,10 +153,7 @@ public class MediathekGui extends JFrame {
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.LOAD_MAINWINDOW));
 
-        var contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-
-        contentPane.add(statusBarPanel, BorderLayout.PAGE_END);
+        getContentPane().setLayout(new BorderLayout());
 
         setIconAndWindowImage();
 
@@ -317,6 +303,7 @@ public class MediathekGui extends JFrame {
 
     /**
      * Return the platform-specific notification implementation.
+     *
      * @return generic or platform-specific notification implementation.
      */
     protected INotificationCenter getNotificationCenter() {
@@ -449,61 +436,70 @@ public class MediathekGui extends JFrame {
      * Read a local filmlist or load a new one in auto mode.
      */
     private void loadFilmlist() {
-        Platform.runLater(() -> {
-            //don´t write filmlist when we are reading only...
-            var writeCondition = !(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate());
-            Daten.dontWriteFilmlistOnStartup.set(writeCondition);
+        //don´t write filmlist when we are reading only...
+        var writeCondition = !(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate());
+        Daten.dontWriteFilmlistOnStartup.set(writeCondition);
 
-            FXProgressPane progressPane = new FXProgressPane();
+        swingStatusBar.getStatusBar().add(progressLabel);
+        swingStatusBar.getStatusBar().add(progressBar);
 
-            FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
-            filmListReaderTask.setOnRunning(e -> {
-                statusBarController.getStatusBar().getRightItems().add(progressPane);
-                progressPane.bindTask(filmListReaderTask);
-            });
+        CompletableFuture.runAsync(() -> {
+                    logger.trace("Reading local filmlist");
+                    MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
 
-            FilmListNetworkReaderTask networkTask = new FilmListNetworkReaderTask();
-            networkTask.setOnRunning(e -> progressPane.bindTask(networkTask));
-
-            FilmListFilterTask filterTask = new FilmListFilterTask(true);
-            filterTask.setOnRunning(e -> progressPane.bindTask(filterTask));
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> statusBarController.getStatusBar().getRightItems().remove(progressPane);
-            filterTask.setOnSucceeded(workerStateEventEventHandler);
-            filterTask.setOnFailed(workerStateEventEventHandler);
-
-            CompletableFuture.runAsync(filmListReaderTask)
-                    .thenRun(networkTask)
-                    .thenRun(filterTask);
-
-            //reset after first load has happened
-            Daten.dontWriteFilmlistOnStartup.set(false);
-        });
-    }
-
-    public IntegerProperty getSelectedItemsProperty() {
-        return selectedItemsProperty;
+                    try (FilmListReader reader = new FilmListReader()) {
+                        final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
+                        reader.readFilmListe(StandardLocations.getFilmlistFilePath(), daten.getListeFilme(), num_days);
+                    }
+                    MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
+                })
+                .thenRun(() -> {
+                    logger.trace("Check for filmlist updates");
+                    if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
+                        daten.getFilmeLaden().loadFilmlist("", true);
+                    }
+                })
+                .thenRun(new RefreshAboWorker(progressLabel, progressBar))
+                .thenRun(new BlacklistFilterWorker(progressLabel, progressBar))
+                .thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
+                .thenRun(() -> Daten.dontWriteFilmlistOnStartup.set(false))
+                .thenRun(() -> SwingUtilities.invokeLater(() -> {
+                    swingStatusBar.getStatusBar().remove(progressBar);
+                    swingStatusBar.getStatusBar().remove(progressLabel);
+                }));
     }
 
     /**
      * Create the status bar item.
      */
     private void createStatusBar() {
-        statusBarController = new StatusBarController(daten);
+        swingStatusBar = new StatusBar(this);
+        getContentPane().add(swingStatusBar, BorderLayout.SOUTH);
 
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            statusBarPanel.setScene(new Scene(statusBarController.createStatusBar()));
-            installSelectedItemsLabel();
+        createFilmlistDownloadProgress();
+    }
+
+    private void createFilmlistDownloadProgress() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                swingStatusBar.getStatusBar().add(progressLabel);
+                swingStatusBar.getStatusBar().add(progressBar);
+            }
+
+            @Override
+            public void progress(ListenerFilmeLadenEvent event) {
+                if (event.max == 0 || event.progress == event.max) {
+                    progressBar.setIndeterminate(true);
+                } else {
+                    progressBar.setIndeterminate(false);
+                    progressBar.setMinimum(0);
+                    progressBar.setMaximum(event.max);
+                    progressBar.setValue(event.progress);
+                }
+                progressLabel.setText(event.text);
+            }
         });
-    }
-
-    private void installSelectedItemsLabel() {
-        ObservableList<Node> leftItems = statusBarController.getStatusBar().getLeftItems();
-        leftItems.add(0, new SelectedItemsLabel(selectedItemsProperty));
-        leftItems.add(1, new VerticalSeparator());
-    }
-
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
     }
 
     public ObjectProperty<TabPaneIndex> tabPaneIndexProperty() {
@@ -519,26 +515,6 @@ public class MediathekGui extends JFrame {
         SwingUtilities.invokeLater(() -> {
             configureTabPlacement();
             configureTabIcons();
-        });
-    }
-
-    @Handler
-    private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
-        Platform.runLater(() -> {
-            var statusBar = statusBarController.getStatusBar();
-            var rightItems = statusBar.getRightItems();
-            if (evt.active) {
-                HBox hb = new HBox();
-                var progressIndicator = new ProgressIndicator();
-                progressIndicator.setTooltip(new Tooltip("Filmdaten werden verarbeitet"));
-                hb.getChildren().add(progressIndicator);
-                rightItems.add(hb);
-                indicatorLayout = new WeakReference<>(hb);
-            }
-            else {
-                //hide progress and label
-                rightItems.remove(indicatorLayout.get());
-            }
         });
     }
 
@@ -824,7 +800,7 @@ public class MediathekGui extends JFrame {
         jMenuDatei.add(loadFilmListAction);
         jMenuDatei.addSeparator();
         var exportMenu = new JMenu("Export");
-        exportMenu.add(new FilmListExportAction(this));
+        exportMenu.add(new FilmListExportAction());
 
         var importMenu = new JMenu("Import");
         importMenu.add(new ImportOldAbosAction());
@@ -913,7 +889,19 @@ public class MediathekGui extends JFrame {
         tabFilme.installViewMenuEntry(jMenuAnsicht);
 
         createAboMenu();
+        if (Config.isDebugModeEnabled())
+            createDeveloperMenu();
         createHelpMenu();
+    }
+
+    private void createDeveloperMenu() {
+        JMenu devMenu = new JMenu("Entwickler");
+
+        JMenuItem miGc = new JMenuItem("GC ausführen");
+        miGc.addActionListener(l -> System.gc());
+
+        devMenu.add(miGc);
+        jMenuBar.add(devMenu);
     }
 
     private void createAboMenu() {

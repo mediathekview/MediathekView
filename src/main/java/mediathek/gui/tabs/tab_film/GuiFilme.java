@@ -38,7 +38,6 @@ import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.buttonsPanel.ButtonsPanelController;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
-import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -115,7 +114,6 @@ public class GuiFilme extends AGuiTabPanel {
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
-    private FilmTabInfoPane filmInfoLabel;
     private JCheckBoxMenuItem cbShowButtons;
     /**
      * We need a strong reference here for message bus to work properly. Otherwise the buttons
@@ -144,8 +142,6 @@ public class GuiFilme extends AGuiTabPanel {
         extensionArea.add(fxPsetButtonsPanel);
 
         setupFilmListTable();
-
-        installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
@@ -181,30 +177,26 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Handler
-    private void handleTableModelChange(TableModelChangeEvent e) {
+    public void handleTableModelChange(TableModelChangeEvent e) {
         if (e.active) {
-            try {
-                SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> toggleFilterDialogVisibilityAction.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> searchField.setEnabled(false));
-                SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(false));
-            } catch (InterruptedException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
+            SwingUtilities.invokeLater(() -> {
+                playFilmAction.setEnabled(false);
+                saveFilmAction.setEnabled(false);
+                bookmarkFilmAction.setEnabled(false);
+                toggleFilterDialogVisibilityAction.setEnabled(false);
+                searchField.setEnabled(false);
+                filterSelectionComboBox.setEnabled(false);
+            });
         }
         else {
-            try {
-                SwingUtilities.invokeAndWait(() -> playFilmAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> saveFilmAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> bookmarkFilmAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> toggleFilterDialogVisibilityAction.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> searchField.setEnabled(true));
-                SwingUtilities.invokeAndWait(() -> filterSelectionComboBox.setEnabled(true));
-            } catch (InterruptedException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
+            SwingUtilities.invokeLater(() -> {
+                playFilmAction.setEnabled(true);
+                saveFilmAction.setEnabled(true);
+                bookmarkFilmAction.setEnabled(true);
+                toggleFilterDialogVisibilityAction.setEnabled(true);
+                searchField.setEnabled(true);
+                filterSelectionComboBox.setEnabled(true);
+            });
         }
     }
 
@@ -227,7 +219,7 @@ public class GuiFilme extends AGuiTabPanel {
         tabelle.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
             }
         });
 
@@ -235,38 +227,8 @@ public class GuiFilme extends AGuiTabPanel {
             @Override
             public void componentShown(ComponentEvent e) {
                 final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
                 onComponentShown();
-            }
-        });
-    }
-
-    @Override
-    protected void installTabInfoStatusBarControl() {
-        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
-
-        Platform.runLater(() -> {
-            filmInfoLabel = new FilmTabInfoPane(daten, this);
-            if (isVisible()) leftItems.add(filmInfoLabel);
-        });
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                Platform.runLater(
-                        () -> {
-                            filmInfoLabel.setVisible(true);
-                            leftItems.add(filmInfoLabel);
-                        });
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                Platform.runLater(
-                        () -> {
-                            filmInfoLabel.setVisible(false);
-                            leftItems.remove(filmInfoLabel);
-                        });
             }
         });
     }
@@ -794,7 +756,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         final var messageBus = MessageBus.getMessageBus();
-        messageBus.publishAsync(new TableModelChangeEvent(true));
+        messageBus.publish(new TableModelChangeEvent(true));
 
         stopBeob = true;
         tabelle.getSpalten();
@@ -817,7 +779,7 @@ public class GuiFilme extends AGuiTabPanel {
                             updateFilmData();
                             stopBeob = false;
                             tabelle.scrollToSelection();
-                            messageBus.publishAsync(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false));
                         });
                     }
 
@@ -829,7 +791,7 @@ public class GuiFilme extends AGuiTabPanel {
                             tabelle.setSpalten();
                             updateFilmData();
                             stopBeob = false;
-                            messageBus.publishAsync(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false));
                         });
                     }
                 },

@@ -87,8 +87,7 @@ public class Main {
                 logger.info("Moving old unsupported media database to trash.");
                 mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
             }
-        }
-        catch (IOException ignored) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -123,8 +122,7 @@ public class Main {
         final PatternLayout consolePattern;
         if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
             consolePattern = PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build();
-        }
-        else {
+        } else {
             consolePattern = PatternLayout.newBuilder().withPattern(". %msg%n").build();
         }
 
@@ -228,13 +226,11 @@ public class Main {
                     try {
                         SettingsMigrator migrator = new SettingsMigrator(settingsFile);
                         migrator.migrate();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         logger.error("settings migration error", e);
                     }
                 }
-            }
-            else
+            } else
                 logger.trace("nothing to migrate");
         }
     }
@@ -242,8 +238,7 @@ public class Main {
     private static void printPortableModeInfo() {
         if (Config.isPortableMode()) {
             logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-        }
-        else
+        } else
             logger.info("Configuring for non-portable mode");
     }
 
@@ -276,16 +271,16 @@ public class Main {
     }
 
     private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
+
     private static void setupFlatLaf() {
         FlatLightLaf.setup();
 
-        UIManager.put("TabbedPane.showTabSeparators", true );
+        UIManager.put("TabbedPane.showTabSeparators", true);
         // install alternate row color only for windows >8 and macOS, Linux
         boolean installAlternateRowColor;
         if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
             installAlternateRowColor = true;
-        }
-        else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+        } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
 
         if (installAlternateRowColor)
             UIManager.put("Table.alternateRowColor", JTABLE_ALTERNATE_ROW_COLOR);
@@ -339,95 +334,97 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        setupEnvironmentProperties();
+        EventQueue.invokeLater(() -> {
+            setupEnvironmentProperties();
 
-        if (GraphicsEnvironment.isHeadless()) {
-            System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
-            System.exit(1);
-        }
-
-        CommandLine cmd = new CommandLine(Config.class);
-        try {
-            var parseResult = cmd.parseArgs(args);
-            if (parseResult.isUsageHelpRequested()) {
-                cmd.usage(System.out);
-                System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
+                System.exit(1);
             }
 
-            Config.setPortableMode(parseResult.hasMatchedPositional(0));
-            if (Config.isPortableMode()) {
-                StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
-            }
-
-            setupLogging();
-            printPortableModeInfo();
-
-            setupDockIcon();
-            setupFlatLaf();
-
-            if (!Config.isDisableJvmParameterChecks())
-                checkJVMSettings();
-
-            if (SystemUtils.IS_OS_WINDOWS) {
-                if (!VersionHelpers.IsWindows10OrGreater())
-                    logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
-            }
-
-            setupCpuAffinity();
-
-            initializeJavaFX();
-
-            removeMediaDb();
-
-            JFXHiddenApplication.launchApplication();
-            checkMemoryRequirements();
-
-            installSingleInstanceHandler();
-
-            printVersionInformation();
-
-            printJvmParameters();
-            printArguments(args);
-        } catch (CommandLine.ParameterException ex) {
-            try (var err = cmd.getErr()) {
-                err.println(ex.getMessage());
-                if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
-                    ex.getCommandLine().usage(err);
+            CommandLine cmd = new CommandLine(Config.class);
+            try {
+                var parseResult = cmd.parseArgs(args);
+                if (parseResult.isUsageHelpRequested()) {
+                    cmd.usage(System.out);
+                    System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
                 }
-                System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
+
+                Config.setPortableMode(parseResult.hasMatchedPositional(0));
+                if (Config.isPortableMode()) {
+                    StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
+                }
+
+                setupLogging();
+                printPortableModeInfo();
+
+                setupDockIcon();
+                setupFlatLaf();
+
+                if (!Config.isDisableJvmParameterChecks())
+                    checkJVMSettings();
+
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    if (!VersionHelpers.IsWindows10OrGreater())
+                        logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
+                }
+
+                setupCpuAffinity();
+
+                initializeJavaFX();
+
+                removeMediaDb();
+
+                JFXHiddenApplication.launchApplication();
+                checkMemoryRequirements();
+
+                installSingleInstanceHandler();
+
+                printVersionInformation();
+
+                printJvmParameters();
+                printArguments(args);
+            } catch (CommandLine.ParameterException ex) {
+                try (var err = cmd.getErr()) {
+                    err.println(ex.getMessage());
+                    if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
+                        ex.getCommandLine().usage(err);
+                    }
+                    System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
+                }
+            } catch (Exception ex) {
+                logger.error("Command line parse error:", ex);
+                System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
             }
-        } catch (Exception ex) {
-            logger.error("Command line parse error:", ex);
-            System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
-        }
 
-        printDirectoryPaths();
+            printDirectoryPaths();
 
-        if (!isDebuggerAttached()) {
-            splashScreen = Optional.of(new SplashScreen());
-        }
-        else {
-            logger.warn("Debugger detected -> Splash screen disabled...");
-        }
-        splashScreen.ifPresent(SplashScreen::show);
+            if (!isDebuggerAttached()) {
+                splashScreen = Optional.of(new SplashScreen());
+            } else {
+                logger.warn("Debugger detected -> Splash screen disabled...");
+            }
+            splashScreen.ifPresent(SplashScreen::show);
 
-        migrateOldConfigSettings();
+            migrateOldConfigSettings();
 
-        loadConfigurationData();
+            loadConfigurationData();
 
-        migrateSeenHistory();
-        Daten.getInstance().launchHistoryDataLoading();
-        
-        Daten.getInstance().loadBookMarkData();
+            migrateSeenHistory();
+            Daten.getInstance().launchHistoryDataLoading();
 
-        if (SystemUtils.IS_OS_LINUX)
-            changeGlobalFontSize();
+            Daten.getInstance().loadBookMarkData();
 
-        startGuiMode();
+            if (SystemUtils.IS_OS_LINUX)
+                changeGlobalFontSize();
+
+            startGuiMode();
+        });
     }
 
     /**
      * Checks if the application has an debugger attached to it.
+     *
      * @return true if debugger was detected, false othewise.
      */
     private static boolean isDebuggerAttached() {
@@ -440,8 +437,7 @@ public class Main {
             logger.info("Custom font size found, changing global UI settings");
             SwingUIFontChanger fc = new SwingUIFontChanger();
             fc.changeFontSize(size);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.info("No custom font size found.");
         }
     }
@@ -454,18 +450,17 @@ public class Main {
             if (migrator.needsMigration()) {
                 migrator.migrate();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("migrateSeenHistory", e);
             splashScreen.ifPresent(SplashScreen::close);
             FXErrorDialog.showErrorDialogWithoutParent(Konstanten.PROGRAMMNAME,
-                            "Migration fehlgeschlagen",
-                            """
-                                    Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
-                                    Das Programm kann nicht fortfahren und wird beendet.
-                                    
-                                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
-                                    """, e);
+                    "Migration fehlgeschlagen",
+                    """
+                            Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
+                            Das Programm kann nicht fortfahren und wird beendet.
+                                                                
+                            Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
+                            """, e);
             System.exit(99);
         }
     }
@@ -487,8 +482,7 @@ public class Main {
             Main.splashScreen.ifPresent(SplashScreen::close);
 
             var dialog = new DialogStarteinstellungen(null);
-            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED)
-            {
+            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED) {
                 //show termination dialog
                 JOptionPane.showMessageDialog(null,
                         "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
@@ -508,8 +502,7 @@ public class Main {
                     .map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Got an error deleting settings directory", ex);
         }
     }
@@ -555,39 +548,36 @@ public class Main {
     }
 
     private static void startGuiMode() {
-        SwingUtilities.invokeLater(() ->
-        {
-            splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_FX));
+        splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_FX));
 
-            splashScreen.ifPresent(s -> s.update(UIProgressState.FILE_CLEANUP));
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                checkForOfficialOSXAppUse();
-                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
-                cleanupOsxFiles();
-            }
+        splashScreen.ifPresent(s -> s.update(UIProgressState.FILE_CLEANUP));
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            checkForOfficialOSXAppUse();
+            System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+            cleanupOsxFiles();
+        }
 
-            if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
-                // use for debugging EDT violations
-                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-                logger.info("Swing Thread checking repaint manager installed.");
-            }
+        if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
+            // use for debugging EDT violations
+            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+            logger.info("Swing Thread checking repaint manager installed.");
+        }
 
-            splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));
-            var window = getPlatformWindow();
-            splashScreen.ifPresent(SplashScreen::close);
-            window.setVisible(true);
+        splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));
+        var window = getPlatformWindow();
+        splashScreen.ifPresent(SplashScreen::close);
+        window.setVisible(true);
             /*
                 on windows there is a strange behaviour that the main window gets sent behind
                 other open windows after the splash screen is closed.
              */
-            if (SystemUtils.IS_OS_WINDOWS) {
-                window.toFront();
-                window.requestFocus();
-            }
-            //show a link to tutorial if we are in Austria and have never used MV before...
-            AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
-            vlcCheck.perform();
-        });
+        if (SystemUtils.IS_OS_WINDOWS) {
+            window.toFront();
+            window.requestFocus();
+        }
+        //show a link to tutorial if we are in Austria and have never used MV before...
+        AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
+        vlcCheck.perform();
     }
 
     private static MediathekGui getPlatformWindow() {

@@ -1,6 +1,10 @@
 package mediathek.daten;
 
 public class DownloadStartInfo {
+    /**
+     * Size of the download list.
+     */
+    public int total_num_download_list_entries = 0;
     public int total_starts = 0;
     public int num_abos = 0;
     public int num_downloads = 0;
