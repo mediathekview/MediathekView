@@ -156,7 +156,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         init();
 
-        setupFilmSelectionPropertyListener(mediathekGui);
+        setupFilmSelectionPropertyListener();
 
         initTable();
 
@@ -210,18 +210,16 @@ public class GuiDownloads extends AGuiTabPanel {
     /**
      * Update the property with the current number of selected entries from the JTable.
      */
-    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
+    private void setupFilmSelectionPropertyListener() {
         tabelle.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                final int sel = tabelle.getSelectedRowCount();
-                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
+                updateSelectedListItemsCount(tabelle);
             }
         });
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                final int sel = tabelle.getSelectedRowCount();
-                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
+                updateSelectedListItemsCount(tabelle);
                 onComponentShown();
             }
         });

@@ -131,7 +131,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setLayout(new BorderLayout());
 
-        createFilmListArea();
+        add(filmListScrollPane, BorderLayout.CENTER);
         createExtensionArea();
         createToolBar();
 
@@ -140,7 +140,7 @@ public class GuiFilme extends AGuiTabPanel {
         extensionArea.add(fxPsetButtonsPanel);
 
         setupFilmListTable();
-        setupFilmSelectionPropertyListener(mediathekGui);
+        setupFilmSelectionPropertyListener();
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsPanel();
         setupFilmActionPanel();
@@ -210,26 +210,20 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * Update the property with the current number of selected entries from the JTable.
      */
-    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
+    private void setupFilmSelectionPropertyListener() {
         tabelle.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                final int sel = tabelle.getSelectedRowCount();
-                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
+                updateSelectedListItemsCount(tabelle);
             }
         });
 
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                final int sel = tabelle.getSelectedRowCount();
-                mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
+                updateSelectedListItemsCount(tabelle);
                 onComponentShown();
             }
         });
-    }
-
-    private void createFilmListArea() {
-        add(filmListScrollPane, BorderLayout.CENTER);
     }
 
     private void createExtensionArea() {

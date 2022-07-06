@@ -53,6 +53,11 @@ public abstract class AGuiTabPanel extends JPanel {
         initDescriptionTabVisibility(configKey);
     }
 
+    protected void updateSelectedListItemsCount(@NotNull JTable table) {
+        final int sel = table.getSelectedRowCount();
+        mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
+    }
+
     protected abstract void setupShowFilmDescriptionMenuItem();
 
     protected void initDescriptionTabVisibility(@NotNull String configKey) {
