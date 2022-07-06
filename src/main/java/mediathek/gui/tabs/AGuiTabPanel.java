@@ -3,7 +3,9 @@ package mediathek.gui.tabs;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.MessageBus;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,10 @@ public abstract class AGuiTabPanel extends JPanel {
     protected abstract List<DatenFilm> getSelFilme();
 
     protected abstract Optional<DatenFilm> getCurrentlySelectedFilm();
+
+    protected void updateStartInfoProperty() {
+        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
+    }
 
     public abstract void installMenuEntries(JMenu menu);
 

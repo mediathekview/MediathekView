@@ -346,7 +346,7 @@ public class GuiFilme extends AGuiTabPanel {
         mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
 
         updateFilmData();
-        setInfoStatusbar();
+        updateStartInfoProperty();
     }
 
     public int getTableRowCount() {
@@ -449,7 +449,7 @@ public class GuiFilme extends AGuiTabPanel {
     private void handleButtonStart(ButtonStartEvent e) {
         SwingUtilities.invokeLater(() -> {
             tabelle.fireTableDataChanged(true);
-            setInfoStatusbar();
+            updateStartInfoProperty();
         });
     }
 
@@ -465,7 +465,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Handler
     private void handleStartEvent(StartEvent msg) {
-        SwingUtilities.invokeLater(this::setInfoStatusbar);
+        SwingUtilities.invokeLater(this::updateStartInfoProperty);
     }
 
     private synchronized void saveFilm(DatenPset pSet) {
@@ -657,10 +657,6 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private void setInfoStatusbar() {
-        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
     private void setupActionListeners() {
         Platform.runLater(() -> {
             reloadTableDataTransition.setOnFinished(e -> {
@@ -774,7 +770,7 @@ public class GuiFilme extends AGuiTabPanel {
                         SwingUtilities.invokeLater(() -> {
                             tabelle.setModel(model);
                             tabelle.setEnabled(true);
-                            setInfoStatusbar();
+                            updateStartInfoProperty();
                             tabelle.setSpalten();
                             updateFilmData();
                             stopBeob = false;
@@ -787,7 +783,7 @@ public class GuiFilme extends AGuiTabPanel {
                         logger.error("Model filtering failed!", thrown);
                         SwingUtilities.invokeLater(() -> {
                             tabelle.setEnabled(true);
-                            setInfoStatusbar();
+                            updateStartInfoProperty();
                             tabelle.setSpalten();
                             updateFilmData();
                             stopBeob = false;
@@ -1218,12 +1214,10 @@ public class GuiFilme extends AGuiTabPanel {
                         });
                     }
                     case DatenFilm.FILM_AUFZEICHNEN -> saveFilm(null);
-                    case DatenFilm.FILM_MERKEN -> {
-                        getCurrentlySelectedFilm().ifPresent(film -> {
-                            if (!film.isLivestream())
-                                bookmarkFilm();
-                        });
-                    }
+                    case DatenFilm.FILM_MERKEN -> getCurrentlySelectedFilm().ifPresent(film -> {
+                        if (!film.isLivestream())
+                            bookmarkFilm();
+                    });
                 }
             }
         }

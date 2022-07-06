@@ -684,7 +684,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private void handleGeoStateChangedEvent(GeoStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             tabelle.fireTableDataChanged(true);
-            setInfo();
+            updateStartInfoProperty();
         });
     }
 
@@ -724,7 +724,7 @@ public class GuiDownloads extends AGuiTabPanel {
         daten.getListeDownloads().getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
         updateFilmData();
-        setInfo();
+        updateStartInfoProperty();
     }
 
     @Handler
@@ -1124,10 +1124,6 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         }
         daten.getListeDownloads().downloadAbbrechen(listeStopDownload);
-    }
-
-    private void setInfo() {
-        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     private void updateFilmData() {
