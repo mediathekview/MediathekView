@@ -20,6 +20,8 @@
  */
 package org.jdesktop.swingx.util;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -29,67 +31,40 @@ import java.awt.*;
 @SuppressWarnings("nls")
 public class OS {
 
-  private static final boolean osIsMacOsX;
-  private static final boolean osIsWindows;
-  private static final boolean osIsWindowsXP;
-  private static final boolean osIsWindows2003;
-  private static final boolean osIsWindowsVista;
-  private static final boolean osIsLinux;
-
-    static {
-        String os = System.getProperty("os.name");
-        if (os != null)
-            os = os.toLowerCase();
-
-        osIsMacOsX = "mac os x".equals(os);
-        osIsWindows = os != null && os.indexOf("windows") != -1;
-        osIsWindowsXP = "windows xp".equals(os);
-        osIsWindows2003 = "windows 2003".equals(os);
-        osIsWindowsVista = "windows vista".equals(os);
-        osIsLinux = os != null && os.indexOf("linux") != -1;
-    }
-
   /**
    * @return true if this VM is running on Mac OS X
    */
   public static boolean isMacOSX() {
-    return osIsMacOsX;
+    return SystemUtils.IS_OS_MAC_OSX;
   }
 
   /**
    * @return true if this VM is running on Windows
    */
   public static boolean isWindows() {
-    return osIsWindows;
+    return SystemUtils.IS_OS_WINDOWS;
   }
 
   /**
    * @return true if this VM is running on Windows XP
    */
   public static boolean isWindowsXP() {
-    return osIsWindowsXP;
+    return SystemUtils.IS_OS_WINDOWS_XP;
   }
 
   /**
    * @return true if this VM is running on Windows Vista
    */
   public static boolean isWindowsVista() {
-    return osIsWindowsVista;
+    return SystemUtils.IS_OS_WINDOWS_VISTA;
   }
-  
-  /**
-   * @return true if this VM is running on a Linux distribution
-   */
-  public static boolean isLinux() {
-    return osIsLinux;
-  }
-  
+
   /**
    * @return true if the VM is running Windows and the Java
    *         application is rendered using XP Visual Styles.
    */
   public static boolean isUsingWindowsVisualStyles() {
-    if (!isWindows()) {
+    if (!SystemUtils.IS_OS_WINDOWS) {
       return false;
     }
 

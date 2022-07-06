@@ -20,6 +20,7 @@
  */
 package org.jdesktop.swingx.plaf.windows;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.plaf.LookAndFeelAddons;
 import org.jdesktop.swingx.plaf.basic.BasicLookAndFeelAddons;
 import org.jdesktop.swingx.util.OS;
@@ -61,7 +62,7 @@ public class WindowsLookAndFeelAddons extends BasicLookAndFeelAddons {
      */
     @Override
     protected boolean isSystemAddon() {
-        return OS.isWindows() && OS.isUsingWindowsVisualStyles();
+        return SystemUtils.IS_OS_WINDOWS && OS.isUsingWindowsVisualStyles();
     }
 
 //  JW: reverting ...     

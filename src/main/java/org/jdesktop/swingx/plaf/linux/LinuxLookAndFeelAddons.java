@@ -20,9 +20,9 @@
  */
 package org.jdesktop.swingx.plaf.linux;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.plaf.LookAndFeelAddons;
 import org.jdesktop.swingx.plaf.basic.BasicLookAndFeelAddons;
-import org.jdesktop.swingx.util.OS;
 import org.kohsuke.MetaInfServices;
 
 import static javax.swing.UIManager.getLookAndFeel;
@@ -43,7 +43,7 @@ public class LinuxLookAndFeelAddons extends BasicLookAndFeelAddons {
      */
     @Override
     protected boolean isSystemAddon() {
-        return OS.isLinux();
+        return SystemUtils.IS_OS_LINUX;
     }
     
     /**
