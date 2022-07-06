@@ -71,18 +71,11 @@ public class TitledPanelAddon extends AbstractComponentAddon {
   protected void addMetalDefaults(LookAndFeelAddons addon, DefaultsList defaults) {
     super.addMetalDefaults(addon, defaults);
 
-    if (isPlastic()) {
-      defaults.add("JXTitledPanel.titleForeground", new ColorUIResource(Color.WHITE));
-      defaults.add("JXTitledPanel.titlePainter", new PainterUIResource<JXTitledPanel>(
-                new MattePainter(new GradientPaint(0, 0, new Color(49, 121, 242),
-                    0, 1,  new Color(198, 211, 247)), true)));
-    } else {
-      defaults.add("JXTitledPanel.titleForeground", new ColorUIResource(Color.WHITE));
-      defaults.add("JXTitledPanel.titlePainter", new PainterUIResource<JXTitledPanel>(
-                new MattePainter(new GradientPaint(0, 0, 
+    defaults.add("JXTitledPanel.titleForeground", new ColorUIResource(Color.WHITE));
+    defaults.add("JXTitledPanel.titlePainter", new PainterUIResource<JXTitledPanel>(
+            new MattePainter(new GradientPaint(0, 0,
                     MetalLookAndFeel.getCurrentTheme().getPrimaryControl(), 0, 1,
                     MetalLookAndFeel.getCurrentTheme().getPrimaryControlDarkShadow()),true)));
-    }
   }
 
   @Override

@@ -26,8 +26,6 @@ import org.jdesktop.swingx.plaf.metal.MetalLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 
-import javax.swing.*;
-
 /**
  * Ease the work of creating an addon for a component.<br>
  * 
@@ -217,14 +215,6 @@ public abstract class AbstractComponentAddon implements ComponentAddon {
      */
     protected boolean isNimbus(LookAndFeelAddons addon) {
         return addon instanceof NimbusLookAndFeelAddons;
-    }
-
-    /**
-     * @return true if the current look and feel is one of JGoodies Plastic l&fs
-     */
-    protected boolean isPlastic() {
-        return UIManager.getLookAndFeel().getClass().getName()
-                .contains("Plastic");
     }
 
 }
