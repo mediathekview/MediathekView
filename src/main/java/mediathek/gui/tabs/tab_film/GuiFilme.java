@@ -622,7 +622,7 @@ public class GuiFilme extends AGuiTabPanel {
         var infoDialog = mediathekGui.getFilmInfoDialog();
         if (infoDialog != null) {
             final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-            filmSelection.ifPresent(mediathekGui.getFilmInfoDialog()::updateCurrentFilm);
+            filmSelection.ifPresent(infoDialog::updateCurrentFilm);
         }
     }
 

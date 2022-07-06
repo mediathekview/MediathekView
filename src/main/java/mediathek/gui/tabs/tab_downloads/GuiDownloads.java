@@ -1057,17 +1057,17 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void updateFilmData() {
         if (isShowing()) {
-            DatenFilm aktFilm = null;
+            DatenFilm selectedFilm = null;
             final int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            if (selectedTableRow != -1) {
                 final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
                 if (datenDownload != null) {
-                    aktFilm = datenDownload.film;
+                    selectedFilm = datenDownload.film;
                 }
             }
             var infoDialog = mediathekGui.getFilmInfoDialog();
             if (infoDialog != null) {
-                infoDialog.updateCurrentFilm(aktFilm);
+                infoDialog.updateCurrentFilm(selectedFilm);
             }
         }
     }
