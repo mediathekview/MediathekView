@@ -23,7 +23,6 @@ package org.jdesktop.swingx.plaf;
 import org.jdesktop.swingx.plaf.linux.LinuxLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.macosx.MacOSXLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.metal.MetalLookAndFeelAddons;
-import org.jdesktop.swingx.plaf.motif.MotifLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 
@@ -170,10 +169,6 @@ public abstract class AbstractComponentAddon implements ComponentAddon {
             addMetalDefaults(addon, defaults);
         } else if (isMac(addon)) {
             addMacDefaults(addon, defaults);
-        } else if (isMotif(addon)) {
-            addMotifDefaults(addon, defaults);
-            // PENDING JW: the separation line here looks fishy
-            // what about Nimbus on Linux systems?
         } else if (isLinux(addon)) {
             addLinuxDefaults(addon, defaults);
         } else if (isNimbus(addon)) {
@@ -211,13 +206,6 @@ public abstract class AbstractComponentAddon implements ComponentAddon {
     }
 
     /**
-     * @return true if the addon is the Motif addon or its subclasses
-     */
-    protected boolean isMotif(LookAndFeelAddons addon) {
-        return addon instanceof MotifLookAndFeelAddons;
-    }
-
-    /**
      * @return true if the current look and feel is Linux
      */
     protected boolean isLinux(LookAndFeelAddons addon) {
@@ -237,13 +225,6 @@ public abstract class AbstractComponentAddon implements ComponentAddon {
     protected boolean isPlastic() {
         return UIManager.getLookAndFeel().getClass().getName()
                 .contains("Plastic");
-    }
-
-    /**
-     * @return true if the current look and feel is Synth l&f
-     */
-    protected boolean isSynth() {
-        return UIManager.getLookAndFeel().getClass().getName().contains("ynth");
     }
 
 }
