@@ -1,9 +1,6 @@
 package mediathek.config;
 
 import com.google.common.util.concurrent.*;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import mediathek.Main;
 import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
@@ -14,9 +11,6 @@ import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.javafx.bookmark.BookmarkDataList;
-import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,7 +31,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -257,6 +251,21 @@ public class Daten {
         return ret;
     }
 
+    private boolean askForBackupRestore() {
+        var text = """
+                Die Einstellungen sind beschädigt und können nicht geladen werden.
+                Soll versucht werden diese aus einem Backup wiederherzustellen?
+                """;
+        int answer = JOptionPane.showConfirmDialog(null, text,
+                Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION)
+            return true;
+        else {
+            logger.info("User will kein Backup laden.");
+            return false;
+        }
+    }
+
     private boolean loadBackup() {
         boolean ret = false;
 
@@ -270,27 +279,7 @@ public class Daten {
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
 
-        var loadBackup = JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    ButtonType btnYes = new ButtonType("Ja", ButtonBar.ButtonData.OK_DONE);
-                    ButtonType btnNo = new ButtonType("Nein", ButtonBar.ButtonData.CANCEL_CLOSE);
-                    Alert alert = new Alert(Alert.AlertType.WARNING,
-                            "Die Einstellungen sind beschädigt und können nicht geladen werden. "
-                                    + "Soll versucht werden diese aus einem Backup wiederherzustellen?",
-                            btnYes,
-                            btnNo);
-
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Gesicherte Einstellungen laden");
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.orElse(btnNo) == btnNo) {
-                        logger.info("User will kein Backup laden.");
-                        return false;
-                    } else
-                        return true;
-                }
-        );
-
-        if (loadBackup) {
+        if (askForBackupRestore()) {
             for (Path p : path) {
                 // teils geladene Reste entfernen
                 clearKonfig();
@@ -330,18 +319,13 @@ public class Daten {
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
-                if (MediathekGui.ui() != null) {
-                    JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setHeaderText("Fehler beim Zurücksetzen der Einstellungen");
-                        alert.setContentText("Die Einstellungen konnten nicht zurückgesetzt werden.\n"
-                                + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                                + StandardLocations.getSettingsDirectory() + '\n'
-                                + "von Hand löschen und dann das Programm wieder starten.\n\n"
-                                + "Im Forum erhalten Sie weitere Hilfe.");
-                        JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-                    });
-                }
+                var msg = "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                        + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
+                        + StandardLocations.getSettingsDirectory() + '\n'
+                        + "von Hand löschen und dann das Programm wieder starten.\n\n"
+                        + "Im Forum erhalten Sie weitere Hilfe.";
+                JOptionPane.showMessageDialog(null, Konstanten.PROGRAMMNAME,
+                        msg, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
