@@ -21,7 +21,6 @@
 package org.jdesktop.swingx.plaf;
 
 import org.jdesktop.swingx.JXTaskPane;
-import org.jdesktop.swingx.plaf.windows.WindowsClassicLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 import org.jdesktop.swingx.util.OS;
 
@@ -152,18 +151,6 @@ public class TaskPaneAddon extends AbstractComponentAddon {
          defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.WHITE));
          defaults.add("TaskPane.borderColor", new ColorUIResource(Color.WHITE));
        }
-    }
-    
-    if (addon instanceof WindowsClassicLookAndFeelAddons) {
-      defaults.add(JXTaskPane.uiClassID, "org.jdesktop.swingx.plaf.windows.WindowsClassicTaskPaneUI");
-      defaults.add("TaskPane.foreground", new ColorUIResource(Color.BLACK));
-      defaults.add("TaskPane.background", new ColorUIResource(Color.WHITE));
-      defaults.add("TaskPane.specialTitleBackground", new ColorUIResource(10, 36, 106));
-      defaults.add("TaskPane.titleBackgroundGradientStart", new ColorUIResource(212, 208, 200));
-      defaults.add("TaskPane.titleBackgroundGradientEnd", new ColorUIResource(212, 208, 200));
-      defaults.add("TaskPane.titleForeground", new ColorUIResource(Color.BLACK));
-      defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.WHITE));
-      defaults.add("TaskPane.borderColor", new ColorUIResource(212, 208, 200));
     }
   }
   

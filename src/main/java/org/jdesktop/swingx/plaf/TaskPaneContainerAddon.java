@@ -22,7 +22,6 @@ package org.jdesktop.swingx.plaf;
 
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.plaf.windows.WindowsClassicLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 import org.jdesktop.swingx.util.OS;
 
@@ -77,10 +76,7 @@ public class TaskPaneContainerAddon extends AbstractComponentAddon {
   @Override
   protected void addWindowsDefaults(LookAndFeelAddons addon, DefaultsList defaults) {
     super.addWindowsDefaults(addon, defaults);
-    if (addon instanceof WindowsClassicLookAndFeelAddons) {
-      defaults.add("TaskPaneContainer.background", UIManagerExt.getSafeColor("List.background",
-                new ColorUIResource(Color.decode("#005C5C"))));
-    } else if (addon instanceof WindowsLookAndFeelAddons) {     
+    if (addon instanceof WindowsLookAndFeelAddons) {
       String xpStyle = OS.getWindowsVisualStyle();
       ColorUIResource background;
       Color backgroundGradientStart;
