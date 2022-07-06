@@ -23,7 +23,6 @@ import mediathek.tool.FileUtils;
 import mediathek.tool.Version;
 import okhttp3.HttpUrl;
 
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
@@ -35,7 +34,6 @@ public class Konstanten {
     public static final boolean APP_IS_NIGHTLY = true;
     public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
-    public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";

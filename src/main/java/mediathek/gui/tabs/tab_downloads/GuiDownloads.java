@@ -3,7 +3,6 @@ package mediathek.gui.tabs.tab_downloads;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
-import javafx.embed.swing.JFXPanel;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -22,6 +21,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
+import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.IntConsumer;
 
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
@@ -139,7 +140,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JSpinner jSpinner1;
     private JEditorPane txtDownload;
     private JScrollPane downloadListScrollPane;
-    private JFXPanel fxDescriptionPanel;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -152,9 +152,8 @@ public class GuiDownloads extends AGuiTabPanel {
         setupF4Key(mediathekGui);
 
         setupDownloadListTable();
-        setupDescriptionPanel(fxDescriptionPanel, tabelle);
 
-        showDescriptionPanel();
+        setupDescriptionTab();
 
         init();
 
@@ -175,6 +174,21 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
+
+    protected void setupDescriptionTab() {
+        descriptionPanel = new FilmDescriptionPanel(this);
+        descriptionPanel.install(descriptionTab, tabelle);
+        descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
+        descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
+                (IntConsumer) tabIndex -> {
+                    // close description tab here
+                    // must use doClick to trigger model change
+                    cbShowDownloadDescription.doClick();
+                });
+
+        setupShowFilmDescriptionMenuItem();
+        initDescriptionTabVisibility(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
     }
 
     private void setupDownloadListStatusBar() {
@@ -613,8 +627,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         });
-
-        setupShowFilmDescriptionMenuItem();
     }
 
     @Handler
@@ -640,28 +652,14 @@ public class GuiDownloads extends AGuiTabPanel {
      * Most of the setup is done in {@link GuiDownloads} function.
      * Here we just display the panel
      */
-    private void setupShowFilmDescriptionMenuItem() {
+    @Override
+    protected void setupShowFilmDescriptionMenuItem() {
         cbShowDownloadDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
-        cbShowDownloadDescription.addActionListener(l -> fxDescriptionPanel.setVisible(cbShowDownloadDescription.isSelected()));
-        cbShowDownloadDescription.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, cbShowDownloadDescription.isSelected()));
-        fxDescriptionPanel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                cbShowDownloadDescription.setSelected(true);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                cbShowDownloadDescription.setSelected(false);
-            }
+        cbShowDownloadDescription.addActionListener(l -> {
+            boolean visible = cbShowDownloadDescription.isSelected();
+            makeDescriptionTabVisible(visible);
+            config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, visible);
         });
-    }
-
-    /**
-     * Show description panel based on settings.
-     */
-    private void showDescriptionPanel() {
-        fxDescriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
     }
 
     private synchronized void reloadTable() {
@@ -725,7 +723,7 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     @Override
-    protected Optional<DatenFilm> getCurrentlySelectedFilm() {
+    public Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow != -1) {
             Optional<DatenFilm> optRet;
@@ -1126,7 +1124,6 @@ public class GuiDownloads extends AGuiTabPanel {
         txtDownload = new JEditorPane();
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
-        fxDescriptionPanel = new JFXPanel();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -1237,7 +1234,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 tempPanel.add(downloadListScrollPane, BorderLayout.CENTER);
                 tempPanel.add(statusBar, BorderLayout.SOUTH);
                 downloadListArea.add(tempPanel, BorderLayout.CENTER);
-                downloadListArea.add(fxDescriptionPanel, BorderLayout.SOUTH);
+                downloadListArea.add(descriptionTab, BorderLayout.SOUTH);
             }
             jSplitPane1.setRightComponent(downloadListArea);
         }

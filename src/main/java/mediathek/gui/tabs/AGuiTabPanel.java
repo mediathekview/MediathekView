@@ -1,17 +1,13 @@
 package mediathek.gui.tabs;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.javafx.descriptionPanel.DescriptionPanelController;
-import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -20,9 +16,34 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class AGuiTabPanel extends JPanel {
-    private static final Logger logger = LogManager.getLogger();
     protected Daten daten;
     protected MediathekGui mediathekGui;
+    protected JTabbedPane descriptionTab = new JTabbedPane();
+    protected FilmDescriptionPanel descriptionPanel;
+
+    /**
+     * Show description panel based on settings.
+     */
+    protected void makeDescriptionTabVisible(boolean visible) {
+        if (visible) {
+            if (descriptionTab.indexOfComponent(descriptionPanel) == -1) {
+                descriptionTab.add(descriptionPanel, 0);
+                descriptionTab.setTitleAt(0, "Beschreibung");
+            }
+        } else {
+            if (descriptionTab.indexOfComponent(descriptionPanel) != -1) {
+                descriptionTab.remove(descriptionPanel);
+            }
+        }
+    }
+
+    protected abstract void setupShowFilmDescriptionMenuItem();
+
+    protected void initDescriptionTabVisibility(@NotNull String configKey) {
+        boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(configKey, true);
+
+        makeDescriptionTabVisible(visible);
+    }
 
     public abstract void tabelleSpeichern();
 
@@ -33,25 +54,10 @@ public abstract class AGuiTabPanel extends JPanel {
      */
     protected abstract List<DatenFilm> getSelFilme();
 
-    protected abstract Optional<DatenFilm> getCurrentlySelectedFilm();
+    public abstract Optional<DatenFilm> getCurrentlySelectedFilm();
 
     protected void updateStartInfoProperty() {
         MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
-    protected void setupDescriptionPanel(@NotNull JFXPanel panel, @NotNull JTable tabelle)
-    {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            try {
-                var descriptionPanelController = DescriptionPanelController.install(panel);
-                SwingUtilities.invokeLater(() -> tabelle.getSelectionModel().addListSelectionListener(e -> {
-                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
-                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
-                }));
-            } catch (Exception ex) {
-                logger.error("setupDescriptionPanel", ex);
-            }
-        });
     }
 
     public abstract void installMenuEntries(JMenu menu);
