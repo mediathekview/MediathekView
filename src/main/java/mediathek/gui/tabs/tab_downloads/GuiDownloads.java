@@ -552,9 +552,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         String info = HEAD;
 
-        // Downloads
-        info += getInfoText();
-
         final var downloadInfos = daten.getDownloadInfos();
         // Größe
         final long byteAlleDownloads = downloadInfos.getByteAlleDownloads();
@@ -587,27 +584,6 @@ public class GuiDownloads extends AGuiTabPanel {
         info += END;
 
         txtDownload.setText(info);
-    }
-
-    private String getInfoText() {
-        String textLinks;
-        final var info = daten.getListeDownloads().getStarts();
-        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + info.total_starts + "<br />";
-
-        if (info.hasValues()) {
-            textLinks += "( ";
-            textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
-            textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
-            if (info.finished > 0)
-                textLinks += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
-
-            if (info.error > 0)
-                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
-
-            textLinks += " )";
-        }
-        textLinks += "<br /></span>";
-        return textLinks;
     }
 
     @Handler
