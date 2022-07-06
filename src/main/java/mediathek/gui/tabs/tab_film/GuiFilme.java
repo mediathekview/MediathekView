@@ -683,10 +683,6 @@ public class GuiFilme extends AGuiTabPanel {
         });
     }
 
-    /**
-     * Setup and show film description panel. Most of the setup is done in {@link GuiFilme} function.
-     * Here we just display the panel
-     */
     @Override
     protected void setupShowFilmDescriptionMenuItem() {
         var config = ApplicationConfiguration.getConfiguration();
