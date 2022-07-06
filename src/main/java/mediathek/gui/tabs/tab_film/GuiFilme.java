@@ -70,7 +70,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -128,6 +127,7 @@ public class GuiFilme extends AGuiTabPanel {
         super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
+        descriptionPanel = new FilmDescriptionPanel(this);
 
         setLayout(new BorderLayout());
 
@@ -141,7 +141,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmListTable();
         setupFilmSelectionPropertyListener(mediathekGui);
-        setupDescriptionTab();
+        setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsPanel();
         setupFilmActionPanel();
 
@@ -150,20 +150,6 @@ public class GuiFilme extends AGuiTabPanel {
         MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
-    }
-
-    private void setupDescriptionTab() {
-        descriptionPanel = new FilmDescriptionPanel(this);
-        descriptionPanel.install(descriptionTab, tabelle);
-        descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
-        descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
-                (IntConsumer) tabIndex -> {
-                    // close description tab here
-                    // must use doClick to trigger model change
-                    cbkShowDescription.doClick();
-                });
-        setupShowFilmDescriptionMenuItem();
-        initDescriptionTabVisibility(ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
     }
 
     private void createToolBar() {

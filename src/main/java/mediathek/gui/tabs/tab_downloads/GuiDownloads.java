@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.IntConsumer;
 
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
@@ -129,8 +128,6 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private MVDownloadsTable tabelle;
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
     private JSplitPane jSplitPane1;
     private JPanel jPanelFilterExtern;
     private JComboBox<String> cbDisplayCategories;
@@ -145,6 +142,8 @@ public class GuiDownloads extends AGuiTabPanel {
         super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
+        descriptionPanel = new FilmDescriptionPanel(this);
+
 
         initComponents();
         setupDownloadListStatusBar();
@@ -153,7 +152,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupDownloadListTable();
 
-        setupDescriptionTab();
+        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
 
         init();
 
@@ -174,21 +173,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
-    }
-
-    protected void setupDescriptionTab() {
-        descriptionPanel = new FilmDescriptionPanel(this);
-        descriptionPanel.install(descriptionTab, tabelle);
-        descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
-        descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
-                (IntConsumer) tabIndex -> {
-                    // close description tab here
-                    // must use doClick to trigger model change
-                    cbShowDownloadDescription.doClick();
-                });
-
-        setupShowFilmDescriptionMenuItem();
-        initDescriptionTabVisibility(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
     }
 
     private void setupDownloadListStatusBar() {

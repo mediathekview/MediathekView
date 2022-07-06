@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.IntConsumer;
 
 public abstract class AGuiTabPanel extends JPanel {
     protected Daten daten;
@@ -35,6 +36,21 @@ public abstract class AGuiTabPanel extends JPanel {
                 descriptionTab.remove(descriptionPanel);
             }
         }
+    }
+
+    protected void setupDescriptionTab(@NotNull JTable table, @NotNull JCheckBoxMenuItem cbmi,
+                                       @NotNull String configKey) {
+        descriptionPanel.install(descriptionTab, table);
+        descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
+        descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
+                (IntConsumer) tabIndex -> {
+                    // close description tab here
+                    // must use doClick to trigger model change
+                    cbmi.doClick();
+                });
+
+        setupShowFilmDescriptionMenuItem();
+        initDescriptionTabVisibility(configKey);
     }
 
     protected abstract void setupShowFilmDescriptionMenuItem();
