@@ -89,8 +89,7 @@
  * <li> {@link org.jdesktop.swingx.JXDialog Dialog}
  * <li> {@link org.jdesktop.swingx.JXPanel Panel}
  * <li> {@link org.jdesktop.swingx.JXErrorPane ErrorPane}
- * <li> {@link org.jdesktop.swingx.JXLoginPane LoginPane}
- * 
+ *
  * <li>Search components: {@link org.jdesktop.swingx.JXFindBar FindBar} used
  * for incremental search (similar to FireFox),
  * {@link org.jdesktop.swingx.JXFindPanel FindPanel} used in a find dialog,
@@ -125,7 +124,6 @@
  * <li> {@link org.jdesktop.swingx.JXColorSelectionButton}
  * <li> {@link org.jdesktop.swingx.JXEditorPane}
  * <li> {@link org.jdesktop.swingx.JXGradientChooser}
- * <li> {@link org.jdesktop.swingx.JXGraph}
  * <li>Image containers {@link org.jdesktop.swingx.JXImageView ImageView}
  * and {@link org.jdesktop.swingx.JXImagePanel ImagePanel} (PENDING JW:
  * merge/remove one?)
