@@ -165,7 +165,7 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme();
                 }
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -176,7 +176,7 @@ public class PanelPsetLang extends PanelVorlage {
                 DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -331,7 +331,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabellePset();
                 notifyProgramSetChanged();
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -707,7 +707,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyProgramSetChanged();
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -739,7 +739,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -775,7 +775,7 @@ public class PanelPsetLang extends PanelVorlage {
                 });
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -796,7 +796,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme.setRowSelectionInterval(neu, neu);
             tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
 
     }
@@ -907,7 +907,7 @@ public class PanelPsetLang extends PanelVorlage {
                         notifyProgramSetChanged();
                     stopBeob = false;
                 } else {
-                    NoSelectionErrorDialog.show();
+                    NoSelectionErrorDialog.show(null);
                 }
             }
             setNamePruefen();

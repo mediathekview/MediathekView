@@ -142,7 +142,7 @@ public class PanelDateinamen extends PanelVorlage {
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
 
     }

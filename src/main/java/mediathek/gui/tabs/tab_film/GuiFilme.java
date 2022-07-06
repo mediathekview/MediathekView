@@ -578,7 +578,7 @@ public class GuiFilme extends AGuiTabPanel {
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
         if (tabelle.getSelectedRow() == -1) {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         } else if (pSet.istSpeichern()) {
             // wenn das pSet zum Speichern (über die Button) gewählt wurde,
             // weiter mit dem Dialog "Speichern"
@@ -641,7 +641,7 @@ public class GuiFilme extends AGuiTabPanel {
                 arrayFilme.add(datenFilm);
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return arrayFilme;
     }

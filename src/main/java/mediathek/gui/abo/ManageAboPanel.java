@@ -255,7 +255,7 @@ public class ManageAboPanel extends JPanel {
 
             daten.getListeAbo().aenderungMelden();
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -272,7 +272,7 @@ public class ManageAboPanel extends JPanel {
     public void editAbo() {
         // nichts selektiert
         if (tabelle.getSelectedRowCount() == 0) {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
             return;
         }
 
@@ -335,7 +335,7 @@ public class ManageAboPanel extends JPanel {
 
             daten.getListeAbo().aenderungMelden();
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 

@@ -772,7 +772,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 arrayDownloads.add(datenDownload);
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return arrayDownloads;
     }
@@ -800,7 +800,7 @@ public class GuiDownloads extends AGuiTabPanel {
         if (row != -1) {
             datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return datenDownload;
     }
@@ -1155,7 +1155,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return arrayFilme;
     }
