@@ -22,7 +22,6 @@ package org.jdesktop.swingx.plaf;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.plaf.basic.BasicDatePickerUI;
-import org.jdesktop.swingx.util.OS;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -59,13 +58,8 @@ public class DatePickerAddon extends AbstractComponentAddon {
     @Override
     protected void addWindowsDefaults(LookAndFeelAddons addon, DefaultsList defaults) {
         super.addWindowsDefaults(addon, defaults);
-        if (OS.isWindowsXP() && OS.isUsingWindowsVisualStyles()) {
-            defaults.add("JXDatePicker.arrowIcon",
-                    LookAndFeel.makeIcon(DatePickerAddon.class, "windows/resources/combo-xp.png"));
-        } else {
-            defaults.add("JXDatePicker.arrowIcon",
-                    LookAndFeel.makeIcon(DatePickerAddon.class, "windows/resources/combo-w2k.png"));
-        }
+        defaults.add("JXDatePicker.arrowIcon",
+                LookAndFeel.makeIcon(DatePickerAddon.class, "windows/resources/combo-xp.png"));
     }
 
     /**

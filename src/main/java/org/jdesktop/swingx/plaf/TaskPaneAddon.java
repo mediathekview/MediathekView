@@ -126,30 +126,21 @@ public class TaskPaneAddon extends AbstractComponentAddon {
         defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.BLACK));
         defaults.add("TaskPane.specialTitleOver", new ColorUIResource(126, 124, 124));
         defaults.add("TaskPane.borderColor", new ColorUIResource(Color.WHITE));
-      } else if (OS.isWindowsVista()) {
+      } else {
           //do not need to use safe method since the properties can never return null
-         final Toolkit toolkit = Toolkit.getDefaultToolkit();
-         
-         defaults.add("TaskPane.foreground", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.background",
-                 new ColorUIResource((Color)toolkit.getDesktopProperty("win.3d.backgroundColor")));
-         defaults.add("TaskPane.specialTitleBackground", new ColorUIResource(33, 89, 201));
-         defaults.add("TaskPane.titleBackgroundGradientStart", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.titleBackgroundGradientEnd",
-                 new ColorUIResource((Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionColor")));
-         defaults.add("TaskPane.titleForeground",
-                 new ColorUIResource((Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionTextColor")));
-         defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.borderColor", new ColorUIResource(Color.WHITE));
-       } else {
-         defaults.add("TaskPane.foreground", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.background", new ColorUIResource(214, 223, 247));
-         defaults.add("TaskPane.specialTitleBackground", new ColorUIResource(33, 89, 201));
-         defaults.add("TaskPane.titleBackgroundGradientStart", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.titleBackgroundGradientEnd", new ColorUIResource(199, 212, 247));
-         defaults.add("TaskPane.titleForeground", new ColorUIResource(33, 89, 201));
-         defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.WHITE));
-         defaults.add("TaskPane.borderColor", new ColorUIResource(Color.WHITE));
+          final Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+          defaults.add("TaskPane.foreground", new ColorUIResource(Color.WHITE));
+          defaults.add("TaskPane.background",
+                  new ColorUIResource((Color)toolkit.getDesktopProperty("win.3d.backgroundColor")));
+          defaults.add("TaskPane.specialTitleBackground", new ColorUIResource(33, 89, 201));
+          defaults.add("TaskPane.titleBackgroundGradientStart", new ColorUIResource(Color.WHITE));
+          defaults.add("TaskPane.titleBackgroundGradientEnd",
+                  new ColorUIResource((Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionColor")));
+          defaults.add("TaskPane.titleForeground",
+                  new ColorUIResource((Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionTextColor")));
+          defaults.add("TaskPane.specialTitleForeground", new ColorUIResource(Color.WHITE));
+          defaults.add("TaskPane.borderColor", new ColorUIResource(Color.WHITE));
        }
     }
   }

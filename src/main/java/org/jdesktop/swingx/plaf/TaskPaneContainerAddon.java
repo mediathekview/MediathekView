@@ -92,17 +92,11 @@ public class TaskPaneContainerAddon extends AbstractComponentAddon {
         background = new ColorUIResource(192, 195, 209);
         backgroundGradientStart = new Color(196, 200, 212);
         backgroundGradientEnd = new Color(177, 179, 200);
-      } else {        
-        if (OS.isWindowsVista()) {
-          final Toolkit toolkit = Toolkit.getDefaultToolkit();
-          background = new ColorUIResource((Color)toolkit.getDesktopProperty("win.3d.backgroundColor"));
-          backgroundGradientStart = (Color)toolkit.getDesktopProperty("win.frame.activeCaptionColor");
-          backgroundGradientEnd = (Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionColor");
-        } else {
-          background = new ColorUIResource(117, 150, 227);
-          backgroundGradientStart = new ColorUIResource(123, 162, 231);
-          backgroundGradientEnd = new ColorUIResource(99, 117, 214);
-        }
+      } else {
+        final Toolkit toolkit = Toolkit.getDefaultToolkit();
+        background = new ColorUIResource((Color)toolkit.getDesktopProperty("win.3d.backgroundColor"));
+        backgroundGradientStart = (Color)toolkit.getDesktopProperty("win.frame.activeCaptionColor");
+        backgroundGradientEnd = (Color)toolkit.getDesktopProperty("win.frame.inactiveCaptionColor");
       }      
       
       defaults.add("TaskPaneContainer.backgroundPainter", new PainterUIResource<JXTaskPaneContainer>(

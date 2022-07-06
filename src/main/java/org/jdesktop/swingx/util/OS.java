@@ -46,20 +46,6 @@ public class OS {
   }
 
   /**
-   * @return true if this VM is running on Windows XP
-   */
-  public static boolean isWindowsXP() {
-    return SystemUtils.IS_OS_WINDOWS_XP;
-  }
-
-  /**
-   * @return true if this VM is running on Windows Vista
-   */
-  public static boolean isWindowsVista() {
-    return SystemUtils.IS_OS_WINDOWS_VISTA;
-  }
-
-  /**
    * @return true if the VM is running Windows and the Java
    *         application is rendered using XP Visual Styles.
    */
