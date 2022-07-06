@@ -37,7 +37,6 @@ import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.buttonsPanel.ButtonsPanelController;
-import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -85,7 +84,7 @@ public class GuiFilme extends AGuiTabPanel {
     private static final String ACTION_MAP_KEY_MARK_UNSEEN = "unseen";
     private static final int[] HIDDEN_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
             DatenFilm.FILM_MERKEN};
-    private static final Logger logger = LogManager.getLogger(GuiFilme.class);
+    private static final Logger logger = LogManager.getLogger();
     private static final int[] BUTTON_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
             DatenFilm.FILM_MERKEN};
     public static boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
@@ -145,7 +144,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
-        setupDescriptionPanel();
+        setupDescriptionPanel(fxDescriptionPanel, tabelle);
         setupPsetButtonsPanel();
         setupFilmActionPanel();
 
@@ -318,20 +317,6 @@ public class GuiFilme extends AGuiTabPanel {
 
         final var visible = config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
         fxPsetButtonsPanel.setVisible(visible);
-    }
-
-    private void setupDescriptionPanel() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            try {
-                var descriptionPanelController = DescriptionPanelController.install(fxDescriptionPanel);
-                SwingUtilities.invokeLater(() -> tabelle.getSelectionModel().addListSelectionListener(e -> {
-                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
-                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
-                }));
-            } catch (Exception ex) {
-                logger.error("setupDescriptionPanel", ex);
-            }
-        });
     }
 
     /**

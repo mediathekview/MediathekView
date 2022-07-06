@@ -3,11 +3,7 @@ package mediathek.gui.tabs.tab_downloads;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
-import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -26,7 +22,6 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
-import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -157,7 +152,7 @@ public class GuiDownloads extends AGuiTabPanel {
         setupF4Key(mediathekGui);
 
         setupDownloadListTable();
-        setupDescriptionPanel();
+        setupDescriptionPanel(fxDescriptionPanel, tabelle);
 
         showDescriptionPanel();
 
@@ -405,30 +400,6 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(invertSelectionAction);
         menu.addSeparator();
         menu.add(shutdownAfterDownloadAction);
-    }
-
-    private void setupDescriptionPanel() {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
-
-                TabPane descriptionPane = loader.load();
-                final DescriptionPanelController descriptionPanelController = loader.getController();
-                descriptionPanelController.setOnCloseRequest(e -> {
-                    SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
-                    e.consume();
-                });
-
-                fxDescriptionPanel.setScene(new Scene(descriptionPane));
-                SwingUtilities.invokeLater(() -> tabelle.getSelectionModel().addListSelectionListener(e -> {
-                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
-                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
-                }));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
     }
 
     public void onComponentShown() {
