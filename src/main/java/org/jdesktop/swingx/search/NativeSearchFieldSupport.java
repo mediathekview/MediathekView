@@ -1,7 +1,7 @@
 package org.jdesktop.swingx.search;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.plaf.AbstractUIChangeHandler;
-import org.jdesktop.swingx.util.OS;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -32,7 +32,7 @@ public class NativeSearchFieldSupport {
 			// only the part 10.x is important
 			versionString = versionString.substring(0, 4);
 
-			return OS.isMacOSX() && Float.parseFloat(versionString) >= 10.5
+			return SystemUtils.IS_OS_MAC_OSX && Float.parseFloat(versionString) >= 10.5
 					&& UIManager.getLookAndFeel().getName().equals("Mac OS X");
 		} catch (Exception e) {
 			// in case the os.version cannot be parsed, we are surely not

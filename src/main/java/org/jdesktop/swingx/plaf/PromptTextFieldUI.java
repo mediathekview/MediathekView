@@ -1,7 +1,7 @@
 package org.jdesktop.swingx.plaf;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.search.NativeSearchFieldSupport;
-import org.jdesktop.swingx.util.OS;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -162,7 +162,7 @@ public class PromptTextFieldUI extends PromptTextUI {
          */
         @Override
         protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        	if (OS.isMacOSX()) {
+        	if (SystemUtils.IS_OS_MAC_OSX) {
         		super.firePropertyChange(propertyName, oldValue, newValue);
         	} else {
         		// Strings get interned...
@@ -179,7 +179,7 @@ public class PromptTextFieldUI extends PromptTextUI {
          */
         @Override
         public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-        	if (OS.isMacOSX()) {
+        	if (SystemUtils.IS_OS_MAC_OSX) {
         		super.firePropertyChange(propertyName, oldValue, newValue);
         	}
         }

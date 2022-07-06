@@ -21,10 +21,10 @@
 
 package org.jdesktop.swingx;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.color.EyeDropperColorChooserPanel;
 import org.jdesktop.swingx.plaf.UIManagerExt;
 import org.jdesktop.swingx.util.GraphicsUtilities;
-import org.jdesktop.swingx.util.OS;
 import org.jdesktop.swingx.util.PaintUtils;
 
 import javax.imageio.ImageIO;
@@ -36,8 +36,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
@@ -83,11 +81,7 @@ public class JXColorSelectionButton extends JButton {
             ex.printStackTrace();
         }
         
-        this.addPropertyChangeListener("background",new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                getChooser().setColor(getBackground());
-            }
-        });
+        this.addPropertyChangeListener("background", propertyChangeEvent -> getChooser().setColor(getBackground()));
     }
     
     
@@ -115,7 +109,7 @@ public class JXColorSelectionButton extends JButton {
                 : UIManagerExt.getSafeColor("Button.disabledForeground", Color.LIGHT_GRAY);
         
         // draw the colorwell image (should only be on OSX)
-        if(OS.isMacOSX() && colorwell != null) {
+        if(SystemUtils.IS_OS_MAC_OSX && colorwell != null) {
             Insets ins = new Insets(5,5,5,5);
             GraphicsUtilities.tileStretchPaint(g, this, colorwell, ins);
             
@@ -176,19 +170,13 @@ public class JXColorSelectionButton extends JButton {
         if (dialog == null) {
             dialog = JColorChooser.createDialog(JXColorSelectionButton.this,
                     "Choose a color", true, getChooser(),
-                    new ActionListener() {
-                public void actionPerformed(ActionEvent actionEvent) {
-                    Color color = getChooser().getColor();
-                    if (color != null) {
-                        setBackground(color);
-                    }
-                }
-            },
-            new ActionListener() {
-                public void actionPerformed(ActionEvent actionEvent) {
-                    setBackground(initialColor);
-                }
-            });
+                    actionEvent -> {
+                        Color color = getChooser().getColor();
+                        if (color != null) {
+                            setBackground(color);
+                        }
+                    },
+                    actionEvent -> setBackground(initialColor));
             dialog.getContentPane().add(getChooser());
             getChooser().getSelectionModel().addChangeListener(
                     new ColorChangeListener(JXColorSelectionButton.this));

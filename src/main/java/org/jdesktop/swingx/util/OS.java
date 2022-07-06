@@ -32,20 +32,6 @@ import java.awt.*;
 public class OS {
 
   /**
-   * @return true if this VM is running on Mac OS X
-   */
-  public static boolean isMacOSX() {
-    return SystemUtils.IS_OS_MAC_OSX;
-  }
-
-  /**
-   * @return true if this VM is running on Windows
-   */
-  public static boolean isWindows() {
-    return SystemUtils.IS_OS_WINDOWS;
-  }
-
-  /**
    * @return true if the VM is running Windows and the Java
    *         application is rendered using XP Visual Styles.
    */
