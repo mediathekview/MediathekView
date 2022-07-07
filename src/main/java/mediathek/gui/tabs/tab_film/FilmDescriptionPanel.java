@@ -107,39 +107,6 @@ public class FilmDescriptionPanel extends JPanel {
         add(hyperlink, new CC().cell(1, 3));
     }
 
-    /**
-     * Determine the image's size while keeping aspect ratio within a given boundary box.
-     * @param imgSize The size of the original image.
-     * @param boundary The bounds where the image needs to fit into.
-     * @return The calculated image dimensions for fitting into boundary.
-     */
-    public Dimension calculateFittedDimension(Dimension imgSize, Dimension boundary) {
-
-        int original_width = imgSize.width;
-        int original_height = imgSize.height;
-        int bound_width = boundary.width;
-        int bound_height = boundary.height;
-        int new_width = original_width;
-        int new_height = original_height;
-
-        // first check if we need to scale width
-        if (original_width > bound_width) {
-            //scale width to fit
-            new_width = bound_width;
-            //scale height to maintain aspect ratio
-            new_height = (new_width * original_height) / original_width;
-        }
-
-        // then check if we need to scale even with the new height
-        if (new_height > bound_height) {
-            //scale height to fit instead
-            new_height = bound_height;
-            //scale width to maintain aspect ratio
-            new_width = (new_height * original_width) / original_height;
-        }
-
-        return new Dimension(new_width, new_height);
-    }
     public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle) {
         tabbedPane.add("Beschreibung", this);
 
@@ -185,7 +152,7 @@ public class FilmDescriptionPanel extends JPanel {
         MVSenderIconCache.get(film.getSender()).ifPresentOrElse(icon -> {
             var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
             var boundary = new Dimension(96, 96);
-            var destDim = calculateFittedDimension(imageDim, boundary);
+            var destDim = GuiFunktionen.calculateFittedDimension(imageDim, boundary);
             lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
         }, () -> lblIcon.setIcon(null));
     }
