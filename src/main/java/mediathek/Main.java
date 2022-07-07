@@ -215,14 +215,13 @@ public class Main {
      */
     private static void migrateOldConfigSettings() {
         var settingsDir = StandardLocations.getSettingsDirectory().toString();
-        if (settingsDir != null && !settingsDir.isEmpty()) {
+        if (!settingsDir.isEmpty()) {
             Path pSettingsDir = Paths.get(settingsDir);
             if (Files.exists(pSettingsDir)) {
                 //convert existing settings
                 Path settingsFile = pSettingsDir.resolve(Konstanten.CONFIG_FILE);
                 if (Files.exists(settingsFile)) {
-                    logger.trace("{} exists", Konstanten.CONFIG_FILE);
-                    logger.trace("migrating old config settings");
+                    logger.trace("migrating old config settings {}", settingsFile.toAbsolutePath().toString());
                     try {
                         SettingsMigrator migrator = new SettingsMigrator(settingsFile);
                         migrator.migrate();
@@ -525,6 +524,7 @@ public class Main {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
             walk.sorted(Comparator.reverseOrder())
