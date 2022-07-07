@@ -331,16 +331,43 @@ public class Main {
     }
 
     /**
+     * Check if a non-floating point scale factor is set on Linux.
+     * Java 18 VM does not support fractional scaling.
+     */
+    private static void checkUiScaleSetting() {
+        var strScale = System.getProperty("sun.java2d.uiScale");
+        if (strScale != null) {
+            try {
+                Integer.parseInt(strScale);
+            }
+            catch (NumberFormatException ex) {
+                // not an int -> show warning
+                // fractional scale is NOT supported under Linux, must use integer only.
+                var scaleFactor = Float.parseFloat(strScale);
+                System.out.println("uiScale factor: " + scaleFactor);
+                var newScale = Math.round(scaleFactor);
+                System.out.println("new scale: " + newScale);
+                JOptionPane.showMessageDialog(null,
+                        "<html>" +
+                                "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
+                                "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" +
+                                "Sie sollten <i>-Dsun.java2d.uiScale=" + newScale + "</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
+                        Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
+            System.exit(1);
+        }
+
         EventQueue.invokeLater(() -> {
             setupEnvironmentProperties();
-
-            if (GraphicsEnvironment.isHeadless()) {
-                System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
-                System.exit(1);
-            }
 
             CommandLine cmd = new CommandLine(Config.class);
             try {
@@ -360,6 +387,9 @@ public class Main {
 
                 setupDockIcon();
                 setupFlatLaf();
+
+                if (SystemUtils.IS_OS_LINUX)
+                    checkUiScaleSetting();
 
                 if (!Config.isDisableJvmParameterChecks())
                     checkJVMSettings();
