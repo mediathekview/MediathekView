@@ -81,7 +81,6 @@ public class FilmDescriptionPanel extends JPanel {
                         .gap()
         ));
 
-        lblIcon.setMaximumSize(new Dimension(96, 96));
         lblIcon.setPreferredSize(new Dimension(96, 96));
         lblIcon.setVerticalAlignment(SwingConstants.TOP);
         add(lblIcon, new CC().cell(0, 0, 1, 3).alignX("center").alignY("top").grow(0, 0)); //NON-NLS
