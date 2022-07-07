@@ -1,5 +1,6 @@
 package mediathek.gui.tabs.tab_film;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 
 public class FilmDescriptionPanel extends JPanel {
@@ -113,7 +113,7 @@ public class FilmDescriptionPanel extends JPanel {
      * @param boundary The bounds where the image needs to fit into.
      * @return The calculated image dimensions for fitting into boundary.
      */
-    public Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
+    public Dimension calculateFittedDimension(Dimension imgSize, Dimension boundary) {
 
         int original_width = imgSize.width;
         int original_height = imgSize.height;
@@ -140,18 +140,6 @@ public class FilmDescriptionPanel extends JPanel {
 
         return new Dimension(new_width, new_height);
     }
-
-    private Image getScaledImage(Image srcImg, int w, int h) {
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = resizedImg.createGraphics();
-
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, 0, 0, w, h, null);
-        g2.dispose();
-
-        return resizedImg;
-    }
-
     public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle) {
         tabbedPane.add("Beschreibung", this);
 
@@ -197,9 +185,8 @@ public class FilmDescriptionPanel extends JPanel {
         MVSenderIconCache.get(film.getSender()).ifPresentOrElse(icon -> {
             var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
             var boundary = new Dimension(96, 96);
-            var destDim = getScaledDimension(imageDim, boundary);
-            var newIcon = getScaledImage(icon.getImage(), destDim.width, destDim.height);
-            lblIcon.setIcon(new ImageIcon(newIcon));
+            var destDim = calculateFittedDimension(imageDim, boundary);
+            lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
         }, () -> lblIcon.setIcon(null));
     }
 }
