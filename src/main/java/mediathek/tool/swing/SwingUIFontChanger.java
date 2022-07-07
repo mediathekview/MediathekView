@@ -14,7 +14,7 @@ import java.util.Arrays;
  * Utility class which changes the font size for each swing font key.
  * Useful for enhancing the font size of an application.
  */
-public class SwingUIFontChanger {
+@Deprecated public class SwingUIFontChanger {
     private static final Logger logger = LogManager.getLogger();
     public static final String NIMBUS_DEFAULT_FONT = "defaultFont";
     public static final String WINDOWS_DEFAULT_FONT = "Table.font";

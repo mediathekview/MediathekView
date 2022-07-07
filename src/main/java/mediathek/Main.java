@@ -461,7 +461,7 @@ public class Main {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
     }
 
-    private static void changeGlobalFontSize() {
+    @Deprecated private static void changeGlobalFontSize() {
         try {
             var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
             logger.info("Custom font size found, changing global UI settings");
