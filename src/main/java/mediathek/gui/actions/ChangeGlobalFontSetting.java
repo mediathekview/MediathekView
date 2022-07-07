@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.swing.LookAndFeelType;
@@ -106,18 +107,6 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         window.close();
     }
 
-    private void showAppTerminationAlert() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, """
-        Die Änderung der Schriftgröße erfordert einen Neustart.
-        Möchten Sie MediathekView nun beenden?
-        """, ButtonType.YES, ButtonType.NO);
-        alert.setHeaderText("Schriftgröße wurde geändert");
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.YES) {
-            SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false));
-        }
-    }
-
     private void createWindow() {
         window = new Stage();
         window.setTitle("Globale Schriftgröße ändern");
@@ -126,7 +115,13 @@ public class ChangeGlobalFontSetting extends AbstractAction {
         window.setOnHidden(evt -> SwingUtilities.invokeLater(() -> {
             menuItem.setEnabled(true);
             if (sizeChanged) {
-                Platform.runLater(this::showAppTerminationAlert);
+                var result = JOptionPane.showConfirmDialog(MediathekGui.ui(),
+                        """
+                                Die Änderung der Schriftgröße erfordert einen Neustart.
+                                Möchten Sie MediathekView nun beenden?
+                                """, Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION)
+                    SwingUtilities.invokeLater(() -> MediathekGui.ui().beenden(false, false));
             }
         }));
     }
