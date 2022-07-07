@@ -19,6 +19,7 @@ import java.awt.*;
 import java.net.URL;
 
 public class FilmDescriptionPanel extends JPanel {
+    private static final Dimension ICON_DIMENSION = new Dimension(96,96);
     private final AGuiTabPanel currentTab;
     private final JScrollPane scrollPane1 = new JScrollPane();
     private final JPopupMenu popupMenu = new JPopupMenu();
@@ -27,7 +28,6 @@ public class FilmDescriptionPanel extends JPanel {
     private final JLabel lblTitel = new JLabel();
     private final JTextArea textArea = new JTextArea();
     private final JXHyperlink hyperlink = new JXHyperlink();
-
     private DatenFilm currentFilm;
 
     public FilmDescriptionPanel(@NotNull AGuiTabPanel currentTab) {
@@ -151,8 +151,7 @@ public class FilmDescriptionPanel extends JPanel {
         SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
         MVSenderIconCache.get(film.getSender()).ifPresentOrElse(icon -> {
             var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-            var boundary = new Dimension(96, 96);
-            var destDim = GuiFunktionen.calculateFittedDimension(imageDim, boundary);
+            var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
             lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
         }, () -> lblIcon.setIcon(null));
     }
