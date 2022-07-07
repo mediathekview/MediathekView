@@ -150,15 +150,8 @@
 
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
-            <artifactId>swingx-mavensupport</artifactId>
+            <artifactId>swingx-all</artifactId>
             <version>1.6.5-1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kohsuke.metainf-services</groupId>
-            <artifactId>metainf-services</artifactId>
-            <version>1.9</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -169,6 +162,11 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-swingx</artifactId>
             <version>${flatlaf.version}</version>
         </dependency>
 
