@@ -467,8 +467,7 @@ public class Main {
             logger.info("Custom font size found, changing global UI settings");
             SwingUIFontChanger fc = new SwingUIFontChanger();
             fc.changeFontSize(size);
-        } catch (Exception e) {
-            logger.info("No custom font size found.");
+        } catch (Exception ignored) {
         }
     }
 
