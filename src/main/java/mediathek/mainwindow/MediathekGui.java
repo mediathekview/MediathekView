@@ -992,7 +992,7 @@ public class MediathekGui extends JFrame {
         stopDownloads();
 
         dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
-        daten.getListeBookmarkList().saveToFile(Daten.getBookmarkFilePath());
+        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
 
         dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();

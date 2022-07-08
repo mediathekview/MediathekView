@@ -32,6 +32,7 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -654,7 +655,7 @@ public class BookmarkWindowController implements Initializable {
    */
   private void saveBookMarkList() {
     if (listUpdated) {
-      listeBookmarkList.saveToFile(Daten.getBookmarkFilePath());
+      listeBookmarkList.saveToFile(StandardLocations.getBookmarkFilePath());
       btnSaveList.setDisable(true);
       JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText("Merkliste ist gesichert"));
     }

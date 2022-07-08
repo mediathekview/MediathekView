@@ -48,6 +48,16 @@ object StandardLocations {
     }
 
     /**
+     * Return the path to "bookmarks.json"
+     *
+     * @return Path object of bookmark file
+     */
+    @JvmStatic
+    fun getBookmarkFilePath(): Path {
+        return getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE)
+    }
+
+    /**
      * Return the path to "mediathek.xml"
      *
      * @return Path to the file

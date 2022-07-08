@@ -123,15 +123,6 @@ public class Daten {
         return xmlFilePath;
     }
 
-    /**
-     * Return the path to "bookmarks.json"
-     *
-     * @return Path object of bookmark file
-     */
-    public static Path getBookmarkFilePath() {
-        return StandardLocations.getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE);
-    }
-
     public StarterClass getStarterClass() {
         return starterClass;
     }
@@ -141,7 +132,7 @@ public class Daten {
      * into memory
      */
     public void loadBookMarkData() {
-      listeBookmarkList.loadFromFile(getBookmarkFilePath());
+      listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
     }
     
     /**
