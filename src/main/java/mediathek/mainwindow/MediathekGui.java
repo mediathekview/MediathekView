@@ -867,13 +867,7 @@ public class MediathekGui extends JFrame {
         installAdditionalHelpEntries();
     }
 
-    protected void installChangeGlobalFontSettingMenuEntry() {
-        //unused on macOS and Windows
-    }
-
     protected void installAdditionalHelpEntries() {
-        installChangeGlobalFontSettingMenuEntry();
-
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ShowAboutAction());
     }

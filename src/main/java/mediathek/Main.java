@@ -16,7 +16,6 @@ import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
 import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
-import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -444,9 +443,6 @@ public class Main {
 
             Daten.getInstance().loadBookMarkData();
 
-            if (SystemUtils.IS_OS_LINUX)
-                changeGlobalFontSize();
-
             startGuiMode();
         });
     }
@@ -458,16 +454,6 @@ public class Main {
      */
     private static boolean isDebuggerAttached() {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
-    }
-
-    @Deprecated private static void changeGlobalFontSize() {
-        try {
-            var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
-            logger.info("Custom font size found, changing global UI settings");
-            SwingUIFontChanger fc = new SwingUIFontChanger();
-            fc.changeFontSize(size);
-        } catch (Exception ignored) {
-        }
     }
 
     /**
