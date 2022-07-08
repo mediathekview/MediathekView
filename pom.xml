@@ -169,6 +169,16 @@
             <artifactId>flatlaf-swingx</artifactId>
             <version>${flatlaf.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-jide-oss</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>jide-oss</artifactId>
+            <version>3.7.12</version>
+        </dependency>
 
         <dependency>
             <groupId>es.blackleg</groupId>
