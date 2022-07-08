@@ -13,17 +13,17 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
 public class FilmDescriptionPanel extends JPanel {
-    private static final Dimension ICON_DIMENSION = new Dimension(96,96);
     private final AGuiTabPanel currentTab;
     private final JScrollPane scrollPane1 = new JScrollPane();
     private final JPopupMenu popupMenu = new JPopupMenu();
-    private final JLabel lblIcon = new JLabel();
+    private final SenderIconLabel lblIcon = new SenderIconLabel();
     private final JLabel lblThema = new JLabel();
     private final JLabel lblTitel = new JLabel();
     private final JTextArea textArea = new JTextArea();
@@ -139,8 +139,7 @@ public class FilmDescriptionPanel extends JPanel {
             hyperlink.setURI(new URL(film.getWebsiteLink()).toURI());
             hyperlink.setText("Link zur Webseite");
             hyperlink.setClicked(false);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             //logger
             hyperlink.setText("Link nicht verfügbar");
         }
@@ -148,10 +147,27 @@ public class FilmDescriptionPanel extends JPanel {
 
         textArea.setText(film.getDescription());
         SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
-        MVSenderIconCache.get(film.getSender()).ifPresentOrElse(icon -> {
-            var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-            var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
-            lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
-        }, () -> lblIcon.setIcon(null));
+        lblIcon.setSender(film.getSender());
+    }
+
+    class SenderIconLabel extends JLabel {
+        private static final Dimension ICON_DIMENSION = new Dimension(96, 96);
+
+        public SenderIconLabel() {
+            setText("");
+            setIcon(null);
+        }
+
+        public void setSender(@Nullable String sender) {
+            if (sender == null) {
+                setIcon(null);
+            } else {
+                MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
+                    var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+                    var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
+                    lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
+                }, () -> lblIcon.setIcon(null));
+            }
+        }
     }
 }
