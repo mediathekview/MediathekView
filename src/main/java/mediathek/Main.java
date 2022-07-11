@@ -595,16 +595,25 @@ public class Main {
     }
 
     private static MediathekGui getPlatformWindow() {
-        MediathekGui window;
+        MediathekGui window = null;
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
         } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else if (SystemUtils.IS_OS_UNIX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             window = new MediathekGuiX11();
-        } else
-            throw new IllegalStateException("Unknown operating system detected! Cannot create main window");
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    """
+                            Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
+                            Es werden nur macOS, Windows und Linux unterstützt.
+
+                            Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(2);
+        }
 
         return window;
     }
