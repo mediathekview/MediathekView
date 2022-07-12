@@ -19,28 +19,36 @@
  */
 package mediathek.controller.history;
 
-import mediathek.tool.Functions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Legacy class used to read entries from old history text files.
  * Should NOT be used in further developments.
  */
 public class MVUsedUrl {
-    public static final int MAX_TITLE_LENGTH = 40;
-    public static final int MAX_THEMA_LENGTH = 25;
     private static final Logger logger = LogManager.getLogger(MVUsedUrl.class);
     private final static String TRENNER = "  |###|  ";
     private final static String PAUSE = " |#| ";
-    private final String datum;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final LocalDate datum;
     private final String thema;
     private final String titel;
     private final String url;
 
     public MVUsedUrl(String date, String thema, String title, String url) {
-        this.datum = date;
+        this.datum = LocalDate.parse(date, DATE_TIME_FORMATTER);
+        this.thema = thema;
+        this.titel = title;
+        this.url = url;
+    }
+
+    public MVUsedUrl(String thema, String title, String url) {
+        this.datum = LocalDate.now();
         this.thema = thema;
         this.titel = title;
         this.url = url;
@@ -78,7 +86,7 @@ public class MVUsedUrl {
     }
 
     public String getDatum() {
-        return datum;
+        return DATE_TIME_FORMATTER.format(datum);
     }
 
     public String getThema() {
@@ -89,11 +97,17 @@ public class MVUsedUrl {
         return titel;
     }
 
-    public String getUsedUrl() {
-        return datum + PAUSE
-                + Functions.textLaenge(MAX_THEMA_LENGTH, putzen(thema), false, false) + PAUSE
-                + Functions.textLaenge(MAX_TITLE_LENGTH, putzen(titel), false, false) + TRENNER
-                + url + '\n';
+    /**
+     * Creates the string for one row in the data file.
+     *
+     * @return one row with data.
+     */
+    public String getPreparedRowString() {
+        return String.format("%s%s%s%s%s%s%s%n",
+                getDatum(), PAUSE,
+                putzen(thema), PAUSE,
+                putzen(titel), TRENNER,
+                url);
     }
 
     public String getUrl() {

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * - Write JavaDoc for each of the new Methods that were split from this moloch
  */
 
-public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
+public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
     public static final int FILM_SENDER = 1;
     public static final int FILM_THEMA = 2;
@@ -53,6 +53,10 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
+    /**
+     * Internal film number, used for storage in database
+     */
+    private final int databaseFilmNumber;
     private DatenAbo abo;
     private BookmarkData bookmark;
     /**
@@ -67,17 +71,16 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      * film length in seconds.
      */
     private long filmLength;
-    /**
-     * Internal film number, used for storage in database
-     */
-    private int databaseFilmNumber;
     private String websiteLink;
     private String description;
-    private String urlKlein = "";
+    /**
+     * Low quality URL.
+     */
+    private String url_low_quality = "";
     /**
      * High Quality (formerly known as HD) URL if available.
      */
-    private Optional<String> highQuality_url = Optional.empty();
+    private Optional<String> url_high_quality = Optional.empty();
     private String datumLong = "";
     private String sender = "";
     private String thema = "";
@@ -95,7 +98,10 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     private String sendeZeit = "";
     private String dauer = "";
     private String groesse = "";
-    private String url = "";
+    /**
+     * Normal quality URL.
+     */
+    private String url_normal_quality = "";
     /**
      * film duration in seconds.
      * getDauer() stores the same info as a String
@@ -105,6 +111,31 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     public DatenFilm() {
         filmSize = new FilmSize(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
+    }
+
+    public DatenFilm(@NotNull DatenFilm other) {
+        this.abo = other.abo;
+        this.bookmark = other.bookmark;
+        this.datumFilm = other.datumFilm;
+        this.filmSize = other.filmSize;
+        this.filmLength = other.filmLength;
+        this.databaseFilmNumber = other.databaseFilmNumber;
+        this.websiteLink = other.websiteLink;
+        this.description = other.description;
+        this.url_low_quality = other.url_low_quality;
+        this.url_high_quality = other.url_high_quality;
+        this.datumLong = other.datumLong;
+        this.sender = other.sender;
+        this.thema = other.thema;
+        this.titel = other.titel;
+        this.availableInCountries = other.availableInCountries;
+        this.subtitle_url = other.subtitle_url;
+        this.datum = other.datum;
+        this.sendeZeit = other.sendeZeit;
+        this.dauer = other.dauer;
+        this.groesse = other.groesse;
+        this.url_normal_quality = other.url_normal_quality;
+        this.duration = other.duration;
     }
 
     public int getDuration() {
@@ -123,23 +154,23 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
         return datumFilm;
     }
 
-    public String getUrlKlein() {
-        return urlKlein;
+    public String getUrlLowQuality() {
+        return url_low_quality;
     }
 
-    public void setUrlKlein(String urlKlein) {
-        this.urlKlein = urlKlein;
+    public void setUrlLowQuality(String url_low_quality) {
+        this.url_low_quality = url_low_quality;
     }
 
     public String getUrlHighQuality() {
-        return highQuality_url.orElse("");
+        return url_high_quality.orElse("");
     }
 
     public void setUrlHighQuality(String urlHd) {
         if (!urlHd.isEmpty())
-            highQuality_url = Optional.of(urlHd);
+            url_high_quality = Optional.of(urlHd);
         else
-            highQuality_url = Optional.empty();
+            url_high_quality = Optional.empty();
     }
 
     public String getDatumLong() {
@@ -302,12 +333,12 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     public String getUrlFuerAufloesung(FilmResolution.Enum resolution) {
         return switch (resolution) {
             case LOW, HIGH_QUALITY -> getUrlNormalOrRequested(resolution);
-            default -> getUrl();
+            default -> getUrlNormalQuality();
         };
     }
 
     public String getDateigroesse(String url) {
-        if (url.equalsIgnoreCase(getUrl())) {
+        if (url.equalsIgnoreCase(getUrlNormalQuality())) {
             return getSize();
         } else {
             return FileSize.getFileLengthFromUrl(url);
@@ -320,7 +351,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      * @return a unique "hash" string
      */
     public String getUniqueHash() {
-        return (getSender() + getThema()).toLowerCase() + getUrl() + getWebsiteLink();
+        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteLink();
     }
 
     /**
@@ -329,32 +360,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return highQuality_url.isPresent();
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        DatenFilm ret = (DatenFilm) super.clone();
-        ret.datumFilm = this.datumFilm;
-        ret.databaseFilmNumber = this.databaseFilmNumber;
-        ret.filmSize = this.filmSize;
-        ret.filmLength = this.filmLength;
-        ret.abo = this.abo;
-        ret.highQuality_url = this.highQuality_url;
-        ret.urlKlein = this.urlKlein;
-        ret.datumLong = this.datumLong;
-        ret.sender = this.sender;
-        ret.thema = this.thema;
-        ret.titel = this.titel;
-        ret.availableInCountries = this.availableInCountries;
-        ret.datum = this.datum;
-        ret.sendeZeit = this.sendeZeit;
-        ret.dauer = this.dauer;
-        ret.groesse = this.groesse;
-        ret.url = this.url;
-        ret.subtitle_url = this.subtitle_url;
-
-        return ret;
+        return url_high_quality.isPresent();
     }
 
     @Override
@@ -383,17 +389,22 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      */
     private long parseTimeToSeconds() {
         long seconds = 0;
-        final String[] split = StringUtils.split(getDauer(), ':');
-
-        try {
-            seconds += Long.parseLong(split[0]) * 3600; //hour
-            seconds += Long.parseLong(split[1]) * 60; //minute
-            seconds += Long.parseLong(split[2]); //second
-        } catch (Exception e) {
-            seconds = 0;
+        final String[] split = StringUtils.split(dauer, ':');
+        // if empty, don't try to split and return early...
+        if (split == null || split.length == 0) {
+            return 0;
         }
+        else {
+            try {
+                seconds += Long.parseLong(split[0]) * 3600; //hour
+                seconds += Long.parseLong(split[1]) * 60; //minute
+                seconds += Long.parseLong(split[2]); //second
+            } catch (Exception e) {
+                seconds = 0;
+            }
 
-        return seconds;
+            return seconds;
+        }
     }
 
     private void setDatum() {
@@ -422,15 +433,15 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
      * Return unpacked url as string.
      * High quality URLs may be "compressed" in the filmlist and need to be unpacked before use.
      *
-     * @param aufloesung One of FilmResolution.HIGH_QUALITY,FilmResolution.LOW,FilmResolution.NORMAL.
-     * @return A unpacked version of the film url as string.
+     * @param resolution One of FilmResolution.HIGH_QUALITY,FilmResolution.LOW,FilmResolution.NORMAL.
+     * @return An unpacked version of the film url as string.
      */
-    private String getUrlNormalOrRequested(@NotNull FilmResolution.Enum aufloesung) {
+    private String getUrlNormalOrRequested(@NotNull FilmResolution.Enum resolution) {
         String ret;
         // liefert die kleine normale URL oder die HD URL
-        final String requestedUrl = getUrlByAufloesung(aufloesung);
+        final String requestedUrl = getUrlByResolution(resolution);
         if (requestedUrl.isEmpty())
-            ret = getUrl();
+            ret = getUrlNormalQuality();
         else {
             try {
                 // check if url contains pipe symbol...
@@ -442,7 +453,7 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
                 }
             } catch (Exception e) {
                 ret = "";
-                logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", aufloesung, requestedUrl, e);
+                logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", resolution, requestedUrl, e);
             }
         }
 
@@ -451,20 +462,20 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
 
     private String decompressUrl(@NotNull final String requestedUrl, final int indexPipe) {
         final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
-        return getUrl().substring(0, i) + requestedUrl.substring(indexPipe + 1);
+        return getUrlNormalQuality().substring(0, i) + requestedUrl.substring(indexPipe + 1);
     }
 
     /**
      * Return url based on requested resolution
      *
-     * @param aufloesung One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
+     * @param resolution One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
      * @return url as String.
      */
-    private String getUrlByAufloesung(@NotNull final FilmResolution.Enum aufloesung) {
-        return switch (aufloesung) {
+    private String getUrlByResolution(@NotNull final FilmResolution.Enum resolution) {
+        return switch (resolution) {
             case HIGH_QUALITY -> getUrlHighQuality();
-            case LOW -> getUrlKlein();
-            default -> getUrl();
+            case LOW -> getUrlLowQuality();
+            default -> getUrlNormalQuality();
         };
     }
 
@@ -515,15 +526,21 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
     public void setDauer(String dauer) {
         this.dauer = dauer;
 
-        //FIXME gefällt mir nicht
-        final String[] split = StringUtils.split(getDauer(), ':');
-
-        try {
-            duration += Integer.parseInt(split[0]) * 3600; //hour
-            duration += Integer.parseInt(split[1]) * 60; //minute
-            duration += Integer.parseInt(split[2]); //second
-        } catch (Exception e) {
+        //bail out early if there is nothing to split...
+        if (dauer == null || dauer.isEmpty()) {
             duration = 0;
+        }
+        else {
+            //FIXME gefällt mir nicht
+            final String[] split = StringUtils.split(this.dauer, ':');
+
+            try {
+                duration += Integer.parseInt(split[0]) * 3600; //hour
+                duration += Integer.parseInt(split[1]) * 60; //minute
+                duration += Integer.parseInt(split[2]); //second
+            } catch (Exception e) {
+                duration = 0;
+            }
         }
     }
 
@@ -535,12 +552,12 @@ public class DatenFilm implements Comparable<DatenFilm>, Cloneable {
         this.groesse = size;
     }
 
-    public String getUrl() {
-        return url;
+    public String getUrlNormalQuality() {
+        return url_normal_quality;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrlNormalQuality(String url_normal_quality) {
+        this.url_normal_quality = url_normal_quality;
     }
 
     public String getUrlSubtitle() {

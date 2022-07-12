@@ -1,9 +1,5 @@
 package mediathek.update
 
-import javafx.application.Platform
-import javafx.scene.Scene
-import javafx.scene.web.WebEngine
-import javafx.scene.web.WebView
 import mediathek.config.Konstanten
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.actions.UrlHyperlinkAction
@@ -18,23 +14,19 @@ import java.awt.BorderLayout
 import java.awt.Frame
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.*
 import javax.swing.JButton
 import javax.swing.JDialog
 
 class UpdateNotificationDialog(owner: Frame?, title: String?, private val version: Version) :
     JDialog(owner, title, true) {
     private val panel = UpdateNotificationPanel()
-    private var browser: WebView? = null
-    private lateinit var webEngine: WebEngine
 
     private fun createButtonPanel(): ButtonFlowPanel {
         val pnl = ButtonFlowPanel()
-        val dlBtn = JButton("Download")
+        val dlBtn = JButton("Zur Download-Seite")
         dlBtn.addActionListener {
             try {
-                val uri = URI(Konstanten.ADRESSE_DOWNLOAD)
-                UrlHyperlinkAction.openURL(MediathekGui.ui(), uri.toString())
+                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_DOWNLOAD))
                 dispose()
             } catch (e: URISyntaxException) {
                 logger.error(e)
@@ -45,16 +37,6 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
         pnl.add(dlBtn)
         pnl.add(btn)
         return pnl
-    }
-
-    private fun setupFxWebView() {
-        Platform.runLater {
-            browser = WebView()
-            val scene = Scene(browser)
-            webEngine = browser!!.engine
-            webEngine.load(Objects.requireNonNull(Konstanten.WEBSITE_BASE_URL.resolve("changelogs")).toString())
-            panel.fxPanel.scene = scene
-        }
     }
 
     private fun setupDialogInformation() {
@@ -71,7 +53,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
         defaultCloseOperation = DISPOSE_ON_CLOSE
         EscapeKeyHandler.installHandler(this) { dispose() }
         setupDialogInformation()
-        setupFxWebView()
+
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(panel, BorderLayout.CENTER)

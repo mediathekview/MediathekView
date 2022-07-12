@@ -190,9 +190,19 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 case DatenDownload.DOWNLOAD_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
+                        Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
+                        setSenderIcon(value.toString(), targetDim);
                     }
                     break;
+            }
+
+            if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
+                if (datenDownload.film != null) {
+                    var title = datenDownload.film.getTitle();
+                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                        setToolTipText(title);
+                }
             }
 
             setBackgroundColor(this, datenDownload.start, isSelected);

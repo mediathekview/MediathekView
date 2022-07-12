@@ -12,7 +12,6 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.javafx.filmlist.FilmListAgeLabel;
 import mediathek.javafx.filmlist.FilmListInfoPane;
 import mediathek.tool.MessageBus;
 import org.controlsfx.control.StatusBar;
@@ -57,10 +56,6 @@ public class StatusBarController {
                     Platform.runLater(() -> statusBar.setText(""));
             }
         });
-    }
-
-    public FilmListAgeLabel getFilmlistAgeLabel() {
-        return filmListInfoPane.getFilmListAgeLabel();
     }
 
     public StatusBar getStatusBar() {

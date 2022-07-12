@@ -35,7 +35,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * Configuration in Settings/Blacklist panel.
      */
     private long minimumFilmLength;
-    private int nr;
 
     /**
      * Add item without notifying registered listeners.
@@ -43,13 +42,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param b {@link BlacklistRule} item.
      */
     public synchronized void addWithoutNotification(BlacklistRule b) {
-        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
         super.add(b);
     }
 
     @Override
     public synchronized boolean add(BlacklistRule b) {
-        b.arr[BlacklistRule.BLACKLIST_NR] = Integer.toString(nr++);
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;
@@ -62,6 +59,17 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         return ret;
     }
 
+    /**
+     * Remove a list of rules and filter after all objects have been removed.
+     * @param ruleList a list of objects that need to be deleted.
+     */
+    public synchronized void remove(List<BlacklistRule> ruleList) {
+        for (var rule : ruleList) {
+            super.remove(rule);
+        }
+        filterListAndNotifyListeners();
+    }
+
     @Override
     public synchronized BlacklistRule remove(int idx) {
         BlacklistRule ret = super.remove(idx);
@@ -69,49 +77,15 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         return ret;
     }
 
-    public synchronized BlacklistRule remove(String ruleNumber) {
-        BlacklistRule bl;
-        if ((bl = getRuleByNr(ruleNumber)) != null) {
-            remove(bl);
-        }
-        filterListAndNotifyListeners();
-        return bl;
-    }
-
     @Override
     public synchronized BlacklistRule get(int idx) {
         return super.get(idx);
-    }
-
-    /**
-     * Return the element at the specified {@link String} position.
-     *
-     * @param ruleNumber Index string of the specified element
-     * @return the specified element in the list
-     */
-    public synchronized BlacklistRule getRuleByNr(final String ruleNumber) {
-        return stream()
-                .filter(e -> e.arr[BlacklistRule.BLACKLIST_NR].equals(ruleNumber))
-                .findFirst()
-                .orElse(null);
-
     }
 
     @Override
     public synchronized void clear() {
         super.clear();
         filterListAndNotifyListeners();
-    }
-
-    public synchronized Object[][] getObjectData() {
-        Object[][] object = new Object[size()][BlacklistRule.MAX_ELEM];
-
-        int i = 0;
-        for (BlacklistRule blacklist : this) {
-            object[i] = blacklist.arr;
-            ++i;
-        }
-        return object;
     }
 
     /**
@@ -141,9 +115,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
             completeFilmList.parallelStream().filter(pred).forEachOrdered(filteredList::add);
 
             setupNewEntries();
-
-            // Array mit Sendernamen/Themen füllen
-            filteredList.fillSenderList();
         }
         stopwatch.stop();
         logger.trace("Complete filtering took: {}", stopwatch);
@@ -292,10 +263,10 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         final boolean bl_is_whitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
         for (BlacklistRule rule : this) {
-            if (Filter.filterAufFilmPruefenWithLength(rule.arr[BlacklistRule.BLACKLIST_SENDER],
-                    rule.arr[BlacklistRule.BLACKLIST_THEMA],
-                    makePattern(rule.arr[BlacklistRule.BLACKLIST_TITEL]),
-                    makePattern(rule.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]),
+            if (Filter.filterAufFilmPruefenWithLength(rule.getSender(),
+                    rule.getThema(),
+                    makePattern(rule.getTitel()),
+                    makePattern(rule.getThema_titel()),
                     EMPTY_STRING_ARRAY, 0, true, film, true)) {
                 return bl_is_whitelist;
             }

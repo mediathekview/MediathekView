@@ -85,6 +85,7 @@ import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CH
 
 public class MediathekGui extends JFrame {
 
+    protected static final Logger logger = LogManager.getLogger(MediathekGui.class);
     private static final String ICON_NAME = "MediathekView.png";
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
@@ -93,7 +94,6 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
-    protected static final Logger logger = LogManager.getLogger(MediathekGui.class);
     /**
      * "Pointer" to UI
      */
@@ -104,13 +104,13 @@ public class MediathekGui extends JFrame {
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
     protected final Daten daten = Daten.getInstance();
     protected final JTabbedPane tabbedPane = new JTabbedPane();
+    protected final JMenu jMenuHilfe = new JMenu();
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
     private final JMenu jMenuDownload = new JMenu();
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
-    private final JMenu jMenuHilfe = new JMenu();
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
@@ -125,6 +125,7 @@ public class MediathekGui extends JFrame {
     private final LoadFilmListAction loadFilmListAction;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction();
+    private final InfoDialog filmInfo;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     /**
@@ -138,7 +139,6 @@ public class MediathekGui extends JFrame {
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private StatusBarController statusBarController;
-    private final InfoDialog filmInfo;
     private ProgramUpdateCheck programUpdateChecker;
     /**
      * Progress indicator thread for OS X and windows.
@@ -146,6 +146,10 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private ManageAboAction manageAboAction;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
+    /**
+     * A weak reference to the table data model filtering progress indicator(s).
+     */
+    private WeakReference<HBox> indicatorLayout;
 
     public MediathekGui() {
         ui = this;
@@ -433,7 +437,7 @@ public class MediathekGui extends JFrame {
 
             FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
             filmListReaderTask.setOnRunning(e -> {
-                getStatusBarController().getStatusBar().getRightItems().add(progressPane);
+                statusBarController.getStatusBar().getRightItems().add(progressPane);
                 progressPane.bindTask(filmListReaderTask);
             });
 
@@ -442,7 +446,7 @@ public class MediathekGui extends JFrame {
 
             FilmListFilterTask filterTask = new FilmListFilterTask(true);
             filterTask.setOnRunning(e -> progressPane.bindTask(filterTask));
-            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> getStatusBarController().getStatusBar().getRightItems().remove(progressPane);
+            final EventHandler<WorkerStateEvent> workerStateEventEventHandler = e -> statusBarController.getStatusBar().getRightItems().remove(progressPane);
             filterTask.setOnSucceeded(workerStateEventEventHandler);
             filterTask.setOnFailed(workerStateEventEventHandler);
 
@@ -497,10 +501,6 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    /**
-     * A weak reference to the table data model filtering progress indicator(s).
-     */
-    private WeakReference<HBox> indicatorLayout;
     @Handler
     private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
         Platform.runLater(() -> {
@@ -860,6 +860,7 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
         jMenuHilfe.add(new ResetAboHistoryAction(this));
+        jMenuHilfe.add(new DeleteLocalFilmlistAction(this));
         jMenuHilfe.addSeparator();
         //do not show menu entry if we have external update support
         var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
@@ -891,11 +892,12 @@ public class MediathekGui extends JFrame {
         return winBinaryInUse;
     }
 
+    protected void installChangeGlobalFontSettingMenuEntry() {
+        //unused on macOS and Windows
+    }
+
     protected void installAdditionalHelpEntries() {
-        jMenuHilfe.addSeparator();
-        var action = new ChangeGlobalFontSetting();
-        var item = jMenuHilfe.add(action);
-        action.setMenuItem(item);
+        installChangeGlobalFontSettingMenuEntry();
 
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ShowAboutAction());

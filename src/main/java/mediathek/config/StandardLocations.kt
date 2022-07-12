@@ -121,10 +121,6 @@ object StandardLocations {
      */
     @JvmStatic
     fun getLockFilePath(): Path {
-        return if (SystemUtils.IS_OS_MAC_OSX)
-            Paths.get(SystemUtils.JAVA_IO_TMPDIR).resolve(LOCKFILE_NAME)
-        else {
-            getSettingsDirectory().resolve(LOCKFILE_NAME)
-        }
+        return getSettingsDirectory().resolve(LOCKFILE_NAME)
     }
 }

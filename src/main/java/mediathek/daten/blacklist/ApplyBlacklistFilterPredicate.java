@@ -5,26 +5,45 @@ import mediathek.daten.DatenFilm;
 import mediathek.tool.Filter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
     private static final String[] EMPTY_STRING = {""};
     private final boolean isWhitelist;
     private final ListeBlacklist listeBlacklist;
+    private final Map<BlacklistRule,BlacklistPattern> rulePatternMap;
 
     public ApplyBlacklistFilterPredicate(ListeBlacklist listeBlacklist) {
         isWhitelist = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
         this.listeBlacklist = listeBlacklist;
+
+        rulePatternMap = new ConcurrentHashMap<>(listeBlacklist.size());
+
+        //pre-create the patterns concurrently before use
+        createPatterns();
+    }
+
+    /**
+     * Create all needed patterns in parallel.
+     */
+    private void createPatterns() {
+        listeBlacklist.parallelStream().forEach(entry -> {
+            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.getTitel());
+            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.getThema_titel());
+            var blPattern = new BlacklistPattern(pTitel, pThema);
+            rulePatternMap.putIfAbsent(entry, blPattern);
+        });
     }
 
     @Override
     public boolean test(DatenFilm film) {
 
         for (BlacklistRule entry : listeBlacklist) {
-            final String[] pTitel = createPattern(entry.hasTitlePattern(), entry.arr[BlacklistRule.BLACKLIST_TITEL]);
-            final String[] pThema = createPattern(entry.hasThemaPattern(), entry.arr[BlacklistRule.BLACKLIST_THEMA_TITEL]);
+            var blPattern = rulePatternMap.get(entry);
 
-            if (performFiltering(entry, pTitel, pThema, film)) {
+            if (performFiltering(entry, blPattern.pTitel, blPattern.pThema, film)) {
                 return isWhitelist;
             }
         }
@@ -61,8 +80,8 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
         final String title = film.getTitle();
 
 
-        final String senderSuchen = entry.arr[BlacklistRule.BLACKLIST_SENDER];
-        final String themaSuchen = entry.arr[BlacklistRule.BLACKLIST_THEMA];
+        final String senderSuchen = entry.getSender();
+        final String themaSuchen = entry.getThema();
 
         if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
@@ -88,5 +107,9 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
 
     private boolean checkLengthWithMin(long filmLaenge) {
         return lengthCheck(0, filmLaenge) || filmLaenge > 0;
+    }
+
+    record BlacklistPattern(String[] pTitel, String[] pThema) {
+
     }
 }

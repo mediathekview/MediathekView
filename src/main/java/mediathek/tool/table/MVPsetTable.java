@@ -3,13 +3,14 @@ package mediathek.tool.table;
 import mediathek.daten.DatenPset;
 import mediathek.tool.models.TModel;
 
-public class MVPsetTable extends MVTable {
-    private static final long serialVersionUID = 7582553351667887172L;
+import java.util.Optional;
 
-    @Override
-    protected void setupTableType() {
-        maxSpalten = DatenPset.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
+public class MVPsetTable extends MVTable {
+    public MVPsetTable() {
+        super(DatenPset.MAX_ELEM, new boolean[DatenPset.MAX_ELEM],
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty());
 
         setModel(new TModel(new Object[][]{}, DatenPset.COLUMN_NAMES));
         setRowSorter(null);
@@ -21,4 +22,8 @@ public class MVPsetTable extends MVTable {
         //do nothing
     }
 
+    @Override
+    public void calculateRowHeight() {
+        // do nothing
+    }
 }

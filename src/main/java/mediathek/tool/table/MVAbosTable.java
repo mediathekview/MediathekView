@@ -4,15 +4,14 @@ import mediathek.config.MVConfig;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.tool.models.TModelAbo;
 
+import java.util.Optional;
+
 public class MVAbosTable extends MVTable {
-    @Override
-    protected void setupTableType() {
-        maxSpalten = DatenAbo.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
-        indexSpalte = DatenAbo.ABO_NR;
-        nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
-        iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
-        iconKleinStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN;
+    public MVAbosTable() {
+        super(DatenAbo.MAX_ELEM, DatenAbo.spaltenAnzeigen,
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN),
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN),
+                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS));
 
         setModel(new TModelAbo(new Object[][]{}));
     }

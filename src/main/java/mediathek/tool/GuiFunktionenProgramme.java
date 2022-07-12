@@ -24,8 +24,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static mediathek.tool.Functions.getOs;
-
 public class GuiFunktionenProgramme {
 
     private static final ArrayList<String> winPfade = new ArrayList<>();
@@ -79,6 +77,10 @@ public class GuiFunktionenProgramme {
         return s;
     }
 
+    private static final String PFAD_LINUX_VLC = "/usr/bin/vlc";
+    private static final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
+    private static final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
+
     /**
      * Liefert den Standardpfad für das entsprechende BS.
      * Programm muss auf dem Rechner installiert sein.
@@ -86,31 +88,24 @@ public class GuiFunktionenProgramme {
      * @return Pfad als String
      */
     public static String getMusterPfadVlc() {
-        final String PFAD_LINUX_VLC = "/usr/bin/vlc";
-        final String PFAD_FREEBSD = "/usr/local/bin/vlc";
-        final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
-        final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
         String pfad = "";
         try {
-            switch (getOs()) {
-                case LINUX:
-                    if (SystemUtils.IS_OS_FREE_BSD)
-                        pfad = PFAD_FREEBSD;
-                    else
-                        pfad = PFAD_LINUX_VLC;
-                    break;
-                case MAC:
-                    pfad = PFAD_MAC_VLC;
-                    break;
-                default:
-                    setWinProgPfade();
-                    for (String s : winPfade) {
-                        pfad = s + PFAD_WIN;
-                        if (new File(pfad).exists()) {
-                            break;
-                        }
-                    }
+            if (SystemUtils.IS_OS_LINUX) {
+                    pfad = PFAD_LINUX_VLC;
             }
+            else if (SystemUtils.IS_OS_MAC_OSX) {
+                pfad = PFAD_MAC_VLC;
+            }
+            else {
+                setWinProgPfade();
+                for (String s : winPfade) {
+                    pfad = s + PFAD_WIN;
+                    if (new File(pfad).exists()) {
+                        break;
+                    }
+                }
+            }
+
             if (!new File(pfad).exists() && System.getenv("PATH_VLC") != null) {
                 pfad = System.getenv("PATH_VLC");
             }
@@ -122,6 +117,10 @@ public class GuiFunktionenProgramme {
         return pfad;
     }
 
+    private static final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
+    private static final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
+    private static final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
+
     /**
      * Liefert den Standardpfad für das entsprechende BS.
      * Bei Win+Mac wird das Programm mitgeliefert und liegt im Ordner "bin" der mit dem Programm
@@ -131,25 +130,15 @@ public class GuiFunktionenProgramme {
      * @return Pfad als String
      */
     public static String getMusterPfadFFmpeg() {
-        final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
-        final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
-        final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
-        final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad = "";
         try {
-            switch (getOs()) {
-                case LINUX:
-                    if (SystemUtils.IS_OS_FREE_BSD)
-                        pfad = PFAD_FREEBSD_FFMPEG;
-                    else
-                        pfad = PFAD_LINUX_FFMPEG;
-                    break;
-                case MAC:
-                    pfad = PFAD_MAC_FFMPEG;
-                    break;
-                default:
-                    pfad = PFAD_WINDOWS_FFMPEG;
-            }
+            if (SystemUtils.IS_OS_LINUX)
+                pfad = PFAD_LINUX_FFMPEG;
+            else if (SystemUtils.IS_OS_MAC_OSX)
+                pfad = PFAD_MAC_FFMPEG;
+            else
+                pfad = PFAD_WINDOWS_FFMPEG;
+
             if (!new File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
                 pfad = System.getenv("PATH_FFMPEG");
             }

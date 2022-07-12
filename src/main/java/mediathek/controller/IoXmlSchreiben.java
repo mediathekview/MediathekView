@@ -26,11 +26,11 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.abo.DatenAbo;
-import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.ReplaceList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -66,7 +66,7 @@ public class IoXmlSchreiben {
         writer.close();
     }
 
-    private void writeAbos(XMLStreamWriter writer) throws XMLStreamException {
+    private void writeAbos(@NotNull XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
         writeNewLine(writer);
 
@@ -75,13 +75,14 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void writeBlacklist(XMLStreamWriter writer) throws XMLStreamException {
+    private void writeBlacklistRules(@NotNull XMLStreamWriter writer) throws XMLStreamException {
         writer.writeCharacters("\n\n");
-        //writer.writeComment("Blacklist");
         writeNewLine(writer);
-        //Blacklist schreiben
-        for (BlacklistRule blacklist : Daten.getInstance().getListeBlacklist()) {
-            xmlSchreibenDaten(writer, BlacklistRule.TAG, BlacklistRule.XML_NAMES, blacklist.arr, false);
+
+        // remove duplicates
+        var distinctBlacklistRules = Daten.getInstance().getListeBlacklist().stream().distinct().toList();
+        for (var rule : distinctBlacklistRules) {
+            rule.writeToConfig(writer);
         }
     }
 
@@ -251,7 +252,7 @@ public class IoXmlSchreiben {
 
             writeAbos(writer);
 
-            writeBlacklist(writer);
+            writeBlacklistRules(writer);
 
             writeProgramSettings(writer);
 

@@ -1,6 +1,7 @@
 package mediathek.tool;
 
 import javafx.scene.paint.Color;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
 import java.util.Arrays;
@@ -32,11 +33,12 @@ public class DarkModeDetector {
      * @return true if in dark mode, false if otherwise.
      */
     public static boolean isDarkMode() {
-        return switch (Functions.getOs()) {
-            case MAC -> isMacOsDarkMode();
-            case WIN32, WIN64 -> isWindowsDarkMode();
-            default -> false;
-        };
+        if (SystemUtils.IS_OS_MAC_OSX)
+            return isMacOsDarkMode();
+        else if (SystemUtils.IS_OS_WINDOWS)
+            return isWindowsDarkMode();
+        else
+            return false;
     }
 
     /**
@@ -44,10 +46,7 @@ public class DarkModeDetector {
      * @return true if supported, false otherwise.
      */
     public static boolean hasDarkModeDetectionSupport() {
-        return switch(Functions.getOs()) {
-            case MAC, WIN32, WIN64 -> true;
-            default -> false;
-        };
+        return SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX;
     }
 
     private static boolean isMacOsDarkMode() {
@@ -104,7 +103,7 @@ public class DarkModeDetector {
     }
 
     public static Color getMacOSAccentColor() {
-        if (Functions.getOs() != OperatingSystemType.MAC)
+        if (SystemUtils.IS_OS_MAC_OSX)
             return MacOSAccentColor.MULTI_COLOR.getColorAqua();
 
         final boolean isDarkMode = isMacOsDarkMode();

@@ -17,7 +17,6 @@ import javax.swing.*;
  */
 public class FilmListInfoPane extends HBox {
     private final FilmListCreationDateLabel filmListCreationDateLabel;
-    private final FilmListAgeLabel filmListAgeLabel;
 
     public FilmListInfoPane(Daten daten) {
         super();
@@ -42,13 +41,8 @@ public class FilmListInfoPane extends HBox {
 
         filmListCreationDateLabel = new FilmListCreationDateLabel(daten);
 
-        filmListAgeLabel = new FilmListAgeLabel();
         getChildren().addAll(new CenteredBorderPane(filmListCreationDateLabel),
                 new VerticalSeparator(),
-                new CenteredBorderPane(filmListAgeLabel));
-    }
-
-    public FilmListAgeLabel getFilmListAgeLabel() {
-        return filmListAgeLabel;
+                new CenteredBorderPane(new FilmListAgeLabel()));
     }
 }

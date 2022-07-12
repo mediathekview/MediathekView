@@ -1,8 +1,9 @@
 package mediathek.file;
 
-import mediathek.tool.Functions;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,12 +45,17 @@ public class GetFile {
         return ret.toString();
     }
 
+    private static @NotNull String getPSetPath() {
+        if (SystemUtils.IS_OS_LINUX)
+            return PFAD_PSET_LINUX;
+        else if (SystemUtils.IS_OS_MAC_OSX)
+            return PFAD_PSET_MAC;
+        else
+            return PFAD_PSET_WINDOWS;
+    }
+
     public static InputStreamReader getLocalPsetTemplate() {
-        final String pfad = switch (Functions.getOs()) {
-            case LINUX -> PFAD_PSET_LINUX;
-            case MAC -> PFAD_PSET_MAC;
-            default -> PFAD_PSET_WINDOWS;
-        };
+        final String pfad = getPSetPath();
         try {
             return new InputStreamReader(Objects.requireNonNull(GetFile.class.getResource(pfad)).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {

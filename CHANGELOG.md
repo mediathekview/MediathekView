@@ -1,7 +1,44 @@
+<u>**13.9.0**</u>
+
+- **Dies ist die letzte Version mit Unterstützung für 32-Bit Betriebssysteme. Ab Version 14 werden nur noch 64-Bit Betriebssysteme unterstützt. (Minimum: Windows 10, macOS 10.14 (Mojave), Ubuntu 18.04 LTS, Debian 8, centOS 7)**
+- **`ACHTUNG:` Es wird ein neues "Look&Feel" für die Oberfläche verwendet, welches für eine deutlich bessere Lesbarkeit und Schärfe der Anwendung sorgt. Wer irgendwelche "Skalierungstricks" mittels `-Dsun.java2d.uiScale=`, etc. verwendet hat MUSS diese entfernen!**
+- **BUGFIX:** Das Filtern nach "ZDF-tivi" funktioniert nun zuverlässig.
+- **BUGFIX:** Themen-ComboBox im Blacklist-Bearbeitungsdialog zeigt nun wieder alle Themen ungefiltert an.
+- **BUGFIX(Windows 32bit):** Möglicher Absturz mit Stack Overflow Error der JVM wurde behoben.
+- **BUGFIX:** Das mehrfach hintereinander durchgeführte Löschen von einzelnen Blacklist-Regeln löscht nun nicht mehr die falschen Regeln. Die Dateninkonsistenz wurde beseitigt.
+- **BUGFIX:** Aktualisierung von Bibliotheken die Abstürze vor allem in Verbindung mit Apple Silicon CPUs verursachen konnten.
+- **BUGFIX:** Diverse Fehler im Dialog für Abo-Historie wurden beseitigt.
+- **BUGFIX:** Algorithmus für Skalierung der Sendericons funktioniert nun richtig.
+- **BUGFIX(Windows):** Sendericons sehen nun nicht mehr so bescheiden unter Windows 10 aus.
+- **BUGFIX:** Seltener Fehler beim Speichern der Tabellenkonfiguration wurde behoben.
+- **BUGFIX:** Die Höhe der Tabelleneinträge für Hilfsprogramme wurde korrigiert.
+- **BUGFIX:** Die Höhe der Tabelleneinträge für Programmsets wurde korrigiert.
+- **FEATURE(macOS, Windows):** MediathekView nutzt nun das moderne FlatLaf Look&Feel zur Darstellung der Oberfläche. Dies verbessert die Darstellung des Programms unter Windows und Linux erheblich. *Es ist nun nicht mehr möglich, ein anderes L&F zu verwenden da diese veraltet sind und eine bescheidene Darstellung (v.a. unter Windows) verursachen.* **In diesem Zusammenhang ist auch die Einstellungsmöglichkeit einer globalen Skalierung entfallen. Der entsprechende Menüpunkt wurde wieder entfernt.**
+- **FEATURE:** Im Einstellungen-Dialog können in Blacklist-Dialog nun gleichzeitig mehrere Regeln gelöscht werden.
+- **FEATURE:** *ARTE.EN, ARTE.ES, ARTE.IT und ARTE.PL* wurden als neue Sender hinzugefügt. Die Bereitstellung der Daten erfolgt über den Server sobald sie verfügbar werden. Bei bestehenden Installationen müssen diese bei Bedarf in den Einstellungen aktiviert werden.
+- **FEATURE:** Der Zeitraum-Spinner im Filter-Dialog lässt nun Werte von 1-365 Tagen zu. Diese können auch manuell eingetragen und mit der ENTER-Taste bestätigt werden. Für eine unbegrenzte Anzeige muss das **"∞"**-Symbol eingegeben werden. Desweiteren wurde ein Tooltip mit Hilfetext hinzugefügt.
+- **FEATURE:** Die Blacklist-Tabelle in *Einstellungen/Blacklist* kann nun gefiltert werden um Einträge zu suchen.
+- **FEATURE:** Das Programm entfernt vorhandene Blacklist-Regel-Duplikate nun automatisch.
+- **FEATURE:** Das Anlegen von Blacklist-Regel-Duplikaten in den Einstellungen wird nun verhindert.
+- **FEATUER:** Im Download-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
+- **FEATURE:** Im Filme-Tab wird der Titel nun zusätzlich in einem Tooltip angezeigt wenn die Spaltenbreite zu klein ist.
+- **FEATURE:** Die Filter der Senderliste (im Filterdialog) können über das Kontextmenü komplett zurückgesetzt werden.
+- **FEATURE:** Die lokale Filmliste kann nun im Menü **"Hilfe/Lokale Filmliste löschen"** gelöscht werden.
+- Im Beschreibungsfeld wird das Thema wieder mit angezeigt.
+- Log4j2 Bibliothek wurde erneut aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
+- Geschwindigkeit der Blacklistfilterung wurde für *große* Blacklisten teils erheblich gesteigert (macOS 12.1 Intel i9 -16%, macOS 12.0.1 Apple M1 -27%, Windows 10 AMD Ryzen 4700U -36%, Ubuntu 21.04 AMD Ryzen 4700U -31%). Testfall war eine Filmliste mit 500k Filmen und reale Blacklisten mit ca. 2500 Einträgen. Alle Betriebssysteme waren 64bit.
+- Textlängenbegrenzung für Thema und Titel in Abo-Historie wurde entfernt.
+- generelle Optimierungen der Abo-Historie
+- Java Version wurde auf 17.0.2 erhöht um Fehler v.a. unter macOS zu beseitigen.
+- ffmpeg 5.0 wird für macOS mitgeliefert.
+- ffmpeg 5.0 wird für windows 64bit mitgeliefert.
+- Livestreams können nicht mehr der Merkliste hinzugefügt werden.
+
 <u>**13.8.1**</u>
 
+- **Java wurde auf Version 17 aktualisiert.**
 - **BUGFIX (macOS):** Timeout-Fehler bei Updatesuche während hoher Netzwerkauslastung behoben.
-- **BUGFIX (macOS):** möglicher Absturz der App unter macOS Monterey wurde behoben. 
+- **BUGFIX (macOS):** möglicher Absturz der App unter macOS Monterey wurde behoben.
 - **BUGFIX:** Teilweise inkorrekte Darstellung der ComboBox "Nur die Filme der letzten Tage laden:" wurde behoben.
 - **BUGFIX:** Die Filterung der Filmliste nach Tagen filterte zu viele gültige Ergebnisse heraus. Dies wurde behoben.
 - **BUGFIX:** Seltener Absturz des Programms beim Start im Zusammenhang mit Abos wurde behoben.
@@ -14,8 +51,8 @@
 - Filtergeschwindigkeit beim Einlesen der Filmliste wurde verbessert.
 - TouchBar support wurde entfernt da die Bibliothek nicht mehr gepflegt wird.
 - Log4j2 Bibliothek wurde aktualisiert um potentielle *[Log4Shell](https://nvd.nist.gov/vuln/detail/CVE-2021-44228)* Sicherheitslücke zu schließen.
-- macOS **Apple Silicon** native Version als separater Download vorhanden (benötigt mindestens macOS BigSur). Diese wurde noch nicht so ausführlich getestet und kann Fehler beinhalten. 
-  
+- macOS **Apple Silicon** native Version als separater Download vorhanden (benötigt mindestens macOS BigSur). Diese wurde noch nicht so ausführlich getestet und kann Fehler beinhalten.
+
 <u>**13.8**</u>
 
 - **Java wurde auf Version 16 aktualisiert.**
@@ -34,7 +71,7 @@
 - **FEATURE:** Im Tab "Filme" kann über das Kontext-Menü *"In Zwischenablage kopieren"* nun auch Film-Thema und Titel kopiert werden.
 - **FEATURE:** Im Tab "Filme" wurde das Kontextmenü übersichtlicher gegliedert.
 - **FEATURE(Linux/Windows):** MediathekView kann mittels portable Modus nun auf einem Rechner mit mehreren *unabhängigen* Instanzen betrieben werden.
-- **FEATURE:** Im Tab "Beschreibung" kann nun der Link zur Webseite mittels Kontextmenü *"URL kopieren"* extrahiert werden.  
+- **FEATURE:** Im Tab "Beschreibung" kann nun der Link zur Webseite mittels Kontextmenü *"URL kopieren"* extrahiert werden.
 - **BUGFIX:** ffmpeg-Downloads sollten nun auch bei erhöhtem Aufkommen von Frameverlusten bei erfolgreichem Abschluss keinen Fehler mehr anzeigen.
 - **BUGFIX:** In *"Einstellungen\Aufzeichnung & Abspielen\Set bearbeiten"* wurde das Springen des Cursor an das Textende in den Eingabefeldern behoben.
 - **BUGFIX:** Livestreams werden beim Abspielen nicht mehr als gesehen markiert.
@@ -55,7 +92,7 @@
 - Performance des Filme-Tab bei Nutzung deutlich verbessert.
 - Geschwindigkeit des Filterns nach Sendern wurde deutlich verbessert.
 - Speicherverbrauch reduziert
-- Ausgabe der ffmpeg-Informationen während eines Downloads wird nur noch bei aktiviertem erweiterten Loggen ausgegeben.  
+- Ausgabe der ffmpeg-Informationen während eines Downloads wird nur noch bei aktiviertem erweiterten Loggen ausgegeben.
 - **BUGFIX:** Info-Dialog wird nun angezeigt dass keine neuen Programminfos vorliegen.
 - **BUGFIX:** "URL kopieren" Kontextmenü zeigt bei Playlists wieder unterschiedliche Auflösungen an.
 - **BUGFIX:** Bandbreitenmonitor funktioniert nun zuverlässig, wenn er beim Start nicht geöffnet war.
@@ -70,10 +107,10 @@
 
 <u>**13.7**</u>
 
-- **Erstellt vor dem Update zwingend ein Backup eurer Konfiguration! 
+- **Erstellt vor dem Update zwingend ein Backup eurer Konfiguration!
 Ein Mischbetrieb von 13.7 und älteren Versionen ist ohne Verlust von Downloadhistorie und anderen Parametern NICHT möglich!!!**
 - **(macOS): Minimum Version des Betriebssystems für das signierte Pogramm: 10.11 El Capitan**
-- **(macOS): Aufgrund der Richtlinien zur Notarisierung der Applikation musste der Speicherort des ffmpeg binary erneut geändert werden.** Vorhandene Programmset müssen *manuell* angepasst werden auf folgenden Speicherort: **bin/ffmpeg**. 
+- **(macOS): Aufgrund der Richtlinien zur Notarisierung der Applikation musste der Speicherort des ffmpeg binary erneut geändert werden.** Vorhandene Programmset müssen *manuell* angepasst werden auf folgenden Speicherort: **bin/ffmpeg**.
 - JavaFX auf Version 15.0.1 aktualisiert.
 - Java JVM Version 15 ist nun Voraussetzung fü das Programm.
 - Die gesehen/manuell gedownloadet Historie wurde vom Textformat auf eine SQLite Datenbank umgestellt. Die Migration erfolgt automatisch beim Start der neuen Version. **Backup vorher erstellen!**
@@ -91,14 +128,14 @@ Ein Mischbetrieb von 13.7 und älteren Versionen ist ohne Verlust von Downloadhi
 - **FEATURE:** Filme können im Tab "Filme" mittels Kontextmenü auch via JDownloader geladen werden. Dieser muss hierzu im Hintergrund laufen.
 - **FEATURE:** "Filmliste laden"-Dialog kann in Position und Größe angepasst werden. Die Änderungen werden beim erneuten Öffnen des Dialogs wieder angewendet.
 - **FEATURE (macOS):** Es wird nun statt *MediathekView Shutdown Helper* ein neues integriertes Programm genutzt um nach Downloads den Rechner herunter zu fahren. Dies kann nun auch über das **Terminal konfiguriert** werden. Der Benutzer kann nachfolgend angeben, ob der Rechner immer heruntergefahren werden oder nur schlafen soll: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "shutdown"` für Ausschalten des Rechner, oder zum Schlafen: `defaults write org.mediathekview.mv_shutdown_helper shutdownAction -string "sleep"`. Die Eingaben müssen jeweils nur einmal im Terminal durchgeführt werden und haben dauerhaft Bestand. Sie werden jeweils angewendet wenn man auf Downloads beim Beenden wartet und "Rechner herunterfahren" aktiviert hat. Standardverhalten ist das Ausschalten des Rechners.
-- **BUGFIX (macOS):** Programm blieb nach Installation macOS 11.1 Update beim Start hängen.  
+- **BUGFIX (macOS):** Programm blieb nach Installation macOS 11.1 Update beim Start hängen.
 - **BUGFIX (macOS):** TouchBar wurde unter macOS 11.1 beim Start nicht angezeigt.
 - **BUGFIX (Windows):** Nicht dargestelltes Desktop-Icon wird nun dargestellt.
 - **BUGFIX (Windows/Linux):** Install4j Fehlermeldung bezüglich Java Version wurde aktualisiert.
 - **BUGFIX (Windows):** Unter Windows konnte es vorkommen dass ein Speichern nach dem Laden der Filmliste nicht möglich war.
 - **BUGFIX (32bit):** Falsch benanntes ffmpeg-Programm wurde umbenannt.
 - **BUGFIX (32bit):** Absturz des Programms beim ersten Start auf 32bit System behoben.
-- **BUGFIX:** Livestreams können nicht mehr als gesehen markiert werden.  
+- **BUGFIX:** Livestreams können nicht mehr als gesehen markiert werden.
 - **BUGFIX:** Einige Filme wurden nicht korrekt als Hörfassung klassifiziert.
 - **BUGFIX:** Fehler bei der Darstellung des freien Speicherplatzes im Download-Dialog behoben.
 - **BUGFIX:** In die Infodatei wird nun die wirklich genutzte Film-URL und die reale Größe geschrieben.
@@ -107,7 +144,7 @@ Ein Mischbetrieb von 13.7 und älteren Versionen ist ohne Verlust von Downloadhi
 - **BUGFIX:** Im Kontextmenü des Tab Film wurde der Eintrag "Film-URL kopieren" in "URL kopieren" umbenannt. Gleichzeitig wird nun geprüft ob es sich um einen regulären Film mit mehreren URLs handelt oder um eine PlayList. Dementsprechend wird die Auswahl nun korrekt angeboten.
 - **BUGFIX:** Selektierte Einträge werden nun - konform zu den Betriebssystemen - nicht mehr fett hervorgehoben.
 - **BUGFIX:** Filme ohne Längenangabe werden nicht mehr durch Minimal-Längen Filter herausgefiltert.
-- **BUGFIX:** Fehler behoben, dass manchmal keine Daten in der Abo-Tabelle dargestellt werden.  
+- **BUGFIX:** Fehler behoben, dass manchmal keine Daten in der Abo-Tabelle dargestellt werden.
 - **BUGFIX:** Minimal- und Maximallänge des Filmlängenfilters beeinflussen sich nun nicht mehr.
 - **BUGFIX:** Tabelle der Farbeinstellungen ist nun nicht mehr zu klein.
 - **BUGFIX:** Liste erweitern beim manuellem Filmliste laden funktioniert nun auch, wenn das Adressfeld leer ist.

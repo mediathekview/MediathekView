@@ -25,7 +25,6 @@ public class DatenProg implements Comparable<DatenProg> {
     public static final String[] XML_NAMES = {"Programmname", "Zieldateiname", "Programmpfad",
         "Programmschalter", "Praefix", "Suffix", "Restart", "Downloadmanager"};
 
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
     public DatenProg() {

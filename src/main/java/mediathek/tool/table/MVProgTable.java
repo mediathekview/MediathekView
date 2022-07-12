@@ -3,13 +3,14 @@ package mediathek.tool.table;
 import mediathek.daten.DatenProg;
 import mediathek.tool.models.TModel;
 
-public class MVProgTable extends MVTable {
-    private static final long serialVersionUID = -2363550088890708511L;
+import java.util.Optional;
 
-    @Override
-    protected void setupTableType() {
-        maxSpalten = DatenProg.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
+public class MVProgTable extends MVTable {
+    public MVProgTable() {
+        super(DatenProg.MAX_ELEM, new boolean[DatenProg.MAX_ELEM],
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty());
 
         setModel(new TModel(new Object[][]{}, DatenProg.COLUMN_NAMES));
     }
@@ -17,5 +18,10 @@ public class MVProgTable extends MVTable {
     @Override
     protected void spaltenAusschalten() {
         //do nothing
+    }
+
+    @Override
+    public void calculateRowHeight() {
+        // do nothing
     }
 }

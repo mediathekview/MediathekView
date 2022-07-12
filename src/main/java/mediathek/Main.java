@@ -1,10 +1,10 @@
 package mediathek;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import com.google.common.base.Stopwatch;
+import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
@@ -12,7 +12,6 @@ import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -37,12 +36,15 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import picocli.CommandLine;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -177,66 +179,16 @@ public class Main {
         loggerContext.updateLoggers();
     }
 
-    /**
-     * Query the class name for Nimbus L&F.
-     *
-     * @return the class name for Nimbus, otherwise return the system default l&f class name.
-     */
-    private static String queryNimbusLaFName() {
-        String systemLaF = UIManager.getSystemLookAndFeelClassName();
-
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    systemLaF = info.getClassName();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            systemLaF = UIManager.getSystemLookAndFeelClassName();
-        }
-
-        return systemLaF;
-    }
-
-    /**
-     * Set the look and feel for various OS.
-     * On macOS, don´t change anything as the JVM will use the native UI L&F for swing.
-     * On windows, use the system windows l&f for swing.
-     * On Linux, use Nimbus l&f which is more modern than Metal.
-     * <p>
-     * One can override the L&F stuff for non-macOS by supplying -Dswing.defaultlaf=class_name and the class name on the CLI.
-     */
-    private static void setSystemLookAndFeel() {
-        //don´t set L&F on macOS...
-        if (SystemUtils.IS_OS_MAC_OSX)
-            return;
-
-        final String laf = System.getProperty("swing.defaultlaf");
-        if (laf == null || laf.isEmpty()) {
-            //only set L&F if there was no define on CLI
-            logger.trace("L&F property is empty, setting L&F");
-            //use system for windows and macOS
-            String systemLaF = UIManager.getSystemLookAndFeelClassName();
-            //on linux, use more modern Nimbus L&F...
-            if (SystemUtils.IS_OS_LINUX) {
-                systemLaF = queryNimbusLaFName();
-            }
-
-            //set the L&F...
-            try {
-                UIManager.setLookAndFeel(systemLaF);
-            } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
-                logger.error("L&F error: ", e);
-            }
-        }
-    }
-
     private static void setupEnvironmentProperties() {
         System.setProperty("file.encoding", "UTF-8");
 
         //enable full strength crypto if not already done
         Security.setProperty("crypto.policy", "unlimited");
+
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            System.setProperty("apple.awt.application.name", Konstanten.PROGRAMMNAME);
+            System.setProperty("apple.awt.application.appearance", "system");
+        }
     }
 
     private static void printVersionInformation() {
@@ -306,6 +258,42 @@ public class Main {
     }
 
     /**
+     * Install dock icon when supported.
+     */
+    private static void setupDockIcon() {
+        try {
+            if (Taskbar.isTaskbarSupported()) {
+                var taskbar = Taskbar.getTaskbar();
+                if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                    final URL url = Main.class.getResource("/mediathek/res/MediathekView.png");
+                    if (url != null) {
+                        final BufferedImage appImage = ImageIO.read(url);
+                        Taskbar.getTaskbar().setIconImage(appImage);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            logger.error("OS X Application image could not be loaded", ex);
+        }
+    }
+
+    private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
+    private static void setupFlatLaf() {
+        FlatLightLaf.setup();
+
+        UIManager.put("TabbedPane.showTabSeparators", true );
+        // install alternate row color only for windows >8 and macOS, Linux
+        boolean installAlternateRowColor;
+        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
+            installAlternateRowColor = true;
+        }
+        else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+
+        if (installAlternateRowColor)
+            UIManager.put("Table.alternateRowColor", JTABLE_ALTERNATE_ROW_COLOR);
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
@@ -331,6 +319,15 @@ public class Main {
 
             setupLogging();
             printPortableModeInfo();
+
+            setupDockIcon();
+            setupFlatLaf();
+
+            if (SystemUtils.IS_OS_WINDOWS) {
+                if (!VersionHelpers.IsWindows10OrGreater())
+                    logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
+            }
+
             setupCpuAffinity();
 
             initializeJavaFX();
@@ -339,6 +336,7 @@ public class Main {
 
             JFXHiddenApplication.launchApplication();
             checkMemoryRequirements();
+
             installSingleInstanceHandler();
 
             printVersionInformation();
@@ -360,15 +358,13 @@ public class Main {
 
         printDirectoryPaths();
 
-        setSystemLookAndFeel();
-
-        if (!Functions.isDebuggerAttached()) {
+        if (!isDebuggerAttached()) {
             splashScreen = Optional.of(new SplashScreen());
-            splashScreen.ifPresent(SplashScreen::show);
         }
         else {
             logger.warn("Debugger detected -> Splash screen disabled...");
         }
+        splashScreen.ifPresent(SplashScreen::show);
 
         migrateOldConfigSettings();
 
@@ -382,10 +378,18 @@ public class Main {
         
         Daten.getInstance().loadBookMarkData();
 
-        if (!SystemUtils.IS_OS_MAC_OSX)
+        if (SystemUtils.IS_OS_LINUX)
             changeGlobalFontSize();
 
         startGuiMode();
+    }
+
+    /**
+     * Checks if the application has an debugger attached to it.
+     * @return true if debugger was detected, false othewise.
+     */
+    private static boolean isDebuggerAttached() {
+        return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
     }
 
     private static void changeGlobalFontSize() {
@@ -435,97 +439,36 @@ public class Main {
     private static void loadConfigurationData() {
         var daten = Daten.getInstance();
 
-        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var btn1 = new CommandLinksDialog.CommandLinksButtonType(
-                    "Add a network that is NOT in range",
-                    "That will show you a list of networks that are currently NOT available and lets you connect to one.",
-                    false);
-
-            List<CommandLinksDialog.CommandLinksButtonType> links = Arrays.asList(
-                    new CommandLinksDialog.CommandLinksButtonType(
-                            "Add a network that is in range",
-                            "this shows you a list of networks that are currently available and lets you connect to one.",
-                            false),
-                    new CommandLinksDialog.CommandLinksButtonType(
-                            "Manually create a network profile",
-                            "This creates a new network profile or locates an existing one and saves it on your computer.",
-                            true),
-                    btn1
-                    );
-
-            CommandLinksDialog dlg = new CommandLinksDialog(links);
-            dlg.setTitle("Manually connect to wireless network");
-            String optionalMasthead = "Manually connect to wireless network";
-            dlg.getDialogPane().setContentText(optionalMasthead);
-            dlg.showAndWait().ifPresent(result -> System.out.println("Result is " + dlg.getResult()));
-            System.exit(2);
-        });*/
-
-        /*JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var page1 = new WizardPane() {
-                @Override public void onEnteringPage(Wizard wizard) {
-                    String first = (String) wizard.getSettings().get("first");
-                    setContentText("Hello " + first);
-                }
-            };
-
-            var page2 = new WizardPane();
-            page2.setContentText("Please locate apps");
-
-            var page3 = new WizardPane();
-            page3.setContentText("Please set geographic location");
-            //page3.getButtonTypes().add(new ButtonType("Help", ButtonBar.ButtonData.HELP_2));
-
-            var wizard = new Wizard();
-            wizard.getSettings().put("first","MyName");
-            wizard.setTitle("New first launch wizard sample");
-            wizard.setFlow(new Wizard.LinearFlow(page1,page2,page3));
-            wizard.showAndWait().ifPresent(r -> {
-                if (r == ButtonType.FINISH) {
-                    System.out.println("Wizard finished, settings: " + wizard.getSettings());
-                }
-                if (r == ButtonType.CANCEL){
-                    System.exit(2);
-                    //delete incomplete settings dir!
-                }
-            });
-        });*/
-
         if (!daten.allesLaden()) {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             Main.splashScreen.ifPresent(SplashScreen::close);
-            //TODO replace with JavaFX dialog!!
+
             var dialog = new DialogStarteinstellungen(null);
-            dialog.setVisible(true);
-            if (dialog.getResultCode() == DialogStarteinstellungen.ResultCode.CANCELLED)
+            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED)
             {
                 //show termination dialog
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Einrichtung des Programms abgebrochen");
-                    alert.setContentText("""
-                            Sie haben die Einrichtung des Programms abgebrochen.
-                            MediathekView muss deswegen beendet werden.""");
-                    alert.initModality(Modality.APPLICATION_MODAL);
-                    alert.showAndWait();
-                });
+                JOptionPane.showMessageDialog(null,
+                        "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
+                                "MediathekView muss deshalb beendet werden.</html>", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
-                //delete directory
-                try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
-                    walk.sorted(Comparator.reverseOrder())
-                            .map(Path::toFile)
-                            //.peek(System.out::println)
-                            .forEach(File::delete);
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                deleteSettingsDirectory();
 
                 System.exit(1);
             }
             MVConfig.loadSystemParameter();
+        }
+    }
+
+    private static void deleteSettingsDirectory() {
+        try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
+            walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    //.peek(System.out::println)
+                    .forEach(File::delete);
+        }
+        catch (Exception ex) {
+            logger.error("Got an error deleting settings directory", ex);
         }
     }
 
@@ -542,15 +485,10 @@ public class Main {
     private static void installSingleInstanceHandler() {
         SINGLE_INSTANCE_WATCHER = new SingleInstance();
         if (SINGLE_INSTANCE_WATCHER.isAppAlreadyActive()) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("MediathekView wird bereits ausgeführt");
-                alert.setContentText("Es dürfen nicht mehrere Programme gleichzeitig laufen.\n" +
-                        "Bitte beenden Sie die andere Instanz.");
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(null,
+                    "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" +
+                            "Bitte beenden Sie zuerst das andere Programm.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
     }
@@ -565,16 +503,10 @@ public class Main {
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
         if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("Nicht genügend Arbeitsspeicher");
-                alert.setContentText("""
-                        Es werden mindestens 768MB RAM für einen halbwegs vernünftigen Betrieb benötigt.
-
-                        Das Programm wird nun beendet.""");
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(null,
+                    "Es werden mindestens 768MB RAM zum Betrieb benötigt.\n" +
+                            "Das Programm wird nun beendet.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
             System.exit(3);
         }

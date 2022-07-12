@@ -8,10 +8,7 @@ import mediathek.daten.abo.AboTags;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.abo.FilmLengthState;
 import mediathek.file.GetFile;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -66,7 +63,7 @@ public class DialogEditAbo extends JDialog {
 
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(GuiFunktionen.getSenderListComboBoxModel(Daten.getInstance().getListeFilme()));
+        comboboxSender.setModel(new SenderListComboBoxModel());
 
         // Zielpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();

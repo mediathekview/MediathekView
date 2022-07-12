@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -151,7 +152,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
+            tabelle.writeTableConfigurationData();
         }
     }
 
@@ -433,7 +434,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupHeaderPopupMenu();
 
-        tabelle.initTabelle();
+        tabelle.readColumnConfigurationData();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
@@ -448,7 +449,8 @@ public class GuiFilme extends AGuiTabPanel {
                         BUTTON_COLUMNS,
                         true,
                         MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
-        headerListener.setFontSizeChangeCapable(true);
+
+        headerListener.setFontSizeChangeCapable(SystemUtils.IS_OS_LINUX);
         tabelle.getTableHeader().addMouseListener(headerListener);
     }
 
@@ -517,7 +519,7 @@ public class GuiFilme extends AGuiTabPanel {
         for (DatenFilm datenFilm : liste) {
             // erst mal schauen obs den schon gibt
             DatenDownload datenDownload =
-                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrl());
+                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
             if (datenDownload != null) {
                 int ret = JOptionPane.showConfirmDialog(mediathekGui,
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
@@ -551,19 +553,24 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
-        //FIXME remove for production!!!
-        /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
-        dlg.setVisible(true);
-        if (dlg.controller.success())
-            System.out.println("SUCCESS");
-        else
-            System.out.println("NO SUCCESS");*/
-
-        // dann alle Downloads im Dialog abfragen
-        Optional<FilmResolution.Enum> res =
-                filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-        DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
-        dialog.setVisible(true);
+        if (Daten.listePset.getListeSpeichern().isEmpty()) {
+            MVMessageDialog.showMessageDialog(this,
+                    "Ohne Programm-Sets können keine Downloads gestartet werden.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+        } else {
+            //FIXME remove for production!!!
+            /*SaveDownloadDialog dlg = new SaveDownloadDialog(datenFilm, pSet);
+            dlg.setVisible(true);
+            if (dlg.controller.success())
+                System.out.println("SUCCESS");
+            else
+                System.out.println("NO SUCCESS");*/
+            // dann alle Downloads im Dialog abfragen
+            Optional<FilmResolution.Enum> res =
+                    filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+            DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
+            dialog.setVisible(true);
+        }
     }
 
     private synchronized void bookmarkFilm() {
@@ -766,7 +773,7 @@ public class GuiFilme extends AGuiTabPanel {
         PauseTransition trans = new PauseTransition(Duration.millis(250));
         trans.setOnFinished(evt -> {
             // reset sender filter first
-            filmActionPanel.senderList.getCheckModel().clearChecks();
+            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {
@@ -961,12 +968,12 @@ public class GuiFilme extends AGuiTabPanel {
                         filmSelection.ifPresent(datenFilm -> {
                             boolean stop = false;
                             final DatenDownload datenDownload =
-                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
                             if (datenDownload != null) {
                                 if (datenDownload.start != null) {
                                     if (datenDownload.start.status == Start.STATUS_RUN) {
                                         stop = true;
-                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrl());
+                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrlNormalQuality());
                                     }
                                 }
                             }
@@ -976,7 +983,12 @@ public class GuiFilme extends AGuiTabPanel {
                         });
                     }
                     case DatenFilm.FILM_AUFZEICHNEN -> saveFilm(null);
-                    case DatenFilm.FILM_MERKEN -> bookmarkFilm();
+                    case DatenFilm.FILM_MERKEN -> {
+                        getCurrentlySelectedFilm().ifPresent(film -> {
+                            if (!film.isLivestream())
+                                bookmarkFilm();
+                        });
+                    }
                 }
             }
         }
@@ -1044,8 +1056,12 @@ public class GuiFilme extends AGuiTabPanel {
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
                 }
                 // update Bookmark state
-                miBookmark.setText(
-                        film.isBookmarked() ? "Film aus Merkliste entfernen" : "Film merken");
+                if (film.isLivestream()) {
+                    jPopupMenu.remove(miBookmark);
+                }
+                else {
+                    miBookmark.setText(film.isBookmarked() ? "Film aus Merkliste entfernen" : "Film merken");
+                }
             });
 
             submenueAbo.add(itemAboLoeschen);

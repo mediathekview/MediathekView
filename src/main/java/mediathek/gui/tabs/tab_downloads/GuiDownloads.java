@@ -1,5 +1,8 @@
 package mediathek.gui.tabs.tab_downloads;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -70,9 +73,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-    private static final int INDEX_COMBO_DISPLAY_ALL = 0;
-    private static final int INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY = 1;
-    private static final int INDEX_COMBO_DISPLAY_ABOS_ONLY = 2;
 
     private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
@@ -80,13 +80,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
-    private static final int INDEX_COMBO_VIEW_ALL = 0;
-    private static final int INDEX_COMBO_VIEW_NOT_STARTED = 1;
-    private static final int INDEX_COMBO_VIEW_STARTED = 2;
-    private static final int INDEX_COMBO_VIEW_WAITING = 3;
-    private static final int INDEX_COMBO_VIEW_RUN_ONLY = 4;
-    private static final int INDEX_COMBO_VIEW_FINISHED_ONLY = 5;
-
 
     private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
@@ -164,7 +157,7 @@ public class GuiDownloads extends AGuiTabPanel {
     @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
+            tabelle.writeTableConfigurationData();
         }
     }
 
@@ -266,17 +259,22 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void setupDisplayCategories() {
-        cbDisplayCategories.setModel(getDisplaySelectionModel());
+        final EventList<String> displaySelectionList = GlazedLists.eventListOf(COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY);
+        cbDisplayCategories.setModel(GlazedListsSwing.eventComboBoxModelWithThreadProxyList(displaySelectionList));
+        cbDisplayCategories.getModel().setSelectedItem(COMBO_DISPLAY_ALL);
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
     }
 
     private void setupCheckboxView() {
-        cbView.setModel(getViewModel());
+        EventList<String> viewSelectionList = GlazedLists.eventListOf(COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED,
+                COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY);
+        cbView.setModel(GlazedListsSwing.eventComboBoxModelWithThreadProxyList(viewSelectionList));
+        cbView.getModel().setSelectedItem(COMBO_VIEW_ALL);
         cbView.addActionListener(new ViewCategoryListener());
     }
 
     private void initTable() {
-        tabelle.initTabelle();
+        tabelle.readColumnConfigurationData();
         tabelle.setSpalten();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
@@ -460,13 +458,11 @@ public class GuiDownloads extends AGuiTabPanel {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
                 mediathekGui.beenden(true, false);
             } else {
-                Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Konstanten.PROGRAMMNAME);
-                    alert.setHeaderText("Keine laufenden Downloads!");
-                    alert.setContentText("Die Downloads müssen zuerst gestartet werden.");
-                    alert.showAndWait();
-                });
+                JOptionPane.showMessageDialog(this,
+                        "Die Downloads müssen zuerst gestartet werden.",
+                        "Keine laufenden Downloads",
+                        JOptionPane.ERROR_MESSAGE);
+
             }
         });
 
@@ -979,9 +975,9 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     /**
-     * @param dauerhaft false werden Downloads zurück gestellt. true löscht permanent.
+     * @param permanentDeletion false werden Downloads zurück gestellt. true löscht permanent.
      */
-    public void downloadLoeschen(boolean dauerhaft) {
+    public void downloadLoeschen(boolean permanentDeletion) {
         try {
             ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
             if (arrayDownloads.isEmpty()) {
@@ -994,7 +990,7 @@ public class GuiDownloads extends AGuiTabPanel {
             List<MVUsedUrl> urlAboList = new ArrayList<>();
 
             for (DatenDownload datenDownload : arrayDownloads) {
-                if (dauerhaft) {
+                if (permanentDeletion) {
                     arrayDownloadsLoeschen.add(datenDownload);
                     if (datenDownload.isFromAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
@@ -1008,9 +1004,11 @@ public class GuiDownloads extends AGuiTabPanel {
                     datenDownload.zurueckstellen();
                 }
             }
+
             if (!urlAboList.isEmpty()) {
-                daten.getAboHistoryController().createLineWriterThread(urlAboList);
+                daten.getAboHistoryController().add(urlAboList);
             }
+
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
         } catch (Exception ex) {
@@ -1082,7 +1080,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.isFromAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                        daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
             }
@@ -1175,7 +1173,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         listeDownloadsLoeschen.add(download);
                         if (download.isFromAbo()) {
                             // wenn er schon fertig ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.getAboHistoryController().urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                            daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
                 }
@@ -1223,23 +1221,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
     private void setInfo() {
         MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
-    /**
-     * Return the model used for the display categories {@link javax.swing.JComboBox}.
-     *
-     * @return The selection model.
-     */
-    private DefaultComboBoxModel<String> getDisplaySelectionModel() {
-        return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
-    }
-
-    /**
-     * Return the model used for the view categories {@link javax.swing.JComboBox}.
-     *
-     * @return The selection model.
-     */private DefaultComboBoxModel<String> getViewModel() {
-        return new DefaultComboBoxModel<>(new String[]{COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED, COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY});
     }
 
     private void updateFilmData() {
@@ -1498,17 +1479,12 @@ public class GuiDownloads extends AGuiTabPanel {
                         Optional<DatenDownload> optDL = Optional.ofNullable((DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF));
                         optDL.ifPresent(dl -> {
                             if (dl.film != null) {
-                                try {
-                                    DatenFilm filmDownload = (DatenFilm) dl.film.clone();
-                                    // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                    filmDownload.setUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                    filmDownload.setUrlKlein("");
-                                    // und starten
-                                    daten.getStarterClass().urlMitProgrammStarten(gruppe, filmDownload, "");
-                                }
-                                catch (CloneNotSupportedException ex) {
-                                    logger.error("Cloning is not supported", ex);
-                                }
+                                DatenFilm filmClone = new DatenFilm(dl.film);
+                                // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                filmClone.setUrlNormalQuality(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                filmClone.setUrlLowQuality("");
+                                // und starten
+                                daten.getStarterClass().urlMitProgrammStarten(gruppe, filmClone, "");
                             }
                         });
                     }, () -> {
@@ -1551,43 +1527,43 @@ public class GuiDownloads extends AGuiTabPanel {
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
-            switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_VIEW_ALL -> {
+            switch ((String)source.getModel().getSelectedItem()) {
+                case COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_NOT_STARTED -> {
+                case COMBO_VIEW_NOT_STARTED -> {
                     onlyNotStarted = true;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_STARTED -> {
+                case COMBO_VIEW_STARTED -> {
                     onlyNotStarted = false;
                     onlyStarted = true;
                     onlyWaiting = false;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_WAITING -> {
+                case COMBO_VIEW_WAITING -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = true;
                     onlyFinished = false;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_FINISHED_ONLY -> {
+                case COMBO_VIEW_FINISHED_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
                     onlyFinished = true;
                     onlyRun = false;
                 }
-                case INDEX_COMBO_VIEW_RUN_ONLY -> {
+                case COMBO_VIEW_RUN_ONLY -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
                     onlyWaiting = false;
@@ -1607,17 +1583,16 @@ public class GuiDownloads extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
-
-            switch (source.getSelectedIndex()) {
-                case INDEX_COMBO_DISPLAY_ALL -> {
+            switch ((String)source.getModel().getSelectedItem()) {
+                case COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
                 }
-                case INDEX_COMBO_DISPLAY_DOWNLOADS_ONLY -> {
+                case COMBO_DISPLAY_DOWNLOADS_ONLY -> {
                     onlyAbos = false;
                     onlyDownloads = true;
                 }
-                case INDEX_COMBO_DISPLAY_ABOS_ONLY -> {
+                case COMBO_DISPLAY_ABOS_ONLY -> {
                     onlyAbos = true;
                     onlyDownloads = false;
                 }

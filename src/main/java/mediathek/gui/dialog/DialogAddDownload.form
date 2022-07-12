@@ -131,7 +131,7 @@
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="231" max="32767" attributes="0"/>
+                                  <EmptySpace pref="235" max="32767" attributes="0"/>
                                   <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jTextFieldName" max="32767" attributes="2"/>
@@ -226,7 +226,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxInfodatei">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Lege Infodatei  an"/>
+            <Property name="text" type="java.lang.String" value="Lege Infodatei an"/>
             <Property name="toolTipText" type="java.lang.String" value="Erzeugt eine Infodatei im Format &quot;Infodatei.txt&quot;"/>
           </Properties>
         </Component>

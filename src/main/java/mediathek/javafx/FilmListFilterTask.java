@@ -26,10 +26,6 @@ public class FilmListFilterTask extends Task<Void> {
         if (submitEvent)
             MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
 
-        updateMessage("Themen suchen");
-        updateProgress(-1, 4);
-        daten.getListeFilme().fillSenderList();
-
         updateMessage("Abos eintragen");
         updateProgress(-1, 4);
         daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false);

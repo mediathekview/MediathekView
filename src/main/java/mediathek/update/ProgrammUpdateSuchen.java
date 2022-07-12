@@ -1,7 +1,6 @@
 package mediathek.update;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
@@ -58,13 +57,7 @@ public class ProgrammUpdateSuchen {
                         UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteProgramInfo.getVersion());
                         dlg.setVisible(true);
                     } else if (showAlert) {
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle(Konstanten.PROGRAMMNAME);
-                            alert.setHeaderText(UPDATE_SEARCH_TITLE);
-                            alert.setContentText("Sie benutzen die neueste Version von MediathekView.");
-                            alert.show();
-                        });
+                        displayNoUpdateAvailableMessage();
                     }
                 }
             });
@@ -73,6 +66,12 @@ public class ProgrammUpdateSuchen {
             Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
                     UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, new RuntimeException(SPI_RECEPTION_ERROR_MSG)));
         });
+    }
+
+    private void displayNoUpdateAvailableMessage() {
+        JOptionPane.showMessageDialog(MediathekGui.ui(),
+                "Sie benutzen die aktuellste Version von MediathekView.",
+                UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void displayInfoMessages(boolean showAll, boolean silent) {
@@ -112,13 +111,9 @@ public class ProgrammUpdateSuchen {
     }
 
     private void displayNoNewInfoMessage() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText("Programminformationen");
-            alert.setContentText("Es liegen keine aktuellen Informationen vor.");
-            alert.showAndWait();
-        });
+        JOptionPane.showMessageDialog(MediathekGui.ui(),
+                "Es liegen keine aktuellen Informationen vor.",
+                "Programminformationen", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showProgramInformation(boolean showAll, boolean silent) {

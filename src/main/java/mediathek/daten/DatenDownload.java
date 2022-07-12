@@ -122,7 +122,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_SENDER] = film.getSender();
         arr[DOWNLOAD_THEMA] = film.getThema();
         arr[DOWNLOAD_TITEL] = film.getTitle();
-        arr[DOWNLOAD_FILM_URL] = film.getUrl();
+        arr[DOWNLOAD_FILM_URL] = film.getUrlNormalQuality();
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM] = film.getSendeDatum();
         arr[DOWNLOAD_ZEIT] = film.getSendeZeit();
@@ -130,7 +130,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_HD] = film.isHighQuality() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
-        arr[DOWNLOAD_HISTORY_URL] = film.getUrl();
+        arr[DOWNLOAD_HISTORY_URL] = film.getUrlNormalQuality();
         if (aufloesung.isEmpty()) {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]));
         } else {
@@ -350,7 +350,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     public void setGroesseFromFilm() {
         if (film != null) {
-            if (film.getUrl().equals(arr[DOWNLOAD_URL])) {
+            if (film.getUrlNormalQuality().equals(arr[DOWNLOAD_URL])) {
                 mVFilmSize.setSize(film.getSize());
             } else {
                 mVFilmSize.setSize(0);

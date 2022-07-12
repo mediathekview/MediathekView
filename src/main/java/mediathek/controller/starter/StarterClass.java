@@ -2,6 +2,7 @@ package mediathek.controller.starter;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.history.MVUsedUrl;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -66,9 +67,10 @@ public class StarterClass {
             logger.error("Download fehlgeschlagen, Datei zu klein:{}", filePath);
         } else {
             if (datenDownload.isFromAbo()) {
-                daten.getAboHistoryController().zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
+                var usedUrl = new MVUsedUrl(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                         datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                         datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+                daten.getAboHistoryController().add(usedUrl);
             }
             ret = true;
         }
@@ -270,7 +272,7 @@ public class StarterClass {
     public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = film.getUrl();
+        String url = film.getUrlNormalQuality();
         if (!url.isEmpty()) {
             DatenDownload d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();

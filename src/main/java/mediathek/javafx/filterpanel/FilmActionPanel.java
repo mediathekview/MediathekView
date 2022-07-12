@@ -25,7 +25,6 @@ import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -40,7 +39,7 @@ import java.util.UUID;
  */
 public class FilmActionPanel {
   private static final Logger logger = LogManager.getLogger();
-  private final PauseTransition finalActionTrans = new PauseTransition(Duration.millis(500));
+  private final PauseTransition finalActionTrans = new PauseTransition(Duration.seconds(1));
   private final Tooltip tooltipSearchIrgendwo = new Tooltip("Suche in Beschreibung aktiviert");
   private final Tooltip tooltipSearchRegular = new Tooltip("Suche in Beschreibung deaktiviert");
   private final Tooltip bookmarklistSelected = new Tooltip("Alle Filme anzeigen");
@@ -62,7 +61,6 @@ public class FilmActionPanel {
   public ReadOnlyObjectProperty<String> zeitraumProperty;
   public ComboBox<String> themaBox;
   public RangeSlider filmLengthSlider;
-  public CheckListView<String> senderList;
   public JDialog filterDialog;
   public ManageAboAction manageAboAction;
   /** Stores the list of thema strings used for autocompletion. */
@@ -194,8 +192,7 @@ public class FilmActionPanel {
     dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
     dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
-    senderList = viewSettingsPane.senderBoxNode.senderBox;
-    viewSettingsPane.senderBoxNode.pauseTransition.setOnFinished(e -> updateThemaBox());
+    viewSettingsPane.senderCheckList.pauseTransition.setOnFinished(e -> updateThemaBox());
 
     themaBox = viewSettingsPane.themaComboBox;
     themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
@@ -204,6 +201,10 @@ public class FilmActionPanel {
     filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
     zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
+  }
+
+  public CommonViewSettingsPane getViewSettingsPane() {
+      return viewSettingsPane;
   }
 
   private void restoreConfigSettings() {
@@ -394,7 +395,7 @@ public class FilmActionPanel {
         items.add("");
 
         List<String> finalList = new ArrayList<>();
-        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+        List<String> selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
 
         final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
         if (selectedSenders.isEmpty()) {

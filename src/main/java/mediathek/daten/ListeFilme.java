@@ -1,10 +1,5 @@
 package mediathek.daten;
 
-import ca.odell.glazedlists.BasicEventList;
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.javafx.EventObservableList;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
 import org.jetbrains.annotations.NotNull;
@@ -18,31 +13,10 @@ import java.util.stream.Stream;
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
     private final FilmListMetaData metaData = new FilmListMetaData();
-    /**
-     * List of available senders which notifies its users.
-     */
-    private final EventList<String> m_senderList = new BasicEventList<>();
-    /**
-     * javafx proxy class to the sender list.
-     */
-    private final ObservableList<String> obs_senderList = new EventObservableList<>(m_senderList);
     public boolean neueFilme;
-
-    /**
-     * Get the basic sender channel list, useful e.g. for swing models
-     *
-     * @return the plain list of channels
-     */
-    public EventList<String> getBaseSenderList() {
-        return m_senderList;
-    }
 
     public FilmListMetaData metaData() {
         return metaData;
-    }
-
-    public ObservableList<String> getSenders() {
-        return obs_senderList;
     }
 
     /**
@@ -98,7 +72,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return DatenFilm object if found or null
      */
     public synchronized DatenFilm getFilmByUrlAndSender(final String url, final String sender) {
-      return parallelStream().filter(f -> f.getUrl().equalsIgnoreCase(url) && f.getSender().equalsIgnoreCase(sender)).findAny().orElse(null);
+      return parallelStream().filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url) && f.getSender().equalsIgnoreCase(sender)).findAny().orElse(null);
     }
 
     public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {
@@ -106,7 +80,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         // wird versucht, einen Film mit einer kleinen/Hoher/HD-URL zu finden
         DatenFilm ret = null;
         for (DatenFilm f : this) {
-            if (f.getUrl().equals(url)) {
+            if (f.getUrlNormalQuality().equals(url)) {
                 ret = f;
                 break;
             } else if (f.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).equals(url)) {
@@ -131,17 +105,5 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     public synchronized long countNewFilms() {
         return stream().filter(DatenFilm::isNew).count();
-    }
-
-    public void fillSenderList() {
-        var writeLock = m_senderList.getReadWriteLock().writeLock();
-
-        var list = stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList());
-        Platform.runLater(() -> {
-            writeLock.lock();
-            m_senderList.clear();
-            m_senderList.addAll(list);
-            writeLock.unlock();
-        });
     }
 }

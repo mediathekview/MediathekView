@@ -28,19 +28,41 @@ import java.util.Optional;
  * The controller for the film description panel
  */
 public class DescriptionPanelController {
+    private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
+    private static final String SPACER = "  -  ";
     @FXML
     private Hyperlink websiteLink;
     @FXML
     private TextFlow textField;
     @FXML
     private Tab descriptionTab;
-
     @FXML
     private ScrollPane scrollPane;
-
     private DatenFilm currentFilm;
     private ContextMenu contextMenu;
-    private static final Logger logger = LogManager.getLogger(DescriptionPanelController.class);
+
+    public static DescriptionPanelController install(JFXPanel fxDescriptionPanel) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
+
+        TabPane descriptionPane = loader.load();
+        final DescriptionPanelController descriptionPanelController = loader.getController();
+        descriptionPanelController.setOnCloseRequest(e -> {
+            SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
+            e.consume();
+        });
+
+        fxDescriptionPanel.setScene(new Scene(descriptionPane));
+        return descriptionPanelController;
+    }
+
+    public static String getStringFromTextFlow(TextFlow tf) {
+        StringBuilder sb = new StringBuilder();
+        tf.getChildren().stream()
+                .filter(t -> Text.class.equals(t.getClass()))
+                .forEach(t -> sb.append(((Text) t).getText()));
+        return sb.toString();
+    }
 
     private void setupWebsiteLink() {
         websiteLink.setOnAction(e -> {
@@ -60,21 +82,6 @@ public class DescriptionPanelController {
         mi.setOnAction(e -> SwingUtilities.invokeLater(() -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink())));
         contextMenu.getItems().add(mi);
         websiteLink.setContextMenu(contextMenu);
-    }
-
-    public static DescriptionPanelController install(JFXPanel fxDescriptionPanel) throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
-
-        TabPane descriptionPane = loader.load();
-        final DescriptionPanelController descriptionPanelController = loader.getController();
-        descriptionPanelController.setOnCloseRequest(e -> {
-            SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
-            e.consume();
-        });
-
-        fxDescriptionPanel.setScene(new Scene(descriptionPane));
-        return descriptionPanelController;
     }
 
     private Font getFont() {
@@ -104,7 +111,7 @@ public class DescriptionPanelController {
             websiteLink.setTooltip(new Tooltip(film.getWebsiteLink()));
 
             Font defaultFont = getFont();
-            Text headLine = new Text((film.getSender().isEmpty() ? "" : film.getSender() + "  -  ") + film.getTitle());
+            Text headLine = new Text((film.getSender().isEmpty() ? "" : film.getSender() + SPACER) + film.getThema() + SPACER + film.getTitle());
             headLine.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, FontPosture.REGULAR, defaultFont.getSize()));
 
             Text description = new Text(film.getDescription());
@@ -119,14 +126,6 @@ public class DescriptionPanelController {
             websiteLink.setVisible(false);
             currentFilm = null;
         });
-    }
-
-    public static String getStringFromTextFlow(TextFlow tf) {
-        StringBuilder sb = new StringBuilder();
-        tf.getChildren().stream()
-                .filter(t -> Text.class.equals(t.getClass()))
-                .forEach(t -> sb.append(((Text) t).getText()));
-        return sb.toString();
     }
 
     private ContextMenu createContextMenu() {

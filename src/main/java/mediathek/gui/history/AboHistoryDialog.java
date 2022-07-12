@@ -12,6 +12,6 @@ public class AboHistoryDialog extends StandardCloseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        return new AboHistoryPanel();
+        return new PanelErledigteUrls();
     }
 }

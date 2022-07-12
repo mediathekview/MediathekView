@@ -1,5 +1,6 @@
 package mediathek.tool
 
+import mediathek.config.Konstanten
 import org.apache.logging.log4j.LogManager
 
 data class Version(val major: Int, val minor: Int, val patch: Int) {
@@ -27,7 +28,10 @@ data class Version(val major: Int, val minor: Int, val patch: Int) {
     }
 
     override fun toString(): String {
-        return String.format("%d.%d.%d", major, minor, patch)
+        return if (Konstanten.APP_IS_NIGHTLY)
+            String.format("%d.%d.%d-nightly", major, minor, patch)
+        else
+            String.format("%d.%d.%d", major, minor, patch)
     }
 
     /**

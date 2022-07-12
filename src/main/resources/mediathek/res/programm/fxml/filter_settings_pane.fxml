@@ -55,7 +55,10 @@
     <CheckBox mnemonicParsing="false" text="Trailer/Teaser/Vorschau nicht anzeigen" fx:id="cbDontShowTrailers"/>
     <CheckBox mnemonicParsing="false" text="Hörfassungen ausblenden" fx:id="cbDontShowAudioVersions"/>
     <Separator/>
-    <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderBoxNode"/>
+    <VBox VBox.vgrow="ALWAYS">
+        <Label text="Sender:"/>
+        <SenderBoxNode VBox.vgrow="ALWAYS" fx:id="senderCheckList" prefHeight="150" minHeight="100"/>
+    </VBox>
     <Separator/>
     <HBox spacing="4.0" maxWidth="Infinity">
         <BorderPane>

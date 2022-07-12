@@ -1,0 +1,55 @@
+JFDML JFormDesigner: "7.0.5.0.404" Java: "11.0.13" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par t {comp jSplitPane1::::1068:x, seq {space :12:965:x, comp jButtonBeenden:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jSplitPane1::::620:x, space u:::p, comp jButtonBeenden:::p::p, space :p:6:p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Einstellungen"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonBeenden"
+				"text": "Schließen"
+			} )
+			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "jSplitPane1"
+				"border": new javax.swing.border.EtchedBorder( 1, null, null )
+				"dividerLocation": 250
+				"continuousLayout": true
+				"oneTouchExpandable": true
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane2"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "jPanelExtra"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JTree" ) {
+						name: "jTree1"
+						"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+						"rootVisible": false
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

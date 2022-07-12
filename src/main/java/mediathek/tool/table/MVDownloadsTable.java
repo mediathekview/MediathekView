@@ -15,16 +15,14 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
+import java.util.Optional;
 
-public class MVDownloadsTable extends ASelectableMVTable {
-    @Override
-    protected void setupTableType() {
-        maxSpalten = DatenDownload.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
-        indexSpalte = DatenDownload.DOWNLOAD_NR;
-        nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
-        iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
-        iconKleinStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
+public class MVDownloadsTable extends MVTable {
+    public MVDownloadsTable() {
+        super(DatenDownload.MAX_ELEM, DatenDownload.spaltenAnzeigen,
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN),
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
+                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS));
 
         setupDragnDrop();
 
@@ -158,7 +156,7 @@ public class MVDownloadsTable extends ASelectableMVTable {
         }
 
         private void reorder(int index, int[] rowFrom) {
-            getSelected();
+            saveSelectedTableRows();
 
             final var daten = Daten.getInstance();
             final var tModel = (TModelDownload) getModel();
@@ -182,7 +180,7 @@ public class MVDownloadsTable extends ASelectableMVTable {
             getRowSorter().setSortKeys(null);
             setRowSorter(null);
             setAutoCreateRowSorter(true);
-            setSelected();
+            restoreSelectedTableRows();
 
             MessageBus.getMessageBus().publishAsync(new DownloadQueueRankChangedEvent());
         }

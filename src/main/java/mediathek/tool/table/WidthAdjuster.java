@@ -1,10 +1,8 @@
 package mediathek.tool.table;
 
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,14 +12,10 @@ class WidthAdjuster extends MouseAdapter {
 
     private static final int EPSILON = 5;   //boundary sensitivity
     private final JTable table;
-    private final JTableHeader tableHeader;
-    private final Cursor EAST = Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR);
-    private final Cursor WEST = Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR);
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
 
     protected WidthAdjuster(final JTable table) {
         this.table = table;
-        tableHeader = table.getTableHeader();
     }
 
     @Override
@@ -33,30 +27,29 @@ class WidthAdjuster extends MouseAdapter {
                 listeSortKeys = null;
             }
         }
-        if (evt.getClickCount() > 1 && usingResizeCursor()) {
-            resize(getLeftColumn(evt.getPoint()));
+        if (evt.getClickCount() > 1 && isUsingResizeCursor()) {
+            resizeColumn(getLeftColumn(evt.getPoint()));
         }
     }
 
-    private boolean usingResizeCursor() {
-        final Cursor cursor = tableHeader.getCursor();
-        return cursor.equals(EAST) || cursor.equals(WEST);
+    private boolean isUsingResizeCursor() {
+        final Cursor cursor = table.getTableHeader().getCursor();
+        return cursor.equals(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR))
+                || cursor.equals(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
     }
 
     //if near the boundary, will choose left column
     private int getLeftColumn(final Point pt) {
         pt.x -= EPSILON;
-        return tableHeader.columnAtPoint(pt);
+        return table.getTableHeader().columnAtPoint(pt);
     }
 
-    private void resize(final int col) {
-
-        final TableColumnModel tcm = table.getColumnModel();
-        final TableColumn tc = tcm.getColumn(col);
+    private void resizeColumn(final int col) {
+        final TableColumn tc = table.getColumnModel().getColumn(col);
         TableCellRenderer tcr = tc.getHeaderRenderer();
 
         if (tcr == null) {
-            tcr = tableHeader.getDefaultRenderer();
+            tcr = table.getTableHeader().getDefaultRenderer();
         }
 
         Object obj = tc.getHeaderValue();

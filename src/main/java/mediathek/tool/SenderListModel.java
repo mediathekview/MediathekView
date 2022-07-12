@@ -1,13 +1,16 @@
 package mediathek.tool;
 
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransformedList;
 import ca.odell.glazedlists.event.ListEvent;
+import mediathek.javafx.filterpanel.SenderListBoxModel;
 
-public class SenderList extends TransformedList<String, String> {
+/**
+ * Read-only model of sender also containing an " " for all sender selection.
+ */
+public class SenderListModel extends TransformedList<String, String> {
 
-    public SenderList(EventList<String> source) {
-        super(source);
+    public SenderListModel() {
+        super(SenderListBoxModel.getReadOnlySenderList());
     }
 
     @Override

@@ -12,15 +12,26 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
-public class MVFilmTable extends ASelectableMVTable {
+public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
+    /**
+     * Stores the selected FILM NUMBERS that need to be restored after updates.
+     */
+    private final List<Integer> selectedFilmNumbers = new ArrayList<>();
 
     public MVFilmTable() {
-        super();
+        super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS,
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
+                Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
+                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME));
+
         setAutoCreateRowSorter(false);
 
         addPropertyChangeListener("model", evt -> {
@@ -32,35 +43,6 @@ public class MVFilmTable extends ASelectableMVTable {
             setRowSorter(sorter);
             sorter.setModel(getModel());
         });
-
-    }
-
-    @Override
-    protected void setSelected() {
-        boolean found = false;
-
-        if (selIndexes != null) {
-            int r;
-            selectionModel.setValueIsAdjusting(true);
-            final var tModel = (TModelFilm) getModel();
-            for (int i : selIndexes) {
-                r = tModel.getModelRowForFilmNumber(i);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = convertRowIndexToView(r);
-                    addRowSelectionInterval(r, r);
-                    found = true;
-                }
-            }
-            if (!found && selRow >= 0 && this.getRowCount() > selRow) {
-                setRowSelectionInterval(selRow,selRow);
-            } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
-                final var rowCount = tModel.getRowCount() - 1;
-                setRowSelectionInterval(rowCount, rowCount);
-            }
-            selectionModel.setValueIsAdjusting(false);
-        }
-        selIndexes = null;
     }
 
     @Override
@@ -79,20 +61,6 @@ public class MVFilmTable extends ASelectableMVTable {
         var config = ApplicationConfiguration.getConfiguration();
         final var fontSize = getDefaultFont().getSize2D();
         config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
-    }
-
-    @Override
-    protected void setupTableType() {
-        //logger.debug("setupTableType()");
-
-        maxSpalten = DatenFilm.MAX_ELEM;
-        spaltenAnzeigen = getSpaltenEinAus(GuiFilme.VISIBLE_COLUMNS, DatenFilm.MAX_ELEM);
-        indexSpalte = DatenFilm.FILM_NR;
-        nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
-        iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
-        iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
-
-        //setModel(new TModelFilm());
     }
 
     private void resetFilmeTab(int i) {
@@ -121,9 +89,9 @@ public class MVFilmTable extends ASelectableMVTable {
 
         getRowSorter().setSortKeys(null); // empty sort keys
         spaltenAusschalten();
-        setSpaltenEinAus(breite, spaltenAnzeigen);
+        setSpaltenEinAus(breite);
         setSpalten();
-        setHeight();
+        calculateRowHeight();
     }
 
     @Override
@@ -136,7 +104,7 @@ public class MVFilmTable extends ASelectableMVTable {
         //logger.debug("getSpalten()");
 
         // Einstellungen der Tabelle merken
-        getSelected();
+        saveSelectedTableRows();
 
         for (int i = 0; i < reihe.length && i < getModel().getColumnCount(); ++i) {
             reihe[i] = convertColumnIndexToModel(i);
@@ -187,15 +155,15 @@ public class MVFilmTable extends ASelectableMVTable {
     public void setSpalten() {
         //logger.debug("setSpalten()");
         try {
-            changeColumnWidth();
+            changeInternalColumnWidths();
 
-            changeColumnWidth2();
+            changeTableModelColumnWidths();
 
             reorderColumns();
 
             restoreSortKeys();
 
-            setSelected();
+            restoreSelectedTableRows();
 
             validate();
         } catch (Exception ex) {
@@ -243,6 +211,77 @@ public class MVFilmTable extends ASelectableMVTable {
                 }
             }
 */
+        }
+    }
+
+    /**
+     * Scroll to a selected row, but center it in the middle of the visible rectangle.
+     * @param rowIndex The row to be displayed centered.
+     */
+    private void scrollToSelectionCentered(int rowIndex) {
+        Rectangle rect = getCellRect(rowIndex, 0, true);
+        Rectangle viewRect = getVisibleRect();
+        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
+
+        int centerX = (viewRect.width - rect.width) / 2;
+        int centerY = (viewRect.height - rect.height) / 2;
+        if (rect.x < centerX) {
+            centerX = -centerX;
+        }
+        if (rect.y < centerY) {
+            centerY = -centerY;
+        }
+        rect.translate(centerX, centerY);
+        scrollRectToVisible(rect);
+    }
+
+    @Override
+    protected void scrollToIndexDelegate(int index) {
+        // film list moves selected entries into center of JTable view
+        scrollToSelectionCentered(index);
+    }
+    @Override
+    protected void restoreSelectedTableRows() {
+        if (!selectedFilmNumbers.isEmpty()) {
+            boolean found = false;
+
+            selectionModel.setValueIsAdjusting(true);
+            final var tModel = (TModelFilm) getModel();
+            for (var i : selectedFilmNumbers) {
+                int r = tModel.getModelRowForFilmNumber(i);
+                if (r >= 0) {
+                    // ansonsten gibts die Zeile nicht mehr
+                    r = convertRowIndexToView(r);
+                    addRowSelectionInterval(r, r);
+                    found = true;
+                }
+            }
+            if (!found && selRow >= 0 && getRowCount() > selRow) {
+                setRowSelectionInterval(selRow,selRow);
+            } else if (!found && selRow >= 0 && getRowCount() > 0) {
+                final var rowCount = tModel.getRowCount() - 1;
+                setRowSelectionInterval(rowCount, rowCount);
+            }
+            selectionModel.setValueIsAdjusting(false);
+        }
+
+        selectedFilmNumbers.clear();
+    }
+
+    @Override
+    public void saveSelectedTableRows() {
+        super.saveSelectedTableRows();
+
+        int selIndex = -1;
+        if (selRow >= 0) {
+            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), DatenFilm.FILM_NR);
+        }
+
+        selectedFilmNumbers.clear();
+        if (selIndex >= 0) {
+            for (int i : selRows) {
+                selectedFilmNumbers.add((int) getModel().getValueAt(convertRowIndexToModel(i), DatenFilm.FILM_NR));
+            }
         }
     }
 }

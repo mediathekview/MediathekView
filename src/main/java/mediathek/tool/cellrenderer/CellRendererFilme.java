@@ -74,7 +74,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
+            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
             final boolean isBookMarked =  datenFilm.isBookmarked();
             final var mvTable = (MVTable)table;
 
@@ -108,14 +108,22 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
                     
                 case DatenFilm.FILM_MERKEN:
-                    handleButtonBookmarkColumn(isBookMarked, isSelected);
+                    handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
                     break;
                     
                 case DatenFilm.FILM_SENDER:
                     if (mvTable.showSenderIcons()) {
-                        setSenderIcon(value.toString(), mvTable.useSmallSenderIcons);
+                        Dimension targetDim = getSenderCellDimension(table, row,columnModelIndex);
+                        setSenderIcon(value.toString(), targetDim);
                     }
                     break;
+
+                    case DatenFilm.FILM_TITEL:
+                        var title = datenFilm.getTitle();
+                        var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
+                        if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
+                            setToolTipText(title);
+                        break;
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
@@ -202,9 +210,15 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         setIconAndToolTip(isSelected, normalDownloadIcon, selectedDownloadIcon, "Film aufzeichnen");
     }
     
-    private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected) {
-        // Button Merken
-        setToolTipText(isBookMarked ? "Film aus Merkliste entfernen": "Film merken");
-        setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
+    private void handleButtonBookmarkColumn(final boolean isBookMarked, final boolean isSelected, boolean isLivestream) {
+        if (isLivestream) {
+            setIcon(null);
+            setToolTipText("");
+        }
+        else {
+            // Button Merken
+            setToolTipText(isBookMarked ? "Film aus Merkliste entfernen" : "Film merken");
+            setIcon(isBookMarked ? (isSelected ? selectedBookmarkIconHighlighted : selectedBookmarkIcon) : normalBookmarkIcon);
+        }
     }
 }

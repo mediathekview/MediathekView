@@ -5,6 +5,10 @@ import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
+import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
+import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
+import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
+import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
@@ -15,6 +19,7 @@ import javax.swing.table.TableModel;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper {
@@ -72,7 +77,7 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
-        return filmActionPanel.senderList.getCheckModel().isEmpty()
+        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && filmActionPanel.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
@@ -117,7 +122,7 @@ public class GuiFilmeModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filmActionPanel.senderList.getCheckModel().getCheckedItems();
+        final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
         if (dontShowSeen)
             historyController.prepareMemoryCache();
@@ -163,7 +168,7 @@ public class GuiFilmeModelHelper {
         //final stage filtering...
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         if (!searchFieldEmpty) {
-            stream = stream.filter(this::finalStageFiltering);
+            stream = stream.filter(createFinalStageFilter());
         }
 
         var list = stream.collect(Collectors.toList());
@@ -177,6 +182,26 @@ public class GuiFilmeModelHelper {
 
         if (dontShowSeen)
             historyController.emptyMemoryCache();
+    }
+
+    private Predicate<DatenFilm> createFinalStageFilter() {
+        //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
+        //otherwise use more optimized search
+        boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
+        Predicate<DatenFilm> filter;
+        if (searchThroughDescriptions) {
+            if (isPattern)
+                filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
+            else
+                filter = new FinalStageFilterNoPatternWithDescription(arrIrgendwo);
+        }
+        else {
+            if (isPattern)
+                filter = new FinalStagePatternFilter(arrIrgendwo);
+            else
+                filter = new FinalStageFilterNoPattern(arrIrgendwo);
+        }
+        return filter;
     }
 
     private boolean subtitleCheck(DatenFilm film) {
@@ -196,31 +221,6 @@ public class GuiFilmeModelHelper {
             return true; // always show entries with length 0, which are internally "no length"
         else
             return filmLength >= minLengthInSeconds;
-    }
-
-    /**
-     * Perform the last stage of filtering.
-     * Rework!!!
-     */
-    private boolean finalStageFiltering(final DatenFilm film) {
-        boolean result;
-
-        if (searchThroughDescriptions && !film.getDescription().isEmpty())
-            result = searchEntriesWithDescription(film);
-        else
-            result = searchEntries(film);
-
-        return result;
-    }
-
-    private boolean searchEntries(DatenFilm film) {
-        return Filter.pruefen(arrIrgendwo, film.getThema())
-                || Filter.pruefen(arrIrgendwo, film.getTitle());
-    }
-
-    private boolean searchEntriesWithDescription(DatenFilm film) {
-        return Filter.pruefen(arrIrgendwo, film.getDescription())
-                || searchEntries(film);
     }
 
     /**

@@ -3,7 +3,6 @@ package mediathek.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.google.common.base.Stopwatch;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -195,7 +194,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrlKlein(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlKlein(checkedString(jp));
+        datenFilm.setUrlLowQuality(checkedString(jp));
     }
 
     private void parseUrlHd(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -270,7 +269,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrl(checkedString(jp));
+        datenFilm.setUrlNormalQuality(checkedString(jp));
     }
 
     private void parseLivestream(DatenFilm datenFilm) {
@@ -279,7 +278,6 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         JsonToken jsonToken;
 
         if (jp.nextToken() != JsonToken.START_OBJECT) {
@@ -357,9 +355,6 @@ public class FilmListReader implements AutoCloseable {
                 dateFilter.filter(datenFilm);
             }
         }
-
-        stopwatch.stop();
-        logger.debug("Reading filmlist took {}", stopwatch);
     }
 
     /**
@@ -368,7 +363,7 @@ public class FilmListReader implements AutoCloseable {
      * @param datenFilm the film to check.
      */
     private void checkPlayList(@NotNull DatenFilm datenFilm) {
-        if (datenFilm.getUrl().endsWith(".m3u8"))
+        if (datenFilm.getUrlNormalQuality().endsWith(".m3u8"))
             datenFilm.setPlayList(true);
     }
 
@@ -433,9 +428,9 @@ public class FilmListReader implements AutoCloseable {
 
     private String buildClientInfo()
     {
-        List<Object> clienData = Arrays.asList(Konstanten.PROGRAMMNAME, Konstanten.MVVERSION, SystemUtils.OS_ARCH,
+        List<Object> clientData = Arrays.asList(Konstanten.PROGRAMMNAME, Konstanten.MVVERSION, SystemUtils.OS_ARCH,
                 SystemUtils.OS_NAME, SystemUtils.OS_VERSION);
-        return clienData.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
+        return clientData.stream().map( Object::toString ).collect( Collectors.joining( "," ) );
     }
 
     /**
