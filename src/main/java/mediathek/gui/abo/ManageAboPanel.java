@@ -1,9 +1,7 @@
 package mediathek.gui.abo;
 
 import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import mediathek.config.Daten;
 import mediathek.daten.abo.AboTags;
 import mediathek.daten.abo.DatenAbo;
@@ -23,12 +21,12 @@ import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.JXStatusBar;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.net.URL;
 
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
@@ -38,14 +36,12 @@ public class ManageAboPanel extends JPanel {
     private final Daten daten;
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
     private final JFXPanel toolBarPanel = new JFXPanel();
-    private final JFXPanel infoPanel = new JFXPanel();
+    private final JXStatusBar infoPanel = new JXStatusBar();
+    private final JLabel totalAbos = new JLabel("totalAbos");
+    private final JLabel activeAbos = new JLabel("activeAbos");
+    private final JLabel inactiveAbos = new JLabel("inactiveAbos");
     private FXAboToolBar toolBar;
     private JScrollPane jScrollPane1;
-    /*
-     * controller must be kept in variable for strong ref, otherwise GC will erase controller and therefore
-     * update of abos in dialog will stop working...
-     */
-    private AboInformationController infoController;
 
     public ManageAboPanel() {
         super();
@@ -56,6 +52,7 @@ public class ManageAboPanel extends JPanel {
 
         setupToolBar();
         setupInfoPanel();
+        updateInfoText();
 
         MessageBus.getMessageBus().subscribe(this);
 
@@ -89,21 +86,9 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setupInfoPanel() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            try {
-                URL url = getClass().getResource("/mediathek/res/programm/fxml/abo/abo_information_panel.fxml");
-
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(url);
-
-                HBox infoPane = loader.load();
-                infoPanel.setScene(new Scene(infoPane));
-
-                infoController = loader.getController();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        infoPanel.add(totalAbos);
+        infoPanel.add(activeAbos);
+        infoPanel.add(inactiveAbos);
     }
 
     private void initializeTable() {
@@ -139,7 +124,41 @@ public class ManageAboPanel extends JPanel {
 
     @Handler
     private void handleAboListChanged(AboListChangedEvent e) {
-        SwingUtilities.invokeLater(this::tabelleLaden);
+        SwingUtilities.invokeLater(() -> {
+            tabelleLaden();
+            updateInfoText();
+        });
+    }
+
+    /**
+     * Get the number of abos which are active and used.
+     *
+     * @return num of used abos
+     */
+    private long numActiveAbos() {
+        return Daten.getInstance().getListeAbo().stream().filter(DatenAbo::isActive).count();
+    }
+
+    /**
+     * Get the number of abos which are created but offline.
+     *
+     * @return number of abos which are offline
+     */
+    private long numInactiveAbos() {
+        return Daten.getInstance().getListeAbo().stream().filter(abo -> !abo.isActive()).count();
+    }
+
+    private void updateInfoText() {
+        var listeAbo = Daten.getInstance().getListeAbo();
+        var numAbos = listeAbo.size();
+
+        if (numAbos == 1)
+            totalAbos.setText("Gesamt: 1 Abo");
+        else
+            totalAbos.setText(String.format("Gesamt: %d Abos", numAbos));
+
+        activeAbos.setText(String.format("%d eingeschaltet", numActiveAbos()));
+        inactiveAbos.setText(String.format("%d ausgeschaltet", numInactiveAbos()));
     }
 
     private void setupKeyMap() {
@@ -230,7 +249,7 @@ public class ManageAboPanel extends JPanel {
             String text;
             if (rows.length == 1) {
                 final int delRow = tabelle.convertRowIndexToModel(rows[0]);
-                var abo = (DatenAbo)tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_REF);
+                var abo = (DatenAbo) tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_REF);
                 text = '"' + abo.getName() + "\" löschen?";
             } else {
                 text = "Möchten Sie wirklich " + rows.length + " Abos löschen?";
@@ -242,7 +261,7 @@ public class ManageAboPanel extends JPanel {
                     final var listeAbo = daten.getListeAbo();
                     for (var row : rows) {
                         final int modelRow = tabelle.convertRowIndexToModel(row);
-                        var abo = (DatenAbo)tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
+                        var abo = (DatenAbo) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
                         listeAbo.remove(abo);
                     }
                 } catch (Exception e) {
@@ -278,7 +297,7 @@ public class ManageAboPanel extends JPanel {
 
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
-        var editedAbo = (DatenAbo)tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
+        var editedAbo = (DatenAbo) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
 
         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), editedAbo, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
@@ -297,7 +316,7 @@ public class ManageAboPanel extends JPanel {
                     }
 
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    var curSelAbo = (DatenAbo)tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
+                    var curSelAbo = (DatenAbo) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
 
                     AboTags.fromIndex(b).ifPresent(tag -> {
                         switch (tag) {
@@ -323,7 +342,7 @@ public class ManageAboPanel extends JPanel {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                var akt = (DatenAbo)tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
+                var akt = (DatenAbo) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
                 akt.setActive(ein);
             }
             tabelleLaden();
