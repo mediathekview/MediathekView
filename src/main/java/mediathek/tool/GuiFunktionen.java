@@ -25,6 +25,26 @@ public class GuiFunktionen {
     private static final int UPDATE_FILME_AUTO = 2;
 
     private static final Logger logger = LogManager.getLogger();
+    /**
+     * Property string to indicate usage of install4j's external updater.
+     */
+    private static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
+
+    /**
+     * Check whether or not we are using Install4j's external update mechanism.
+     *
+     * @return true if it is NOT used, true otherwise.
+     */
+    public static boolean isNotUsingExternalUpdater() {
+        var externalUpdateCheck = System.getProperty(EXTERNAL_UPDATE_PROPERTY);
+        boolean ret = false;
+        if (externalUpdateCheck != null) {
+            if (externalUpdateCheck.equalsIgnoreCase("true") || externalUpdateCheck.isEmpty())
+                ret = true;
+        }
+
+        return !ret;
+    }
 
     /**
      * Determine the image's size while keeping aspect ratio within a given boundary box.

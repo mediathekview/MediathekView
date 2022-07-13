@@ -32,7 +32,6 @@ public class Konstanten {
      * Is this a nightly or a production build?
      */
     public static final boolean APP_IS_NIGHTLY = true;
-    public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
 
     public static final String FORMAT_ZIP = ".zip";
