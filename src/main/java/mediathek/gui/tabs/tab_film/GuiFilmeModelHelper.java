@@ -9,9 +9,9 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
+import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
@@ -109,7 +109,7 @@ public class GuiFilmeModelHelper {
         dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
         dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
         dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
-        searchThroughDescriptions = newSearchField.getSearchMode() == FXSearchControlFieldMode.IRGENDWO;
+        searchThroughDescriptions = newSearchField.getSearchMode() == SearchControlFieldMode.IRGENDWO;
 
         arrIrgendwo = evaluateThemaTitel();
     }

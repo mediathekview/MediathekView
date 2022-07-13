@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
@@ -35,8 +36,8 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -766,8 +767,8 @@ public class GuiFilme extends AGuiTabPanel {
         private static final String SEARCHMODE_PROPERTY_STRING = "searchMode";
         private final SearchHistoryButton searchHistoryButton = new SearchHistoryButton();
         private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-        private final Color DEFAULT_FOREGROUND_COLOR = (Color) UIManager.get("TextField.foreground");
-        private FXSearchControlFieldMode searchMode;
+        private final Color DEFAULT_FOREGROUND_COLOR = UIManager.getColor("TextField.foreground");
+        private SearchControlFieldMode searchMode;
 
         public SearchField() {
             super("", 20);
@@ -780,9 +781,9 @@ public class GuiFilme extends AGuiTabPanel {
             //put placeholder text
             boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
             if (bSearchThroughDescription)
-                setSearchMode(FXSearchControlFieldMode.IRGENDWO);
+                setSearchMode(SearchControlFieldMode.IRGENDWO);
             else
-                setSearchMode(FXSearchControlFieldMode.THEMA_TITEL);
+                setSearchMode(SearchControlFieldMode.THEMA_TITEL);
 
             addActionListener(l -> {
                 //System.out.println("SEARCH FIRED FROM NEW SEARCH FIELD");
@@ -804,11 +805,11 @@ public class GuiFilme extends AGuiTabPanel {
             putClientProperty("JTextField.clearCallback", (Consumer<JTextComponent>) textField -> clearSearchField());
         }
 
-        public FXSearchControlFieldMode getSearchMode() {
+        public SearchControlFieldMode getSearchMode() {
             return searchMode;
         }
 
-        public void setSearchMode(FXSearchControlFieldMode mode) {
+        public void setSearchMode(SearchControlFieldMode mode) {
             var oldValue = searchMode;
             searchMode = mode;
             pcs.firePropertyChange(SEARCHMODE_PROPERTY_STRING, oldValue, mode);
@@ -841,9 +842,24 @@ public class GuiFilme extends AGuiTabPanel {
 
         private void setForegroundTextColor(String text) {
             if (Filter.isPattern(text))
-                setForeground(Color.BLUE);
+                setForeground(getPatternColor());
             else
                 setForeground(DEFAULT_FOREGROUND_COLOR);
+        }
+
+        /**
+         * Get the pattern text color based on L&F dark mode.
+         * @return adjusted color for current L&F
+         */
+        private Color getPatternColor() {
+            Color color;
+            if (FlatLaf.isLafDark()) {
+                color = UIManager.getColor("Hyperlink.linkColor");
+            }
+            else
+                color = Color.BLUE;
+
+            return color;
         }
 
         private boolean isPatternValid(String text) {
@@ -874,7 +890,7 @@ public class GuiFilme extends AGuiTabPanel {
          */
         private void setupHelperTexts() {
             String text;
-            if (searchMode == FXSearchControlFieldMode.THEMA_TITEL)
+            if (searchMode == SearchControlFieldMode.THEMA_TITEL)
                 text = "Thema/Titel";
             else
                 text = "Thema/Titel/Beschreibung";
@@ -906,7 +922,7 @@ public class GuiFilme extends AGuiTabPanel {
         class ToggleSearchFieldToggleButton extends JToggleButton {
             public ToggleSearchFieldToggleButton() {
                 FlatSVGIcon selectedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
-                selectedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.BLUE));
+                selectedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> getSelectedColor()));
                 FlatSVGIcon normalIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
                 normalIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.GRAY));
                 setIcon(normalIcon);
@@ -919,19 +935,30 @@ public class GuiFilme extends AGuiTabPanel {
                 addActionListener(l -> {
                     switch (getSearchMode()) {
                         case IRGENDWO -> {
-                            setSearchMode(FXSearchControlFieldMode.THEMA_TITEL);
+                            setSearchMode(SearchControlFieldMode.THEMA_TITEL);
                             setupToolTip(false);
                         }
                         case THEMA_TITEL -> {
-                            setSearchMode(FXSearchControlFieldMode.IRGENDWO);
+                            setSearchMode(SearchControlFieldMode.IRGENDWO);
                             setupToolTip(true);
                         }
                     }
                     //update config
-                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, getSearchMode() == FXSearchControlFieldMode.IRGENDWO);
+                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, getSearchMode() == SearchControlFieldMode.IRGENDWO);
 
                     loadTable();
                 });
+            }
+
+            private Color getSelectedColor() {
+                Color color;
+                if (FlatLaf.isLafDark()) {
+                    color = UIManager.getColor("Hyperlink.linkColor");
+                }
+                else
+                    color = Color.BLUE;
+
+                return color;
             }
 
             private void setupToolTip(boolean active) {

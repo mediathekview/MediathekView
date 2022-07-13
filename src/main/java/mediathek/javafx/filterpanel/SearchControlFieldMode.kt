@@ -1,5 +1,5 @@
 package mediathek.javafx.filterpanel
 
-enum class FXSearchControlFieldMode {
+enum class SearchControlFieldMode {
     THEMA_TITEL, IRGENDWO
 }
