@@ -62,6 +62,11 @@
         </repository>
 
         <repository>
+            <id>install4j repo</id>
+            <url>https://maven.ej-technologies.com/repository</url>
+        </repository>
+
+        <repository>
             <id>oss.sonatype.org-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -139,9 +144,16 @@
         <install4j.home>./install4j9.0.5</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
+        <install4j.version>9.0.7</install4j.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.install4j</groupId>
+            <artifactId>install4j-runtime</artifactId>
+            <version>${install4j.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>

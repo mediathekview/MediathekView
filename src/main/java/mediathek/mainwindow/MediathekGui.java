@@ -16,6 +16,7 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
+import mediathek.gui.actions.external_updater.ConfigureExternalUpdaterAction;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
 import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
@@ -105,6 +106,7 @@ public class MediathekGui extends JFrame {
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final InfoDialog filmInfo;
+    private final ConfigureExternalUpdaterAction configureExternalUpdaterAction = new ConfigureExternalUpdaterAction();
     public StatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -860,6 +862,13 @@ public class MediathekGui extends JFrame {
         //do not show menu entry if we have external update support
         if (GuiFunktionen.isNotUsingExternalUpdater()) {
             jMenuHilfe.add(searchProgramUpdateAction);
+        }
+        else {
+            // add install4j Update configurator (windows only)
+            if (SystemUtils.IS_OS_WINDOWS) {
+                jMenuHilfe.add(configureExternalUpdaterAction);
+                jMenuHilfe.addSeparator();
+            }
         }
         jMenuHilfe.add(new ShowProgramInfosAction());
 

@@ -1,5 +1,5 @@
 <u>**14.0.0**</u>
-
+- **TODO:** ConfigureExternalUpdaterAction fertig programmieren!
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
