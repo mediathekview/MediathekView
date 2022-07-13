@@ -278,7 +278,7 @@ public class GuiFilme extends AGuiTabPanel {
     private void setupPsetButtonsPanel() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> {
             try {
-                psetController = ButtonsPanelController.install(fxPsetButtonsPanel, this);
+                psetController = new ButtonsPanelController(this, fxPsetButtonsPanel);
                 psetController.setOnCloseRequest(e -> {
                     MessageBus.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(false));
                     e.consume();

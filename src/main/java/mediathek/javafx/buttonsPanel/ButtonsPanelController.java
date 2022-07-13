@@ -4,14 +4,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.TilePane;
@@ -22,39 +17,34 @@ import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class ButtonsPanelController implements Initializable {
-    private static final Logger logger = LogManager.getLogger();
-    @FXML
-    private Tab buttonsTab;
-    @FXML
-    private TilePane tilePane;
+public class ButtonsPanelController {
+    private final GuiFilme guiFilme;
+    private final TilePane tilePane = new TilePane();
+    private final Tab buttonsTab = new Tab("Buttons");
 
-    public void setGuiFilme(GuiFilme guiFilme) {
+    public ButtonsPanelController(@NotNull GuiFilme guiFilme, @NotNull JFXPanel parent) {
         this.guiFilme = guiFilme;
-    }
 
-    private GuiFilme guiFilme;
+        tilePane.setPadding(new Insets(5, 5, 5, 5));
+        tilePane.setVgap(5d);
+        tilePane.setHgap(5d);
 
-    public static ButtonsPanelController install(JFXPanel parent, GuiFilme guiFilme) throws IOException {
-        logger.trace("install");
+        ScrollPane sp = new ScrollPane();
+        sp.setFitToHeight(true);
+        sp.setFitToWidth(true);
+        sp.setContent(tilePane);
+        buttonsTab.setContent(sp);
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ButtonsPanelController.class.getResource("/mediathek/res/programm/fxml/pset_buttons.fxml"));
+        TabPane tabPane = new TabPane();
+        tabPane.setPrefHeight(110d);
+        tabPane.getTabs().add(buttonsTab);
 
-        TabPane buttonsPane = loader.load();
-        final ButtonsPanelController buttonsController = loader.getController();
-        buttonsController.setGuiFilme(guiFilme);
-        parent.setScene(new Scene(buttonsPane));
-
-        return buttonsController;
+        parent.setScene(new Scene(tabPane));
+        MessageBus.getMessageBus().subscribe(this);
     }
 
     public void setOnCloseRequest(EventHandler<Event> e) {
@@ -62,8 +52,6 @@ public class ButtonsPanelController implements Initializable {
     }
 
     public void setupButtonLayout() {
-        logger.trace("setupButtonLayout called");
-
         tilePane.getChildren().clear();
         var listeButton = Daten.listePset.getListeButton();
         final var children = tilePane.getChildren();
@@ -79,15 +67,14 @@ public class ButtonsPanelController implements Initializable {
                 } else {
                     var b = new Button(psetName);
                     if (psetColor != null)
-                        b.setBackground(new Background(new BackgroundFill(JavaFxUtils.toFXColor(psetColor),null,null)));
+                        b.setBackground(new Background(new BackgroundFill(JavaFxUtils.toFXColor(psetColor), null, null)));
                     b.setOnAction(e -> {
                         System.out.println("EXECUTING PSET BUTTON");
                         SwingUtilities.invokeLater(() -> guiFilme.playerStarten(pset));
                     });
                     children.add(b);
                 }
-            }
-            else {
+            } else {
                 children.add(new Label(""));
             }
         }
@@ -96,10 +83,5 @@ public class ButtonsPanelController implements Initializable {
     @Handler
     private void handleProgramSetChangedEvent(ProgramSetChangedEvent e) {
         Platform.runLater(this::setupButtonLayout);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        MessageBus.getMessageBus().subscribe(this);
     }
 }
