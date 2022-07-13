@@ -1,5 +1,6 @@
 package mediathek;
 
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import javax.imageio.ImageIO;
@@ -271,6 +273,7 @@ public class Main {
 
     private static void setupFlatLaf() {
         FlatLightLaf.setup();
+        //FlatDarkLaf.setup();
 
         UIManager.put("TabbedPane.showTabSeparators", true);
         // install alternate row color only for windows >8 and macOS, Linux
@@ -280,7 +283,35 @@ public class Main {
         } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
 
         if (installAlternateRowColor)
-            UIManager.put("Table.alternateRowColor", JTABLE_ALTERNATE_ROW_COLOR);
+            UIManager.put("Table.alternateRowColor", getAlternatingRowColor());
+    }
+
+    /**
+     * Return the alternating row color based on L&F setting.
+     * @return alternating color for dark or light L&Fs.
+     */
+    private static Color getAlternatingRowColor() {
+        Color color;
+
+        if (!FlatLaf.isLafDark()) {
+            return JTABLE_ALTERNATE_ROW_COLOR;
+        }
+        else {
+            var tableBg = UIManager.getColor("Table.background");
+            color = brightenColor(tableBg, 0.25f);
+        }
+        return color;
+    }
+
+    /**
+     * Calculate a brighter color by factor based on HSB values.
+     * @param originalColor the original color.
+     * @param factor the factor to brighten.
+     * @return the new brighter color.
+     */
+    private static @NotNull Color brightenColor(@NotNull Color originalColor, float factor) {
+        float[] hsb = Color.RGBtoHSB(originalColor.getRed(), originalColor.getGreen(),originalColor.getBlue(), null);
+        return Color.getHSBColor(hsb[0], hsb[1], factor * (1f + hsb[2]));
     }
 
     /**
