@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.embed.swing.JFXPanel;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -36,10 +35,8 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.javafx.buttonsPanel.ButtonsPanelController;
 import mediathek.javafx.filterpanel.FXSearchControlFieldMode;
 import mediathek.javafx.filterpanel.FilmActionPanel;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -70,6 +67,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -91,15 +89,16 @@ public class GuiFilme extends AGuiTabPanel {
     public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
+    protected final JTabbedPane psetButtonsTab = new JTabbedPane();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
     private final JPanel extensionArea = new JPanel();
     private final JCheckBoxMenuItem cbkShowDescription =
             new JCheckBoxMenuItem("Beschreibung anzeigen");
-    private final JFXPanel fxPsetButtonsPanel = new JFXPanel();
     private final SeenHistoryController historyController = new SeenHistoryController();
     private final JToolBar toolBar = new JToolBar();
+    private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
     /**
      * The JavaFx Film action popup panel.
      */
@@ -109,20 +108,14 @@ public class GuiFilme extends AGuiTabPanel {
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
     protected PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
+    protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
-    private JCheckBoxMenuItem cbShowButtons;
-    /**
-     * We need a strong reference here for message bus to work properly. Otherwise the buttons
-     * panel controller will not receive change messages.
-     */
-    private ButtonsPanelController psetController;
     private MVFilmTable tabelle;
     /**
      * We perform model filtering in the background the keep UI thread alive.
      */
     private ListenableFuture<TableModel> modelFuture;
-
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
@@ -137,12 +130,12 @@ public class GuiFilme extends AGuiTabPanel {
 
         // add film description panel
         extensionArea.add(descriptionTab);
-        extensionArea.add(fxPsetButtonsPanel);
+        extensionArea.add(psetButtonsTab);
 
         setupFilmListTable();
         setupFilmSelectionPropertyListener();
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
-        setupPsetButtonsPanel();
+        setupPsetButtonsTab();
         setupFilmActionPanel();
 
         start_init();
@@ -231,20 +224,24 @@ public class GuiFilme extends AGuiTabPanel {
         add(extensionArea, BorderLayout.SOUTH);
     }
 
-    @Handler
-    private void handleButtonsPanelVisibilityChanged(ButtonsPanelVisibilityChangedEvent evt) {
-        SwingUtilities.invokeLater(() -> cbShowButtons.setSelected(evt.visible));
-        SwingUtilities.invokeLater(() -> fxPsetButtonsPanel.setVisible(evt.visible));
+    public void installViewMenuEntry(JMenu jMenuAnsicht) {
+        jMenuAnsicht.add(cbShowButtons, 0);
     }
 
-    public void installViewMenuEntry(JMenu jMenuAnsicht) {
-        cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-        cbShowButtons.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false));
-        cbShowButtons.addActionListener(e -> MessageBus.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(cbShowButtons.isSelected())));
-
-        jMenuAnsicht.add(cbShowButtons, 0);
+    /**
+     * Show description panel based on settings.
+     */
+    protected void makeButtonsTabVisible(boolean visible) {
+        if (visible) {
+            if (psetButtonsTab.indexOfComponent(psetButtonsPanel) == -1) {
+                psetButtonsTab.add(psetButtonsPanel, 0);
+                psetButtonsTab.setTitleAt(0, "Buttons");
+            }
+        } else {
+            if (psetButtonsTab.indexOfComponent(psetButtonsPanel) != -1) {
+                psetButtonsTab.remove(psetButtonsPanel);
+            }
+        }
     }
 
     @Override
@@ -275,35 +272,29 @@ public class GuiFilme extends AGuiTabPanel {
         filmActionPanel = new FilmActionPanel(btnToggleFilterDialogVisibility);
     }
 
-    private void setupPsetButtonsPanel() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            try {
-                psetController = new ButtonsPanelController(this, fxPsetButtonsPanel);
-                psetController.setOnCloseRequest(e -> {
-                    MessageBus.getMessageBus().publishAsync(new ButtonsPanelVisibilityChangedEvent(false));
-                    e.consume();
-                });
-                psetController.setupButtonLayout();
-            } catch (Exception ex) {
-                logger.error("setupPsetButtonsPanel", ex);
-            }
-        });
+    private void setupPsetButtonsTab() {
+        var initialVisibility = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
+        setupButtonsMenuItem(initialVisibility);
 
+        psetButtonsPanel = new PsetButtonsPanel(this);
+        psetButtonsPanel.putClientProperty("JTabbedPane.tabClosable", true);
+        psetButtonsPanel.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) tabIndex -> cbShowButtons.doClick());
+        psetButtonsPanel.install(psetButtonsTab);
+
+        makeButtonsTabVisible(initialVisibility);
+    }
+
+    private void setupButtonsMenuItem(boolean initialVisibility) {
         var config = ApplicationConfiguration.getConfiguration();
-        SwingUtilities.invokeLater(() -> fxPsetButtonsPanel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, true);
-            }
 
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
-            }
-        }));
-
-        final var visible = config.getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
-        fxPsetButtonsPanel.setVisible(visible);
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            cbShowButtons.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+        cbShowButtons.setSelected(initialVisibility);
+        cbShowButtons.addActionListener(l -> {
+            boolean visible = cbShowButtons.isSelected();
+            makeButtonsTabVisible(visible);
+            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, visible);
+        });
     }
 
     private void onComponentShown() {
