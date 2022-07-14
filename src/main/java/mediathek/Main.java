@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.gui.dialog.DialogStarteinstellungen;
@@ -428,7 +427,7 @@ public class Main {
 
                 setupCpuAffinity();
 
-                initializeJavaFX();
+                Platform.setImplicitExit(false);
 
                 removeMediaDb();
 
@@ -504,14 +503,6 @@ public class Main {
                             """, e);
             System.exit(99);
         }
-    }
-
-    @SuppressWarnings("unused")
-    private static void initializeJavaFX() {
-        //JavaFX stuff
-        Platform.setImplicitExit(false);
-        //necessary to init JavaFX before loading config data
-        var dummy = new JFXPanel();
     }
 
     private static void loadConfigurationData() {
