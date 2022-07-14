@@ -42,7 +42,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE =
             "application.ui.bandwidth_monitor.visible";
     public static final String APPLICATION_UI_USE_TRAY = "application.ui.tray.use";
-    public static final String APPLICATION_UI_FONT_SIZE = "application.ui.font_size";
     public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
             "application.ui.download.tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
@@ -68,7 +67,6 @@ public class ApplicationConfiguration {
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
-    public static final String TAB_FILM_FONT_SIZE = "tab.film.font_size";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
     /**
      * logger for {@link TimerTaskListener} inner class.
