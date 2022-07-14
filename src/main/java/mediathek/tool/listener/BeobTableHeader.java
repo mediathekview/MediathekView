@@ -26,10 +26,6 @@ public class BeobTableHeader extends MouseAdapter {
     private final boolean displaySenderIconMenus;
     private final MVConfig.Configs configKey;
     private JCheckBoxMenuItem[] box;
-    /**
-     * Indicate whether the used table (and cell renderer) is capable of changing font size.
-     */
-    private boolean fontSizeChangeCapable;
     private JMenuItem miResetColumns;
 
     /**
@@ -163,19 +159,7 @@ public class BeobTableHeader extends MouseAdapter {
         // Tabellenspalten zurücksetzen
         jPopupMenu.add(miResetColumns);
 
-        if (isFontSizeChangeCapable()) {
-            jPopupMenu.addSeparator();
-        }
-
         return jPopupMenu;
-    }
-
-    public boolean isFontSizeChangeCapable() {
-        return fontSizeChangeCapable;
-    }
-
-    public void setFontSizeChangeCapable(boolean fontSizeChangeCapable) {
-        this.fontSizeChangeCapable = fontSizeChangeCapable;
     }
 
     private void showMenu(MouseEvent evt) {
