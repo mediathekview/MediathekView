@@ -1,5 +1,8 @@
 package mediathek.mainwindow;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import com.formdev.flatlaf.ui.FlatUIUtils;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -53,10 +56,15 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -107,6 +115,8 @@ public class MediathekGui extends JFrame {
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final InfoDialog filmInfo;
     private final ConfigureExternalUpdaterAction configureExternalUpdaterAction = new ConfigureExternalUpdaterAction();
+    private final JMenu fontMenu = new JMenu("Schrift");
+    private final String[] availableFontFamilyNames;
     public StatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -144,9 +154,14 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private ManageAboAction manageAboAction;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
+    private int initialFontMenuItemCount = -1;
 
     public MediathekGui() {
         ui = this;
+
+        availableFontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getAvailableFontFamilyNames().clone();
+        Arrays.sort( availableFontFamilyNames );
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -396,6 +411,8 @@ public class MediathekGui extends JFrame {
         jMenuAbos.setMnemonic('b');
         jMenuAbos.setText("Abos");
         jMenuBar.add(jMenuAbos);
+
+        jMenuBar.add(fontMenu);
 
         jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
@@ -839,6 +856,138 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
+    private void createFontMenu() {
+        var restoreFontMenuItem = new JMenuItem();
+        restoreFontMenuItem.setText("Schrift zurücksetzen");
+        restoreFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        restoreFontMenuItem.addActionListener(e -> restoreFont());
+        fontMenu.add(restoreFontMenuItem);
+
+        var incrFontMenuItem = new JMenuItem();
+        incrFontMenuItem.setText("Schrift vergrößern");
+        incrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        incrFontMenuItem.addActionListener(e -> increaseFontSize());
+        fontMenu.add(incrFontMenuItem);
+
+        var decrFontMenuItem = new JMenuItem();
+        decrFontMenuItem.setText("Schrift verkleinern");
+        decrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        decrFontMenuItem.addActionListener(e -> decreaseFontSize());
+        fontMenu.add(decrFontMenuItem);
+
+        updateFontMenuItems();
+    }
+
+    private void restoreFont() {
+        UIManager.put( "defaultFont", null );
+        updateFontMenuItems();
+        FlatLaf.updateUI();
+    }
+
+    private void increaseFontSize() {
+        Font font = UIManager.getFont( "defaultFont" );
+        Font newFont = font.deriveFont( (float) (font.getSize() + 1) );
+        UIManager.put( "defaultFont", newFont );
+
+        updateFontMenuItems();
+        FlatLaf.updateUI();
+    }
+
+    private void decreaseFontSize() {
+        Font font = UIManager.getFont( "defaultFont" );
+        Font newFont = font.deriveFont( (float) Math.max( font.getSize() - 1, 10 ) );
+        UIManager.put( "defaultFont", newFont );
+
+        updateFontMenuItems();
+        FlatLaf.updateUI();
+    }
+
+    private void updateFontMenuItems() {
+        if( initialFontMenuItemCount < 0 )
+            initialFontMenuItemCount = fontMenu.getItemCount();
+        else {
+            // remove old font items
+            for( int i = fontMenu.getItemCount() - 1; i >= initialFontMenuItemCount; i-- )
+                fontMenu.remove( i );
+        }
+
+        // get current font
+        Font currentFont = UIManager.getFont( "Label.font" );
+        String currentFamily = currentFont.getFamily();
+        String currentSize = Integer.toString( currentFont.getSize() );
+
+        // add font families
+        fontMenu.addSeparator();
+        ArrayList<String> families = new ArrayList<>( Arrays.asList(
+                "Arial", "Cantarell", "Comic Sans MS", "DejaVu Sans",
+                "Dialog", "Liberation Sans", "Noto Sans", "Roboto",
+                "SansSerif", "Segoe UI", "Serif", "Tahoma", "Ubuntu", "Verdana" ) );
+        if( !families.contains( currentFamily ) )
+            families.add( currentFamily );
+        families.sort( String.CASE_INSENSITIVE_ORDER );
+
+        ButtonGroup familiesGroup = new ButtonGroup();
+        for( String family : families ) {
+            if( Arrays.binarySearch( availableFontFamilyNames, family ) < 0 )
+                continue; // not available
+
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem( family );
+            item.setSelected( family.equals( currentFamily ) );
+            item.addActionListener( this::fontFamilyChanged );
+            fontMenu.add( item );
+
+            familiesGroup.add( item );
+        }
+
+        // add font sizes
+        fontMenu.addSeparator();
+        ArrayList<String> sizes = new ArrayList<>( Arrays.asList(
+                "10", "11", "12", "14", "16", "18", "20", "24", "28" ) );
+        if( !sizes.contains( currentSize ) )
+            sizes.add( currentSize );
+        sizes.sort( String.CASE_INSENSITIVE_ORDER );
+
+        ButtonGroup sizesGroup = new ButtonGroup();
+        for( String size : sizes ) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem( size );
+            item.setSelected( size.equals( currentSize ) );
+            item.addActionListener( this::fontSizeChanged );
+            fontMenu.add( item );
+
+            sizesGroup.add( item );
+        }
+
+        // enabled/disable items
+        boolean enabled = UIManager.getLookAndFeel() instanceof FlatLaf;
+        for( Component item : fontMenu.getMenuComponents() )
+            item.setEnabled( enabled );
+    }
+
+    private void fontFamilyChanged( ActionEvent e ) {
+        String fontFamily = e.getActionCommand();
+
+        FlatAnimatedLafChange.showSnapshot();
+
+        Font font = UIManager.getFont( "defaultFont" );
+        Font newFont = StyleContext.getDefaultStyleContext().getFont( fontFamily, font.getStyle(), font.getSize() );
+        // StyleContext.getFont() may return a UIResource, which would cause loosing user scale factor on Windows
+        newFont = FlatUIUtils.nonUIResource( newFont );
+        UIManager.put( "defaultFont", newFont );
+
+        FlatLaf.updateUI();
+        FlatAnimatedLafChange.hideSnapshotWithAnimation();
+    }
+
+    private void fontSizeChanged( ActionEvent e ) {
+        String fontSizeStr = e.getActionCommand();
+
+        Font font = UIManager.getFont( "defaultFont" );
+        Font newFont = font.deriveFont( (float) Integer.parseInt( fontSizeStr ) );
+        UIManager.put( "defaultFont", newFont );
+
+        FlatLaf.updateUI();
+    }
+
     @Handler
     private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(false));
@@ -887,6 +1036,7 @@ public class MediathekGui extends JFrame {
         tabFilme.installMenuEntries(jMenuFilme);
         tabDownloads.installMenuEntries(jMenuDownload);
 
+        createFontMenu();
         createViewMenu();
         tabFilme.installViewMenuEntry(jMenuAnsicht);
 

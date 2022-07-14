@@ -3,7 +3,6 @@ package mediathek.tool.table;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmSize;
 import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
@@ -43,24 +42,6 @@ public class MVFilmTable extends MVTable {
             setRowSorter(sorter);
             sorter.setModel(getModel());
         });
-    }
-
-    @Override
-    protected void loadDefaultFontSize() {
-        var config = ApplicationConfiguration.getConfiguration();
-        try {
-            final var fontSize = config.getFloat(ApplicationConfiguration.TAB_FILM_FONT_SIZE);
-            var newFont = getDefaultFont().deriveFont(fontSize);
-            setDefaultFont(newFont);
-        }
-        catch (Exception ignored) {}
-    }
-
-    @Override
-    protected void saveDefaultFontSize() {
-        var config = ApplicationConfiguration.getConfiguration();
-        final var fontSize = getDefaultFont().getSize2D();
-        config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
     }
 
     private void resetFilmeTab(int i) {

@@ -94,7 +94,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final boolean isBookMarked = datenFilm.isBookmarked();
             final var mvTable = (MVTable) table;
 
-            setFont((mvTable.getDefaultFont()));
 
             //shortcut if we want to have line breaks, use text areas and skip the rest
             if (mvTable.isLineBreak()) {

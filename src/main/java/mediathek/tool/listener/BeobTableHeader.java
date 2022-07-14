@@ -1,7 +1,6 @@
 package mediathek.tool.listener;
 
 import mediathek.config.MVConfig;
-import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,10 +12,6 @@ import java.awt.event.MouseEvent;
  * Rechte Maustaste in der Tabelle (Kontextmenü)
  */
 public class BeobTableHeader extends MouseAdapter {
-    /**
-     * Size factor to increase/decrease the current font size.
-     */
-    private static final float FONT_SIZE_FACTOR = 2f;
     protected final MVTable tabelle;
     private final String[] columns;
     private final boolean[] spaltenAnzeigen;
@@ -31,14 +26,11 @@ public class BeobTableHeader extends MouseAdapter {
     private final boolean displaySenderIconMenus;
     private final MVConfig.Configs configKey;
     private JCheckBoxMenuItem[] box;
-    private JMenuItem miIncreaseFont;
-    private JMenuItem miDecreaseFont;
     /**
      * Indicate whether the used table (and cell renderer) is capable of changing font size.
      */
     private boolean fontSizeChangeCapable;
     private JMenuItem miResetColumns;
-    private JMenuItem miResetFontSize;
 
     /**
      * Context Menu for manipulation of table visual appearance from table header.
@@ -74,31 +66,6 @@ public class BeobTableHeader extends MouseAdapter {
         miResetColumns = new JMenuItem("Spalten zurücksetzen");
         miResetColumns.addActionListener(e -> tabelle.resetTabelle());
 
-        miDecreaseFont = new JMenuItem("Schrift verkleinern");
-        miDecreaseFont.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        miDecreaseFont.addActionListener(e -> {
-            var oldFont = tabelle.getDefaultFont();
-            final var oldSize = oldFont.getSize2D();
-            final var newSize = oldSize - FONT_SIZE_FACTOR;
-            tabelle.setDefaultFont(oldFont.deriveFont(newSize));
-            tabelle.calculateRowHeight();
-        });
-
-        miIncreaseFont = new JMenuItem("Schrift vergrößern");
-        miIncreaseFont.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
-        miIncreaseFont.addActionListener(e -> {
-            var oldFont = tabelle.getDefaultFont();
-            final var oldSize = oldFont.getSize2D();
-            final var newSize = oldSize + FONT_SIZE_FACTOR;
-            tabelle.setDefaultFont(oldFont.deriveFont(newSize));
-            tabelle.calculateRowHeight();
-        });
-
-        miResetFontSize = new JMenuItem("Schriftgröße zurücksetzen");
-        miResetFontSize.addActionListener(e -> {
-            tabelle.setDefaultFont(UIManager.getDefaults().getFont("Table.font"));
-            tabelle.calculateRowHeight();
-        });
     }
 
     @Override
@@ -198,9 +165,6 @@ public class BeobTableHeader extends MouseAdapter {
 
         if (isFontSizeChangeCapable()) {
             jPopupMenu.addSeparator();
-            jPopupMenu.add(miIncreaseFont);
-            jPopupMenu.add(miDecreaseFont);
-            jPopupMenu.add(miResetFontSize);
         }
 
         return jPopupMenu;
