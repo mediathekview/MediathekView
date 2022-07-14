@@ -12,6 +12,7 @@ class CreateNewAboAction(private val listeAbo: ListeAbo) : AbstractAction() {
 
     init {
         putValue(NAME, "Abo anlegen...")
+        putValue(SHORT_DESCRIPTION, "Abo anlegen")
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"))
     }
 }

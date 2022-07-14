@@ -1,18 +1,17 @@
 package mediathek.gui.abo;
 
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.config.Daten;
 import mediathek.daten.abo.AboTags;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
 import mediathek.tool.NoSelectionErrorDialog;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.SenderListModel;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
@@ -35,12 +34,12 @@ public class ManageAboPanel extends JPanel {
     private final MVTable tabelle = new MVAbosTable();
     private final Daten daten;
     private final CreateNewAboAction createAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
-    private final JFXPanel toolBarPanel = new JFXPanel();
     private final JXStatusBar infoPanel = new JXStatusBar();
     private final JLabel totalAbos = new JLabel("totalAbos");
     private final JLabel activeAbos = new JLabel("activeAbos");
     private final JLabel inactiveAbos = new JLabel("inactiveAbos");
-    private FXAboToolBar toolBar;
+    private final JToolBar swingToolBar = new JToolBar();
+    private final JComboBox<String> senderCombo = new JComboBox<>();
     private JScrollPane jScrollPane1;
 
     public ManageAboPanel() {
@@ -100,20 +99,42 @@ public class ManageAboPanel extends JPanel {
     }
 
     private void setupToolBar() {
-        CreateNewAboAction newAboAction = new CreateNewAboAction(Daten.getInstance().getListeAbo());
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            toolBar = new FXAboToolBar();
-            toolBar.btnOn.setOnAction(e -> SwingUtilities.invokeLater(() -> changeAboActiveState(true)));
-            toolBar.btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> changeAboActiveState(false)));
-            toolBar.btnDelete.setOnAction(e -> SwingUtilities.invokeLater(this::aboLoeschen));
-            toolBar.btnEdit.setOnAction(e -> SwingUtilities.invokeLater(this::editAbo));
+        JButton button = new JButton();
+        button.setToolTipText("Abos einschalten");
+        button.addActionListener(l -> changeAboActiveState(true));
+        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg"));
+        swingToolBar.add(button);
 
-            toolBar.btnNewAbo.setOnAction(e -> SwingUtilities.invokeLater(() -> newAboAction.actionPerformed(null)));
+        button = new JButton();
+        button.setToolTipText("Abos ausschalten");
+        button.addActionListener(l -> changeAboActiveState(false));
+        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/xmark.svg", 16f));
+        swingToolBar.add(button);
+        swingToolBar.addSeparator();
 
-            toolBar.cbSender.setOnAction(e -> SwingUtilities.invokeLater(this::tabelleLaden));
+        button = new JButton(createAboAction);
+        button.setText("");
+        swingToolBar.add(button);
 
-            toolBarPanel.setScene(new Scene(toolBar));
-        });
+        button = new JButton();
+        button.setToolTipText("Abos löschen");
+        button.addActionListener(l -> aboLoeschen());
+        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
+        swingToolBar.add(button);
+
+        button = new JButton();
+        button.setToolTipText("Abo ändern");
+        button.addActionListener(l -> editAbo());
+        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
+        swingToolBar.add(button);
+        swingToolBar.addSeparator();
+
+        swingToolBar.add(new JLabel("Abos für Sender:"));
+        senderCombo.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
+        senderCombo.setModel(GlazedListsSwing.eventComboBoxModel(new SenderListModel()));
+        senderCombo.setSelectedIndex(0);
+        senderCombo.addActionListener(l -> tabelleLaden());
+        swingToolBar.add(senderCombo);
     }
 
     public void tabelleSpeichern() {
@@ -232,15 +253,14 @@ public class ManageAboPanel extends JPanel {
     private void tabelleLaden() {
         tabelle.getSpalten();
 
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            final String selectedItem = toolBar.cbSender.getValue();
-            if (selectedItem != null) {
-                SwingUtilities.invokeLater(() -> {
-                    addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
-                    tabelle.setSpalten();
-                });
-            }
-        });
+        String selectedItem = null;
+        var item = senderCombo.getSelectedItem();
+        if (item != null)
+            selectedItem = item.toString();
+        if (selectedItem != null) {
+            addObjectData((TModelAbo) tabelle.getModel(), selectedItem);
+            tabelle.setSpalten();
+        }
     }
 
     private void aboLoeschen() {
@@ -368,7 +388,7 @@ public class ManageAboPanel extends JPanel {
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
-        add(toolBarPanel, BorderLayout.NORTH);
+        add(swingToolBar, BorderLayout.NORTH);
         add(jScrollPane1, BorderLayout.CENTER);
         add(infoPanel, BorderLayout.SOUTH);
     }
