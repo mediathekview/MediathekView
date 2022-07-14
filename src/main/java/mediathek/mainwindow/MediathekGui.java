@@ -412,7 +412,8 @@ public class MediathekGui extends JFrame {
         jMenuAbos.setText("Abos");
         jMenuBar.add(jMenuAbos);
 
-        jMenuBar.add(fontMenu);
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            jMenuBar.add(fontMenu);
 
         jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
