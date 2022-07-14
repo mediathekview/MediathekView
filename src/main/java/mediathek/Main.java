@@ -430,6 +430,8 @@ public class Main {
                 Platform.setImplicitExit(false);
 
                 removeMediaDb();
+                deleteOldFilmDatabaseFiles();
+                deleteOldUserAgentsDatabase();
 
                 JFXHiddenApplication.launchApplication();
                 checkMemoryRequirements();
@@ -528,6 +530,37 @@ public class Main {
         }
     }
 
+    private static void deleteOldUserAgentsDatabase() {
+        try {
+            var settingsPath = StandardLocations.getSettingsDirectory();
+            var agentDb = settingsPath.resolve("user_agents.mv.db");
+            Files.deleteIfExists(agentDb);
+        }
+        catch (IOException e) {
+            logger.error("Error deleting old user agent database occured", e);
+        }
+    }
+
+    private static void deleteOldFilmDatabaseFiles() {
+        var settingsPath = StandardLocations.getSettingsDirectory();
+        var dbFolder = settingsPath.resolve("database");
+        var traceFile = settingsPath.resolve("databasemediathekview.trace.db");
+
+        if (!Files.exists(dbFolder))
+            return;
+
+        try (var walk = Files.walk(dbFolder)) {
+            walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    //.peek(System.out::println)
+                    .forEach(File::delete);
+
+            Files.deleteIfExists(traceFile);
+        }
+        catch (Exception ex) {
+            logger.error("Got an error deleting old database directory", ex);
+        }
+    }
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
