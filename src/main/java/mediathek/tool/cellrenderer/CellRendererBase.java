@@ -26,6 +26,10 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      * @param sender Name of the sender.
      */
     protected void setSenderIcon(@NotNull String sender, @NotNull Dimension targetDim) {
+        // make target dims for icon slightly smaller
+        targetDim.width -= 4;
+        targetDim.height -= 4;
+
         var key = new SenderCacheKey(sender, targetDim);
         final AtomicReference<Icon> cachedIcon = new AtomicReference<>();
         cachedIcon.set(senderCellIconCache.getOrDefault(key, null));
@@ -39,10 +43,11 @@ public class CellRendererBase extends DefaultTableCellRenderer {
         }
 
         if (cachedIcon.get() != null) {
-            setHorizontalAlignment(SwingConstants.CENTER);
             setText("");
             setIcon(cachedIcon.get());
         }
+        setVerticalAlignment(SwingConstants.CENTER);
+        setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     /**
