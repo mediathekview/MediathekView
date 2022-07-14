@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import mediathek.config.Konstanten;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +10,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class SwingErrorDialog {
-    public static void showExceptionMessage(@NotNull Component parentComponent,
+    public static void showExceptionMessage(@Nullable Component parentComponent,
                                             @NotNull String messageText,
                                             @NotNull Exception exception) throws HeadlessException {
 

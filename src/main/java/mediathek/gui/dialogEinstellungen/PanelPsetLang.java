@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import javafx.scene.control.Alert;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
@@ -15,8 +14,6 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererProgramme;
@@ -767,12 +764,9 @@ public class PanelPsetLang extends PanelVorlage {
 
                 IoXmlSchreiben configWriter = new IoXmlSchreiben();
                 configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText("Programmset exportieren");
-                    alert.setContentText("Das Programmset wurde erfolgreich exportiert.");
-                    JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-                });
+                JOptionPane.showMessageDialog(this,
+                        "Das Programmset wurde erfolgreich exportiert.",
+                        Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             NoSelectionErrorDialog.show(this);

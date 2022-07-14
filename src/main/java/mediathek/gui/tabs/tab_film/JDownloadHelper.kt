@@ -1,13 +1,12 @@
 package mediathek.gui.tabs.tab_film
 
-import javafx.application.Platform
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
-import mediathek.tool.javafx.FXErrorDialog
 import okhttp3.FormBody
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -47,11 +46,9 @@ class JDownloadHelper {
             showErrorMessage()
         } catch (e: Exception) {
             logger.error("downloadUrl", e)
-            Platform.runLater {
-                FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, "Download nicht möglich",
-                        "Die URL konnte nicht mit JDownloader geladen werden.\n" +
-                                "Bitte wenden Sie sich bei Bedarf an das Forum.", e)
-            }
+            SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+            "<html>Die URL konnte nicht mit JDownloader geladen werden.<br>" +
+                    "Bitte wenden Sie sich bei Bedarf an das Forum.</html>",e)
         }
     }
 

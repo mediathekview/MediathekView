@@ -7,7 +7,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,13 +66,5 @@ public class FXErrorDialog {
         createExceptionContent(alert, ex);
         alert.initOwner(JFXHiddenApplication.getPrimaryStage());
         JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-    }
-
-    public static void showErrorDialogWithoutParent(String title, String header, String detailedErrorMessage, @NotNull Exception ex) {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            Alert alert = getBaseAlert(title,header, detailedErrorMessage);
-            createExceptionContent(alert, ex);
-            alert.showAndWait();
-        });
     }
 }
