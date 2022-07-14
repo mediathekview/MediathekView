@@ -96,7 +96,6 @@ public class ProgrammUpdateSuchen {
                 }
             }
             if (!text.isEmpty()) {
-                //TODO add new dialog with web view here!
                 JDialog dlg = new DialogHinweisUpdate(null, text.toString());
                 dlg.setVisible(true);
                 MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
