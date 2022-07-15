@@ -1396,10 +1396,10 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             }
 
-            if (!film.getUrlSubtitle().isEmpty()) {
+            if (!film.getSubtitleUrl().isEmpty()) {
 
                 item = new JMenuItem("Untertitel-URL");
-                item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlSubtitle()));
+                item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getSubtitleUrl()));
                 parentMenu.add(item);
             }
         }

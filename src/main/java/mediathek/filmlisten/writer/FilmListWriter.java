@@ -143,8 +143,8 @@ public class FilmListWriter {
         jg.writeString(datenFilm.getFileSize().toString());
         jg.writeString(datenFilm.getDescription());
         jg.writeString(datenFilm.getUrlNormalQuality());
-        jg.writeString(datenFilm.getWebsiteLink());
-        jg.writeString(datenFilm.getUrlSubtitle());
+        jg.writeString(datenFilm.getWebsiteUrl());
+        jg.writeString(datenFilm.getSubtitleUrl());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
         writeLowQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN

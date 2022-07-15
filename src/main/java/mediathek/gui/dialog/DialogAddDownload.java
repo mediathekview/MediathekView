@@ -528,7 +528,7 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
 
-        if (datenFilm.getUrlSubtitle().isEmpty()) {
+        if (datenFilm.getSubtitleUrl().isEmpty()) {
             // dann gibts keinen Subtitle
             jCheckBoxSubtitle.setEnabled(false);
         } else {

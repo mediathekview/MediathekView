@@ -36,7 +36,7 @@ open class MVInfoFile {
         sb.append(System.lineSeparator())
         sb.append("Website")
         sb.append(System.lineSeparator())
-        sb.append(film.websiteLink)
+        sb.append(film.websiteUrl)
         sb.append(System.lineSeparator())
         sb.append(System.lineSeparator())
         sb.append(FILM_URL)

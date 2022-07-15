@@ -147,7 +147,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 lblDuration.text = currentFilm!!.filmLengthAsString
                 cbHq.isSelected = currentFilm!!.isHighQuality
                 cbSubtitle.isSelected = currentFilm!!.hasSubtitle()
-                hyperlink.tooltip = Tooltip(currentFilm!!.websiteLink)
+                hyperlink.tooltip = Tooltip(currentFilm!!.websiteUrl)
                 hyperlink.isDisable = false
                 lblAbo.text = currentFilm!!.abo?.name
             }
@@ -224,7 +224,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 SwingUtilities.invokeLater {
                     if (currentFilm != null) {
                         try {
-                            UrlHyperlinkAction.openURL(null, currentFilm!!.websiteLink)
+                            UrlHyperlinkAction.openURL(null, currentFilm!!.websiteUrl)
                         } catch (ex: URISyntaxException) {
                             ex.printStackTrace()
                         }
@@ -244,7 +244,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     private fun createCopyUrlContextMenu() : ContextMenu {
         val contextMenu = ContextMenu()
         val mi = MenuItem("URL kopieren")
-        mi.onAction = EventHandler { SwingUtilities.invokeLater { GuiFunktionen.copyToClipboard(currentFilm!!.websiteLink) } }
+        mi.onAction = EventHandler { SwingUtilities.invokeLater { GuiFunktionen.copyToClipboard(currentFilm!!.websiteUrl) } }
         contextMenu.items.add(mi)
         return contextMenu
     }

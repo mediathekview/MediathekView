@@ -95,15 +95,15 @@ class JDownloadHelper {
         val miWebsiteToJd = JMenuItem("Webseiten-URL an JDownloader übergeben")
         miWebsiteToJd.addActionListener {
             try {
-                val webSiteUrl = film.websiteLink.toHttpUrl()
+                val webSiteUrl = film.websiteUrl.toHttpUrl()
                 downloadUrl(webSiteUrl, film)
             }
             catch (e: IllegalArgumentException) {
-                logger.error("Illegal Website URL found: {}", film.websiteLink)
+                logger.error("Illegal Website URL found: {}", film.websiteUrl)
             }
         }
         jPopupMenu.add(miWebsiteToJd)
-        if (film.websiteLink.isBlank()) {
+        if (film.websiteUrl.isBlank()) {
             miWebsiteToJd.isEnabled = false
         }
     }

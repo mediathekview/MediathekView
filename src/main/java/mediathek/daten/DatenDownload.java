@@ -123,7 +123,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_THEMA] = film.getThema();
         arr[DOWNLOAD_TITEL] = film.getTitle();
         arr[DOWNLOAD_FILM_URL] = film.getUrlNormalQuality();
-        arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
+        arr[DOWNLOAD_URL_SUBTITLE] = film.getSubtitleUrl();
         arr[DOWNLOAD_DATUM] = film.getSendeDatum();
         arr[DOWNLOAD_ZEIT] = film.getSendeZeit();
         arr[DOWNLOAD_DAUER] = film.getFilmLengthAsString();
@@ -141,7 +141,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
         arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
 
-        websiteUrl = film.getWebsiteLink();
+        websiteUrl = film.getWebsiteUrl();
 
         // und jetzt noch die Dateigröße für die entsp. URL
         setGroesse("");

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,22 +67,17 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * File size in MByte
      */
     private final FilmSize filmSize = new FilmSize();
+    /**
+     * Stores all URLs, some keys may not exist.
+     */
+    private final EnumMap<MapKeys, String> urlMap = new EnumMap<>(MapKeys.class);
     private DatenAbo abo;
     private BookmarkData bookmark;
     /**
      * film date stored IN SECONDS!!!
      */
     private DatumFilm datumFilm = DatumFilm.UNDEFINED_FILM_DATE;
-    private String websiteLink;
     private String description;
-    /**
-     * Low quality URL.
-     */
-    private String url_low_quality = "";
-    /**
-     * High Quality (formerly known as HD) URL if available.
-     */
-    private Optional<String> url_high_quality = Optional.empty();
     private String datumLong = "";
     private String sender = "";
     private String thema = "";
@@ -91,16 +87,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Empty means viewable without restrictions.
      */
     private Optional<String> availableInCountries = Optional.empty();
-    /**
-     * URL to the subtitle file, if available.
-     */
-    private Optional<String> subtitle_url = Optional.empty();
     private String datum = "";
     private String sendeZeit = "";
-    /**
-     * Normal quality URL.
-     */
-    private String url_normal_quality = "";
     /**
      * film duration or film length in seconds.
      */
@@ -116,19 +104,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.datumFilm = other.datumFilm;
         this.filmSize.setSize(other.filmSize.toString());
         this.databaseFilmNumber = other.databaseFilmNumber;
-        this.websiteLink = other.websiteLink;
         this.description = other.description;
-        this.url_low_quality = other.url_low_quality;
-        this.url_high_quality = other.url_high_quality;
         this.datumLong = other.datumLong;
         this.sender = other.sender;
         this.thema = other.thema;
         this.titel = other.titel;
         this.availableInCountries = other.availableInCountries;
-        this.subtitle_url = other.subtitle_url;
+        this.urlMap.putAll(other.urlMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
-        this.url_normal_quality = other.url_normal_quality;
         this.filmLength = other.filmLength;
     }
 
@@ -188,22 +172,25 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getUrlLowQuality() {
-        return url_low_quality;
+        return urlMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
     }
 
-    public void setUrlLowQuality(String url_low_quality) {
-        this.url_low_quality = url_low_quality;
+    public void setUrlLowQuality(@NotNull String url_low_quality) {
+        if (url_low_quality.isEmpty())
+            urlMap.remove(MapKeys.LOW_QUALITY_URL);
+        else
+            urlMap.put(MapKeys.LOW_QUALITY_URL, url_low_quality);
     }
 
     public String getUrlHighQuality() {
-        return url_high_quality.orElse("");
+        return urlMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
     }
 
-    public void setUrlHighQuality(String urlHd) {
-        if (!urlHd.isEmpty())
-            url_high_quality = Optional.of(urlHd);
+    public void setUrlHighQuality(@NotNull String urlHd) {
+        if (urlHd.isEmpty())
+            urlMap.remove(MapKeys.HIGH_QUALITY_URL);
         else
-            url_high_quality = Optional.empty();
+            urlMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
     }
 
     public String getDatumLong() {
@@ -302,13 +289,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    public String getWebsiteLink() {
-        return StringUtils.defaultString(websiteLink);
+    public String getWebsiteUrl() {
+        return urlMap.getOrDefault(MapKeys.WEBSITE_URL, "");
     }
 
-    public void setWebsiteLink(String link) {
-        if (link != null && !link.isEmpty()) {
-            websiteLink = link;
+    public void setWebsiteUrl(String link) {
+        if (link == null || link.isEmpty()) {
+            urlMap.remove(MapKeys.WEBSITE_URL);
+        }
+        else {
+            urlMap.put(MapKeys.WEBSITE_URL, link);
         }
     }
 
@@ -359,7 +349,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public boolean hasSubtitle() {
-        return subtitle_url.isPresent();
+        return urlMap.containsKey(MapKeys.SUBTITLE_URL);
     }
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
@@ -384,7 +374,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return a unique "hash" string
      */
     public String getUniqueHash() {
-        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteLink();
+        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteUrl();
     }
 
     /**
@@ -393,7 +383,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return url_high_quality.isPresent();
+        return urlMap.containsKey(MapKeys.HIGH_QUALITY_URL);
     }
 
     @Override
@@ -527,22 +517,26 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getUrlNormalQuality() {
-        return url_normal_quality;
+        return urlMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
     }
 
-    public void setUrlNormalQuality(String url_normal_quality) {
-        this.url_normal_quality = url_normal_quality;
-    }
-
-    public String getUrlSubtitle() {
-        return subtitle_url.orElse("");
-    }
-
-    public void setUrlSubtitle(String urlSubtitle) {
-        if (!urlSubtitle.isEmpty())
-            subtitle_url = Optional.of(urlSubtitle);
+    public void setUrlNormalQuality(@NotNull String url_normal_quality) {
+        if (url_normal_quality.isEmpty())
+            urlMap.remove(MapKeys.NORMAL_QUALITY_URL);
         else
-            subtitle_url = Optional.empty();
+            urlMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
+    }
+
+    public String getSubtitleUrl() {
+        return urlMap.getOrDefault(MapKeys.SUBTITLE_URL,"");
+    }
+
+    public void setSubtitleUrl(@NotNull String urlSubtitle) {
+        if (urlSubtitle.isEmpty())
+            urlMap.remove(MapKeys.SUBTITLE_URL);
+        else {
+            urlMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
+        }
     }
 
     public Optional<String> getGeo() {
@@ -579,4 +573,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public boolean isBookmarked() {
         return this.bookmark != null;
     }
+
+    enum MapKeys {SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL}
 }

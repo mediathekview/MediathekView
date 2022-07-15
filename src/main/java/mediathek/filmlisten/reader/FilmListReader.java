@@ -96,7 +96,7 @@ public class FilmListReader implements AutoCloseable {
     protected void parseWebsiteLink(JsonParser jp, DatenFilm datenFilm) throws IOException {
         final String value = jp.nextTextValue();
         if (value != null && !value.isEmpty()) {
-            datenFilm.setWebsiteLink(value);
+            datenFilm.setWebsiteUrl(value);
         }
     }
 
@@ -190,7 +190,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrlSubtitle(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlSubtitle(checkedString(jp));
+        datenFilm.setSubtitleUrl(checkedString(jp));
     }
 
     private void parseUrlKlein(JsonParser jp, DatenFilm datenFilm) throws IOException {

@@ -96,7 +96,7 @@ public class BookmarkData {
   
   @JsonIgnore
   public boolean hasWebURL() {
-    return (this.filmdata != null && !this.filmdata.getWebsiteLink().isEmpty());
+    return (this.filmdata != null && !this.filmdata.getWebsiteUrl().isEmpty());
   }
 
   /**
@@ -132,7 +132,7 @@ public class BookmarkData {
   
   @JsonIgnore
   public String getWebUrl() {
-    return (this.filmdata != null) ? this.filmdata.getWebsiteLink() : null;
+    return (this.filmdata != null) ? this.filmdata.getWebsiteUrl() : null;
   }
 
   @JsonIgnore

@@ -136,14 +136,14 @@ public class FilmDescriptionPanel extends JPanel {
 
         hyperlink.setVisible(true);
         try {
-            hyperlink.setURI(new URL(film.getWebsiteLink()).toURI());
+            hyperlink.setURI(new URL(film.getWebsiteUrl()).toURI());
             hyperlink.setText("Link zur Webseite");
             hyperlink.setClicked(false);
         } catch (Exception e) {
             //logger
             hyperlink.setText("Link nicht verfügbar");
         }
-        hyperlink.setToolTipText(film.getWebsiteLink());
+        hyperlink.setToolTipText(film.getWebsiteUrl());
 
         textArea.setText(film.getDescription());
         SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
