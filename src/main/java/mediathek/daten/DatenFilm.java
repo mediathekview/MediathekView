@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * TODO:
@@ -52,17 +51,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Compressed URLs are missing the base normal quality URL and are indicated by the pipe-symbol.
      */
     public static final char COMPRESSION_MARKER = '|';
-    /**
-     * The database instance for all descriptions.
-     */
-    private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
-    /**
-     * Internal film number, used for storage in database
-     */
-    private final int databaseFilmNumber;
     /**
      * File size in MByte
      */
@@ -95,7 +86,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private int filmLength;
 
     public DatenFilm() {
-        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
     }
 
     public DatenFilm(@NotNull DatenFilm other) {
@@ -103,7 +93,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.bookmark = other.bookmark;
         this.datumFilm = other.datumFilm;
         this.filmSize.setSize(other.filmSize.toString());
-        this.databaseFilmNumber = other.databaseFilmNumber;
         this.description = other.description;
         this.datumLong = other.datumLong;
         this.sender = other.sender;
@@ -254,10 +243,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * This is used internally for the database id AND
      * for the old MV code that might access it for various stuff.
      *
+     * This number is UNUSED and always returns 1 until it is completely removed.
+     *
      * @return the original internal film number
      */
     public int getFilmNr() {
-        return databaseFilmNumber;
+        return 1;
     }
 
     /**

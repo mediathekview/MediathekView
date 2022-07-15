@@ -787,7 +787,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
         replStr = StringUtils.replace(replStr, "%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
 
-        replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
+        replStr = StringUtils.replace(replStr, "%i", String.valueOf(System.currentTimeMillis()));
 
         String res = "";
         if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL))) {

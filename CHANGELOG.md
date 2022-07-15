@@ -3,6 +3,8 @@
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
+- Die Spalte für Filmnummer liefert bis zur vollständigen Entfernung **immer** `1` zurück.
+- Der PSet-Parameter `%i` liefert anstatt der internen Filmnummer nun die aktuelle Zeit seit 1970 in Millisekunden.
 - *Globale Schriftgröße ändern...*-Befehl wurde unter Linux entfernt da es keine Auswirkungen mehr hat.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
