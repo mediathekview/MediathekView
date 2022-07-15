@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
@@ -131,6 +132,10 @@ public class PanelEinstellungen extends JPanel {
         
         cbAutomaticUpdateChecks.addActionListener(this::cbAutomaticUpdateChecksActionPerformed);
         cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK,true));
+        if (GuiFunktionen.isUsingExternalUpdater()) {
+            cbAutomaticUpdateChecks.setEnabled(false);
+            cbAutomaticUpdateChecks.setToolTipText("Diese Option ist deaktiviert, da ein externer Updater verwendet wird.");
+        }
     }
 
     @Handler

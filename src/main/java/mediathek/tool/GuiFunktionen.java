@@ -46,6 +46,9 @@ public class GuiFunktionen {
         return !ret;
     }
 
+    public static boolean isUsingExternalUpdater() {
+        return !isNotUsingExternalUpdater();
+    }
     /**
      * Determine the image's size while keeping aspect ratio within a given boundary box.
      *
