@@ -62,16 +62,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Internal film number, used for storage in database
      */
     private final int databaseFilmNumber;
+    /**
+     * File size in MByte
+     */
+    private final FilmSize filmSize = new FilmSize();
     private DatenAbo abo;
     private BookmarkData bookmark;
     /**
      * film date stored IN SECONDS!!!
      */
     private DatumFilm datumFilm = DatumFilm.UNDEFINED_FILM_DATE;
-    /**
-     * File size in MByte
-     */
-    private FilmSize filmSize = new FilmSize();
     private String websiteLink;
     private String description;
     /**
@@ -114,7 +114,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.abo = other.abo;
         this.bookmark = other.bookmark;
         this.datumFilm = other.datumFilm;
-        this.filmSize = other.filmSize;
+        this.filmSize.setSize(other.filmSize.toString());
         this.databaseFilmNumber = other.databaseFilmNumber;
         this.websiteLink = other.websiteLink;
         this.description = other.description;
