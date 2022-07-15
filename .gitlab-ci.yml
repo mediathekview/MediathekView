@@ -3,7 +3,7 @@ variables:
   MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
   MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
-image: maven:3.8-eclipse-temurin-17
+image: maven:3.8-eclipse-temurin-18
 
 
 cache:
