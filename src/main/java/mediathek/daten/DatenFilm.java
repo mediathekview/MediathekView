@@ -74,7 +74,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     /**
      * film length in seconds.
      */
-    private long filmLength;
+    private int filmLength;
     private String websiteLink;
     private String description;
     /**
@@ -381,7 +381,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return filmlength in seconds, or 0.
      */
-    public long getFilmLength() {
+    public int getFilmLength() {
         return filmLength;
     }
 
@@ -391,8 +391,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return result in seconds or 0.
      */
-    private long parseTimeToSeconds() {
-        long seconds = 0;
+    private int parseTimeToSeconds() {
+        int seconds = 0;
         final String[] split = StringUtils.split(dauer, ':');
         // if empty, don't try to split and return early...
         if (split == null || split.length == 0) {
@@ -400,9 +400,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
         else {
             try {
-                seconds += Long.parseLong(split[0]) * 3600; //hour
-                seconds += Long.parseLong(split[1]) * 60; //minute
-                seconds += Long.parseLong(split[2]); //second
+                seconds += Integer.parseInt(split[0]) * 3600; //hour
+                seconds += Integer.parseInt(split[1]) * 60; //minute
+                seconds += Integer.parseInt(split[2]); //second
             } catch (Exception e) {
                 seconds = 0;
             }
