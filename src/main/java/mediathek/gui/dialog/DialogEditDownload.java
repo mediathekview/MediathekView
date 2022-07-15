@@ -86,7 +86,7 @@ public class DialogEditDownload extends JDialog {
         if (datenDownload.film != null) {
             jRadioButtonResHi.setEnabled(!gestartet);
             jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL)));
-            dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL));
+            dateiGroesse_Hoch = datenDownload.film.getFileSizeForUrl(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL));
             if (!dateiGroesse_Hoch.isEmpty()) {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
             }
@@ -94,7 +94,7 @@ public class DialogEditDownload extends JDialog {
             if (!datenDownload.film.getUrlHighQuality().isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
                 jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY)));
-                dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY));
+                dateiGroesse_HD = datenDownload.film.getFileSizeForUrl(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY));
                 if (!dateiGroesse_HD.isEmpty()) {
                     jRadioButtonResHd.setText(jRadioButtonResHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
                 }
@@ -103,7 +103,7 @@ public class DialogEditDownload extends JDialog {
             if (!datenDownload.film.getUrlLowQuality().isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
                 jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.LOW)));
-                dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.LOW));
+                dateiGroesse_Klein = datenDownload.film.getFileSizeForUrl(datenDownload.film.getUrlFuerAufloesung(FilmResolution.Enum.LOW));
                 if (!dateiGroesse_Klein.isEmpty()) {
                     jRadioButtonResLo.setText(jRadioButtonResLo.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
                 }

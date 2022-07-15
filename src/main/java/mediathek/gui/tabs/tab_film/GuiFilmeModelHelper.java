@@ -220,7 +220,7 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean minLengthCheck(DatenFilm film) {
-        final long filmLength = film.getFilmLength();
+        var filmLength = film.getFilmLength();
         if (filmLength == 0)
             return true; // always show entries with length 0, which are internally "no length"
         else

@@ -7,6 +7,7 @@ import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.datum.DatumFilm;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -70,11 +71,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     /**
      * File size in MByte
      */
-    private FilmSize filmSize;
-    /**
-     * film length in seconds.
-     */
-    private int filmLength;
+    private FilmSize filmSize = new FilmSize();
     private String websiteLink;
     private String description;
     /**
@@ -100,20 +97,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private Optional<String> subtitle_url = Optional.empty();
     private String datum = "";
     private String sendeZeit = "";
-    private String dauer = "";
-    private String groesse = "";
     /**
      * Normal quality URL.
      */
     private String url_normal_quality = "";
     /**
-     * film duration in seconds.
-     * getDauer() stores the same info as a String
+     * film duration or film length in seconds.
      */
-    private int duration;
+    private int filmLength;
 
     public DatenFilm() {
-        filmSize = new FilmSize(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
     }
 
@@ -122,7 +115,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.bookmark = other.bookmark;
         this.datumFilm = other.datumFilm;
         this.filmSize = other.filmSize;
-        this.filmLength = other.filmLength;
         this.databaseFilmNumber = other.databaseFilmNumber;
         this.websiteLink = other.websiteLink;
         this.description = other.description;
@@ -136,14 +128,51 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.subtitle_url = other.subtitle_url;
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
-        this.dauer = other.dauer;
-        this.groesse = other.groesse;
         this.url_normal_quality = other.url_normal_quality;
-        this.duration = other.duration;
+        this.filmLength = other.filmLength;
     }
 
-    public int getDuration() {
-        return duration;
+    /**
+     * URLs are considered compressed if they contain a '|'-symbol in the text.
+     * They need to be decompressed before use.
+     * @param requestedUrl the string to be checked.
+     * @return true if url is compressed, false otherwise.
+     */
+    public static boolean isUrlCompressed(@NotNull String requestedUrl) {
+        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
+        return indexPipe != -1;
+    }
+
+    /**
+     * Get the filmlength or duration.
+     *
+     * @return filmlength/duration in seconds, or 0.
+     */
+    public int getFilmLength() {
+        return filmLength;
+    }
+
+    /**
+     * Set the film's length or duration.
+     *
+     * @param dauer Input string in format "HH:MM:SS".
+     */
+    public void setFilmLength(String dauer) {
+        //bail out early if there is nothing to split...
+        if (dauer == null || dauer.isEmpty()) {
+            filmLength = 0;
+        }
+        else {
+            final String[] split = StringUtils.split(dauer, ':');
+
+            try {
+                filmLength += Integer.parseInt(split[0]) * 3600; //hour
+                filmLength += Integer.parseInt(split[1]) * 60; //minute
+                filmLength += Integer.parseInt(split[2]); //second
+            } catch (Exception e) {
+                filmLength = 0;
+            }
+        }
     }
 
     public @Nullable DatenAbo getAbo() {
@@ -249,7 +278,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return The size in MByte
      */
-    public FilmSize getFilmSize() {
+    public FilmSize getFileSize() {
         return filmSize;
     }
 
@@ -341,9 +370,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         };
     }
 
-    public String getDateigroesse(String url) {
+    public String getFileSizeForUrl(@NotNull String url) {
         if (url.equalsIgnoreCase(getUrlNormalQuality())) {
-            return getSize();
+            return getFileSize().toString();
         } else {
             return FileSize.getFileLengthFromUrl(url);
         }
@@ -376,41 +405,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    /**
-     * Get the filmlength in seconds.
-     *
-     * @return filmlength in seconds, or 0.
-     */
-    public int getFilmLength() {
-        return filmLength;
-    }
-
-    /**
-     * Convert HH:MM:SS string into seconds.
-     * Or set to 0 in case of error.
-     *
-     * @return result in seconds or 0.
-     */
-    private int parseTimeToSeconds() {
-        int seconds = 0;
-        final String[] split = StringUtils.split(dauer, ':');
-        // if empty, don't try to split and return early...
-        if (split == null || split.length == 0) {
-            return 0;
-        }
-        else {
-            try {
-                seconds += Integer.parseInt(split[0]) * 3600; //hour
-                seconds += Integer.parseInt(split[1]) * 60; //minute
-                seconds += Integer.parseInt(split[2]); //second
-            } catch (Exception e) {
-                seconds = 0;
-            }
-
-            return seconds;
-        }
-    }
-
     private void setDatum() {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
@@ -427,9 +421,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public void init() {
-        filmSize = new FilmSize(this);
-        filmLength = parseTimeToSeconds();
-
         setDatum();
     }
 
@@ -459,17 +450,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
 
         return ret;
-    }
-
-    /**
-     * URLs are considered compressed if they contain a '|'-symbol in the text.
-     * They need to be decompressed before use.
-     * @param requestedUrl the string to be checked.
-     * @return true if url is compressed, false otherwise.
-     */
-    public static boolean isUrlCompressed(@NotNull String requestedUrl) {
-        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
-        return indexPipe != -1;
     }
 
     public String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
@@ -532,37 +512,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.sendeZeit = sendeZeit;
     }
 
-    public String getDauer() {
-        return dauer;
-    }
-
-    public void setDauer(String dauer) {
-        this.dauer = dauer;
-
-        //bail out early if there is nothing to split...
-        if (dauer == null || dauer.isEmpty()) {
-            duration = 0;
-        }
+    /**
+     * Get the film's length or duration formatted as a string in "HH:MM:SS" format.
+     * Similar to {@link DatenFilm#getFilmLength()}.
+     *
+     * @return film length or duration as String.
+     */
+    public String getFilmLengthAsString() {
+        if (filmLength == 0)
+            return "";
         else {
-            //FIXME gefällt mir nicht
-            final String[] split = StringUtils.split(this.dauer, ':');
-
-            try {
-                duration += Integer.parseInt(split[0]) * 3600; //hour
-                duration += Integer.parseInt(split[1]) * 60; //minute
-                duration += Integer.parseInt(split[2]); //second
-            } catch (Exception e) {
-                duration = 0;
-            }
+            return DurationFormatUtils.formatDuration(filmLength * 1000L,"HH:mm:ss", true);
         }
-    }
-
-    public String getSize() {
-        return groesse;
-    }
-
-    public void setSize(String size) {
-        this.groesse = size;
     }
 
     public String getUrlNormalQuality() {

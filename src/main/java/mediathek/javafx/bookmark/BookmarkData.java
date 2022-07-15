@@ -56,7 +56,7 @@ public class BookmarkData {
   public String getTitel(){ return this.titel; }
   public void   setTitel(String url){ this.titel = url;}
 
-  public String getDauer(){ return ((filmdata != null) ? filmdata.getDauer(): ""); }
+  public String getDauer(){ return ((filmdata != null) ? filmdata.getFilmLengthAsString(): ""); }
   public void   setDauer(String dauer){}
 
   public String getDescription(){ return ((filmdata != null) ? filmdata.getDescription(): ""); }
@@ -165,7 +165,7 @@ public class BookmarkData {
       Film.setUrlHighQuality(getHighQualityUrl());
       Film.setUrlLowQuality(getUrlKlein());
       Film.setSender(getSender());
-      Film.setDauer(getDauer());
+      Film.setFilmLength(getDauer());
     }
     return Film;
   }

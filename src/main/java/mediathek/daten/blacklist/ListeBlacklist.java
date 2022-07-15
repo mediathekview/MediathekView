@@ -315,7 +315,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @return true if film should be displayed
      */
     private boolean checkFilmLength(@NotNull DatenFilm film) {
-        final long filmLength = film.getFilmLength();
+        var filmLength = film.getFilmLength();
         return !(filmLength != 0 && minimumFilmLength > filmLength);
     }
 

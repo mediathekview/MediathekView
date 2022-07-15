@@ -111,7 +111,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             //here comes the content...
             switch (columnModelIndex) {
                 case DatenFilm.FILM_DAUER:
-                    setText(datenFilm.getDauer());
+                    setText(datenFilm.getFilmLengthAsString());
                     break;
 
                 case DatenFilm.FILM_ABSPIELEN:

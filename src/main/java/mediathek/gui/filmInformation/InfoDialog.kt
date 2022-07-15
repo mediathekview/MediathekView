@@ -139,12 +139,12 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                     lblSender.graphic = SenderIcon(JavaFxUtils.toBufferedImage(icon))
                 }
                 lblGeo.text = currentFilm!!.geo.orElse("")
-                lblSize.text = currentFilm!!.size
+                lblSize.text = currentFilm!!.fileSize.toString()
                 lblThema.text = currentFilm!!.thema
                 lblTitle.text = currentFilm!!.title
                 lblDate.text = currentFilm!!.sendeDatum
                 lblUhrzeit.text = currentFilm!!.sendeZeit
-                lblDuration.text = currentFilm!!.dauer
+                lblDuration.text = currentFilm!!.filmLengthAsString
                 cbHq.isSelected = currentFilm!!.isHighQuality
                 cbSubtitle.isSelected = currentFilm!!.hasSubtitle()
                 hyperlink.tooltip = Tooltip(currentFilm!!.websiteLink)

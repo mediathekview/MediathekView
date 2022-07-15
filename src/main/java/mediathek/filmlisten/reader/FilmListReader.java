@@ -210,12 +210,12 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseDauer(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setDauer(checkedString(jp));
+        datenFilm.setFilmLength(checkedString(jp));
     }
 
     private void parseGroesse(JsonParser jp, DatenFilm datenFilm) throws IOException {
         String value = checkedString(jp);
-        datenFilm.setSize(value);
+        datenFilm.getFileSize().setSize(value);
     }
 
     /**

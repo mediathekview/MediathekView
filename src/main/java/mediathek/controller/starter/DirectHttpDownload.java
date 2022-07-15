@@ -429,7 +429,7 @@ public class DirectHttpDownload extends Thread {
 
     private void bereitsAnschauen(DatenDownload datenDownload) {
         if (datenDownload.film != null && datenDownload.start != null) {
-            final long filmLength = datenDownload.film.getFilmLength();
+            var filmLength = datenDownload.film.getFilmLength();
             if (filmLength > 0
                     && datenDownload.start.restSekunden > 0
                     && datenDownload.mVFilmSize.getAktSize() > 0

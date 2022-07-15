@@ -130,7 +130,7 @@ public class DialogAddDownload extends JDialog {
         var decoratedPool = Daten.getInstance().getDecoratedPool();
         hqFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY);
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
 
         Futures.addCallback(hqFuture, new FutureCallback<>() {
@@ -158,7 +158,7 @@ public class DialogAddDownload extends JDialog {
 
         hochFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlNormalQuality();
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
         Futures.addCallback(hochFuture, new FutureCallback<>() {
             @Override
@@ -183,7 +183,7 @@ public class DialogAddDownload extends JDialog {
 
         kleinFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlFuerAufloesung(FilmResolution.Enum.LOW);
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
         Futures.addCallback(kleinFuture, new FutureCallback<>() {
             @Override

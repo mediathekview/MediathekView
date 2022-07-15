@@ -139,8 +139,8 @@ public class FilmListWriter {
         writeTitel(jg, datenFilm);
         jg.writeString(datenFilm.getSendeDatum());
         writeZeit(jg, datenFilm);
-        jg.writeString(datenFilm.getDauer());
-        jg.writeString(datenFilm.getSize());
+        jg.writeString(datenFilm.getFilmLengthAsString());
+        jg.writeString(datenFilm.getFileSize().toString());
         jg.writeString(datenFilm.getDescription());
         jg.writeString(datenFilm.getUrlNormalQuality());
         jg.writeString(datenFilm.getWebsiteLink());
