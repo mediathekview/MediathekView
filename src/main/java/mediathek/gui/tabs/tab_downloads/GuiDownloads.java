@@ -1439,8 +1439,8 @@ public class GuiDownloads extends AGuiTabPanel {
                             if (dl.film != null) {
                                 DatenFilm filmClone = new DatenFilm(dl.film);
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmClone.setUrlNormalQuality(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                filmClone.setUrlLowQuality("");
+                                filmClone.setNormalQualityUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                filmClone.setLowQualityUrl("");
                                 // und starten
                                 daten.getStarterClass().urlMitProgrammStarten(gruppe, filmClone, "");
                             }

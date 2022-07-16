@@ -61,9 +61,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     /**
      * Stores all URLs, some keys may not exist.
      */
-    private final EnumMap<MapKeys, String> urlMap = new EnumMap<>(MapKeys.class);
-    private DatenAbo abo;
-    private BookmarkData bookmark;
+    private final EnumMap<MapKeys, Object> dataMap = new EnumMap<>(MapKeys.class);
     /**
      * film date stored IN SECONDS!!!
      */
@@ -89,8 +87,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public DatenFilm(@NotNull DatenFilm other) {
-        this.abo = other.abo;
-        this.bookmark = other.bookmark;
         this.datumFilm = other.datumFilm;
         this.filmSize.setSize(other.filmSize.toString());
         this.description = other.description;
@@ -99,7 +95,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.thema = other.thema;
         this.titel = other.titel;
         this.availableInCountries = other.availableInCountries;
-        this.urlMap.putAll(other.urlMap);
+        this.dataMap.putAll(other.dataMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
         this.filmLength = other.filmLength;
@@ -111,7 +107,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param requestedUrl the string to be checked.
      * @return true if url is compressed, false otherwise.
      */
-    public static boolean isUrlCompressed(@NotNull String requestedUrl) {
+    public static boolean isCompressedUrl(@NotNull String requestedUrl) {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         return indexPipe != -1;
     }
@@ -149,37 +145,40 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public @Nullable DatenAbo getAbo() {
-        return abo;
+        return (DatenAbo) dataMap.getOrDefault(MapKeys.ABO_DATA, null);
     }
 
-    public void setAbo(DatenAbo abo) {
-        this.abo = abo;
+    public void setAbo(@Nullable DatenAbo abo) {
+        if (abo == null)
+            dataMap.remove(MapKeys.ABO_DATA);
+        else
+            dataMap.put(MapKeys.ABO_DATA, abo);
     }
 
     public DatumFilm getDatumFilm() {
         return datumFilm;
     }
 
-    public String getUrlLowQuality() {
-        return urlMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
+    public String getLowQualityUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
     }
 
-    public void setUrlLowQuality(@NotNull String url_low_quality) {
+    public void setLowQualityUrl(@NotNull String url_low_quality) {
         if (url_low_quality.isEmpty())
-            urlMap.remove(MapKeys.LOW_QUALITY_URL);
+            dataMap.remove(MapKeys.LOW_QUALITY_URL);
         else
-            urlMap.put(MapKeys.LOW_QUALITY_URL, url_low_quality);
+            dataMap.put(MapKeys.LOW_QUALITY_URL, url_low_quality);
     }
 
-    public String getUrlHighQuality() {
-        return urlMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
+    public String getHighQualityUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
     }
 
-    public void setUrlHighQuality(@NotNull String urlHd) {
+    public void setHighQualityUrl(@NotNull String urlHd) {
         if (urlHd.isEmpty())
-            urlMap.remove(MapKeys.HIGH_QUALITY_URL);
+            dataMap.remove(MapKeys.HIGH_QUALITY_URL);
         else
-            urlMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
+            dataMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
     }
 
     public String getDatumLong() {
@@ -281,15 +280,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getWebsiteUrl() {
-        return urlMap.getOrDefault(MapKeys.WEBSITE_URL, "");
+        return (String)dataMap.getOrDefault(MapKeys.WEBSITE_URL, "");
     }
 
     public void setWebsiteUrl(String link) {
         if (link == null || link.isEmpty()) {
-            urlMap.remove(MapKeys.WEBSITE_URL);
+            dataMap.remove(MapKeys.WEBSITE_URL);
         }
         else {
-            urlMap.put(MapKeys.WEBSITE_URL, link);
+            dataMap.put(MapKeys.WEBSITE_URL, link);
         }
     }
 
@@ -340,7 +339,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public boolean hasSubtitle() {
-        return urlMap.containsKey(MapKeys.SUBTITLE_URL);
+        return dataMap.containsKey(MapKeys.SUBTITLE_URL);
     }
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
@@ -374,7 +373,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return urlMap.containsKey(MapKeys.HIGH_QUALITY_URL);
+        return dataMap.containsKey(MapKeys.HIGH_QUALITY_URL);
     }
 
     @Override
@@ -420,7 +419,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             ret = getUrlNormalQuality();
         else {
             try {
-                if (isUrlCompressed(requestedUrl))
+                if (isCompressedUrl(requestedUrl))
                     ret = decompressUrl(requestedUrl);
                 else
                     ret = requestedUrl;
@@ -447,8 +446,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      */
     private String getUrlByResolution(@NotNull final FilmResolution.Enum resolution) {
         return switch (resolution) {
-            case HIGH_QUALITY -> getUrlHighQuality();
-            case LOW -> getUrlLowQuality();
+            case HIGH_QUALITY -> getHighQualityUrl();
+            case LOW -> getLowQualityUrl();
             default -> getUrlNormalQuality();
         };
     }
@@ -508,25 +507,25 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getUrlNormalQuality() {
-        return urlMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
+        return (String)dataMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
     }
 
-    public void setUrlNormalQuality(@NotNull String url_normal_quality) {
+    public void setNormalQualityUrl(@NotNull String url_normal_quality) {
         if (url_normal_quality.isEmpty())
-            urlMap.remove(MapKeys.NORMAL_QUALITY_URL);
+            dataMap.remove(MapKeys.NORMAL_QUALITY_URL);
         else
-            urlMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
+            dataMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
     }
 
     public String getSubtitleUrl() {
-        return urlMap.getOrDefault(MapKeys.SUBTITLE_URL,"");
+        return (String)dataMap.getOrDefault(MapKeys.SUBTITLE_URL,"");
     }
 
     public void setSubtitleUrl(@NotNull String urlSubtitle) {
         if (urlSubtitle.isEmpty())
-            urlMap.remove(MapKeys.SUBTITLE_URL);
+            dataMap.remove(MapKeys.SUBTITLE_URL);
         else {
-            urlMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
+            dataMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
         }
     }
 
@@ -543,8 +542,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return BookmarkData entry
      */
-    public BookmarkData getBookmark() {
-        return this.bookmark;
+    public @Nullable BookmarkData getBookmark() {
+        return (BookmarkData) dataMap.getOrDefault(MapKeys.BOOKMARK_DATA, null);
     }
 
     /**
@@ -552,8 +551,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @param bookmark Bookmark entry
      */
-    public void setBookmark(BookmarkData bookmark) {
-        this.bookmark = bookmark;
+    public void setBookmark(@Nullable BookmarkData bookmark) {
+        if (bookmark == null)
+            dataMap.remove(MapKeys.BOOKMARK_DATA);
+        else
+            dataMap.put(MapKeys.BOOKMARK_DATA, bookmark);
     }
 
     /**
@@ -562,8 +564,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return boolean true
      */
     public boolean isBookmarked() {
-        return this.bookmark != null;
+        return dataMap.containsKey(MapKeys.BOOKMARK_DATA);
     }
 
-    enum MapKeys {SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL}
+    enum MapKeys {SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL, BOOKMARK_DATA, ABO_DATA}
 }

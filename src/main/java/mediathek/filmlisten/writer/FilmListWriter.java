@@ -159,9 +159,9 @@ public class FilmListWriter {
     }
 
     private void writeLowQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
-        String url = datenFilm.getUrlLowQuality();
+        String url = datenFilm.getLowQualityUrl();
         if (decompressUrls) {
-            if (DatenFilm.isUrlCompressed(url)) {
+            if (DatenFilm.isCompressedUrl(url)) {
                 url = datenFilm.decompressUrl(url);
             }
         }
@@ -170,9 +170,9 @@ public class FilmListWriter {
     }
 
     private void writeHighQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
-        String url = datenFilm.getUrlHighQuality();
+        String url = datenFilm.getHighQualityUrl();
         if (decompressUrls) {
-            if (DatenFilm.isUrlCompressed(url)) {
+            if (DatenFilm.isCompressedUrl(url)) {
                 url = datenFilm.decompressUrl(url);
             }
         }

@@ -194,11 +194,11 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrlKlein(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlLowQuality(checkedString(jp));
+        datenFilm.setLowQualityUrl(checkedString(jp));
     }
 
     private void parseUrlHd(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlHighQuality(checkedString(jp));
+        datenFilm.setHighQualityUrl(checkedString(jp));
     }
 
     private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -269,7 +269,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlNormalQuality(checkedString(jp));
+        datenFilm.setNormalQualityUrl(checkedString(jp));
     }
 
     private void parseLivestream(DatenFilm datenFilm) {
