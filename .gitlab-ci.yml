@@ -29,6 +29,9 @@ default:
     - mvn -v
     - mvn clean
     - mvn install4j:install-license -Pinstall4j
+    - git clone https://gitlab.com/mediathekview/mediathekview-buildres.git tmpres
+    - mv tmpres/bin res/
+    - rm -rf tmpres
 
 stages:
   - deploy-nightly-lin
