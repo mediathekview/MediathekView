@@ -19,11 +19,11 @@ jobs:
         id: check-if-changed
         with:
           paths: .github/workflows src/ res/ pom.xml .install4j/ .mvn/
-      - name: Set up JDK 17
+      - name: Set up JDK 18
         if: steps.check-if-changed.outputs.changed == 'true'
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 18
 
       - name: Cache local Maven repository
         if: steps.check-if-changed.outputs.changed == 'true'
@@ -57,28 +57,28 @@ jobs:
         include:
           - os: linux
             architecture: 64bit
-            maven_profiles: "linux,64bit,install4j"
+            maven_profiles: "linux_64bit,install4j"
           - os: arm
-            architecture: 32bit
-            maven_profiles: "arm,!64bit,32bit,install4j,!linux"
+            architecture: 64bit
+            maven_profiles: "!linux_64bit,linux_arm_64bit,install4j"
           - os: windows
             architecture: 64bit
-            maven_profiles: "windows,64bit,install4j,!linux"
-          - os: windows
-            architecture: 32bit
-            maven_profiles: "windows32,!64bit,32bit,install4j,!linux"
-          - os: macOS
-            architecture: 64bit
-            maven_profiles: "mac,!linux"
+            maven_profiles: "!linux_64bit,windows_64bit,install4j"
+          # - os: windows
+          #   architecture: 32bit
+          #   maven_profiles: "windows32,!64bit,32bit,install4j,!linux"
+          # - os: macOS
+          #   architecture: 64bit
+          #   maven_profiles: "mac,!linux"
     steps:
       - uses: actions/checkout@v2
         with:
           ref: develop
-      - name: Set up JDK 17
+      - name: Set up JDK 18
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '16'
+          java-version: '18'
       - uses: AdoptOpenJDK/install-jdk@v1
         with:
           version: '8'
@@ -87,7 +87,7 @@ jobs:
       - name: Download install4j
         uses: wei/curl@v1
         with:
-          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_5.tar.gz' --output install4j.tar.gz
+          args: -fsSL 'https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_7.tar.gz' --output install4j.tar.gz
       - name: Extract install4j
         run: tar -zxvf install4j.tar.gz
 
@@ -125,10 +125,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: develop
-      - name: Set up JDK 17
+      - name: Set up JDK 18
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 18
       - name: Get version
         run: echo "VERSION=$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )" >> $GITHUB_ENV
       - uses: actions/download-artifact@v2

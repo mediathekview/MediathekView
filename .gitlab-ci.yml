@@ -22,8 +22,8 @@ default:
     - ssh-keyscan -p 52150 mediathekview.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 52150 5.1.76.243 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_5.tar.gz
-    - tar -zxf install4j_unix_9_0_5.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_9_0_7.tar.gz -O install4j.tar.gz
+    - tar -zxf install4j.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
@@ -34,13 +34,13 @@ stages:
   - deploy-nightly-lin
   - deploy-nightly-linarm
   - deploy-nightly-win
-  - deploy-nightly-win32
+  # - deploy-nightly-win32
   - deploy-nightly-mac
   # - deploy-nightly-mac-as
   - deploy-lin
   - deploy-linarm
   - deploy-win
-  - deploy-win32
+  # - deploy-win32
 
 Build and Deploy nightly Linux:
   stage: deploy-nightly-lin
@@ -56,7 +56,7 @@ Build and Deploy nightly Linux ARM:
   stage: deploy-nightly-linarm
   script:
     - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly linux-armhf $CI_COMMIT_SHA
+    - /skripte/deploy.sh nightly linux-aarch64 $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
@@ -68,13 +68,13 @@ Build and Deploy nightly Windows:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
-Build and Deploy nightly Windows 32bit:
-  stage: deploy-nightly-win32
-  script:
-    - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
+# Build and Deploy nightly Windows 32bit:
+#   stage: deploy-nightly-win32
+#   script:
+#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
+#     - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Mac Intel:
   stage: deploy-nightly-mac
@@ -108,7 +108,7 @@ Build and Deploy Linux ARM:
   stage: deploy-linarm
   script:
     - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh release linux-armhf
+    - /skripte/deploy.sh release linux-aarch64
   rules:
     - if: $CI_COMMIT_TAG
 
@@ -120,10 +120,10 @@ Build and Deploy Windows:
   rules:
     - if: $CI_COMMIT_TAG
 
-Build and Deploy Windows 32bit:
-  stage: deploy-win32
-  script:
-    - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh release win32
-  rules:
-    - if: $CI_COMMIT_TAG
+# Build and Deploy Windows 32bit:
+#   stage: deploy-win32
+#   script:
+#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
+#     - /skripte/deploy.sh release win32
+#   rules:
+#     - if: $CI_COMMIT_TAG

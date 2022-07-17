@@ -141,7 +141,7 @@
             -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
 
-        <install4j.home>./install4j9.0.5</install4j.home>
+        <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
         <install4j.version>9.0.7</install4j.version>

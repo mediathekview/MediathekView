@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.5" transformSequenceNumber="9">
+<install4j version="${install4j.version}" transformSequenceNumber="9">
   <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-armhf" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-aarch64" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
@@ -61,7 +61,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://download.mediathekview.de/stabil/updates-linux-armhf.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
+  <installerGui autoUpdateDescriptorUrl="https://download.mediathekview.de/stabil/updates-linux-aarch64.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://download.mediathekview.de/stabil/">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
@@ -1004,22 +1004,22 @@ return true;</property>
     </styles>
   </installerGui>
   <mediaSets>
-    <unixInstaller name="Unix Installer ARM32" id="161">
-      <jreBundle platform="linux-arm32-vfp-hflt">
+    <unixInstaller name="Unix Installer ARM64" id="161">
+      <jreBundle platform="linux-aarch64">
         <modules>
           <defaultModules set="all" />
         </modules>
       </jreBundle>
     </unixInstaller>
-    <linuxDeb name="Linux Deb Archive ARM32" id="164" maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="armhf">
-      <jreBundle platform="linux-arm32-vfp-hflt">
+    <linuxDeb name="Linux Deb Archive ARM64" id="164" maintainerEmail="info@mediathekview.de" architectureSet="true" architecture="aarch64">
+      <jreBundle platform="linux-aarch64">
         <modules>
           <defaultModules set="all" />
         </modules>
       </jreBundle>
     </linuxDeb>
-    <unixArchive name="Unix Archive ARM32" id="679">
-      <jreBundle platform="linux-arm32-vfp-hflt">
+    <unixArchive name="Unix Archive ARM64" id="679">
+      <jreBundle platform="linux-aarch64">
         <modules>
           <defaultModules set="all" />
         </modules>
