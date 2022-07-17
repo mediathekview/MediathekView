@@ -7,6 +7,7 @@
 - Der PSet-Parameter `%i` liefert anstatt der internen Filmnummer nun die aktuelle Zeit seit 1970 in Millisekunden.
 - *Globale Schriftgröße ändern...*-Befehl wurde unter Linux entfernt da es keine Auswirkungen mehr hat.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
+- **BUGFIX:** Fehler in der Anzeige im Statusfeld des Download-Tab wurde behoben.
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
 - **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
 - **BUGFIX:** Sendericons werden nun vollständig und hochauflösend gerendert.
