@@ -135,7 +135,7 @@
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
             -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.win.64>
-        <!-- VM Parameters Linux x64 -->
+        <!-- VM Parameters Linux 64bit Intel and ARM -->
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
             -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
             -Dfile.encoding=UTF-8 -DexternalUpdateCheck
