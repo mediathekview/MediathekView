@@ -72,6 +72,10 @@ public class ApplicationConfiguration {
      * logger for {@link TimerTaskListener} inner class.
      */
     private static final Logger logger = LogManager.getLogger();
+    /**
+     * A custom small thread scheduler exclusively for config changes.
+     */
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
     private XMLConfiguration config;
     private FileHandler handler;
     /**
@@ -93,8 +97,7 @@ public class ApplicationConfiguration {
             config.setProperty("config.major", version.getMajor());
             config.setProperty("config.minor", version.getMinor());
             config.setProperty("config.patch", version.getPatch());
-        }
-        finally {
+        } finally {
             config.unlock(LockMode.WRITE);
         }
     }
@@ -220,17 +223,20 @@ public class ApplicationConfiguration {
         public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
     }
 
+    public static class MemoryMonitorDialog {
+        public static final String VISIBLE = "memory_monitor.visible";
+        public static final String X = "memory_monitor.x";
+        public static final String Y = "memory_monitor.y";
+        public static final String WIDTH = "memory_monitor.width";
+        public static final String HEIGHT = "memory_monitor.height";
+    }
+
     public static class SettingsDialog {
         public static final String WIDTH = "application.ui.settings_dialog.width";
         public static final String HEIGHT = "application.ui.settings_dialog.height";
         public static final String X = "application.ui.settings_dialog.x";
         public static final String Y = "application.ui.settings_dialog.y";
     }
-
-    /**
-     * A custom small thread scheduler exclusively for config changes.
-     */
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
 
     /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case

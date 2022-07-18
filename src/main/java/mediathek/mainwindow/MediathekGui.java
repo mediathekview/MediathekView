@@ -439,7 +439,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
-        if (Config.isDebugModeEnabled())
+        boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
+        if (visible)
             showMemoryMonitorAction.showMemoryMonitor();
     }
 
