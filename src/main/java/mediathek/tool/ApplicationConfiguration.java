@@ -231,6 +231,13 @@ public class ApplicationConfiguration {
         public static final String HEIGHT = "memory_monitor.height";
     }
 
+    public static class EditDownloadDialog {
+        public static final String X = "edit_download_dialog.x";
+        public static final String Y = "edit_download_dialog.y";
+        public static final String WIDTH = "edit_download_dialog.width";
+        public static final String HEIGHT = "edit_download_dialog.height";
+    }
+
     public static class SettingsDialog {
         public static final String WIDTH = "application.ui.settings_dialog.width";
         public static final String HEIGHT = "application.ui.settings_dialog.height";

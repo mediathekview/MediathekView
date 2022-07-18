@@ -5,9 +5,11 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.FilmResolution;
 import mediathek.file.GetFile;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.SVGIconUtilities;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +20,10 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
+import java.util.NoSuchElementException;
 
 public class DialogEditDownload extends JDialog {
     private final DatenDownload datenDownload;
@@ -39,9 +44,8 @@ public class DialogEditDownload extends JDialog {
     private final JFrame parent;
     private final String orgProgArray;
     private FilmResolution.Enum resolution = FilmResolution.Enum.NORMAL;
-    private final JLabel jLabelFilmHD = new JLabel();
-    private final JLabel jLabelFilmUT = new JLabel();
-    private static ImageIcon ja_sw_16;
+    private final JCheckBox cbHighQuality = new JCheckBox();
+    private final JCheckBox cbSubtitleAvailable = new JCheckBox();
     private final TableColumnModel columnModel;
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet, TableColumnModel colModel) {
@@ -50,9 +54,10 @@ public class DialogEditDownload extends JDialog {
         this.parent = parent;
         datenDownload = ddownload;
         gestartet = ggestartet;
-        jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
-        ja_sw_16 = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg");
         columnModel = colModel;
+
+        cbSubtitleAvailable.setEnabled(false);
+        cbHighQuality.setEnabled(false);
 
         orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
@@ -72,6 +77,56 @@ public class DialogEditDownload extends JDialog {
 
         setupResolutionButtons();
         setExtra();
+
+        restoreLocation();
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                saveLocation();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                saveLocation();
+            }
+        });
+    }
+
+    private void restoreLocation() {
+        var config = ApplicationConfiguration.getConfiguration();
+        config.lock(LockMode.READ);
+        try {
+            var newLocation = new Point();
+            newLocation.x = config.getInt(ApplicationConfiguration.EditDownloadDialog.X);
+            newLocation.y = config.getInt(ApplicationConfiguration.EditDownloadDialog.Y);
+            setLocation(newLocation);
+
+            int w = config.getInt(ApplicationConfiguration.EditDownloadDialog.WIDTH, -1);
+            int h = config.getInt(ApplicationConfiguration.EditDownloadDialog.HEIGHT, -1);
+            if (w != -1 && h != -1) {
+                setSize(w,h);
+            }
+        } catch (NoSuchElementException ignored) {
+        } finally {
+            config.unlock(LockMode.READ);
+        }
+    }
+
+    private void saveLocation() {
+        if (!isVisible())
+            return;
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.WRITE);
+            var location = getLocationOnScreen();
+            config.setProperty(ApplicationConfiguration.EditDownloadDialog.X, location.x);
+            config.setProperty(ApplicationConfiguration.EditDownloadDialog.Y, location.y);
+            config.setProperty(ApplicationConfiguration.EditDownloadDialog.WIDTH, getWidth());
+            config.setProperty(ApplicationConfiguration.EditDownloadDialog.HEIGHT, getHeight());
+        } finally {
+            config.unlock(LockMode.WRITE);
+        }
     }
 
     private void setupResolutionButtons() {
@@ -130,8 +185,6 @@ public class DialogEditDownload extends JDialog {
     private void changeRes() {
         // RadioButton sind nur enabled wenn "datenDownload.film" vorhanden
         var res = getRadioButtonResolution();
-        //var test = res.toString();
-        //var test2 = res.name();
         datenDownload.arr[DatenDownload.DOWNLOAD_URL] = datenDownload.film.getUrlFuerAufloesung(res);
         textfeldListe[DatenDownload.DOWNLOAD_URL].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
 
@@ -287,33 +340,31 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxSpotlight);
                     break;
                 case DatenDownload.DOWNLOAD_HD:
-                    jLabelFilmHD.setOpaque(false);
-                    jLabelFilmHD.setIcon(ja_sw_16);
+                    cbHighQuality.setSelected(true);
                     gridbag.setConstraints(labelListe[i], c);
                     jPanelExtra.add(labelListe[i]);
                     c.gridx = 1;
                     c.weightx = 10;
-                    gridbag.setConstraints(jLabelFilmHD, c);
-                    jPanelExtra.add(jLabelFilmHD);
+                    gridbag.setConstraints(cbHighQuality, c);
+                    jPanelExtra.add(cbHighQuality);
                     if (datenDownload.film != null) {
-                        jLabelFilmHD.setVisible(datenDownload.film.isHighQuality());
+                        cbHighQuality.setVisible(datenDownload.film.isHighQuality());
                     } else {
-                        jLabelFilmHD.setVisible(false);
+                        cbHighQuality.setVisible(false);
                     }
                     break;
                 case DatenDownload.DOWNLOAD_UT:
-                    jLabelFilmUT.setOpaque(false);
-                    jLabelFilmUT.setIcon(ja_sw_16);
+                    cbSubtitleAvailable.setSelected(true);
                     gridbag.setConstraints(labelListe[i], c);
                     jPanelExtra.add(labelListe[i]);
                     c.gridx = 1;
                     c.weightx = 10;
-                    gridbag.setConstraints(jLabelFilmUT, c);
-                    jPanelExtra.add(jLabelFilmUT);
+                    gridbag.setConstraints(cbSubtitleAvailable, c);
+                    jPanelExtra.add(cbSubtitleAvailable);
                     if (datenDownload.film != null) {
-                        jLabelFilmUT.setVisible(datenDownload.film.hasSubtitle());
+                        cbSubtitleAvailable.setVisible(datenDownload.film.hasSubtitle());
                     } else {
-                        jLabelFilmUT.setVisible(false);
+                        cbSubtitleAvailable.setVisible(false);
                     }
                     break;
                 case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF:
