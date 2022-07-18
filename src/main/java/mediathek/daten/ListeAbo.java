@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.abo.DatenAbo;
@@ -28,8 +27,6 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -38,7 +35,6 @@ import java.util.Collections;
 
 public class ListeAbo extends ArrayList<DatenAbo> {
     private static final String[] LEER = {""};
-    private static final Logger logger = LogManager.getLogger();
     private int nr;
 
     private int parseMinSize() {
@@ -193,13 +189,15 @@ public class ListeAbo extends ArrayList<DatenAbo> {
                 ifPresentOrElse(film::setAbo, () -> deleteAboInFilm(film));
     }
 
+    /**
+     * Hier wird tatsächlich für jeden Film die Liste der Abos durchsucht.
+     * Braucht länger.
+     * @param listeFilme Die Filmliste
+     * @param aboLoeschen abo löschen?
+     */
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
-        // braucht länger
-
         if (this.isEmpty() && aboLoeschen) {
-            listeFilme.parallelStream().forEach(this::deleteAboInFilm);
+            listeFilme.forEach(this::deleteAboInFilm);
             return;
         }
 
@@ -218,8 +216,5 @@ public class ListeAbo extends ArrayList<DatenAbo> {
             datenAbo.setThemaFilterPattern(LEER);
             datenAbo.setIrgendwoFilterPattern(LEER);
         });
-
-        stopwatch.stop();
-        logger.debug("setAboFuerFilm: {}", stopwatch);
     }
 }

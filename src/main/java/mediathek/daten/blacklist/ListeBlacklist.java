@@ -1,6 +1,5 @@
 package mediathek.daten.blacklist;
 
-import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
@@ -11,8 +10,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.MessageBus;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ import java.util.function.Predicate;
 
 public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
-    private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();
     /**
      * This specifies the lower boundary for all films to be shown or not.
@@ -92,7 +88,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * Main filtering routine
      */
     public synchronized void filterListe() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         final Daten daten = Daten.getInstance();
         final ListeFilme completeFilmList = daten.getListeFilme();
         final ListeFilme filteredList = daten.getListeFilmeNachBlackList();
@@ -116,8 +111,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
             setupNewEntries();
         }
-        stopwatch.stop();
-        logger.trace("Complete filtering took: {}", stopwatch);
     }
 
     /**

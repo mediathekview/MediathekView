@@ -1,6 +1,5 @@
 package mediathek.filmlisten;
 
-import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
@@ -338,7 +337,6 @@ public class FilmeLaden {
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
 
-        Stopwatch stopwatch = Stopwatch.createStarted();
         listeFilme.parallelStream()
                 .peek(film -> film.setNew(false))
                 .filter(film -> !hashSet.contains(film.getUrlNormalQuality()))
@@ -346,8 +344,6 @@ public class FilmeLaden {
                     film.setNew(true);
                     listeFilme.neueFilme = true;
                 });
-        stopwatch.stop();
-        logger.debug("findAndMarkNewFilms() took: {}", stopwatch);
 
         hashSet.clear();
     }
