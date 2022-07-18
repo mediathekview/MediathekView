@@ -101,8 +101,8 @@ public class ListeAbo extends ArrayList<DatenAbo> {
 
     public void aenderungMelden() {
         // Filmliste anpassen
-        var worker = new ChangeWorker();
-        worker.execute();
+        setAboFuerFilm(Daten.getInstance().getListeFilme(), true);
+        MessageBus.getMessageBus().publishAsync(new AboListChangedEvent());
     }
 
     public ArrayList<String> getPfade() {
@@ -216,26 +216,5 @@ public class ListeAbo extends ArrayList<DatenAbo> {
             datenAbo.setThemaFilterPattern(LEER);
             datenAbo.setIrgendwoFilterPattern(LEER);
         });
-    }
-
-    class ChangeWorker extends SwingWorker<Void,Void> {
-        public ChangeWorker() {
-            SwingUtilities.invokeLater(() -> {
-                MediathekGui.ui().infiniteProgressPanel.setText("Verarbeite Abos...");
-                MediathekGui.ui().infiniteProgressPanel.start();
-            });
-        }
-        @Override
-        protected Void doInBackground() {
-            setAboFuerFilm(Daten.getInstance().getListeFilme(), true);
-            MessageBus.getMessageBus().publishAsync(new AboListChangedEvent());
-           return null;
-        }
-
-        @Override
-        protected void done() {
-            MediathekGui.ui().infiniteProgressPanel.setText("");
-            MediathekGui.ui().infiniteProgressPanel.stop();
-        }
     }
 }

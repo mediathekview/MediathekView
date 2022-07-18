@@ -206,6 +206,8 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
      */
     public void stop()
     {
+        //removeMouseListener(this);
+
         if (animation != null) {
             animation.interrupt();
             animation = null;
@@ -226,11 +228,14 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
             animation.interrupt();
             animation = null;
 
-            removeMouseListener(this);
-            setVisible(false);
+            tidy();
         }
     }
 
+    private void tidy() {
+        removeMouseListener(this);
+        setVisible(false);
+    }
     public void paintComponent(Graphics g)
     {
         if (started)
@@ -321,7 +326,7 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
      */
     private class Animator implements Runnable
     {
-        private boolean rampUp = true;
+        private final boolean rampUp;
 
         protected Animator(boolean rampUp)
         {
@@ -383,11 +388,10 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
             if (!rampUp)
             {
                 started = false;
-                removeMouseListener(InfiniteProgressPanel.this);
                 // there has been an EDT violation warning...
                 SwingUtilities.invokeLater(() -> {
                     repaint();
-                    setVisible(false);
+                    tidy();
                 });
             }
         }

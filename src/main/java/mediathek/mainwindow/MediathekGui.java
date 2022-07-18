@@ -84,7 +84,6 @@ public class MediathekGui extends JFrame {
      */
     private static MediathekGui ui;
     public final LoadFilmListAction loadFilmListAction;
-    public final InfiniteProgressPanel infiniteProgressPanel = new InfiniteProgressPanel();
     /**
      * Number of active downloads
      */
@@ -151,8 +150,6 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui() {
         ui = this;
-
-        setGlassPane(infiniteProgressPanel);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
