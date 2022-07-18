@@ -1,0 +1,104 @@
+JFDML JFormDesigner: "7.0.6.0.1131" Java: "11.0.15" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "fill,insets 5,hidemode 3,gap 5 5"
+			"$columnConstraints": "[565,fill]"
+			"$rowConstraints": "[grow,fill][fill][fill]"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Download editieren"
+			"minimumSize": new java.awt.Dimension( 500, 0 )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignTop": true
+					"$alignLeft": true
+				} ) {
+					name: "jPanelExtra"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,grow"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
+				"$columnConstraints": "[fill][fill][fill][fill]"
+				"$rowConstraints": "[fill]"
+			} ) {
+				name: "jPanelRes"
+				"border": new javax.swing.border.TitledBorder( "" )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabelRes"
+					"text": "Download-Qualität:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResHd"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Höchste/Hoch"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResHi"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Mittel"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResLo"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Niedrig"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$columnConstraints": "[fill][fill]"
+				"$rowConstraints": "[fill]"
+				"$layoutConstraints": "insets 0,hidemode 3,alignx right,gap 5 5"
+			} ) {
+				name: "panel1"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonOk"
+					"text": "Ok"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonAbbrechen"
+					"text": "Abbrechen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 2"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 570, 300 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+	}
+}
