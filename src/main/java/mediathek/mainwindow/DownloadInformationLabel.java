@@ -2,6 +2,7 @@ package mediathek.mainwindow;
 
 import mediathek.config.Daten;
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent;
+import mediathek.tool.FileSize;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
@@ -35,8 +36,24 @@ public class DownloadInformationLabel extends JLabel {
 
             textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
 
-            if (info.running > 0)
+            if (info.running > 0) {
                 textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
+
+                var infos = daten.getDownloadInfos();
+                final long byteAlleDownloads = infos.getByteAlleDownloads();
+                final long byteAktDownloads = infos.getByteAktDownloads();
+                if (byteAlleDownloads > 0 || byteAktDownloads > 0) {
+                    textLinks += " (";
+                    textLinks += "Größe: ";
+                    if (byteAktDownloads > 0) {
+                        textLinks += FileSize.convertSize(byteAktDownloads) + " von "
+                                + FileSize.convertSize(byteAlleDownloads) + " MByte)";
+                    } else {
+                        textLinks += FileSize.convertSize(byteAlleDownloads) + " MByte)";
+                    }
+                }
+
+            }
 
             textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
 

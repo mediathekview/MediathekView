@@ -53,7 +53,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GuiDownloads extends AGuiTabPanel {
@@ -77,12 +76,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final static int[] COLUMNS_DISABLED = {DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_URL_RTMP};
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
-    private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-            + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
-            + "<body>";
-    private static final String END = "</body></html>";
     private final AtomicLong _lastUpdate = new AtomicLong(0);
-    private final AtomicBoolean tabVisible = new AtomicBoolean(false);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -135,7 +129,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JButton btnClear;
     private JSpinner jSpinnerAnzahlDownloads;
     private JSpinner jSpinner1;
-    private JEditorPane txtDownload;
     private JScrollPane downloadListScrollPane;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
@@ -168,8 +161,6 @@ public class GuiDownloads extends AGuiTabPanel {
         setupDownloadRateLimitSpinner();
 
         setupFilterPanel();
-
-        setupComponentListener();
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
@@ -253,20 +244,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void setupComponentListener() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                tabVisible.set(true);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                tabVisible.set(false);
-            }
-        });
-    }
-
     private void setupFilterPanel() {
         final boolean visible = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS);
         updateFilterVisibility(visible);
@@ -319,16 +296,6 @@ public class GuiDownloads extends AGuiTabPanel {
             popupMenu.add(miStopAllDownloads);
 
             taskbar.setMenu(popupMenu);
-        }
-    }
-
-    @Handler
-    private void handleDownloadInfoUpdate(DownloadInfoUpdateAvailableEvent e) {
-        if (tabVisible.get()) {
-            SwingUtilities.invokeLater(() -> {
-                if (txtDownload.isShowing())
-                    setInfoText();
-            });
         }
     }
 
@@ -484,7 +451,6 @@ public class GuiDownloads extends AGuiTabPanel {
         final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
         jSplitPane1.setDividerLocation(location);
 
-        setupInfoPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -502,55 +468,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         });
-    }
-
-    private void setupInfoPanel() {
-        txtDownload.setText("");
-        txtDownload.setEditable(false);
-        txtDownload.setFocusable(false);
-        txtDownload.setContentType("text/html");
-    }
-
-    private void setInfoText() {
-        if (daten.getListeDownloads().getStarts().total_starts == 0) {
-            txtDownload.setText("");
-            return;
-        }
-
-        String info = HEAD;
-
-        final var downloadInfos = daten.getDownloadInfos();
-        // Größe
-        final long byteAlleDownloads = downloadInfos.getByteAlleDownloads();
-        final long byteAktDownloads = downloadInfos.getByteAktDownloads();
-        if (byteAlleDownloads > 0 || byteAktDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (byteAktDownloads > 0) {
-                info += FileSize.convertSize(byteAktDownloads) + " von "
-                        + FileSize.convertSize(byteAlleDownloads) + " MByte" + "</span>";
-            } else {
-                info += FileSize.convertSize(byteAlleDownloads) + " MByte" + "</span>";
-            }
-        }
-        // Restzeit
-        final long timeRestAktDownloads = downloadInfos.getTimeRestAktDownloads();
-        final long timeRestAllDownloads = downloadInfos.getTimeRestAllDownloads();
-        if (timeRestAktDownloads > 0 && timeRestAllDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + downloadInfos.getRestzeit() + ",<br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
-        } else if (timeRestAktDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + downloadInfos.getRestzeit() + "</span>";
-        } else if (timeRestAllDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
-        }
-
-        info += END;
-
-        txtDownload.setText(info);
     }
 
     @Handler
@@ -1102,8 +1019,6 @@ public class GuiDownloads extends AGuiTabPanel {
         var lblBandwidth = new JLabel();
         var jLabel1 = new JLabel();
         jSpinner1 = new JSpinner();
-        var spDownload = new JScrollPane();
-        txtDownload = new JEditorPane();
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
 
@@ -1193,18 +1108,6 @@ public class GuiDownloads extends AGuiTabPanel {
                     panel2.add(jSpinner1, new CC().cell(1, 1));
                 }
                 jPanelFilterExtern.add(panel2, new CC().cell(0, 1));
-
-                //======== spDownload ========
-                {
-                    spDownload.setPreferredSize(new Dimension(14, 150));
-
-                    //---- txtDownload ----
-                    txtDownload.setEditable(false);
-                    txtDownload.setOpaque(false);
-                    txtDownload.setPreferredSize(new Dimension(10, 500));
-                    spDownload.setViewportView(txtDownload);
-                }
-                jPanelFilterExtern.add(spDownload, new CC().cell(0, 2));
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
 
