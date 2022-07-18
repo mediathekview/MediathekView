@@ -16,14 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Optional;
-
-/*
- * TODO:
- * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
- * - Finalize a Real Entity
- * - Write test cases for each Method
- * - Write JavaDoc for each of the new Methods that were split from this moloch
- */
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
@@ -53,6 +46,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final char COMPRESSION_MARKER = '|';
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
+    private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     /**
      * File size in MByte
@@ -84,6 +78,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private int filmLength;
 
     public DatenFilm() {
+        dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
     }
 
     public DatenFilm(@NotNull DatenFilm other) {
@@ -247,7 +242,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return the original internal film number
      */
     public int getFilmNr() {
-        return 1;
+        return (int)dataMap.get(MapKeys.FILM_NR);
     }
 
     /**
@@ -568,5 +563,5 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return dataMap.containsKey(MapKeys.BOOKMARK_DATA);
     }
 
-    enum MapKeys {SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL, BOOKMARK_DATA, ABO_DATA}
+    enum MapKeys {FILM_NR, SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL, BOOKMARK_DATA, ABO_DATA}
 }
