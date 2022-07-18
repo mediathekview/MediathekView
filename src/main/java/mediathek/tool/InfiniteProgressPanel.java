@@ -383,12 +383,11 @@ public class InfiniteProgressPanel extends JComponent implements MouseListener
             if (!rampUp)
             {
                 started = false;
+                removeMouseListener(InfiniteProgressPanel.this);
                 // there has been an EDT violation warning...
                 SwingUtilities.invokeLater(() -> {
                     repaint();
-
                     setVisible(false);
-                    removeMouseListener(InfiniteProgressPanel.this);
                 });
             }
         }
