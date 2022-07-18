@@ -62,7 +62,7 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
         defaultCloseOperation = DISPOSE_ON_CLOSE
         isResizable = true
         isModal = true
-        aboPanel = ManageAboPanel()
+        aboPanel = ManageAboPanel(this)
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(aboPanel, BorderLayout.CENTER)

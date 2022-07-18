@@ -21,6 +21,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXStatusBar;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,10 +41,10 @@ public class ManageAboPanel extends JPanel {
     private final JLabel inactiveAbos = new JLabel("inactiveAbos");
     private final JToolBar swingToolBar = new JToolBar();
     private final JComboBox<String> senderCombo = new JComboBox<>();
+    private final InfiniteProgressPanel infiniteProgressPanel = new InfiniteProgressPanel();
     private JScrollPane jScrollPane1;
 
-    public ManageAboPanel() {
-        super();
+    public ManageAboPanel(@NotNull JDialog dialog) {
         daten = Daten.getInstance();
 
         initComponents();
@@ -58,6 +59,8 @@ public class ManageAboPanel extends JPanel {
         initListeners();
 
         initializeTable();
+
+        dialog.setGlassPane(infiniteProgressPanel);
     }
 
     public void addObjectData(TModelAbo model, String sender) {
@@ -292,7 +295,8 @@ public class ManageAboPanel extends JPanel {
 
             selectFirstRow();
 
-            daten.getListeAbo().aenderungMelden();
+            var worker = new ChangeWorker();
+            worker.execute();
         } else {
             NoSelectionErrorDialog.show(this);
         }
@@ -354,7 +358,8 @@ public class ManageAboPanel extends JPanel {
         }
 
         tabelleLaden();
-        daten.getListeAbo().aenderungMelden();
+        var worker = new ChangeWorker();
+        worker.execute();
     }
 
     private void changeAboActiveState(boolean ein) {
@@ -372,7 +377,8 @@ public class ManageAboPanel extends JPanel {
                 tabelle.addRowSelectionInterval(row, row);
             }
 
-            daten.getListeAbo().aenderungMelden();
+            var worker = new ChangeWorker();
+            worker.execute();
         } else {
             NoSelectionErrorDialog.show(this);
         }
@@ -391,5 +397,22 @@ public class ManageAboPanel extends JPanel {
         add(swingToolBar, BorderLayout.NORTH);
         add(jScrollPane1, BorderLayout.CENTER);
         add(infoPanel, BorderLayout.SOUTH);
+    }
+
+    class ChangeWorker extends SwingWorker<Void,Void> {
+        public ChangeWorker() {
+            infiniteProgressPanel.start();
+        }
+
+        @Override
+        protected void done() {
+            infiniteProgressPanel.stop();
+        }
+
+        @Override
+        protected Void doInBackground() {
+            daten.getListeAbo().aenderungMelden();
+            return null;
+        }
     }
 }
