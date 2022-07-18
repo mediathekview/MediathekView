@@ -1,4 +1,4 @@
-package mediathek.gui.abo;
+package mediathek.tool;
 
 import javax.swing.*;
 import java.awt.*;

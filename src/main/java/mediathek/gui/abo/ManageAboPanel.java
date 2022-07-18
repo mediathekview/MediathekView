@@ -8,10 +8,7 @@ import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.MessageBus;
-import mediathek.tool.NoSelectionErrorDialog;
-import mediathek.tool.SVGIconUtilities;
-import mediathek.tool.SenderListModel;
+import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelAbo;
@@ -402,11 +399,13 @@ public class ManageAboPanel extends JPanel {
     class ChangeWorker extends SwingWorker<Void,Void> {
         public ChangeWorker() {
             infiniteProgressPanel.start();
+            infiniteProgressPanel.setText("Verarbeite Abos...");
         }
 
         @Override
         protected void done() {
             infiniteProgressPanel.stop();
+            infiniteProgressPanel.setText("");
         }
 
         @Override

@@ -354,6 +354,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (url.equalsIgnoreCase(getUrlNormalQuality())) {
             return getFileSize().toString();
         } else {
+            //FIXME this is blocking EDT!
             return FileSize.getFileLengthFromUrl(url);
         }
     }

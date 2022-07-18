@@ -84,6 +84,7 @@ public class MediathekGui extends JFrame {
      */
     private static MediathekGui ui;
     public final LoadFilmListAction loadFilmListAction;
+    public final InfiniteProgressPanel infiniteProgressPanel = new InfiniteProgressPanel();
     /**
      * Number of active downloads
      */
@@ -92,6 +93,7 @@ public class MediathekGui extends JFrame {
     protected final JTabbedPane tabbedPane = new JTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
     protected final SettingsAction settingsAction = new SettingsAction(this);
+    final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -108,7 +110,7 @@ public class MediathekGui extends JFrame {
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final InfoDialog filmInfo;
     private final ConfigureExternalUpdaterAction configureExternalUpdaterAction = new ConfigureExternalUpdaterAction();
-    final JMenu fontMenu = new JMenu("Schrift");
+    private final ManageAboAction manageAboAction = new ManageAboAction();
     public StatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -145,11 +147,12 @@ public class MediathekGui extends JFrame {
      * Progress indicator thread for OS X and windows.
      */
     private IndicatorThread progressIndicatorThread;
-    private ManageAboAction manageAboAction;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
 
     public MediathekGui() {
         ui = this;
+
+        setGlassPane(infiniteProgressPanel);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -938,8 +941,6 @@ public class MediathekGui extends JFrame {
         jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
         jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui()));
         jMenuAbos.addSeparator();
-        manageAboAction = new ManageAboAction();
-        tabFilme.filmActionPanel.manageAboAction = manageAboAction;
         jMenuAbos.add(manageAboAction);
     }
 

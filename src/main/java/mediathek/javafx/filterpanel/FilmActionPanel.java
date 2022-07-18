@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
-import mediathek.gui.actions.ManageAboAction;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
@@ -50,7 +49,6 @@ public class FilmActionPanel {
   public ComboBox<String> themaBox;
   public RangeSlider filmLengthSlider;
   public JDialog filterDialog;
-  public ManageAboAction manageAboAction;
   /** Stores the list of thema strings used for autocompletion. */
   private SuggestionProvider<String> themaSuggestionProvider;
 

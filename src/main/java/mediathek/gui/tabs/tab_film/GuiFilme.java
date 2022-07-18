@@ -1220,26 +1220,17 @@ public class GuiFilme extends AGuiTabPanel {
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             // Abo anlegen
-            JMenuItem itemAboLoeschen = new JMenuItem("Abo Löschen");
             JMenuItem itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
             JMenuItem itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
-            JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
 
             Optional<DatenFilm> res = getFilm(nr);
             res.ifPresent(film -> {
-                if ((daten.getListeAbo().getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/))
-                        != null) {
-                    // gibts schon, dann löschen
+                if ((daten.getListeAbo().getAboFuerFilm_schnell(film, false)) != null) {
+                    // gibts schon -> deaktivieren...
                     itemAbo.setEnabled(false);
                     itemAboMitTitel.setEnabled(false);
-                    itemAboLoeschen.addActionListener(beobAbo);
-
-                    // dann können wir auch ändern
-                    itemChangeAboFilter.addActionListener(new BeobChangeAbo());
                 } else {
-                    itemAboLoeschen.setEnabled(false);
-                    itemChangeAboFilter.setEnabled(false);
-                    // neues Abo anlegen
+                    // neues Abo anlegen möglich...
                     itemAbo.addActionListener(beobAbo);
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
                 }
@@ -1251,8 +1242,6 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             });
 
-            submenueAbo.add(itemAboLoeschen);
-            submenueAbo.add(itemChangeAboFilter);
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
 
