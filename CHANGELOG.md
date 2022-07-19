@@ -8,6 +8,7 @@
 - Im Tab "Filme" wurden *"Abo löschen"* und *"Abo ändern"* aufgrund der teilweise langen Ausführungszeiten und dem damit zusammenhängenden Einfrieren der Oberfläche entfernt. Bitte nutzen Sie wie dafür vorgesehen den "Abos verwalten" Dialog.
 - Im Tab "Downloads" wurde die Textanzeige zu laufenden Downloads entfernt. Die Informationen werden nun in der globalen Statuszeile der App bei Bedarf angezeigt.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
+- **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
 - **BUGFIX:** Fehler in der Anzeige im Statusfeld des Download-Tab wurde behoben.
 - **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
