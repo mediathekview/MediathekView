@@ -6,12 +6,15 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 public class GuiFunktionen {
 
@@ -44,6 +47,33 @@ public class GuiFunktionen {
         }
 
         return !ret;
+    }
+
+    /**
+     * Create an auto-dismissable JOptionPane-like dialog with return value.
+     * Uses internally {@link JOptionPane} to create and handle the values.
+     * @param parentComponent the parent object.
+     * @param title the dialog title.
+     * @param message the message.
+     * @param optionType Currently I support only DEFAULT ok-dialog and YES_NO_OPTION confirmDialog.
+     * @param defaultValue the default value to return.
+     * @param defaultDelay the number of time units to wait until close.
+     * @param timeUnit The time unit of defaultDelay.
+     * @param style the warning, error or information style from {@link JOptionPane}.
+     * @return the clicked value or the defaultValue.
+     */
+    public static int createDismissableMessageDialog(@Nullable Component parentComponent,
+                                                     @NotNull String title,
+                                                     @NotNull String message,
+                                                     @MagicConstant(intValues = {JOptionPane.YES_NO_OPTION, JOptionPane.DEFAULT_OPTION, JOptionPane.YES_NO_CANCEL_OPTION}) int optionType,
+                                                     @MagicConstant(intValues = {JOptionPane.OK_OPTION, JOptionPane.CANCEL_OPTION, JOptionPane.YES_OPTION, JOptionPane.NO_OPTION}) int defaultValue,
+                                                     int defaultDelay, @NotNull TimeUnit timeUnit,
+                                                     @MagicConstant(intValues = {JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, JOptionPane.ERROR_MESSAGE}) int style) {
+        var op = new JOptionPane(message, style, optionType, null, null);
+        var dialog = op.createDialog(parentComponent, title);
+        new Timer((int)TimeUnit.MILLISECONDS.convert(defaultDelay,timeUnit), e -> op.setValue(defaultValue)).start();
+        dialog.setVisible(true);
+        return (int)op.getValue();
     }
 
     public static boolean isUsingExternalUpdater() {

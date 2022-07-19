@@ -22,6 +22,7 @@
 - **FEATURE:** Geoinformationen werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
 - **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
 - **FEATURE:** Untertitelverfügbarkeit wird nun über ein `cc`-Icon an Anfang des Titels angezeigt. Die Spalte `UT` wird in einer späteren Programmversion entfernt werden.
+- **FEATURE:** Im Tab Download werden die Dialoge bzgl. Neustarts fertiger Downloads nun automatisch nach 10 Sekunden geschlossen wenn kein Userinput passiert. Es wird dann jeweils die "Nein"-Option ausgewählt um bereits vorhandene Downloads zu schützen.
 - **FEATURE(Windows/Linux):** Schriftgröße kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
 
 <u>**13.9.1**</u>

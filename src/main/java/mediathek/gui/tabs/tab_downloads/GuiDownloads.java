@@ -53,6 +53,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GuiDownloads extends AGuiTabPanel {
@@ -821,16 +822,17 @@ public class GuiDownloads extends AGuiTabPanel {
                 if (download.start.status > Start.STATUS_RUN) {
                     // wenn er noch läuft gibts nix
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                    //TODO in auto dialog umwandeln!
-                    int a = JOptionPane.showConfirmDialog(mediathekGui, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
-                            "Fertiger Download", JOptionPane.YES_NO_OPTION);
-                    if (a != JOptionPane.YES_OPTION) {
+                    int reply = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
+                            "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
+                            JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (reply != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
                         continue;
                     }
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.isFromAbo()) {
-                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        // wenn er schon fertig ist und ein Abo ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
@@ -899,7 +901,6 @@ public class GuiDownloads extends AGuiTabPanel {
                     }
                     if (download.start.status > Start.STATUS_RUN) {
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                        //TODO in auto dialog umwandeln!
                         if (antwort == -1) {
                             // nur einmal fragen
                             String text;
@@ -909,8 +910,10 @@ public class GuiDownloads extends AGuiTabPanel {
                             } else {
                                 text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
-                            antwort = JOptionPane.showConfirmDialog(mediathekGui, text,
-                                    "Fertiger Download", JOptionPane.YES_NO_CANCEL_OPTION);
+                            antwort = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
+                                    text,
+                                    JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                                    JOptionPane.QUESTION_MESSAGE);
                         }
                         if (antwort == JOptionPane.CANCEL_OPTION) {
                             //=============================
