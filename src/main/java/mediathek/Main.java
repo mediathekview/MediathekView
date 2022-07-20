@@ -392,8 +392,9 @@ public class Main {
             System.exit(1);
         }
 
+        setupEnvironmentProperties();
+
         EventQueue.invokeLater(() -> {
-            setupEnvironmentProperties();
 
             CommandLine cmd = new CommandLine(Config.class);
             try {

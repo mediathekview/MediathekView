@@ -131,7 +131,7 @@ public class MediathekGuiMac extends MediathekGui {
 
         if (SystemInfo.isMacFullWindowContentSupported) {
             getRootPane().putClientProperty("apple.awt.fullWindowContent", true);
-            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
+            //getRootPane().putClientProperty("apple.awt.transparentTitleBar", true);
 
             commonToolBar.add(Box.createHorizontalStrut(70),0);
         }
