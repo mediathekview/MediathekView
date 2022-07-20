@@ -1,5 +1,6 @@
 <u>**14.0.0**</u>
 - **TODO:** ConfigureExternalUpdaterAction fertig programmieren!
+- **TODO:** check info dialog size on linux
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
@@ -7,7 +8,6 @@
 - *Globale Schriftgröße ändern...*-Befehl wurde unter Linux entfernt da es keine Auswirkungen mehr hat.
 - Im Tab "Filme" wurden *"Abo löschen"* und *"Abo ändern"* aufgrund der teilweise langen Ausführungszeiten und dem damit zusammenhängenden Einfrieren der Oberfläche entfernt. Bitte nutzen Sie wie dafür vorgesehen den "Abos verwalten" Dialog.
 - Im Tab "Downloads" wurde die Textanzeige zu laufenden Downloads entfernt. Die Informationen werden nun in der globalen Statuszeile der App bei Bedarf angezeigt.
-- Der Filminformationsdialog wurde neu geschrieben. Unter Linux kann es vorkommen dass der Dialog bis an den oberen Bildschirmrand "wandert". Dies ist ein Fehler von Java.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
