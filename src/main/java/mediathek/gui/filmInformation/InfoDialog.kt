@@ -276,7 +276,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         buildLayout()
         checkedPack()
         if (SystemUtils.IS_OS_LINUX) {
-            val linuxSize = Dimension(350, 550)
+            val linuxSize = Dimension(350, 450)
             setSize(linuxSize.width, linuxSize.height)
             minimumSize = linuxSize
             preferredSize = linuxSize
