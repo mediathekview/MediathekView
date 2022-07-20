@@ -218,9 +218,11 @@ public class ApplicationConfiguration {
     }
 
     public static class FilmInfoDialog {
-        public static final String FILM_INFO_VISIBLE = "film.information.visible";
-        public static final String FILM_INFO_LOCATION_X = "film.information.location.x";
-        public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+        public static final String VISIBLE = "film.information.visible";
+        public static final String X = "film.information.location.x";
+        public static final String Y = "film.information.location.y";
+        public static final String WIDTH = "film.information.location.width";
+        public static final String HEIGHT = "film.information.location.height";
     }
 
     public static class MemoryMonitorDialog {

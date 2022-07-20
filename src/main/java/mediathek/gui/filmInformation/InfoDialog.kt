@@ -61,9 +61,16 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         config.lock(LockMode.READ)
         try {
             val newLocation = Point()
-            newLocation.x = config.getInt(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_X)
-            newLocation.y = config.getInt(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_Y)
+            newLocation.x = config.getInt(ApplicationConfiguration.FilmInfoDialog.X)
+            newLocation.y = config.getInt(ApplicationConfiguration.FilmInfoDialog.Y)
             location = newLocation
+
+            if (SystemUtils.IS_OS_LINUX) {
+                val w: Int = config.getInt(ApplicationConfiguration.FilmInfoDialog.WIDTH)
+                val h: Int = config.getInt(ApplicationConfiguration.FilmInfoDialog.HEIGHT)
+                if (w > 50 && h > 50)
+                    size = Dimension(w, h)
+            }
         } catch (ignored: NoSuchElementException) {
         } finally {
             config.unlock(LockMode.READ)
@@ -79,8 +86,12 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         config.lock(LockMode.WRITE)
         try {
             val location = locationOnScreen
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_X, location.x)
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_LOCATION_Y, location.y)
+            config.setProperty(ApplicationConfiguration.FilmInfoDialog.X, location.x)
+            config.setProperty(ApplicationConfiguration.FilmInfoDialog.Y, location.y)
+            if (SystemUtils.IS_OS_LINUX) {
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.WIDTH, width)
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.HEIGHT, height)
+            }
         } finally {
             config.unlock(LockMode.WRITE)
         }
@@ -270,7 +281,8 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     init {
         type = Type.UTILITY
         title = "Filminformation"
-        isResizable = false
+        if (!SystemUtils.IS_OS_LINUX)
+            isResizable = false
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
         buildLayout()
@@ -285,20 +297,24 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
 
         updateTextFields()
         restoreLocation()
-        isVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
+        isVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false)
 
         addWindowListener(object : WindowAdapter() {
             override fun windowOpened(e: WindowEvent) {
-                config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, true)
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.VISIBLE, true)
             }
 
             override fun windowClosed(e: WindowEvent) {
-                config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
+                config.setProperty(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false)
             }
         })
 
         //addFilmlistLoadListener();
         addComponentListener(object : ComponentAdapter() {
+            override fun componentResized(e: ComponentEvent?) {
+                saveLocation()
+            }
+
             override fun componentMoved(e: ComponentEvent) {
                 if (isVisible) {
                     saveLocation()
