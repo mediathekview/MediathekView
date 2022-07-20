@@ -197,7 +197,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
 
     private fun buildLayout() {
         layout = MigLayout(
-            LC().insets("5").hideMode(3),
+            LC().insets("5").hideMode(3).debug(),
             // columns
             AC()
                 .fill().gap()
@@ -259,8 +259,10 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         isResizable = false
         //hardcode size as linux hates pack()
         //setSize(350, 520)
+        minimumSize = Dimension(350,450)
         defaultCloseOperation = DISPOSE_ON_CLOSE
         buildLayout()
+        pack()
         updateTextFields()
         restoreLocation()
         val wasVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
