@@ -104,8 +104,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         hyperlink.toolTipText = ""
         hyperlink.isEnabled = false
         lblDescription.text = ""
-
-        pack()
+        SwingUtilities.invokeLater { pack() }
     }
 
     companion object {
@@ -139,6 +138,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             lblDescription.text = desc
             SwingUtilities.invokeLater {
                 descScrollPane.verticalScrollBar.value = 0
+                pack()
             }
         }
     }
@@ -152,7 +152,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         currentFilm = film
         if (isVisible) {
             updateTextFields()
-            pack()
+            //pack()
         }
     }
 
@@ -259,7 +259,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         isResizable = false
         //hardcode size as linux hates pack()
         //setSize(350, 520)
-        minimumSize = Dimension(350,450)
+//        minimumSize = Dimension(350,450)
         defaultCloseOperation = DISPOSE_ON_CLOSE
         buildLayout()
         pack()
