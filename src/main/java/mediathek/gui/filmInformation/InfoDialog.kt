@@ -14,6 +14,7 @@ import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.configuration2.sync.LockMode
+import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.JXHyperlink
 import java.awt.Desktop
 import java.awt.Dimension
@@ -106,7 +107,9 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         hyperlink.toolTipText = ""
         hyperlink.isEnabled = false
         lblDescription.text = ""
-        SwingUtilities.invokeLater { pack() }
+        SwingUtilities.invokeLater {
+            checkedPack()
+        }
     }
 
     companion object {
@@ -141,7 +144,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             lblDescription.text = desc
             SwingUtilities.invokeLater {
                 descScrollPane.verticalScrollBar.value = 0
-                pack()
+                checkedPack()
             }
         }
     }
@@ -155,7 +158,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         currentFilm = film
         if (isVisible) {
             updateTextFields()
-            //pack()
         }
     }
 
@@ -256,6 +258,15 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         add(descScrollPane, CC().cell(0, 13).spanX(2).growY().growX().height("90!"))
     }
 
+    /**
+     * Only pack dialog when we are NOT running linux...
+     */
+    private fun checkedPack() {
+        //only pack only OS OTHER THAN Linux
+        if (!SystemUtils.IS_OS_LINUX)
+            pack()
+    }
+
     init {
         type = Type.UTILITY
         title = "Filminformation"
@@ -263,14 +274,19 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
         buildLayout()
-        pack()
+        checkedPack()
+        if (SystemUtils.IS_OS_LINUX) {
+            val linuxSize = Dimension(350, 550)
+            setSize(linuxSize.width, linuxSize.height)
+            minimumSize = linuxSize
+            preferredSize = linuxSize
+            maximumSize = linuxSize
+        }
 
         updateTextFields()
         restoreLocation()
-        val wasVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
-        if (wasVisible) {
-            isVisible = true
-        }
+        isVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
+
         addWindowListener(object : WindowAdapter() {
             override fun windowOpened(e: WindowEvent) {
                 config.setProperty(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, true)
