@@ -25,7 +25,6 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.*
 
 
@@ -46,7 +45,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     private val hyperlink = SwingHyperlink()
     private val descScrollPane = JScrollPane()
     private val lblDescription = JTextArea()
-    private val isPacking = AtomicBoolean(false)
 
 
     internal class SwingDisabledCheckBox : JCheckBox() {
@@ -54,6 +52,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             isEnabled = false
         }
     }
+
     /**
      * Restore window position from config settings.
      */
@@ -68,13 +67,6 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         } finally {
             config.unlock(LockMode.READ)
         }
-    }
-
-    override fun pack() {
-        isPacking.set(true)
-        super.pack()
-        restoreLocation()
-        isPacking.set(false)
     }
 
     /**
@@ -118,8 +110,9 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     }
 
     companion object {
-        private val DEFAULT_SENDER_DIMENSION = Dimension(64,64)
+        private val DEFAULT_SENDER_DIMENSION = Dimension(64, 64)
     }
+
     private fun updateTextFields() {
         if (currentFilm == null) {
             clearControls()
@@ -167,7 +160,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     }
 
     internal class SwingHyperlink : JXHyperlink() {
-        private fun openUrl(url : String) {
+        private fun openUrl(url: String) {
             try {
                 UrlHyperlinkAction.openURL(null, url)
             } catch (ex: URISyntaxException) {
@@ -185,18 +178,17 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                         if (d.isSupported(Desktop.Action.BROWSE)) {
                             try {
                                 d.browse(URI(toolTipText))
-                            }
-                            catch (ex: Exception) {
+                            } catch (ex: Exception) {
                                 SwingErrorDialog.showExceptionMessage(
                                     MediathekGui.ui(),
                                     "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                                    ex)
+                                    ex
+                                )
                             }
                         } else {
                             openUrl(toolTipText)
                         }
-                    }
-                    else {
+                    } else {
                         openUrl(toolTipText)
                     }
 
@@ -207,7 +199,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
 
     private fun buildLayout() {
         layout = MigLayout(
-            LC().insets("5").hideMode(3).debug(),
+            LC().insets("5").hideMode(3),
             // columns
             AC()
                 .fill().gap()
@@ -227,7 +219,8 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
                 .gap()
                 .gap()
                 .gap()
-                .gap())
+                .gap()
+        )
 
         add(JLabel("Sender:"), CC().cell(0, 0))
         add(lblSender, CC().cell(1, 0))
@@ -267,12 +260,11 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         type = Type.UTILITY
         title = "Filminformation"
         isResizable = false
-        //hardcode size as linux hates pack()
-        //setSize(350, 520)
-//        minimumSize = Dimension(350,450)
         defaultCloseOperation = DISPOSE_ON_CLOSE
+
         buildLayout()
         pack()
+
         updateTextFields()
         restoreLocation()
         val wasVisible = config.getBoolean(ApplicationConfiguration.FilmInfoDialog.FILM_INFO_VISIBLE, false)
@@ -293,8 +285,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         addComponentListener(object : ComponentAdapter() {
             override fun componentMoved(e: ComponentEvent) {
                 if (isVisible) {
-                    if (!isPacking.get())
-                        saveLocation()
+                    saveLocation()
                 }
             }
         })
