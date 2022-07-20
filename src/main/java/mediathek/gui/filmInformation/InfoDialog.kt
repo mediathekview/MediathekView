@@ -25,6 +25,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.net.URI
 import java.net.URISyntaxException
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.*
 
 
@@ -45,6 +46,8 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
     private val hyperlink = SwingHyperlink()
     private val descScrollPane = JScrollPane()
     private val lblDescription = JTextArea()
+    private val isPacking = AtomicBoolean(false)
+
 
     internal class SwingDisabledCheckBox : JCheckBox() {
         init {
@@ -65,6 +68,13 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         } finally {
             config.unlock(LockMode.READ)
         }
+    }
+
+    override fun pack() {
+        isPacking.set(true)
+        super.pack()
+        restoreLocation()
+        isPacking.set(false)
     }
 
     /**
@@ -282,7 +292,10 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         //addFilmlistLoadListener();
         addComponentListener(object : ComponentAdapter() {
             override fun componentMoved(e: ComponentEvent) {
-                if (isVisible) saveLocation()
+                if (isVisible) {
+                    if (!isPacking.get())
+                        saveLocation()
+                }
             }
         })
     }
