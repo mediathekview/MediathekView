@@ -828,6 +828,9 @@
         </profile>
 
         <profile>
+            <!-- Does not include ffmpeg and install4j is also not ready.
+                For local test purposes only.
+            -->
             <id>windows_arm64</id>
             <activation>
                 <os>
