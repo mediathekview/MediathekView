@@ -7,6 +7,7 @@
 - *Globale Schriftgröße ändern...*-Befehl wurde unter Linux entfernt da es keine Auswirkungen mehr hat.
 - Im Tab "Filme" wurden *"Abo löschen"* und *"Abo ändern"* aufgrund der teilweise langen Ausführungszeiten und dem damit zusammenhängenden Einfrieren der Oberfläche entfernt. Bitte nutzen Sie wie dafür vorgesehen den "Abos verwalten" Dialog.
 - Im Tab "Downloads" wurde die Textanzeige zu laufenden Downloads entfernt. Die Informationen werden nun in der globalen Statuszeile der App bei Bedarf angezeigt.
+- Die Spalten `HQ`, `UT` und `Geo` sind aufgrund der neuen Icons grundsätzlich überflüssig.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
@@ -22,11 +23,14 @@
 - **FEATURE:** Tab Filmbeschreibung wurde neu designed und stellt nun auch das Sendericon dar.
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
 - **FEATURE:** Neues Suchfeld inklusive Suchhistorie.
-- **FEATURE:** Geoinformationen werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
-- **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
+- **FEATURE:** Geoinformationen in der Spalte `Geo` im Tab "Filme" werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
 - **FEATURE:** Untertitelverfügbarkeit wird nun über ein `cc`-Icon an Anfang des Titels angezeigt. Die Spalte `UT` wird in einer späteren Programmversion entfernt werden.
+- **FEATURE:** Inhalte in HQ werden mit einem `HQ` Icon im Titel im Tab "Filme" dargestellt.
+- **FEATURE:** Geogesperrte Inhalte werden mit einem Schloß versehen.
+- **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
 - **FEATURE:** Im Tab Download werden die Dialoge bzgl. Neustarts fertiger Downloads nun automatisch nach 10 Sekunden geschlossen wenn kein Userinput passiert. Es wird dann jeweils die "Nein"-Option ausgewählt um bereits vorhandene Downloads zu schützen.
 - **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
+- **FEATURE(Windows/Linux):** Die Breite der Scrollbars wurde etwas erhöht um die Sichtbarkeit zu verbessern.
 
 <u>**13.9.1**</u>
 

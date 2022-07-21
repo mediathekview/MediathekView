@@ -7,6 +7,8 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.CompoundIcon;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
@@ -31,6 +35,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     private final FlatSVGIcon subtitleIcon;
     private final FlatSVGIcon subtitleIconSelected;
+
+    private final FlatSVGIcon highQualityIcon;
+    private final FlatSVGIcon highQualityIconSelected;
+    /**
+     * Temporary storage for the icons that will be assembled to a compound icon.
+     */
+    private final List<Icon> iconList = new ArrayList<>();
+
     public CellRendererFilme() {
         selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
         selectedDownloadIcon.setColorFilter(whiteColorFilter);
@@ -58,6 +70,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         subtitleIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
         subtitleIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
         subtitleIconSelected.setColorFilter(whiteColorFilter);
+
+        highQualityIcon = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
+        highQualityIconSelected = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
+        highQualityIconSelected.setColorFilter(whiteColorFilter);
     }
 
     private JTextArea createTextArea(String content) {
@@ -139,7 +155,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
                         setToolTipText(title);
                     setText(title);
-                    setSubtitleIcon(datenFilm, isSelected);
+                    setIndicatorIcons(datenFilm, isSelected);
                     break;
 
                 case DatenFilm.FILM_GEO:
@@ -156,19 +172,45 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     /**
-     * Show "cc" icon when subtitle is available
-     * @param datenFilm film information
+     * Show "CC" and/or "HQ" icon(s) when supported by the film.
+     *
+     * @param datenFilm  film information
      * @param isSelected is row selected.
      */
-    private void setSubtitleIcon(@NotNull DatenFilm datenFilm, boolean isSelected) {
-        if (datenFilm.hasSubtitle()) {
-            Icon icon;
+    private void setIndicatorIcons(@NotNull DatenFilm datenFilm, boolean isSelected) {
+        datenFilm.getGeo().ifPresent(geoString -> {
+            if (!geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
+                //locked
+                if (isSelected)
+                    iconList.add(lockedIconSelected);
+                else
+                    iconList.add(lockedIcon);
+            }
+        });
+
+        if (datenFilm.isHighQuality()) {
             if (isSelected)
-                icon = subtitleIconSelected;
+                iconList.add(highQualityIconSelected);
             else
-                icon = subtitleIcon;
-            setIcon(icon);
+                iconList.add(highQualityIcon);
         }
+
+        if (datenFilm.hasSubtitle()) {
+            if (isSelected)
+                iconList.add(subtitleIconSelected);
+            else
+                iconList.add(subtitleIcon);
+        }
+
+        Icon icon;
+        if (iconList.size() == 1)
+            icon = iconList.get(0);
+        else
+            icon = new CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, iconList.toArray(new Icon[0]));
+        setIcon(icon);
+
+        //always clear at the end
+        iconList.clear();
     }
 
     /**
