@@ -17,6 +17,7 @@
 - **BUGFIX:** Update-Möglichkeit innerhalb des Programms wird nun richtig ein- und ausgeblendet, je nach verwendetem Installationstyp.
 - **BUGFIX:** Potentieller Absturz beim Einlesen der Abohistorie wurde behoben.
 - **BUGFIX:** Das Hinzufügen großer Mengen an Downloads blockiert nun nicht mehr das Programm.
+- **BUGFIX:** Die Dateigrößen von manuellen Downloads werden nun - sofern vorhanden - richtig verarbeitet.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
 - **FEATURE:** Tab Filmbeschreibung wurde neu designed und stellt nun auch das Sendericon dar.
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
