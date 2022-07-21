@@ -27,7 +27,6 @@ import java.util.ArrayList;
 public class MVColor {
 
     // Tabelle Filme
-    public static final MVC FILM_LIVESTREAM = new MVC(MVConfig.Configs.FARBE__FILM_LIVESTREAM, new Color(130, 0, 0), "Filme, Livestreams");
     public static final MVC FILM_HISTORY = new MVC(MVConfig.Configs.FARBE__FILM_HISTORY, new Color(225, 225, 225), "Filme, gesehen");
     public static final MVC FILM_NEU = new MVC(MVConfig.Configs.FARBE__FILM_NEU, new Color(0, 0, 240), "Filme, neue");
     public static final MVC FILM_BOOKMARKED = new MVC(MVConfig.Configs.FARBE__FILM_BOOKMARKED, new Color(204, 238, 255), "Filme, gemerkt");
@@ -65,7 +64,6 @@ public class MVColor {
     public static final int MVC_MAX = 2;
 
     public MVColor() {
-        liste.add(FILM_LIVESTREAM);
         liste.add(FILM_HISTORY);
         liste.add(FILM_NEU);
         liste.add(FILM_BOOKMARKED);

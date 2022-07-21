@@ -38,6 +38,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     private final FlatSVGIcon highQualityIcon;
     private final FlatSVGIcon highQualityIconSelected;
+    private final FlatSVGIcon liveStreamIcon;
+    private final FlatSVGIcon liveStreamIconSelected;
     /**
      * Temporary storage for the icons that will be assembled to a compound icon.
      */
@@ -74,6 +76,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         highQualityIcon = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
         highQualityIconSelected = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
         highQualityIconSelected.setColorFilter(whiteColorFilter);
+
+        liveStreamIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
+        liveStreamIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
+        liveStreamIconSelected.setColorFilter(whiteColorFilter);
     }
 
     private JTextArea createTextArea(String content) {
@@ -202,6 +208,13 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 iconList.add(subtitleIcon);
         }
 
+        if (datenFilm.isLivestream()) {
+            if (isSelected)
+                iconList.add(liveStreamIconSelected);
+            else
+                iconList.add(liveStreamIcon);
+        }
+
         Icon icon;
         if (iconList.size() == 1)
             icon = iconList.get(0);
@@ -236,10 +249,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             setBackgroundColor(c, datenDownload.start, isSelected);
         } else {
             //not a start, set specific background colors
-            if (datenFilm.isLivestream()) {
-                // bei livestreams keine History anzeigen
-                c.setForeground(MVColor.FILM_LIVESTREAM.color);
-            } else if (hasBeenSeen) {
+            if (hasBeenSeen) {
                 if (!isSelected) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }

@@ -82,7 +82,6 @@ public class BookmarkWindowController implements Initializable {
   private final BookmarkDataList listeBookmarkList;
   private FilteredList<BookmarkData> filteredBookmarkList;
   private Color ColorExpired;
-  private Color ColorLive;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
   private final SeenHistoryController history = new SeenHistoryController();
@@ -321,7 +320,7 @@ public class BookmarkWindowController implements Initializable {
         } else {
           setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
           // set foreground color:
-          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null;
+          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : null;
           if (fillcolor != null) {
             this.getChildren().forEach((n) -> ((Labeled) n).setTextFill(fillcolor));
           }
@@ -844,7 +843,6 @@ public class BookmarkWindowController implements Initializable {
     Color colorSeen = convertMVCAWTColor(FILM_HISTORY);
     Color colorNew = convertMVCAWTColor(FILM_NEU);
     ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
-    ColorLive = convertMVCAWTColor(FILM_LIVESTREAM);
     BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
     BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));
   }
