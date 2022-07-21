@@ -119,13 +119,10 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     }
 
     private void setGeoblockingBackgroundColor(final Component c, final boolean isSelected) {
-        final Color color;
         if (isSelected)
-            color = MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color;
-        else
-            color = MVColor.FILM_GEOBLOCK_BACKGROUND.color;
+            return;
 
-        c.setBackground(color);
+        c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
     }
 
     protected void setupGeoblockingBackground(final Component c, final String geo, final boolean isSelected) {
