@@ -7,8 +7,6 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.CompoundIcon;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
@@ -17,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
@@ -32,18 +28,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final FlatSVGIcon selectedBookmarkIcon;
     private final FlatSVGIcon normalBookmarkIcon;
     private final FlatSVGIcon selectedBookmarkIconHighlighted;
-
-    private final FlatSVGIcon subtitleIcon;
-    private final FlatSVGIcon subtitleIconSelected;
-
-    private final FlatSVGIcon highQualityIcon;
-    private final FlatSVGIcon highQualityIconSelected;
-    private final FlatSVGIcon liveStreamIcon;
-    private final FlatSVGIcon liveStreamIconSelected;
-    /**
-     * Temporary storage for the icons that will be assembled to a compound icon.
-     */
-    private final List<Icon> iconList = new ArrayList<>();
 
     public CellRendererFilme() {
         selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
@@ -68,18 +52,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.ORANGE));
 
         normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-
-        subtitleIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
-        subtitleIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
-        subtitleIconSelected.setColorFilter(whiteColorFilter);
-
-        highQualityIcon = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
-        highQualityIconSelected = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
-        highQualityIconSelected.setColorFilter(whiteColorFilter);
-
-        liveStreamIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
-        liveStreamIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
-        liveStreamIconSelected.setColorFilter(whiteColorFilter);
     }
 
     private JTextArea createTextArea(String content) {
@@ -178,55 +150,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     /**
-     * Show "CC" and/or "HQ" icon(s) when supported by the film.
-     *
-     * @param datenFilm  film information
-     * @param isSelected is row selected.
-     */
-    private void setIndicatorIcons(@NotNull DatenFilm datenFilm, boolean isSelected) {
-        datenFilm.getGeo().ifPresent(geoString -> {
-            if (!geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
-                //locked
-                if (isSelected)
-                    iconList.add(lockedIconSelected);
-                else
-                    iconList.add(lockedIcon);
-            }
-        });
-
-        if (datenFilm.isHighQuality()) {
-            if (isSelected)
-                iconList.add(highQualityIconSelected);
-            else
-                iconList.add(highQualityIcon);
-        }
-
-        if (datenFilm.hasSubtitle()) {
-            if (isSelected)
-                iconList.add(subtitleIconSelected);
-            else
-                iconList.add(subtitleIcon);
-        }
-
-        if (datenFilm.isLivestream()) {
-            if (isSelected)
-                iconList.add(liveStreamIconSelected);
-            else
-                iconList.add(liveStreamIcon);
-        }
-
-        Icon icon;
-        if (iconList.size() == 1)
-            icon = iconList.get(0);
-        else
-            icon = new CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, iconList.toArray(new Icon[0]));
-        setIcon(icon);
-
-        //always clear at the end
-        iconList.clear();
-    }
-
-    /**
      * Apply the specific horizontal alignment to the cell based on column
      *
      * @param columnModelIndex the current column index
@@ -259,13 +182,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     c.setForeground(MVColor.FILM_NEU.color);
             } else if (isBookMarked && !isSelected) {
                 c.setBackground(MVColor.FILM_BOOKMARKED.color);
-            }
-
-            if (geoMelden) {
-                //only apply geo block colors when we haven´t changed the background for seen history
-                if (!hasBeenSeen) {
-                    setupGeoblockingBackground(c, datenFilm.getGeo().orElse(""), isSelected);
-                }
             }
         }
     }

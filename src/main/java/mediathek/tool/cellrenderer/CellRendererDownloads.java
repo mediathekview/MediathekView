@@ -108,7 +108,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                             handleAboColumn(textArea, datenDownload);
                         }
                         setBackgroundColor(textArea, datenDownload.start, isSelected);
-                        handleGeoBlocking(textArea, datenDownload, isSelected);
                         return textArea;
                     }
                 }
@@ -213,11 +212,12 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
                     if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
                         setToolTipText(title);
+
+                    setIndicatorIcons(datenDownload.film, isSelected);
                 }
             }
 
             setBackgroundColor(this, datenDownload.start, isSelected);
-            handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
             logger.error(ex);
         }
@@ -272,14 +272,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         } else {
             setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
             setText("Download");
-        }
-    }
-
-    private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
-        if (geoMelden) {
-            if (datenDownload.start == null) {
-                setupGeoblockingBackground(c, datenDownload.arr[DatenDownload.DOWNLOAD_GEO], isSelected);
-            }
         }
     }
 
