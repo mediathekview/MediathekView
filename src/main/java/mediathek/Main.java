@@ -273,6 +273,9 @@ public class Main {
         FlatLightLaf.setup();
         //FlatDarkLaf.setup();
 
+        // win and linux users complain about scrollbars being too small...
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            UIManager.put( "ScrollBar.width", 16 );
         UIManager.put("TabbedPane.showTabSeparators", true);
         // install alternate row color only for windows >8 and macOS, Linux
         boolean installAlternateRowColor;
