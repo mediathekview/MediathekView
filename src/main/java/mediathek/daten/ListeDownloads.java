@@ -227,6 +227,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                                       boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
         Object[] object;
         tModel.setRowCount(0);
+        tModel.getDataVector().clear();
         for (DatenDownload download : this) {
             if (download.istZurueckgestellt()) {
                 continue;

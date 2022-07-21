@@ -151,6 +151,7 @@ public class GuiDownloads extends AGuiTabPanel {
         init();
 
         setupFilmSelectionPropertyListener();
+        setupDownloadSizeSelectionUpdater();
 
         initTable();
 
@@ -197,6 +198,40 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             });
         }
+    }
+
+    private void updateFilmSizes(int[] rows) {
+        boolean updateNeeded = false;
+
+        for (var row : rows) {
+            var indexRow = tabelle.convertRowIndexToModel(row);
+            var listeDownloads = daten.getListeDownloads();
+            var dlInfo = listeDownloads.get(indexRow);
+            if (dlInfo != null) {
+                if (dlInfo.mVFilmSize.getSize() != 0)
+                    continue;
+
+                if (dlInfo.film != null) {
+                    var oldSize = dlInfo.mVFilmSize.getSize();
+                    dlInfo.queryLiveSize();
+                    if (dlInfo.mVFilmSize.getSize() != oldSize)
+                        updateNeeded = true;
+                }
+            } else
+                logger.error("Could not get download object");
+        }
+
+        if (updateNeeded)
+            reloadTable();
+    }
+
+    private void setupDownloadSizeSelectionUpdater() {
+        tabelle.getSelectionModel().addListSelectionListener(l -> {
+            if (!l.getValueIsAdjusting()) {
+                var rows = tabelle.getSelectedRows();
+                updateFilmSizes(rows);
+            }
+        });
     }
 
     /**
@@ -255,7 +290,7 @@ public class GuiDownloads extends AGuiTabPanel {
         jSplitPane1.setDividerLocation(location);
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jPanelFilterExtern.isVisible()) {
-                config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION,jSplitPane1.getDividerLocation());
+                config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, jSplitPane1.getDividerLocation());
             }
         });
     }
@@ -263,7 +298,7 @@ public class GuiDownloads extends AGuiTabPanel {
     @Handler
     private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1);
             jSpinnerAnzahlDownloads.setValue(maxNumDownloads);
         });
     }
@@ -442,9 +477,9 @@ public class GuiDownloads extends AGuiTabPanel {
         });
 
         jSpinnerAnzahlDownloads.setModel(new SpinnerNumberModel(1, 1, 9, 1));
-        jSpinnerAnzahlDownloads.setValue(config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1));
+        jSpinnerAnzahlDownloads.setValue(config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1));
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
-            final int maxNumDownloads = ((Number)jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
+            final int maxNumDownloads = ((Number) jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
             config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
             MessageBus.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
@@ -772,8 +807,7 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private @NotNull List<DatenDownload> addAllDownloadsToList()
-    {
+    private @NotNull List<DatenDownload> addAllDownloadsToList() {
         final var rowCount = tabelle.getRowCount();
         final var tableModel = tabelle.getModel();
         List<DatenDownload> destList = new ArrayList<>();
@@ -824,7 +858,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                     int reply = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
                             "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
-                            JOptionPane.YES_NO_OPTION,JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                            JOptionPane.YES_NO_OPTION, JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
                             JOptionPane.QUESTION_MESSAGE);
                     if (reply != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
@@ -912,7 +946,7 @@ public class GuiDownloads extends AGuiTabPanel {
                             }
                             antwort = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
                                     text,
-                                    JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
                                     JOptionPane.QUESTION_MESSAGE);
                         }
                         if (antwort == JOptionPane.CANCEL_OPTION) {
@@ -1036,30 +1070,30 @@ public class GuiDownloads extends AGuiTabPanel {
             {
                 jPanelFilterExtern.setPreferredSize(new Dimension(200, 644));
                 jPanelFilterExtern.setLayout(new MigLayout(
-                    new LC().insets("0").hideMode(3).gridGap("0", "0"), //NON-NLS
-                    // columns
-                    new AC()
-                        .grow().fill(),
-                    // rows
-                    new AC()
-                        .gap()
-                        .fill().gap()
-                        .grow().fill()));
+                        new LC().insets("0").hideMode(3).gridGap("0", "0"), //NON-NLS
+                        // columns
+                        new AC()
+                                .grow().fill(),
+                        // rows
+                        new AC()
+                                .gap()
+                                .fill().gap()
+                                .grow().fill()));
 
                 //======== panel3 ========
                 {
                     panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
                     panel3.setLayout(new MigLayout(
-                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                        // columns
-                        new AC()
-                            .fill().gap()
-                            .grow().fill(),
-                        // rows
-                        new AC()
-                            .fill().gap()
-                            .fill().gap()
-                            .fill()));
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            // columns
+                            new AC()
+                                    .fill().gap()
+                                    .grow().fill(),
+                            // rows
+                            new AC()
+                                    .fill().gap()
+                                    .fill().gap()
+                                    .fill()));
 
                     //---- label1 ----
                     label1.setText("Typ:"); //NON-NLS
@@ -1082,15 +1116,15 @@ public class GuiDownloads extends AGuiTabPanel {
                 {
                     panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
                     panel2.setLayout(new MigLayout(
-                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                        // columns
-                        new AC()
-                            .fill().gap()
-                            .fill(),
-                        // rows
-                        new AC()
-                            .gap()
-                            .fill()));
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            // columns
+                            new AC()
+                                    .fill().gap()
+                                    .fill(),
+                            // rows
+                            new AC()
+                                    .gap()
+                                    .fill()));
 
                     //---- jLabel3 ----
                     jLabel3.setText("gleichzeitig:"); //NON-NLS
@@ -1243,6 +1277,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         }
+
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1391,7 +1426,7 @@ public class GuiDownloads extends AGuiTabPanel {
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
-            switch ((String)source.getModel().getSelectedItem()) {
+            switch ((String) source.getModel().getSelectedItem()) {
                 case COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
@@ -1447,7 +1482,7 @@ public class GuiDownloads extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
-            switch ((String)source.getModel().getSelectedItem()) {
+            switch ((String) source.getModel().getSelectedItem()) {
                 case COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;

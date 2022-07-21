@@ -362,9 +362,17 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         if (film != null) {
             if (!groesse.isEmpty()) {
                 mVFilmSize.setSize(groesse);
-            } else {
-                mVFilmSize.setSize(film.getFileSizeForUrl(arr[DOWNLOAD_URL]));
             }
+        }
+    }
+
+    /**
+     * Request the file size live from Internet.
+     * Might cause delays when network is slow.
+     */
+    public void queryLiveSize() {
+        if (film != null) {
+            mVFilmSize.setSize(film.getFileSizeForUrl(arr[DOWNLOAD_URL]));
         }
     }
 

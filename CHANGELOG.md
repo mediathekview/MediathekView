@@ -1,6 +1,5 @@
 <u>**14.0.0**</u>
 - **TODO:** ConfigureExternalUpdaterAction fertig programmieren!
-- **TODO:** check info dialog size on linux
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
@@ -17,6 +16,7 @@
 - **BUGFIX:** Sendericons werden nun vollständig und hochauflösend gerendert.
 - **BUGFIX:** Update-Möglichkeit innerhalb des Programms wird nun richtig ein- und ausgeblendet, je nach verwendetem Installationstyp.
 - **BUGFIX:** Potentieller Absturz beim Einlesen der Abohistorie wurde behoben.
+- **BUGFIX:** Das Hinzufügen großer Mengen an Downloads blockiert nun nicht mehr das Programm.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
 - **FEATURE:** Tab Filmbeschreibung wurde neu designed und stellt nun auch das Sendericon dar.
 - **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
@@ -25,7 +25,7 @@
 - **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
 - **FEATURE:** Untertitelverfügbarkeit wird nun über ein `cc`-Icon an Anfang des Titels angezeigt. Die Spalte `UT` wird in einer späteren Programmversion entfernt werden.
 - **FEATURE:** Im Tab Download werden die Dialoge bzgl. Neustarts fertiger Downloads nun automatisch nach 10 Sekunden geschlossen wenn kein Userinput passiert. Es wird dann jeweils die "Nein"-Option ausgewählt um bereits vorhandene Downloads zu schützen.
-- **FEATURE(Windows/Linux):** Schriftgröße kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
+- **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
 
 <u>**13.9.1**</u>
 
