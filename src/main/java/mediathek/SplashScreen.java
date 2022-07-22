@@ -1,54 +1,68 @@
+/*
+ * Created by JFormDesigner on Fri Jul 22 12:01:51 CEST 2022
+ */
+
 package mediathek;
 
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import mediathek.config.Konstanten;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.tool.TimerPool;
 import mediathek.tool.UIProgressState;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.net.URL;
+import javax.swing.*;
+import java.awt.*;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class SplashScreen {
-    private static final Logger LOG = LogManager.getLogger(SplashScreen.class);
+public class SplashScreen extends JWindow {
     private static final double MAXIMUM_STEPS = EnumSet.allOf(UIProgressState.class).size() - 1d;
-
-    @FXML
-    private Label appName;
-
-    @FXML
-    private Label appVersion;
-
-    @FXML
-    private Label progressText;
-
-    @FXML
-    private ProgressBar progressBar;
-
+    public JLabel versionLabel;
     private double curSteps;
-    private Stage window;
+    private JLabel appTitleLabel;
+    private JLabel imageLabel;
+    private JProgressBar progressBar;
+    private JLabel statusLabel;
+
+    public SplashScreen() {
+        super();
+        initComponents();
+
+        getContentPane().setBackground(Color.BLACK);
+
+        var res = String.format("Version: %s (%s %s)", Konstanten.MVVERSION, getOsName(), SystemUtils.OS_ARCH);
+        versionLabel.setText(res);
+
+        progressBar.setValue(0);
+        setLocationRelativeTo(null);
+
+        //strange behaviour on win where window will not come to front or stay there...
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (isAlwaysOnTopSupported())
+                setAlwaysOnTop(true);
+        }
+    }
+
+    public void update(UIProgressState state) {
+        curSteps++;
+        int pct = (int) Math.round(100 * (curSteps / MAXIMUM_STEPS));
+        updateStatus(state.toString(), pct);
+    }
+
+    public void close() {
+        TimerPool.getTimerPool().schedule(() ->
+                SwingUtilities.invokeLater(() -> setVisible(false)), 2, TimeUnit.SECONDS);
+        Main.splashScreen = Optional.empty();
+    }
 
     /**
      * Return "modern" macOS string for mac instead of legacy "Mac OS X".
      * According to apple dev docs even "old" 10.6 is now named macOS.
+     *
      * @return "macOS" for mac otherwise the java OS name
      */
     private String getOsName() {
-        final String osName;
+        String osName;
         if (SystemUtils.IS_OS_MAC_OSX)
             osName = "macOS";
         else
@@ -57,47 +71,92 @@ public class SplashScreen {
         return osName;
     }
 
-    public void show() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            window = new Stage(StageStyle.UNDECORATED);
-            window.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
-
-            URL url = getClass().getResource("/mediathek/res/programm/fxml/splashscreen.fxml");
-
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(url);
-            fxmlLoader.setController(this);
-
-            try {
-                Scene scene = new Scene(fxmlLoader.load());
-                window.setScene(scene);
-
-                appName.setText(Konstanten.PROGRAMMNAME);
-                appVersion.setText("Version: " + Konstanten.MVVERSION + " (" + getOsName() + ")");
-                progressBar.prefWidthProperty().bind(scene.widthProperty());
-
-                window.setScene(scene);
-                window.show();
-                window.centerOnScreen();
-            } catch (IOException ioException) {
-                LOG.error("Can't find/load the splash screen FXML description!", ioException);
-            }
-        });
+    /**
+     * Updates the percent complete bar and the associated status text.
+     *
+     * @param statusText      The new status text to display.
+     * @param percentComplete The new percentage.
+     */
+    public void updateStatus(String statusText, int percentComplete) {
+        appTitleLabel.paintImmediately(0, 0, appTitleLabel.getWidth(), appTitleLabel.getHeight());
+        imageLabel.paintImmediately(0, 0, imageLabel.getWidth(), imageLabel.getHeight());
+        versionLabel.paintImmediately(0, 0, versionLabel.getWidth(), versionLabel.getHeight());
+        statusLabel.setText(statusText);
+        statusLabel.paintImmediately(0, 0, statusLabel.getWidth(), statusLabel.getHeight());
+        progressBar.setValue(percentComplete);
+        progressBar.paintImmediately(0, 0, progressBar.getWidth(), progressBar.getHeight());
     }
 
-    public void close() {
-        TimerPool.getTimerPool().schedule(() -> JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            window.close();
-            Main.splashScreen = Optional.empty(); // delete reference as we are not working anymore
-        }),2, TimeUnit.SECONDS);
-    }
+    private void initComponents() {
+        appTitleLabel = new JLabel();
+        versionLabel = new JLabel();
+        imageLabel = new JLabel();
+        progressBar = new JProgressBar();
+        statusLabel = new JLabel();
 
-    public void update(UIProgressState state) {
-        Platform.runLater(() -> {
-            curSteps++;
-            final double p = (curSteps / MAXIMUM_STEPS);
-            progressBar.setProgress(p);
-            progressText.setText(state.toString());
-        });
+        setMinimumSize(new Dimension(640, 480));
+        setBackground(Color.black);
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setAutoRequestFocus(false);
+        setForeground(Color.black);
+        var contentPane = getContentPane();
+
+        appTitleLabel.setText(Konstanten.PROGRAMMNAME);
+        appTitleLabel.setFont(appTitleLabel.getFont().deriveFont(appTitleLabel.getFont().getStyle() | Font.BOLD, appTitleLabel.getFont().getSize() + 45f));
+        appTitleLabel.setForeground(Color.white);
+        appTitleLabel.setBackground(Color.black);
+        appTitleLabel.setOpaque(true);
+
+        versionLabel.setText("Version");
+        versionLabel.setOpaque(true);
+        versionLabel.setForeground(Color.white);
+        versionLabel.setBackground(Color.black);
+
+        imageLabel.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/MediathekView.png")));
+        imageLabel.setBackground(Color.black);
+        imageLabel.setOpaque(true);
+
+        progressBar.setValue(50);
+        progressBar.setPreferredSize(new Dimension(146, 10));
+
+        statusLabel.setText("Status Text Message is here");
+        statusLabel.setForeground(Color.white);
+        statusLabel.setBackground(Color.black);
+        statusLabel.setOpaque(true);
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(versionLabel, GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                                        .addComponent(progressBar, GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                .addComponent(appTitleLabel)
+                                                .addGap(0, 257, Short.MAX_VALUE))
+                                        .addComponent(statusLabel, GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                                .addGap(0, 372, Short.MAX_VALUE)
+                                                .addComponent(imageLabel)))
+                                .addContainerGap())
+        );
+        contentPaneLayout.setVerticalGroup(
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(appTitleLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(versionLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                                .addComponent(imageLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(statusLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
+        );
+        pack();
     }
 }

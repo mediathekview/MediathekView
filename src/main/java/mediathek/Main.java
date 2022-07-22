@@ -466,7 +466,7 @@ public class Main {
             } else {
                 logger.warn("Debugger detected -> Splash screen disabled...");
             }
-            splashScreen.ifPresent(SplashScreen::show);
+            splashScreen.ifPresent(splash -> splash.setVisible(true));
 
             migrateOldConfigSettings();
 
@@ -638,10 +638,10 @@ public class Main {
         splashScreen.ifPresent(SplashScreen::close);
         window.setVisible(true);
             /*
-                on windows there is a strange behaviour that the main window gets sent behind
+                on windows and linux there is a strange behaviour that the main window gets sent behind
                 other open windows after the splash screen is closed.
              */
-        if (SystemUtils.IS_OS_WINDOWS) {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             window.toFront();
             window.requestFocus();
         }
