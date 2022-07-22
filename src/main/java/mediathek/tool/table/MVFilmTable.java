@@ -34,13 +34,13 @@ public class MVFilmTable extends MVTable {
         setAutoCreateRowSorter(false);
 
         addPropertyChangeListener("model", evt -> {
-            //System.out.println("TABLE MODEL CHANGED");
+            var model = (TableModel) evt.getNewValue();
             if (sorter == null) {
-                sorter = new MyRowSorter<>(getModel());
+                sorter = new MyRowSorter<>(model);
                 //sorter.addRowSorterListener(evt1 -> System.out.println("SORT ORDER HAS CHANGED"));
             }
+            sorter.setModel(model);
             setRowSorter(sorter);
-            sorter.setModel(getModel());
         });
     }
 
@@ -225,8 +225,6 @@ public class MVFilmTable extends MVTable {
     }
 
     static class MyRowSorter<M extends TableModel> extends TableRowSorter<M> {
-        //private static final Logger rsLogger = LogManager.getLogger();
-
         public MyRowSorter(M model) {
             super(model);
         }
@@ -234,6 +232,8 @@ public class MVFilmTable extends MVTable {
         @Override
         public void setModel(M model) {
             super.setModel(model);
+
+            //must be set after each model change
             // do not sort buttons
             setSortable(DatenFilm.FILM_ABSPIELEN, false);
             setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
@@ -244,27 +244,18 @@ public class MVFilmTable extends MVTable {
             setComparator(DatenFilm.FILM_SENDER, (Comparator<String>) String::compareTo);
             setComparator(DatenFilm.FILM_ZEIT, (Comparator<String>) String::compareTo);
             //setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
+            setComparator(DatenFilm.FILM_DAUER, Comparator.naturalOrder());
         }
 
         @Override
         public void setSortKeys(List<? extends SortKey> sortKeys) {
-            //FIXME something is wrong in MVTable with setting sort keys
+            // MV config stores only ONE sort key
+            // here we make sure that only one will be set on the table...
             if (sortKeys != null) {
-                if (sortKeys.size() > 1) {
-                    //rsLogger.error("BULLSHIT SORTKEYS IN");
+                while (sortKeys.size() > 1)
                     sortKeys.remove(1);
-                }
             }
             super.setSortKeys(sortKeys);
-/*
-            var list = getSortKeys();
-            if (list != null) {
-                rsLogger.debug("SORT KEYS:");
-                for (var key : list) {
-                    rsLogger.debug("COLUMN: " + key.getColumn() + ",SortOrder: " + key.getSortOrder().toString());
-                }
-            }
-*/
         }
     }
 }

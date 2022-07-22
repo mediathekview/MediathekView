@@ -76,6 +76,18 @@ public class GuiFunktionen {
         return (int)op.getValue();
     }
 
+    /**
+     * Show a "red box" around a component to indicate error condition
+     * @param component the target
+     * @param hasError if true, set error box around component, otherwise remove it.
+     */
+    public static void showErrorIndication(@NotNull JComponent component, boolean hasError) {
+        if (hasError)
+            component.putClientProperty("JComponent.outline", "error");
+        else
+            component.putClientProperty("JComponent.outline", "");
+    }
+
     public static boolean isUsingExternalUpdater() {
         return !isNotUsingExternalUpdater();
     }

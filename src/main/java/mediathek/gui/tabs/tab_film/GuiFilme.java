@@ -16,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -766,7 +767,6 @@ public class GuiFilme extends AGuiTabPanel {
         private static final String SEARCHMODE_PROPERTY_STRING = "searchMode";
         private final SearchHistoryButton searchHistoryButton = new SearchHistoryButton();
         private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-        private final Color DEFAULT_FOREGROUND_COLOR = UIManager.getColor("TextField.foreground");
         private SearchControlFieldMode searchMode;
 
         public SearchField() {
@@ -841,24 +841,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         private void setForegroundTextColor(String text) {
             if (Filter.isPattern(text))
-                setForeground(getPatternColor());
+                setForeground(MVColor.getRegExPatternColor());
             else
-                setForeground(DEFAULT_FOREGROUND_COLOR);
-        }
-
-        /**
-         * Get the pattern text color based on L&F dark mode.
-         * @return adjusted color for current L&F
-         */
-        private Color getPatternColor() {
-            Color color;
-            if (FlatLaf.isLafDark()) {
-                color = UIManager.getColor("Hyperlink.linkColor");
-            }
-            else
-                color = Color.BLUE;
-
-            return color;
+                setForeground(UIManager.getColor("TextField.foreground"));
         }
 
         private boolean isPatternValid(String text) {
@@ -867,16 +852,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         private void checkPatternValidity(String text) {
             if (Filter.isPattern(text))
-                showErrorIndication(!isPatternValid(text));
+                GuiFunktionen.showErrorIndication(this,!isPatternValid(text));
             else
-                showErrorIndication(false);
-        }
-
-        private void showErrorIndication(boolean hasError) {
-            if (hasError)
-                putClientProperty("JComponent.outline", "error");
-            else
-                putClientProperty("JComponent.outline", "");
+                GuiFunktionen.showErrorIndication(this, false);
         }
 
         private void clearSearchField() {

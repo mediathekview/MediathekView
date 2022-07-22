@@ -19,8 +19,10 @@
  */
 package mediathek.config;
 
+import com.formdev.flatlaf.FlatLaf;
 import mediathek.tool.MVC;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -45,22 +47,16 @@ public class MVColor {
     public static final MVC DOWNLOAD_FEHLER = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_FEHLER, new Color(241, 188, 221), "Download, fehlerhaft");
     public static final MVC DOWNLOAD_FEHLER_SEL = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_FEHLER_SEL, new Color(206, 92, 128), "Download, fehlerhaft, selektiert");
 
-    // Filter wenn RegEx
-    public static final MVC FILTER_REGEX = new MVC(MVConfig.Configs.FARBE__FILTER_REGEX, new Color(153, 214, 255), "Filter ist RegEx");
-    public static final MVC FILTER_REGEX_FEHLER = new MVC(MVConfig.Configs.FARBE__FILTER_REGEX_FEHLER, Color.RED, "Filter ist Regex, fehlerhaft");
-
     // ProgrammGui
     public static final MVC BUTTON_SET_ABSPIELEN = new MVC(MVConfig.Configs.FARBE__BUTTON_SET_ABSPIELEN, new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
-
     // DialogDownload
     public static final MVC DOWNLOAD_DATEINAME_EXISTIERT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_EXISTIERT, new Color(190, 0, 0), "Download, Dateiname existiert schon");
     public static final MVC DOWNLOAD_DATEINAME_NEU = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_NEU, new Color(0, 140, 0), "Download, Dateiname ist neu");
     public static final MVC DOWNLOAD_DATEINAME_ALT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_ALT, new Color(0, 0, 200), "Download, Dateiname ist der alte");
-
-    public ArrayList<MVC> liste = new ArrayList<>();
     public static final int MVC_TEXT = 0;
     public static final int MVC_COLOR = 1;
     public static final int MVC_MAX = 2;
+    public ArrayList<MVC> liste = new ArrayList<>();
 
     public MVColor() {
         liste.add(FILM_HISTORY);
@@ -77,12 +73,25 @@ public class MVColor {
         liste.add(DOWNLOAD_FERTIG_SEL);
         liste.add(DOWNLOAD_FEHLER);
         liste.add(DOWNLOAD_FEHLER_SEL);
-        liste.add(FILTER_REGEX);
-        liste.add(FILTER_REGEX_FEHLER);
         liste.add(BUTTON_SET_ABSPIELEN);
         liste.add(DOWNLOAD_DATEINAME_EXISTIERT);
         liste.add(DOWNLOAD_DATEINAME_NEU);
         liste.add(DOWNLOAD_DATEINAME_ALT);
+    }
+
+    /**
+     * Get the pattern text color based on L&F dark mode.
+     *
+     * @return adjusted color for current L&F
+     */
+    public static Color getRegExPatternColor() {
+        Color color;
+        if (FlatLaf.isLafDark()) {
+            color = UIManager.getColor("Hyperlink.linkColor");
+        } else
+            color = Color.BLUE;
+
+        return color;
     }
 
     public final void load() {

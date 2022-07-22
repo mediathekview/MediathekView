@@ -2,6 +2,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.file.GetFile;
@@ -232,8 +233,25 @@ public class PanelBlacklist extends JPanel {
             }
 
             private void tus() {
-                Filter.validatePatternInput(jTextFieldThemaTitel);
-                Filter.validatePatternInput(jTextFieldTitel);
+                validatePatternInput(jTextFieldThemaTitel);
+                validatePatternInput(jTextFieldTitel);
+            }
+
+            /**
+             * Check if entry in JTextField is a regexp pattern and its validity.
+             * If a recognized pattern is invalid, change the background color of the JTextField.
+             *
+             * @param tf The control that will be validated
+             */
+            private void validatePatternInput(JTextField tf) {
+                String text = tf.getText();
+                if (Filter.isPattern(text)) {
+                    tf.setForeground(MVColor.getRegExPatternColor());
+                    GuiFunktionen.showErrorIndication(tf, Filter.makePatternNoCache(text) == null);
+                } else {
+                    GuiFunktionen.showErrorIndication(tf, false);
+                    tf.setForeground(UIManager.getColor("TextField.foreground"));
+                }
             }
         };
         jTextFieldTitel.getDocument().addDocumentListener(documentListener);
