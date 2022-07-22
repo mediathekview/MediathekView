@@ -19,11 +19,11 @@ import java.util.Optional;
 
 public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
-    private MyRowSorter<TableModel> sorter;
     /**
      * Stores the selected FILM NUMBERS that need to be restored after updates.
      */
     private final List<Integer> selectedFilmNumbers = new ArrayList<>();
+    private MyRowSorter<TableModel> sorter;
 
     public MVFilmTable() {
         super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS,
@@ -152,49 +152,6 @@ public class MVFilmTable extends MVTable {
         }
     }
 
-    static class MyRowSorter<M extends TableModel> extends TableRowSorter<M> {
-        //private static final Logger rsLogger = LogManager.getLogger();
-
-        public MyRowSorter(M model) {
-            super(model);
-        }
-
-        @Override
-        public void setModel(M model) {
-            super.setModel(model);
-            // do not sort buttons
-            setSortable(DatenFilm.FILM_ABSPIELEN, false);
-            setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
-            //compare to FilmSize->int instead of String
-            setComparator(DatenFilm.FILM_GROESSE, (Comparator<FilmSize>) FilmSize::compareTo);
-            // deactivate german collator used in DatenFilm as it slows down sorting as hell...
-            setComparator(DatenFilm.FILM_SENDER, (Comparator<String>) String::compareTo);
-            setComparator(DatenFilm.FILM_ZEIT, (Comparator<String>) String::compareTo);
-            setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
-        }
-
-        @Override
-        public void setSortKeys(List<? extends SortKey> sortKeys) {
-            //FIXME something is wrong in MVTable with setting sort keys
-            if (sortKeys != null) {
-                if (sortKeys.size() > 1) {
-                    //rsLogger.error("BULLSHIT SORTKEYS IN");
-                    sortKeys.remove(1);
-                }
-            }
-            super.setSortKeys(sortKeys);
-/*
-            var list = getSortKeys();
-            if (list != null) {
-                rsLogger.debug("SORT KEYS:");
-                for (var key : list) {
-                    rsLogger.debug("COLUMN: " + key.getColumn() + ",SortOrder: " + key.getSortOrder().toString());
-                }
-            }
-*/
-        }
-    }
-
     /**
      * Scroll to a selected row, but center it in the middle of the visible rectangle.
      * @param rowIndex The row to be displayed centered.
@@ -221,6 +178,7 @@ public class MVFilmTable extends MVTable {
         // film list moves selected entries into center of JTable view
         scrollToSelectionCentered(index);
     }
+
     @Override
     protected void restoreSelectedTableRows() {
         if (!selectedFilmNumbers.isEmpty()) {
@@ -263,6 +221,50 @@ public class MVFilmTable extends MVTable {
             for (int i : selRows) {
                 selectedFilmNumbers.add((int) getModel().getValueAt(convertRowIndexToModel(i), DatenFilm.FILM_NR));
             }
+        }
+    }
+
+    static class MyRowSorter<M extends TableModel> extends TableRowSorter<M> {
+        //private static final Logger rsLogger = LogManager.getLogger();
+
+        public MyRowSorter(M model) {
+            super(model);
+        }
+
+        @Override
+        public void setModel(M model) {
+            super.setModel(model);
+            // do not sort buttons
+            setSortable(DatenFilm.FILM_ABSPIELEN, false);
+            setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
+            setSortable(DatenFilm.FILM_URL, false);
+            //compare to FilmSize->int instead of String
+            setComparator(DatenFilm.FILM_GROESSE, (Comparator<FilmSize>) FilmSize::compareTo);
+            // deactivate german collator used in DatenFilm as it slows down sorting as hell...
+            setComparator(DatenFilm.FILM_SENDER, (Comparator<String>) String::compareTo);
+            setComparator(DatenFilm.FILM_ZEIT, (Comparator<String>) String::compareTo);
+            //setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
+        }
+
+        @Override
+        public void setSortKeys(List<? extends SortKey> sortKeys) {
+            //FIXME something is wrong in MVTable with setting sort keys
+            if (sortKeys != null) {
+                if (sortKeys.size() > 1) {
+                    //rsLogger.error("BULLSHIT SORTKEYS IN");
+                    sortKeys.remove(1);
+                }
+            }
+            super.setSortKeys(sortKeys);
+/*
+            var list = getSortKeys();
+            if (list != null) {
+                rsLogger.debug("SORT KEYS:");
+                for (var key : list) {
+                    rsLogger.debug("COLUMN: " + key.getColumn() + ",SortOrder: " + key.getSortOrder().toString());
+                }
+            }
+*/
         }
     }
 }

@@ -35,6 +35,8 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     private final FlatSVGIcon highQualityIconSelected;
     private final FlatSVGIcon liveStreamIcon;
     private final FlatSVGIcon liveStreamIconSelected;
+    private final FlatSVGIcon audioDescription;
+    private final FlatSVGIcon audioDescriptionSelected;
     protected FlatSVGIcon.ColorFilter whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
     public CellRendererBaseWithStart() {
@@ -59,6 +61,10 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         liveStreamIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
         liveStreamIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
         liveStreamIconSelected.setColorFilter(whiteColorFilter);
+
+        audioDescription = SVGIconUtilities.createSVGIcon("icons/fontawesome/audio-description.svg");
+        audioDescriptionSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/audio-description.svg");
+        audioDescriptionSelected.setColorFilter(whiteColorFilter);
     }
 
     protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
@@ -154,6 +160,13 @@ public class CellRendererBaseWithStart extends CellRendererBase {
                 iconList.add(highQualityIconSelected);
             else
                 iconList.add(highQualityIcon);
+        }
+
+        if (datenFilm.isAudioVersion()) {
+            if (isSelected)
+                iconList.add(audioDescriptionSelected);
+            else
+                iconList.add(audioDescription);
         }
 
         if (datenFilm.hasSubtitle()) {
