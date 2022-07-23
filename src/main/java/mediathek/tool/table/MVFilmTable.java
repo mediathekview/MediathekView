@@ -32,15 +32,16 @@ public class MVFilmTable extends MVTable {
                 Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME));
 
         setAutoCreateRowSorter(false);
-
         addPropertyChangeListener("model", evt -> {
+            //we need to setup sorter later as the model is invalid at ctor point...
             var model = (TableModel) evt.getNewValue();
             if (sorter == null) {
                 sorter = new MyRowSorter<>(model);
-                //sorter.addRowSorterListener(evt1 -> System.out.println("SORT ORDER HAS CHANGED"));
+                sorter.setModel(model);
+                setRowSorter(sorter);
             }
-            sorter.setModel(model);
-            setRowSorter(sorter);
+            else
+                sorter.setModel(model);
         });
     }
 
