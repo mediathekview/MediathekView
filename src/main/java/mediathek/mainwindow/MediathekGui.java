@@ -32,7 +32,7 @@ import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
-import mediathek.javafx.ShutdownDialog;
+import mediathek.javafx.ShutdownDialogController;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
@@ -987,7 +987,7 @@ public class MediathekGui extends JFrame {
 
         endProgramUpdateChecker();
 
-        ShutdownDialog dialog = new ShutdownDialog(this);
+        ShutdownDialogController dialog = new ShutdownDialogController(this);
         dialog.show();
 
         // stop the download thread
