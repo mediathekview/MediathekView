@@ -987,47 +987,47 @@ public class MediathekGui extends JFrame {
 
         endProgramUpdateChecker();
 
-        ShutdownDialogController dialog = new ShutdownDialogController(this);
-        dialog.show();
+        ShutdownDialogController shutdownProgress = new ShutdownDialogController(this);
+        shutdownProgress.show();
 
         // stop the download thread
-        dialog.setStatusText(ShutdownState.TERMINATE_STARTER_THREAD);
+        shutdownProgress.setStatusText(ShutdownState.TERMINATE_STARTER_THREAD);
         daten.getStarterClass().getStarterThread().interrupt();
 
-        dialog.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        shutdownProgress.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
         closeNotificationCenter();
 
         manageAboAction.closeDialog();
 
         tabFilme.saveSettings();  // needs thread pools active!
 
-        dialog.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
+        shutdownProgress.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
-        dialog.setStatusText(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
+        shutdownProgress.setStatusText(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
         try (SeenHistoryController history = new SeenHistoryController()) {
             history.performMaintenance();
         }
 
         // Tabelleneinstellungen merken
-        dialog.setStatusText(ShutdownState.SAVE_FILM_DATA);
+        shutdownProgress.setStatusText(ShutdownState.SAVE_FILM_DATA);
         tabFilme.tabelleSpeichern();
 
-        dialog.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
+        shutdownProgress.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(ShutdownState.STOP_DOWNLOADS);
+        shutdownProgress.setStatusText(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
 
-        dialog.setStatusText(ShutdownState.SAVE_BOOKMARKS);
+        shutdownProgress.setStatusText(ShutdownState.SAVE_BOOKMARKS);
         daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
 
-        dialog.setStatusText(ShutdownState.SAVE_APP_DATA);
+        shutdownProgress.setStatusText(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
 
-        dialog.setStatusText(ShutdownState.COMPLETE);
-        dialog.hide();
+        shutdownProgress.setStatusText(ShutdownState.COMPLETE);
+        shutdownProgress.hide();
 
         tabFilme.filmActionPanel.filterDialog.dispose();
 
