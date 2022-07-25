@@ -1,6 +1,6 @@
 package mediathek.gui.actions
 
-import mediathek.gui.dialog.about.AboutDialog
+import mediathek.gui.dialog.AboutDialog
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.GuiFunktionen
 import java.awt.event.ActionEvent
