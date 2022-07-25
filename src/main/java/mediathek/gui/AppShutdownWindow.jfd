@@ -19,7 +19,7 @@ new FormModel {
 				"value": "cell 0 0 1 2,aligny top,growy 0"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label2"
+				name: "message"
 				"text": "Progress text here..."
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
@@ -28,7 +28,7 @@ new FormModel {
 				"value": "cell 1 0"
 			} )
 			add( new FormComponent( "javax.swing.JProgressBar" ) {
-				name: "progressBar1"
+				name: "progress"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}

@@ -26,8 +26,8 @@ public class AppShutdownWindow extends JWindow {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         label1 = new JXBusyLabel();
-        label2 = new JLabel();
-        progressBar1 = new JProgressBar();
+        message = new JLabel();
+        progress = new JProgressBar();
 
         //======== this ========
         var contentPane = getContentPane();
@@ -46,10 +46,10 @@ public class AppShutdownWindow extends JWindow {
         label1.setVerticalAlignment(SwingConstants.TOP);
         contentPane.add(label1, new CC().cell(0, 0, 1, 2).alignY("top").growY(0)); //NON-NLS
 
-        //---- label2 ----
-        label2.setText("Progress text here..."); //NON-NLS
-        contentPane.add(label2, new CC().cell(1, 0));
-        contentPane.add(progressBar1, new CC().cell(1, 1).alignY("center").grow(100, 0).width("350:350:350")); //NON-NLS
+        //---- message ----
+        message.setText("Progress text here..."); //NON-NLS
+        contentPane.add(message, new CC().cell(1, 0));
+        contentPane.add(progress, new CC().cell(1, 1).alignY("center").grow(100, 0).width("350:350:350")); //NON-NLS
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -58,7 +58,7 @@ public class AppShutdownWindow extends JWindow {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     public JXBusyLabel label1;
-    public JLabel label2;
-    public JProgressBar progressBar1;
+    public JLabel message;
+    public JProgressBar progress;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

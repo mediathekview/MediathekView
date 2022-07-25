@@ -17,13 +17,12 @@ public class ShutdownDialogController {
     public ShutdownDialogController(MediathekGui gui) {
         this.gui = gui;
         window = new AppShutdownWindow(gui);
-        window.progressBar1.setMaximum(EnumSet.allOf(ShutdownState.class).size());
+        window.progress.setMaximum(EnumSet.allOf(ShutdownState.class).size());
     }
 
     public void show() {
         gui.setEnabled(false);
         window.label1.setBusy(true);
-        //TODO center on screen!
         window.setVisible(true);
     }
 
@@ -35,10 +34,10 @@ public class ShutdownDialogController {
 
     public void setStatusText(ShutdownState state) {
         curSteps++;
-        window.label2.setText(state.toString());
-        window.label2.paintImmediately(0, 0, window.label2.getWidth(), window.label2.getHeight());
-        window.progressBar1.setValue((int) curSteps);
-        window.progressBar1.paintImmediately(0, 0, window.progressBar1.getWidth(), window.progressBar1.getHeight());
+        window.message.setText(state.toString());
+        window.message.paintImmediately(0, 0, window.message.getWidth(), window.message.getHeight());
+        window.progress.setValue((int) curSteps);
+        window.progress.paintImmediately(0, 0, window.progress.getWidth(), window.progress.getHeight());
         window.label1.paintImmediately(0, 0, window.label1.getWidth(), window.label1.getHeight());
         /*try {
             Thread.sleep(500);
