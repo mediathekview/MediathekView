@@ -1,8 +1,6 @@
 package mediathek.mainwindow;
 
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.stage.Stage;
 import mediathek.Main;
 import mediathek.config.*;
@@ -14,7 +12,6 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
-import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.external_updater.ConfigureExternalUpdaterAction;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
@@ -97,10 +94,6 @@ public class MediathekGui extends JFrame {
     private final JMenu jMenuDownload = new JMenu();
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
-    /**
-     * Helper to determine what tab is currently active
-     */
-    private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final SearchProgramUpdateAction searchProgramUpdateAction;
@@ -507,10 +500,6 @@ public class MediathekGui extends JFrame {
                 progressLabel.setText(event.text);
             }
         });
-    }
-
-    public ObjectProperty<TabPaneIndex> tabPaneIndexProperty() {
-        return tabPaneIndexProperty;
     }
 
     public InfoDialog getFilmInfoDialog() {

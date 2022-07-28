@@ -14,7 +14,6 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.*;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -399,7 +398,6 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     public void onComponentShown() {
-        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 

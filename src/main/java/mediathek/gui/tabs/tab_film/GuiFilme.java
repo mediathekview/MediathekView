@@ -26,7 +26,6 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.FilterSelectionComboBoxModel;
-import mediathek.gui.TabPaneIndex;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
@@ -300,8 +299,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void onComponentShown() {
-        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
-
         updateFilmData();
         updateStartInfoProperty();
     }
