@@ -20,6 +20,7 @@
 - **BUGFIX:** Das Hinzufügen großer Mengen an Downloads blockiert nun nicht mehr das Programm.
 - **BUGFIX:** Die Dateigrößen von manuellen Downloads werden nun - sofern vorhanden - richtig verarbeitet.
 - **BUGFIX:** geo-geblockte Filmeinträge verwenden nun bei der Auswahl die Farben des Themes anstatt einer eigens definierten.
+- **BUGFIX:** Menüpunkt *"Downloads/Aktion nach abgeschlossenen Downloads..."* wurde entfernt da es in der Funktion dem regulären Beenden der Applikation entspricht.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
 - **FEATURE:** Tab Filmbeschreibung wurde neu designed und stellt nun auch das Sendericon dar.

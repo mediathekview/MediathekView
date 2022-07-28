@@ -32,12 +32,10 @@ import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
-import mediathek.javafx.ShutdownDialogController;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
-import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
@@ -333,7 +331,7 @@ public class MediathekGui extends JFrame {
      * This shutdown hook will try to save both log messages and write config changes to disk before app terminates.
      */
     private void setupShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread());
+        Runtime.getRuntime().addShutdownHook(new Log4jShutdownHookThread());
     }
 
     private void setupSystemTray() {
@@ -623,7 +621,7 @@ public class MediathekGui extends JFrame {
                 if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
                     setVisible(false);
                 } else {
-                    beenden(false, false);
+                    beenden(false);
                 }
             }
         });
@@ -962,14 +960,10 @@ public class MediathekGui extends JFrame {
         return dialogEinstellungen;
     }
 
-    public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
+    public boolean beenden(boolean shutDown) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
-            if (showOptionTerminate) {
-                dialogBeenden.setComboWaitAndTerminate();
-            }
-
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.applicationCanTerminate()) {
                 return false;
@@ -992,6 +986,15 @@ public class MediathekGui extends JFrame {
         ShutdownDialogController shutdownProgress = new ShutdownDialogController(this);
         shutdownProgress.show();
 
+        var historyWorker = CompletableFuture.runAsync(() -> {
+            try (SeenHistoryController history = new SeenHistoryController()) {
+                history.performMaintenance();
+            }
+        });
+
+        var bookmarkWorker = CompletableFuture.runAsync(() ->
+                daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath()));
+
         // stop the download thread
         shutdownProgress.setStatus(ShutdownState.TERMINATE_STARTER_THREAD);
         daten.getStarterClass().getStarterThread().interrupt();
@@ -1005,30 +1008,31 @@ public class MediathekGui extends JFrame {
         tabFilme.saveSettings();  // needs thread pools active!
         tabFilme.filmActionPanel.filterDialog.dispose();
 
-        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_THREAD_POOL);
-        shutdownTimerPool();
-        waitForCommonPoolToComplete();
-
         shutdownProgress.setStatus(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();
 
         shutdownProgress.setStatus(ShutdownState.STOP_DOWNLOADS);
         stopDownloads();
 
-        shutdownProgress.setStatus(ShutdownState.SAVE_BOOKMARKS);
-        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
-
         shutdownProgress.setStatus(ShutdownState.SAVE_APP_DATA);
         daten.allesSpeichern();
 
+        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_THREAD_POOL);
+        shutdownTimerPool();
+        waitForCommonPoolToComplete();
+
         //shutdown JavaFX
         shutdownProgress.setStatus(ShutdownState.TERMINATE_JAVAFX_SUPPORT);
-        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
-        Platform.exit();
+        shutdownJavaFx();
 
-        shutdownProgress.setStatus(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
-        try (SeenHistoryController history = new SeenHistoryController()) {
-            history.performMaintenance();
+        try {
+            shutdownProgress.setStatus(ShutdownState.SAVE_BOOKMARKS);
+            bookmarkWorker.get();
+
+            shutdownProgress.setStatus(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
+            historyWorker.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Async task error", e);
         }
 
         //close main window
@@ -1037,19 +1041,33 @@ public class MediathekGui extends JFrame {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        shutdownProgress.setStatus(ShutdownState.COMPLETE);
         RuntimeStatistics.printRuntimeStatistics();
+        RuntimeStatistics.printDataUsageStatistics();
+        shutdownProgress.setStatus(ShutdownState.COMPLETE);
 
         if (shutDown) {
             shutdownComputer();
         }
 
-        var byteCounter = MVHttpClient.getInstance().getByteCounter();
-        logger.trace("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
-        logger.trace("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
-        System.exit(0);
+        shutdownJavaVm();
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Gracefully shutdown the JavaFX environment.
+     */
+    private void shutdownJavaFx() {
+        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        Platform.exit();
+    }
+
+    /**
+     * Shutdown Java virtual machine.
+     * This will be only necessary on Windows and Linux.
+     */
+    protected void shutdownJavaVm() {
+        System.exit(0);
     }
 
     private void shutdownTimerPool() {
@@ -1097,21 +1115,6 @@ public class MediathekGui extends JFrame {
      */
     protected void shutdownComputer() {
         //default is none
-    }
-
-    /**
-     * Gracefully shutdown config and log.
-     * This may be necessary in case the app is not properly quit.
-     */
-    static class ShutdownHookThread extends Thread {
-        @Override
-        public void run() {
-            //write all settings if not done already...just to be sure
-            ApplicationConfiguration.getInstance().writeConfiguration();
-
-            //shut down log4j
-            Log4jShutdownCallbackRegistry.Companion.execute();
-        }
     }
 
 }

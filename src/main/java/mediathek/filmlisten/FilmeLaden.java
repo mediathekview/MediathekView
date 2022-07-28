@@ -98,7 +98,7 @@ public class FilmeLaden {
         final Request request = new Request.Builder().url(Objects.requireNonNull(filmListUrl)).build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
-            if (body != null && response.isSuccessful()) {
+            if (response.isSuccessful()) {
                 String remoteId = body.string();
                 if (!remoteId.isEmpty() && !remoteId.equalsIgnoreCase(id))
                     result = true; // we have an update...
@@ -321,10 +321,17 @@ public class FilmeLaden {
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));
         }
-        workerTask.thenRun(() -> SwingUtilities.invokeLater(() -> {
-            ui.swingStatusBar.getStatusBar().remove(progLabel);
-            ui.swingStatusBar.getStatusBar().remove(progressBar);
-        }));
+        workerTask.thenRun(() -> {
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    ui.swingStatusBar.getStatusBar().remove(progressBar);
+                    ui.swingStatusBar.getStatusBar().remove(progLabel);
+                    //ui.swingStatusBar.revalidate();
+                });
+            } catch (InterruptedException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void fillHash(ListeFilme listeFilme) {

@@ -6,7 +6,6 @@ import mediathek.daten.blacklist.BlacklistRule
 import mediathek.gui.messages.ReplaceListChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
-import org.apache.commons.lang3.tuple.ImmutableTriple
 import org.apache.logging.log4j.LogManager
 import java.io.FileInputStream
 import java.io.IOException
@@ -22,12 +21,10 @@ class OldConfigFileImporter {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance()
 
     @Throws(IOException::class, XMLStreamException::class)
-    fun importAboBlacklist(
-        datei: String,
-        importAbo: Boolean,
-        importBlacklist: Boolean,
-        importReplaceList: Boolean
-    ): ImmutableTriple<Int, Int, Int> {
+    fun importAboBlacklist(datei: String,
+                           importAbo: Boolean,
+                           importBlacklist: Boolean,
+                           importReplaceList: Boolean): ImportResult {
         var foundAbos = 0
         var foundBlacklistEntries = 0
         var foundReplaceListEntries = 0
@@ -60,11 +57,13 @@ class OldConfigFileImporter {
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             if (parser != null) {
                 try {
                     parser!!.close()
-                } catch (ignored: XMLStreamException) {
+                }
+                catch (ignored: XMLStreamException) {
                 }
             }
         }
@@ -76,8 +75,10 @@ class OldConfigFileImporter {
         if (foundReplaceListEntries > 0)
             MessageBus.messageBus.publishAsync(ReplaceListChangedEvent())
 
-        return ImmutableTriple(foundAbos, foundBlacklistEntries, foundReplaceListEntries)
+        return ImportResult(foundAbos, foundBlacklistEntries, foundReplaceListEntries)
     }
+
+    data class ImportResult(val foundAbos: Int, val foundBlacklistEntries: Int, val foundReplaceListEntries: Int)
 
     private fun importAboEntry(parser: XMLStreamReader): Boolean {
         return try {
@@ -85,7 +86,8 @@ class OldConfigFileImporter {
             datenAbo.readFromConfig(parser)
             daten.listeAbo.addAbo(datenAbo)
             true
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             logger.error("Error importing abo entry")
             false
         }
@@ -93,7 +95,7 @@ class OldConfigFileImporter {
 
     private fun importReplaceList(parser: XMLStreamReader): Boolean {
         val sa = arrayOfNulls<String>(ReplaceList.MAX_ELEM)
-        val success = get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)
+        val success = get(parser, sa)
         return if (success) {
             ReplaceList.list.add(sa)
             true
@@ -101,10 +103,7 @@ class OldConfigFileImporter {
             false
     }
 
-    private operator fun get(
-        parser: XMLStreamReader, xmlElem: String, xmlNames: Array<String>,
-        strRet: Array<String?>
-    ): Boolean {
+    private operator fun get(parser: XMLStreamReader, strRet: Array<String?>): Boolean {
         val maxElem = strRet.size
         for (i in 0 until maxElem) {
             if (strRet[i] == null) {
@@ -116,13 +115,13 @@ class OldConfigFileImporter {
             while (parser.hasNext()) {
                 val event = parser.next()
                 if (event == XMLStreamConstants.END_ELEMENT) {
-                    if (parser.localName == xmlElem) {
+                    if (parser.localName == ReplaceList.REPLACELIST) {
                         break
                     }
                 }
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     for (i in 0 until maxElem) {
-                        if (parser.localName == xmlNames[i]) {
+                        if (parser.localName == ReplaceList.COLUMN_NAMES[i]) {
                             strRet[i] = parser.elementText
                             break
                         }
@@ -130,7 +129,8 @@ class OldConfigFileImporter {
                 }
             }
             true
-        } catch (ex: Exception) {
+        }
+        catch (ex: Exception) {
             logger.error("get", ex)
             false
         }

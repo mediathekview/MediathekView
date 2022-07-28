@@ -37,7 +37,7 @@ public class ResetSettingsPanel extends JPanel {
                 // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
                 // Programm wie beim ersten Start
                 Daten.setResetConfigurationData(true);
-                MediathekGui.ui().beenden(false, false);
+                MediathekGui.ui().beenden(false);
             }
         });
 

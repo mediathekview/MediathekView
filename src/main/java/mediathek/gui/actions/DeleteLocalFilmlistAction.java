@@ -32,7 +32,7 @@ public class DeleteLocalFilmlistAction extends AbstractAction {
             JOptionPane.showMessageDialog(owner,
                     "Filmliste wurde gelöscht.\nDas Programm wird nun beendet.",
                     Konstanten.PROGRAMMNAME,JOptionPane.INFORMATION_MESSAGE);
-            MediathekGui.ui().beenden(false,false);
+            MediathekGui.ui().beenden(false);
         } catch (IOException ex) {
             logger.error("Failed to delete filmlist", ex);
             JOptionPane.showMessageDialog(owner,

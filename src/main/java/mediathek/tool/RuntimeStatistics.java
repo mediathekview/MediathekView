@@ -1,5 +1,7 @@
 package mediathek.tool;
 
+import mediathek.config.Config;
+import mediathek.tool.http.MVHttpClient;
 import org.apache.logging.log4j.LogManager;
 
 import java.time.Duration;
@@ -24,5 +26,14 @@ public class RuntimeStatistics {
         logger.info("   --> Start: {}", formatter.format(startZeit));
         logger.info("   --> Ende:  {}", formatter.format(endZeit));
         logger.info("   --> Laufzeit: {}h {}m {}s", runTime.getHour(),runTime.getMinute(),runTime.getSecond());
+    }
+
+    public static void printDataUsageStatistics() {
+        if (Config.isEnhancedLoggingEnabled()) {
+            var byteCounter = MVHttpClient.getInstance().getByteCounter();
+            var logger = LogManager.getLogger();
+            logger.info("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
+            logger.info("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
+        }
     }
 }

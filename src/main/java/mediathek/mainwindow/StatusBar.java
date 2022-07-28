@@ -6,7 +6,29 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StatusBar extends JComponent {
-    private final JXStatusBar statusBar = new JXStatusBar();
+    /**
+     * This class tries to fix some redraw issues with JXStatusBar on removal.
+     */
+    static class FixedRedrawStatusBar extends JXStatusBar {
+        @Override
+        public void remove(int index) {
+            super.remove(index);
+            this.revalidate();
+        }
+
+        @Override
+        public void remove(Component comp) {
+            super.remove(comp);
+            this.revalidate();
+        }
+
+        @Override
+        public void removeAll() {
+            super.removeAll();
+            this.revalidate();
+        }
+    }
+    private final FixedRedrawStatusBar statusBar = new FixedRedrawStatusBar();
 
     public StatusBar(MediathekGui mediathekGui) {
         setLayout(new BorderLayout());

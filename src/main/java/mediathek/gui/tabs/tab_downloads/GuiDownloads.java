@@ -98,7 +98,6 @@ public class GuiDownloads extends AGuiTabPanel {
     protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
     protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
     protected InvertSelectionAction invertSelectionAction = new InvertSelectionAction(this);
-    protected ShutdownAfterDownloadAction shutdownAfterDownloadAction = new ShutdownAfterDownloadAction(mediathekGui);
     protected PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
     protected StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
     protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
@@ -397,8 +396,6 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(playDownloadAction);
         menu.addSeparator();
         menu.add(invertSelectionAction);
-        menu.addSeparator();
-        menu.add(shutdownAfterDownloadAction);
     }
 
     public void onComponentShown() {
@@ -883,7 +880,7 @@ public class GuiDownloads extends AGuiTabPanel {
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            mediathekGui.beenden(false, dialogBeenden.isShutdownRequested());
+            mediathekGui.beenden(dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();

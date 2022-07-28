@@ -49,12 +49,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         return applicationCanTerminate
     }
 
-    fun setComboWaitAndTerminate() {
-        comboActions.selectedItem = WAIT_FOR_DOWNLOADS_AND_TERMINATE
-        cbShutdownComputer.isSelected = true
-        isShutdownRequested = true
-    }
-
     /**
      * Create the ComboBoxModel for user selection.
      *
