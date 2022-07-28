@@ -108,7 +108,7 @@ public class MediathekGui extends JFrame {
     private final InfoDialog filmInfo;
     private final ConfigureExternalUpdaterAction configureExternalUpdaterAction = new ConfigureExternalUpdaterAction();
     private final ManageAboAction manageAboAction = new ManageAboAction();
-    public StatusBar swingStatusBar;
+    public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
@@ -447,8 +447,8 @@ public class MediathekGui extends JFrame {
         var writeCondition = !(GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate());
         Daten.dontWriteFilmlistOnStartup.set(writeCondition);
 
-        swingStatusBar.getStatusBar().add(progressLabel);
-        swingStatusBar.getStatusBar().add(progressBar);
+        swingStatusBar.add(progressLabel);
+        swingStatusBar.add(progressBar);
 
         CompletableFuture.runAsync(() -> {
                     logger.trace("Reading local filmlist");
@@ -471,8 +471,8 @@ public class MediathekGui extends JFrame {
                 .thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
                 .thenRun(() -> Daten.dontWriteFilmlistOnStartup.set(false))
                 .thenRun(() -> SwingUtilities.invokeLater(() -> {
-                    swingStatusBar.getStatusBar().remove(progressBar);
-                    swingStatusBar.getStatusBar().remove(progressLabel);
+                    swingStatusBar.remove(progressBar);
+                    swingStatusBar.remove(progressLabel);
                 }));
     }
 
@@ -480,7 +480,7 @@ public class MediathekGui extends JFrame {
      * Create the status bar item.
      */
     private void createStatusBar() {
-        swingStatusBar = new StatusBar(this);
+        swingStatusBar = new FixedRedrawStatusBar(this);
         getContentPane().add(swingStatusBar, BorderLayout.SOUTH);
 
         createFilmlistDownloadProgress();
@@ -490,8 +490,8 @@ public class MediathekGui extends JFrame {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                swingStatusBar.getStatusBar().add(progressLabel);
-                swingStatusBar.getStatusBar().add(progressBar);
+                swingStatusBar.add(progressLabel);
+                swingStatusBar.add(progressBar);
             }
 
             @Override

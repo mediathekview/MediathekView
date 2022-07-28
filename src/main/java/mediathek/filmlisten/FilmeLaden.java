@@ -308,8 +308,8 @@ public class FilmeLaden {
 
         try {
             SwingUtilities.invokeAndWait(() -> {
-                ui.swingStatusBar.getStatusBar().add(progLabel);
-                ui.swingStatusBar.getStatusBar().add(progressBar);
+                ui.swingStatusBar.add(progLabel);
+                ui.swingStatusBar.add(progressBar);
             });
         } catch (InterruptedException | InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -324,9 +324,8 @@ public class FilmeLaden {
         workerTask.thenRun(() -> {
             try {
                 SwingUtilities.invokeAndWait(() -> {
-                    ui.swingStatusBar.getStatusBar().remove(progressBar);
-                    ui.swingStatusBar.getStatusBar().remove(progLabel);
-                    //ui.swingStatusBar.revalidate();
+                    ui.swingStatusBar.remove(progressBar);
+                    ui.swingStatusBar.remove(progLabel);
                 });
             } catch (InterruptedException | InvocationTargetException e) {
                 throw new RuntimeException(e);
