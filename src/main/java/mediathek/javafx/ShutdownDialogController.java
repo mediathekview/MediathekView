@@ -5,6 +5,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ShutdownState;
 
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Display a wait dialog with some status message to inform user what is happening currently.
@@ -26,13 +27,7 @@ public class ShutdownDialogController {
         window.setVisible(true);
     }
 
-    public void hide() {
-        gui.setEnabled(true);
-        window.label1.setBusy(false);
-        window.setVisible(false);
-    }
-
-    public void setStatusText(ShutdownState state) {
+    public void setStatus(ShutdownState state) {
         curSteps++;
         window.message.setText(state.toString());
         window.message.paintImmediately(0, 0, window.message.getWidth(), window.message.getHeight());
@@ -40,9 +35,16 @@ public class ShutdownDialogController {
         window.progress.paintImmediately(0, 0, window.progress.getWidth(), window.progress.getHeight());
         window.label1.paintImmediately(0, 0, window.label1.getWidth(), window.label1.getHeight());
         /*try {
-            Thread.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(750);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
+        if (state == ShutdownState.COMPLETE) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+                window.dispose();
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 }

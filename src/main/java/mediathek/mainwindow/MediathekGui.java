@@ -980,68 +980,65 @@ public class MediathekGui extends JFrame {
         if (automaticFilmlistUpdate != null)
             automaticFilmlistUpdate.close();
 
+        endProgramUpdateChecker();
+
         showMemoryMonitorAction.closeMemoryMonitor();
 
         if (bandwidthMonitor != null)
             bandwidthMonitor.close();
 
-        endProgramUpdateChecker();
+        manageAboAction.closeDialog();
 
         ShutdownDialogController shutdownProgress = new ShutdownDialogController(this);
         shutdownProgress.show();
 
         // stop the download thread
-        shutdownProgress.setStatusText(ShutdownState.TERMINATE_STARTER_THREAD);
+        shutdownProgress.setStatus(ShutdownState.TERMINATE_STARTER_THREAD);
         daten.getStarterClass().getStarterThread().interrupt();
 
-        shutdownProgress.setStatusText(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
         closeNotificationCenter();
 
-        manageAboAction.closeDialog();
-
+        // Tabelleneinstellungen merken
+        shutdownProgress.setStatus(ShutdownState.SAVE_FILM_DATA);
+        tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
+        tabFilme.filmActionPanel.filterDialog.dispose();
 
-        shutdownProgress.setStatusText(ShutdownState.SHUTDOWN_THREAD_POOL);
+        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_THREAD_POOL);
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
-        shutdownProgress.setStatusText(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
+        shutdownProgress.setStatus(ShutdownState.SAVE_DOWNLOAD_DATA);
+        tabDownloads.tabelleSpeichern();
+
+        shutdownProgress.setStatus(ShutdownState.STOP_DOWNLOADS);
+        stopDownloads();
+
+        shutdownProgress.setStatus(ShutdownState.SAVE_BOOKMARKS);
+        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
+
+        shutdownProgress.setStatus(ShutdownState.SAVE_APP_DATA);
+        daten.allesSpeichern();
+
+        //shutdown JavaFX
+        shutdownProgress.setStatus(ShutdownState.TERMINATE_JAVAFX_SUPPORT);
+        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        Platform.exit();
+
+        shutdownProgress.setStatus(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
         try (SeenHistoryController history = new SeenHistoryController()) {
             history.performMaintenance();
         }
 
-        // Tabelleneinstellungen merken
-        shutdownProgress.setStatusText(ShutdownState.SAVE_FILM_DATA);
-        tabFilme.tabelleSpeichern();
-
-        shutdownProgress.setStatusText(ShutdownState.SAVE_DOWNLOAD_DATA);
-        tabDownloads.tabelleSpeichern();
-
-        shutdownProgress.setStatusText(ShutdownState.STOP_DOWNLOADS);
-        stopDownloads();
-
-        shutdownProgress.setStatusText(ShutdownState.SAVE_BOOKMARKS);
-        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
-
-        shutdownProgress.setStatusText(ShutdownState.SAVE_APP_DATA);
-        daten.allesSpeichern();
-
-        shutdownProgress.setStatusText(ShutdownState.COMPLETE);
-        shutdownProgress.hide();
-
-        tabFilme.filmActionPanel.filterDialog.dispose();
-
-        RuntimeStatistics.printRuntimeStatistics();
-
+        //close main window
         dispose();
-
-        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
 
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        //shutdown JavaFX
-        Platform.exit();
+        shutdownProgress.setStatus(ShutdownState.COMPLETE);
+        RuntimeStatistics.printRuntimeStatistics();
 
         if (shutDown) {
             shutdownComputer();
