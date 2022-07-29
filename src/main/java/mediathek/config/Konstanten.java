@@ -33,10 +33,6 @@ public class Konstanten {
      */
     public static final boolean APP_IS_NIGHTLY = true;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
-    /**
-     * The maximum size for {@link mediathek.tool.http.MVHttpClient} cache directory in Megabytes.
-     */
-    public static final long WEB_CACHE_SIZE = 512 * FileUtils.ONE_MB;
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";

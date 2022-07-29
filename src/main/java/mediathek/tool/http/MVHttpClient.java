@@ -1,12 +1,13 @@
 package mediathek.tool.http;
 
 import mediathek.config.Config;
-import mediathek.config.Konstanten;
-import mediathek.config.StandardLocations;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.dns.DnsSelector;
 import mediathek.tool.dns.IPvPreferenceMode;
-import okhttp3.*;
+import okhttp3.Authenticator;
+import okhttp3.ConnectionSpec;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +25,6 @@ public class MVHttpClient {
     private final Logger logger = LogManager.getLogger(MVHttpClient.class);
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final ByteCounter byteCounter = new ByteCounter();
-    private final Cache sharedCache = new Cache(StandardLocations.getWebCacheDirectory().toFile(), Konstanten.WEB_CACHE_SIZE);
     private OkHttpClient httpClient;
     private OkHttpClient copyClient;
 
@@ -72,7 +72,6 @@ public class MVHttpClient {
      */
     private OkHttpClient.Builder getDefaultClientBuilder() {
         var builder = new OkHttpClient.Builder();
-        builder.cache(sharedCache);
 
         if (Config.isHttpTrafficDebuggingEnabled()) {
             var interceptor = new HttpLoggingInterceptor(logger::trace);
@@ -86,16 +85,6 @@ public class MVHttpClient {
             interceptor.level(level);
             builder.addInterceptor(interceptor);
             builder.connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS));
-
-            builder.addInterceptor(chain -> {
-                Response response = chain.proceed(chain.request());
-                if (response.cacheResponse() != null) {
-                    logger.warn("<-- Received CACHE response");
-                } else if (response.networkResponse() != null) {
-                    logger.warn("<-- Received NETWORK response");
-                }
-                return response;
-            });
         }
 
         var config = ApplicationConfiguration.getConfiguration();
