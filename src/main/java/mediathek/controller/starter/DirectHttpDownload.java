@@ -273,6 +273,8 @@ public class DirectHttpDownload extends Thread {
     private Request buildDownloadRequest(@NotNull HttpUrl url) {
         var request = new Request.Builder().url(url).get()
                 .header("User-Agent", getUserAgent());
+        request.cacheControl(new CacheControl.Builder().noCache().build());
+
         if (alreadyDownloaded != 0)
             request.header("Range", "bytes=" + alreadyDownloaded + '-');
 

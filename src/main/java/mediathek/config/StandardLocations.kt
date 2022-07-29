@@ -69,6 +69,15 @@ object StandardLocations {
     }
 
     /**
+     * Return the path to the okhttp web cache.
+     */
+    @JvmStatic
+    @Throws(InvalidPathException::class)
+    fun getWebCacheDirectory() : Path {
+        return getSettingsDirectory().resolve("webcache")
+    }
+
+    /**
      * Return the standard path to downloads.
      *
      * @return Standard path to the download directory.
