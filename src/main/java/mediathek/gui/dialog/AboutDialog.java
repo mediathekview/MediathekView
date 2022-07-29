@@ -32,7 +32,7 @@ public class AboutDialog extends JDialog {
         hyperlinkGuiDonation.addActionListener(l -> browseToUrl("https://paypal.me/ChristianFranzke"));
         hyperlinkServerDonation.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_DONATION));
         hyperlinkForum.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_FORUM));
-        hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_HELP));
+        hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ANLEITUNG));
 
         hyperlinkJetBrains.addActionListener(l -> browseToUrl("https://www.jetbrains.com"));
         hyperlinkEjTechnologies.addActionListener(l -> browseToUrl("https://www.ej-technologies.com"));
