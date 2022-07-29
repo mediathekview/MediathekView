@@ -138,6 +138,7 @@ public class MediathekGui extends JFrame {
      */
     private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
+    private boolean shutdownRequested;
 
     public MediathekGui() {
         ui = this;
@@ -610,7 +611,7 @@ public class MediathekGui extends JFrame {
                 if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
                     setVisible(false);
                 } else {
-                    beenden(false);
+                    quitApplication();
                 }
             }
         });
@@ -949,7 +950,15 @@ public class MediathekGui extends JFrame {
         return dialogEinstellungen;
     }
 
-    public boolean beenden(boolean shutDown) {
+    public boolean isShutdownRequested() {
+        return shutdownRequested;
+    }
+
+    public void setShutdownRequested(boolean shutdownRequested) {
+        this.shutdownRequested = shutdownRequested;
+    }
+
+    public boolean quitApplication() {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
@@ -957,7 +966,7 @@ public class MediathekGui extends JFrame {
             if (!dialogBeenden.applicationCanTerminate()) {
                 return false;
             }
-            shutDown = dialogBeenden.isShutdownRequested();
+            setShutdownRequested(dialogBeenden.isShutdownRequested());
         }
 
         if (automaticFilmlistUpdate != null)
@@ -1034,11 +1043,11 @@ public class MediathekGui extends JFrame {
         RuntimeStatistics.printDataUsageStatistics();
         shutdownProgress.setStatus(ShutdownState.COMPLETE);
 
-        if (shutDown) {
+        if (isShutdownRequested()) {
             shutdownComputer();
         }
 
-        shutdownJavaVm();
+        System.exit(0);
 
         return true;
     }
@@ -1049,14 +1058,6 @@ public class MediathekGui extends JFrame {
     private void shutdownJavaFx() {
         JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
         Platform.exit();
-    }
-
-    /**
-     * Shutdown Java virtual machine.
-     * This will be only necessary on Windows and Linux.
-     */
-    protected void shutdownJavaVm() {
-        System.exit(0);
     }
 
     private void shutdownTimerPool() {

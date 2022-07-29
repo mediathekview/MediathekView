@@ -878,7 +878,8 @@ public class GuiDownloads extends AGuiTabPanel {
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            mediathekGui.beenden(dialogBeenden.isShutdownRequested());
+            mediathekGui.setShutdownRequested(dialogBeenden.isShutdownRequested());
+            mediathekGui.quitApplication();
         }
 
         reloadTable();

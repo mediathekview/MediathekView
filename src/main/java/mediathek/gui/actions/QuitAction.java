@@ -17,6 +17,6 @@ public class QuitAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        mediathekGui.beenden(false);
+        mediathekGui.quitApplication();
     }
 }

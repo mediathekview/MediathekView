@@ -88,10 +88,6 @@ class MediathekGuiMac : MediathekGui() {
         }
     }
 
-    override fun shutdownJavaVm() {
-        // not needed on macOS due to default quit strategy.
-    }
-
     /**
      * Setup the UI for OS X
      */
@@ -101,9 +97,10 @@ class MediathekGuiMac : MediathekGui() {
         desktop.disableSuddenTermination()
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
             desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
-                if (!beenden(false)) {
+                if (!quitApplication()) {
                     response.cancelQuit()
                 } else {
+                    //should never be reached from quitApplication()
                     response.performQuit()
                 }
             }

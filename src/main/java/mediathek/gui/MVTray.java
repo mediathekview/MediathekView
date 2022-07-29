@@ -98,7 +98,7 @@ public final class MVTray {
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> MediathekGui.ui().beenden(false));
+            itemBeenden.addActionListener(e -> MediathekGui.ui().quitApplication());
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
