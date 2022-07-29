@@ -85,8 +85,8 @@ public class FilmListExportAction extends AbstractAction {
             if (selectedFile != null) {
                 FilmListWriter writer = new FilmListWriter(true);
                 // do not "compress" the sender tag
-                writer.setCompressSenderTag(false);
-                writer.setCompressThemaTag(false);
+                //writer.setCompressSenderTag(false);
+                //writer.setCompressThemaTag(false);
                 writer.setDecompressUrls(true);
                 writer.writeFilmList(selectedFile.getAbsolutePath(),
                         Daten.getInstance().getListeFilme(),
