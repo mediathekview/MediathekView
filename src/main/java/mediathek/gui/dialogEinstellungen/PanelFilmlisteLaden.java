@@ -243,7 +243,7 @@ public class PanelFilmlisteLaden extends JPanel {
         var panel3 = new JPanel();
         var panel2 = new JPanel();
         var label1 = new JLabel();
-        jSpinnerDays = new DaysSpinner();
+        var jSpinnerDays = new DaysSpinner();
         var label2 = new JLabel();
         btnReloadFilmlist = new JButton();
         var jPanel1 = new JPanel();
@@ -567,7 +567,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox jCheckBoxUpdate;
     private JRadioButton jRadioButtonAuto;
     private JRadioButton jRadioButtonManuell;
-    private DaysSpinner jSpinnerDays;
     private JButton btnReloadFilmlist;
     private JCheckBox cbSign;
     private JCheckBox cbTrailer;
