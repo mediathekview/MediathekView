@@ -1,11 +1,11 @@
-JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.12" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.7.0.1134" Java: "11.0.15" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {par l:::p {comp jPanel4::l:::x, comp jPanel2::l:::x}, comp jCheckBoxTray::l:p::p, comp cbUseWikipediaSenderLogos::l:p::p, comp cbAutomaticUpdateChecks::l:p::p}, space :0:0:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp jPanel2:::p::p, space :::p, comp jCheckBoxTray:::p::p, space :::p, comp cbUseWikipediaSenderLogos:::p::p, space :::p, comp cbAutomaticUpdateChecks:::p::p, space ::16:x}}"
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {comp jPanel4:::p::p, comp panel1:::p::p}, space :0:17:x}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space ::5:x}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
@@ -55,7 +55,7 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq l {comp jLabel4:::p::p, space :::p, comp jtfProxyHost:::p:250:p}, seq l {comp jLabel7:::p::p, space :::p, comp jtfProxyUser:::::x}}, space u:::p, par t {comp jLabel8:::p::p, comp jLabel5:::p::p}, space :::p, par l {seq {comp jtfProxyPort:::p:72:p, space :0:175:x}, comp jpfProxyPassword:::::x}, space :::p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq l {comp jLabel4:::p::p, space :::p, comp jtfProxyHost:::p:250:p}, seq l {comp jLabel7:::p::p, space :::p, comp jtfProxyUser:::::x}}, space u:::p, par t {comp jLabel8:::p::p, comp jLabel5:::p::p}, space :::p, par l {seq {comp jtfProxyPort:::p:72:p, space :0:187:x}, comp jpfProxyPassword:::::x}, space :::p}}"
 				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel4::b:p::p, comp jtfProxyHost::b:p::p, comp jLabel5::b:p::p, comp jtfProxyPort::b:p::p}, space :::p, par b {comp jLabel7::b:p::p, comp jtfProxyUser::b:p::p, comp jLabel8::b:p::p, comp jpfProxyPassword::b:p::p}, space :::x}}"
 			} ) {
 				name: "jPanel4"
@@ -105,69 +105,26 @@ new FormModel {
 					name: "jpfProxyPassword"
 				} )
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space ::102:x}}"
-				"$verticalGroup": "par t {seq t {space :0:0:x, comp jPanel6:::p::p}}"
-			} ) {
-				name: "jPanel2"
-				"border": new javax.swing.border.TitledBorder( "Einschränkungen für das Laden der Filmliste" )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
+				name: "panel1"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :5:5:p, comp jLabel6:::p::p, space :5:5:p, comp jSpinnerDays:::p::p, space :::p, comp jButtonLoad:::p::p, space :::x}}"
-					"$verticalGroup": "par l {seq {par l {seq {space :11:11:p, comp jLabel6:::p::p}, seq l {space :6:6:p, par b {comp jSpinnerDays::b:p::p, comp jButtonLoad::b:p::p}}}, space :p:2:p}}"
-				} ) {
-					name: "jPanel6"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "jLabel6"
-						"text": "Nur die Filme der letzten Tage laden:"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JSpinner" ) {
-						name: "jSpinnerDays"
-						"model": new javax.swing.SpinnerListModel {
-							list: new java.util.ArrayList {
-								add( "Alles" )
-								add( "1" )
-								add( "2" )
-								add( "10" )
-								add( "15" )
-							}
-						}
-						"toolTipText": "<html>Es werden nur Filme der letzten <i>xx</i> Tage geladen.<br>Bei \"Alle\" werden alle Filme geladen.<br>(Eine kleinere Filmliste kann bei Rechnern mit wenig Speicher hilfreich sein.)<br><br>\nAuswirkung hat das erst <b>nach dem Neuladen der kompletten Filmliste</b>.</html>"
-						"minimumSize": new java.awt.Dimension( 100, 30 )
-						"preferredSize": new java.awt.Dimension( 100, 30 )
-						"maximumSize": new java.awt.Dimension( 150, 30 )
-						auxiliary() {
-							"model.noCode": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "jButtonLoad"
-						"text": "Filmliste jetzt neu laden"
-					} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxTray"
+					"text": "Programm ins Tray minimieren"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbUseWikipediaSenderLogos"
+					"text": "Senderlogos von Wikipedia verwenden"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbAutomaticUpdateChecks"
+					"text": "Programmupdates täglich suchen"
 				} )
 			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "jCheckBoxTray"
-				"text": "Programm ins Tray minimieren"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbUseWikipediaSenderLogos"
-				"text": "Senderlogos von Wikipedia verwenden"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbAutomaticUpdateChecks"
-				"text": "Programmupdates täglich suchen"
-			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 645, 390 )
+			"size": new java.awt.Dimension( 680, 305 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
