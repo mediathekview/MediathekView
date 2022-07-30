@@ -49,18 +49,19 @@ public class Daten {
     /**
      * "source" list of all entries, contains everything
      */
-    private final ListeFilme listeFilme;
+    private final ListeFilme listeFilme = new ListeFilme();
     /**
      * "the" final list of films after all filtering is done
      */
-    private final ListeFilme listeFilmeNachBlackList;
+    private final ListeFilme listeFilmeNachBlackList = new ListeFilme();
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
-    private final ListeBlacklist listeBlacklist;
+    private final ListeBlacklist listeBlacklist = new ListeBlacklist();
     private final BookmarkDataList listeBookmarkList;
     private final ListeAbo listeAbo;
-    private final DownloadInfos downloadInfos;
+    private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
     private INotificationCenter notificationCenter;
     /**
      * erfolgreich geladene Abos.
@@ -70,11 +71,8 @@ public class Daten {
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
 
     private Daten() {
-        listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
 
-        listeFilmeNachBlackList = new ListeFilme();
-        listeBlacklist = new ListeBlacklist();
         listeBookmarkList = BookmarkDataList.getInstance(this);
 
         listePset = new ListePset();
@@ -84,7 +82,6 @@ public class Daten {
         listeDownloads = new ListeDownloads(this);
         listeDownloadsButton = new ListeDownloads(this);
 
-        downloadInfos = new DownloadInfos();
         starterClass = new StarterClass(this);
     }
 
@@ -126,7 +123,7 @@ public class Daten {
     public StarterClass getStarterClass() {
         return starterClass;
     }
-
+    
     /**
      * Load the stored bookmarkdata form JSON file
      * into memory
@@ -146,7 +143,7 @@ public class Daten {
 
         return zdt.toInstant().toEpochMilli();
     }
-    
+
     public INotificationCenter notificationCenter() {
         return notificationCenter;
     }
@@ -179,8 +176,6 @@ public class Daten {
     public ListeningExecutorService getDecoratedPool() {
         return decoratedPool;
     }
-
-    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
 
     public void launchHistoryDataLoading() {
         logger.trace("launching async history data loading");

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatenFilm implements Comparable<DatenFilm> {
@@ -498,7 +499,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (filmLength == 0)
             return "";
         else {
-            return DurationFormatUtils.formatDuration(filmLength * 1000L,"HH:mm:ss", true);
+            var duration = TimeUnit.MILLISECONDS.convert(filmLength, TimeUnit.SECONDS);
+            return DurationFormatUtils.formatDuration(duration,"HH:mm:ss", true);
         }
     }
 
