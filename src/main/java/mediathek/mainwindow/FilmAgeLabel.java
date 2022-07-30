@@ -41,7 +41,7 @@ public class FilmAgeLabel extends JLabel implements ActionListener {
             setToolTipText("Minuten");
             return String.format("Alter: %dm", age.minutes);
         }
-        else if (age.hours > 24) {
+        else if (age.hours > 25) {
             setToolTipText("Tage:Stunden:Minuten");
             var duration = TimeUnit.MILLISECONDS.convert(age.hours * 60 + age.minutes, TimeUnit.SECONDS);
             return DurationFormatUtils.formatDuration(duration,"dd:HH:mm", true);
