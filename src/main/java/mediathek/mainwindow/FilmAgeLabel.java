@@ -1,6 +1,7 @@
 package mediathek.mainwindow;
 
 import mediathek.config.Daten;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Duration;
 import java.util.IllegalFormatException;
+import java.util.concurrent.TimeUnit;
 
 public class FilmAgeLabel extends JLabel implements ActionListener {
     record FilmListAge(long hours, long minutes) {
@@ -21,7 +23,6 @@ public class FilmAgeLabel extends JLabel implements ActionListener {
         return new FilmListAge(hours, minutes);
     }
 
-    private final Timer timer;
     private FilmListAge oldAge = new FilmListAge(0, 0);
 
     public FilmAgeLabel() {
@@ -29,15 +30,24 @@ public class FilmAgeLabel extends JLabel implements ActionListener {
 
         setAgeToLabel();
 
-        timer = new Timer(1000, this);
+        //start the update timer
+        var timer = new Timer(1000, this);
         timer.setRepeats(true);
         timer.start();
     }
 
     private String computeAgeString(@NotNull FilmListAge age) throws IllegalFormatException {
         if (age.hours == 0) {
+            setToolTipText("Minuten");
             return String.format("Alter: %dm", age.minutes);
-        } else {
+        }
+        else if (age.hours > 24) {
+            setToolTipText("Tage:Stunden:Minuten");
+            var duration = TimeUnit.MILLISECONDS.convert(age.hours * 60 + age.minutes, TimeUnit.SECONDS);
+            return DurationFormatUtils.formatDuration(duration,"dd:HH:mm", true);
+        }
+        else {
+            setToolTipText("Stunden Minuten");
             return String.format("Alter: %dh %dm", age.hours, age.minutes);
         }
     }
