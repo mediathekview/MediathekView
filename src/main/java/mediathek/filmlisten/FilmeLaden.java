@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -11,6 +12,7 @@ import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.FilmlistWriterWorker;
+import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -287,7 +289,7 @@ public class FilmeLaden {
 
             try (FilmListReader reader = new FilmListReader()) {
                 final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-                reader.readFilmListe(StandardLocations.getFilmlistFilePath(), listeFilme, num_days);
+                reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), listeFilme, num_days);
             }
             logger.info("");
 
@@ -320,6 +322,9 @@ public class FilmeLaden {
 
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));
+        }
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList){
+            workerTask = workerTask.thenRun(new LuceneIndexWorker(progLabel, progressBar));
         }
         workerTask.thenRun(() -> {
             try {

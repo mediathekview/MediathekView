@@ -1,7 +1,7 @@
 package mediathek.gui.tasks
 
 import mediathek.config.Daten
-import mediathek.config.StandardLocations.getFilmlistFilePath
+import mediathek.config.StandardLocations.getFilmlistFilePathString
 import mediathek.filmlisten.writer.FilmListWriter
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -26,7 +26,7 @@ class FilmlistWriterWorker(progLabel: JLabel, private val progressBar: JProgress
 
     override fun doInBackground(): Void? {
         val writer = FilmListWriter(false)
-        writer.writeFilmList(getFilmlistFilePath(), Daten.getInstance().listeFilme)
+        writer.writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme)
         { prog: Double ->
             progress = (100.0 * prog).roundToInt()
         }

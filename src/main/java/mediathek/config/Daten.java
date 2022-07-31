@@ -50,10 +50,6 @@ public class Daten {
      * "source" list of all entries, contains everything
      */
     private final ListeFilme listeFilme = new ListeFilme();
-    /**
-     * "the" final list of films after all filtering is done
-     */
-    private final ListeFilme listeFilmeNachBlackList = new ListeFilme();
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist = new ListeBlacklist();
@@ -62,6 +58,11 @@ public class Daten {
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+    /**
+     * "the" final list of films after all filtering is done.
+     * Defaults to no lucene index unless changed at startup.
+     */
+    private ListeFilme listeFilmeNachBlackList = new ListeFilme();
     private INotificationCenter notificationCenter;
     /**
      * erfolgreich geladene Abos.
@@ -69,7 +70,6 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
-
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
@@ -123,15 +123,15 @@ public class Daten {
     public StarterClass getStarterClass() {
         return starterClass;
     }
-    
+
     /**
      * Load the stored bookmarkdata form JSON file
      * into memory
      */
     public void loadBookMarkData() {
-      listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
+        listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
     }
-    
+
     /**
      * Return the number of milliseconds from today´s midnight.
      *
@@ -373,6 +373,10 @@ public class Daten {
         return listeFilmeNachBlackList;
     }
 
+    public void setListeFilmeNachBlackList(ListeFilme listeFilmeNachBlackList) {
+        this.listeFilmeNachBlackList = listeFilmeNachBlackList;
+    }
+
     public ListeDownloads getListeDownloads() {
         return listeDownloads;
     }
@@ -388,7 +392,7 @@ public class Daten {
     public BookmarkDataList getListeBookmarkList() {
         return listeBookmarkList;
     }
-    
+
     public ListeAbo getListeAbo() {
         return listeAbo;
     }

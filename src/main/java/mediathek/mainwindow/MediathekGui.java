@@ -7,6 +7,7 @@ import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmeLaden;
@@ -28,6 +29,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
+import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -65,7 +67,7 @@ import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CH
 
 public class MediathekGui extends JFrame {
 
-    protected static final Logger logger = LogManager.getLogger(MediathekGui.class);
+    protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
@@ -444,13 +446,13 @@ public class MediathekGui extends JFrame {
         swingStatusBar.add(progressLabel);
         swingStatusBar.add(progressBar);
 
-        CompletableFuture.runAsync(() -> {
+        var worker = CompletableFuture.runAsync(() -> {
                     logger.trace("Reading local filmlist");
                     MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
 
                     try (FilmListReader reader = new FilmListReader()) {
                         final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-                        reader.readFilmListe(StandardLocations.getFilmlistFilePath(), daten.getListeFilme(), num_days);
+                        reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.getListeFilme(), num_days);
                     }
                     MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
                 })
@@ -461,8 +463,13 @@ public class MediathekGui extends JFrame {
                     }
                 })
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
-                .thenRun(new BlacklistFilterWorker(progressLabel, progressBar))
-                .thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
+                .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
+
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList){
+            worker = worker.thenRun(new LuceneIndexWorker(progressLabel, progressBar));
+        }
+
+        worker.thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
                 .thenRun(() -> Daten.dontWriteFilmlistOnStartup.set(false))
                 .thenRun(() -> SwingUtilities.invokeLater(() -> {
                     swingStatusBar.remove(progressBar);
@@ -1043,6 +1050,8 @@ public class MediathekGui extends JFrame {
         RuntimeStatistics.printDataUsageStatistics();
         shutdownProgress.setStatus(ShutdownState.COMPLETE);
 
+        cleanupLuceneIndex();
+
         if (isShutdownRequested()) {
             shutdownComputer();
         }
@@ -1050,6 +1059,18 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return true;
+    }
+
+    private void cleanupLuceneIndex() {
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList filmList) {
+            try (var writer = filmList.getWriter()) {
+                writer.deleteAll();
+                writer.commit();
+                //filmList.getLuceneDirectory().close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**

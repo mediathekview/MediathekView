@@ -107,7 +107,7 @@ object StandardLocations {
      * @return the path as String.
      */
     @JvmStatic
-    fun getFilmlistFilePath(): String {
+    fun getFilmlistFilePathString(): String {
         val filePart = File.separator + Konstanten.JSON_DATEI_FILME
         return if (Config.isPortableMode())
             getSettingsDirectory().toString() + filePart
@@ -121,6 +121,24 @@ object StandardLocations {
         }
     }
 
+    /**
+     * Return the location of the lucene film index.
+     */
+    @JvmStatic
+    fun getFilmIndexPath(): Path {
+        val indexDirectory = "mv_index"
+
+        return if (Config.isPortableMode())
+            getSettingsDirectory().resolve(indexDirectory)
+        else {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                val base = Paths.get(SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME)
+                base.resolve(indexDirectory)
+            } else {
+                getSettingsDirectory().resolve(indexDirectory)
+            }
+        }
+    }
     /**
      * Return the path to the lockfile.
      * On macOS we do not support roaming settings with the official app, therefore keep the old temp dir convention.

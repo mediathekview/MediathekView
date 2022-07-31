@@ -26,7 +26,7 @@ public class DeleteLocalFilmlistAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            var filmlistPathStr = StandardLocations.getFilmlistFilePath();
+            var filmlistPathStr = StandardLocations.getFilmlistFilePathString();
             var fimlistPath = Paths.get(filmlistPathStr);
             FileUtils.moveToTrash(fimlistPath);
             JOptionPane.showMessageDialog(owner,

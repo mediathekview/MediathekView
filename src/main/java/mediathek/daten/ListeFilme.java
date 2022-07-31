@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
     private static final String PCS_METADATA = "metaData";
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     public boolean neueFilme;
     private FilmListMetaData metaData = new FilmListMetaData();
 

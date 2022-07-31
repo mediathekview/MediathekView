@@ -62,6 +62,13 @@ public class Config {
     @CommandLine.Option(names = {"-nj", "--no-jvm-param-checks"}, description = "JVM Parameter-Prüfung deaktivieren")
     private static boolean disableJvmParameterChecks;
 
+    public static boolean activateLuceneEngine() {
+        return activateLuceneEngine;
+    }
+
+    @CommandLine.Option(names = {"-ls", "--with-lucene"}, description = "Experimentelle Lucene Index-Engine aktivieren")
+    private static boolean activateLuceneEngine;
+
     public static boolean isDisableJvmParameterChecks() {
         return disableJvmParameterChecks;
     }

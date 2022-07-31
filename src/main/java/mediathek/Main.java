@@ -6,6 +6,7 @@ import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
+import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
@@ -474,8 +475,10 @@ public class Main {
 
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
-
             Daten.getInstance().loadBookMarkData();
+            //FIXME read from configuration data
+            if (Config.activateLuceneEngine())
+                Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
 
             startGuiMode();
         });
