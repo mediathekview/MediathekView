@@ -122,8 +122,7 @@ public class FilmeLaden {
             logger.debug(ex);
             if (showDialogs) {
                 SwingErrorDialog.showExceptionMessage(MediathekGui.ui(), NETWORK_NOT_AVAILABLE, ex);
-            }
-            else
+            } else
                 logger.warn(NETWORK_NOT_AVAILABLE);
 
         } catch (IOException ex) {
@@ -317,25 +316,26 @@ public class FilmeLaden {
             throw new RuntimeException(e);
         }
         var workerTask = CompletableFuture.runAsync(new RefreshAboWorker(progLabel, progressBar))
-                .thenRun(new BlacklistFilterWorker(progLabel, progressBar))
-                .thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))));
+                .thenRun(new BlacklistFilterWorker(progLabel, progressBar));
 
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));
         }
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList){
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
             workerTask = workerTask.thenRun(new LuceneIndexWorker(progLabel, progressBar));
         }
-        workerTask.thenRun(() -> {
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    ui.swingStatusBar.remove(progressBar);
-                    ui.swingStatusBar.remove(progLabel);
+
+        workerTask.thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
+                .thenRun(() -> {
+                    try {
+                        SwingUtilities.invokeAndWait(() -> {
+                            ui.swingStatusBar.remove(progressBar);
+                            ui.swingStatusBar.remove(progLabel);
+                        });
+                    } catch (InterruptedException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
-            } catch (InterruptedException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
     private void fillHash(ListeFilme listeFilme) {
