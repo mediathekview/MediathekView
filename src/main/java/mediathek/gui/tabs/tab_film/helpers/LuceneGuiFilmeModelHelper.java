@@ -154,13 +154,29 @@ public class LuceneGuiFilmeModelHelper {
                     if (showLivestreamsOnly) {
                         var q = new QueryParser("livestream", listeFilme.getAnalyzer())
                                 .parse("livestream:\"true\"");
-                        qb.add(q, BooleanClause.Occur.MUST);
+                        qb.add(q, BooleanClause.Occur.FILTER);
                     }
                     if (showHqOnly) {
                         var q = new QueryParser("highquality", listeFilme.getAnalyzer())
                                 .parse("highquality:\"true\"");
-                        qb.add(q, BooleanClause.Occur.MUST);
+                        qb.add(q, BooleanClause.Occur.FILTER);
                     }
+                    if (dontShowTrailers) {
+                        var q = new QueryParser("trailerteaser", listeFilme.getAnalyzer())
+                                .parse("trailerteaser:\"false\"");
+                        qb.add(q, BooleanClause.Occur.FILTER);
+                    }
+                    if (dontShowAudioVersions) {
+                        var q = new QueryParser("audioversion", listeFilme.getAnalyzer())
+                                .parse("audioversion:\"false\"");
+                        qb.add(q, BooleanClause.Occur.FILTER);
+                    }
+                    if (dontShowGebaerdensprache) {
+                        var q = new QueryParser("signlanguage", listeFilme.getAnalyzer())
+                                .parse("signlanguage:\"false\"");
+                        qb.add(q, BooleanClause.Occur.FILTER);
+                    }
+
                     //the complete lucene query...
                     Query finalQuery = qb.build();
                     //SEARCH
@@ -193,12 +209,6 @@ public class LuceneGuiFilmeModelHelper {
                 stream = stream.filter(DatenFilm::isNew);
             if (showBookmarkedOnly)
                 stream = stream.filter(DatenFilm::isBookmarked);
-            if (dontShowTrailers)
-                stream = stream.filter(film -> !film.isTrailerTeaser());
-            if (dontShowGebaerdensprache)
-                stream = stream.filter(film -> !film.isSignLanguage());
-            if (dontShowAudioVersions)
-                stream = stream.filter(film -> !film.isAudioVersion());
             if (dontShowAbos)
                 stream = stream.filter(film -> film.getAbo() == null);
             if (showSubtitlesOnly) {

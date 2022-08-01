@@ -60,6 +60,9 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                 if (film.isHighQuality())
                     doc.add(new StringField("highquality", Boolean.toString(true), Field.Store.NO));
 
+                doc.add(new StringField("trailerteaser", Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
+                doc.add(new StringField("audioversion", Boolean.toString(film.isAudioVersion()), Field.Store.NO));
+                doc.add(new StringField("signlanguage", Boolean.toString(film.isSignLanguage()), Field.Store.NO));
                 try {
                     String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
                             DateTools.Resolution.DAY);
