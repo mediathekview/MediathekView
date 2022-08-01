@@ -3,6 +3,7 @@ package mediathek.daten.blacklist;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
@@ -120,8 +121,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      */
     private Predicate<DatenFilm> createPredicate() {
         final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
-        if (days_lower_boundary != 0)
-            filterList.add(this::checkDate);
+        // we must keep it for the "old-style search. for lucene it is useless
+        if (!(Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList)) {
+            if (days_lower_boundary != 0)
+                filterList.add(this::checkDate);
+        }
 
         if (blacklistIsActive) {
             if (doNotShowGeoBlockedFilms) {

@@ -55,6 +55,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                 doc.add(new TextField("titel", film.getTitle(), Field.Store.NO));
                 doc.add(new TextField("thema", film.getThema(), Field.Store.NO));
                 doc.add(new TextField("beschreibung", film.getDescription(), Field.Store.NO));
+                if (film.isLivestream())
+                    doc.add(new StringField("livestream", Boolean.toString(true), Field.Store.NO));
+                if (film.isHighQuality())
+                    doc.add(new StringField("highquality", Boolean.toString(true), Field.Store.NO));
+
                 try {
                     String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
                             DateTools.Resolution.DAY);

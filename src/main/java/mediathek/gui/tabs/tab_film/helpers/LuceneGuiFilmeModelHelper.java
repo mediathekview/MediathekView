@@ -9,19 +9,26 @@ import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
+import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +53,7 @@ public class LuceneGuiFilmeModelHelper {
     private boolean dontShowGebaerdensprache;
     private boolean dontShowAudioVersions;
     private long maxLength;
+    private String zeitraum;
     private SliderRange sliderRange;
 
     public LuceneGuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
@@ -80,7 +88,8 @@ public class LuceneGuiFilmeModelHelper {
                 && !filmActionPanel.showBookMarkedOnly.getValue()
                 && !filmActionPanel.dontShowTrailers.getValue()
                 && !filmActionPanel.dontShowSignLanguage.getValue()
-                && !filmActionPanel.dontShowAudioVersions.getValue();
+                && !filmActionPanel.dontShowAudioVersions.getValue()
+                && filmActionPanel.zeitraumProperty.getValue().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
     private void updateFilterVars() {
@@ -94,6 +103,7 @@ public class LuceneGuiFilmeModelHelper {
         dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
         dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
         dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
+        zeitraum = filmActionPanel.zeitraumProperty.getValue();
     }
 
     private void calculateFilmLengthSliderValues() {
@@ -117,16 +127,45 @@ public class LuceneGuiFilmeModelHelper {
             List<DatenFilm> resultList;
             Stream<DatenFilm> stream;
 
-            if (searchText.isEmpty()) {
+            if (noFiltersAreSet()) {
                 resultList = new ArrayList<>(listeFilme);
                 stream = resultList.parallelStream();
             } else {
                 Stopwatch watch2 = Stopwatch.createStarted();
                 try (var reader = DirectoryReader.open(listeFilme.getLuceneDirectory())) {
-                    Query q = new QueryParser("titel", listeFilme.getAnalyzer())
-                            .parse(searchText);
+                    Query initialQuery;
+                    if (searchText.isEmpty()) {
+                        // search for everything...
+                        searchText = "*:*";
+                    }
+
+                    initialQuery = new QueryParser("titel", listeFilme.getAnalyzer()).parse(searchText);
+
+                    BooleanQuery.Builder qb = new BooleanQuery.Builder();
+                    qb.add(initialQuery, BooleanClause.Occur.MUST);
+                    //Zeitraum filter on demand...
+                    if (!zeitraum.equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                        try {
+                            qb.add(createZeitraumQuery(listeFilme), BooleanClause.Occur.FILTER);
+                        } catch (Exception ex) {
+                            logger.error("Unable to add zeitraum filter", ex);
+                        }
+                    }
+                    if (showLivestreamsOnly) {
+                        var q = new QueryParser("livestream", listeFilme.getAnalyzer())
+                                .parse("livestream:\"true\"");
+                        qb.add(q, BooleanClause.Occur.MUST);
+                    }
+                    if (showHqOnly) {
+                        var q = new QueryParser("highquality", listeFilme.getAnalyzer())
+                                .parse("highquality:\"true\"");
+                        qb.add(q, BooleanClause.Occur.MUST);
+                    }
+                    //the complete lucene query...
+                    Query finalQuery = qb.build();
+                    //SEARCH
                     var searcher = new IndexSearcher(reader);
-                    var docs = searcher.search(q, Integer.MAX_VALUE);
+                    var docs = searcher.search(finalQuery, Integer.MAX_VALUE);
                     var hits = docs.scoreDocs;
 
                     watch2.stop();
@@ -154,10 +193,6 @@ public class LuceneGuiFilmeModelHelper {
                 stream = stream.filter(DatenFilm::isNew);
             if (showBookmarkedOnly)
                 stream = stream.filter(DatenFilm::isBookmarked);
-            if (showLivestreamsOnly)
-                stream = stream.filter(DatenFilm::isLivestream);
-            if (showHqOnly)
-                stream = stream.filter(DatenFilm::isHighQuality);
             if (dontShowTrailers)
                 stream = stream.filter(film -> !film.isTrailerTeaser());
             if (dontShowGebaerdensprache)
@@ -184,7 +219,7 @@ public class LuceneGuiFilmeModelHelper {
             stream = stream.filter(this::minLengthCheck);
 
             resultList = stream.collect(Collectors.toList());
-            logger.trace("Resulting filmlist size after all filters applied: {}", resultList.size());
+            //logger.trace("Resulting filmlist size after all filters applied: {}", resultList.size());
             stream.close();
 
             //adjust initial capacity
@@ -199,12 +234,25 @@ public class LuceneGuiFilmeModelHelper {
             return filmModel;
         } catch (Exception ex) {
             logger.error("Lucene filtering failed!", ex);
-            SwingUtilities.invokeLater(() -> {
-                SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                        "Die Lucene Abfrage ist inkorrekt und führt zu keinen Ergebnissen.", ex);
-            });
+            SwingUtilities.invokeLater(() -> SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+                    "Die Lucene Abfrage ist inkorrekt und führt zu keinen Ergebnissen.", ex));
             return new TModelFilm();
         }
+    }
+
+    private Query createZeitraumQuery(@NotNull IndexedFilmList listeFilme) throws ParseException {
+        var numDays = Integer.parseInt(zeitraum);
+        var to_Date = LocalDateTime.now();
+        var from_Date = to_Date.minusDays(numDays);
+        var utcZone = ZoneId.of("UTC");
+        //[20190101 TO 20190801]
+        var toStr = DateTools.timeToString(to_Date.atZone(utcZone).toInstant().toEpochMilli(),
+                DateTools.Resolution.DAY);
+        var fromStr = DateTools.timeToString(from_Date.atZone(utcZone).toInstant().toEpochMilli(),
+                DateTools.Resolution.DAY);
+        String zeitraum = String.format("[%s TO %s]", fromStr, toStr);
+        return new QueryParser("sendedatum", listeFilme.getAnalyzer())
+                .parse(zeitraum);
     }
 
     private boolean subtitleCheck(DatenFilm film) {
