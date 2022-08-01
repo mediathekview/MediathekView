@@ -121,7 +121,6 @@ public class LuceneGuiFilmeModelHelper {
                 resultList = new ArrayList<>(listeFilme);
                 stream = resultList.parallelStream();
             } else {
-                //Beispiel-String: thema:Wissenschaft OR title:Wissenschaft AND sendeDatum:[20190101 TO 20190801]
                 Stopwatch watch2 = Stopwatch.createStarted();
                 try (var reader = DirectoryReader.open(listeFilme.getLuceneDirectory())) {
                     Query q = new QueryParser("titel", listeFilme.getAnalyzer())
