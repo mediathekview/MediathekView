@@ -44,7 +44,7 @@
     <Separator/>
     <CheckBox mnemonicParsing="false" text="Nur neue Filme anzeigen" fx:id="cbShowNewOnly"/>
     <CheckBox mnemonicParsing="false" text="Nur gemerkte Filme anzeigen" fx:id="cbShowBookMarkedOnly"/>
-    <CheckBox mnemonicParsing="false" text="Nur HD-Filme anzeigen" fx:id="cbShowOnlyHd"/>
+    <CheckBox mnemonicParsing="false" text="Nur High Quality(HQ) Filme anzeigen" fx:id="cbShowOnlyHd"/>
     <CheckBox mnemonicParsing="false" text="Nur Filme mit Untertitel anzeigen" fx:id="cbShowSubtitlesOnly"/>
     <CheckBox mnemonicParsing="false" text="Nur Live Streams anzeigen" fx:id="cbShowOnlyLivestreams"/>
     <Separator/>
