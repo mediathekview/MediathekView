@@ -59,6 +59,9 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                     doc.add(new StringField("livestream", Boolean.toString(true), Field.Store.NO));
                 if (film.isHighQuality())
                     doc.add(new StringField("highquality", Boolean.toString(true), Field.Store.NO));
+                if (film.hasSubtitle() || film.hasBurnedInSubtitles()) {
+                    doc.add(new StringField("subtitles", Boolean.toString(true), Field.Store.NO));
+                }
 
                 doc.add(new StringField("trailerteaser", Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
                 doc.add(new StringField("audioversion", Boolean.toString(film.isAudioVersion()), Field.Store.NO));

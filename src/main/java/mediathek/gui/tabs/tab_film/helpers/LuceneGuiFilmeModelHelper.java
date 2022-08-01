@@ -15,6 +15,7 @@ import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -141,8 +142,10 @@ public class LuceneGuiFilmeModelHelper {
 
                     initialQuery = new QueryParser("titel", listeFilme.getAnalyzer()).parse(searchText);
 
+                    var analyzer = listeFilme.getAnalyzer();
                     BooleanQuery.Builder qb = new BooleanQuery.Builder();
                     qb.add(initialQuery, BooleanClause.Occur.MUST);
+
                     //Zeitraum filter on demand...
                     if (!zeitraum.equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
                         try {
@@ -152,30 +155,28 @@ public class LuceneGuiFilmeModelHelper {
                         }
                     }
                     if (showLivestreamsOnly) {
-                        var q = new QueryParser("livestream", listeFilme.getAnalyzer())
-                                .parse("livestream:\"true\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
+                        addLivestreamQuery(qb, analyzer);
                     }
                     if (showHqOnly) {
-                        var q = new QueryParser("highquality", listeFilme.getAnalyzer())
-                                .parse("highquality:\"true\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
+                        addHighQualityOnlyQuery(qb, analyzer);
                     }
                     if (dontShowTrailers) {
-                        var q = new QueryParser("trailerteaser", listeFilme.getAnalyzer())
-                                .parse("trailerteaser:\"false\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
+                        addNoTrailerTeaserQuery(qb, analyzer);
                     }
                     if (dontShowAudioVersions) {
-                        var q = new QueryParser("audioversion", listeFilme.getAnalyzer())
-                                .parse("audioversion:\"false\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
+                        addNoAudioVersionQuery(qb, analyzer);
                     }
                     if (dontShowGebaerdensprache) {
                         var q = new QueryParser("signlanguage", listeFilme.getAnalyzer())
                                 .parse("signlanguage:\"false\"");
                         qb.add(q, BooleanClause.Occur.FILTER);
                     }
+                    if (showSubtitlesOnly) {
+                        var q = new QueryParser("subtitles", listeFilme.getAnalyzer())
+                                .parse("subtitles:\"true\"");
+                        qb.add(q, BooleanClause.Occur.FILTER);
+                    }
+
 
                     //the complete lucene query...
                     Query finalQuery = qb.build();
@@ -211,9 +212,6 @@ public class LuceneGuiFilmeModelHelper {
                 stream = stream.filter(DatenFilm::isBookmarked);
             if (dontShowAbos)
                 stream = stream.filter(film -> film.getAbo() == null);
-            if (showSubtitlesOnly) {
-                stream = stream.filter(this::subtitleCheck);
-            }
 
             final String filterThema = getFilterThema();
             if (!filterThema.isEmpty()) {
@@ -250,6 +248,30 @@ public class LuceneGuiFilmeModelHelper {
         }
     }
 
+    private void addNoAudioVersionQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser("audioversion", analyzer)
+                .parse("audioversion:\"false\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
+    private void addNoTrailerTeaserQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser("trailerteaser", analyzer)
+                .parse("trailerteaser:\"false\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
+    private void addLivestreamQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser("livestream", analyzer)
+                .parse("livestream:\"true\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
+    private void addHighQualityOnlyQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser("highquality", analyzer)
+                .parse("highquality:\"true\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
     private Query createZeitraumQuery(@NotNull IndexedFilmList listeFilme) throws ParseException {
         var numDays = Integer.parseInt(zeitraum);
         var to_Date = LocalDateTime.now();
@@ -263,10 +285,6 @@ public class LuceneGuiFilmeModelHelper {
         String zeitraum = String.format("[%s TO %s]", fromStr, toStr);
         return new QueryParser("sendedatum", listeFilme.getAnalyzer())
                 .parse(zeitraum);
-    }
-
-    private boolean subtitleCheck(DatenFilm film) {
-        return film.hasSubtitle() || film.hasBurnedInSubtitles();
     }
 
     private boolean maxLengthCheck(DatenFilm film) {
