@@ -3,7 +3,7 @@ package mediathek.gui.tasks;
 import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.daten.IndexedFilmList;
-import mediathek.tool.datum.DatumFilm;
+import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.*;
@@ -56,12 +56,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                 doc.add(new TextField("thema", film.getThema(), Field.Store.NO));
                 doc.add(new TextField("beschreibung", film.getDescription(), Field.Store.NO));
                 try {
-                    var filmDate = film.getDatumFilm();
-                    if (!filmDate.equals(DatumFilm.UNDEFINED_FILM_DATE)) {
-                        var sendeDatumStr = DateTools.timeToString(filmDate.toInstant().toEpochMilli(), DateTools.Resolution.MINUTE);
-                        doc.add(new StringField("sendedatum", sendeDatumStr, Field.Store.NO));
-                    }
-                } catch (Exception ignored) {
+                    String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
+                            DateTools.Resolution.DAY);
+                    doc.add(new StringField("sendedatum", sendeDatumStr, Field.Store.NO));
+                } catch (Exception ex) {
+                    logger.error("Error indexing sendedatum", ex);
                 }
                 filmListe.getWriter().addDocument(doc);
                 final var progress = (int) (100.0f * (counter / totalSize));
