@@ -22,7 +22,6 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.jetbrains.annotations.NotNull;
 
@@ -178,7 +177,7 @@ public class LuceneGuiFilmeModelHelper {
                 logger.trace("Executing query: {}", finalQuery.toString());
 
                 //SEARCH
-                var searcher = new IndexSearcher(listeFilme.getReader());
+                var searcher = listeFilme.getIndexSearcher();
                 var docs = searcher.search(finalQuery, Integer.MAX_VALUE);
                 var hits = docs.scoreDocs;
 

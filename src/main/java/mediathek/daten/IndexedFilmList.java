@@ -7,6 +7,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.NRTCachingDirectory;
@@ -21,6 +22,7 @@ public class IndexedFilmList extends ListeFilme {
     private IndexWriter writer;
     private boolean validIndex;
     private DirectoryReader reader;
+    private IndexSearcher indexSearcher;
 
     public IndexedFilmList() {
         try {
@@ -34,6 +36,14 @@ public class IndexedFilmList extends ListeFilme {
             logger.error("Creation of Lucene index failed!", ex);
             setValidIndex(false);
         }
+    }
+
+    public IndexSearcher getIndexSearcher() {
+        return indexSearcher;
+    }
+
+    public void setIndexSearcher(IndexSearcher indexSearcher) {
+        this.indexSearcher = indexSearcher;
     }
 
     /**

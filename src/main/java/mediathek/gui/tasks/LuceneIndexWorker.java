@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.search.IndexSearcher;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -89,8 +90,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             if (reader != null) {
                 reader.close();
             }
+
             reader = DirectoryReader.open(filmListe.getLuceneDirectory());
             filmListe.setReader(reader);
+
+            filmListe.setIndexSearcher(new IndexSearcher(reader));
 
             filmListe.setValidIndex(true);
         } catch (Exception ex) {
