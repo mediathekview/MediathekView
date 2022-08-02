@@ -250,9 +250,8 @@ public class LuceneGuiFilmeModelHelper {
     }
 
     private void addNoSignLanguageQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser(LuceneIndexKeys.SIGN_LANGUAGE, analyzer)
-                .parse("\"false\"");
-        qb.add(q, BooleanClause.Occur.FILTER);
+        var q = new QueryParser(LuceneIndexKeys.SIGN_LANGUAGE, analyzer).parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.MUST_NOT);
     }
 
     private void addNoAudioVersionQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
