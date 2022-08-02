@@ -51,11 +51,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
 
                 var doc = new Document();
                 // store fields for debugging, otherwise they should stay disabled
-                doc.add(new StringField("id", Integer.toString(film.getFilmNr()), Field.Store.YES));
-                doc.add(new TextField("sender", film.getSender(), Field.Store.NO));
-                doc.add(new TextField("titel", film.getTitle(), Field.Store.NO));
-                doc.add(new TextField("thema", film.getThema(), Field.Store.NO));
-                doc.add(new TextField("beschreibung", film.getDescription(), Field.Store.NO));
+                doc.add(new StringField(LuceneIndexKeys.ID, Integer.toString(film.getFilmNr()), Field.Store.YES));
+                doc.add(new TextField(LuceneIndexKeys.SENDER, film.getSender(), Field.Store.NO));
+                doc.add(new TextField(LuceneIndexKeys.TITEL, film.getTitle(), Field.Store.NO));
+                doc.add(new TextField(LuceneIndexKeys.THEMA, film.getThema(), Field.Store.NO));
+                doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
                 if (film.isLivestream())
                     doc.add(new StringField("livestream", Boolean.toString(true), Field.Store.NO));
                 if (film.isHighQuality())

@@ -7,6 +7,7 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.GuiFilme;
+import mediathek.gui.tasks.LuceneIndexKeys;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
@@ -138,7 +139,7 @@ public class LuceneGuiFilmeModelHelper {
                     searchText = "*:*";
                 }
 
-                initialQuery = new QueryParser("titel", listeFilme.getAnalyzer()).parse(searchText);
+                initialQuery = new QueryParser(LuceneIndexKeys.TITEL, listeFilme.getAnalyzer()).parse(searchText);
 
                 var analyzer = listeFilme.getAnalyzer();
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();
@@ -191,7 +192,7 @@ public class LuceneGuiFilmeModelHelper {
                 Set<Integer> filmNrSet = new HashSet<>(hits.length);
                 for (var hit : hits) {
                     var d = searcher.doc(hit.doc);
-                    filmNrSet.add(Integer.parseInt(d.get("id")));
+                    filmNrSet.add(Integer.parseInt(d.get(LuceneIndexKeys.ID)));
                 }
                 logger.trace("Number of found Lucene index entries: {}", filmNrSet.size());
                 stream = listeFilme.parallelStream()
