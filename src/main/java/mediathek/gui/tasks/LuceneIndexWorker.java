@@ -57,20 +57,20 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                 doc.add(new TextField(LuceneIndexKeys.THEMA, film.getThema(), Field.Store.NO));
                 doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
                 if (film.isLivestream())
-                    doc.add(new StringField("livestream", Boolean.toString(true), Field.Store.NO));
+                    doc.add(new StringField(LuceneIndexKeys.LIVESTREAM, Boolean.toString(true), Field.Store.NO));
                 if (film.isHighQuality())
-                    doc.add(new StringField("highquality", Boolean.toString(true), Field.Store.NO));
+                    doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(true), Field.Store.NO));
                 if (film.hasSubtitle() || film.hasBurnedInSubtitles()) {
-                    doc.add(new StringField("subtitles", Boolean.toString(true), Field.Store.NO));
+                    doc.add(new StringField(LuceneIndexKeys.SUBTITLE, Boolean.toString(true), Field.Store.NO));
                 }
 
-                doc.add(new StringField("trailerteaser", Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
-                doc.add(new StringField("audioversion", Boolean.toString(film.isAudioVersion()), Field.Store.NO));
-                doc.add(new StringField("signlanguage", Boolean.toString(film.isSignLanguage()), Field.Store.NO));
+                doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
+                doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
+                doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
                 try {
                     String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
                             DateTools.Resolution.DAY);
-                    doc.add(new StringField("sendedatum", sendeDatumStr, Field.Store.NO));
+                    doc.add(new StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO));
                 } catch (Exception ex) {
                     logger.error("Error indexing sendedatum", ex);
                 }

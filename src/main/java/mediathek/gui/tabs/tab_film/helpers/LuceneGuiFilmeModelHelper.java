@@ -139,9 +139,9 @@ public class LuceneGuiFilmeModelHelper {
                     searchText = "*:*";
                 }
 
-                initialQuery = new QueryParser(LuceneIndexKeys.TITEL, listeFilme.getAnalyzer()).parse(searchText);
-
                 var analyzer = listeFilme.getAnalyzer();
+                initialQuery = new QueryParser(LuceneIndexKeys.TITEL, analyzer).parse(searchText);
+
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();
                 qb.add(initialQuery, BooleanClause.Occur.MUST);
 
@@ -166,14 +166,10 @@ public class LuceneGuiFilmeModelHelper {
                     addNoAudioVersionQuery(qb, analyzer);
                 }
                 if (dontShowGebaerdensprache) {
-                    var q = new QueryParser("signlanguage", listeFilme.getAnalyzer())
-                            .parse("signlanguage:\"false\"");
-                    qb.add(q, BooleanClause.Occur.FILTER);
+                    addNoSignLanguageQuery(qb, analyzer);
                 }
                 if (showSubtitlesOnly) {
-                    var q = new QueryParser("subtitles", listeFilme.getAnalyzer())
-                            .parse("subtitles:\"true\"");
-                    qb.add(q, BooleanClause.Occur.FILTER);
+                    addSubtitleOnlyQuery(qb, analyzer);
                 }
 
 
@@ -248,27 +244,36 @@ public class LuceneGuiFilmeModelHelper {
         }
     }
 
+    private void addSubtitleOnlyQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser(LuceneIndexKeys.SUBTITLE, analyzer)
+                .parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
+    private void addNoSignLanguageQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser(LuceneIndexKeys.SIGN_LANGUAGE, analyzer)
+                .parse("\"false\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
     private void addNoAudioVersionQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser("audioversion", analyzer)
-                .parse("audioversion:\"false\"");
+        var q = new QueryParser(LuceneIndexKeys.AUDIOVERSION, analyzer)
+                .parse("\"false\"");
         qb.add(q, BooleanClause.Occur.FILTER);
     }
 
     private void addNoTrailerTeaserQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser("trailerteaser", analyzer)
-                .parse("trailerteaser:\"false\"");
+        var q = new QueryParser(LuceneIndexKeys.TRAILER_TEASER, analyzer).parse("\"false\"");
         qb.add(q, BooleanClause.Occur.FILTER);
     }
 
     private void addLivestreamQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser("livestream", analyzer)
-                .parse("livestream:\"true\"");
+        var q = new QueryParser(LuceneIndexKeys.LIVESTREAM, analyzer).parse("\"true\"");
         qb.add(q, BooleanClause.Occur.FILTER);
     }
 
     private void addHighQualityOnlyQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser("highquality", analyzer)
-                .parse("highquality:\"true\"");
+        var q = new QueryParser(LuceneIndexKeys.HIGH_QUALITY, analyzer).parse("\"true\"");
         qb.add(q, BooleanClause.Occur.FILTER);
     }
 
@@ -283,8 +288,7 @@ public class LuceneGuiFilmeModelHelper {
         var fromStr = DateTools.timeToString(from_Date.atZone(utcZone).toInstant().toEpochMilli(),
                 DateTools.Resolution.DAY);
         String zeitraum = String.format("[%s TO %s]", fromStr, toStr);
-        return new QueryParser("sendedatum", listeFilme.getAnalyzer())
-                .parse(zeitraum);
+        return new QueryParser(LuceneIndexKeys.SENDE_DATUM, listeFilme.getAnalyzer()).parse(zeitraum);
     }
 
     private boolean maxLengthCheck(DatenFilm film) {
