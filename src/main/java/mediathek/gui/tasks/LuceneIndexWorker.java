@@ -64,14 +64,15 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(true), Field.Store.NO));
         }
 
-        try {
-            String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
-                    DateTools.Resolution.DAY);
-            doc.add(new StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO));
-        } catch (Exception ex) {
-            logger.error("Error indexing sendedatum", ex);
-        }
+        addSendeDatum(doc, film);
+
         writer.addDocument(doc);
+    }
+
+    private void addSendeDatum(@NotNull Document doc, @NotNull DatenFilm film) {
+        String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
+                DateTools.Resolution.DAY);
+        doc.add(new StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO));
     }
 
     @Override
