@@ -170,11 +170,13 @@ public class LuceneGuiFilmeModelHelper {
                 if (showSubtitlesOnly) {
                     addSubtitleOnlyQuery(qb, analyzer);
                 }
-
+                if (showNewOnly) {
+                    addNewOnlyQuery(qb, analyzer);
+                }
 
                 //the complete lucene query...
                 Query finalQuery = qb.build();
-                logger.trace("Executing query: {}", finalQuery.toString());
+                logger.info("Executing Lucene query: {}", finalQuery.toString());
 
                 //SEARCH
                 var searcher = listeFilme.getIndexSearcher();
@@ -201,8 +203,6 @@ public class LuceneGuiFilmeModelHelper {
                 senderSet.addAll(selectedSenders);
                 stream = stream.filter(f -> senderSet.contains(f.getSender()));
             }
-            if (showNewOnly)
-                stream = stream.filter(DatenFilm::isNew);
             if (showBookmarkedOnly)
                 stream = stream.filter(DatenFilm::isBookmarked);
             if (dontShowAbos)
@@ -263,6 +263,11 @@ public class LuceneGuiFilmeModelHelper {
     private void addNoTrailerTeaserQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
         var q = new QueryParser(LuceneIndexKeys.TRAILER_TEASER, analyzer).parse("\"true\"");
         qb.add(q, BooleanClause.Occur.MUST_NOT);
+    }
+
+    private void addNewOnlyQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser(LuceneIndexKeys.NEW, analyzer).parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.FILTER);
     }
 
     private void addLivestreamQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {

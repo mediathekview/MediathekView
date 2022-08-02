@@ -13,4 +13,5 @@ public class LuceneIndexKeys {
     public static final String AUDIOVERSION = "audioversion";
     public static final String SIGN_LANGUAGE = "signlanguage";
     public static final String SENDE_DATUM = "sendedatum";
+    public static final String NEW = "new";
 }
