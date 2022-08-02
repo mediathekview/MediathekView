@@ -66,7 +66,9 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
                 }
 
                 doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
-                doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
+                if (film.isAudioVersion()) {
+                    doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(true), Field.Store.NO));
+                }
                 doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
                 try {
                     String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),

@@ -257,13 +257,13 @@ public class LuceneGuiFilmeModelHelper {
 
     private void addNoAudioVersionQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
         var q = new QueryParser(LuceneIndexKeys.AUDIOVERSION, analyzer)
-                .parse("\"false\"");
-        qb.add(q, BooleanClause.Occur.FILTER);
+                .parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.MUST_NOT);
     }
 
     private void addNoTrailerTeaserQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
-        var q = new QueryParser(LuceneIndexKeys.TRAILER_TEASER, analyzer).parse("\"false\"");
-        qb.add(q, BooleanClause.Occur.FILTER);
+        var q = new QueryParser(LuceneIndexKeys.TRAILER_TEASER, analyzer).parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.MUST_NOT);
     }
 
     private void addLivestreamQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
