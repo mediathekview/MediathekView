@@ -7,6 +7,7 @@ import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.*;
+import org.apache.lucene.index.DirectoryReader;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -83,6 +84,14 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             filmListe.getWriter().commit();
             watch.stop();
             logger.trace("Lucene index creation took {}", watch);
+
+            var reader = filmListe.getReader();
+            if (reader != null) {
+                reader.close();
+            }
+            reader = DirectoryReader.open(filmListe.getLuceneDirectory());
+            filmListe.setReader(reader);
+
             filmListe.setValidIndex(true);
         } catch (Exception ex) {
             ex.printStackTrace();

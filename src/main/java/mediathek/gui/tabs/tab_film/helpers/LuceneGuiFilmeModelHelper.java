@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -133,70 +132,70 @@ public class LuceneGuiFilmeModelHelper {
                 stream = resultList.parallelStream();
             } else {
                 Stopwatch watch2 = Stopwatch.createStarted();
-                try (var reader = DirectoryReader.open(listeFilme.getLuceneDirectory())) {
-                    Query initialQuery;
-                    if (searchText.isEmpty()) {
-                        // search for everything...
-                        searchText = "*:*";
-                    }
-
-                    initialQuery = new QueryParser("titel", listeFilme.getAnalyzer()).parse(searchText);
-
-                    var analyzer = listeFilme.getAnalyzer();
-                    BooleanQuery.Builder qb = new BooleanQuery.Builder();
-                    qb.add(initialQuery, BooleanClause.Occur.MUST);
-
-                    //Zeitraum filter on demand...
-                    if (!zeitraum.equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
-                        try {
-                            qb.add(createZeitraumQuery(listeFilme), BooleanClause.Occur.FILTER);
-                        } catch (Exception ex) {
-                            logger.error("Unable to add zeitraum filter", ex);
-                        }
-                    }
-                    if (showLivestreamsOnly) {
-                        addLivestreamQuery(qb, analyzer);
-                    }
-                    if (showHqOnly) {
-                        addHighQualityOnlyQuery(qb, analyzer);
-                    }
-                    if (dontShowTrailers) {
-                        addNoTrailerTeaserQuery(qb, analyzer);
-                    }
-                    if (dontShowAudioVersions) {
-                        addNoAudioVersionQuery(qb, analyzer);
-                    }
-                    if (dontShowGebaerdensprache) {
-                        var q = new QueryParser("signlanguage", listeFilme.getAnalyzer())
-                                .parse("signlanguage:\"false\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
-                    }
-                    if (showSubtitlesOnly) {
-                        var q = new QueryParser("subtitles", listeFilme.getAnalyzer())
-                                .parse("subtitles:\"true\"");
-                        qb.add(q, BooleanClause.Occur.FILTER);
-                    }
-
-
-                    //the complete lucene query...
-                    Query finalQuery = qb.build();
-                    //SEARCH
-                    var searcher = new IndexSearcher(reader);
-                    var docs = searcher.search(finalQuery, Integer.MAX_VALUE);
-                    var hits = docs.scoreDocs;
-
-                    watch2.stop();
-                    logger.trace("Lucene index search took: {}", watch2);
-
-                    Set<Integer> filmNrSet = new HashSet<>(hits.length);
-                    for (var hit : hits) {
-                        var d = searcher.doc(hit.doc);
-                        filmNrSet.add(Integer.parseInt(d.get("id")));
-                    }
-                    logger.trace("Number of found Lucene index entries: {}", filmNrSet.size());
-                    stream = listeFilme.parallelStream()
-                            .filter(film -> filmNrSet.contains(film.getFilmNr()));
+                Query initialQuery;
+                if (searchText.isEmpty()) {
+                    // search for everything...
+                    searchText = "*:*";
                 }
+
+                initialQuery = new QueryParser("titel", listeFilme.getAnalyzer()).parse(searchText);
+
+                var analyzer = listeFilme.getAnalyzer();
+                BooleanQuery.Builder qb = new BooleanQuery.Builder();
+                qb.add(initialQuery, BooleanClause.Occur.MUST);
+
+                //Zeitraum filter on demand...
+                if (!zeitraum.equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                    try {
+                        qb.add(createZeitraumQuery(listeFilme), BooleanClause.Occur.FILTER);
+                    } catch (Exception ex) {
+                        logger.error("Unable to add zeitraum filter", ex);
+                    }
+                }
+                if (showLivestreamsOnly) {
+                    addLivestreamQuery(qb, analyzer);
+                }
+                if (showHqOnly) {
+                    addHighQualityOnlyQuery(qb, analyzer);
+                }
+                if (dontShowTrailers) {
+                    addNoTrailerTeaserQuery(qb, analyzer);
+                }
+                if (dontShowAudioVersions) {
+                    addNoAudioVersionQuery(qb, analyzer);
+                }
+                if (dontShowGebaerdensprache) {
+                    var q = new QueryParser("signlanguage", listeFilme.getAnalyzer())
+                            .parse("signlanguage:\"false\"");
+                    qb.add(q, BooleanClause.Occur.FILTER);
+                }
+                if (showSubtitlesOnly) {
+                    var q = new QueryParser("subtitles", listeFilme.getAnalyzer())
+                            .parse("subtitles:\"true\"");
+                    qb.add(q, BooleanClause.Occur.FILTER);
+                }
+
+
+                //the complete lucene query...
+                Query finalQuery = qb.build();
+                logger.trace("Executing query: {}", finalQuery.toString());
+
+                //SEARCH
+                var searcher = new IndexSearcher(listeFilme.getReader());
+                var docs = searcher.search(finalQuery, Integer.MAX_VALUE);
+                var hits = docs.scoreDocs;
+
+                watch2.stop();
+                logger.trace("Lucene index search took: {}", watch2);
+
+                Set<Integer> filmNrSet = new HashSet<>(hits.length);
+                for (var hit : hits) {
+                    var d = searcher.doc(hit.doc);
+                    filmNrSet.add(Integer.parseInt(d.get("id")));
+                }
+                logger.trace("Number of found Lucene index entries: {}", filmNrSet.size());
+                stream = listeFilme.parallelStream()
+                        .filter(film -> filmNrSet.contains(film.getFilmNr()));
             }
 
             final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();

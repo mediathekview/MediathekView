@@ -4,6 +4,7 @@ import mediathek.config.StandardLocations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -19,6 +20,7 @@ public class IndexedFilmList extends ListeFilme {
     private Directory luceneDirectory;
     private IndexWriter writer;
     private boolean validIndex;
+    private DirectoryReader reader;
 
     public IndexedFilmList() {
         try {
@@ -36,6 +38,7 @@ public class IndexedFilmList extends ListeFilme {
 
     /**
      * Return whether the filmlist has a valid Lucene index.
+     *
      * @return true if a index was already created.
      */
     public boolean hasValidIndex() {
@@ -58,6 +61,14 @@ public class IndexedFilmList extends ListeFilme {
 
     public IndexWriter getWriter() {
         return writer;
+    }
+
+    public DirectoryReader getReader() {
+        return reader;
+    }
+
+    public void setReader(DirectoryReader reader) {
+        this.reader = reader;
     }
 
     public Directory getLuceneDirectory() {
