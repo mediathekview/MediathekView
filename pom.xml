@@ -89,7 +89,7 @@
 
         <annotations.version>23.0.0</annotations.version>
         <assertj-core.version>3.23.1</assertj-core.version>
-        <commons-configuration2.version>2.7</commons-configuration2.version>
+        <commons-configuration2.version>2.8.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.1</controlsfx.version>

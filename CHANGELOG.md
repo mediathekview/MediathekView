@@ -22,6 +22,7 @@
 - **BUGFIX:** geo-geblockte Filmeinträge verwenden nun bei der Auswahl die Farben des Themes anstatt einer eigens definierten.
 - **BUGFIX:** Menüpunkt *"Downloads/Aktion nach abgeschlossenen Downloads..."* wurde entfernt da es in der Funktion dem regulären Beenden der Applikation entspricht.
 - **BUGFIX:** Bei zeitgesteuerten Downloads wurde der Rechner manchmal nicht wie gewünscht heruntergefahren.
+- **BUGFIX:** Nutzung der aktuellsten Apache Commons Configuration2 Bibliothek zur Behebung der bekannten CVEs.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! **Derzeit experimentelles Feature was separat aktiviert werden muss. --> FINGER WEG!**
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
