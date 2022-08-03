@@ -4,6 +4,8 @@ import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
+import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -119,8 +121,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
 
             filmListe.setIndexSearcher(new IndexSearcher(reader));
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.exit(98);
+            SwingUtilities.invokeLater(() -> {
+                SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+                        "Fehler bei der Erstellung des Filmindex.\nDas Programm wird beendet da es nicht lauffähig ist.", ex);
+                MediathekGui.ui().quitApplication();
+            });
         }
 
         return null;
