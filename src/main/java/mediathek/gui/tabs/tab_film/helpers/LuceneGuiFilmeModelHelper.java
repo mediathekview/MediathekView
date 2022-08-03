@@ -20,6 +20,8 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
+import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -27,12 +29,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -132,14 +132,18 @@ public class LuceneGuiFilmeModelHelper {
                 stream = resultList.parallelStream();
             } else {
                 Stopwatch watch2 = Stopwatch.createStarted();
-                Query initialQuery;
                 if (searchText.isEmpty()) {
                     // search for everything...
                     searchText = "*:*";
                 }
 
                 var analyzer = listeFilme.getAnalyzer();
-                initialQuery = new QueryParser(LuceneIndexKeys.TITEL, analyzer).parse(searchText);
+                var parser = new StandardQueryParser(analyzer);
+                Map<String, PointsConfig> pointsConfigMap = new HashMap<>();
+                pointsConfigMap.put(LuceneIndexKeys.FILM_SIZE, new PointsConfig(new DecimalFormat(), Integer.class));
+                pointsConfigMap.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
+                parser.setPointsConfigMap(pointsConfigMap);
+                var initialQuery = parser.parse(searchText, LuceneIndexKeys.TITEL);
 
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();
                 qb.add(initialQuery, BooleanClause.Occur.MUST);

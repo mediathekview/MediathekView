@@ -44,6 +44,9 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         doc.add(new TextField(LuceneIndexKeys.SENDER, film.getSender(), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.TITEL, film.getTitle(), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.THEMA, film.getThema(), Field.Store.NO));
+        doc.add(new IntPoint(LuceneIndexKeys.FILM_LENGTH, film.getFilmLength()));
+        doc.add(new IntPoint(LuceneIndexKeys.FILM_SIZE, film.getFileSize().toInteger()));
+
         if (!film.getDescription().isEmpty()) {
             doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
         }

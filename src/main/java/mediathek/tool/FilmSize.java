@@ -30,9 +30,13 @@ public class FilmSize implements Comparable<FilmSize> {
         }
     }
 
+    public Integer toInteger() {
+        return (size == 0) ? 0 : size;
+    }
+
     @Override
     public String toString() {
-        return (size == 0) ? "" : Long.toString(size);
+        return (size == 0) ? "" : Integer.toString(size);
     }
 
     @Override
