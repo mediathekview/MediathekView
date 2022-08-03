@@ -248,7 +248,12 @@ public class MediathekGui extends JFrame {
             commonToolBar.setName("Allgemein");
         }
 
-        getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        }
+        else
+            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
     }
 
     /**
