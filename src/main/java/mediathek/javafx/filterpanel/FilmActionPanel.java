@@ -41,9 +41,14 @@ public class FilmActionPanel {
      */
     private final EventList<String> sourceThemaList = new BasicEventList<>();
     /**
-     * The JavaFX list based on {@link #sourceThemaList}.
+     * The transaction lists reduces multiple change events of {@link #sourceThemaList} into one.
      */
-    private final EventObservableList<String> themaListItems = new EventObservableList<>(sourceThemaList);
+    private final TransactionList<String> transactionThemaList = new TransactionList<>(sourceThemaList);
+    /**
+     * The JavaFX list based on {@link #transactionThemaList}. Used as JavaFX ComboBox model.
+     */
+    private final EventObservableList<String> themaListItems = new EventObservableList<>(transactionThemaList);
+
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -198,6 +203,14 @@ public class FilmActionPanel {
         viewSettingsPane.themaComboBox.setItems(themaListItems);
         themaSuggestionProvider = SuggestionProvider.create(themaListItems);
         TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
+
+        //TransActionList will deliver only one change event for all changes,
+        //we can update the thema list here easily...
+        transactionThemaList.addListEventListener(listChanges -> {
+            themaSuggestionProvider.clearSuggestions();
+            themaSuggestionProvider.addPossibleSuggestions(themaListItems);
+            viewSettingsPane.themaComboBox.getSelectionModel().select(0);
+        });
     }
 
     public CommonViewSettingsPane getViewSettingsPane() {
@@ -320,7 +333,6 @@ public class FilmActionPanel {
     public void updateThemaComboBox() {
         //update the thema list -> updates the combobox automagically
         //use transaction list to minimize updates...
-        var transactionThemaList = new TransactionList<>(sourceThemaList);
         transactionThemaList.beginEvent(true);
         transactionThemaList.clear();
         transactionThemaList.add("");
@@ -331,11 +343,5 @@ public class FilmActionPanel {
                 .toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
-
-        //update autocpmpletion provider here only as the other listeners fire too much
-        themaSuggestionProvider.clearSuggestions();
-        //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
-        themaSuggestionProvider.addPossibleSuggestions(themaListItems);
-        viewSettingsPane.themaComboBox.getSelectionModel().select(0);
     }
 }
