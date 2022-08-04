@@ -72,7 +72,7 @@ public class LuceneGuiFilmeModelHelper {
     }
 
     private String getFilterThema() {
-        String filterThema = filmActionPanel.themaBox.getSelectionModel().getSelectedItem();
+        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
             filterThema = "";
         }

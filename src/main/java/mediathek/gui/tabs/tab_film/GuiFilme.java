@@ -356,7 +356,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> filmActionPanel.updateThemaBox());
+                Platform.runLater(() -> filmActionPanel.updateThemaComboBox());
             }
         });
 
@@ -654,8 +654,8 @@ public class GuiFilme extends AGuiTabPanel {
 
             setupZeitraumListener();
 
-            filmActionPanel.themaBox.setOnAction(evt -> {
-                if (!filmActionPanel.themaBox.getItems().isEmpty()) {
+            filmActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
+                if (!filmActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
                     reloadTableDataTransition.playFromStart();
                 }
             });
