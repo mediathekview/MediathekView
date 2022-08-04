@@ -39,6 +39,13 @@ import java.util.stream.Stream;
 
 public class LuceneGuiFilmeModelHelper {
     private static final Logger logger = LogManager.getLogger();
+    private static final Map<String, PointsConfig> PARSER_CONFIG_MAP = new HashMap<>();
+
+    static {
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_SIZE, new PointsConfig(new DecimalFormat(), Integer.class));
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
+    }
+
     private final FilmActionPanel filmActionPanel;
     private final SeenHistoryController historyController;
     private final GuiFilme.SearchField searchField;
@@ -139,10 +146,7 @@ public class LuceneGuiFilmeModelHelper {
 
                 var analyzer = listeFilme.getAnalyzer();
                 var parser = new StandardQueryParser(analyzer);
-                Map<String, PointsConfig> pointsConfigMap = new HashMap<>();
-                pointsConfigMap.put(LuceneIndexKeys.FILM_SIZE, new PointsConfig(new DecimalFormat(), Integer.class));
-                pointsConfigMap.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
-                parser.setPointsConfigMap(pointsConfigMap);
+                parser.setPointsConfigMap(PARSER_CONFIG_MAP);
                 var initialQuery = parser.parse(searchText, LuceneIndexKeys.TITEL);
 
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();
