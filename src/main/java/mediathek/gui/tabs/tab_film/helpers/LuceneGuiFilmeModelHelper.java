@@ -181,6 +181,10 @@ public class LuceneGuiFilmeModelHelper {
                 if (showNewOnly) {
                     addNewOnlyQuery(qb, analyzer);
                 }
+                final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+                if (!selectedSenders.isEmpty()) {
+                    addSenderFilterQuery(qb, analyzer, selectedSenders);
+                }
 
                 //the complete lucene query...
                 Query finalQuery = qb.build();
@@ -204,13 +208,6 @@ public class LuceneGuiFilmeModelHelper {
                         .filter(film -> filmNrSet.contains(film.getFilmNr()));
             }
 
-            final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
-            if (!selectedSenders.isEmpty()) {
-                //ObservableList.contains() is insanely slow...this speeds up to factor 250!
-                Set<String> senderSet = new HashSet<>(selectedSenders.size());
-                senderSet.addAll(selectedSenders);
-                stream = stream.filter(f -> senderSet.contains(f.getSender()));
-            }
             if (showBookmarkedOnly)
                 stream = stream.filter(DatenFilm::isBookmarked);
             if (dontShowAbos)
@@ -251,6 +248,18 @@ public class LuceneGuiFilmeModelHelper {
         }
     }
 
+    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer, @NotNull List<String> selectedSenders) throws ParseException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("+(");
+        for (var sender : selectedSenders) {
+            sb.append("sender:");
+            sb.append(sender);
+            sb.append(" ");
+        }
+        sb.append(")");
+        var q = new QueryParser(LuceneIndexKeys.SENDER, analyzer).parse(sb.toString());
+        qb.add(q, BooleanClause.Occur.FILTER);
+    }
     private void addSubtitleOnlyQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
         var q = new QueryParser(LuceneIndexKeys.SUBTITLE, analyzer)
                 .parse("\"true\"");
