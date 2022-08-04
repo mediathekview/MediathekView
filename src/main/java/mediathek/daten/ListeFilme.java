@@ -9,7 +9,10 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ListeFilme extends ArrayList<DatenFilm> {
@@ -32,6 +35,18 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public void addMetaDataChangeListener(PropertyChangeListener listener) {
         this.pcs.addPropertyChangeListener(PCS_METADATA, listener);
     }
+
+    /**
+     * case-insensitive .distinct() implementation.
+     * @param keyExtractor the function to be applied to the key
+     * @return true if it has been seen already
+     * @param <T> template param
+     */
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
     /**
      * Search all themas within list based on sender.
      * If sender is empty, return full list of themas.
@@ -46,14 +61,13 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             mystream = mystream.filter(f -> f.getSender().equals(sender));
 
         return mystream.map(DatenFilm::getThema)
-                .distinct()
-                .sorted(GermanStringSorter.getInstance())
-                .collect(Collectors.toList());
+                .filter(distinctByKey(String::toLowerCase))
+                .sorted(GermanStringSorter.getInstance()).toList();
     }
 
     public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
-        // es werden nur Filme die noch nicht vorhanden sind, einsortiert
+        // es werden nur Filme, die noch nicht vorhanden sind, einsortiert
         final HashSet<String> hashNewFilms = new HashSet<>(newFilmsList.size() + 1, 1);
 
         newFilmsList.forEach(newFilm -> hashNewFilms.add(newFilm.getUniqueHash()));

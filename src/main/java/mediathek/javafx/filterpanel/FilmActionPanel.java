@@ -328,7 +328,6 @@ public class FilmActionPanel {
         var selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
         var tempThemaList = getThemaList(selectedSenders).stream()
                 .sorted(GermanStringSorter.getInstance())
-                .distinct()
                 .toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
