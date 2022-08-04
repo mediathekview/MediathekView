@@ -10,6 +10,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
@@ -184,10 +185,9 @@ public class FilmActionPanel {
         dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
         dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
 
-        viewSettingsPane.senderCheckList.pauseTransition.setOnFinished(e -> updateThemaComboBox());
-
-
         setupThemaComboBox();
+        viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
+                addListener((ListChangeListener<String>) c -> updateThemaComboBox());
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
