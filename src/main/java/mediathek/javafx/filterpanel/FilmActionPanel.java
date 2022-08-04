@@ -10,7 +10,6 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
@@ -199,15 +198,6 @@ public class FilmActionPanel {
         viewSettingsPane.themaComboBox.setItems(themaListItems);
         themaSuggestionProvider = SuggestionProvider.create(themaListItems);
         TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
-
-        //update autocompletion provider whenever theList changes...
-        themaListItems.addListener((ListChangeListener<String>) c -> {
-            //update suggestion provider
-            themaSuggestionProvider.clearSuggestions();
-            //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
-            themaSuggestionProvider.addPossibleSuggestions(themaListItems);
-            viewSettingsPane.themaComboBox.getSelectionModel().select(0);
-        });
     }
 
     public CommonViewSettingsPane getViewSettingsPane() {
@@ -342,5 +332,11 @@ public class FilmActionPanel {
                 .toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
+
+        //update autocpmpletion provider here only as the other listeners fire too much
+        themaSuggestionProvider.clearSuggestions();
+        //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
+        themaSuggestionProvider.addPossibleSuggestions(themaListItems);
+        viewSettingsPane.themaComboBox.getSelectionModel().select(0);
     }
 }
