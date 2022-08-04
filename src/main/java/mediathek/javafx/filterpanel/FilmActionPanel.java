@@ -1,11 +1,16 @@
 package mediathek.javafx.filterpanel;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.TransactionList;
+import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
@@ -32,6 +37,14 @@ public class FilmActionPanel {
     private static final Logger logger = LogManager.getLogger();
     private final FilterConfiguration filterConfig;
     private final ObservableList<FilterDTO> availableFilters;
+    /**
+     * The "base" thema list
+     */
+    private final EventList<String> sourceThemaList = new BasicEventList<>();
+    /**
+     * The JavaFX list based on {@link #sourceThemaList}.
+     */
+    private final EventObservableList<String> themaListItems = new EventObservableList<>(sourceThemaList);
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -51,7 +64,6 @@ public class FilmActionPanel {
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
-
     private CommonViewSettingsPane viewSettingsPane;
 
     public FilmActionPanel(@NotNull JToggleButton filterToggleBtn) {
@@ -175,12 +187,27 @@ public class FilmActionPanel {
 
         viewSettingsPane.senderCheckList.pauseTransition.setOnFinished(e -> updateThemaComboBox());
 
-        themaSuggestionProvider = SuggestionProvider.create(viewSettingsPane.themaComboBox.getItems());
-        TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
+
+        setupThemaComboBox();
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
         zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
+    }
+
+    private void setupThemaComboBox() {
+        viewSettingsPane.themaComboBox.setItems(themaListItems);
+        themaSuggestionProvider = SuggestionProvider.create(themaListItems);
+        TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
+
+        //update autocompletion provider whenever theList changes...
+        themaListItems.addListener((ListChangeListener<String>) c -> {
+            //update suggestion provider
+            themaSuggestionProvider.clearSuggestions();
+            //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
+            themaSuggestionProvider.addPossibleSuggestions(themaListItems);
+            viewSettingsPane.themaComboBox.getSelectionModel().select(0);
+        });
     }
 
     public CommonViewSettingsPane getViewSettingsPane() {
@@ -276,34 +303,44 @@ public class FilmActionPanel {
                 .addListener(((observable, oldValue, newValue) -> filterConfig.setZeitraum(newValue)));
     }
 
-    public void updateThemaComboBox() {
-        final var items = viewSettingsPane.themaComboBox.getItems();
-        items.clear();
-        items.add("");
-
+    /**
+     * Retrieve the list of all thema based on sender select checkbox list.
+     *
+     * @param selectedSenders the list of selected senders
+     * @return list of all applicable themas.
+     */
+    private List<String> getThemaList(@NotNull List<String> selectedSenders) {
         List<String> finalList = new ArrayList<>();
-        List<String> selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
 
         final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
         if (selectedSenders.isEmpty()) {
-            final List<String> lst = blackList.getThemen("");
-            finalList.addAll(lst);
-            lst.clear();
+            finalList.addAll(blackList.getThemen(""));
         } else {
             for (String sender : selectedSenders) {
-                final List<String> lst = blackList.getThemen(sender);
-                finalList.addAll(lst);
-                lst.clear();
+                finalList.addAll(blackList.getThemen(sender));
             }
         }
 
-        items.addAll(finalList.stream()
-                .distinct()
-                .sorted(GermanStringSorter.getInstance()).toList());
-        finalList.clear();
+        return finalList;
+    }
 
-        themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(items);
-        viewSettingsPane.themaComboBox.getSelectionModel().select(0);
+    /**
+     * Update the Thema list and the autocompletion provider after a sender checkbox list change.
+     */
+    public void updateThemaComboBox() {
+        //update the thema list -> updates the combobox automagically
+        //use transaction list to minimize updates...
+        var transactionThemaList = new TransactionList<>(sourceThemaList);
+        transactionThemaList.beginEvent(true);
+        transactionThemaList.clear();
+        transactionThemaList.add("");
+
+        var selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
+        var tempThemaList = getThemaList(selectedSenders).stream()
+                .sorted(GermanStringSorter.getInstance())
+                .distinct()
+                .toList();
+        transactionThemaList.addAll(tempThemaList);
+        transactionThemaList.commitEvent();
     }
 }
