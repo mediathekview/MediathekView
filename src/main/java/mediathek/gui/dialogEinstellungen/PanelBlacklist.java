@@ -331,8 +331,6 @@ public class PanelBlacklist extends JPanel {
         for (String item : lst)
             model.addElement(item);
         jComboBoxThema.setModel(model);
-
-        lst.clear();
     }
 
     private void fillControlsWithRuleData() {
