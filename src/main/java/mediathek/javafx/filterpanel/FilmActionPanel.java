@@ -7,7 +7,6 @@ import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -45,7 +44,6 @@ public class FilmActionPanel {
      * The JavaFX list based on {@link #sourceThemaList}.
      */
     private final EventObservableList<String> themaListItems = new EventObservableList<>(sourceThemaList);
-    public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
     public BooleanProperty showNewOnly;

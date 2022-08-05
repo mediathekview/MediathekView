@@ -647,10 +647,6 @@ public class GuiFilme extends AGuiTabPanel {
             filmActionPanel.showLivestreamsOnly.addListener(reloadTableListener);
             filmActionPanel.filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmActionPanel.filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
-            filmActionPanel.searchThroughDescriptionProperty.addListener((os, o, n) -> {
-                if (!filmActionPanel.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
-                    reloadTableDataTransition.playFromStart();
-            });
 
             setupZeitraumListener();
 
