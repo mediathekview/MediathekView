@@ -73,7 +73,7 @@ public class FilmActionPanel {
         setupDeleteFilterButton();
 
         SwingUtilities.invokeLater(
-                () -> filterDialog = new SwingFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
+                () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
 
         restoreConfigSettings();
 

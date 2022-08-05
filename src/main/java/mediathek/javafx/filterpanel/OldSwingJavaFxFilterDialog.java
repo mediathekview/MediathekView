@@ -20,11 +20,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.util.NoSuchElementException;
 
-public class SwingFilterDialog extends JDialog {
+public class OldSwingJavaFxFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
     private final JToggleButton filterToggleButton;
 
-    public SwingFilterDialog(Frame owner, CommonViewSettingsPane content, @NotNull JToggleButton filterToggleButton) {
+    public OldSwingJavaFxFilterDialog(Frame owner, CommonViewSettingsPane content, @NotNull JToggleButton filterToggleButton) {
         super(owner);
         this.filterToggleButton = filterToggleButton;
 
