@@ -52,7 +52,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * If sender is empty, return full list of themas.
      *
      * @param sender sender name as String
-     * @return List of themas as String.
+     * @return IMMUTABLE List of themas as String.
      */
     public List<String> getThemen(String sender) {
         Stream<DatenFilm> mystream = parallelStream();
