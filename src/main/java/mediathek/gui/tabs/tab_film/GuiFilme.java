@@ -683,7 +683,6 @@ public class GuiFilme extends AGuiTabPanel {
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {
-                e.printStackTrace();
                 logger.error("Failed to filter list", e);
             }
             reloadTableDataTransition.playFromStart();
