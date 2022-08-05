@@ -9,6 +9,7 @@ import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
+import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -91,10 +92,24 @@ public class PanelEinstellungen extends JPanel {
         }
     }
 
+    private void setupModernSearch() {
+        var config = ApplicationConfiguration.getConfiguration();
+        var useModernSearch = config.getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+
+        var searchPanel = new ModernSearchConfigPanel();
+        searchPanel.getCbActivateModernSearch().setSelected(useModernSearch);
+        searchPanel.getCbActivateModernSearch().addActionListener(l -> {
+            var selected = searchPanel.getCbActivateModernSearch().isSelected();
+            config.setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, selected);
+        });
+        modernSearchTitlePanel.setContentContainer(searchPanel);
+    }
+
     public PanelEinstellungen() {
         super();
         initComponents();
 
+        setupModernSearch();
         setupUserAgentSettings();
 
         setupProxySettings();
@@ -169,6 +184,7 @@ public class PanelEinstellungen extends JPanel {
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
+        modernSearchTitlePanel = new JXTitledPanel();
 
         //======== this ========
         setMaximumSize(new Dimension(10, 10));
@@ -324,6 +340,9 @@ public class PanelEinstellungen extends JPanel {
             panel1.add(cbAutomaticUpdateChecks);
         }
 
+        //---- modernSearchTitlePanel ----
+        modernSearchTitlePanel.setTitle("Moderne Suche"); //NON-NLS
+
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
@@ -337,7 +356,8 @@ public class PanelEinstellungen extends JPanel {
                             .addGroup(layout.createParallelGroup()
                                 .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(0, 17, Short.MAX_VALUE)))
+                            .addGap(0, 20, Short.MAX_VALUE))
+                        .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -351,7 +371,9 @@ public class PanelEinstellungen extends JPanel {
                     .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(5, Short.MAX_VALUE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -367,5 +389,6 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
+    private JXTitledPanel modernSearchTitlePanel;
     // End of variables declaration//GEN-END:variables
 }

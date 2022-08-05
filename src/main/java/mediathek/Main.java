@@ -476,8 +476,10 @@ public class Main {
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().loadBookMarkData();
-            //FIXME read from configuration data
-            if (Config.activateLuceneEngine())
+            // enable modern search on demand
+            var useModernSearch = ApplicationConfiguration.getConfiguration()
+                    .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+            if (useModernSearch)
                 Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
 
             startGuiMode();

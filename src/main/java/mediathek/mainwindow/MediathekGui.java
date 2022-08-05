@@ -1016,7 +1016,7 @@ public class MediathekGui extends JFrame {
         shutdownProgress.setStatus(ShutdownState.SAVE_FILM_DATA);
         tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
-        tabFilme.filmActionPanel.filterDialog.dispose();
+        tabFilme.filmActionPanel.getFilterDialog().dispose();
 
         shutdownProgress.setStatus(ShutdownState.SAVE_DOWNLOAD_DATA);
         tabDownloads.tabelleSpeichern();

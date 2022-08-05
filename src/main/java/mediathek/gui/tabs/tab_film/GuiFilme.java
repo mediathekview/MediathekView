@@ -399,7 +399,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filmActionPanel.showUnseenOnly.getValue()) {
+            if (filmActionPanel.isShowUnseenOnly()) {
                 Platform.runLater(() -> reloadTableDataTransition.playFromStart());
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -502,7 +502,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filmActionPanel.showOnlyHd.getValue() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filmActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -548,7 +548,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filmActionPanel.showOnlyHd.getValue()) {
+            if (filmActionPanel.isShowOnlyHighQuality()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -635,18 +635,19 @@ public class GuiFilme extends AGuiTabPanel {
                     reloadTableDataTransition.playFromStart();
                 }
             };
-            filmActionPanel.showOnlyHd.addListener(reloadTableListener);
-            filmActionPanel.showSubtitlesOnly.addListener(reloadTableListener);
-            filmActionPanel.showNewOnly.addListener(reloadTableListener);
-            filmActionPanel.showBookMarkedOnly.addListener(reloadTableListener);
-            filmActionPanel.showUnseenOnly.addListener(reloadTableListener);
-            filmActionPanel.dontShowAbos.addListener(reloadTableListener);
-            filmActionPanel.dontShowTrailers.addListener(reloadTableListener);
-            filmActionPanel.dontShowSignLanguage.addListener(reloadTableListener);
-            filmActionPanel.dontShowAudioVersions.addListener(reloadTableListener);
-            filmActionPanel.showLivestreamsOnly.addListener(reloadTableListener);
-            filmActionPanel.filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
-            filmActionPanel.filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
+            filmActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
+            filmActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
+            filmActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
+            filmActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
+            filmActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
+            filmActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
+            filmActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
+            filmActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
+            filmActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
+            filmActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
+            var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+            filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
+            filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
             setupZeitraumListener();
 
@@ -683,7 +684,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
             reloadTableDataTransition.playFromStart();
         });
-        filmActionPanel.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+        filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> trans.playFromStart());
     }
 
     private void loadTable() {
@@ -759,7 +760,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            var dlg = filmActionPanel.filterDialog;
+            var dlg = filmActionPanel.getFilterDialog();
             if (dlg != null) {
                 var visible = dlg.isVisible();
                 visible = !visible;

@@ -30,16 +30,6 @@ public class GuiFilmeModelHelper {
     private final ListeFilme listeFilme;
     private final SeenHistoryController historyController;
     private boolean searchThroughDescriptions;
-    private boolean showNewOnly;
-    private boolean showBookmarkedOnly;
-    private boolean showSubtitlesOnly;
-    private boolean showHqOnly;
-    private boolean dontShowSeen;
-    private boolean dontShowAbos;
-    private boolean showLivestreamsOnly;
-    private boolean dontShowTrailers;
-    private boolean dontShowGebaerdensprache;
-    private boolean dontShowAudioVersions;
     private long maxLength;
     private String[] arrIrgendwo;
     private long minLengthInSeconds;
@@ -82,43 +72,34 @@ public class GuiFilmeModelHelper {
     }
 
     private boolean noFiltersAreSet() {
+        var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+
         return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && searchField.getText().isEmpty()
-                && ((int) filmActionPanel.filmLengthSlider.getLowValue() == 0)
-                && ((int) filmActionPanel.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
-                && !filmActionPanel.dontShowAbos.getValue()
-                && !filmActionPanel.showUnseenOnly.getValue()
-                && !filmActionPanel.showOnlyHd.getValue()
-                && !filmActionPanel.showSubtitlesOnly.getValue()
-                && !filmActionPanel.showLivestreamsOnly.getValue()
-                && !filmActionPanel.showNewOnly.getValue()
-                && !filmActionPanel.showBookMarkedOnly.getValue()
-                && !filmActionPanel.dontShowTrailers.getValue()
-                && !filmActionPanel.dontShowSignLanguage.getValue()
-                && !filmActionPanel.dontShowAudioVersions.getValue();
+                && ((int) filmLengthSlider.getLowValue() == 0)
+                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && !filmActionPanel.isDontShowAbos()
+                && !filmActionPanel.isShowUnseenOnly()
+                && !filmActionPanel.isShowOnlyHighQuality()
+                && !filmActionPanel.isShowSubtitlesOnly()
+                && !filmActionPanel.isShowLivestreamsOnly()
+                && !filmActionPanel.isShowNewOnly()
+                && !filmActionPanel.isShowBookMarkedOnly()
+                && !filmActionPanel.isDontShowTrailers()
+                && !filmActionPanel.isDontShowSignLanguage()
+                && !filmActionPanel.isDontShowAudioVersions();
     }
 
     private void updateFilterVars() {
-        showNewOnly = filmActionPanel.showNewOnly.getValue();
-        showBookmarkedOnly = filmActionPanel.showBookMarkedOnly.getValue();
-        showSubtitlesOnly = filmActionPanel.showSubtitlesOnly.getValue();
-        showHqOnly = filmActionPanel.showOnlyHd.getValue();
-        dontShowSeen = filmActionPanel.showUnseenOnly.getValue();
-        dontShowAbos = filmActionPanel.dontShowAbos.getValue();
-        showLivestreamsOnly = filmActionPanel.showLivestreamsOnly.getValue();
-        dontShowTrailers = filmActionPanel.dontShowTrailers.getValue();
-        dontShowGebaerdensprache = filmActionPanel.dontShowSignLanguage.getValue();
-        dontShowAudioVersions = filmActionPanel.dontShowAudioVersions.getValue();
         searchThroughDescriptions = searchField.getSearchMode() == SearchControlFieldMode.IRGENDWO;
 
         arrIrgendwo = evaluateThemaTitel();
     }
 
     private void calculateFilmLengthSliderValues() {
-        final long minLength = (long) filmActionPanel.filmLengthSlider.getLowValue();
-        maxLength = (long) filmActionPanel.filmLengthSlider.getHighValue();
-        minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
+        maxLength = (long) filmActionPanel.getFilmLengthSlider().getHighValue();
+        minLengthInSeconds = TimeUnit.SECONDS.convert((long)filmActionPanel.getFilmLengthSlider().getLowValue(), TimeUnit.MINUTES);
         maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
     }
 
@@ -129,7 +110,7 @@ public class GuiFilmeModelHelper {
         final String filterThema = getFilterThema();
         final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
-        if (dontShowSeen)
+        if (filmActionPanel.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = listeFilme.parallelStream();
@@ -139,23 +120,23 @@ public class GuiFilmeModelHelper {
             senderSet.addAll(selectedSenders);
             stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
-        if (showNewOnly)
+        if (filmActionPanel.isShowNewOnly())
             stream = stream.filter(DatenFilm::isNew);
-        if (showBookmarkedOnly)
+        if (filmActionPanel.isShowBookMarkedOnly())
             stream = stream.filter(DatenFilm::isBookmarked);
-        if (showLivestreamsOnly)
+        if (filmActionPanel.isShowLivestreamsOnly())
             stream = stream.filter(DatenFilm::isLivestream);
-        if (showHqOnly)
+        if (filmActionPanel.isShowOnlyHighQuality())
             stream = stream.filter(DatenFilm::isHighQuality);
-        if (dontShowTrailers)
+        if (filmActionPanel.isDontShowTrailers())
             stream = stream.filter(film -> !film.isTrailerTeaser());
-        if (dontShowGebaerdensprache)
+        if (filmActionPanel.isDontShowSignLanguage())
             stream = stream.filter(film -> !film.isSignLanguage());
-        if (dontShowAudioVersions)
+        if (filmActionPanel.isDontShowAudioVersions())
             stream = stream.filter(film -> !film.isAudioVersion());
-        if (dontShowAbos)
+        if (filmActionPanel.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
-        if (showSubtitlesOnly) {
+        if (filmActionPanel.isShowSubtitlesOnly()) {
             stream = stream.filter(this::subtitleCheck);
         }
         if (!filterThema.isEmpty()) {
@@ -164,7 +145,7 @@ public class GuiFilmeModelHelper {
         if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
             stream = stream.filter(this::maxLengthCheck);
         }
-        if (dontShowSeen) {
+        if (filmActionPanel.isShowUnseenOnly()) {
             stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
@@ -185,7 +166,7 @@ public class GuiFilmeModelHelper {
 
         list.clear();
 
-        if (dontShowSeen)
+        if (filmActionPanel.isShowUnseenOnly())
             historyController.emptyMemoryCache();
     }
 

@@ -1,0 +1,35 @@
+JFDML JFormDesigner: "7.0.7.0.1134" Java: "17.0.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[][]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "com.jidesoft.swing.MultilineLabel" ) {
+				name: "multilineLabel1"
+				"text": "Mit der modernen Suche können komplexe Abfragen inkl. UND/ODER/NICHT Anteilen über diverse Felder der Filmliste durchgeführt werden. \nDie Bedienung ist komplett anders und deutlich komplexer als die bisher verwendete Suche und richtet sich daher nur an erfahrene Nutzer, die sich in die Materie einarbeiten wollen. Eine Suche im Internet zur Gestaltung der Abfragen ist unausweichlich.\nDie Lade-/Verarbeitungszeit der Filmliste erhöht sich je nach verwendetem Rechner um ca. 10-30 Sekunden.\nEs ist nicht möglich, die neue Suche und die alte parallel zu verwenden."
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,grow"
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "cbActivateModernSearch"
+				"text": "<html>Moderne Suchfunktion aktivieren <b>(erfordert Neustart!)</b></html>"
+				auxiliary() {
+					"JavaCodeGenerator.variableGetter": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 665, 175 )
+		} )
+	}
+}

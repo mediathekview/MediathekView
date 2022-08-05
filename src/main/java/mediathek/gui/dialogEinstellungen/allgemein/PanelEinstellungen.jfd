@@ -1,11 +1,11 @@
-JFDML JFormDesigner: "7.0.7.0.1134" Java: "11.0.15" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.7.0.1134" Java: "17.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {comp jPanel4:::p::p, comp panel1:::p::p}, space :0:17:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space ::5:x}}"
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {comp jPanel4:::p::p, comp panel1:::p::p}, space :0:20:x}, comp modernSearchTitlePanel::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space :::p, comp modernSearchTitlePanel::::164:x, space :::p}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
@@ -123,8 +123,12 @@ new FormModel {
 					"text": "Programmupdates täglich suchen"
 				} )
 			} )
+			add( new FormComponent( "org.jdesktop.swingx.JXTitledPanel" ) {
+				name: "modernSearchTitlePanel"
+				"title": "Moderne Suche"
+			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 680, 305 )
+			"size": new java.awt.Dimension( 680, 470 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

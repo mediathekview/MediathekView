@@ -202,7 +202,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      */
     private void loadCurrentFilterSettings() {
         try {
-            final String val = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty.getValue();
+            final String val = MediathekGui.ui().tabFilme.filmActionPanel.getZeitraumString();
             if (val.equals(ZeitraumSpinner.UNLIMITED_VALUE))
                 days_lower_boundary = 0;
             else {
