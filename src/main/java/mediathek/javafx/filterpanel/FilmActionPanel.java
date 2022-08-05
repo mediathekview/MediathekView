@@ -7,7 +7,6 @@ import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -54,7 +53,6 @@ public class FilmActionPanel {
     public BooleanProperty dontShowTrailers;
     public BooleanProperty dontShowSignLanguage;
     public BooleanProperty dontShowAudioVersions;
-    public BooleanProperty searchThroughDescriptionProperty = new SimpleBooleanProperty();
     public ReadOnlyObjectProperty<String> zeitraumProperty;
     public RangeSlider filmLengthSlider;
     public JDialog filterDialog;
