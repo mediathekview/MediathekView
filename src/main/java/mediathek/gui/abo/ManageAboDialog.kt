@@ -4,6 +4,7 @@ import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import org.apache.commons.configuration2.sync.LockMode
 import java.awt.BorderLayout
+import java.awt.Dimension
 import java.awt.Frame
 import javax.swing.JDialog
 
@@ -66,6 +67,7 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(aboPanel, BorderLayout.CENTER)
+        minimumSize = Dimension(640,480)
         pack()
 
         restoreFromConfig()
