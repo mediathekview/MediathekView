@@ -24,6 +24,7 @@
 - **BUGFIX:** Bei zeitgesteuerten Downloads wurde der Rechner manchmal nicht wie gewünscht heruntergefahren.
 - **BUGFIX:** Nutzung der aktuellsten Apache Commons Configuration2 Bibliothek zur Behebung der bekannten CVEs.
 - **BUGFIX:** Duplikate in der Themaliste werden nun (noch weiter) reduziert als bisher.
+- **BUGFIX:** Abo verwalten Dialog konnte manchmal Höhe und Breite 0 haben.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
 - **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
