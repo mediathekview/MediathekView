@@ -32,7 +32,7 @@ public class LuceneIndexKeys {
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
      */
-    public static final String SUBTITLE = "subtitle";
+    public static final String SUBTITLE = "untertitel";
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
      */
@@ -53,13 +53,13 @@ public class LuceneIndexKeys {
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
      */
-    public static final String NEW = "new";
+    public static final String NEW = "neu";
     /**
      * Filmlänge in Sekunde. Integer-Value. 0 wenn nicht vorhanden.
      */
     public static final String FILM_LENGTH = "länge";
     /**
-     * Filmlänge in Sekunde. Integer-Value. 0 wenn nicht vorhanden.
+     * Filmgröße in Megabytes. Integer-Value. 0 wenn nicht vorhanden.
      */
     public static final String FILM_SIZE = "größe";
 }

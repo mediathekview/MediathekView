@@ -38,36 +38,20 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         var doc = new Document();
         // store fields for debugging, otherwise they should stay disabled
         doc.add(new StringField(LuceneIndexKeys.ID, Integer.toString(film.getFilmNr()), Field.Store.YES));
-        if (film.isNew()) {
-            doc.add(new StringField(LuceneIndexKeys.NEW, Boolean.toString(true), Field.Store.NO));
-        }
+        doc.add(new StringField(LuceneIndexKeys.NEW, Boolean.toString(film.isNew()), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.SENDER, film.getSender(), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.TITEL, film.getTitle(), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.THEMA, film.getThema(), Field.Store.NO));
         doc.add(new IntPoint(LuceneIndexKeys.FILM_LENGTH, film.getFilmLength()));
         doc.add(new IntPoint(LuceneIndexKeys.FILM_SIZE, film.getFileSize().toInteger()));
 
-        if (!film.getDescription().isEmpty()) {
-            doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
-        }
-        if (film.isLivestream()) {
-            doc.add(new StringField(LuceneIndexKeys.LIVESTREAM, Boolean.toString(true), Field.Store.NO));
-        }
-        if (film.isHighQuality()) {
-            doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(true), Field.Store.NO));
-        }
-        if (film.hasSubtitle() || film.hasBurnedInSubtitles()) {
-            doc.add(new StringField(LuceneIndexKeys.SUBTITLE, Boolean.toString(true), Field.Store.NO));
-        }
-        if (film.isTrailerTeaser()) {
-            doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(true), Field.Store.NO));
-        }
-        if (film.isAudioVersion()) {
-            doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(true), Field.Store.NO));
-        }
-        if (film.isSignLanguage()) {
-            doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(true), Field.Store.NO));
-        }
+        doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.LIVESTREAM, Boolean.toString(film.isLivestream()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(film.isHighQuality()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.SUBTITLE, Boolean.toString(film.hasSubtitle() || film.hasBurnedInSubtitles()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
 
         addSendeDatum(doc, film);
 
