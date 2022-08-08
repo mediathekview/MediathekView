@@ -69,8 +69,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.*;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
@@ -871,8 +873,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             public void addHistoryEntry(String text) {
                 if (!historyList.contains(text)) {
-                    historyList.add(text);
-                    Collections.sort(historyList);
+                    historyList.add(0, text);
                     saveHistory();
                 }
 
@@ -887,7 +888,6 @@ public class GuiFilme extends AGuiTabPanel {
                         });
                         if (!entries.isEmpty()) {
                             historyList.addAll(entries);
-                            Collections.sort(historyList);
                         }
                     }
                 } catch (JsonProcessingException ex) {
