@@ -169,6 +169,8 @@ public class FilmListReader implements AutoCloseable {
                 jp.nextTextValue();
                 jp.nextTextValue();
                 meta.setId(jp.nextTextValue());
+                //update to fire pcs
+                listeFilme.setMetaData(meta);
 
                 break;
             }
