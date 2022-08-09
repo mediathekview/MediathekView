@@ -1,6 +1,8 @@
 package mediathek.mainwindow;
 
 import org.jetbrains.annotations.NotNull;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -56,7 +58,9 @@ public class MemoryUsagePanel extends JPanel {
 
         var chart = new JFreeChart(plot);
         chart.removeLegend();
-        add(new ChartPanel(chart));
+        var chartPanel = new ChartPanel(chart);
+        chartPanel.addChartMouseListener(new GarbageCollectionMouseListener());
+        add(chartPanel);
     }
 
     private void addTotalObservation(double y) {
@@ -85,5 +89,17 @@ public class MemoryUsagePanel extends JPanel {
             addTotalObservation(t);
         }
 
+    }
+
+    private static class GarbageCollectionMouseListener implements ChartMouseListener {
+        @Override
+        public void chartMouseClicked(ChartMouseEvent event) {
+            System.gc();
+        }
+
+        @Override
+        public void chartMouseMoved(ChartMouseEvent event) {
+
+        }
     }
 }
