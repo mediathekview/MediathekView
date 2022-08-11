@@ -60,6 +60,7 @@ public class MemoryUsagePanel extends JPanel {
         chart.removeLegend();
         var chartPanel = new ChartPanel(chart);
         chartPanel.addChartMouseListener(new GarbageCollectionMouseListener());
+        chartPanel.setPopupMenu(null);
         add(chartPanel);
     }
 
