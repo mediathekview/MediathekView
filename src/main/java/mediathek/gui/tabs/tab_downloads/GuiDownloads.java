@@ -354,18 +354,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                refreshDownloadListAction.setEnabled(false);
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                refreshDownloadListAction.setEnabled(true);
-            }
-        });
-
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
@@ -481,24 +469,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
         jSplitPane1.setDividerLocation(location);
-
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                loadFilmlist = true;
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                loadFilmlist = false;
-                daten.getListeDownloads().filmEintragen();
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
-                    updateDownloads();
-                } else {
-                    reloadTable(); // damit die Filmnummern richtig angezeigt werden
-                }
-            }
-        });
     }
 
     @Handler
@@ -1160,6 +1130,26 @@ public class GuiDownloads extends AGuiTabPanel {
         add(swingToolBar, BorderLayout.NORTH);
 
         createSwingToolBar();
+
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                loadFilmlist = true;
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                loadFilmlist = false;
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
+                daten.getListeDownloads().filmEintragen();
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                    updateDownloads();
+                } else {
+                    reloadTable(); // damit die Filmnummern richtig angezeigt werden
+                }
+            }
+        });
     }
 
     protected void createSwingToolBar() {
@@ -1174,18 +1164,6 @@ public class GuiDownloads extends AGuiTabPanel {
         swingToolBar.add(cleanupDownloadListAction);
         swingToolBar.addSeparator();
         swingToolBar.add(toggleFilterPanelAction);
-
-        Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
-            }
-        });
     }
 
     class ToggleFilterPanelAction extends AbstractAction {
