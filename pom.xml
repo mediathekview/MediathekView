@@ -83,7 +83,7 @@
         <java.version>18</java.version>
         <jdk.language.version>18</jdk.language.version>
         <kotlin.language.target>18</kotlin.language.target>
-        <kotlin.version>1.7.0</kotlin.version>
+        <kotlin.version>1.7.10</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -100,9 +100,9 @@
         <jackson.version>2.13.3</jackson.version>
         <javafx.version>19-ea+7</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
-        <jna.version>5.11.0</jna.version>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
-        <log4j2.version>2.17.2</log4j2.version>
+        <jna.version>5.12.1</jna.version>
+        <junit.jupiter.version>5.9.0</junit.jupiter.version>
+        <log4j2.version>2.18.0</log4j2.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
