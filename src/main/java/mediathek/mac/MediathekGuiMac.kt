@@ -25,6 +25,10 @@ class MediathekGuiMac : MediathekGui() {
         //unused on macOS
     }
 
+    override fun setupScrollBarWidth() {
+        // unused on macOS
+    }
+
     override fun initializeSystemTray() {
         //we don´t use it on macOS
     }

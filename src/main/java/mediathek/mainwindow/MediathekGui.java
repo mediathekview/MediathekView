@@ -1,5 +1,6 @@
 package mediathek.mainwindow;
 
+import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import mediathek.Main;
@@ -128,6 +129,7 @@ public class MediathekGui extends JFrame {
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected FontManager fontManager = new FontManager(this);
+    protected ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -146,6 +148,11 @@ public class MediathekGui extends JFrame {
         ui = this;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+        setupScrollBarWidth();
+        UIManager.put("TabbedPane.showTabSeparators", true);
+
+        setupAlternatingRowColors();
 
         loadFilmListAction = new LoadFilmListAction(this);
         searchProgramUpdateAction = new SearchProgramUpdateAction();
@@ -232,6 +239,22 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
+    protected void setupScrollBarWidth() {
+        // win and linux users complain about scrollbars being too small...
+        UIManager.put( "ScrollBar.width", 16 );
+    }
+
+    public void setupAlternatingRowColors() {
+        // install alternate row color only for windows >8 and macOS, Linux
+        boolean installAlternateRowColor;
+        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
+            installAlternateRowColor = true;
+        } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+
+        if (installAlternateRowColor)
+            UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
+    }
+
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.add(showFilmInformationAction);
@@ -242,6 +265,8 @@ public class MediathekGui extends JFrame {
         commonToolBar.add(manageBookmarkAction);
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
+        commonToolBar.add(Box.createHorizontalGlue());
+        commonToolBar.add(toggleDarkModeAction);
 
         if (!SystemUtils.IS_OS_MAC_OSX) {
             commonToolBar.setFloatable(true);

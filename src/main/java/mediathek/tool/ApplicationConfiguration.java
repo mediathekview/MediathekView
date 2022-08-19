@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
  * The global application configuration class. This will contain all the config data in the future.
  */
 public class ApplicationConfiguration {
+    public static final String APPLICATION_DARK_MODE = "application.dark_mode";
     public static final String APPLICATION_USER_AGENT = "application.user_agent";
     public static final String APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =

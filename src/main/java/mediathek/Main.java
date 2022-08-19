@@ -1,5 +1,6 @@
 package mediathek;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
@@ -267,25 +268,11 @@ public class Main {
     }
 
     private static void setupFlatLaf() {
-        FlatLightLaf.setup();
-        //FlatDarkLaf.setup();
-
-        // win and linux users complain about scrollbars being too small...
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            UIManager.put( "ScrollBar.width", 16 );
-        UIManager.put("TabbedPane.showTabSeparators", true);
-        setupAlternatingRowColors();
-    }
-
-    private static void setupAlternatingRowColors() {
-        // install alternate row color only for windows >8 and macOS, Linux
-        boolean installAlternateRowColor;
-        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
-            installAlternateRowColor = true;
-        } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
-
-        if (installAlternateRowColor)
-            UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
+        var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+        if (darkMode)
+            FlatDarkLaf.setup();
+        else
+            FlatLightLaf.setup();
     }
 
     /**
