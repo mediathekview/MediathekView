@@ -21,6 +21,7 @@ package mediathek.config;
 
 import com.formdev.flatlaf.FlatLaf;
 import mediathek.tool.MVC;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,6 @@ public class MVColor {
 
     // Tabelle Filme
     public static final MVC FILM_HISTORY = new MVC(MVConfig.Configs.FARBE__FILM_HISTORY, new Color(225, 225, 225), "Filme, gesehen");
-    public static final MVC FILM_NEU = new MVC(MVConfig.Configs.FARBE__FILM_NEU, new Color(0, 0, 240), "Filme, neue");
     public static final MVC FILM_BOOKMARKED = new MVC(MVConfig.Configs.FARBE__FILM_BOOKMARKED, new Color(204, 238, 255), "Filme, gemerkt");
 
     // Tabelle Downloads
@@ -48,19 +48,17 @@ public class MVColor {
     public static final MVC DOWNLOAD_FEHLER_SEL = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_FEHLER_SEL, new Color(206, 92, 128), "Download, fehlerhaft, selektiert");
 
     // ProgrammGui
-    public static final MVC BUTTON_SET_ABSPIELEN = new MVC(MVConfig.Configs.FARBE__BUTTON_SET_ABSPIELEN, new Color(205, 255, 191), "Einstellungen Sets, Button Abspielen");
     // DialogDownload
-    public static final MVC DOWNLOAD_DATEINAME_EXISTIERT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_EXISTIERT, new Color(190, 0, 0), "Download, Dateiname existiert schon");
     public static final MVC DOWNLOAD_DATEINAME_NEU = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_NEU, new Color(0, 140, 0), "Download, Dateiname ist neu");
     public static final MVC DOWNLOAD_DATEINAME_ALT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_DATEINAME_ALT, new Color(0, 0, 200), "Download, Dateiname ist der alte");
     public static final int MVC_TEXT = 0;
     public static final int MVC_COLOR = 1;
     public static final int MVC_MAX = 2;
+    private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
     public ArrayList<MVC> liste = new ArrayList<>();
 
     public MVColor() {
         liste.add(FILM_HISTORY);
-        liste.add(FILM_NEU);
         liste.add(FILM_BOOKMARKED);
         liste.add(DOWNLOAD_IST_ABO);
         liste.add(DOWNLOAD_IST_DIREKTER_DOWNLOAD);
@@ -73,8 +71,6 @@ public class MVColor {
         liste.add(DOWNLOAD_FERTIG_SEL);
         liste.add(DOWNLOAD_FEHLER);
         liste.add(DOWNLOAD_FEHLER_SEL);
-        liste.add(BUTTON_SET_ABSPIELEN);
-        liste.add(DOWNLOAD_DATEINAME_EXISTIERT);
         liste.add(DOWNLOAD_DATEINAME_NEU);
         liste.add(DOWNLOAD_DATEINAME_ALT);
     }
@@ -92,6 +88,39 @@ public class MVColor {
             color = Color.BLUE;
 
         return color;
+    }
+
+    public static Color getNewColor() {
+        return getRegExPatternColor();
+    }
+
+    /**
+     * Return the alternating row color based on L&F setting.
+     *
+     * @return alternating color for dark or light L&Fs.
+     */
+    public static Color getAlternatingRowColor() {
+        Color color;
+
+        if (!FlatLaf.isLafDark()) {
+            return JTABLE_ALTERNATE_ROW_COLOR;
+        } else {
+            var tableBg = UIManager.getColor("Table.background");
+            color = brightenColor(tableBg, 0.25f);
+        }
+        return color;
+    }
+
+    /**
+     * Calculate a brighter color by factor based on HSB values.
+     *
+     * @param originalColor the original color.
+     * @param factor        the factor to brighten.
+     * @return the new brighter color.
+     */
+    private static @NotNull Color brightenColor(@NotNull Color originalColor, float factor) {
+        float[] hsb = Color.RGBtoHSB(originalColor.getRed(), originalColor.getGreen(), originalColor.getBlue(), null);
+        return Color.getHSBColor(hsb[0], hsb[1], factor * (1f + hsb[2]));
     }
 
     public final void load() {

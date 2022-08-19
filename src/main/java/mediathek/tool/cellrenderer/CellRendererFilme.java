@@ -179,7 +179,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             } else if (datenFilm.isNew()) {
                 // fix #259
                 if (!isSelected)
-                    c.setForeground(MVColor.FILM_NEU.color);
+                    c.setForeground(MVColor.getNewColor());
             } else if (isBookMarked && !isSelected) {
                 c.setBackground(MVColor.FILM_BOOKMARKED.color);
             }

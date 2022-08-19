@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
+import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
@@ -67,7 +68,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
-import static mediathek.config.MVColor.*;
+import static mediathek.config.MVColor.DOWNLOAD_FEHLER;
+import static mediathek.config.MVColor.FILM_HISTORY;
 
 
 /**
@@ -840,8 +842,8 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void initSettings() {
-    Color colorSeen = convertMVCAWTColor(FILM_HISTORY);
-    Color colorNew = convertMVCAWTColor(FILM_NEU);
+    var colorSeen = convertMVCAWTColor(FILM_HISTORY);
+    var colorNew = JavaFxUtils.toFXColor(MVColor.getNewColor());
     ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
     BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
     BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));

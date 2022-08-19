@@ -144,7 +144,7 @@ public class MVPanelDownloadZiel extends JPanel {
         try {
             File file = new File(pfadName);
             if (file.exists()) {
-                jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_EXISTIERT.color);
+                jLabelExists.setForeground(Color.RED);
                 jLabelExists.setText("Datei existiert schon!");
             } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME])
                     || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD])) {

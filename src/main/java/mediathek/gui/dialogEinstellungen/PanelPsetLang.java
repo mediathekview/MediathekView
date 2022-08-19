@@ -2,7 +2,6 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
@@ -206,7 +205,6 @@ public class PanelPsetLang extends PanelVorlage {
 
         //Pset
         jButtonAbspielen.addActionListener(e -> {
-            jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setAbspielen();
@@ -585,7 +583,6 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
-            jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]) {
                 case FilmResolution.HIGH_QUALITY -> jRadioButtonAufloesungHD.setSelected(true);
                 case FilmResolution.LOW -> jRadioButtonAufloesungKlein.setSelected(true);
