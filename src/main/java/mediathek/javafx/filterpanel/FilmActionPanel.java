@@ -366,8 +366,7 @@ public class FilmActionPanel {
         filmLengthSlider.highValueProperty().addListener(
                 ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
-        viewSettingsPane.zeitraumSpinner.valueProperty().addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setZeitraum(newValue)));
+        zeitraumProperty.addListener(((os, oV, newValue) -> filterConfig.setZeitraum(newValue)));
     }
 
     /**
