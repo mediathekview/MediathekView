@@ -1,9 +1,9 @@
 package mediathek.mac;
 
-import javafx.application.Platform;
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.javafx.FXErrorDialog;
+import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.SwingErrorDialog;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,11 +62,9 @@ public class SpotlightCommentWriter {
                     builder.start().waitFor(5, TimeUnit.SECONDS);
                     logger.trace("Spotlight writing finished");
                 } catch (Exception ex) {
-                    Platform.runLater(() -> FXErrorDialog.showErrorDialog("Fehler",
-                            "Fehler beim Schreiben des Spotlight-Kommentars",
+                    SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
                             "Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.\n" +
-                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                            ex));
+                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.", ex);
                     logger.error("Fehler beim Spotlight schreiben: {}", filmPath.toString(), ex);
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.

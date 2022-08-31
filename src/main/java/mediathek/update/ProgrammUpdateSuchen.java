@@ -1,12 +1,11 @@
 package mediathek.update;
 
-import javafx.application.Platform;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.Version;
 import mediathek.tool.http.MVHttpClient;
-import mediathek.tool.javafx.FXErrorDialog;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -49,8 +48,8 @@ public class ProgrammUpdateSuchen {
                     showProgramInformation(showAllInformation, silent);
 
                 if (remoteProgramInfo.getVersion().isInvalid()) {
-                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE,
-                            UPDATE_ERROR_MESSAGE, new RuntimeException(PI_VERSION_INVALID_MSG)));
+                    SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+                            UPDATE_ERROR_MESSAGE, new RuntimeException(PI_VERSION_INVALID_MSG));
                     logger.warn(PI_VERSION_INVALID_MSG);
                 } else {
                     if (Konstanten.MVVERSION.isOlderThan(remoteProgramInfo.getVersion())) {
@@ -63,8 +62,8 @@ public class ProgrammUpdateSuchen {
             });
         }, () -> {
             logger.warn(SPI_RECEPTION_ERROR_MSG);
-            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME,
-                    UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, new RuntimeException(SPI_RECEPTION_ERROR_MSG)));
+            SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+                    UPDATE_ERROR_MESSAGE, new RuntimeException(SPI_RECEPTION_ERROR_MSG));
         });
     }
 
