@@ -334,6 +334,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return flags.contains(DatenFilmFlags.BURNED_IN_SUBTITLES);
     }
 
+    /**
+     * Return if the film has a subtitle (URL).
+     * @return true if a downloadable subtitle is available.
+     */
     public boolean hasSubtitle() {
         return dataMap.containsKey(MapKeys.SUBTITLE_URL);
     }

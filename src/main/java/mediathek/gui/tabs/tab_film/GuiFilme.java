@@ -1175,6 +1175,31 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
+    public class DownloadSubtitleAction extends AbstractAction {
+        public DownloadSubtitleAction() {
+            putValue(Action.NAME, "Untertitel-Datei sofort laden...");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getCurrentlySelectedFilm().ifPresent(film -> {
+                var selectedFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Untertitel speichern", "");
+                if (selectedFile != null) {
+                    try {
+                        MVSubtitle subtitleFile = new MVSubtitle();
+                        subtitleFile.writeSubtitle(film.getSubtitleUrl(), selectedFile);
+                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Untertitel wurde erfolgreich geladen.",
+                                Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    catch (Exception ex) {
+                        SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
+                                "Untertitel konnte nicht geladen werden.", ex);
+                    }
+                }
+                });
+        }
+    }
+
     /**
      * Implements the context menu for tab film.
      */
@@ -1190,6 +1215,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
+        private final DownloadSubtitleAction downloadSubtitleAction = new DownloadSubtitleAction();
         private Point p;
         private JMenuItem miPrintTable;
 
@@ -1283,7 +1309,6 @@ public class GuiFilme extends AGuiTabPanel {
             return item;
         }
 
-
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1371,6 +1396,13 @@ public class GuiFilme extends AGuiTabPanel {
                 setupCopytoClipboardContextMenu(film, jPopupMenu);
                 jPopupMenu.addSeparator();
                 setupSearchEntries(jPopupMenu, film);
+            });
+
+            res.ifPresent(film -> {
+                if (film.hasSubtitle()) {
+                    jPopupMenu.add(downloadSubtitleAction);
+                    jPopupMenu.addSeparator();
+                }
             });
 
             // Drucken

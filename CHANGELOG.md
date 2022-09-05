@@ -38,6 +38,7 @@
 - **FEATURE:** Geogesperrte Inhalte werden mit einem Schloß versehen.
 - **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
 - **FEATURE:** Im Tab Download werden die Dialoge bzgl. Neustarts fertiger Downloads nun automatisch nach 10 Sekunden geschlossen wenn kein Userinput passiert. Es wird dann jeweils die "Nein"-Option ausgewählt um bereits vorhandene Downloads zu schützen.
+- **FEATURE:** Untertitel eines Films können über das Kontextmenü im Film-Tab nun manuell geladen werden. Dabei erfolgt automatisch eine Konvertierung in das SRT-Format soweit notwendig. 
 - **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
 - **FEATURE(Windows/Linux):** Die Breite der Scrollbars wurde etwas erhöht um die Sichtbarkeit zu verbessern.
 
