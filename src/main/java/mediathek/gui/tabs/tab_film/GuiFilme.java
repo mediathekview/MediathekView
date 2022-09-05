@@ -777,6 +777,7 @@ public class GuiFilme extends AGuiTabPanel {
         private static final String SEARCHMODE_PROPERTY_STRING = "searchMode";
         protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
         protected SearchControlFieldMode searchMode;
+
         public SearchField() {
             super("", 20);
             setMaximumSize(DEFAULT_DIMENSION);
@@ -908,8 +909,8 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     public class LuceneSearchField extends SearchField {
-        private final SearchHistoryButton luceneSearchHistoryButton = new SearchHistoryButton(SearchControlFieldMode.LUCENE);
         private static final Dimension LUCENE_DEFAULT_DIMENSION = new Dimension(700, 100);
+        private final SearchHistoryButton luceneSearchHistoryButton = new SearchHistoryButton(SearchControlFieldMode.LUCENE);
 
         public LuceneSearchField() {
             setMaximumSize(LUCENE_DEFAULT_DIMENSION);
@@ -936,12 +937,10 @@ public class GuiFilme extends AGuiTabPanel {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else {
+                    } else {
                         showError();
                     }
-                }
-                else {
+                } else {
                     showError();
                 }
             });
@@ -1175,31 +1174,6 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    public class DownloadSubtitleAction extends AbstractAction {
-        public DownloadSubtitleAction() {
-            putValue(Action.NAME, "Untertitel-Datei sofort laden...");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            getCurrentlySelectedFilm().ifPresent(film -> {
-                var selectedFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Untertitel speichern", "");
-                if (selectedFile != null) {
-                    try {
-                        MVSubtitle subtitleFile = new MVSubtitle();
-                        subtitleFile.writeSubtitle(film.getSubtitleUrl(), selectedFile);
-                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Untertitel wurde erfolgreich geladen.",
-                                Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
-                    }
-                    catch (Exception ex) {
-                        SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                                "Untertitel konnte nicht geladen werden.", ex);
-                    }
-                }
-                });
-        }
-    }
-
     /**
      * Implements the context menu for tab film.
      */
@@ -1215,7 +1189,7 @@ public class GuiFilme extends AGuiTabPanel {
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
-        private final DownloadSubtitleAction downloadSubtitleAction = new DownloadSubtitleAction();
+        private final DownloadSubtitleAction downloadSubtitleAction = new DownloadSubtitleAction(GuiFilme.this);
         private Point p;
         private JMenuItem miPrintTable;
 
