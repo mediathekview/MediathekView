@@ -133,7 +133,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
                         setToolTipText(title);
                     setText(title);
-                    setIndicatorIcons(datenFilm, isSelected);
+                    setIndicatorIcons(table, datenFilm, isSelected);
                     break;
 
                 case DatenFilm.FILM_GEO:

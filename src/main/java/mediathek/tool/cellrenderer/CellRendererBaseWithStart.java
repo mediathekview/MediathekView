@@ -144,7 +144,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      * @param datenFilm  film information
      * @param isSelected is row selected.
      */
-    protected void setIndicatorIcons(@NotNull DatenFilm datenFilm, boolean isSelected) {
+    protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
         datenFilm.getGeo().ifPresent(geoString -> {
             if (!geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
                 //locked
@@ -155,11 +155,15 @@ public class CellRendererBaseWithStart extends CellRendererBase {
             }
         });
 
-        if (datenFilm.isHighQuality()) {
-            if (isSelected)
-                iconList.add(highQualityIconSelected);
-            else
-                iconList.add(highQualityIcon);
+        var tc = table.getColumn("HQ");
+        // if HQ column is NOT visible add icon
+        if (tc.getWidth() == 0) {
+            if (datenFilm.isHighQuality()) {
+                if (isSelected)
+                    iconList.add(highQualityIconSelected);
+                else
+                    iconList.add(highQualityIcon);
+            }
         }
 
         if (datenFilm.isAudioVersion()) {
@@ -169,11 +173,15 @@ public class CellRendererBaseWithStart extends CellRendererBase {
                 iconList.add(audioDescription);
         }
 
-        if (datenFilm.hasSubtitle()) {
-            if (isSelected)
-                iconList.add(subtitleIconSelected);
-            else
-                iconList.add(subtitleIcon);
+        tc = table.getColumn("UT");
+        //if UT column is NOT visible
+        if (tc.getWidth() == 0) {
+            if (datenFilm.hasSubtitle()) {
+                if (isSelected)
+                    iconList.add(subtitleIconSelected);
+                else
+                    iconList.add(subtitleIcon);
+            }
         }
 
         if (datenFilm.isLivestream()) {

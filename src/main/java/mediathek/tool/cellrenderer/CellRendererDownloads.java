@@ -213,7 +213,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
                         setToolTipText(title);
 
-                    setIndicatorIcons(datenDownload.film, isSelected);
+                    setIndicatorIcons(table, datenDownload.film, isSelected);
                 }
             }
 
