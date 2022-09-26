@@ -92,7 +92,7 @@ public class DirectHttpDownload extends Thread {
         long newLimit;
 
         if (limit <= 0)
-            newLimit = 10 * FileUtils.ONE_GB;
+            newLimit = Long.MAX_VALUE;
         else
             newLimit = limit * FileUtils.ONE_KB;
 
