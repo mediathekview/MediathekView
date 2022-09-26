@@ -126,9 +126,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private JComboBox<String> cbDisplayCategories;
     private JComboBox<String> cbView;
     private JButton btnClear;
-    private JSpinner jSpinnerAnzahlDownloads;
-    private JSpinner jSpinner1;
     private JScrollPane downloadListScrollPane;
+    private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -138,6 +137,10 @@ public class GuiDownloads extends AGuiTabPanel {
 
 
         initComponents();
+        // use rounded combo boxes
+        cbDisplayCategories.putClientProperty( "JComponent.roundRect", true );
+        cbView.putClientProperty( "JComponent.roundRect", true );
+
         setupDownloadListStatusBar();
 
         setupF4Key(mediathekGui);
@@ -157,8 +160,6 @@ public class GuiDownloads extends AGuiTabPanel {
         setupDisplayCategories();
 
         setupCheckboxView();
-
-        setupDownloadRateLimitSpinner();
 
         setupFilterPanel();
 
@@ -293,14 +294,6 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
-    @Handler
-    private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1);
-            jSpinnerAnzahlDownloads.setValue(maxNumDownloads);
-        });
-    }
-
     protected void toggleDownloadFilterPanel() {
         boolean visibility = !jPanelFilterExtern.isVisible();
         updateFilterVisibility(visibility);
@@ -331,21 +324,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
             taskbar.setMenu(popupMenu);
         }
-    }
-
-    private void setupDownloadRateLimitSpinner() {
-        //restore spinner setting from config
-        final int oldDownloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
-        jSpinner1.setValue(oldDownloadLimit);
-
-        jSpinner1.addChangeListener(e -> {
-            final int downloadLimit = (int) jSpinner1.getValue();
-            logger.info("Saving download rate limit {} to config", downloadLimit);
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, downloadLimit);
-            DownloadRateLimitChangedEvent evt = new DownloadRateLimitChangedEvent();
-            evt.newLimit = downloadLimit;
-            MessageBus.getMessageBus().publishAsync(evt);
-        });
     }
 
     public MVDownloadsTable getTableComponent() {
@@ -457,14 +435,6 @@ public class GuiDownloads extends AGuiTabPanel {
         btnClear.addActionListener(l -> {
             cbDisplayCategories.setSelectedIndex(0);
             cbView.setSelectedIndex(0);
-        });
-
-        jSpinnerAnzahlDownloads.setModel(new SpinnerNumberModel(1, 1, 9, 1));
-        jSpinnerAnzahlDownloads.setValue(config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1));
-        jSpinnerAnzahlDownloads.addChangeListener(l -> {
-            final int maxNumDownloads = ((Number) jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
-            config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
-            MessageBus.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
         });
 
         final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
@@ -1016,12 +986,6 @@ public class GuiDownloads extends AGuiTabPanel {
         var label2 = new JLabel();
         cbView = new JComboBox<>();
         btnClear = new JButton();
-        var panel2 = new JPanel();
-        var jLabel3 = new JLabel();
-        jSpinnerAnzahlDownloads = new JSpinner();
-        var lblBandwidth = new JLabel();
-        var jLabel1 = new JLabel();
-        jSpinner1 = new JSpinner();
         var downloadListArea = new JPanel();
         downloadListScrollPane = new JScrollPane();
 
@@ -1077,40 +1041,7 @@ public class GuiDownloads extends AGuiTabPanel {
                     panel3.add(btnClear, new CC().cell(0, 2, 2, 1).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
                 }
                 jPanelFilterExtern.add(panel3, new CC().cell(0, 0));
-
-                //======== panel2 ========
-                {
-                    panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
-                    panel2.setLayout(new MigLayout(
-                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                            // columns
-                            new AC()
-                                    .fill().gap()
-                                    .fill(),
-                            // rows
-                            new AC()
-                                    .gap()
-                                    .fill()));
-
-                    //---- jLabel3 ----
-                    jLabel3.setText("gleichzeitig:"); //NON-NLS
-                    panel2.add(jLabel3, new CC().cell(0, 0));
-                    panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
-
-                    //---- lblBandwidth ----
-                    lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
-                    panel2.add(lblBandwidth, new CC().cell(0, 1));
-
-                    //---- jLabel1 ----
-                    jLabel1.setText("KiB/s"); //NON-NLS
-                    panel2.add(jLabel1, new CC().cell(2, 1));
-
-                    //---- jSpinner1 ----
-                    jSpinner1.setModel(new SpinnerNumberModel(0, 0, 1048576, 1));
-                    jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
-                    panel2.add(jSpinner1, new CC().cell(1, 1));
-                }
-                jPanelFilterExtern.add(panel2, new CC().cell(0, 1));
+                jPanelFilterExtern.add(dlConfigPanel, new CC().cell(0, 1));
             }
             jSplitPane1.setLeftComponent(jPanelFilterExtern);
 

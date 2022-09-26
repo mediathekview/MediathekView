@@ -60,7 +60,6 @@ public class ApplicationConfiguration {
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
     public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
-    public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
@@ -85,7 +84,6 @@ public class ApplicationConfiguration {
      * several times in a row.
      */
     private ScheduledFuture<?> future;
-
     private ApplicationConfiguration() {
         setupXmlConfiguration();
         createFileHandler();
@@ -180,6 +178,11 @@ public class ApplicationConfiguration {
             config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, !SystemUtils.IS_OS_MAC_OSX);
         }
     }
+
+    public static class DownloadRateLimiter {
+    public static final String LIMIT = "download.rate.limit";
+    public static final String ACTIVE = "download.rate.active";
+}
 
     /**
      * Part of the Bill Pugh Singleton implementation

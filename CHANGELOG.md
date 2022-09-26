@@ -42,6 +42,7 @@
 - **FEATURE:** Untertitel eines Films können über das Kontextmenü im Film-Tab nun manuell geladen werden. Dabei erfolgt automatisch eine Konvertierung in das SRT-Format soweit notwendig. 
 - **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
 - **FEATURE(Windows/Linux):** Die Breite der Scrollbars wurde etwas erhöht um die Sichtbarkeit zu verbessern.
+- **FEATURE:** Bandbreitenbegrenzung kann im Tab *"Downloads"* nun über eine CheckBox aktiviert/deaktiviert werden.
 
 <u>**13.9.1**</u>
 

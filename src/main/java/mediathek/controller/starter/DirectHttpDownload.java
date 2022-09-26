@@ -82,16 +82,20 @@ public class DirectHttpDownload extends Thread {
      * @param evt the new limit
      */
     @Handler
-    private void handleRateLimitChanged(DownloadRateLimitChangedEvent evt) {
-        final long limit = calculateDownloadLimit(evt.newLimit);
+    private void handleRateLimitChanged(@NotNull DownloadRateLimitChangedEvent evt) {
+        final long limit = calculateDownloadLimit(evt);
         logger.info("thread changing download speed limit to {} KB", limit);
         rateLimiter.setRate(limit);
     }
 
-    private long calculateDownloadLimit(long limit) {
+    private long calculateDownloadLimit(@NotNull DownloadRateLimitChangedEvent evt) {
+        return calcLimit(evt.newLimit, evt.active);
+    }
+
+    private long calcLimit(long limit, boolean active) {
         long newLimit;
 
-        if (limit <= 0)
+        if (limit <= 0 || !active)
             newLimit = Long.MAX_VALUE;
         else
             newLimit = limit * FileUtils.ONE_KB;
@@ -99,13 +103,17 @@ public class DirectHttpDownload extends Thread {
         return newLimit;
     }
 
+    private long calculateDownloadLimit(long limit) {
+        var active = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DownloadRateLimiter.ACTIVE, false);
+        return calcLimit(limit, active);
+    }
     /**
      * Try to read the download limit from config file, other set to artificial limit 1GB/s!
      *
      * @return the limit in KB/s
      */
     private long getDownloadLimit() {
-        final long downloadLimit = ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
+        final long downloadLimit = ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0);
         return calculateDownloadLimit(downloadLimit);
     }
 
