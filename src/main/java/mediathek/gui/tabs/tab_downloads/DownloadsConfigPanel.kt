@@ -45,7 +45,7 @@ class DownloadsConfigPanel : JPanel() {
 
         //restore spinner setting from config
         val oldDownloadLimit =
-            ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0)
+            ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0)
         spinnerMaxBandwidth.value = oldDownloadLimit
         spinnerMaxBandwidth.addChangeListener { fireDownloadRateLimitChangedEvent() }
     }
