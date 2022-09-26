@@ -128,11 +128,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
 
                 case DatenFilm.FILM_TITEL:
-                    var title = datenFilm.getTitle();
-                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
-                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
-                        setToolTipText(title);
-                    setText(title);
+                    setText(datenFilm.getTitle());
                     setIndicatorIcons(table, datenFilm, isSelected);
                     break;
 
