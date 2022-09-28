@@ -119,7 +119,7 @@
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
         <picocli.version>4.6.3</picocli.version>
         <sqlite-jdbc.version>3.39.3.0</sqlite-jdbc.version>
-        <tilesfx.version>17.1.15</tilesfx.version>
+        <tilesfx.version>17.1.6</tilesfx.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
