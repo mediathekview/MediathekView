@@ -208,11 +208,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
             if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
                 if (datenDownload.film != null) {
-                    var title = datenDownload.film.getTitle();
-                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
-                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
-                        setToolTipText(title);
-
                     setIndicatorIcons(table, datenDownload.film, isSelected);
                 }
             }

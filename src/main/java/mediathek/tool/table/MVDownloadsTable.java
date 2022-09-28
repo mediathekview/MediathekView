@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -27,6 +28,38 @@ public class MVDownloadsTable extends MVTable {
         setupDragnDrop();
 
         setModel(new TModelDownload());
+    }
+
+    @Override public String getToolTipText(MouseEvent e) {
+        var p = e.getPoint(); // MouseEvent
+        final int viewColumn = columnAtPoint(p);
+        final int modelColumnIndex = convertColumnIndexToModel(viewColumn);
+
+        //only show title as tooltip for TITEL column...
+        if (modelColumnIndex != DatenDownload.DOWNLOAD_TITEL)
+            return super.getToolTipText(e);
+
+        String toolTipText = null;
+        final int viewRow = rowAtPoint(p);
+        var comp = prepareRenderer(getCellRenderer(viewRow, viewColumn), viewRow, viewColumn);
+        var bounds = getCellRect(viewRow, viewColumn, false);
+
+
+        try {
+            //comment row, exclude heading
+            if (comp.getPreferredSize().width > bounds.width) {
+                final int modelRowIndex = convertRowIndexToModel(viewRow);
+                final DatenDownload datenDownload = (DatenDownload) getModel().getValueAt(modelRowIndex, DatenDownload.DOWNLOAD_REF);
+                if (datenDownload.film != null)
+                    toolTipText = datenDownload.film.getTitle();
+                else
+                    toolTipText = "";
+            }
+        } catch (RuntimeException ignored) {
+            //catch null pointer exception if mouse is over an empty line
+        }
+
+        return toolTipText;
     }
 
     private void setupDragnDrop() {
