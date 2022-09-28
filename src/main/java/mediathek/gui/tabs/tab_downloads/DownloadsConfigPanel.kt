@@ -62,6 +62,7 @@ class DownloadsConfigPanel : JPanel() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @Handler
     private fun handleParallelDownloadNumberChange(e: ParallelDownloadNumberChangedEvent) {
         SwingUtilities.invokeLater {
