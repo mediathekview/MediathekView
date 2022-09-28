@@ -26,12 +26,12 @@ class JDownloadHelper {
 
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
         val formBody: RequestBody = FormBody.Builder()
-                .add("urls", url.toString())
-                .build()
+            .add("urls", url.toString())
+            .build()
         val request = Request.Builder()
-                .url("http://127.0.0.1:9666/flash/add")
-                .post(formBody)
-                .build()
+            .url("http://127.0.0.1:9666/flash/add")
+            .post(formBody)
+            .build()
         try {
             val builder = MVHttpClient.getInstance().reducedTimeOutClient.newBuilder()
             builder.connectTimeout(125, TimeUnit.MILLISECONDS)
@@ -40,15 +40,18 @@ class JDownloadHelper {
                 if (it.isSuccessful)
                     historyController.markSeen(film)
             }
-        } catch (e: ConnectException) {
+        }
+        catch (e: ConnectException) {
             showErrorMessage()
-        } catch (e: SocketTimeoutException) {
+        }
+        catch (e: SocketTimeoutException) {
             showErrorMessage()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             logger.error("downloadUrl", e)
             SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-            "<html>Die URL konnte nicht mit JDownloader geladen werden.<br>" +
-                    "Bitte wenden Sie sich bei Bedarf an das Forum.</html>",e)
+                                                  "<html>Die URL konnte nicht mit JDownloader geladen werden.<br>" +
+                                                          "Bitte wenden Sie sich bei Bedarf an das Forum.</html>", e)
         }
     }
 
@@ -63,34 +66,27 @@ class JDownloadHelper {
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {
         jPopupMenu.addSeparator()
-        val miText = "Mit JDownloader herunterladen"
-        if (film.isPlayList) {
-            val miDownloadJD = JMenuItem(miText)
-            miDownloadJD.addActionListener {
-                val url = film.urlNormalQuality.toHttpUrl()
-                downloadUrl(url, film)
-            }
-            jPopupMenu.add(miDownloadJD)
-        } else {
-            val mJD = JMenu(miText)
-            val uNormal = film.urlNormalQuality.toHttpUrl()
-            val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
-            val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
-            if (film.isHighQuality) {
-                val miHq = JMenuItem("in bester Qualität")
-                miHq.addActionListener { downloadUrl(uHq, film) }
-                mJD.add(miHq)
-            }
-            val miNormal = JMenuItem("in normaler Qualität")
-            miNormal.addActionListener { downloadUrl(uNormal, film) }
-            mJD.add(miNormal)
-            if (uLow !== uNormal) {
-                val miLow = JMenuItem("in niedriger Qualität")
-                miLow.addActionListener { downloadUrl(uLow, film) }
-                mJD.add(miLow)
-            }
-            jPopupMenu.add(mJD)
+
+        val mJD = JMenu("Mit JDownloader herunterladen")
+        val uNormal = film.urlNormalQuality.toHttpUrl()
+        val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
+        val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
+
+        if (film.isHighQuality) {
+            val miHq = JMenuItem("in bester Qualität")
+            miHq.addActionListener { downloadUrl(uHq, film) }
+            mJD.add(miHq)
         }
+        val miNormal = JMenuItem("in normaler Qualität")
+        miNormal.addActionListener { downloadUrl(uNormal, film) }
+        mJD.add(miNormal)
+
+        if (uLow !== uNormal) {
+            val miLow = JMenuItem("in niedriger Qualität")
+            miLow.addActionListener { downloadUrl(uLow, film) }
+            mJD.add(miLow)
+        }
+        jPopupMenu.add(mJD)
 
         val miWebsiteToJd = JMenuItem("Webseiten-URL an JDownloader übergeben")
         miWebsiteToJd.addActionListener {
