@@ -73,10 +73,6 @@ class DownloadsConfigPanel : JPanel() {
     }
 
     private fun initComponents() {
-        val label1 = JLabel()
-        val label2 = JLabel()
-        val label3 = JLabel()
-
         border = TitledBorder("Downloads")
         layout = MigLayout(
             LC().insets("0").hideMode(3).align("center", "center"),
@@ -91,17 +87,14 @@ class DownloadsConfigPanel : JPanel() {
                 .gap()
         )
 
-        label1.text = "gleichzeitig:" //NON-NLS
-        add(label1, CC().cell(1, 0))
+        add(JLabel("gleichzeitig:"), CC().cell(1, 0))
         add(spinnerNumDownloads, CC().cell(2, 0).width("80:100")) //NON-NLS
         add(cbMaxBandwidth, CC().cell(0, 1))
 
-        label2.text = "max. Bandbreite:" //NON-NLS
-        add(label2, CC().cell(1, 1))
+        add(JLabel("max. Bandbreite:"), CC().cell(1, 1))
         add(spinnerMaxBandwidth, CC().cell(2, 1).width("80:100")) //NON-NLS
 
-        label3.text = "KiB/s" //NON-NLS
-        add(label3, CC().cell(3, 1))
+        add(JLabel("KiB/s"), CC().cell(3, 1))
     }
 
     private val spinnerNumDownloads: JSpinner = JSpinner()
