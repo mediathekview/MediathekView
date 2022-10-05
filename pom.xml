@@ -83,7 +83,7 @@
         <java.version>18</java.version>
         <jdk.language.version>18</jdk.language.version>
         <kotlin.language.target>18</kotlin.language.target>
-        <kotlin.version>1.7.10</kotlin.version>
+        <kotlin.version>1.7.20</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -94,7 +94,7 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.1</controlsfx.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
-        <flatlaf.version>2.4</flatlaf.version>
+        <flatlaf.version>2.5</flatlaf.version>
         <guava.version>31.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.13.4</jackson.version>
