@@ -57,17 +57,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
+    public static final int DIVIDER_LOCATION = -1;
     private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-
     private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
     private static final String COMBO_VIEW_STARTED = "gestartet";
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
-
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
@@ -90,6 +89,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private final ActiveDownloadsInfoLabel activeDownloadsInfoLabel = new ActiveDownloadsInfoLabel(startInfoProperty);
     private final FinishedDownloadsInfoLabel finishedDownloadsInfoLabel = new FinishedDownloadsInfoLabel(startInfoProperty);
     private final FailedDownloadsInfoLabel failedDownloadsInfoLabel = new FailedDownloadsInfoLabel(startInfoProperty);
+    private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
     protected StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
     protected StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
     protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
@@ -127,7 +127,6 @@ public class GuiDownloads extends AGuiTabPanel {
     private JComboBox<String> cbView;
     private JButton btnClear;
     private JScrollPane downloadListScrollPane;
-    private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
@@ -283,10 +282,7 @@ public class GuiDownloads extends AGuiTabPanel {
         final boolean visible = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS);
         updateFilterVisibility(visible);
 
-        var config = ApplicationConfiguration.getConfiguration();
-
-        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
-        jSplitPane1.setDividerLocation(location);
+        setSplitDividerLocation();
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jPanelFilterExtern.isVisible()) {
                 config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, jSplitPane1.getDividerLocation());
@@ -303,7 +299,16 @@ public class GuiDownloads extends AGuiTabPanel {
     private void updateFilterVisibility(boolean visible) {
         jPanelFilterExtern.setVisible(visible);
         if (visible) {
-            final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+            setSplitDividerLocation();
+        }
+    }
+
+    private void setSplitDividerLocation() {
+        var location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, DIVIDER_LOCATION);
+        if (location == DIVIDER_LOCATION) {
+            jSplitPane1.resetToPreferredSizes();
+        }
+        else {
             jSplitPane1.setDividerLocation(location);
         }
     }
@@ -437,8 +442,7 @@ public class GuiDownloads extends AGuiTabPanel {
             cbView.setSelectedIndex(0);
         });
 
-        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
-        jSplitPane1.setDividerLocation(location);
+        setSplitDividerLocation();
     }
 
     @Handler

@@ -45,7 +45,7 @@ public class ApplicationConfiguration {
             "application.ui.bandwidth_monitor.visible";
     public static final String APPLICATION_UI_USE_TRAY = "application.ui.tray.use";
     public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
-            "application.ui.download.tab.divider.location";
+            "application.ui.download_tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";

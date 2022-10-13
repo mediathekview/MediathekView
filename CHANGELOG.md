@@ -27,6 +27,7 @@
 - **BUGFIX:** Abo verwalten Dialog konnte manchmal Höhe und Breite 0 haben.
 - **BUGFIX:** Bei geänderter Senderauswahl wird nun eine vollständige Filmliste geladen, solange die Filmliste **nicht** erweitert wird.
 - **BUGFIX:** Bei Übergabe von Downloads an JDownloader kann nun die Qualität bestimmt werden.
+- **BUGFIX:** Filterpanel im Tab "Downloads" wird nun nicht mehr zu klein dargestellt beim ersten Start.
 - **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
