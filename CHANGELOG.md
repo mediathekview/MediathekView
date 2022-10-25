@@ -45,6 +45,7 @@
 - **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
 - **FEATURE(Windows/Linux):** Die Breite der Scrollbars wurde etwas erhöht um die Sichtbarkeit zu verbessern.
 - **FEATURE:** Bandbreitenbegrenzung kann im Tab *"Downloads"* nun über eine CheckBox aktiviert/deaktiviert werden.
+- **FEATURE:** Der Splash-Screen beim Start lässt sich mittels `-ns` oder `--no-splash` deaktivieren.
 
 <u>**13.9.1**</u>
 
