@@ -63,6 +63,11 @@ public class Config {
     @CommandLine.Option(names = {"-nj", "--no-jvm-param-checks"}, description = "JVM Parameter-Prüfung deaktivieren")
     private static boolean disableJvmParameterChecks;
 
+    @CommandLine.Option(names = {"-ns", "--no-splash"}, description = "Splash-Screen nicht anzeigen")
+    private static boolean disableSplashScreen;
+
+    public static boolean isSplashScreenDisabled() { return disableSplashScreen;}
+
     public static boolean isDisableJvmParameterChecks() {
         return disableJvmParameterChecks;
     }

@@ -422,8 +422,14 @@ public class Main {
             printDirectoryPaths();
 
             if (!isDebuggerAttached()) {
-                splashScreen = Optional.of(new SplashScreen());
-            } else {
+                if (!Config.isSplashScreenDisabled()) {
+                    splashScreen = Optional.of(new SplashScreen());
+                }
+                else {
+                    logger.warn("Splash screen disabled...");
+                }
+            }
+            else {
                 logger.warn("Debugger detected -> Splash screen disabled...");
             }
             splashScreen.ifPresent(splash -> splash.setVisible(true));
