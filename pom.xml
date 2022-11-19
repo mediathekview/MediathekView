@@ -118,7 +118,7 @@
         <mockito.version>4.8.0</mockito.version>
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
         <picocli.version>4.6.3</picocli.version>
-        <sqlite-jdbc.version>3.39.3.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.39.4.1</sqlite-jdbc.version>
         <tilesfx.version>17.1.6</tilesfx.version>
         <xz.version>1.9</xz.version>
 
