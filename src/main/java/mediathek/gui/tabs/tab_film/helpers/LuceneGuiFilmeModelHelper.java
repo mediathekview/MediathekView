@@ -6,7 +6,7 @@ import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
-import mediathek.gui.tabs.tab_film.GuiFilme;
+import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tasks.LuceneIndexKeys;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
@@ -33,11 +33,10 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LuceneGuiFilmeModelHelper {
+public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     private static final Logger logger = LogManager.getLogger();
     private static final Map<String, PointsConfig> PARSER_CONFIG_MAP = new HashMap<>();
 
@@ -46,18 +45,13 @@ public class LuceneGuiFilmeModelHelper {
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
     }
 
-    private final FilmActionPanel filmActionPanel;
-    private final SeenHistoryController historyController;
-    private final GuiFilme.SearchField searchField;
-    private long maxLength;
-    private SliderRange sliderRange;
 
     public LuceneGuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
                                      @NotNull SeenHistoryController historyController,
-                                     @NotNull GuiFilme.SearchField searchField) {
+                                     @NotNull SearchFieldData searchFieldData) {
         this.filmActionPanel = filmActionPanel;
         this.historyController = historyController;
-        this.searchField = searchField;
+        this.searchFieldData = searchFieldData;
     }
 
     private String getFilterThema() {
@@ -69,12 +63,15 @@ public class LuceneGuiFilmeModelHelper {
         return filterThema;
     }
 
-    private boolean noFiltersAreSet() {
+    @Override
+    protected boolean noFiltersAreSet() {
+        var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+
         return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
-                && searchField.getText().isEmpty()
-                && ((int) filmActionPanel.getFilmLengthSlider().getLowValue() == 0)
-                && ((int) filmActionPanel.getFilmLengthSlider().getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && searchFieldData.isEmpty()
+                && ((int) filmLengthSlider.getLowValue() == 0)
+                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
                 && !filmActionPanel.isShowUnseenOnly()
                 && !filmActionPanel.isShowOnlyHighQuality()
@@ -88,13 +85,6 @@ public class LuceneGuiFilmeModelHelper {
                 && filmActionPanel.getZeitraumString().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
-    private void calculateFilmLengthSliderValues() {
-        final long minLength = (long) filmActionPanel.getFilmLengthSlider().getLowValue();
-        maxLength = (long) filmActionPanel.getFilmLengthSlider().getHighValue();
-        var minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
-        var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-        sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);
-    }
 
     private TModelFilm performTableFiltering() {
         var listeFilme = (IndexedFilmList) Daten.getInstance().getListeFilmeNachBlackList();
@@ -104,7 +94,7 @@ public class LuceneGuiFilmeModelHelper {
             if (filmActionPanel.isShowUnseenOnly())
                 historyController.prepareMemoryCache();
 
-            String searchText = searchField.getText();
+            String searchText = searchFieldData.searchFieldText();
             List<DatenFilm> resultList;
             Stream<DatenFilm> stream;
 
@@ -285,27 +275,7 @@ public class LuceneGuiFilmeModelHelper {
         return new QueryParser(LuceneIndexKeys.SENDE_DATUM, listeFilme.getAnalyzer()).parse(zeitraum);
     }
 
-    private boolean maxLengthCheck(DatenFilm film) {
-        return film.getFilmLength() < sliderRange.getMaxLengthInSeconds();
-    }
-
-    private boolean seenCheck(DatenFilm film) {
-        return !historyController.hasBeenSeenFromCache(film);
-    }
-
-    private boolean minLengthCheck(DatenFilm film) {
-        var filmLength = film.getFilmLength();
-        if (filmLength == 0)
-            return true; // always show entries with length 0, which are internally "no length"
-        else
-            return filmLength >= sliderRange.getMinLengthInSeconds();
-    }
-
-    /**
-     * Filter the filmlist.
-     *
-     * @return the filtered table model.
-     */
+    @Override
     public TableModel getFilteredTableModel() {
         var listeFilme = (IndexedFilmList) Daten.getInstance().getListeFilmeNachBlackList();
         TModelFilm filmModel;

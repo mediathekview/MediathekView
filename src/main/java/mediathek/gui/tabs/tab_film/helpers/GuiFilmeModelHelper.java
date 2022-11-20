@@ -4,15 +4,13 @@ import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
-import mediathek.gui.tabs.tab_film.GuiFilme;
+import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
-import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
@@ -20,30 +18,19 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.table.TableModel;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class GuiFilmeModelHelper {
-    private final FilmActionPanel filmActionPanel;
+public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
-    private final ListeFilme listeFilme;
-    private final SeenHistoryController historyController;
-    private boolean searchThroughDescriptions;
-    private long maxLength;
     private String[] arrIrgendwo;
-    private long minLengthInSeconds;
-    private long maxLengthInSeconds;
-    private final GuiFilme.SearchField searchField;
 
     public GuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
                                @NotNull SeenHistoryController historyController,
-                               @NotNull GuiFilme.SearchField searchField) {
+                               @NotNull SearchFieldData searchFieldData) {
         this.filmActionPanel = filmActionPanel;
         this.historyController = historyController;
-        this.searchField = searchField;
-
-        listeFilme = Daten.getInstance().getListeFilmeNachBlackList();
+        this.searchFieldData = searchFieldData;
     }
 
     private String getFilterThema() {
@@ -55,28 +42,13 @@ public class GuiFilmeModelHelper {
         return filterThema;
     }
 
-    private String[] evaluateThemaTitel() {
-        String[] arrThemaTitel;
-
-        final String filterThemaTitel = searchField.getText();
-        if (Filter.isPattern(filterThemaTitel)) {
-            arrThemaTitel = new String[]{filterThemaTitel};
-        } else {
-            arrThemaTitel = filterThemaTitel.split(",");
-            for (int i = 0; i < arrThemaTitel.length; ++i) {
-                arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
-            }
-        }
-
-        return arrThemaTitel;
-    }
-
-    private boolean noFiltersAreSet() {
+    @Override
+    protected boolean noFiltersAreSet() {
         var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
 
         return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
-                && searchField.getText().isEmpty()
+                && searchFieldData.isEmpty()
                 && ((int) filmLengthSlider.getLowValue() == 0)
                 && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
@@ -91,20 +63,10 @@ public class GuiFilmeModelHelper {
                 && !filmActionPanel.isDontShowAudioVersions();
     }
 
-    private void updateFilterVars() {
-        searchThroughDescriptions = searchField.getSearchMode() == SearchControlFieldMode.IRGENDWO;
-
-        arrIrgendwo = evaluateThemaTitel();
-    }
-
-    private void calculateFilmLengthSliderValues() {
-        maxLength = (long) filmActionPanel.getFilmLengthSlider().getHighValue();
-        minLengthInSeconds = TimeUnit.SECONDS.convert((long)filmActionPanel.getFilmLengthSlider().getLowValue(), TimeUnit.MINUTES);
-        maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-    }
 
     private void performTableFiltering() {
-        updateFilterVars();
+        arrIrgendwo = searchFieldData.evaluateThemaTitel();
+
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
@@ -113,7 +75,7 @@ public class GuiFilmeModelHelper {
         if (filmActionPanel.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
-        var stream = listeFilme.parallelStream();
+        var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
         if (!selectedSenders.isEmpty()) {
             //ObservableList.contains() is insanely slow...this speeds up to factor 250!
             Set<String> senderSet = new HashSet<>(selectedSenders.size());
@@ -175,7 +137,7 @@ public class GuiFilmeModelHelper {
         //otherwise use more optimized search
         boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
         Predicate<DatenFilm> filter;
-        if (searchThroughDescriptions) {
+        if (searchFieldData.searchThroughDescriptions()) {
             if (isPattern)
                 filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
             else
@@ -193,28 +155,11 @@ public class GuiFilmeModelHelper {
     private boolean subtitleCheck(DatenFilm film) {
         return film.hasSubtitle() || film.hasBurnedInSubtitles();
     }
-    private boolean maxLengthCheck(DatenFilm film) {
-        return film.getFilmLength() < maxLengthInSeconds;
-    }
 
-    private boolean seenCheck(DatenFilm film) {
-        return !historyController.hasBeenSeenFromCache(film);
-    }
-
-    private boolean minLengthCheck(DatenFilm film) {
-        var filmLength = film.getFilmLength();
-        if (filmLength == 0)
-            return true; // always show entries with length 0, which are internally "no length"
-        else
-            return filmLength >= minLengthInSeconds;
-    }
-
-    /**
-     * Filter the filmlist.
-     *
-     * @return the filtered table model.
-     */
+    @Override
     public TableModel getFilteredTableModel() {
+        final var listeFilme = Daten.getInstance().getListeFilmeNachBlackList();
+
         if (!listeFilme.isEmpty()) {
             if (noFiltersAreSet()) {
                 //adjust initial capacity

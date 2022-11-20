@@ -35,6 +35,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
+import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.filterpanel.FilmActionPanel;
@@ -705,13 +706,15 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
+            GuiModelHelper helper;
+            var searchFieldData = new SearchFieldData(searchField.getText(),
+                    searchField.getSearchMode());
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                final var helper = new LuceneGuiFilmeModelHelper(filmActionPanel, historyController, searchField);
-                return helper.getFilteredTableModel();
+                helper = new LuceneGuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
             } else {
-                final var helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchField);
-                return helper.getFilteredTableModel();
+                helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
             }
+            return helper.getFilteredTableModel();
         });
         Futures.addCallback(modelFuture,
                 new FutureCallback<>() {
