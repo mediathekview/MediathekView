@@ -9,6 +9,7 @@ import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.Optional
 
 object StandardLocations {
     /**
@@ -68,6 +69,21 @@ object StandardLocations {
         return getSettingsDirectory().resolve(Konstanten.CONFIG_FILE)
     }
 
+    @JvmStatic
+    @Throws(InvalidPathException::class)
+    fun getXDGDownloadDirectory(): Optional<Path> {
+        return try {
+            val process = ProcessBuilder("xdg-user-dir", "DOWNLOAD")
+                .directory(File(SystemUtils.USER_HOME))
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .start()
+            val line = process.inputReader().use { reader -> reader.readLine() }
+            Optional.of(line).filter { s -> s.isNotEmpty() }.map { s -> Paths.get(s) }
+        } catch (_: IOException) {
+            Optional.empty()
+        }
+    }
+
     /**
      * Return the standard path to downloads.
      *
@@ -79,6 +95,8 @@ object StandardLocations {
         val userHome = SystemUtils.USER_HOME
         val path = if (SystemUtils.IS_OS_MAC_OSX)
             Paths.get(userHome, "Downloads")
+        else if (SystemUtils.IS_OS_LINUX)
+            getXDGDownloadDirectory().orElse(Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS))
         else
             Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS)
         return path.toAbsolutePath().toString()
