@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 public class ListeBlacklist extends ArrayList<BlacklistRule> {
@@ -188,34 +189,36 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
-    /**
-     * Convert days to milliseconds
-     * @param days days
-     * @return the input converted to milliseconds
-     */
-    private long daysToMilliseconds(int days) {
-        return 1000L * 60L * 60L * 24L * days;
+    private void calculateZeitraumBoundaries() {
+        try {
+            var strZeitraum = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty().get();
+            if (strZeitraum.equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE))
+                days_lower_boundary = 0;
+            else {
+                var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum), TimeUnit.DAYS);
+                days_lower_boundary = System.currentTimeMillis() - days_ms;
+            }
+        } catch (Exception ex) {
+            days_lower_boundary = 0;
+        }
+    }
+
+    private void calculateMinimumFilmLength() {
+        try {
+            var filmlength_minutes = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE));
+            minimumFilmLength = filmlength_minutes * 60; // convert to seconds
+        } catch (Exception ex) {
+            minimumFilmLength = 0;
+        }
     }
 
     /**
      * Load current filter settings from Config
      */
     private void loadCurrentFilterSettings() {
-        try {
-            final String val = MediathekGui.ui().tabFilme.filmActionPanel.getZeitraumString();
-            if (val.equals(ZeitraumSpinner.UNLIMITED_VALUE))
-                days_lower_boundary = 0;
-            else {
-                days_lower_boundary = System.currentTimeMillis() - daysToMilliseconds(Integer.parseInt(val));
-            }
-        } catch (Exception ex) {
-            days_lower_boundary = 0;
-        }
-        try {
-            minimumFilmLength = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
-        } catch (Exception ex) {
-            minimumFilmLength = 0;
-        }
+        calculateZeitraumBoundaries();
+        calculateMinimumFilmLength();
+
         blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         var config = ApplicationConfiguration.getConfiguration();

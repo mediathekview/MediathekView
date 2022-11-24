@@ -82,7 +82,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 && !filmActionPanel.isDontShowTrailers()
                 && !filmActionPanel.isDontShowSignLanguage()
                 && !filmActionPanel.isDontShowAudioVersions()
-                && filmActionPanel.getZeitraumString().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+                && filmActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
 
@@ -117,7 +117,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 qb.add(initialQuery, BooleanClause.Occur.MUST);
 
                 //Zeitraum filter on demand...
-                if (!filmActionPanel.getZeitraumString().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                if (!filmActionPanel.zeitraumProperty().get().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
                     try {
                         qb.add(createZeitraumQuery(listeFilme), BooleanClause.Occur.FILTER);
                     } catch (Exception ex) {
@@ -262,7 +262,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     }
 
     private Query createZeitraumQuery(@NotNull IndexedFilmList listeFilme) throws ParseException {
-        var numDays = Integer.parseInt(filmActionPanel.getZeitraumString());
+        var numDays = Integer.parseInt(filmActionPanel.zeitraumProperty().get());
         var to_Date = LocalDateTime.now();
         var from_Date = to_Date.minusDays(numDays);
         var utcZone = ZoneId.of("UTC");

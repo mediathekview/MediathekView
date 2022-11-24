@@ -88,10 +88,6 @@ public class FilmActionPanel {
         return filmLengthSlider;
     }
 
-    public String getZeitraumString() {
-        return zeitraumProperty.get();
-    }
-
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
         return zeitraumProperty;
     }
