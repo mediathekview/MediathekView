@@ -98,6 +98,7 @@ public class GuiFilme extends AGuiTabPanel {
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
+    private final PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
@@ -107,6 +108,7 @@ public class GuiFilme extends AGuiTabPanel {
     private final SeenHistoryController historyController = new SeenHistoryController();
     private final JToolBar toolBar = new JToolBar();
     private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
+    private final PauseTransition zeitraumTransition = new PauseTransition(Duration.millis(250));
     /**
      * The JavaFx Film action popup panel.
      */
@@ -114,7 +116,6 @@ public class GuiFilme extends AGuiTabPanel {
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
-    protected PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
@@ -403,7 +404,7 @@ public class GuiFilme extends AGuiTabPanel {
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             if (filmActionPanel.isShowUnseenOnly()) {
-                Platform.runLater(() -> reloadTableDataTransition.playFromStart());
+                Platform.runLater(reloadTableDataTransition::playFromStart);
             } else {
                 tabelle.fireTableDataChanged(true);
             }
@@ -420,12 +421,12 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Handler
     private void handleAboListChanged(AboListChangedEvent e) {
-        Platform.runLater(() -> reloadTableDataTransition.playFromStart());
+        Platform.runLater(reloadTableDataTransition::playFromStart);
     }
 
     @Handler
     private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
-        Platform.runLater(() -> reloadTableDataTransition.playFromStart());
+        Platform.runLater(reloadTableDataTransition::playFromStart);
     }
 
     @Handler
@@ -622,16 +623,33 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
+    private void setupDataTransitions() {
+        //execute on JavaFX thread!
+        reloadTableDataTransition.setOnFinished(e -> {
+            try {
+                SwingUtilities.invokeAndWait(this::loadTable);
+            } catch (InterruptedException | InvocationTargetException ex) {
+                ex.printStackTrace();
+                logger.error("Table reload failed", ex);
+            }
+        });
+
+        zeitraumTransition.setOnFinished(evt -> {
+            // reset sender filter first
+            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
+            try {
+                SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
+            } catch (InterruptedException | InvocationTargetException e) {
+                logger.error("Failed to filter list", e);
+            }
+            reloadTableDataTransition.playFromStart();
+        });
+    }
+
     private void setupActionListeners() {
         Platform.runLater(() -> {
-            reloadTableDataTransition.setOnFinished(e -> {
-                try {
-                    SwingUtilities.invokeAndWait(this::loadTable);
-                } catch (InterruptedException | InvocationTargetException ex) {
-                    ex.printStackTrace();
-                    logger.error("Table reload failed", ex);
-                }
-            });
+            setupDataTransitions();
+
             final ChangeListener<Boolean> reloadTableListener = (ob, ov, nv) -> reloadTableDataTransition.playFromStart();
             final ChangeListener<Boolean> reloadTableListener2 = (ob, ov, newValue) -> {
                 if (!newValue) {
@@ -652,7 +670,7 @@ public class GuiFilme extends AGuiTabPanel {
             filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
-            setupZeitraumListener();
+            filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
 
             filmActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
                 if (!filmActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
@@ -673,21 +691,6 @@ public class GuiFilme extends AGuiTabPanel {
             makeDescriptionTabVisible(visible);
             config.setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, visible);
         });
-    }
-
-    private void setupZeitraumListener() {
-        PauseTransition trans = new PauseTransition(Duration.millis(250));
-        trans.setOnFinished(evt -> {
-            // reset sender filter first
-            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
-            try {
-                SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
-            } catch (InterruptedException | InvocationTargetException e) {
-                logger.error("Failed to filter list", e);
-            }
-            reloadTableDataTransition.playFromStart();
-        });
-        filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> trans.playFromStart());
     }
 
     private void loadTable() {
