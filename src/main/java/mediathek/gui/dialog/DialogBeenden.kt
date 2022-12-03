@@ -58,7 +58,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         get() = DefaultComboBoxModel(
             arrayOf(
                 CANCEL_AND_TERMINATE_PROGRAM, WAIT_FOR_DOWNLOADS_AND_TERMINATE,
-                WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE, DONT_TERMINATE
+                WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE
             )
         )
 
@@ -188,7 +188,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         private const val WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden"
         private const val WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE =
             "Nur auf bereits laufende Downloads warten, danach beenden"
-        private const val DONT_TERMINATE = "Programm nicht beenden"
     }
 
     init {
@@ -234,10 +233,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
                 WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE -> waitUntilDownloadsHaveFinished(true)
                 CANCEL_AND_TERMINATE_PROGRAM -> {
                     applicationCanTerminate = true
-                    dispose()
-                }
-                DONT_TERMINATE -> {
-                    applicationCanTerminate = false
                     dispose()
                 }
             }
