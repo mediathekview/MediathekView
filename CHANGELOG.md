@@ -48,6 +48,7 @@
 - **FEATURE:** Bandbreitenbegrenzung kann im Tab *"Downloads"* nun über eine CheckBox aktiviert/deaktiviert werden.
 - **FEATURE:** Der Splash-Screen beim Start lässt sich mittels `-ns` oder `--no-splash` deaktivieren.
 - **FEATURE(Linux):** interne Nutzung von `xdg-user-dir` um sich besser in die vorhandene Desktops zu integrieren. Dies ist v.a. für flatpack-Installationen notwendig.
+- **FEATURE(macOS App):** ffmpeg auf Version 5.11 aktualisiert.
 
 <u>**13.9.1**</u>
 
