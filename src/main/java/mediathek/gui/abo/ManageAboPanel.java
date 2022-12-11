@@ -39,6 +39,7 @@ public class ManageAboPanel extends JPanel {
     private final JToolBar swingToolBar = new JToolBar();
     private final JComboBox<String> senderCombo = new JComboBox<>();
     private final InfiniteProgressPanel infiniteProgressPanel = new InfiniteProgressPanel();
+    private final JButton btnEditAbo = new JButton();
     private JScrollPane jScrollPane1;
 
     public ManageAboPanel(@NotNull JDialog dialog) {
@@ -56,6 +57,9 @@ public class ManageAboPanel extends JPanel {
         initListeners();
 
         initializeTable();
+
+        //disable edit button when multiple rows are selected
+        tabelle.getSelectionModel().addListSelectionListener(e -> btnEditAbo.setEnabled(tabelle.getSelectedRows().length <= 1));
 
         dialog.setGlassPane(infiniteProgressPanel);
     }
@@ -122,11 +126,10 @@ public class ManageAboPanel extends JPanel {
         button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
         swingToolBar.add(button);
 
-        button = new JButton();
-        button.setToolTipText("Abo ändern");
-        button.addActionListener(l -> editAbo());
-        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
-        swingToolBar.add(button);
+        btnEditAbo.setToolTipText("Abo ändern");
+        btnEditAbo.addActionListener(l -> editAbo());
+        btnEditAbo.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
+        swingToolBar.add(btnEditAbo);
         swingToolBar.addSeparator();
 
         swingToolBar.add(new JLabel("Abos für Sender:"));
