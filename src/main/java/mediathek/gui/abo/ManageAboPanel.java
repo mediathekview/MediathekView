@@ -24,6 +24,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ManageAboPanel extends JPanel {
     private static final String ACTION_MAP_KEY_EDIT_ABO = "edit_abo";
@@ -60,6 +62,17 @@ public class ManageAboPanel extends JPanel {
 
         //disable edit button when multiple rows are selected
         tabelle.getSelectionModel().addListSelectionListener(e -> btnEditAbo.setEnabled(tabelle.getSelectedRows().length <= 1));
+
+        //edit abo on double mouse-click
+        tabelle.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                if (mouseEvent.getClickCount() == 2 && tabelle.getSelectedRow() != -1) {
+                    if (tabelle.rowAtPoint(mouseEvent.getPoint()) != -1) {
+                        editAbo();
+                    }
+                }
+            }
+        });
 
         dialog.setGlassPane(infiniteProgressPanel);
     }
