@@ -1,8 +1,6 @@
 package mediathek.gui.actions
 
-import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLaf
-import com.formdev.flatlaf.FlatLightLaf
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
@@ -18,12 +16,14 @@ class ToggleDarkModeAction : AbstractAction() {
 
     override fun actionPerformed(e: ActionEvent) {
         FlatAnimatedLafChange.showSnapshot()
-        if (FlatLaf.isLafDark())
-            FlatLightLaf.setup()
-        else
-            FlatDarkLaf.setup()
+        val ui = MediathekGui.ui()
 
-        MediathekGui.ui().setupAlternatingRowColors()
+        if (FlatLaf.isLafDark()) {
+            ui.setupLightLookAndFeel();
+        }
+        else {
+            ui.setupDarkLookAndFeel();
+        }
 
         // update all components
         FlatLaf.updateUI()

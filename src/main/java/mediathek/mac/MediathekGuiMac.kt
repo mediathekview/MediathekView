@@ -1,5 +1,7 @@
 package mediathek.mac
 
+import com.formdev.flatlaf.themes.FlatMacDarkLaf
+import com.formdev.flatlaf.themes.FlatMacLightLaf
 import com.formdev.flatlaf.util.SystemInfo
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -23,6 +25,16 @@ class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
     override fun installAdditionalHelpEntries() {
         //unused on macOS
+    }
+
+    override fun setupDarkLookAndFeel() {
+        FlatMacDarkLaf.setup()
+        setupAlternatingRowColors()
+    }
+
+    override fun setupLightLookAndFeel() {
+        FlatMacLightLaf.setup()
+        setupAlternatingRowColors()
     }
 
     override fun setupScrollBarWidth() {
