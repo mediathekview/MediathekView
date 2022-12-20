@@ -6,7 +6,6 @@ import mediathek.javafx.AppTerminationIndefiniteProgress
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.SVGIconUtilities
-import java.awt.BorderLayout
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.util.*
@@ -24,11 +23,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
      */
     var isShutdownRequested = false
         private set
-
-    /**
-     * JPanel for displaying the glassPane with the busy indicator label.
-     */
-    private var glassPane: GlassPanel? = null
 
     /**
      * The download monitoring [javax.swing.SwingWorker].
@@ -72,21 +66,13 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         dispose()
     }
 
-    private class GlassPanel(isShutdownRequested: Boolean) : JPanel() {
-        init {
-            layout = BorderLayout(5, 5)
-            add(AppTerminationIndefiniteProgress(isShutdownRequested), BorderLayout.CENTER)
-        }
-    }
-
     /**
      * Handler which will wait untill all downloads have finished.
      *
      * @param waitForRunningDownloadsOnly if true stop all waiting DL and wait only for those running.
      */
     private fun waitUntilDownloadsHaveFinished(waitForRunningDownloadsOnly: Boolean = false) {
-        glassPane = GlassPanel(isShutdownRequested)
-        setGlassPane(glassPane)
+        glassPane = AppTerminationIndefiniteProgress(isShutdownRequested)
         glassPane?.isVisible = true
 
         if (waitForRunningDownloadsOnly)
