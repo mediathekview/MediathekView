@@ -14,9 +14,10 @@ import javax.swing.*
 
 class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     /**
-     * Indicates whether the application can terminate.
+     * Indicate whether the application can terminate.
      */
-    private var applicationCanTerminate = false
+    var applicationCanTerminate = false
+        private set
 
     /**
      * Indicate whether computer should be shut down.
@@ -33,15 +34,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     private val cbShutdownComputer: JCheckBox = JCheckBox("Rechner herunterfahren")
     private val btnCancel: JButton = JButton("Abbrechen")
     private val jButtonHilfe: JButton = JButton(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
-
-    /**
-     * Return whether the user still wants to terminate the application.
-     *
-     * @return true if the app should continue to terminate.
-     */
-    fun applicationCanTerminate(): Boolean {
-        return applicationCanTerminate
-    }
 
     /**
      * Create the ComboBoxModel for user selection.

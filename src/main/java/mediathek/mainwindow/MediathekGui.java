@@ -1012,7 +1012,7 @@ public class MediathekGui extends JFrame {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
             dialogBeenden.setVisible(true);
-            if (!dialogBeenden.applicationCanTerminate()) {
+            if (!dialogBeenden.getApplicationCanTerminate()) {
                 return false;
             }
             setShutdownRequested(dialogBeenden.isShutdownRequested());
