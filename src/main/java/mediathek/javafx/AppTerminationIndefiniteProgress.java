@@ -1,50 +1,38 @@
 package mediathek.javafx;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
-import org.tbee.javafx.scene.layout.MigPane;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXBusyLabel;
+
+import javax.swing.*;
 
 /**
- * This will display a JFXPanel with a indefinite progress indicator and some status
+ * This will display a JPanel with a indefinite progress indicator and some status
  * messages used as a glass pane overlay during app termination.
  */
-public class AppTerminationIndefiniteProgress extends JFXPanel {
-    private final boolean willBeShutDown;
-    private Label lblMessage;
+public class AppTerminationIndefiniteProgress extends JPanel {
+    private final JLabel lblMessage = new JLabel("Warte auf Abschluss der Downloads...");
 
     public AppTerminationIndefiniteProgress(boolean willbeShutDown) {
         super();
-        this.willBeShutDown = willbeShutDown;
 
-        Platform.runLater(this::initFX);
+        setLayout(new MigLayout(new LC().hideMode(3),
+                new AC().fill().fill(),new AC()));
+
+        var busyLabel = new JXBusyLabel();
+        add(busyLabel, new CC().cell(0,0).span(1,3));
+        busyLabel.setBusy(true);
+
+        add(lblMessage, new CC().cell(1,0));
+        if (willbeShutDown) {
+            add(new JLabel("Der Rechner wird danach heruntergefahren."), new CC().cell(1,1));
+        }
+        add(new JLabel("Sie können den Vorgang mit Escape abbrechen."), new CC().cell(1,2));
     }
 
     public void setMessage(String text) {
-        Platform.runLater(() -> lblMessage.setText(text));
-    }
-
-    private void initFX() {
-        setScene(createScene());
-    }
-
-    private Scene createScene() {
-        var migPane = new MigPane(new LC().hideMode(3),
-                new AC().fill().fill(),new AC());
-        migPane.add(new ProgressIndicator(),new CC().cell(0,0).span(1,3));
-        lblMessage = new Label("Warte auf Abschluss der Downloads...");
-        migPane.add(lblMessage, new CC().cell(1,0));
-        if (willBeShutDown) {
-            Label lblShutdown = new Label("Der Rechner wird danach heruntergefahren.");
-            migPane.add(lblShutdown, new CC().cell(1,1));
-        }
-        migPane.add(new Label("Sie können den Vorgang mit Escape abbrechen."), new CC().cell(1,2));
-
-        return new Scene(migPane);
+        SwingUtilities.invokeLater(() -> lblMessage.setText(text));
     }
 }
