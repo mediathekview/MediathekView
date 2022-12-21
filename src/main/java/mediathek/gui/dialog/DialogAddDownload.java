@@ -406,9 +406,12 @@ public class DialogAddDownload extends JDialog {
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
      */
     private void calculateAndCheckDiskSpace() {
-        jRadioButtonAufloesungHd.setForeground(Color.black);
-        jRadioButtonAufloesungHoch.setForeground(Color.black);
-        jRadioButtonAufloesungKlein.setForeground(Color.black);
+        var fgColor = UIManager.getColor("Label.foreground");
+        if (fgColor != null) {
+            jRadioButtonAufloesungHd.setForeground(fgColor);
+            jRadioButtonAufloesungHoch.setForeground(fgColor);
+            jRadioButtonAufloesungKlein.setForeground(fgColor);
+        }
 
         try {
             var filmBorder = (TitledBorder)jPanelSize.getBorder();
