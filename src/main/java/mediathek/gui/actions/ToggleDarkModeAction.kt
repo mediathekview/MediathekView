@@ -4,9 +4,12 @@ import com.formdev.flatlaf.FlatLaf
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.DarkModeFactory
+import mediathek.tool.LightModeFactory
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import javax.swing.LookAndFeel
 
 class ToggleDarkModeAction : AbstractAction() {
     init {
@@ -16,17 +19,17 @@ class ToggleDarkModeAction : AbstractAction() {
 
     override fun actionPerformed(e: ActionEvent) {
         FlatAnimatedLafChange.showSnapshot()
-        val ui = MediathekGui.ui()
 
-        if (FlatLaf.isLafDark()) {
-            ui.setupLightLookAndFeel();
+        val laf: LookAndFeel = if (!FlatLaf.isLafDark()) {
+            DarkModeFactory.lookAndFeel
+        } else {
+            LightModeFactory.lookAndFeel
         }
-        else {
-            ui.setupDarkLookAndFeel();
-        }
-
+        FlatLaf.setup(laf)
+        MediathekGui.ui().setupAlternatingRowColors()
         // update all components
         FlatLaf.updateUI()
+
         FlatAnimatedLafChange.hideSnapshotWithAnimation()
         ApplicationConfiguration.getConfiguration()
             .setProperty(ApplicationConfiguration.APPLICATION_DARK_MODE, FlatLaf.isLafDark())

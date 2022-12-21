@@ -1,7 +1,5 @@
 package mediathek.mainwindow;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -230,16 +228,6 @@ public class MediathekGui extends JFrame {
         logger.trace("Loading info dialog");
         filmInfo = new InfoDialog(this);
         logger.trace("Finished loading info dialog");
-    }
-
-    public void setupDarkLookAndFeel() {
-        FlatDarkLaf.setup();
-        setupAlternatingRowColors();
-    }
-
-    public void setupLightLookAndFeel() {
-        FlatLightLaf.setup();
-        setupAlternatingRowColors();
     }
 
     /**

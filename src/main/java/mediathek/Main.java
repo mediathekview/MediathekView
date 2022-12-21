@@ -1,9 +1,6 @@
 package mediathek;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.formdev.flatlaf.FlatLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
@@ -271,18 +268,15 @@ public class Main {
 
     private static void setupFlatLaf() {
         var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+        LookAndFeel laf;
+
         if (darkMode) {
-            if (SystemUtils.IS_OS_MAC_OSX)
-                FlatMacDarkLaf.setup();
-            else
-                FlatDarkLaf.setup();
+            laf = DarkModeFactory.getLookAndFeel();
         }
         else {
-            if (SystemUtils.IS_OS_MAC_OSX)
-                FlatMacLightLaf.setup();
-            else
-                FlatLightLaf.setup();
+            laf = LightModeFactory.getLookAndFeel();
         }
+        FlatLaf.setup(laf);
     }
 
     /**
