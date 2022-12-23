@@ -23,20 +23,22 @@ import java.util.concurrent.TimeUnit;
 
 public class MemoryUsagePanel extends JPanel {
 
-    private final TimeSeries total;
+    private final TimeSeries total = new TimeSeries("Total Memory");
+    private final DateAxis domain = new DateAxis("Time");
+    private final NumberAxis range = new NumberAxis("Memory");
 
     public MemoryUsagePanel(int maxAge, @NotNull TimeUnit timeUnit) {
 
         super(new BorderLayout());
 
-        total = new TimeSeries("Total Memory");
         total.setMaximumItemAge(TimeUnit.MILLISECONDS.convert(maxAge, timeUnit));
+
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(total);
 
-        var domain = new DateAxis("Time");
-        NumberAxis range = new NumberAxis("Memory");
         range.setAutoRange(true);
+
+        setLabelColors();
 
         var renderer = new XYSplineRenderer();
         renderer.setDefaultShapesVisible(false);
@@ -64,8 +66,32 @@ public class MemoryUsagePanel extends JPanel {
         add(chartPanel);
     }
 
+    private void setLabelColors() {
+        var color = UIManager.getColor("Label.foreground");
+
+        domain.setLabelPaint(color);
+        domain.setTickLabelPaint(color);
+        domain.setTickMarkPaint(color);
+
+        range.setLabelPaint(color);
+        range.setTickLabelPaint(color);
+        range.setTickMarkPaint(color);
+    }
+
     private void addTotalObservation(double y) {
         total.add(new Millisecond(), y);
+    }
+
+    private static class GarbageCollectionMouseListener implements ChartMouseListener {
+        @Override
+        public void chartMouseClicked(ChartMouseEvent event) {
+            System.gc();
+        }
+
+        @Override
+        public void chartMouseMoved(ChartMouseEvent event) {
+
+        }
     }
 
     public class MemoryUsageDataGenerator extends Timer implements ActionListener {
@@ -90,17 +116,5 @@ public class MemoryUsagePanel extends JPanel {
             addTotalObservation(t);
         }
 
-    }
-
-    private static class GarbageCollectionMouseListener implements ChartMouseListener {
-        @Override
-        public void chartMouseClicked(ChartMouseEvent event) {
-            System.gc();
-        }
-
-        @Override
-        public void chartMouseMoved(ChartMouseEvent event) {
-
-        }
     }
 }
