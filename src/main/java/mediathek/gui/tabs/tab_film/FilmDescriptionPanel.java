@@ -165,8 +165,8 @@ public class FilmDescriptionPanel extends JPanel {
                 MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
                     var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
                     var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
-                    lblIcon.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
-                }, () -> lblIcon.setIcon(null));
+                    setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
+                }, () -> setIcon(null));
             }
         }
     }
