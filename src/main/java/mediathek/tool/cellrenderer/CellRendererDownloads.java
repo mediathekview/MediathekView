@@ -114,7 +114,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             }
 
             switch (columnModelIndex) {
-                case DatenDownload.DOWNLOAD_PROGRESS:
+                case DatenDownload.DOWNLOAD_PROGRESS -> {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (((MVTable) table).showSenderIcons() && !((MVTable) table).useSmallSenderIcons) {
                         progressBar.setBorder(largeBorder);
@@ -139,65 +139,42 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     } else {
                         setText("");
                     }
-                    break;
-
-                case DatenDownload.DOWNLOAD_FILM_NR:
+                }
+                case DatenDownload.DOWNLOAD_FILM_NR -> {
                     if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) == 0) {
                         setText("");
                     }
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
-
-                case DatenDownload.DOWNLOAD_ART:
+                }
+                case DatenDownload.DOWNLOAD_ART -> {
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD -> setText(DatenDownload.ART_DOWNLOAD_TXT);
                         case DatenDownload.ART_PROGRAMM -> setText(DatenDownload.ART_PROGRAMM_TXT);
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_QUELLE:
+                }
+                case DatenDownload.DOWNLOAD_QUELLE -> {
                     switch (datenDownload.quelle) {
                         case DatenDownload.QUELLE_ALLE -> setText(DatenDownload.QUELLE_ALLE_TXT);
                         case DatenDownload.QUELLE_ABO -> setText(DatenDownload.QUELLE_ABO_TXT);
                         case DatenDownload.QUELLE_BUTTON -> setText(DatenDownload.QUELLE_BUTTON_TXT);
                         case DatenDownload.QUELLE_DOWNLOAD -> setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                     }
-                    break;
-
-                case DatenDownload.DOWNLOAD_BUTTON_START:
-                    handleButtonStartColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenDownload.DOWNLOAD_BUTTON_DEL:
-                    handleButtonDeleteColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenDownload.DOWNLOAD_GROESSE:
-                    setHorizontalAlignment(SwingConstants.RIGHT);
-                    break;
-
-                case DatenDownload.DOWNLOAD_ABO:
-                    handleAboColumn(datenDownload);
-                    break;
-
-                case DatenDownload.DOWNLOAD_NR:
-                case DatenDownload.DOWNLOAD_DATUM:
-                case DatenDownload.DOWNLOAD_ZEIT:
-                case DatenDownload.DOWNLOAD_DAUER:
-                case DatenDownload.DOWNLOAD_BANDBREITE:
-                case DatenDownload.DOWNLOAD_RESTZEIT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
-
-                case DatenDownload.DOWNLOAD_SENDER:
+                }
+                case DatenDownload.DOWNLOAD_BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected);
+                case DatenDownload.DOWNLOAD_BUTTON_DEL -> handleButtonDeleteColumn(datenDownload, isSelected);
+                case DatenDownload.DOWNLOAD_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
+                case DatenDownload.DOWNLOAD_ABO -> handleAboColumn(datenDownload);
+                case DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT,
+                        DatenDownload.DOWNLOAD_DAUER, DatenDownload.DOWNLOAD_BANDBREITE,
+                        DatenDownload.DOWNLOAD_RESTZEIT ->
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                case DatenDownload.DOWNLOAD_SENDER -> {
                     if (((MVTable) table).showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
-                    break;
-
-                case DatenDownload.DOWNLOAD_GEO:
-                    drawGeolocationIcons(datenDownload.film, isSelected);
-                    break;
+                }
+                case DatenDownload.DOWNLOAD_GEO -> drawGeolocationIcons(datenDownload.film, isSelected);
             }
 
             if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {

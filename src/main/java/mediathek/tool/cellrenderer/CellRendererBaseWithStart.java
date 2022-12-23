@@ -106,33 +106,30 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         if (s != null) {
             Color color = null;
             switch (s.status) {
-                case Start.STATUS_INIT:
+                case Start.STATUS_INIT -> {
                     if (isSelected)
                         color = MVColor.DOWNLOAD_WAIT_SEL.color;
                     else
                         color = MVColor.DOWNLOAD_WAIT.color;
-                    break;
-
-                case Start.STATUS_RUN:
+                }
+                case Start.STATUS_RUN -> {
                     if (isSelected)
                         color = MVColor.DOWNLOAD_RUN_SEL.color;
                     else
                         color = MVColor.DOWNLOAD_RUN.color;
-                    break;
-
-                case Start.STATUS_FERTIG:
+                }
+                case Start.STATUS_FERTIG -> {
                     if (isSelected)
                         color = MVColor.DOWNLOAD_FERTIG_SEL.color;
                     else
                         color = MVColor.DOWNLOAD_FERTIG.color;
-                    break;
-
-                case Start.STATUS_ERR:
+                }
+                case Start.STATUS_ERR -> {
                     if (isSelected)
                         color = MVColor.DOWNLOAD_FEHLER_SEL.color;
                     else
                         color = MVColor.DOWNLOAD_FEHLER.color;
-                    break;
+                }
             }
             c.setBackground(color);
         }
