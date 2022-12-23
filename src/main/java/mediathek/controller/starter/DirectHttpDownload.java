@@ -230,9 +230,6 @@ public class DirectHttpDownload extends Thread {
                             final var diffZeit = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                             final long restProzent = 1000L - p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
-                            // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
-                            // als die bereits geladene Speilzeit des Films
-                            bereitsAnschauen(datenDownload);
                         }
                         melden = true;
                     }
@@ -433,22 +430,6 @@ public class DirectHttpDownload extends Thread {
             }
         }
         return result;
-    }
-
-    private void bereitsAnschauen(DatenDownload datenDownload) {
-        if (datenDownload.film != null && datenDownload.start != null) {
-            var filmLength = datenDownload.film.getFilmLength();
-            if (filmLength > 0
-                    && datenDownload.start.restSekunden > 0
-                    && datenDownload.mVFilmSize.getAktSize() > 0
-                    && datenDownload.mVFilmSize.getSize() > 0) {
-                // macht nur dann Sinn
-                final long zeitGeladen = filmLength * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
-                if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
-                    datenDownload.start.beginnAnschauen = true;
-                }
-            }
-        }
     }
 
     enum HttpDownloadState {

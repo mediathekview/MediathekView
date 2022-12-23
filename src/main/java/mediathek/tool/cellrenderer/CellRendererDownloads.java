@@ -24,7 +24,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
     private final FlatSVGIcon film_start_tab;
     private final Icon film_start_sw_tab;
-    private final Border emptyBorder = BorderFactory.createEmptyBorder();
+    private final Border emptyBorder = BorderFactory.createEmptyBorder(3,2,3,2);
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
     private final FlatSVGIcon download_stop_tab;
@@ -141,13 +141,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_RESTZEIT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.start != null && datenDownload.start.beginnAnschauen) {
-                        setForeground(MVColor.DOWNLOAD_ANSEHEN.color);
-                    }
-                    break;
-
                 case DatenDownload.DOWNLOAD_FILM_NR:
                     if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) == 0) {
                         setText("");
@@ -191,6 +184,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                 case DatenDownload.DOWNLOAD_ZEIT:
                 case DatenDownload.DOWNLOAD_DAUER:
                 case DatenDownload.DOWNLOAD_BANDBREITE:
+                case DatenDownload.DOWNLOAD_RESTZEIT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
 

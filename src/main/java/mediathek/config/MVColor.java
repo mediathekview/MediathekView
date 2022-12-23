@@ -36,7 +36,6 @@ public class MVColor {
     // Tabelle Downloads
     public static final MVC DOWNLOAD_IST_ABO = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_IST_ABO, new Color(138, 67, 0), "Download ist ein Abo");
     public static final MVC DOWNLOAD_IST_DIREKTER_DOWNLOAD = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_IST_DIREKTER_DOWNLOAD, new Color(0, 72, 138), "Download ist ein direkter Download");
-    public static final MVC DOWNLOAD_ANSEHEN = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_ANSEHEN, new Color(0, 125, 0), "Download kann schon angesehen werden");
     // status Downloads
     public static final MVC DOWNLOAD_WAIT = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_WAIT, new Color(239, 244, 255), "Download, noch nicht gestartet");
     public static final MVC DOWNLOAD_WAIT_SEL = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_WAIT_SEL, new Color(199, 206, 222), "Download, noch nicht gestartet, selektiert");
@@ -62,7 +61,6 @@ public class MVColor {
         liste.add(FILM_BOOKMARKED);
         liste.add(DOWNLOAD_IST_ABO);
         liste.add(DOWNLOAD_IST_DIREKTER_DOWNLOAD);
-        liste.add(DOWNLOAD_ANSEHEN);
         liste.add(DOWNLOAD_WAIT);
         liste.add(DOWNLOAD_WAIT_SEL);
         liste.add(DOWNLOAD_RUN);
