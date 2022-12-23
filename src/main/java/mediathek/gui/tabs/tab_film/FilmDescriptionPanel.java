@@ -150,12 +150,20 @@ public class FilmDescriptionPanel extends JPanel {
         lblIcon.setSender(film.getSender());
     }
 
-    class SenderIconLabel extends JLabel {
+    static class SenderIconLabel extends JLabel {
         private static final Dimension ICON_DIMENSION = new Dimension(96, 96);
 
         public SenderIconLabel() {
             setText("");
             setIcon(null);
+        }
+
+        private void sizeToIcon(@NotNull Icon icon) {
+            int height = icon.getIconHeight();
+            int width = icon.getIconWidth();
+
+            Dimension d = new Dimension(width, height);
+            setPreferredSize(d);
         }
 
         public void setSender(@Nullable String sender) {
@@ -165,7 +173,9 @@ public class FilmDescriptionPanel extends JPanel {
                 MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
                     var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
                     var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
-                    setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
+                    var origIcon = new ScaledImageIcon(icon, destDim.width, destDim.height);
+                    setIcon(origIcon);
+                    sizeToIcon(origIcon);
                 }, () -> setIcon(null));
             }
         }
