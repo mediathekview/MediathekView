@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -41,7 +42,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -109,13 +109,19 @@ public class FilmListReader implements AutoCloseable {
     protected void parseGeo(JsonParser jp, DatenFilm datenFilm) throws IOException {
         var geoStr = checkedString(jp);
 
-        Optional<String> geo;
         if (geoStr.isEmpty())
-            geo = Optional.empty();
-        else
-            geo = Optional.of(geoStr);
-
-        datenFilm.setGeo(geo);
+            datenFilm.countrySet.clear();
+        else {
+            var split = geoStr.split("-");
+            for (var geoItem : split) {
+                try {
+                    datenFilm.countrySet.add(Country.valueOf(geoItem));
+                }
+                catch (IllegalArgumentException ex) {
+                    logger.error("Unable to parse string {} to Country enum", geoItem);
+                }
+            }
+        }
     }
 
     private void parseSender(JsonParser jp, DatenFilm datenFilm) throws IOException {

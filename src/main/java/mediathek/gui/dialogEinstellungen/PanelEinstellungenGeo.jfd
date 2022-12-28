@@ -22,14 +22,19 @@ new FormModel {
 					"text": "Deutschland (DE)"
 				} )
 				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonAt"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Österreich (AT)"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
 					name: "jRadioButtonCH"
 					"$buttonGroup": new FormReference( "buttonGroup1" )
 					"text": "Schweiz (CH)"
 				} )
 				add( new FormComponent( "javax.swing.JRadioButton" ) {
-					name: "jRadioButtonAt"
+					name: "radioButtonFR"
+					"text": "Frankreich (FR)"
 					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "Österreich (AT)"
 				} )
 				add( new FormComponent( "javax.swing.JRadioButton" ) {
 					name: "jRadioButtonEu"
@@ -52,7 +57,7 @@ new FormModel {
 				"value": "cell 0 1,alignx right,growx 0"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 445, 170 )
+			"size": new java.awt.Dimension( 445, 200 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {

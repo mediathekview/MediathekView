@@ -9,6 +9,7 @@
 - Im Tab "Downloads" wurde die Textanzeige zu laufenden Downloads entfernt. Die Informationen werden nun in der globalen Statuszeile der App bei Bedarf angezeigt.
 - Die Spalten `HQ`, `UT` und `Geo` sind aufgrund der neuen Icons grundsätzlich überflüssig.
 - Die Option "Programm nicht beenden" im Beenden-Dialog bei laufenden Downloads wurde entfernt, das sie redundant ist und durch den Button "Abbrechen" erzielt wird.
+- Frankreich kann nun als Standort für das Geoblocking gesetzt werden.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
@@ -30,6 +31,7 @@
 - **BUGFIX:** Bei Übergabe von Downloads an JDownloader kann nun die Qualität bestimmt werden.
 - **BUGFIX:** Filterpanel im Tab "Downloads" wird nun nicht mehr zu klein dargestellt beim ersten Start.
 - **BUGFIX:** *Abo ändern*-Button kann nicht mehr aktiviert werden wenn mehrere Abos in der Liste ausgewählt sind.
+- **BUGFIX:** Frankreich wurde beim Geoblocking nicht berücksichtigt.
 - **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.

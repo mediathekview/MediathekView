@@ -1,8 +1,9 @@
 package mediathek.tool;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
-import mediathek.daten.GeoblockingField;
+import mediathek.daten.Country;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -14,7 +15,6 @@ import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.intellij.lang.annotations.MagicConstant;
 
 import java.io.File;
 import java.util.NoSuchElementException;
@@ -73,6 +73,7 @@ public class ApplicationConfiguration {
      * logger for {@link TimerTaskListener} inner class.
      */
     private static final Logger logger = LogManager.getLogger();
+    private static final ObjectMapper mapper = new ObjectMapper();
     /**
      * A custom small thread scheduler exclusively for config changes.
      */
@@ -84,6 +85,7 @@ public class ApplicationConfiguration {
      * several times in a row.
      */
     private ScheduledFuture<?> future;
+
     private ApplicationConfiguration() {
         setupXmlConfiguration();
         createFileHandler();
@@ -110,12 +112,26 @@ public class ApplicationConfiguration {
         return getInstance().config;
     }
 
-    public String getGeographicLocation() {
-        return getConfiguration().getString(GEO_LOCATION, GeoblockingField.GEO_DE);
+    public Country getGeographicLocation() {
+        try {
+            var str = getConfiguration().getString(GEO_LOCATION);
+            return mapper.readValue(str, Country.class);
+        }
+        catch (Exception ex) {
+            logger.error("Unable to parse country, resetting to GERMANY", ex);
+            return Country.DE;
+        }
     }
 
-    public void setGeographicLocation(@MagicConstant(flagsFromClass = GeoblockingField.class) String newValue) {
-        getConfiguration().setProperty(GEO_LOCATION, newValue);
+    public void setGeographicLocation(Country country) {
+        try {
+            var newValue = mapper.writeValueAsString(country);
+            getConfiguration().setProperty(GEO_LOCATION, newValue);
+        }
+        catch (Exception ex) {
+            logger.error("Error setting location, setting to GERMANY", ex);
+            setGeographicLocation(Country.DE);
+        }
     }
 
     public boolean getBlacklistDoNotShowGeoblockedFilms() {
@@ -170,7 +186,7 @@ public class ApplicationConfiguration {
     private void createDefaultConfigSettings() {
         try {
             config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
-            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
+            setGeographicLocation(Country.DE);
 
             handler.save();
         } catch (ConfigurationException configurationException) {
@@ -184,7 +200,8 @@ public class ApplicationConfiguration {
 
     private void updateNewerDefaults() {
         if (!config.containsKey(GEO_LOCATION)) {
-            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
+            //object mapper expects quotation marks in the string!
+            config.setProperty(GEO_LOCATION, "\"DE\"");
         }
         if (!config.containsKey(APPLICATION_INSTALL_TAB_SWITCH_LISTENER)) {
             config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, !SystemUtils.IS_OS_MAC_OSX);

@@ -3,6 +3,7 @@ package mediathek.tool.cellrenderer;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.CompoundIcon;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CellRenderer base class for all custom renderer associated with a Start.
@@ -70,28 +72,31 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         setText("");
-        film.getGeo().ifPresentOrElse(geoString -> {
-            setToolTipText(geoString);
-            if (geoString.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
-                // we are unlocked
-                if (isSelected)
-                    setIcon(unlockedIconSelected);
-                else
-                    setIcon(unlockedIcon);
-            } else {
-                //locked
-                if (isSelected)
-                    setIcon(lockedIconSelected);
-                else
-                    setIcon(lockedIcon);
-            }
-        }, () -> {
+        if (film.countrySet.isEmpty()) {
             setToolTipText("Keine Geoinformationen vorhanden");
             if (isSelected)
                 setIcon(unlockedIconSelected);
             else
                 setIcon(unlockedIcon);
-        });
+        }
+        else {
+            var geoString = film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
+            setToolTipText(geoString);
+            if (film.countrySet.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
+                //we are unlocked
+                if (isSelected)
+                    setIcon(unlockedIconSelected);
+                else
+                    setIcon(unlockedIcon);
+            }
+            else {
+                // locked
+                if (isSelected)
+                    setIcon(lockedIconSelected);
+                else
+                    setIcon(lockedIcon);
+            }
+        }
     }
 
     protected void resetComponent() {
@@ -142,15 +147,15 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      * @param isSelected is row selected.
      */
     protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
-        datenFilm.getGeo().ifPresent(geoString -> {
-            if (!geoString.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
+        if (!datenFilm.countrySet.isEmpty()) {
+            if (!datenFilm.countrySet.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
                 //locked
                 if (isSelected)
                     iconList.add(lockedIconSelected);
                 else
                     iconList.add(lockedIcon);
             }
-        });
+        }
 
         var tc = table.getColumn("HQ");
         // if HQ column is NOT visible add icon

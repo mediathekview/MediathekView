@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public final class DatenDownload implements Comparable<DatenDownload> {
 
@@ -139,7 +140,11 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
-        arr[DatenDownload.DOWNLOAD_GEO] = film.getGeo().orElse("");
+        if (film.countrySet.isEmpty())
+            arr[DatenDownload.DOWNLOAD_GEO] = "";
+        else {
+            arr[DatenDownload.DOWNLOAD_GEO] = film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
+        }
 
         websiteUrl = film.getWebsiteUrl();
 

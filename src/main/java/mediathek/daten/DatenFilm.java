@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,6 +47,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
+    /**
+     * List of countries which can view this film.
+     */
+    public final EnumSet<Country> countrySet = EnumSet.noneOf(Country.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     /**
      * File size in MByte
@@ -66,11 +69,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private String sender = "";
     private String thema = "";
     private String titel = "";
-    /**
-     * String of countries where this entry can be viewed, if available.
-     * Empty means viewable without restrictions.
-     */
-    private Optional<String> availableInCountries = Optional.empty();
     private String datum = "";
     private String sendeZeit = "";
     /**
@@ -90,7 +88,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.sender = other.sender;
         this.thema = other.thema;
         this.titel = other.titel;
-        this.availableInCountries = other.availableInCountries;
+        this.countrySet.addAll(other.countrySet);
         this.dataMap.putAll(other.dataMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
@@ -237,7 +235,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Get the film number.
      * This is used internally for the database id AND
      * for the old MV code that might access it for various stuff.
-     *
+     * <p>
      * This number is UNUSED and always returns 1 until it is completely removed.
      *
      * @return the original internal film number
@@ -529,14 +527,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         else {
             dataMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
         }
-    }
-
-    public Optional<String> getGeo() {
-        return availableInCountries;
-    }
-
-    public void setGeo(Optional<String> availableInCountries) {
-        this.availableInCountries = availableInCountries;
     }
 
     /**

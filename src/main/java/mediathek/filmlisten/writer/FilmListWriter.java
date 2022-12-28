@@ -3,6 +3,7 @@ package mediathek.filmlisten.writer;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class FilmListWriter {
 
@@ -152,7 +154,10 @@ public class FilmListWriter {
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
-        jg.writeString(datenFilm.getGeo().orElse(""));
+        if (datenFilm.countrySet.isEmpty())
+            jg.writeString("");
+        else
+            jg.writeString(datenFilm.countrySet.stream().map(Country::toString).collect(Collectors.joining("-")));
         jg.writeString(Boolean.toString(datenFilm.isNew()));
 
         jg.writeEndArray();

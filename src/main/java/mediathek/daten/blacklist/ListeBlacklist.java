@@ -2,6 +2,7 @@ package mediathek.daten.blacklist;
 
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
@@ -322,7 +323,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         /**
          * Stores the current user´s location. Can be modified by another thread.
          */
-        private String geoLocation;
+        private Country geoLocation;
 
         public GeoblockingPredicate() {
             updateLocationData();
@@ -338,11 +339,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         @Override
         public boolean test(DatenFilm film) {
-            var geoOpt = film.getGeo();
-            if (geoOpt.isEmpty())
+            if (film.countrySet.isEmpty())
                 return true;
-            else
-                return geoOpt.orElse("").contains(geoLocation);
+            else {
+                return film.countrySet.contains(geoLocation);
+            }
         }
     }
 }

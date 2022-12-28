@@ -2,6 +2,7 @@ package mediathek.gui.filmInformation
 
 import com.formdev.flatlaf.util.ScaledImageIcon
 import com.jidesoft.swing.MultilineLabel
+import mediathek.daten.Country
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.mainwindow.MediathekGui
@@ -26,6 +27,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.net.URI
 import java.net.URISyntaxException
+import java.util.stream.Collectors
 import javax.swing.*
 
 
@@ -143,7 +145,12 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             lblUhrzeit.text = currentFilm!!.sendeZeit
             lblDuration.text = currentFilm!!.filmLengthAsString
             lblSize.text = currentFilm!!.fileSize.toString()
-            lblGeo.text = currentFilm!!.geo.orElse("")
+
+            if (currentFilm!!.countrySet.isEmpty())
+                lblGeo.text = ""
+            else
+                lblGeo.text = currentFilm!!.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"))
+
             cbHq.isSelected = currentFilm!!.isHighQuality
             cbSubtitle.isSelected = currentFilm!!.hasSubtitle()
             lblAbo.text = currentFilm!!.abo?.name

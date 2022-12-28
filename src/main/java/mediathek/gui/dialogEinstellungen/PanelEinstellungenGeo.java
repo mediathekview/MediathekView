@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
-import mediathek.daten.GeoblockingField;
+import mediathek.daten.Country;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
@@ -30,30 +30,35 @@ public class PanelEinstellungenGeo extends JPanel {
 
     private void init() {
         switch (ApplicationConfiguration.getInstance().getGeographicLocation()) {
-            case GeoblockingField.GEO_CH -> jRadioButtonCH.setSelected(true);
-            case GeoblockingField.GEO_AT -> jRadioButtonAt.setSelected(true);
-            case GeoblockingField.GEO_EU -> jRadioButtonEu.setSelected(true);
-            case GeoblockingField.GEO_WELT -> jRadioButtonSonst.setSelected(true);
+            case CH -> jRadioButtonCH.setSelected(true);
+            case AT -> jRadioButtonAt.setSelected(true);
+            case EU -> jRadioButtonEu.setSelected(true);
+            case FR -> radioButtonFR.setSelected(true);
+            case WELT -> jRadioButtonSonst.setSelected(true);
             default -> jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_DE);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.DE);
+            filterBlacklistAndNotifyChanges();
+        });
+        radioButtonFR.addActionListener(e -> {
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.FR);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonCH.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_CH);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.CH);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonAt.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_AT);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.AT);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonEu.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_EU);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.EU);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_WELT);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.WELT);
             filterBlacklistAndNotifyChanges();
         });
 
@@ -82,8 +87,9 @@ public class PanelEinstellungenGeo extends JPanel {
     private void initComponents() {
         var panel1 = new JPanel();
         jRadioButtonDe = new JRadioButton();
-        jRadioButtonCH = new JRadioButton();
         jRadioButtonAt = new JRadioButton();
+        jRadioButtonCH = new JRadioButton();
+        radioButtonFR = new JRadioButton();
         jRadioButtonEu = new JRadioButton();
         jRadioButtonSonst = new JRadioButton();
         jButtonHilfe = new JButton();
@@ -109,13 +115,17 @@ public class PanelEinstellungenGeo extends JPanel {
             jRadioButtonDe.setText("Deutschland (DE)"); //NON-NLS
             panel1.add(jRadioButtonDe);
 
+            //---- jRadioButtonAt ----
+            jRadioButtonAt.setText("\u00d6sterreich (AT)"); //NON-NLS
+            panel1.add(jRadioButtonAt);
+
             //---- jRadioButtonCH ----
             jRadioButtonCH.setText("Schweiz (CH)"); //NON-NLS
             panel1.add(jRadioButtonCH);
 
-            //---- jRadioButtonAt ----
-            jRadioButtonAt.setText("\u00d6sterreich (AT)"); //NON-NLS
-            panel1.add(jRadioButtonAt);
+            //---- radioButtonFR ----
+            radioButtonFR.setText("Frankreich (FR)"); //NON-NLS
+            panel1.add(radioButtonFR);
 
             //---- jRadioButtonEu ----
             jRadioButtonEu.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
@@ -135,16 +145,18 @@ public class PanelEinstellungenGeo extends JPanel {
         //---- buttonGroup1 ----
         var buttonGroup1 = new ButtonGroup();
         buttonGroup1.add(jRadioButtonDe);
-        buttonGroup1.add(jRadioButtonCH);
         buttonGroup1.add(jRadioButtonAt);
+        buttonGroup1.add(jRadioButtonCH);
+        buttonGroup1.add(radioButtonFR);
         buttonGroup1.add(jRadioButtonEu);
         buttonGroup1.add(jRadioButtonSonst);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JRadioButton jRadioButtonDe;
-    private JRadioButton jRadioButtonCH;
     private JRadioButton jRadioButtonAt;
+    private JRadioButton jRadioButtonCH;
+    private JRadioButton radioButtonFR;
     private JRadioButton jRadioButtonEu;
     private JRadioButton jRadioButtonSonst;
     private JButton jButtonHilfe;
