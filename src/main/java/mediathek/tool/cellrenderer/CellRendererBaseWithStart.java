@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
+    private static final EnumSet<Country> euCountryList = EnumSet.of(Country.DE, Country.AT, Country.FR);
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected final FlatSVGIcon lockedIcon;
     protected final FlatSVGIcon lockedIconSelected;
@@ -82,7 +84,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         else {
             var geoString = film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
             setToolTipText(geoString);
-            if (film.countrySet.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
+            if (filmIsCountryUnlocked(film)) {
                 //we are unlocked
                 if (isSelected)
                     setIcon(unlockedIconSelected);
@@ -96,6 +98,17 @@ public class CellRendererBaseWithStart extends CellRendererBase {
                 else
                     setIcon(lockedIcon);
             }
+        }
+    }
+
+    private boolean filmIsCountryUnlocked(@NotNull DatenFilm film) {
+        var curLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
+        //EU consists of many states therefore we have to extend the country test...
+        if (film.countrySet.contains(Country.EU)) {
+            return film.countrySet.contains(curLocation) || euCountryList.contains(curLocation);
+        }
+        else {
+            return film.countrySet.contains(curLocation);
         }
     }
 
@@ -148,7 +161,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      */
     protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
         if (!datenFilm.countrySet.isEmpty()) {
-            if (!datenFilm.countrySet.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
+            if (!filmIsCountryUnlocked(datenFilm)) {
                 //locked
                 if (isSelected)
                     iconList.add(lockedIconSelected);
