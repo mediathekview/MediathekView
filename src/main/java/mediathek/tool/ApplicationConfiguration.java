@@ -115,10 +115,14 @@ public class ApplicationConfiguration {
     public Country getGeographicLocation() {
         try {
             var str = getConfiguration().getString(GEO_LOCATION);
+            // str has no quotation marks if it was set before the update but object mapper now expects them...
+            if (!str.startsWith("\"") && !str.endsWith("\""))
+                str = "\"" + str + "\"";
             return mapper.readValue(str, Country.class);
         }
         catch (Exception ex) {
             logger.error("Unable to parse country, resetting to GERMANY", ex);
+            setGeographicLocation(Country.DE);
             return Country.DE;
         }
     }
