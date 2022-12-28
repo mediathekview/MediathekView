@@ -114,7 +114,7 @@ public class ApplicationConfiguration {
 
     public Country getGeographicLocation() {
         try {
-            var str = getConfiguration().getString(GEO_LOCATION);
+            var str = config.getString(GEO_LOCATION);
             // str has no quotation marks if it was set before the update but object mapper now expects them...
             if (!str.startsWith("\"") && !str.endsWith("\""))
                 str = "\"" + str + "\"";
@@ -130,7 +130,7 @@ public class ApplicationConfiguration {
     public void setGeographicLocation(Country country) {
         try {
             var newValue = mapper.writeValueAsString(country);
-            getConfiguration().setProperty(GEO_LOCATION, newValue);
+            config.setProperty(GEO_LOCATION, newValue);
         }
         catch (Exception ex) {
             logger.error("Error setting location, setting to GERMANY", ex);
@@ -139,11 +139,11 @@ public class ApplicationConfiguration {
     }
 
     public boolean getBlacklistDoNotShowGeoblockedFilms() {
-        return getConfiguration().getBoolean(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+        return config.getBoolean(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
     }
 
     public void setBlacklistDoNotShowGeoblockedFilms(boolean newValue) {
-        getConfiguration().setProperty(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, newValue);
+        config.setProperty(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, newValue);
     }
 
     private void initializeTimedEventWriting() {
