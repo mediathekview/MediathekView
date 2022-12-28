@@ -412,6 +412,11 @@ public class Main {
                 printArguments(args);
             } catch (CommandLine.ParameterException ex) {
                 try (var err = cmd.getErr()) {
+                    var errStr = ex.getMessage() + "\n\n" + ex.getCommandLine().getUsageMessage();
+                    JOptionPane.showMessageDialog(null,
+                            errStr,
+                            "Fehlerhafte Kommandozeilenparameter",
+                            JOptionPane.ERROR_MESSAGE);
                     err.println(ex.getMessage());
                     if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
                         ex.getCommandLine().usage(err);
