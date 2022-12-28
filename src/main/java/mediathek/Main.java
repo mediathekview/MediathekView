@@ -292,6 +292,7 @@ public class Main {
         var shenandoahHeuristics = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:ShenandoahGCHeuristics=compact")).findAny().stream().count();
         var stringDedup = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseStringDeduplication")).findAny().stream().count();
         var maxRamPct = paramList.stream().filter(s -> s.startsWith("-XX:MaxRAMPercentage=")).findAny().stream().count();
+        var addOpens = paramList.stream().filter(s -> s.equalsIgnoreCase("--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED")).findAny().stream().count();
 
         //Incorrect VM params
         var mxParamCount = paramList.stream().filter(s -> s.startsWith("-Xmx")).findAny().stream().count();
@@ -303,22 +304,31 @@ public class Main {
                 && (mxParamCount == 0))
             correctParameters = true;
 
+        if (SystemUtils.IS_OS_LINUX) {
+            if (addOpens == 0)
+                correctParameters = false;
+        }
+
         if (!correctParameters) {
             //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            JOptionPane.showMessageDialog(null,
-                    "<html>" +
-                            "<b>Inkorrekte JVM Parameter erkannt</b><br/><br/>" +
-                            "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
-                            "<ul>" +
-                            "<li>-XX:+UseShenandoahGC</li>" +
-                            "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
-                            "<li>-XX:+UseStringDeduplication</li>" +
-                            "<li>-XX:MaxRAMPercentage=<b>xx.x</b></li>" +
-                            "</ul><br/>" +
-                            "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                            "</html>",
-                    Konstanten.PROGRAMMNAME,
+            var message = "<html>" +
+                    "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
+                    "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
+                    "<ul>" +
+                    "<li>-XX:+UseShenandoahGC</li>" +
+                    "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
+                    "<li>-XX:+UseStringDeduplication</li>" +
+                    "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
+            if (SystemUtils.IS_OS_LINUX) {
+                message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
+            }
+
+            message += "</ul><br/>" +
+                        "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                        "</html>";
+
+            JOptionPane.showMessageDialog(null,message, Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE);
         }
     }
