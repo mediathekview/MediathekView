@@ -221,8 +221,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        var config = ApplicationConfiguration.getConfiguration();
-        doNotShowGeoBlockedFilms = config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+        doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms();
 
         geoblockingPredicate.updateLocation();
     }

@@ -57,9 +57,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
     public static final String APPLICATION_BUTTONS_PANEL_VISIBLE =
             "application.buttons_panel.visible";
-    public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
-    public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
@@ -69,6 +67,7 @@ public class ApplicationConfiguration {
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+    private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
@@ -108,6 +107,14 @@ public class ApplicationConfiguration {
 
     public static Configuration getConfiguration() {
         return getInstance().config;
+    }
+
+    public boolean getBlacklistDoNotShowGeoblockedFilms() {
+        return getConfiguration().getBoolean(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+    }
+
+    public void setBlacklistDoNotShowGeoblockedFilms(boolean newValue) {
+        getConfiguration().setProperty(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, newValue);
     }
 
     private void initializeTimedEventWriting() {
@@ -154,7 +161,6 @@ public class ApplicationConfiguration {
     private void createDefaultConfigSettings() {
         try {
             config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
-            config.setProperty(GEO_REPORT, true);
             config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
 
             handler.save();
@@ -168,9 +174,6 @@ public class ApplicationConfiguration {
     }
 
     private void updateNewerDefaults() {
-        if (!config.containsKey(GEO_REPORT)) {
-            config.setProperty(GEO_REPORT, true);
-        }
         if (!config.containsKey(GEO_LOCATION)) {
             config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
         }
@@ -180,9 +183,9 @@ public class ApplicationConfiguration {
     }
 
     public static class DownloadRateLimiter {
-    public static final String LIMIT = "download.rate.limit";
-    public static final String ACTIVE = "download.rate.active";
-}
+        public static final String LIMIT = "download.rate.limit";
+        public static final String ACTIVE = "download.rate.active";
+    }
 
     /**
      * Part of the Bill Pugh Singleton implementation

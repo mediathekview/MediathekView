@@ -67,8 +67,7 @@ public class PanelBlacklist extends JPanel {
         });
 
         jCheckBoxGeo.addActionListener(e -> {
-            ApplicationConfiguration.getConfiguration().
-                    setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
+            ApplicationConfiguration.getInstance().setBlacklistDoNotShowGeoblockedFilms(jCheckBoxGeo.isSelected());
             notifyBlacklistChanged();
         });
 
@@ -153,8 +152,7 @@ public class PanelBlacklist extends JPanel {
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
 
-        var config = ApplicationConfiguration.getConfiguration();
-        jCheckBoxGeo.setSelected(config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false));
+        jCheckBoxGeo.setSelected(ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms());
 
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
