@@ -34,7 +34,7 @@ public class PanelEinstellungenGeo extends JPanel {
             case AT -> jRadioButtonAt.setSelected(true);
             case EU -> jRadioButtonEu.setSelected(true);
             case FR -> radioButtonFR.setSelected(true);
-            case WELT -> jRadioButtonSonst.setSelected(true);
+            case OTHER -> jRadioButtonSonst.setSelected(true);
             default -> jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
@@ -58,7 +58,7 @@ public class PanelEinstellungenGeo extends JPanel {
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.WELT);
+            ApplicationConfiguration.getInstance().setGeographicLocation(Country.OTHER);
             filterBlacklistAndNotifyChanges();
         });
 
