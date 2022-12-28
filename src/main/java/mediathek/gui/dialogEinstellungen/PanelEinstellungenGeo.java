@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
+import com.formdev.flatlaf.util.ScaledImageIcon;
 import mediathek.config.Daten;
 import mediathek.daten.Country;
 import mediathek.file.GetFile;
@@ -7,6 +8,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import net.miginfocom.layout.AC;
@@ -14,9 +16,12 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.VerticalLayout;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.util.Objects;
 
 public class PanelEinstellungenGeo extends JPanel {
     private final JFrame parentComponent;
@@ -25,7 +30,25 @@ public class PanelEinstellungenGeo extends JPanel {
         parentComponent = pparentComponent;
 
         initComponents();
+        setCountryFlags();
         init();
+    }
+
+    private void setCountryFlags() {
+        lblIcon_DE.setIcon(getScaledIconResource("/icons/countries/162-germany.png"));
+        lblIcon_AT.setIcon(getScaledIconResource("/icons/countries/003-austria.png"));
+        lblIcon_CH.setIcon(getScaledIconResource("/icons/countries/205-switzerland.png"));
+        lblIcon_FR.setIcon(getScaledIconResource("/icons/countries/195-france.png"));
+        lblIcon_EU.setIcon(getScaledIconResource("/icons/countries/259-european-union.png"));
+    }
+
+    private static final Dimension FLAG_DIMENSIONS = new Dimension(32,24);
+
+    private ScaledImageIcon getScaledIconResource(@NotNull String url) {
+        var icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(url)));
+        var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+        var destDim = GuiFunktionen.calculateFittedDimension(imageDim, FLAG_DIMENSIONS);
+        return new ScaledImageIcon(icon, destDim.width, destDim.height);
     }
 
     private void init() {
@@ -86,11 +109,26 @@ public class PanelEinstellungenGeo extends JPanel {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         var panel1 = new JPanel();
+        var panel2 = new JPanel();
         jRadioButtonDe = new JRadioButton();
+        lblIcon_DE = new JLabel();
+        var label2 = new JLabel();
+        var panel3 = new JPanel();
         jRadioButtonAt = new JRadioButton();
+        lblIcon_AT = new JLabel();
+        var label4 = new JLabel();
+        var panel4 = new JPanel();
         jRadioButtonCH = new JRadioButton();
+        lblIcon_CH = new JLabel();
+        var label6 = new JLabel();
+        var panel5 = new JPanel();
         radioButtonFR = new JRadioButton();
+        lblIcon_FR = new JLabel();
+        var label8 = new JLabel();
+        var panel6 = new JPanel();
         jRadioButtonEu = new JRadioButton();
+        lblIcon_EU = new JLabel();
+        var label10 = new JLabel();
         jRadioButtonSonst = new JRadioButton();
         jButtonHilfe = new JButton();
 
@@ -110,26 +148,103 @@ public class PanelEinstellungenGeo extends JPanel {
             panel1.setBorder(new TitledBorder("Mein Standort")); //NON-NLS
             panel1.setLayout(new VerticalLayout());
 
-            //---- jRadioButtonDe ----
-            jRadioButtonDe.setSelected(true);
-            jRadioButtonDe.setText("Deutschland (DE)"); //NON-NLS
-            panel1.add(jRadioButtonDe);
+            //======== panel2 ========
+            {
+                panel2.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().align("left"), //NON-NLS
+                    // rows
+                    new AC()
+                        .fill()));
 
-            //---- jRadioButtonAt ----
-            jRadioButtonAt.setText("\u00d6sterreich (AT)"); //NON-NLS
-            panel1.add(jRadioButtonAt);
+                //---- jRadioButtonDe ----
+                jRadioButtonDe.setSelected(true);
+                panel2.add(jRadioButtonDe, new CC().cell(0, 0));
+                panel2.add(lblIcon_DE, new CC().cell(0, 0));
 
-            //---- jRadioButtonCH ----
-            jRadioButtonCH.setText("Schweiz (CH)"); //NON-NLS
-            panel1.add(jRadioButtonCH);
+                //---- label2 ----
+                label2.setText("Deutschland (DE)"); //NON-NLS
+                panel2.add(label2, new CC().cell(0, 0));
+            }
+            panel1.add(panel2);
 
-            //---- radioButtonFR ----
-            radioButtonFR.setText("Frankreich (FR)"); //NON-NLS
-            panel1.add(radioButtonFR);
+            //======== panel3 ========
+            {
+                panel3.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().align("left"), //NON-NLS
+                    // rows
+                    new AC()
+                        .fill()));
+                panel3.add(jRadioButtonAt, new CC().cell(0, 0));
+                panel3.add(lblIcon_AT, new CC().cell(0, 0));
 
-            //---- jRadioButtonEu ----
-            jRadioButtonEu.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
-            panel1.add(jRadioButtonEu);
+                //---- label4 ----
+                label4.setText("\u00d6sterreich (AT)"); //NON-NLS
+                panel3.add(label4, new CC().cell(0, 0));
+            }
+            panel1.add(panel3);
+
+            //======== panel4 ========
+            {
+                panel4.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().align("left"), //NON-NLS
+                    // rows
+                    new AC()
+                        .fill()));
+                panel4.add(jRadioButtonCH, new CC().cell(0, 0));
+                panel4.add(lblIcon_CH, new CC().cell(0, 0));
+
+                //---- label6 ----
+                label6.setText("Schweiz (CH)"); //NON-NLS
+                panel4.add(label6, new CC().cell(0, 0));
+            }
+            panel1.add(panel4);
+
+            //======== panel5 ========
+            {
+                panel5.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().align("left"), //NON-NLS
+                    // rows
+                    new AC()
+                        .fill()));
+                panel5.add(radioButtonFR, new CC().cell(0, 0));
+                panel5.add(lblIcon_FR, new CC().cell(0, 0));
+
+                //---- label8 ----
+                label8.setText("Frankreich (FR)"); //NON-NLS
+                panel5.add(label8, new CC().cell(0, 0));
+            }
+            panel1.add(panel5);
+
+            //======== panel6 ========
+            {
+                panel6.setLayout(new MigLayout(
+                    new LC().insets("0").hideMode(3), //NON-NLS
+                    // columns
+                    new AC()
+                        .grow().align("left"), //NON-NLS
+                    // rows
+                    new AC()
+                        .fill()));
+                panel6.add(jRadioButtonEu, new CC().cell(0, 0));
+                panel6.add(lblIcon_EU, new CC().cell(0, 0));
+
+                //---- label10 ----
+                label10.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
+                panel6.add(label10, new CC().cell(0, 0));
+            }
+            panel1.add(panel6);
 
             //---- jRadioButtonSonst ----
             jRadioButtonSonst.setText("Sonstiger"); //NON-NLS
@@ -154,10 +269,15 @@ public class PanelEinstellungenGeo extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JRadioButton jRadioButtonDe;
+    private JLabel lblIcon_DE;
     private JRadioButton jRadioButtonAt;
+    private JLabel lblIcon_AT;
     private JRadioButton jRadioButtonCH;
+    private JLabel lblIcon_CH;
     private JRadioButton radioButtonFR;
+    private JLabel lblIcon_FR;
     private JRadioButton jRadioButtonEu;
+    private JLabel lblIcon_EU;
     private JRadioButton jRadioButtonSonst;
     private JButton jButtonHilfe;
     // End of variables declaration//GEN-END:variables

@@ -1,5 +1,4 @@
-<u>**14.0.0**</u>
-- **TODO:** ConfigureExternalUpdaterAction fertig programmieren!
+# **14.0.0**
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
 - Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
@@ -10,6 +9,7 @@
 - Die Spalten `HQ`, `UT` und `Geo` sind aufgrund der neuen Icons grundsätzlich überflüssig.
 - Die Option "Programm nicht beenden" im Beenden-Dialog bei laufenden Downloads wurde entfernt, das sie redundant ist und durch den Button "Abbrechen" erzielt wird.
 - Frankreich kann nun als Standort für das Geoblocking gesetzt werden.
+- verwendete Bibliotheken wurden aktualisiert.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
@@ -54,6 +54,7 @@
 - **FEATURE(Linux):** interne Nutzung von `xdg-user-dir` um sich besser in die vorhandene Desktops zu integrieren. Dies ist v.a. für flatpack-Installationen notwendig.
 - **FEATURE(macOS App):** ffmpeg auf Version 5.11 aktualisiert.
 - **FEATURE:** Abos können per Doppelklick im *Abo verwalten*-Dialog editiert werden.
+- **FEATURE:** Länderflaggen werden in *Einstellungen/Standort & Geoblocking* dargestellt.
 
 <u>**13.9.1**</u>
 
