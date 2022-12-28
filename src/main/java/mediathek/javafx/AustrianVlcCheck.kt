@@ -43,8 +43,7 @@ class AustrianVlcCheck {
         logger.trace("ORF setup tutorial display check started")
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true)) {
             //we haven´t shown the config help dialog before
-            val location = config.getString(ApplicationConfiguration.GEO_LOCATION, "")
-            if (location == GeoblockingField.GEO_AT) {
+            if (ApplicationConfiguration.getInstance().geographicLocation == GeoblockingField.GEO_AT) {
                 Platform.runLater {
                     val alert = Alert(Alert.AlertType.INFORMATION)
                     alert.title = Konstanten.PROGRAMMNAME

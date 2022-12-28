@@ -325,15 +325,15 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         private String geoLocation;
 
         public GeoblockingPredicate() {
-            setLocationData();
+            updateLocationData();
         }
 
         public void updateLocation() {
-            setLocationData();
+            updateLocationData();
         }
 
-        private void setLocationData() {
-            geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        private void updateLocationData() {
+            geoLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
         }
 
         @Override

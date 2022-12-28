@@ -13,7 +13,6 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -30,9 +29,7 @@ public class PanelEinstellungenGeo extends JPanel {
     }
 
     private void init() {
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-
-        switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
+        switch (ApplicationConfiguration.getInstance().getGeographicLocation()) {
             case GeoblockingField.GEO_CH -> jRadioButtonCH.setSelected(true);
             case GeoblockingField.GEO_AT -> jRadioButtonAt.setSelected(true);
             case GeoblockingField.GEO_EU -> jRadioButtonEu.setSelected(true);
@@ -40,23 +37,23 @@ public class PanelEinstellungenGeo extends JPanel {
             default -> jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_DE);
+            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_DE);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonCH.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_CH);
+            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_CH);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonAt.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_AT);
+            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_AT);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonEu.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_EU);
+            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_EU);
             filterBlacklistAndNotifyChanges();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.GEO_LOCATION, GeoblockingField.GEO_WELT);
+            ApplicationConfiguration.getInstance().setGeographicLocation(GeoblockingField.GEO_WELT);
             filterBlacklistAndNotifyChanges();
         });
 

@@ -72,7 +72,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         setText("");
         film.getGeo().ifPresentOrElse(geoString -> {
             setToolTipText(geoString);
-            if (geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
+            if (geoString.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
                 // we are unlocked
                 if (isSelected)
                     setIcon(unlockedIconSelected);
@@ -143,7 +143,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      */
     protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
         datenFilm.getGeo().ifPresent(geoString -> {
-            if (!geoString.contains(config.getString(ApplicationConfiguration.GEO_LOCATION))) {
+            if (!geoString.contains(ApplicationConfiguration.getInstance().getGeographicLocation())) {
                 //locked
                 if (isSelected)
                     iconList.add(lockedIconSelected);

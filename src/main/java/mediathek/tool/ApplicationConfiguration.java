@@ -14,6 +14,7 @@ import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.intellij.lang.annotations.MagicConstant;
 
 import java.io.File;
 import java.util.NoSuchElementException;
@@ -57,7 +58,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
     public static final String APPLICATION_BUTTONS_PANEL_VISIBLE =
             "application.buttons_panel.visible";
-    public static final String GEO_LOCATION = "geo.location";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
@@ -67,6 +67,7 @@ public class ApplicationConfiguration {
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+    private static final String GEO_LOCATION = "geo.location";
     private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
      * logger for {@link TimerTaskListener} inner class.
@@ -107,6 +108,14 @@ public class ApplicationConfiguration {
 
     public static Configuration getConfiguration() {
         return getInstance().config;
+    }
+
+    public String getGeographicLocation() {
+        return getConfiguration().getString(GEO_LOCATION, GeoblockingField.GEO_DE);
+    }
+
+    public void setGeographicLocation(@MagicConstant(flagsFromClass = GeoblockingField.class) String newValue) {
+        getConfiguration().setProperty(GEO_LOCATION, newValue);
     }
 
     public boolean getBlacklistDoNotShowGeoblockedFilms() {
