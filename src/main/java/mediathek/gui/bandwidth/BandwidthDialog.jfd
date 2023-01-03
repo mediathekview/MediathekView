@@ -1,0 +1,58 @@
+JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "fill,insets 5,hidemode 3"
+			"$columnConstraints": "[grow,fill][right]"
+			"$rowConstraints": "[center][grow,fill]"
+		} ) {
+			name: "this"
+			"title": "Bandbreite"
+			"minimumSize": new java.awt.Dimension( 400, 200 )
+			"defaultCloseOperation": 2
+			"type": enum java.awt.Window$Type UTILITY
+			"preferredSize": new java.awt.Dimension( 400, 200 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblBandwidth"
+				"text": "0"
+				"horizontalAlignment": 11
+				"verticalAlignment": 3
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 19, false )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,aligny bottom,growy 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "MBit/s"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 2, false )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,aligny bottom,growy 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "chartContainer"
+				"minimumSize": new java.awt.Dimension( 240, 120 )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "org.jfree.chart.ChartPanel" ) {
+					name: "chartPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.customCreateCode": "new ChartPanel(null);"
+					}
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1 2 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 515, 300 )
+		} )
+	}
+}
