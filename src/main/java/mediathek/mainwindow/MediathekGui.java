@@ -18,7 +18,6 @@ import mediathek.gui.actions.*;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
 import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
-import mediathek.gui.bandwidth.BandwidthMonitorController;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -97,11 +96,11 @@ public class MediathekGui extends JFrame {
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
-    private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final InfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
+    private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -128,10 +127,6 @@ public class MediathekGui extends JFrame {
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected FontManager fontManager = new FontManager(this);
     protected ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
-    /**
-     * Bandwidth monitoring for downloads.
-     */
-    private BandwidthMonitorController bandwidthMonitor;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
@@ -219,7 +214,7 @@ public class MediathekGui extends JFrame {
 
         logger.trace("Loading bandwidth monitor");
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
-            getBandwidthMonitorController().setVisibility();
+            showBandwidthUsageAction.actionPerformed(null);
         }
         logger.trace("Finished loading bandwidth monitor");
 
@@ -367,14 +362,6 @@ public class MediathekGui extends JFrame {
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
-    }
-
-    private BandwidthMonitorController getBandwidthMonitorController() {
-        if (bandwidthMonitor == null) {
-            bandwidthMonitor = new BandwidthMonitorController(this);
-        }
-
-        return bandwidthMonitor;
     }
 
     private void setupTaskbarMenu() {
@@ -548,12 +535,6 @@ public class MediathekGui extends JFrame {
             configureTabPlacement();
             configureTabIcons();
         });
-    }
-
-    @Handler
-    private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
-        final var vis = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false);
-        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(vis));
     }
 
     private void setWindowTitle() {
@@ -852,15 +833,9 @@ public class MediathekGui extends JFrame {
     }
 
     private void createViewMenu() {
-        cbBandwidthDisplay.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false));
-        cbBandwidthDisplay.addActionListener(e -> {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, cbBandwidthDisplay.isSelected());
-            getBandwidthMonitorController().setVisibility();
-        });
-
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showMemoryMonitorAction);
-        jMenuAnsicht.add(cbBandwidthDisplay);
+        jMenuAnsicht.add(showBandwidthUsageAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
         jMenuAnsicht.addSeparator();
@@ -1005,8 +980,11 @@ public class MediathekGui extends JFrame {
 
         showMemoryMonitorAction.closeMemoryMonitor();
 
-        if (bandwidthMonitor != null)
-            bandwidthMonitor.close();
+        showBandwidthUsageAction.getDialogOptional().ifPresent(dlg -> {
+            dlg.dispose();
+            //little hack, we must preserve the visible state since it was open when app quits...
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, true);
+        });
 
         manageAboAction.closeDialog();
 

@@ -10,6 +10,7 @@
 - Die Option "Programm nicht beenden" im Beenden-Dialog bei laufenden Downloads wurde entfernt, das sie redundant ist und durch den Button "Abbrechen" erzielt wird.
 - Frankreich kann nun als Standort für das Geoblocking gesetzt werden.
 - verwendete Bibliotheken wurden aktualisiert.
+- Bandbreitendialog wurde zurück nach Swing portiert.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)

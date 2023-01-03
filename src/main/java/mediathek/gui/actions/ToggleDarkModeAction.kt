@@ -2,11 +2,9 @@ package mediathek.gui.actions
 
 import com.formdev.flatlaf.FlatLaf
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange
+import mediathek.gui.messages.DarkModeChangeEvent
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.DarkModeFactory
-import mediathek.tool.LightModeFactory
-import mediathek.tool.SVGIconUtilities
+import mediathek.tool.*
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.LookAndFeel
@@ -33,5 +31,7 @@ class ToggleDarkModeAction : AbstractAction() {
         FlatAnimatedLafChange.hideSnapshotWithAnimation()
         ApplicationConfiguration.getConfiguration()
             .setProperty(ApplicationConfiguration.APPLICATION_DARK_MODE, FlatLaf.isLafDark())
+
+        MessageBus.messageBus.publishAsync(DarkModeChangeEvent())
     }
 }

@@ -1,5 +1,8 @@
 package mediathek.mainwindow;
 
+import mediathek.gui.messages.DarkModeChangeEvent;
+import mediathek.tool.MessageBus;
+import net.engio.mbassy.listener.Handler;
 import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
@@ -64,6 +67,13 @@ public class MemoryUsagePanel extends JPanel {
         chartPanel.addChartMouseListener(new GarbageCollectionMouseListener());
         chartPanel.setPopupMenu(null);
         add(chartPanel);
+
+        MessageBus.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleDarkModeChange(DarkModeChangeEvent e) {
+        SwingUtilities.invokeLater(this::setLabelColors);
     }
 
     private void setLabelColors() {
