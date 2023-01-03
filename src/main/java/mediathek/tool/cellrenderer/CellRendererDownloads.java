@@ -66,8 +66,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
     private void setupProgressBar() {
         progressBar.setStringPainted(true);
-        //on OSX the OS provided progress bar looks much better...
-        if (!SystemUtils.IS_OS_MAC_OSX) {
+        //use old style only on linux for now...
+        if (SystemUtils.IS_OS_LINUX) {
             progressBar.setUI(new BasicProgressBarUI() {
                 @Override
                 protected Color getSelectionBackground() {
