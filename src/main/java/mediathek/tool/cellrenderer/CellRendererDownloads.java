@@ -35,7 +35,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final Icon download_clear_sw_tab;
     private final FlatSVGIcon download_del_tab_selected;
     private final Icon download_del_sw_tab;
-    private JProgressBar progressBar;
+    private final JProgressBar progressBar = new JProgressBar(0, 1000);
 
     public CellRendererDownloads() {
         var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
@@ -65,7 +65,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     }
 
     private void setupProgressBar() {
-        progressBar = new JProgressBar(0, 1000);
         progressBar.setStringPainted(true);
         //on OSX the OS provided progress bar looks much better...
         if (!SystemUtils.IS_OS_MAC_OSX) {
