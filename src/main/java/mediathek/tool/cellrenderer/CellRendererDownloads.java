@@ -6,13 +6,11 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 
 public class CellRendererDownloads extends CellRendererBaseWithStart {
@@ -58,28 +56,8 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         film_start_tab.setColorFilter(whiteColorFilter);
         film_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
 
-        setupProgressBar();
-
         panel = new JPanel(new BorderLayout());
         panel.add(progressBar);
-    }
-
-    private void setupProgressBar() {
-        progressBar.setStringPainted(true);
-        //use old style only on linux for now...
-        if (SystemUtils.IS_OS_LINUX) {
-            progressBar.setUI(new BasicProgressBarUI() {
-                @Override
-                protected Color getSelectionBackground() {
-                    return UIManager.getDefaults().getColor("Table.foreground");
-                }
-
-                @Override
-                protected Color getSelectionForeground() {
-                    return Color.WHITE;
-                }
-            });
-        }
     }
 
     @Override
