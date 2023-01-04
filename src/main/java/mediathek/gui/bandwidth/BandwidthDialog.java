@@ -148,11 +148,14 @@ public class BandwidthDialog extends JDialog {
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
         plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+        plot.setDomainGridlinesVisible(false);
 
         dateAxis.setAutoRange(true);
         dateAxis.setLowerMargin(0.0);
         dateAxis.setUpperMargin(0.0);
-        dateAxis.setTickLabelsVisible(true);
+        dateAxis.setTickLabelsVisible(false);
+        dateAxis.setTickMarksVisible(false);
+        dateAxis.setAxisLineVisible(false);
 
         bandwidthAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         bandwidthAxis.setNumberFormatOverride(new DecimalFormat("#######.##"));
