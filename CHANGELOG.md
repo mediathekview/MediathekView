@@ -56,6 +56,7 @@
 - **FEATURE(macOS App):** ffmpeg auf Version 5.11 aktualisiert.
 - **FEATURE:** Abos können per Doppelklick im *Abo verwalten*-Dialog editiert werden.
 - **FEATURE:** Länderflaggen werden in *Einstellungen/Standort & Geoblocking* dargestellt.
+- **FEATURE:** *Export/Dekomprimierte Filmliste* speichert eine Filmliste mit vollständigen Sender/Thema Tags ab.
 
 <u>**13.9.1**</u>
 

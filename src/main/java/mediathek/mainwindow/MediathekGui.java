@@ -15,6 +15,8 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
+import mediathek.gui.actions.export.ExportDecompressedFilmlistAction;
+import mediathek.gui.actions.export.ExportReadableFilmlistAction;
 import mediathek.gui.actions.import_actions.ImportOldAbosAction;
 import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
 import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
@@ -813,7 +815,8 @@ public class MediathekGui extends JFrame {
         jMenuDatei.add(loadFilmListAction);
         jMenuDatei.addSeparator();
         var exportMenu = new JMenu("Export");
-        exportMenu.add(new FilmListExportAction());
+        exportMenu.add(new ExportReadableFilmlistAction());
+        exportMenu.add(new ExportDecompressedFilmlistAction());
 
         var importMenu = new JMenu("Import");
         importMenu.add(new ImportOldAbosAction());
