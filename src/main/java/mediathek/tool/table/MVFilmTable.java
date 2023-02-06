@@ -4,26 +4,19 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.tool.FilmSize;
-import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
-    /**
-     * Stores the selected FILM NUMBERS that need to be restored after updates.
-     */
-    private final List<Integer> selectedFilmNumbers = new ArrayList<>();
     private MyRowSorter<TableModel> sorter;
 
     @Override public String getToolTipText(MouseEvent e) {
@@ -182,78 +175,6 @@ public class MVFilmTable extends MVTable {
             validate();
         } catch (Exception ex) {
             logger.error("setSpalten", ex);
-        }
-    }
-
-    /**
-     * Scroll to a selected row, but center it in the middle of the visible rectangle.
-     * @param rowIndex The row to be displayed centered.
-     */
-    private void scrollToSelectionCentered(int rowIndex) {
-        Rectangle rect = getCellRect(rowIndex, 0, true);
-        Rectangle viewRect = getVisibleRect();
-        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
-
-        int centerX = (viewRect.width - rect.width) / 2;
-        int centerY = (viewRect.height - rect.height) / 2;
-        if (rect.x < centerX) {
-            centerX = -centerX;
-        }
-        if (rect.y < centerY) {
-            centerY = -centerY;
-        }
-        rect.translate(centerX, centerY);
-        scrollRectToVisible(rect);
-    }
-
-    @Override
-    protected void scrollToIndexDelegate(int index) {
-        // film list moves selected entries into center of JTable view
-        scrollToSelectionCentered(index);
-    }
-
-    @Override
-    protected void restoreSelectedTableRows() {
-        if (!selectedFilmNumbers.isEmpty()) {
-            boolean found = false;
-
-            selectionModel.setValueIsAdjusting(true);
-            final var tModel = (TModelFilm) getModel();
-            for (var i : selectedFilmNumbers) {
-                int r = tModel.getModelRowForFilmNumber(i);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = convertRowIndexToView(r);
-                    addRowSelectionInterval(r, r);
-                    found = true;
-                }
-            }
-            if (!found && selRow >= 0 && getRowCount() > selRow) {
-                setRowSelectionInterval(selRow,selRow);
-            } else if (!found && selRow >= 0 && getRowCount() > 0) {
-                final var rowCount = tModel.getRowCount() - 1;
-                setRowSelectionInterval(rowCount, rowCount);
-            }
-            selectionModel.setValueIsAdjusting(false);
-        }
-
-        selectedFilmNumbers.clear();
-    }
-
-    @Override
-    public void saveSelectedTableRows() {
-        super.saveSelectedTableRows();
-
-        int selIndex = -1;
-        if (selRow >= 0) {
-            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), DatenFilm.FILM_NR);
-        }
-
-        selectedFilmNumbers.clear();
-        if (selIndex >= 0) {
-            for (int i : selRows) {
-                selectedFilmNumbers.add((int) getModel().getValueAt(convertRowIndexToModel(i), DatenFilm.FILM_NR));
-            }
         }
     }
 

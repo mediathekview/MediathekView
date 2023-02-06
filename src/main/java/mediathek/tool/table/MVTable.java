@@ -26,8 +26,7 @@ public abstract class MVTable extends JTable {
     protected final int[] reihe;
     public boolean useSmallSenderIcons;
     protected final int maxSpalten;
-    protected int[] selRows;
-    protected int selRow = -1;
+    private int[] selRows = {};
     protected final boolean[] spaltenAnzeigen;
     protected final Optional<MVConfig.Configs> columnConfigurationDataConfigKey;
     protected final Optional<MVConfig.Configs> showIconsConfigKey;
@@ -257,15 +256,19 @@ public abstract class MVTable extends JTable {
         scrollRectToVisible(getCellRect(index, 0, true));
     }
 
-    public void saveSelectedTableRows() {
+    protected void saveSelectedTableRows() {
         // Einstellungen der Tabelle merken
-        selRow = getSelectedRow();
         selRows = getSelectedRows();
     }
 
     protected void restoreSelectedTableRows() {
-        if (selRows != null) {
-            if (selRows.length > 0) {
+        if (selRows.length > 0) {
+            final int visibleRow;
+            if (selRows.length == 1) {
+                final var selectedRow = selRows[0];
+                selectionModel.setSelectionInterval(selectedRow, selectedRow);
+                visibleRow = selectedRow;
+            } else {
                 selectionModel.setValueIsAdjusting(true);
                 for (int selectedRow : selRows) {
                     if (selectedRow < getRowCount()) {
@@ -273,7 +276,10 @@ public abstract class MVTable extends JTable {
                     }
                 }
                 selectionModel.setValueIsAdjusting(false);
+                visibleRow = selRows[0];
             }
+            scrollToIndexDelegate(visibleRow);
+            requestFocus();
         }
     }
 
