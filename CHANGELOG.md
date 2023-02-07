@@ -11,7 +11,6 @@
 - Frankreich kann nun als Standort für das Geoblocking gesetzt werden.
 - verwendete Bibliotheken wurden aktualisiert.
 - Bandbreitendialog wurde zurück nach Swing portiert.
-- Windows 7 Style der Tabelle wurde entfernt da Minimum-Windows nun 10 ist.
 - **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
 - **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
 - **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)

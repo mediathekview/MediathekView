@@ -1,7 +1,9 @@
 package mediathek.tool.table;
 
+import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +60,19 @@ public abstract class MVTable extends JTable {
         smallSenderIconConfigKey.ifPresent(key -> useSmallSenderIcons = Boolean.parseBoolean(MVConfig.get(key)));
 
         calculateRowHeight();
+
+        applyWindowsSevenTableEffects();
+    }
+
+    /**
+     * Show JTable grid lines on Windows 7 only.
+     */
+    private void applyWindowsSevenTableEffects() {
+        // Windows 7 used to have grid lines therefore simulate behaviour
+        if (SystemUtils.IS_OS_WINDOWS && !VersionHelpers.IsWindows8OrGreater()) {
+            setShowHorizontalLines(true);
+            setShowVerticalLines(true);
+        }
     }
 
     private SortKey sortKeyLesen(String s, String strSortOrder) {
