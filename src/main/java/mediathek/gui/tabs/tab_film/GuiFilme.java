@@ -589,8 +589,13 @@ public class GuiFilme extends AGuiTabPanel {
     public Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow != -1) {
-            final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
-            return Optional.of((DatenFilm) tabelle.getModel().getValueAt(modelIndex, DatenFilm.FILM_REF));
+            try {
+                final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+                return Optional.of((DatenFilm) tabelle.getModel().getValueAt(modelIndex, DatenFilm.FILM_REF));
+            }
+            catch (Exception e) {
+                return Optional.empty();
+            }
         } else {
             return Optional.empty();
         }
