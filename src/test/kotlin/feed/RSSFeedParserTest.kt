@@ -27,27 +27,6 @@ internal class RSSFeedParserTest {
     }
 
     @Test
-    fun vogellaFeedTest() {
-        try {
-            URL("https://www.vogella.com/article.rss").openStream().use {
-                val parser = RSSFeedParser()
-                val feed = parser.readFeed(it)
-                Assertions.assertNotNull(feed)
-                //println(feed);
-                Assertions.assertNotNull(feed!!.messages)
-                Assertions.assertFalse(feed.messages.isEmpty())
-                for (message in feed.messages) {
-                    //println(message);
-                    Assertions.assertNotNull(message)
-                    Assertions.assertEquals(message.link, message.guid)
-                }
-            }
-        } catch (e: Exception) {
-            Assertions.fail<Any>(e)
-        }
-    }
-
-    @Test
     fun mvwTest() {
         try {
             URL("https://mediathekviewweb.de/feed").openStream().use {
