@@ -9,6 +9,7 @@ import javax.swing.AbstractAction
 import javax.swing.JOptionPane
 import javax.swing.ProgressMonitor
 
+
 /**
  * Exports the current film list to JSON file.
  */
@@ -24,6 +25,14 @@ class ExportDecompressedFilmlistAction : AbstractAction() {
         monitor.millisToDecideToPopup = 100
         val selectedFile = chooseSaveFileLocation(MediathekGui.ui(), "Lesbare Filmliste sichern", "")
         if (selectedFile != null) {
+            if (!DiskSpaceUtil.enoughDiskSpace(selectedFile)) {
+                JOptionPane.showMessageDialog(MediathekGui.ui(),
+                                              "Nicht genügend freier Speicher auf dem gewählten Laufwerk.\nVorgang wurde abgebrochen.",
+                                              Konstanten.PROGRAMMNAME,
+                                              JOptionPane.ERROR_MESSAGE)
+                return
+            }
+
             val worker = FilmlistExportWorker(this, selectedFile, compressSender = false, compressThema = false)
             worker.addPropertyChangeListener { evt: PropertyChangeEvent ->
                 if ("progress" == evt.propertyName) {
