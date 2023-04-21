@@ -21,7 +21,7 @@ public class CompoundIcon implements Icon
     {
         X_AXIS,
         Y_AXIS,
-        Z_AXIS;
+        Z_AXIS
     }
 
     public final static float TOP = 0.0f;

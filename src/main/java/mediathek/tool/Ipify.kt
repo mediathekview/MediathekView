@@ -46,7 +46,7 @@ object Ipify {
                 .uri(URI.create("https://api64.ipify.org"))
                 .build()
 
-            val response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            val response = client.send(request, HttpResponse.BodyHandlers.ofString())
             return response.body()
         }
 }
