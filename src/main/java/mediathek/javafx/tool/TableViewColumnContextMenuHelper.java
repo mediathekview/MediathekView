@@ -41,15 +41,9 @@ public class TableViewColumnContextMenuHelper {
     }
 
     private Optional<Node> getMenuButton() {
-        var tableHeaderRow = getTableHeaderRow();
-        if (tableHeaderRow.isEmpty()) {
-            return Optional.empty();
-        }
-
-        // child identified as cornerRegion in TableHeaderRow.java
-        return tableHeaderRow.get().getChildren().stream()
+        return getTableHeaderRow().flatMap(headerRow -> headerRow.getChildren().stream()
                 .filter(child -> child.getStyleClass().contains("show-hide-columns-button"))
-                .findAny();
+                .findAny());
     }
 
     private Optional<TableHeaderRow> getTableHeaderRow() {
