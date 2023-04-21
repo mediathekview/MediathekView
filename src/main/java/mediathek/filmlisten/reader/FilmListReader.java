@@ -31,6 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -389,12 +391,12 @@ public class FilmListReader implements AutoCloseable {
             notifyStart(source); // für die Progressanzeige
 
             if (source.startsWith("http")) {
-                final URL sourceUrl = new URL(source);
-                processFromWeb(sourceUrl, listeFilme);
+                    final var sourceUrl = new URI(source);
+                    processFromWeb(sourceUrl.toURL(), listeFilme);
             } else
                 processFromFile(source, listeFilme);
 
-        } catch (MalformedURLException ex) {
+        } catch (MalformedURLException | URISyntaxException ex) {
             logger.warn(ex);
         }
 
