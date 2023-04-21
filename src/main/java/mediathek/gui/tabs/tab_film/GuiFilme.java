@@ -66,8 +66,8 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -944,7 +944,7 @@ public class GuiFilme extends AGuiTabPanel {
                     var desktop = Desktop.getDesktop();
                     if (desktop.isSupported(Desktop.Action.BROWSE)) {
                         try {
-                            desktop.browse(new URL("https://ci-builds.apache.org/job/Lucene/job/Lucene-Artifacts-main/javadoc/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package.description").toURI());
+                            desktop.browse(new URI("https://ci-builds.apache.org/job/Lucene/job/Lucene-Artifacts-main/javadoc/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package.description"));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

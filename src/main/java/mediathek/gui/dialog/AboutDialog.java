@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
+import java.net.URI;
 
 /**
  * @author Christian Franzke
@@ -51,7 +51,7 @@ public class AboutDialog extends JDialog {
             var desktop = Desktop.getDesktop();
             if (desktop.isSupported(Desktop.Action.BROWSE)) {
                 try {
-                    desktop.browse(new URL(url).toURI());
+                    desktop.browse(new URI(url));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
