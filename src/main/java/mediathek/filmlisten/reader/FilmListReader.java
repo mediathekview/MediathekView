@@ -400,6 +400,24 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
+        //decompress URLs when using Lucene...
+        var useModernSearch = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+        if (useModernSearch) {
+            if(!listeFilme.isEmpty()) {
+                logger.trace("Start decompressing URLs for Lucene Index");
+                listeFilme.parallelStream().forEach(film -> {
+                    var hqUrl = film.getHighQualityUrl();
+
+                    if (DatenFilm.isCompressedUrl(hqUrl)) {
+                        hqUrl = film.decompressUrl(hqUrl);
+                        film.setHighQualityUrl(hqUrl);
+                    }
+                });
+                logger.trace("Finished decompressing URLs for Lucene Index");
+            }
+        }
+
         notifyFertig(source, listeFilme);
     }
 

@@ -62,4 +62,14 @@ public class LuceneIndexKeys {
      * Filmgröße in Megabytes. Integer-Value. 0 wenn nicht vorhanden.
      */
     public static final String FILM_SIZE = "größe";
+
+    /**
+     * String-Value
+     */
+    public static final String URL_HIGH_QUALITY = "hq_url";
+
+    /**
+     * String-Value
+     */
+    public static final String URL_NORMAL_QUALITY = "normal_url";
 }
