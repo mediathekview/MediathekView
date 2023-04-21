@@ -118,7 +118,7 @@
         <mockito.version>4.10.0</mockito.version>
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
         <picocli.version>4.7.0</picocli.version>
-        <sqlite-jdbc.version>3.40.0.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.41.2.1</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
