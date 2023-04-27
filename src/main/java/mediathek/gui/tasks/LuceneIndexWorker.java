@@ -35,9 +35,8 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
     }
 
     private void indexFilm(@NotNull IndexWriter writer, @NotNull DatenFilm film) throws IOException {
-        final var isHighQuality = film.isHighQuality();
-
         var doc = new Document();
+        // store fields for debugging, otherwise they should stay disabled
         doc.add(new StringField(LuceneIndexKeys.ID, Integer.toString(film.getFilmNr()), Field.Store.YES));
         doc.add(new StringField(LuceneIndexKeys.NEW, Boolean.toString(film.isNew()), Field.Store.NO));
         doc.add(new TextField(LuceneIndexKeys.SENDER, film.getSender(), Field.Store.NO));
@@ -48,15 +47,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
 
         doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.LIVESTREAM, Boolean.toString(film.isLivestream()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(isHighQuality), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(film.isHighQuality()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.SUBTITLE, Boolean.toString(film.hasSubtitle() || film.hasBurnedInSubtitles()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
-
-        doc.add(new StringField(LuceneIndexKeys.URL_NORMAL_QUALITY, film.getUrlNormalQuality(), Field.Store.NO));
-        if (isHighQuality)
-            doc.add(new StringField(LuceneIndexKeys.URL_HIGH_QUALITY, film.getHighQualityUrl(), Field.Store.NO));
 
         addSendeDatum(doc, film);
 
