@@ -36,6 +36,7 @@
 - **BUGFIX:** Frankreich wurde beim Geoblocking nicht berücksichtigt.
 - **BUGFIX:** Filme mit *EU* blocking code wurden teilweise falsch als geblockt angezeigt.
 - **BUGFIX:** Beim Export von Filmlisten wird nun vorher geprüft, ob noch mindestesns 1 GB freier Speicher vorhanden ist.
+- **BUGFIX:** Behebung diverser Probleme in *Downloads/Alle Downloads zeitverzögert starten...*. 
 - **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
