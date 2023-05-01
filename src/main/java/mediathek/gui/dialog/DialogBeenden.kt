@@ -2,8 +2,8 @@ package mediathek.gui.dialog
 
 import mediathek.config.Daten
 import mediathek.file.GetFile
-import mediathek.javafx.AppTerminationIndefiniteProgress
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.WindowAdapter

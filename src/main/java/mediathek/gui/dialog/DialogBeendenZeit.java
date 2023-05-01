@@ -3,7 +3,7 @@ package mediathek.gui.dialog;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
-import mediathek.javafx.AppTerminationIndefiniteProgress;
+import mediathek.tool.AppTerminationIndefiniteProgress;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.SVGIconUtilities;
 

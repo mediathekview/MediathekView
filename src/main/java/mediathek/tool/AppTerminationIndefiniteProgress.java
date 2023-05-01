@@ -1,4 +1,4 @@
-package mediathek.javafx;
+package mediathek.tool;
 
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
