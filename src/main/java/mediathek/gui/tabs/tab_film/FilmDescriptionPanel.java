@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
+import java.net.URI;
 
 public class FilmDescriptionPanel extends JPanel {
     private final AGuiTabPanel currentTab;
@@ -136,7 +136,7 @@ public class FilmDescriptionPanel extends JPanel {
 
         hyperlink.setVisible(true);
         try {
-            hyperlink.setURI(new URL(film.getWebsiteUrl()).toURI());
+            hyperlink.setURI(new URI(film.getWebsiteUrl()));
             hyperlink.setText("Link zur Webseite");
             hyperlink.setClicked(false);
         } catch (Exception e) {
