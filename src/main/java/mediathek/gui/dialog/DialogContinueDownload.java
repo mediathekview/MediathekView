@@ -7,12 +7,8 @@ import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
-@SuppressWarnings("serial")
 public class DialogContinueDownload extends JDialog {
     public enum DownloadResult {
 
@@ -90,6 +86,15 @@ public class DialogContinueDownload extends JDialog {
         pack();
 
         getRootPane().setDefaultButton(jButtonWeiter);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                //display dialog slightly lower than normal to prevent inadvertent presses from other dialogs (#686)
+                var loc = getLocationOnScreen();
+                setLocation(loc.x, loc.y + 70);
+            }
+        });
     }
 
     /**
