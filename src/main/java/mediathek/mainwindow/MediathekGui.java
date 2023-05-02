@@ -87,7 +87,7 @@ public class MediathekGui extends JFrame {
      */
     protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
     protected final Daten daten = Daten.getInstance();
-    protected final JTabbedPane tabbedPane = new JTabbedPane();
+    protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
     protected final SettingsAction settingsAction = new SettingsAction(this);
     final JMenu fontMenu = new JMenu("Schrift");
@@ -690,7 +690,9 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.ADD_TABS_TO_UI));
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-        tabbedPane.setSelectedComponent(tabFilme);
+
+        tabbedPane.restoreSavedTabPosition();
+        tabbedPane.installChangeListener();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
         configureTabPlacement();
