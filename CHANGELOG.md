@@ -38,7 +38,7 @@
 - **BUGFIX:** Beim Export von Filmlisten wird nun vorher geprüft, ob noch mindestesns 1 GB freier Speicher vorhanden ist.
 - **BUGFIX:** Behebung diverser Probleme in *Downloads/Alle Downloads zeitverzögert starten...*.
 - **BUGFIX:** *Download weiterführen* Dialog wird nun etwas tiefer auf dem Bildschirm als normal dargestellt um ungewollte Buttonclicks zu verhindern.
-- **FEATURE:** MediathekView merkt sich nun beim Beenden das zuletzt sichtbare Tab und stellt dieses beim Start wieder her.
+- **FEATURE:** MediathekView kann sich nun beim Beenden das zuletzt sichtbare Tab merken und dieses beim Start wiederherstellen. Das Verhalten lässt sich in den Einstellungen konfigurieren.
 - **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
 - **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.

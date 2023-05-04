@@ -1,17 +1,18 @@
-JFDML JFormDesigner: "7.0.7.0.1134" Java: "17.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "8.0.3.0.246" Java: "17.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {comp jPanel4:::p::p, comp panel1:::p::p}, space :0:20:x}, comp modernSearchTitlePanel::l:::x}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space :::p, comp modernSearchTitlePanel::::164:x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space :::p, comp modernSearchTitlePanel::::143:x, space :::p}}"
 		} ) {
 			name: "this"
 			"maximumSize": new java.awt.Dimension( 10, 10 )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :5:5:p, comp jCheckBoxTabsTop:::p::p, space :5:5:p, comp jCheckBoxTabIcon:::p::p, space :5:5:p, comp cbAutomaticMenuTabSwitching:::p::p, space :::x}}"
-				"$verticalGroup": "par l {seq {space :5:5:p, par l {comp jCheckBoxTabsTop:::p::p, comp jCheckBoxTabIcon:::p::p, comp cbAutomaticMenuTabSwitching:::p::p}}}"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
+				"$columnConstraints": "[fill][fill][fill]"
+				"$rowConstraints": "[][fill]"
 			} ) {
 				name: "jPanel5"
 				"border": new javax.swing.border.TitledBorder( "Tab-Verhalten" )
@@ -21,15 +22,28 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTabsTop"
 					"text": "Tabs oben anzeigen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTabIcon"
 					"text": "Icons anzeigen"
 					"toolTipText": "Im Tab keine Icons anzeigen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticMenuTabSwitching"
 					"text": "Tabs schalten automatisch bei Menünutzung um"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbRestoreSelectedTab"
+					"text": "Letzte Auswahl beim Start wiederherstellen"
+					"toolTipText": "Wenn gewählt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1 3 1"
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {

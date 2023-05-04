@@ -31,6 +31,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =
             "application.ui.install_tab_listeners";
+    public static final String APPLICATION_RESTORE_SELECTED_TAB = "application.ui.restore_selected_tab";
     public static final String APPLICATION_UI_TAB_POSITION_TOP = "application.ui.tab_position.top";
     public static final String APPLICATION_UI_MAINWINDOW_MAXIMIZED =
             "application.ui.mainwindow.maximized";

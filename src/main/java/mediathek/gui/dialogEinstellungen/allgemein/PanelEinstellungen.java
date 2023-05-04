@@ -7,6 +7,10 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTitledPanel;
@@ -130,6 +134,12 @@ public class PanelEinstellungen extends JPanel {
             cbAutomaticUpdateChecks.setEnabled(false);
             cbAutomaticUpdateChecks.setToolTipText("Diese Option ist deaktiviert, da ein externer Updater verwendet wird.");
         }
+
+        var restore = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false);
+        cbRestoreSelectedTab.setSelected(restore);
+        cbRestoreSelectedTab.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
+                cbRestoreSelectedTab.isSelected()));
     }
 
     private void setupTabSwitchListener() {
@@ -168,6 +178,7 @@ public class PanelEinstellungen extends JPanel {
         jCheckBoxTabsTop = new JCheckBox();
         jCheckBoxTabIcon = new JCheckBox();
         cbAutomaticMenuTabSwitching = new JCheckBox();
+        cbRestoreSelectedTab = new JCheckBox();
         var jPanel3 = new JPanel();
         var jLabel3 = new JLabel();
         jtfUserAgent = new JTextField();
@@ -192,39 +203,35 @@ public class PanelEinstellungen extends JPanel {
         //======== jPanel5 ========
         {
             jPanel5.setBorder(new TitledBorder("Tab-Verhalten")); //NON-NLS
+            jPanel5.setLayout(new MigLayout(
+                new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .gap()
+                    .fill()));
 
             //---- jCheckBoxTabsTop ----
             jCheckBoxTabsTop.setText("Tabs oben anzeigen"); //NON-NLS
+            jPanel5.add(jCheckBoxTabsTop, new CC().cell(0, 0));
 
             //---- jCheckBoxTabIcon ----
             jCheckBoxTabIcon.setText("Icons anzeigen"); //NON-NLS
             jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen"); //NON-NLS
+            jPanel5.add(jCheckBoxTabIcon, new CC().cell(1, 0));
 
             //---- cbAutomaticMenuTabSwitching ----
             cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um"); //NON-NLS
+            jPanel5.add(cbAutomaticMenuTabSwitching, new CC().cell(2, 0));
 
-            GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
-            jPanel5.setLayout(jPanel5Layout);
-            jPanel5Layout.setHorizontalGroup(
-                jPanel5Layout.createParallelGroup()
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jCheckBoxTabsTop)
-                        .addGap(5, 5, 5)
-                        .addComponent(jCheckBoxTabIcon)
-                        .addGap(5, 5, 5)
-                        .addComponent(cbAutomaticMenuTabSwitching)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-            jPanel5Layout.setVerticalGroup(
-                jPanel5Layout.createParallelGroup()
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(jPanel5Layout.createParallelGroup()
-                            .addComponent(jCheckBoxTabsTop)
-                            .addComponent(jCheckBoxTabIcon)
-                            .addComponent(cbAutomaticMenuTabSwitching)))
-            );
+            //---- cbRestoreSelectedTab ----
+            cbRestoreSelectedTab.setText("Letzte Auswahl beim Start wiederherstellen"); //NON-NLS
+            cbRestoreSelectedTab.setToolTipText("Wenn gew\u00e4hlt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."); //NON-NLS
+            jPanel5.add(cbRestoreSelectedTab, new CC().cell(0, 1, 3, 1));
         }
 
         //======== jPanel3 ========
@@ -372,7 +379,7 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -381,6 +388,7 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox jCheckBoxTabsTop;
     private JCheckBox jCheckBoxTabIcon;
     private JCheckBox cbAutomaticMenuTabSwitching;
+    private JCheckBox cbRestoreSelectedTab;
     private JTextField jtfUserAgent;
     private JTextField jtfProxyHost;
     private JTextField jtfProxyPort;

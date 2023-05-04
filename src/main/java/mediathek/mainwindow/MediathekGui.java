@@ -691,7 +691,8 @@ public class MediathekGui extends JFrame {
         tabbedPane.addTab(GuiFilme.NAME, tabFilme);
         tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
 
-        tabbedPane.restoreSavedTabPosition();
+        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false))
+            tabbedPane.restoreSavedTabPosition();
         tabbedPane.installChangeListener();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.CONFIGURE_TABS));
