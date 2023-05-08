@@ -38,6 +38,8 @@
 - **BUGFIX:** Beim Export von Filmlisten wird nun vorher geprüft, ob noch mindestesns 1 GB freier Speicher vorhanden ist.
 - **BUGFIX:** Behebung diverser Probleme in *Downloads/Alle Downloads zeitverzögert starten...*.
 - **BUGFIX:** *Download weiterführen* Dialog wird nun etwas tiefer auf dem Bildschirm als normal dargestellt um ungewollte Buttonclicks zu verhindern.
+- **BUGFIX:** *Download editieren*-Dialog wurde konform zum Kontextmenü in *Download ändern* umbenannt.
+- **BUGFIX:** *Download ändern*-Dialog zeigte manchmal Daten fehlerhaft an.
 - **FEATURE:** MediathekView kann sich nun beim Beenden das zuletzt sichtbare Tab merken und dieses beim Start wiederherstellen. Das Verhalten lässt sich in den Einstellungen konfigurieren.
 - **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
 - **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
@@ -62,6 +64,7 @@
 - **FEATURE:** Abos können per Doppelklick im *Abo verwalten*-Dialog editiert werden.
 - **FEATURE:** Länderflaggen werden in *Einstellungen/Standort & Geoblocking* dargestellt.
 - **FEATURE:** *Export/Dekomprimierte Filmliste* speichert eine Filmliste mit vollständigen Sender/Thema Tags ab.
+- **FEATURE:** *Download ändern*-Dialog speichert seine Größe und Position und stellt diese wieder her.
 
 <u>**13.9.1**</u>
 

@@ -1,5 +1,6 @@
 package mediathek.gui.dialog;
 
+import com.formdev.flatlaf.FlatLaf;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
@@ -47,20 +48,22 @@ public class DialogEditDownload extends JDialog {
     private final JCheckBox cbHighQuality = new JCheckBox();
     private final JCheckBox cbSubtitleAvailable = new JCheckBox();
     private final TableColumnModel columnModel;
+    private final GridBagLayout gridbag = new GridBagLayout();
 
-    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet, TableColumnModel colModel) {
+
+    public DialogEditDownload(JFrame parent, boolean modal, DatenDownload datenDownload, boolean started, TableColumnModel colModel) {
         super(parent, modal);
         initComponents();
         this.parent = parent;
-        datenDownload = ddownload;
-        gestartet = ggestartet;
+        this.datenDownload = datenDownload;
+        this.gestartet = started;
         columnModel = colModel;
 
         cbSubtitleAvailable.setEnabled(false);
         cbHighQuality.setEnabled(false);
 
-        orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
-        mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
+        orgProgArray = this.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
+        mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, this.datenDownload, false);
         mVPanelDownloadZiel.setBorder(BorderFactory.createLineBorder(new Color(204, 204, 204)));
         jRadioButtonResHd.addActionListener(e -> changeRes());
         jRadioButtonResHi.addActionListener(e -> changeRes());
@@ -91,6 +94,16 @@ public class DialogEditDownload extends JDialog {
                 saveLocation();
             }
         });
+    }
+
+    private Color getBlueColor() {
+        Color color;
+        if (FlatLaf.isLafDark()) {
+            color = UIManager.getColor("Hyperlink.linkColor");
+        } else
+            color = Color.BLUE;
+
+        return color;
     }
 
     private void restoreLocation() {
@@ -212,37 +225,59 @@ public class DialogEditDownload extends JDialog {
 
     private void setExtra() {
         jPanelExtra.removeAll();
-        GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
 
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
-        for (int i = 0; i < columnModel.getColumnCount(); ++i) {
+        var colCount = columnModel.getColumnCount();
+        for (int i = 0; i < colCount; ++i) {
+            //skip information that is not useful to the user...
+            if (doNotShow(i)) {
+                continue;
+            }
+            //do not show Abo information if there is none...
+            if (i == DatenDownload.DOWNLOAD_ABO && datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isEmpty())
+                continue;
+            //do not show geo information if not needed...
+            if (i == DatenDownload.DOWNLOAD_GEO && datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty())
+                continue;
+            //do not show subtitle url if it is empty...
+            if (i == DatenDownload.DOWNLOAD_URL_SUBTITLE && datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE].isEmpty())
+                continue;
+
             JLabel label = new JLabel("  " + columnModel.getColumn(i).getHeaderValue() + ": ");
             labelListe[i] = label;
             JTextField textfeld = new JTextField();
             textfeld.setEditable(false);
             textfeld.setText(datenDownload.arr[i]);
             textfeldListe[i] = textfeld;
-            addExtraFeld(i, gridbag, c);
+            addExtraFeld(i, c);
             ++zeile;
             c.gridy = zeile;
         }
         jPanelExtra.validate();
     }
 
-    private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c) {
-        //Label
-        c.gridx = 0;
-        c.weightx = 0;
-        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
+    private boolean doNotShow(int i) {
+        return i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
                 || i == DatenDownload.DOWNLOAD_URL_RTMP
                 || i == DatenDownload.DOWNLOAD_BUTTON_DEL || i == DatenDownload.DOWNLOAD_BUTTON_START
                 || i == DatenDownload.DOWNLOAD_REF
-                || i == DatenDownload.DOWNLOAD_BANDBREITE) {
-            // ist eigentlich Unsinn, es anzuzeigen
+                || i == DatenDownload.DOWNLOAD_BANDBREITE
+                || i == DatenDownload.DOWNLOAD_NR
+                || i == DatenDownload.DOWNLOAD_FILM_NR
+                || i == DatenDownload.DOWNLOAD_HISTORY_URL
+                || i == DatenDownload.DOWNLOAD_PROGRESS
+                || i == DatenDownload.DOWNLOAD_RESTZEIT;
+    }
+
+    private void addExtraFeld(int i, GridBagConstraints c) {
+        //Label
+        c.gridx = 0;
+        c.weightx = 0;
+        if (doNotShow(i)) {
             return;
         }
 
@@ -261,7 +296,7 @@ public class DialogEditDownload extends JDialog {
         } else {
             switch (i) {
                 case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-                    labelListe[i].setForeground(Color.BLUE);
+                    labelListe[i].setForeground(getBlueColor());
                     jCheckBoxRestart.setSelected(datenDownload.isRestart());
                     jCheckBoxRestart.addActionListener(new BeobCheckbox());
                     jCheckBoxRestart.setEnabled(!gestartet);
@@ -292,7 +327,7 @@ public class DialogEditDownload extends JDialog {
                     if (!datenDownload.isInterrupted()) {
                         return;
                     }
-                    labelListe[i].setForeground(Color.BLUE);
+                    labelListe[i].setForeground(getBlueColor());
                     jCheckBoxUnterbrochen.setSelected(datenDownload.isInterrupted());
                     jCheckBoxUnterbrochen.addActionListener(new BeobCheckbox());
                     jCheckBoxUnterbrochen.setEnabled(!gestartet);
@@ -304,7 +339,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxUnterbrochen);
                     break;
                 case DatenDownload.DOWNLOAD_INFODATEI:
-                    labelListe[i].setForeground(Color.BLUE);
+                    labelListe[i].setForeground(getBlueColor());
                     jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]));
                     jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
                     jCheckBoxInfodatei.setEnabled(!gestartet);
@@ -316,7 +351,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxInfodatei);
                     break;
                 case DatenDownload.DOWNLOAD_SUBTITLE:
-                    labelListe[i].setForeground(Color.BLUE);
+                    labelListe[i].setForeground(getBlueColor());
                     jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]));
                     jCheckBoxSubtitle.addActionListener(new BeobCheckbox());
                     jCheckBoxSubtitle.setEnabled(!gestartet);
@@ -328,7 +363,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxSubtitle);
                     break;
                 case DatenDownload.DOWNLOAD_SPOTLIGHT:
-                    labelListe[i].setForeground(Color.BLUE);
+                    labelListe[i].setForeground(getBlueColor());
                     jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT]));
                     jCheckBoxSpotlight.addActionListener(new BeobCheckbox());
                     jCheckBoxSpotlight.setEnabled(!gestartet);
@@ -374,7 +409,7 @@ public class DialogEditDownload extends JDialog {
                         // nur bei Downloads über ein Programm
                         if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].isEmpty()) {
                             // Aufruf über Array ist leer -> Win, Mac
-                            labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setForeground(Color.BLUE);
+                            labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setForeground(getBlueColor());
                             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].setEditable(!gestartet);// und wenn noch nicht gestartet
                             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF));
                             gridbag.setConstraints(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY], c);
@@ -385,7 +420,7 @@ public class DialogEditDownload extends JDialog {
                             jPanelExtra.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
                         } else {
                             // dann ist ein Array vorhanden -> Linux
-                            labelListe[i].setForeground(Color.BLUE);
+                            labelListe[i].setForeground(getBlueColor());
                             textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                             textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                             gridbag.setConstraints(labelListe[i], c);
@@ -436,47 +471,47 @@ public class DialogEditDownload extends JDialog {
                     break;
                 default:
                     switch (i) {
-                        case DatenDownload.DOWNLOAD_NR:
-                            textfeldListe[i].setText(String.valueOf(datenDownload.nr));
-                            break;
-                        case DatenDownload.DOWNLOAD_FILM_NR:
+                        case DatenDownload.DOWNLOAD_NR -> textfeldListe[i].setText(String.valueOf(datenDownload.nr));
+                        case DatenDownload.DOWNLOAD_FILM_NR -> {
                             if (datenDownload.film != null) {
                                 textfeldListe[i].setText(String.valueOf(datenDownload.film.getFilmNr()));
                             }
-                            break;
-                        case DatenDownload.DOWNLOAD_URL:
+                        }
+                        case DatenDownload.DOWNLOAD_URL -> {
                             if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                                 // nur bei direkten Downloads
-                                labelListe[i].setForeground(Color.BLUE);
+                                labelListe[i].setForeground(getBlueColor());
                                 textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                                 textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                             }
-                            break;
-                        case DatenDownload.DOWNLOAD_GROESSE:
-                            textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
-                            break;
-                        case DatenDownload.DOWNLOAD_PROGRESS:
-                            textfeldListe[i].setText(Start.getTextProgress(datenDownload.isDownloadManager(), datenDownload.start));
-                            break;
-                        case DatenDownload.DOWNLOAD_RESTZEIT:
-                            textfeldListe[i].setText(datenDownload.getTextRestzeit());
-                            break;
-                        case DatenDownload.DOWNLOAD_ART:
+                        }
+                        case DatenDownload.DOWNLOAD_GROESSE ->
+                                textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
+                        case DatenDownload.DOWNLOAD_PROGRESS ->
+                                textfeldListe[i].setText(Start.getTextProgress(datenDownload.isDownloadManager(), datenDownload.start));
+                        case DatenDownload.DOWNLOAD_RESTZEIT ->
+                                textfeldListe[i].setText(datenDownload.getTextRestzeit());
+                        case DatenDownload.DOWNLOAD_ART -> {
                             switch (datenDownload.art) {
-                                case DatenDownload.ART_DOWNLOAD -> textfeldListe[i].setText(DatenDownload.ART_DOWNLOAD_TXT);
-                                case DatenDownload.ART_PROGRAMM -> textfeldListe[i].setText(DatenDownload.ART_PROGRAMM_TXT);
+                                case DatenDownload.ART_DOWNLOAD ->
+                                        textfeldListe[i].setText(DatenDownload.ART_DOWNLOAD_TXT);
+                                case DatenDownload.ART_PROGRAMM ->
+                                        textfeldListe[i].setText(DatenDownload.ART_PROGRAMM_TXT);
                             }
-                            break;
-                        case DatenDownload.DOWNLOAD_QUELLE:
+                        }
+                        case DatenDownload.DOWNLOAD_QUELLE -> {
                             switch (datenDownload.quelle) {
-                                case DatenDownload.QUELLE_ALLE -> textfeldListe[i].setText(DatenDownload.QUELLE_ALLE_TXT);
+                                case DatenDownload.QUELLE_ALLE ->
+                                        textfeldListe[i].setText(DatenDownload.QUELLE_ALLE_TXT);
                                 case DatenDownload.QUELLE_ABO -> textfeldListe[i].setText(DatenDownload.QUELLE_ABO_TXT);
-                                case DatenDownload.QUELLE_BUTTON -> textfeldListe[i].setText(DatenDownload.QUELLE_BUTTON_TXT);
-                                case DatenDownload.QUELLE_DOWNLOAD -> textfeldListe[i].setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
+                                case DatenDownload.QUELLE_BUTTON ->
+                                        textfeldListe[i].setText(DatenDownload.QUELLE_BUTTON_TXT);
+                                case DatenDownload.QUELLE_DOWNLOAD ->
+                                        textfeldListe[i].setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                             }
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                        }
                     }
                     gridbag.setConstraints(labelListe[i], c);
                     jPanelExtra.add(labelListe[i]);
@@ -531,132 +566,6 @@ public class DialogEditDownload extends JDialog {
         return ok;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanelExtra = new javax.swing.JPanel();
-        jButtonOk = new javax.swing.JButton();
-        jButtonAbbrechen = new javax.swing.JButton();
-        jPanelRes = new javax.swing.JPanel();
-        javax.swing.JLabel jLabelRes = new javax.swing.JLabel();
-        jRadioButtonResHd = new javax.swing.JRadioButton();
-        jRadioButtonResHi = new javax.swing.JRadioButton();
-        jRadioButtonResLo = new javax.swing.JRadioButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Download editieren");
-        setMinimumSize(new java.awt.Dimension(500, 0));
-
-        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(jPanelExtraLayout);
-        jPanelExtraLayout.setHorizontalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelExtraLayout.setVerticalGroup(
-            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(jPanelExtra);
-
-        jButtonOk.setText("Ok");
-
-        jButtonAbbrechen.setText("Abbrechen");
-
-        jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jLabelRes.setText("Download-Qualität:");
-
-        buttonGroup1.add(jRadioButtonResHd);
-        jRadioButtonResHd.setText("Höchste/Hoch");
-
-        buttonGroup1.add(jRadioButtonResHi);
-        jRadioButtonResHi.setText("Mittel");
-
-        buttonGroup1.add(jRadioButtonResLo);
-        jRadioButtonResLo.setText("Niedrig");
-
-        javax.swing.GroupLayout jPanelResLayout = new javax.swing.GroupLayout(jPanelRes);
-        jPanelRes.setLayout(jPanelResLayout);
-        jPanelResLayout.setHorizontalGroup(
-            jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelResLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelRes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButtonResHd)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButtonResHi)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButtonResLo)
-                .addContainerGap(304, Short.MAX_VALUE))
-        );
-        jPanelResLayout.setVerticalGroup(
-            jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelResLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelRes)
-                    .addComponent(jRadioButtonResHd)
-                    .addComponent(jRadioButtonResHi)
-                    .addComponent(jRadioButtonResLo))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelRes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonAbbrechen)))
-                .addContainerGap())
-        );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelRes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonOk)
-                    .addComponent(jButtonAbbrechen))
-                .addContainerGap())
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonOk;
-    private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JPanel jPanelRes;
-    private javax.swing.JRadioButton jRadioButtonResHd;
-    private javax.swing.JRadioButton jRadioButtonResHi;
-    private javax.swing.JRadioButton jRadioButtonResLo;
-    private javax.swing.JScrollPane jScrollPane1;
-    // End of variables declaration//GEN-END:variables
-
     private class BeobachterDocumentTextfeld implements DocumentListener {
 
         int nr;
@@ -700,4 +609,104 @@ public class DialogEditDownload extends JDialog {
             datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = Boolean.toString(jCheckBoxSpotlight.isSelected());
         }
     }
+
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jPanelExtra = new javax.swing.JPanel();
+        jButtonOk = new javax.swing.JButton();
+        jButtonAbbrechen = new javax.swing.JButton();
+        jPanelRes = new javax.swing.JPanel();
+        jRadioButtonResHd = new javax.swing.JRadioButton();
+        jRadioButtonResHi = new javax.swing.JRadioButton();
+        jRadioButtonResLo = new javax.swing.JRadioButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Download ändern");
+        setMinimumSize(new java.awt.Dimension(500, 0));
+
+        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
+        jPanelExtra.setLayout(jPanelExtraLayout);
+        jPanelExtraLayout.setHorizontalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelExtraLayout.setVerticalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(jPanelExtra);
+
+        jButtonOk.setText("Ok");
+
+        jButtonAbbrechen.setText("Abbrechen");
+
+        jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder("Download-Qualität:"));
+        jPanelRes.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
+
+        buttonGroup1.add(jRadioButtonResHd);
+        jRadioButtonResHd.setText("Höchste/Hoch");
+        jPanelRes.add(jRadioButtonResHd);
+
+        buttonGroup1.add(jRadioButtonResHi);
+        jRadioButtonResHi.setText("Mittel");
+        jPanelRes.add(jRadioButtonResHi);
+
+        buttonGroup1.add(jRadioButtonResLo);
+        jRadioButtonResLo.setText("Niedrig");
+        jPanelRes.add(jRadioButtonResLo);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelRes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonAbbrechen)))
+                .addContainerGap())
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
+
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelRes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonOk)
+                    .addComponent(jButtonAbbrechen))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAbbrechen;
+    private javax.swing.JButton jButtonOk;
+    private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JPanel jPanelRes;
+    private javax.swing.JRadioButton jRadioButtonResHd;
+    private javax.swing.JRadioButton jRadioButtonResHi;
+    private javax.swing.JRadioButton jRadioButtonResLo;
+    // End of variables declaration//GEN-END:variables
 }
