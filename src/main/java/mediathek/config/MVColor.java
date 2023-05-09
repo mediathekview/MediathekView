@@ -92,6 +92,14 @@ public class MVColor {
         return getRegExPatternColor();
     }
 
+    public static Color getBlueColor() {
+        return getRegExPatternColor();
+    }
+
+    public static Color getSelectedColor() {
+        return getRegExPatternColor();
+    }
+
     /**
      * Return the alternating row color based on L&F setting.
      *

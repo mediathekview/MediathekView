@@ -1,6 +1,6 @@
 package mediathek.gui.dialog;
 
-import com.formdev.flatlaf.FlatLaf;
+import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
@@ -94,16 +94,6 @@ public class DialogEditDownload extends JDialog {
                 saveLocation();
             }
         });
-    }
-
-    private Color getBlueColor() {
-        Color color;
-        if (FlatLaf.isLafDark()) {
-            color = UIManager.getColor("Hyperlink.linkColor");
-        } else
-            color = Color.BLUE;
-
-        return color;
     }
 
     private void restoreLocation() {
@@ -296,7 +286,7 @@ public class DialogEditDownload extends JDialog {
         } else {
             switch (i) {
                 case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
-                    labelListe[i].setForeground(getBlueColor());
+                    labelListe[i].setForeground(MVColor.getBlueColor());
                     jCheckBoxRestart.setSelected(datenDownload.isRestart());
                     jCheckBoxRestart.addActionListener(new BeobCheckbox());
                     jCheckBoxRestart.setEnabled(!gestartet);
@@ -327,7 +317,7 @@ public class DialogEditDownload extends JDialog {
                     if (!datenDownload.isInterrupted()) {
                         return;
                     }
-                    labelListe[i].setForeground(getBlueColor());
+                    labelListe[i].setForeground(MVColor.getBlueColor());
                     jCheckBoxUnterbrochen.setSelected(datenDownload.isInterrupted());
                     jCheckBoxUnterbrochen.addActionListener(new BeobCheckbox());
                     jCheckBoxUnterbrochen.setEnabled(!gestartet);
@@ -339,7 +329,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxUnterbrochen);
                     break;
                 case DatenDownload.DOWNLOAD_INFODATEI:
-                    labelListe[i].setForeground(getBlueColor());
+                    labelListe[i].setForeground(MVColor.getBlueColor());
                     jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]));
                     jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
                     jCheckBoxInfodatei.setEnabled(!gestartet);
@@ -351,7 +341,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxInfodatei);
                     break;
                 case DatenDownload.DOWNLOAD_SUBTITLE:
-                    labelListe[i].setForeground(getBlueColor());
+                    labelListe[i].setForeground(MVColor.getBlueColor());
                     jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]));
                     jCheckBoxSubtitle.addActionListener(new BeobCheckbox());
                     jCheckBoxSubtitle.setEnabled(!gestartet);
@@ -363,7 +353,7 @@ public class DialogEditDownload extends JDialog {
                     jPanelExtra.add(jCheckBoxSubtitle);
                     break;
                 case DatenDownload.DOWNLOAD_SPOTLIGHT:
-                    labelListe[i].setForeground(getBlueColor());
+                    labelListe[i].setForeground(MVColor.getBlueColor());
                     jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT]));
                     jCheckBoxSpotlight.addActionListener(new BeobCheckbox());
                     jCheckBoxSpotlight.setEnabled(!gestartet);
@@ -409,7 +399,7 @@ public class DialogEditDownload extends JDialog {
                         // nur bei Downloads über ein Programm
                         if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].isEmpty()) {
                             // Aufruf über Array ist leer -> Win, Mac
-                            labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setForeground(getBlueColor());
+                            labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setForeground(MVColor.getBlueColor());
                             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].setEditable(!gestartet);// und wenn noch nicht gestartet
                             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF));
                             gridbag.setConstraints(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY], c);
@@ -420,7 +410,7 @@ public class DialogEditDownload extends JDialog {
                             jPanelExtra.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
                         } else {
                             // dann ist ein Array vorhanden -> Linux
-                            labelListe[i].setForeground(getBlueColor());
+                            labelListe[i].setForeground(MVColor.getBlueColor());
                             textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                             textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                             gridbag.setConstraints(labelListe[i], c);
@@ -480,7 +470,7 @@ public class DialogEditDownload extends JDialog {
                         case DatenDownload.DOWNLOAD_URL -> {
                             if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                                 // nur bei direkten Downloads
-                                labelListe[i].setForeground(getBlueColor());
+                                labelListe[i].setForeground(MVColor.getBlueColor());
                                 textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                                 textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                             }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
@@ -1084,7 +1083,7 @@ public class GuiFilme extends AGuiTabPanel {
         class ToggleSearchFieldToggleButton extends JToggleButton {
             public ToggleSearchFieldToggleButton() {
                 FlatSVGIcon selectedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
-                selectedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> getSelectedColor()));
+                selectedIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> MVColor.getSelectedColor()));
                 FlatSVGIcon normalIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/envelope-open-text.svg");
                 normalIcon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.GRAY));
                 setIcon(normalIcon);
@@ -1110,16 +1109,6 @@ public class GuiFilme extends AGuiTabPanel {
 
                     loadTable();
                 });
-            }
-
-            private Color getSelectedColor() {
-                Color color;
-                if (FlatLaf.isLafDark()) {
-                    color = UIManager.getColor("Hyperlink.linkColor");
-                } else
-                    color = Color.BLUE;
-
-                return color;
             }
 
             private void setupToolTip(boolean active) {
