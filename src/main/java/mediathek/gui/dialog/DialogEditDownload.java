@@ -612,12 +612,13 @@ public class DialogEditDownload extends JDialog {
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
-        jButtonOk = new javax.swing.JButton();
-        jButtonAbbrechen = new javax.swing.JButton();
         jPanelRes = new javax.swing.JPanel();
         jRadioButtonResHd = new javax.swing.JRadioButton();
         jRadioButtonResHi = new javax.swing.JRadioButton();
         jRadioButtonResLo = new javax.swing.JRadioButton();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        jButtonOk = new javax.swing.JButton();
+        jButtonAbbrechen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Download ändern");
@@ -636,10 +637,6 @@ public class DialogEditDownload extends JDialog {
 
         jScrollPane1.setViewportView(jPanelExtra);
 
-        jButtonOk.setText("Ok");
-
-        jButtonAbbrechen.setText("Abbrechen");
-
         jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder("Download-Qualität:"));
         jPanelRes.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
@@ -655,6 +652,12 @@ public class DialogEditDownload extends JDialog {
         jRadioButtonResLo.setText("Niedrig");
         jPanelRes.add(jRadioButtonResLo);
 
+        jButtonOk.setText("Ok");
+        jPanel1.add(jButtonOk);
+
+        jButtonAbbrechen.setText("Abbrechen");
+        jPanel1.add(jButtonAbbrechen);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -666,25 +669,18 @@ public class DialogEditDownload extends JDialog {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonAbbrechen)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelRes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonOk)
-                    .addComponent(jButtonAbbrechen))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
