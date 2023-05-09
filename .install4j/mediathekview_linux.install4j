@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="${install4j.version}" transformSequenceNumber="9">
+<install4j version="10.0.5" transformSequenceNumber="10">
   <directoryPresets config="${project.basedir}/.install4j" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
@@ -7,7 +7,7 @@
     </languages>
     <jreBundles jdkProviderId="Adoptium" release="${install4j.adoptium.jdk.version}" />
   </application>
-  <files preserveSymlinks="false">
+  <files>
     <mountPoints>
       <mountPoint id="58" />
     </mountPoints>
@@ -43,7 +43,7 @@
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
-      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" changeWorkingDirectory="false" />
       <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.linux.64}" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
