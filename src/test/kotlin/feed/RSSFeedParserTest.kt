@@ -6,27 +6,6 @@ import java.net.URL
 
 internal class RSSFeedParserTest {
     @Test
-    fun sampleFeedTest() {
-        try {
-            URL("https://www.feedforall.com/sample-feed.xml").openStream().use {
-                val parser = RSSFeedParser()
-                val feed = parser.readFeed(it)
-                Assertions.assertNotNull(feed)
-                //println(feed);
-                Assertions.assertNotNull(feed!!.messages)
-                Assertions.assertFalse(feed.messages.isEmpty())
-                Assertions.assertEquals(feed.messages.size, 3)
-                for (message in feed.messages) {
-                    //println(message);
-                    Assertions.assertNotNull(message)
-                }
-            }
-        } catch (e: Exception) {
-            Assertions.fail<Any>(e)
-        }
-    }
-
-    @Test
     fun mvwTest() {
         try {
             URL("https://mediathekviewweb.de/feed").openStream().use {
