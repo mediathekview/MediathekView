@@ -48,7 +48,7 @@ stages:
 Build and Deploy nightly Linux:
   stage: deploy-nightly-lin
   script:
-    - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
     - scripte/appimage.sh nightly
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
@@ -58,7 +58,7 @@ Build and Deploy nightly Linux:
 Build and Deploy nightly Linux ARM:
   stage: deploy-nightly-linarm
   script:
-    - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly linux-aarch64 $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -66,7 +66,7 @@ Build and Deploy nightly Linux ARM:
 Build and Deploy nightly Windows:
   stage: deploy-nightly-win
   script:
-    - mvn -B package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -74,7 +74,7 @@ Build and Deploy nightly Windows:
 # Build and Deploy nightly Windows 32bit:
 #   stage: deploy-nightly-win32
 #   script:
-#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
+#     - mvn package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
 #     - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -82,7 +82,7 @@ Build and Deploy nightly Windows:
 Build and Deploy nightly Mac Intel:
   stage: deploy-nightly-mac
   script:
-    - mvn -B package -P!linux_64bit,mac_intel $MAVEN_CLI_OPTS
+    - mvn package -P!linux_64bit,mac_intel $MAVEN_CLI_OPTS
     - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -90,7 +90,7 @@ Build and Deploy nightly Mac Intel:
 # Build and Deploy nightly Mac Apple Silicon:
 #   stage: deploy-nightly-mac-as
 #   script:
-#     - mvn -B package -P!linux_64bit,mac_apple_silicon $MAVEN_CLI_OPTS
+#     - mvn package -P!linux_64bit,mac_apple_silicon $MAVEN_CLI_OPTS
 #     - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
 #   rules:
 #     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
@@ -100,7 +100,7 @@ Build and Deploy nightly Mac Intel:
 Build and Deploy Linux:
   stage: deploy-lin
   script:
-    - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
     - scripte/appimage.sh release
     - /skripte/deploy.sh release linux
@@ -110,7 +110,7 @@ Build and Deploy Linux:
 Build and Deploy Linux ARM:
   stage: deploy-linarm
   script:
-    - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh release linux-aarch64
   rules:
     - if: $CI_COMMIT_TAG
@@ -118,7 +118,7 @@ Build and Deploy Linux ARM:
 Build and Deploy Windows:
   stage: deploy-win
   script:
-    - mvn -B package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
+    - mvn package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
     - /skripte/deploy.sh release win
   rules:
     - if: $CI_COMMIT_TAG
@@ -126,7 +126,7 @@ Build and Deploy Windows:
 # Build and Deploy Windows 32bit:
 #   stage: deploy-win32
 #   script:
-#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
+#     - mvn package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
 #     - /skripte/deploy.sh release win32
 #   rules:
 #     - if: $CI_COMMIT_TAG
