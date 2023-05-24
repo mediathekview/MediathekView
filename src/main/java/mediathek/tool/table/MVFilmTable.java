@@ -191,13 +191,12 @@ public class MVFilmTable extends MVTable {
             // do not sort buttons
             setSortable(DatenFilm.FILM_ABSPIELEN, false);
             setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
-            setSortable(DatenFilm.FILM_URL, false);
             //compare to FilmSize->int instead of String
             setComparator(DatenFilm.FILM_GROESSE, (Comparator<FilmSize>) FilmSize::compareTo);
             // deactivate german collator used in DatenFilm as it slows down sorting as hell...
             setComparator(DatenFilm.FILM_SENDER, (Comparator<String>) String::compareTo);
             setComparator(DatenFilm.FILM_ZEIT, (Comparator<String>) String::compareTo);
-            //setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
+            setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
             setComparator(DatenFilm.FILM_DAUER, Comparator.naturalOrder());
         }
 
