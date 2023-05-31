@@ -93,7 +93,6 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.2</controlsfx.version>
-        <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <flatlaf.version>3.1.1</flatlaf.version>
         <guava.version>31.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
@@ -735,27 +734,20 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>${copy-rename-maven-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-file</id>
+                                <id>download-ffmpeg-exe-from-server</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>copy</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg.exe</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.exe</destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg.txt</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.txt</destinationFile>
-                                        </fileSet>
-                                    </fileSets>
+                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.exe</url>
+                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
+                                    <md5>c075ca784ad26b3ad3f8f49474ee5187</md5>
                                 </configuration>
                             </execution>
                         </executions>
