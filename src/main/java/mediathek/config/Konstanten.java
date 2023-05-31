@@ -53,6 +53,7 @@ public class Konstanten {
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
     // MediathekView URLs
+    public static final HttpUrl LUCENE_CLIENT_HELP_URL = HttpUrl.get("https://github.com/mediathekview/MediathekView/blob/develop/lucene_help.md");
     public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
     public static final HttpUrl WEBSITE_BASE_URL = HttpUrl.get("https://mediathekview.de");
     public static final HttpUrl URL_MEDIATHEKVIEW_RESOURCES = HttpUrl.get("https://res.mediathekview.de");
