@@ -1050,23 +1050,32 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>${maven-resources-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-mac-binaries</id>
-                                <phase>validate</phase>
+                                <id>download-shutdown-helper-from-server</id>
+                                <phase>install</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/res/macOS/bin</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
+                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-intel-ffmpeg-from-server</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffmpeg</url>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <md5>9de5ebaae8f7ad4024a10345ee8d01d5</md5>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1168,23 +1177,32 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>${maven-resources-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-mac-binaries</id>
-                                <phase>validate</phase>
+                                <id>download-shutdown-helper-from-server</id>
+                                <phase>install</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/res/macOS/bin</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
+                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-apple-silicon-ffmpeg-from-server</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffmpeg</url>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <md5>7d60eebebb96059d2d3c3a0599cdefd2</md5>
                                 </configuration>
                             </execution>
                         </executions>
