@@ -740,7 +740,7 @@
                         <executions>
                             <execution>
                                 <id>download-ffmpeg-exe-from-server</id>
-                                <phase>generate-sources</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
