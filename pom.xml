@@ -1021,30 +1021,35 @@
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-controls</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-graphics</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
             <build>
@@ -1056,7 +1061,7 @@
                         <executions>
                             <execution>
                                 <id>download-shutdown-helper-from-server</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
@@ -1068,7 +1073,7 @@
                             </execution>
                             <execution>
                                 <id>download-intel-ffmpeg-from-server</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
@@ -1183,7 +1188,7 @@
                         <executions>
                             <execution>
                                 <id>download-shutdown-helper-from-server</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
@@ -1195,7 +1200,7 @@
                             </execution>
                             <execution>
                                 <id>download-apple-silicon-ffmpeg-from-server</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
