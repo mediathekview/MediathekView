@@ -66,3 +66,6 @@ See / Siehe [Contribution Guide](https://github.com/mediathekview/MediathekView/
 - [Forum](https://forum.mediathekview.de/)
 - [Anleitung](https://mediathekview.de/anleitung/)
 - [FAQ](https://mediathekview.de/faq/)
+
+# Credits
+- Die dargestellten Länderflaggen wurden von [Freepik](https://www.flaticon.com/authors/freepik) auf [www.flaticon.com](https://www.flaticon.com) erstellt.

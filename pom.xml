@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>13.9.1</version>
+    <version>14.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -62,6 +62,11 @@
         </repository>
 
         <repository>
+            <id>install4j repo</id>
+            <url>https://maven.ej-technologies.com/repository</url>
+        </repository>
+
+        <repository>
             <id>oss.sonatype.org-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -75,29 +80,28 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <jdk.language.version>17</jdk.language.version>
-        <kotlin.language.target>16</kotlin.language.target>
-        <kotlin.version>1.6.21</kotlin.version>
+        <java.version>20</java.version>
+        <jdk.language.version>20</jdk.language.version>
+        <kotlin.language.target>19</kotlin.language.target>
+        <kotlin.version>1.8.21</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
-        <annotations.version>22.0.0</annotations.version>
-        <assertj-core.version>3.21.0</assertj-core.version>
-        <commons-configuration2.version>2.7</commons-configuration2.version>
+        <annotations.version>23.1.0</annotations.version>
+        <assertj-core.version>3.23.1</assertj-core.version>
+        <commons-configuration2.version>2.9.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <controlsfx.version>11.1.1</controlsfx.version>
-        <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
-        <flatlaf.version>2.4-SNAPSHOT</flatlaf.version>
+        <controlsfx.version>11.1.2</controlsfx.version>
+        <flatlaf.version>3.1.1</flatlaf.version>
         <guava.version>31.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
-        <jackson.version>2.13.3</jackson.version>
-        <javafx.version>19-ea+7</javafx.version>
+        <jackson.version>2.14.1</jackson.version>
+        <javafx.version>20.0.1</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
-        <jna.version>5.11.0</jna.version>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
-        <log4j2.version>2.17.2</log4j2.version>
+        <jna.version>5.13.0</jna.version>
+        <junit.jupiter.version>5.9.0</junit.jupiter.version>
+        <log4j2.version>2.20.0</log4j2.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -110,57 +114,97 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.0</miglayout.version>
-        <mockito.version>4.2.0</mockito.version>
-        <okhttp.version>4.9.3</okhttp.version>
-        <okio.version>3.0.0</okio.version>
-        <picocli.version>4.6.3</picocli.version>
-        <sqlite-jdbc.version>3.36.0.3</sqlite-jdbc.version>
-        <tilesfx.version>17.1.6</tilesfx.version>
+        <mockito.version>4.10.0</mockito.version>
+        <okhttp.version>5.0.0-alpha.10</okhttp.version>
+        <picocli.version>4.7.0</picocli.version>
+        <sqlite-jdbc.version>3.41.2.1</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
         <!-- Adoptium (Eclipse Temurin runtime, formerly AdoptOpenJDK) is used for Windows and Linux 64bit -->
-        <install4j.adoptium.jdk.version>17/jdk-17.0.2+8</install4j.adoptium.jdk.version>
-        <!-- Liberica includes JavaFX and is used for Arm and 32bit -->
-        <install4j.liberica.jdk.version>17/17.0.2+9</install4j.liberica.jdk.version>
-        <install4j.jdk.min-version>17</install4j.jdk.min-version>
+        <install4j.adoptium.jdk.version>20/jdk-20.0.1+9</install4j.adoptium.jdk.version>
+        <!-- Zulu without JavaFX is used on AArch64 ARM 64 bit linux -->
+        <install4j.zulu.jdk.version>20/20.0.1</install4j.zulu.jdk.version>
+        <install4j.jdk.min-version>20</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
             -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.win.64>
-        <!-- VM Parameters Linux x64 -->
+        <!-- VM Parameters Linux 64bit Intel and ARM -->
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
             -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
             -Dfile.encoding=UTF-8 -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
-        <!-- VM Parameters Windows x32 -->
-        <install4j.vmparameters.win.32>-Xmx1G -Xss1048576 -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=100.0
-            -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -DexternalUpdateCheck
-            --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
-            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED
-            --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED
-            --add-exports javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED
-        </install4j.vmparameters.win.32>
-        <!-- VM Parameters Linux x32 -->
-        <install4j.vmparameters.linux.32>-Xmx1280M -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8
-            -DexternalUpdateCheck --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED
-            --add-exports javafx.base/com.sun.javafx.event=ALL-UNNAMED --add-exports
-            javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports
-            javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
-        </install4j.vmparameters.linux.32>
 
-        <install4j.home>./install4j9.0.5</install4j.home>
+        <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_9}</install4j.licenseKey>
+        <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
+        <install4j.version>10.0.5</install4j.version>
+        <lucene.version>9.5.0</lucene.version>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>com.github.lgooddatepicker</groupId>
+            <artifactId>LGoodDatePicker</artifactId>
+            <version>11.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.install4j</groupId>
+            <artifactId>install4j-runtime</artifactId>
+            <version>${install4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-all</artifactId>
+            <version>1.6.5-1</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-swingx</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-jide-oss</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>jide-oss</artifactId>
+            <version>3.7.12</version>
         </dependency>
 
         <dependency>
@@ -186,30 +230,14 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.hansolo</groupId>
-            <artifactId>tilesfx</artifactId>
-            <version>${tilesfx.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
+            <artifactId>jna-jpms</artifactId>
             <version>${jna.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
+            <artifactId>jna-platform-jpms</artifactId>
             <version>${jna.version}</version>
         </dependency>
 
@@ -330,11 +358,6 @@
 
         <dependency>
             <groupId>com.github.jiconfont</groupId>
-            <artifactId>jiconfont-swing</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-javafx</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -348,24 +371,6 @@
             <groupId>net.engio</groupId>
             <artifactId>mbassador</artifactId>
             <version>1.3.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio</artifactId>
-            <version>${okio.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-stdlib-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio-jvm</artifactId>
-            <version>${okio.version}</version>
         </dependency>
 
         <dependency>
@@ -463,11 +468,6 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
@@ -550,9 +550,6 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
-                            <args>
-                                <arg>-Xuse-ir</arg>
-                            </args>
                         </configuration>
                     </execution>
                     <execution>
@@ -566,9 +563,6 @@
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
-                            <args>
-                                <arg>-Xuse-ir</arg>
-                            </args>
                         </configuration>
                     </execution>
                 </executions>
@@ -720,12 +714,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
@@ -746,27 +734,20 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>${copy-rename-maven-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-file</id>
-                                <phase>generate-sources</phase>
+                                <id>download-ffmpeg-exe-from-server</id>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>copy</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg.exe</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.exe</destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg.txt</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.txt</destinationFile>
-                                        </fileSet>
-                                    </fileSets>
+                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.exe</url>
+                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
+                                    <md5>c075ca784ad26b3ad3f8f49474ee5187</md5>
                                 </configuration>
                             </execution>
                         </executions>
@@ -810,89 +791,22 @@
         </profile>
 
         <profile>
-            <id>windows_32bit</id>
+            <!-- Does not include ffmpeg and install4j is also not ready.
+                For local test purposes only.
+            -->
+            <id>windows_arm64</id>
             <activation>
                 <os>
                     <family>windows</family>
-                    <arch>x86</arch>
+                    <arch>aarch64</arch>
                 </os>
             </activation>
             <properties>
                 <javafx.platform>win</javafx.platform>
-                <install4j.platform>windows32</install4j.platform>
+                <install4j.platform>windows</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>${copy-rename-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy-file</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg32.exe</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.exe</destinationFile>
-                                        </fileSet>
-                                        <fileSet>
-                                            <sourceFile>res/bin/ffmpeg32.txt</sourceFile>
-                                            <destinationFile>target/res/bin/ffmpeg.txt</destinationFile>
-                                        </fileSet>
-                                    </fileSets>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
@@ -959,12 +873,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
@@ -1026,7 +934,7 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux</javafx.platform>
+                <javafx.platform>linux-aarch64</javafx.platform>
                 <install4j.platform>arm</install4j.platform>
             </properties>
             <dependencies>
@@ -1035,42 +943,30 @@
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-controls</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-graphics</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
                 </dependency>
             </dependencies>
             <build>
@@ -1125,58 +1021,66 @@
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-controls</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-graphics</artifactId>
                     <version>${javafx.version}</version>
                     <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>${maven-resources-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-mac-binaries</id>
-                                <phase>validate</phase>
+                                <id>download-shutdown-helper-from-server</id>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/res/macOS/bin</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
+                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-intel-ffmpeg-from-server</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffmpeg</url>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <md5>9de5ebaae8f7ad4024a10345ee8d01d5</md5>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1259,11 +1163,6 @@
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-media</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
                     <artifactId>javafx-swing</artifactId>
                     <version>${javafx.version}</version>
                 </dependency>
@@ -1283,23 +1182,32 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>${maven-resources-plugin.version}</version>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>copy-mac-binaries</id>
-                                <phase>validate</phase>
+                                <id>download-shutdown-helper-from-server</id>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>wget</goal>
                                 </goals>
                                 <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/res/macOS/bin</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
+                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-apple-silicon-ffmpeg-from-server</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffmpeg</url>
+                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                                    <md5>7d60eebebb96059d2d3c3a0599cdefd2</md5>
                                 </configuration>
                             </execution>
                         </executions>

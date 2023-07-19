@@ -3,6 +3,7 @@ package mediathek.filmlisten.writer;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
@@ -11,6 +12,7 @@ import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -20,14 +22,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class FilmListWriter {
 
     private static final Logger logger = LogManager.getLogger(FilmListWriter.class);
     private static final String TAG_JSON_LIST = "X";
+    private final boolean readable;
     private String sender = "";
     private String thema = "";
-    private final boolean readable;
+    private boolean compressSenderTag = true;
+    private boolean compressThemaTag = true;
 
     public FilmListWriter(boolean readable) {
         this.readable = readable;
@@ -54,7 +59,7 @@ public class FilmListWriter {
     }
 
     private void writeFormatHeader(JsonGenerator jg, ListeFilme listeFilme) throws IOException {
-        final var meta = listeFilme.metaData();
+        final var meta = listeFilme.getMetaData();
 
         jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
         jg.writeString(""); //ListeFilme.FILMLISTE_DATUM_NR unused in newer versions
@@ -136,24 +141,55 @@ public class FilmListWriter {
         writeTitel(jg, datenFilm);
         jg.writeString(datenFilm.getSendeDatum());
         writeZeit(jg, datenFilm);
-        jg.writeString(datenFilm.getDauer());
-        jg.writeString(datenFilm.getSize());
+        jg.writeString(datenFilm.getFilmLengthAsString());
+        jg.writeString(datenFilm.getFileSize().toString());
         jg.writeString(datenFilm.getDescription());
         jg.writeString(datenFilm.getUrlNormalQuality());
-        jg.writeString(datenFilm.getWebsiteLink());
-        jg.writeString(datenFilm.getUrlSubtitle());
+        jg.writeString(datenFilm.getWebsiteUrl());
+        jg.writeString(datenFilm.getSubtitleUrl());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-        jg.writeString(datenFilm.getUrlLowQuality());
+        writeLowQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        jg.writeString(datenFilm.getUrlHighQuality());
+        writeHighQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
         jg.writeString(datenFilm.getDatumLong());
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
-        jg.writeString(datenFilm.getGeo().orElse(""));
+        if (datenFilm.countrySet.isEmpty())
+            jg.writeString("");
+        else
+            jg.writeString(datenFilm.countrySet.stream().map(Country::toString).collect(Collectors.joining("-")));
         jg.writeString(Boolean.toString(datenFilm.isNew()));
 
         jg.writeEndArray();
     }
+
+    private void writeLowQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
+        String url = datenFilm.getLowQualityUrl();
+        if (decompressUrls) {
+            if (DatenFilm.isCompressedUrl(url)) {
+                url = datenFilm.decompressUrl(url);
+            }
+        }
+
+        jg.writeString(url);
+    }
+
+    private void writeHighQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) throws IOException {
+        String url = datenFilm.getHighQualityUrl();
+        if (decompressUrls) {
+            if (DatenFilm.isCompressedUrl(url)) {
+                url = datenFilm.decompressUrl(url);
+            }
+        }
+
+        jg.writeString(url);
+    }
+
+    public void setDecompressUrls(boolean decompressUrls) {
+        this.decompressUrls = decompressUrls;
+    }
+
+    private boolean decompressUrls;
 
     private void skipEntry(JsonGenerator jg) throws IOException {
         jg.writeString("");
@@ -166,21 +202,37 @@ public class FilmListWriter {
     private void writeSender(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
         String tempSender = datenFilm.getSender();
 
-        if (tempSender.equals(sender)) {
-            jg.writeString("");
-        } else {
-            sender = tempSender;
-            jg.writeString(tempSender);
+        if (compressSenderTag) {
+            if (tempSender.equals(sender)) {
+                jg.writeString("");
+            } else {
+                sender = tempSender;
+                jg.writeString(tempSender);
+            }
         }
+        else
+            jg.writeString(tempSender);
+    }
+
+    public void setCompressThemaTag(boolean compressThemaTag) {
+        this.compressThemaTag = compressThemaTag;
+    }
+
+    public void setCompressSenderTag(boolean compress) {
+        compressSenderTag = compress;
     }
 
     private void writeThema(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
-        if (datenFilm.getThema().equals(thema)) {
-            jg.writeString("");
-        } else {
-            thema = datenFilm.getThema();
-            jg.writeString(datenFilm.getThema());
+        if (compressThemaTag) {
+            if (datenFilm.getThema().equals(thema)) {
+                jg.writeString("");
+            } else {
+                thema = datenFilm.getThema();
+                jg.writeString(datenFilm.getThema());
+            }
         }
+        else
+            jg.writeString(datenFilm.getThema());
     }
 
     private void writeZeit(JsonGenerator jg, DatenFilm datenFilm) throws IOException {

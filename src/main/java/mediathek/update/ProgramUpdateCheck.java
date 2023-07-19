@@ -1,13 +1,13 @@
 package mediathek.update;
 
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.NetUtils;
 import mediathek.tool.TimerPool;
@@ -113,13 +113,11 @@ public class ProgramUpdateCheck implements AutoCloseable {
                 //we have internet...
                 SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 
-                var externalUpdateCheck = System.getProperty(Konstanten.EXTERNAL_UPDATE_PROPERTY);
-                if (externalUpdateCheck == null || !externalUpdateCheck.equalsIgnoreCase("true")) {
+                if (GuiFunktionen.isNotUsingExternalUpdater()) {
                     searchForProgramUpdate();
                 }
-                else {
+                else
                     logger.info("External Update Mechanism in use -> skip program update check");
-                }
 
                 checkForPsetUpdates();
             } else

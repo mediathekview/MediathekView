@@ -3,17 +3,7 @@ package mediathek.gui.tabs.tab_downloads;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TabPane;
-import javafx.stage.Modality;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.MVUsedUrl;
@@ -24,17 +14,13 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.TabPaneIndex;
-import mediathek.gui.actions.ShowFilmInformationAction;
+import mediathek.gui.actions.*;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
-import mediathek.gui.toolbar.FXDownloadToolBar;
-import mediathek.javafx.descriptionPanel.DescriptionPanelController;
-import mediathek.javafx.downloadtab.DownloadTabInformationLabel;
-import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -51,6 +37,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.JXStatusBar;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -65,23 +52,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class GuiDownloads extends AGuiTabPanel {
     public static final String NAME = "Downloads";
+    public static final int DIVIDER_LOCATION = -1;
     private static final String COMBO_DISPLAY_ALL = "alle";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-
     private static final String COMBO_VIEW_ALL = "alle";
     private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
     private static final String COMBO_VIEW_STARTED = "gestartet";
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
-
-    private static final String MENU_ITEM_TEXT_CLEANUP_DOWNLOADS = "Liste säubern";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
     private static final String ACTION_MAP_KEY_MARK_AS_SEEN = "seen";
@@ -90,18 +75,41 @@ public class GuiDownloads extends AGuiTabPanel {
     private final static int[] COLUMNS_DISABLED = {DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_URL_RTMP};
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
-    private static final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-            + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>"
-            + "<body>";
-    private static final String END = "</body></html>";
     private final AtomicLong _lastUpdate = new AtomicLong(0);
-    private final AtomicBoolean tabVisible = new AtomicBoolean(false);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private final JXStatusBar statusBar = new JXStatusBar();
+    private final DownloadStartInfoProperty startInfoProperty = new DownloadStartInfoProperty();
+    private final AboLabel lblAbos = new AboLabel(startInfoProperty);
+    private final TotalDownloadsLabel totalDownloadsLabel = new TotalDownloadsLabel(startInfoProperty);
+    private final ManualDownloadsInfoLabel manualDownloadsInfoLabel = new ManualDownloadsInfoLabel(startInfoProperty);
+    private final WaitingDownloadsInfoLabel waitingDownloadsInfoLabel = new WaitingDownloadsInfoLabel(startInfoProperty);
+    private final ActiveDownloadsInfoLabel activeDownloadsInfoLabel = new ActiveDownloadsInfoLabel(startInfoProperty);
+    private final FinishedDownloadsInfoLabel finishedDownloadsInfoLabel = new FinishedDownloadsInfoLabel(startInfoProperty);
+    private final FailedDownloadsInfoLabel failedDownloadsInfoLabel = new FailedDownloadsInfoLabel(startInfoProperty);
+    private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
+    protected StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
+    protected StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
+    protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
+    protected StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
+    protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
+    protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
+    protected InvertSelectionAction invertSelectionAction = new InvertSelectionAction(this);
+    protected PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
+    protected StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
+    protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
+    protected DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
+    protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
+    protected DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
+    protected EditDownloadAction editDownloadAction = new EditDownloadAction(this);
+    protected DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
+    protected OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
+    protected ToggleFilterPanelAction toggleFilterPanelAction = new ToggleFilterPanelAction();
+    protected JToolBar swingToolBar = new JToolBar();
     private boolean onlyAbos;
     private boolean onlyDownloads;
-
     private boolean onlyWaiting;
     private boolean onlyNotStarted;
     private boolean onlyStarted;
@@ -112,28 +120,38 @@ public class GuiDownloads extends AGuiTabPanel {
      * The internally used model.
      */
     private TModelDownload model;
-    private DownloadTabInformationLabel filmInfoLabel;
     private MVDownloadsTable tabelle;
+    private JSplitPane jSplitPane1;
+    private JPanel jPanelFilterExtern;
+    private JComboBox<String> cbDisplayCategories;
+    private JComboBox<String> cbView;
+    private JButton btnClear;
+    private JScrollPane downloadListScrollPane;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
+        descriptionPanel = new FilmDescriptionPanel(this);
+
 
         initComponents();
+        // use rounded combo boxes
+        cbDisplayCategories.putClientProperty( "JComponent.roundRect", true );
+        cbView.putClientProperty( "JComponent.roundRect", true );
+
+        setupDownloadListStatusBar();
 
         setupF4Key(mediathekGui);
 
         setupDownloadListTable();
-        setupDescriptionPanel();
 
-        showDescriptionPanel();
+        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
 
         init();
 
-        installTabInfoStatusBarControl();
-
-        setupFilmSelectionPropertyListener(mediathekGui);
+        setupFilmSelectionPropertyListener();
+        setupDownloadSizeSelectionUpdater();
 
         initTable();
 
@@ -142,16 +160,20 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupCheckboxView();
 
-        setupToolBar();
-
-        setupDownloadRateLimitSpinner();
-
         setupFilterPanel();
-
-        setupComponentListener();
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+    }
+
+    private void setupDownloadListStatusBar() {
+        statusBar.add(totalDownloadsLabel);
+        statusBar.add(lblAbos);
+        statusBar.add(manualDownloadsInfoLabel);
+        statusBar.add(activeDownloadsInfoLabel);
+        statusBar.add(waitingDownloadsInfoLabel);
+        statusBar.add(finishedDownloadsInfoLabel);
+        statusBar.add(failedDownloadsInfoLabel);
     }
 
     @Override
@@ -159,34 +181,6 @@ public class GuiDownloads extends AGuiTabPanel {
         if (tabelle != null) {
             tabelle.writeTableConfigurationData();
         }
-    }
-
-    private void setupToolBar() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            var toolBar = new FXDownloadToolBar();
-            toolBar.btnFilmInfo.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().getFilmInfoDialog().showInfo()));
-            toolBar.btnUpdateDownloads.setOnAction(e -> SwingUtilities.invokeLater(this::updateDownloads));
-            toolBar.btnStartAllDownloads.setOnAction(e -> SwingUtilities.invokeLater(() -> starten(true)));
-            toolBar.btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(this::filmAbspielen));
-            toolBar.btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(false)));
-            toolBar.btnRemoveDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> downloadLoeschen(true)));
-            toolBar.btnCleanup.setOnAction(e -> SwingUtilities.invokeLater(this::cleanupDownloads));
-            toolBar.btnFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> MessageBus.getMessageBus().publishAsync(new DownloadFilterVisibilityChangedEvent())));
-
-            Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-                @Override
-                public void start(ListenerFilmeLadenEvent event) {
-                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(true));
-                }
-
-                @Override
-                public void fertig(ListenerFilmeLadenEvent event) {
-                    Platform.runLater(() -> toolBar.btnUpdateDownloads.setDisable(false));
-                }
-            });
-
-            toolBarPanel.setScene(new Scene(toolBar));
-        });
     }
 
     private void setupF4Key(MediathekGui mediathekGui) {
@@ -204,51 +198,54 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    /**
-     * Update the property with the current number of selected entries from the JTable.
-     */
-    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
-        tabelle.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
-            }
-        });
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                final int sel = tabelle.getSelectedRowCount();
-                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
-                onComponentShown();
+    private void updateFilmSizes(int[] rows) {
+        boolean updateNeeded = false;
+
+        for (var row : rows) {
+            var indexRow = tabelle.convertRowIndexToModel(row);
+            var listeDownloads = daten.getListeDownloads();
+            var dlInfo = listeDownloads.get(indexRow);
+            if (dlInfo != null) {
+                if (dlInfo.mVFilmSize.getSize() != 0)
+                    continue;
+
+                if (dlInfo.film != null) {
+                    var oldSize = dlInfo.mVFilmSize.getSize();
+                    dlInfo.queryLiveSize();
+                    if (dlInfo.mVFilmSize.getSize() != oldSize)
+                        updateNeeded = true;
+                }
+            } else
+                logger.error("Could not get download object");
+        }
+
+        if (updateNeeded)
+            reloadTable();
+    }
+
+    private void setupDownloadSizeSelectionUpdater() {
+        tabelle.getSelectionModel().addListSelectionListener(l -> {
+            if (!l.getValueIsAdjusting()) {
+                var rows = tabelle.getSelectedRows();
+                updateFilmSizes(rows);
             }
         });
     }
 
-    @Override
-    protected void installTabInfoStatusBarControl() {
-        final var leftItems = mediathekGui.getStatusBarController().getStatusBar().getLeftItems();
-
-        Platform.runLater(() -> {
-            filmInfoLabel = new DownloadTabInformationLabel(daten);
-            if (isVisible())
-                leftItems.add(filmInfoLabel);
+    /**
+     * Update the property with the current number of selected entries from the JTable.
+     */
+    private void setupFilmSelectionPropertyListener() {
+        tabelle.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                updateSelectedListItemsCount(tabelle);
+            }
         });
-
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(true);
-                    leftItems.add(filmInfoLabel);
-                });
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                Platform.runLater(() -> {
-                    filmInfoLabel.setVisible(false);
-                    leftItems.remove(filmInfoLabel);
-                });
+                updateSelectedListItemsCount(tabelle);
+                onComponentShown();
             }
         });
     }
@@ -281,56 +278,37 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void setupComponentListener() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                tabVisible.set(true);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                tabVisible.set(false);
-            }
-        });
-    }
-
     private void setupFilterPanel() {
         final boolean visible = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS);
         updateFilterVisibility(visible);
 
-        var config = ApplicationConfiguration.getConfiguration();
-
-        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
-        jSplitPane1.setDividerLocation(location);
+        setSplitDividerLocation();
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jPanelFilterExtern.isVisible()) {
-                config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION,jSplitPane1.getDividerLocation());
+                config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, jSplitPane1.getDividerLocation());
             }
         });
     }
 
-    @Handler
-    private void handleParallelDownloadNumberChange(ParallelDownloadNumberChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
-            jSpinnerAnzahlDownloads.setValue(maxNumDownloads);
-        });
-    }
-
-    @Handler
-    private void handleDownloadFilterVisibilityChanged(DownloadFilterVisibilityChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            boolean visibility = !jPanelFilterExtern.isVisible();
-            updateFilterVisibility(visibility);
-            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(visibility));
-        });
+    protected void toggleDownloadFilterPanel() {
+        boolean visibility = !jPanelFilterExtern.isVisible();
+        updateFilterVisibility(visibility);
+        MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(visibility));
     }
 
     private void updateFilterVisibility(boolean visible) {
         jPanelFilterExtern.setVisible(visible);
         if (visible) {
-            final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
+            setSplitDividerLocation();
+        }
+    }
+
+    private void setSplitDividerLocation() {
+        var location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, DIVIDER_LOCATION);
+        if (location == DIVIDER_LOCATION) {
+            jSplitPane1.resetToPreferredSizes();
+        }
+        else {
             jSplitPane1.setDividerLocation(location);
         }
     }
@@ -353,89 +331,12 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    @Handler
-    private void handleDownloadInfoUpdate(DownloadInfoUpdateAvailableEvent e) {
-        if (tabVisible.get()) {
-            SwingUtilities.invokeLater(() -> {
-                if (txtDownload.isShowing())
-                    setInfoText();
-            });
-        }
-    }
-
-    private void setupDownloadRateLimitSpinner() {
-        //restore spinner setting from config
-        final int oldDownloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
-        jSpinner1.setValue(oldDownloadLimit);
-
-        jSpinner1.addChangeListener(e -> {
-            final int downloadLimit = (int) jSpinner1.getValue();
-            logger.info("Saving download rate limit {} to config", downloadLimit);
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, downloadLimit);
-            DownloadRateLimitChangedEvent evt = new DownloadRateLimitChangedEvent();
-            evt.newLimit = downloadLimit;
-            MessageBus.getMessageBus().publishAsync(evt);
-        });
+    public MVDownloadsTable getTableComponent() {
+        return tabelle;
     }
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miDownloadsStartAll = new JMenuItem("Alle Downloads starten");
-        miDownloadsStartAll.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
-        miDownloadsStartAll.addActionListener(e -> starten(true));
-
-        JMenuItem miDownloadStartTimed = new JMenuItem("Alle Downloads zeitverzögert starten...");
-        miDownloadStartTimed.addActionListener(e -> startAllDownloadsAtSpecificTime());
-
-        JMenuItem miStopAllDownloads = new JMenuItem("Alle Downloads stoppen");
-        miStopAllDownloads.addActionListener(e -> stoppen(true));
-
-        JMenuItem miStopWaitingDownloads = new JMenuItem("Wartende Downloads stoppen");
-        miStopWaitingDownloads.addActionListener(e -> stopAllWaitingDownloads());
-
-        JMenuItem miUpdateDownloads = new JMenuItem("Liste der Downloads aktualisieren");
-        miUpdateDownloads.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
-        miUpdateDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-        miUpdateDownloads.addActionListener(e -> updateDownloads());
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                miUpdateDownloads.setEnabled(false);
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                miUpdateDownloads.setEnabled(true);
-            }
-        });
-
-        JMenuItem miCleanupDownloads = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
-        miCleanupDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
-        miCleanupDownloads.addActionListener(e -> cleanupDownloads());
-
-        JMenuItem miStartDownloads = new JMenuItem("Ausgewählte Downloads starten");
-        miStartDownloads.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
-        miStartDownloads.addActionListener(e -> starten(false));
-
-        JMenuItem miStopDownloads = new JMenuItem("Ausgewählte Downloads stoppen");
-        miStopDownloads.addActionListener(e -> stoppen(false));
-
-        JMenuItem miDownloadsVorziehen = new JMenuItem("Downloads vorziehen");
-        miDownloadsVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
-        miDownloadsVorziehen.addActionListener(e -> downloadsVorziehen());
-
-        JMenuItem miDownloadsZurueckstellen = new JMenuItem("Downloads zurückstellen");
-        miDownloadsZurueckstellen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
-        miDownloadsZurueckstellen.addActionListener(e -> downloadLoeschen(false));
-
-        JMenuItem miDownloadsLoeschen = new JMenuItem("Downloads aus Liste entfernen");
-        miDownloadsLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-        miDownloadsLoeschen.addActionListener(e -> downloadLoeschen(true));
-
-        JMenuItem miEditDownload = new JMenuItem("Download ändern");
-        miEditDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-        miEditDownload.addActionListener(e -> editDownload());
-
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
         miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
@@ -444,79 +345,30 @@ public class GuiDownloads extends AGuiTabPanel {
         miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
 
-        JMenuItem miPlayDownload = new JMenuItem("Gespeicherten Film abspielen");
-        miPlayDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-        miPlayDownload.addActionListener(e -> filmAbspielen());
-
-        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
-        miInvertSelection.addActionListener(e -> tabelle.invertSelection());
-
-        JMenuItem miShutdownAfterDownload = new JMenuItem("Aktion nach abgeschlossenen Downloads...");
-        miShutdownAfterDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.POWER_OFF, 16));
-        miShutdownAfterDownload.addActionListener(e -> {
-            if (daten.getListeDownloads().unfinishedDownloads() > 0) {
-                // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                mediathekGui.beenden(true, false);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Die Downloads müssen zuerst gestartet werden.",
-                        "Keine laufenden Downloads",
-                        JOptionPane.ERROR_MESSAGE);
-
-            }
-        });
-
-        menu.add(miDownloadsStartAll);
-        menu.add(miDownloadStartTimed);
-        menu.add(miStopAllDownloads);
-        menu.add(miStopWaitingDownloads);
-        menu.add(miUpdateDownloads);
-        menu.add(miCleanupDownloads);
+        menu.add(startAllDownloadsAction);
+        menu.add(startAllDownloadsTimedAction);
+        menu.add(stopAllDownloadsAction);
+        menu.add(stopAllWaitingDownloadsAction);
+        menu.add(refreshDownloadListAction);
+        menu.add(cleanupDownloadListAction);
         menu.addSeparator();
-        menu.add(miStartDownloads);
-        menu.add(miStopDownloads);
-        menu.add(miDownloadsVorziehen);
-        menu.add(miDownloadsZurueckstellen);
-        menu.add(miDownloadsLoeschen);
-        menu.add(miEditDownload);
+        menu.add(startDownloadsAction);
+        menu.add(stopDownloadsAction);
+        menu.add(advanceDownloadsAction);
+        menu.add(deferDownloadsAction);
+        menu.add(deleteDownloadsAction);
+        menu.add(editDownloadAction);
         menu.addSeparator();
         menu.add(cbShowDownloadDescription);
         menu.addSeparator();
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
-        menu.add(miPlayDownload);
+        menu.add(playDownloadAction);
         menu.addSeparator();
-        menu.add(miInvertSelection);
-        menu.addSeparator();
-        menu.add(miShutdownAfterDownload);
-    }
-
-    private void setupDescriptionPanel() {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Konstanten.FXML_FILM_DESCRIPTION_PANEL_URL);
-
-                TabPane descriptionPane = loader.load();
-                final DescriptionPanelController descriptionPanelController = loader.getController();
-                descriptionPanelController.setOnCloseRequest(e -> {
-                    SwingUtilities.invokeLater(() -> fxDescriptionPanel.setVisible(false));
-                    e.consume();
-                });
-
-                fxDescriptionPanel.setScene(new Scene(descriptionPane));
-                SwingUtilities.invokeLater(() -> tabelle.getSelectionModel().addListSelectionListener(e -> {
-                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
-                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
-                }));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        menu.add(invertSelectionAction);
     }
 
     public void onComponentShown() {
-        mediathekGui.tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 
@@ -527,10 +379,6 @@ public class GuiDownloads extends AGuiTabPanel {
     public void stoppen(boolean alle) {
         filmStartenWiederholenStoppen(alle, false, true, false);
     }
-
-    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
-
-    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
 
     private void setupKeyMappings() {
         final InputMap im = tabelle.getInputMap();
@@ -589,114 +437,12 @@ public class GuiDownloads extends AGuiTabPanel {
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
                 true, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
 
-        btnClear.setIcon(Icons.ICON_BUTTON_CLEAR);
         btnClear.addActionListener(l -> {
             cbDisplayCategories.setSelectedIndex(0);
             cbView.setSelectedIndex(0);
         });
 
-        jSpinnerAnzahlDownloads.setModel(new SpinnerNumberModel(1, 1, 9, 1));
-        jSpinnerAnzahlDownloads.setValue(config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1));
-        jSpinnerAnzahlDownloads.addChangeListener(l -> {
-            final int maxNumDownloads = ((Number)jSpinnerAnzahlDownloads.getModel().getValue()).intValue();
-            config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads);
-            MessageBus.getMessageBus().publishAsync(new ParallelDownloadNumberChangedEvent());
-        });
-
-        final int location = config.getInt(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION);
-        jSplitPane1.setDividerLocation(location);
-
-        setupInfoPanel();
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                loadFilmlist = true;
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                loadFilmlist = false;
-                daten.getListeDownloads().filmEintragen();
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
-                    updateDownloads();
-                } else {
-                    reloadTable(); // damit die Filmnummern richtig angezeigt werden
-                }
-            }
-        });
-    }
-
-    private void setupInfoPanel() {
-        txtDownload.setText("");
-        txtDownload.setEditable(false);
-        txtDownload.setFocusable(false);
-        txtDownload.setContentType("text/html");
-    }
-
-    private void setInfoText() {
-        if (daten.getListeDownloads().getStarts().total_starts == 0) {
-            txtDownload.setText("");
-            return;
-        }
-
-        String info = HEAD;
-
-        // Downloads
-        info += getInfoText();
-
-        final var downloadInfos = daten.getDownloadInfos();
-        // Größe
-        final long byteAlleDownloads = downloadInfos.getByteAlleDownloads();
-        final long byteAktDownloads = downloadInfos.getByteAktDownloads();
-        if (byteAlleDownloads > 0 || byteAktDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (byteAktDownloads > 0) {
-                info += FileSize.convertSize(byteAktDownloads) + " von "
-                        + FileSize.convertSize(byteAlleDownloads) + " MByte" + "</span>";
-            } else {
-                info += FileSize.convertSize(byteAlleDownloads) + " MByte" + "</span>";
-            }
-        }
-        // Restzeit
-        final long timeRestAktDownloads = downloadInfos.getTimeRestAktDownloads();
-        final long timeRestAllDownloads = downloadInfos.getTimeRestAllDownloads();
-        if (timeRestAktDownloads > 0 && timeRestAllDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + downloadInfos.getRestzeit() + ",<br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
-        } else if (timeRestAktDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + downloadInfos.getRestzeit() + "</span>";
-        } else if (timeRestAllDownloads > 0) {
-            info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + downloadInfos.getGesamtRestzeit() + "</span>";
-        }
-
-        info += END;
-
-        txtDownload.setText(info);
-    }
-
-    private String getInfoText() {
-        String textLinks;
-        final var info = daten.getListeDownloads().getStarts();
-        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + info.total_starts + "<br />";
-
-        if (info.hasValues()) {
-            textLinks += "( ";
-            textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
-            textLinks += (info.initialized == 1) ? ", 1 wartet" : ", " + info.initialized + " warten";
-            if (info.finished > 0)
-                textLinks += (info.finished == 1) ? ", 1 fertig" : ", " + info.finished + " fertig";
-
-            if (info.error > 0)
-                textLinks += (info.error == 1) ? ", 1 fehlerhaft" : ", " + info.error + " fehlerhaft";
-
-            textLinks += " )";
-        }
-        textLinks += "<br /></span>";
-        return textLinks;
+        setSplitDividerLocation();
     }
 
     @Handler
@@ -755,8 +501,6 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         });
-
-        setupShowFilmDescriptionMenuItem();
     }
 
     @Handler
@@ -773,7 +517,7 @@ public class GuiDownloads extends AGuiTabPanel {
     private void handleGeoStateChangedEvent(GeoStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             tabelle.fireTableDataChanged(true);
-            setInfo();
+            updateStartInfoProperty();
         });
     }
 
@@ -782,28 +526,14 @@ public class GuiDownloads extends AGuiTabPanel {
      * Most of the setup is done in {@link GuiDownloads} function.
      * Here we just display the panel
      */
-    private void setupShowFilmDescriptionMenuItem() {
+    @Override
+    protected void setupShowFilmDescriptionMenuItem() {
         cbShowDownloadDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
-        cbShowDownloadDescription.addActionListener(l -> fxDescriptionPanel.setVisible(cbShowDownloadDescription.isSelected()));
-        cbShowDownloadDescription.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, cbShowDownloadDescription.isSelected()));
-        fxDescriptionPanel.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                cbShowDownloadDescription.setSelected(true);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                cbShowDownloadDescription.setSelected(false);
-            }
+        cbShowDownloadDescription.addActionListener(l -> {
+            boolean visible = cbShowDownloadDescription.isSelected();
+            makeDescriptionTabVisible(visible);
+            config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, visible);
         });
-    }
-
-    /**
-     * Show description panel based on settings.
-     */
-    private void showDescriptionPanel() {
-        fxDescriptionPanel.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
     }
 
     private synchronized void reloadTable() {
@@ -813,7 +543,7 @@ public class GuiDownloads extends AGuiTabPanel {
         daten.getListeDownloads().getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
         updateFilmData();
-        setInfo();
+        updateStartInfoProperty();
     }
 
     @Handler
@@ -861,13 +591,13 @@ public class GuiDownloads extends AGuiTabPanel {
                 arrayDownloads.add(datenDownload);
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return arrayDownloads;
     }
 
     @Override
-    protected Optional<DatenFilm> getCurrentlySelectedFilm() {
+    public Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow != -1) {
             Optional<DatenFilm> optRet;
@@ -889,7 +619,7 @@ public class GuiDownloads extends AGuiTabPanel {
         if (row != -1) {
             datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return datenDownload;
     }
@@ -914,7 +644,7 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void downloadsVorziehen() {
+    public void downloadsVorziehen() {
         ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
         if (arrayDownloads.isEmpty()) {
             return;
@@ -922,7 +652,7 @@ public class GuiDownloads extends AGuiTabPanel {
         daten.getListeDownloads().downloadsVorziehen(arrayDownloads);
     }
 
-    private void zielordnerOeffnen() {
+    public void zielordnerOeffnen() {
         DatenDownload datenDownload = getSelDownload();
         if (datenDownload == null) {
             return;
@@ -940,7 +670,7 @@ public class GuiDownloads extends AGuiTabPanel {
         OpenPlayerAction.filmAbspielen(mediathekGui, s);
     }
 
-    private void filmLoeschen_() {
+    public void filmLoeschen_() {
         DatenDownload datenDownload = getSelDownload();
         if (datenDownload == null) {
             return;
@@ -1016,8 +746,7 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private @NotNull List<DatenDownload> addAllDownloadsToList()
-    {
+    private @NotNull List<DatenDownload> addAllDownloadsToList() {
         final var rowCount = tabelle.getRowCount();
         final var tableModel = tabelle.getModel();
         List<DatenDownload> destList = new ArrayList<>();
@@ -1038,14 +767,10 @@ public class GuiDownloads extends AGuiTabPanel {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
         if (tabelle.getRowCount() == 0) {
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(Konstanten.PROGRAMMNAME);
-                alert.setHeaderText("Keine Downloads vorhanden");
-                alert.setContentText("Es sind keine Downloads in der Liste zum Starten vorhanden.");
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.showAndWait();
-            });
+            JOptionPane.showMessageDialog(this,
+                    "Es sind keine Downloads in der Liste zum Starten vorhanden.",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -1070,16 +795,17 @@ public class GuiDownloads extends AGuiTabPanel {
                 if (download.start.status > Start.STATUS_RUN) {
                     // wenn er noch läuft gibts nix
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                    //TODO in auto dialog umwandeln!
-                    int a = JOptionPane.showConfirmDialog(mediathekGui, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
-                            "Fertiger Download", JOptionPane.YES_NO_OPTION);
-                    if (a != JOptionPane.YES_OPTION) {
+                    int reply = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
+                            "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
+                            JOptionPane.YES_NO_OPTION, JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (reply != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
                         continue;
                     }
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.isFromAbo()) {
-                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        // wenn er schon fertig ist und ein Abo ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         daten.getAboHistoryController().removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
@@ -1096,7 +822,8 @@ public class GuiDownloads extends AGuiTabPanel {
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            mediathekGui.beenden(false, dialogBeenden.isShutdownRequested());
+            mediathekGui.setShutdownRequested(dialogBeenden.isShutdownRequested());
+            mediathekGui.quitApplication();
         }
 
         reloadTable();
@@ -1148,7 +875,6 @@ public class GuiDownloads extends AGuiTabPanel {
                     }
                     if (download.start.status > Start.STATUS_RUN) {
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
-                        //TODO in auto dialog umwandeln!
                         if (antwort == -1) {
                             // nur einmal fragen
                             String text;
@@ -1158,8 +884,10 @@ public class GuiDownloads extends AGuiTabPanel {
                             } else {
                                 text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
-                            antwort = JOptionPane.showConfirmDialog(mediathekGui, text,
-                                    "Fertiger Download", JOptionPane.YES_NO_CANCEL_OPTION);
+                            antwort = GuiFunktionen.createDismissableMessageDialog(mediathekGui, "Fertiger Download",
+                                    text,
+                                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.NO_OPTION, 10, TimeUnit.SECONDS,
+                                    JOptionPane.QUESTION_MESSAGE);
                         }
                         if (antwort == JOptionPane.CANCEL_OPTION) {
                             //=============================
@@ -1219,23 +947,19 @@ public class GuiDownloads extends AGuiTabPanel {
         daten.getListeDownloads().downloadAbbrechen(listeStopDownload);
     }
 
-    private void setInfo() {
-        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
-    }
-
     private void updateFilmData() {
         if (isShowing()) {
-            DatenFilm aktFilm = null;
+            DatenFilm selectedFilm = null;
             final int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow >= 0) {
+            if (selectedTableRow != -1) {
                 final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
                 if (datenDownload != null) {
-                    aktFilm = datenDownload.film;
+                    selectedFilm = datenDownload.film;
                 }
             }
             var infoDialog = mediathekGui.getFilmInfoDialog();
             if (infoDialog != null) {
-                infoDialog.updateCurrentFilm(aktFilm);
+                infoDialog.updateCurrentFilm(selectedFilm);
             }
         }
     }
@@ -1252,15 +976,146 @@ public class GuiDownloads extends AGuiTabPanel {
                 }
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
         return arrayFilme;
     }
 
-    public class BeobMausTabelle extends MouseAdapter {
+    private void initComponents() {
+        jSplitPane1 = new JSplitPane();
+        jPanelFilterExtern = new JPanel();
+        var panel3 = new JPanel();
+        var label1 = new JLabel();
+        cbDisplayCategories = new JComboBox<>();
+        var label2 = new JLabel();
+        cbView = new JComboBox<>();
+        btnClear = new JButton();
+        var downloadListArea = new JPanel();
+        downloadListScrollPane = new JScrollPane();
 
-        private final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction(false);
-        DatenDownload datenDownload;
+        //======== this ========
+        setLayout(new BorderLayout());
+
+        //======== jSplitPane1 ========
+        {
+            jSplitPane1.setDividerLocation(330);
+
+            //======== jPanelFilterExtern ========
+            {
+                jPanelFilterExtern.setPreferredSize(new Dimension(200, 644));
+                jPanelFilterExtern.setLayout(new MigLayout(
+                        new LC().insets("0").hideMode(3).gridGap("0", "0"), //NON-NLS
+                        // columns
+                        new AC()
+                                .grow().fill(),
+                        // rows
+                        new AC()
+                                .gap()
+                                .fill().gap()
+                                .grow().fill()));
+
+                //======== panel3 ========
+                {
+                    panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
+                    panel3.setLayout(new MigLayout(
+                            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                            // columns
+                            new AC()
+                                    .fill().gap()
+                                    .grow().fill(),
+                            // rows
+                            new AC()
+                                    .fill().gap()
+                                    .fill().gap()
+                                    .fill()));
+
+                    //---- label1 ----
+                    label1.setText("Typ:"); //NON-NLS
+                    panel3.add(label1, new CC().cell(0, 0));
+                    panel3.add(cbDisplayCategories, new CC().cell(1, 0));
+
+                    //---- label2 ----
+                    label2.setText("Status:"); //NON-NLS
+                    panel3.add(label2, new CC().cell(0, 1));
+                    panel3.add(cbView, new CC().cell(1, 1));
+
+                    //---- btnClear ----
+                    btnClear.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/broom.svg")); //NON-NLS
+                    btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
+                    panel3.add(btnClear, new CC().cell(0, 2, 2, 1).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
+                }
+                jPanelFilterExtern.add(panel3, new CC().cell(0, 0));
+                jPanelFilterExtern.add(dlConfigPanel, new CC().cell(0, 1));
+            }
+            jSplitPane1.setLeftComponent(jPanelFilterExtern);
+
+            //======== downloadListArea ========
+            {
+                downloadListArea.setLayout(new BorderLayout());
+                JPanel tempPanel = new JPanel();
+                tempPanel.setLayout(new BorderLayout());
+                tempPanel.add(downloadListScrollPane, BorderLayout.CENTER);
+                tempPanel.add(statusBar, BorderLayout.SOUTH);
+                downloadListArea.add(tempPanel, BorderLayout.CENTER);
+                downloadListArea.add(descriptionTab, BorderLayout.SOUTH);
+            }
+            jSplitPane1.setRightComponent(downloadListArea);
+        }
+        add(jSplitPane1, BorderLayout.CENTER);
+        add(swingToolBar, BorderLayout.NORTH);
+
+        createSwingToolBar();
+
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                loadFilmlist = true;
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(false));
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                loadFilmlist = false;
+                SwingUtilities.invokeLater(() -> refreshDownloadListAction.setEnabled(true));
+                daten.getListeDownloads().filmEintragen();
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                    updateDownloads();
+                } else {
+                    reloadTable(); // damit die Filmnummern richtig angezeigt werden
+                }
+            }
+        });
+    }
+
+    protected void createSwingToolBar() {
+        swingToolBar.setFloatable(true);
+        swingToolBar.setName("Downloads");
+
+        swingToolBar.add(refreshDownloadListAction);
+        swingToolBar.add(startAllDownloadsAction);
+        swingToolBar.add(playDownloadAction);
+        swingToolBar.add(deferDownloadsAction);
+        swingToolBar.add(deleteDownloadsAction);
+        swingToolBar.add(cleanupDownloadListAction);
+        swingToolBar.addSeparator();
+        swingToolBar.add(toggleFilterPanelAction);
+    }
+
+    class ToggleFilterPanelAction extends AbstractAction {
+        public ToggleFilterPanelAction() {
+            putValue(Action.NAME, "Filter anzeigen/ausblenden");
+            putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen/ausblenden");
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleDownloadFilterPanel();
+        }
+    }
+
+    public class BeobMausTabelle extends MouseAdapter {
+        private DatenDownload datenDownload;
         private Point p;
 
         @Override
@@ -1353,7 +1208,7 @@ public class GuiDownloads extends AGuiTabPanel {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16));
+            itemStarten.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, true, true, false));
@@ -1365,72 +1220,25 @@ public class GuiDownloads extends AGuiTabPanel {
             itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false, false, true, false));
 
             jPopupMenu.addSeparator();
-
-            JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
-            itemVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
-            jPopupMenu.add(itemVorziehen);
-            itemVorziehen.addActionListener(arg0 -> downloadsVorziehen());
-
-            JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOCK_O, 16));
-            jPopupMenu.add(itemLoeschen);
-            itemLoeschen.addActionListener(arg0 -> downloadLoeschen(false /* dauerhaft */));
-            //dauerhaft löschen
-            JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
-            itemDauerhaftLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-            jPopupMenu.add(itemDauerhaftLoeschen);
-            itemDauerhaftLoeschen.addActionListener(arg0 -> downloadLoeschen(true /* dauerhaft */));
-            //Download ändern
-            JMenuItem itemAendern = new JMenuItem("Download ändern");
-            itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-            jPopupMenu.add(itemAendern);
-            itemAendern.addActionListener(arg0 -> editDownload());
+            jPopupMenu.add(advanceDownloadsAction);
+            jPopupMenu.add(deferDownloadsAction);
+            jPopupMenu.add(deleteDownloadsAction);
+            jPopupMenu.add(editDownloadAction);
 
             jPopupMenu.addSeparator();
-
-            JMenuItem itemAlleStarten = new JMenuItem("Alle Downloads starten");
-            itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
-            itemAlleStarten.addActionListener(arg0 -> starten(true));
-            jPopupMenu.add(itemAlleStarten);
-
-            JMenuItem itemAlleStoppen = new JMenuItem("Alle Downloads stoppen");
-            itemAlleStoppen.addActionListener(arg0 -> stoppen(true));
-            jPopupMenu.add(itemAlleStoppen);
+            jPopupMenu.add(startAllDownloadsAction);
+            jPopupMenu.add(stopAllDownloadsAction);
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(arg0 -> stopAllWaitingDownloads());
 
-            JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
-            jPopupMenu.add(itemAktualisieren);
-            itemAktualisieren.addActionListener(arg0 -> updateDownloads());
-
-            JMenuItem itemAufraeumen = new JMenuItem(MENU_ITEM_TEXT_CLEANUP_DOWNLOADS);
-            itemAufraeumen.setIcon(IconFontSwing.buildIcon(FontAwesome.ERASER, 16));
-            jPopupMenu.add(itemAufraeumen);
-            itemAufraeumen.addActionListener(arg0 -> cleanupDownloads());
-
+            jPopupMenu.add(refreshDownloadListAction);
+            jPopupMenu.add(cleanupDownloadListAction);
             jPopupMenu.addSeparator();
-
-            // Film abspielen
-            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
-
-            itemPlayerDownload.addActionListener(e -> filmAbspielen());
-            jPopupMenu.add(itemPlayerDownload);
-            // Film löschen
-            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
-
-            itemDeleteDownload.addActionListener(e -> filmLoeschen_());
-            jPopupMenu.add(itemDeleteDownload);
-            // Zielordner öffnen
-            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-            jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(e -> zielordnerOeffnen());
-
+            jPopupMenu.add(playDownloadAction);
+            jPopupMenu.add(deleteDownloadAction);
+            jPopupMenu.add(openTargetFolderAction);
             jPopupMenu.addSeparator();
 
             //Abo ändern
@@ -1481,8 +1289,8 @@ public class GuiDownloads extends AGuiTabPanel {
                             if (dl.film != null) {
                                 DatenFilm filmClone = new DatenFilm(dl.film);
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmClone.setUrlNormalQuality(dl.arr[DatenDownload.DOWNLOAD_URL]);
-                                filmClone.setUrlLowQuality("");
+                                filmClone.setNormalQualityUrl(dl.arr[DatenDownload.DOWNLOAD_URL]);
+                                filmClone.setLowQualityUrl("");
                                 // und starten
                                 daten.getStarterClass().urlMitProgrammStarten(gruppe, filmClone, "");
                             }
@@ -1494,7 +1302,7 @@ public class GuiDownloads extends AGuiTabPanel {
                         } else {
                             menuPath = "Datei->Einstellungen->Set bearbeiten";
                         }
-                        MVMessageDialog.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
+                        JOptionPane.showMessageDialog(mediathekGui, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                 "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                     });
                 }
@@ -1513,7 +1321,7 @@ public class GuiDownloads extends AGuiTabPanel {
             });
             jPopupMenu.add(itemUrl);
 
-            jPopupMenu.add(showFilmInformationAction);
+            jPopupMenu.add(mediathekGui.showFilmInformationAction);
 
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
@@ -1527,7 +1335,7 @@ public class GuiDownloads extends AGuiTabPanel {
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
 
-            switch ((String)source.getModel().getSelectedItem()) {
+            switch ((String) source.getModel().getSelectedItem()) {
                 case COMBO_VIEW_ALL -> {
                     onlyNotStarted = false;
                     onlyStarted = false;
@@ -1583,7 +1391,7 @@ public class GuiDownloads extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox<?> source = (JComboBox<?>) e.getSource();
-            switch ((String)source.getModel().getSelectedItem()) {
+            switch ((String) source.getModel().getSelectedItem()) {
                 case COMBO_DISPLAY_ALL -> {
                     onlyAbos = false;
                     onlyDownloads = false;
@@ -1601,162 +1409,4 @@ public class GuiDownloads extends AGuiTabPanel {
             reloadTable();
         }
     }
-
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    // Generated using JFormDesigner non-commercial license
-    private void initComponents() {
-        jSplitPane1 = new JSplitPane();
-        jPanelFilterExtern = new JPanel();
-        var panel3 = new JPanel();
-        var label1 = new JLabel();
-        cbDisplayCategories = new JComboBox<>();
-        var label2 = new JLabel();
-        cbView = new JComboBox<>();
-        btnClear = new JButton();
-        var panel2 = new JPanel();
-        var jLabel3 = new JLabel();
-        jSpinnerAnzahlDownloads = new JSpinner();
-        var lblBandwidth = new JLabel();
-        var jLabel1 = new JLabel();
-        jSpinner1 = new JSpinner();
-        var spDownload = new JScrollPane();
-        txtDownload = new JEditorPane();
-        var downloadListArea = new JPanel();
-        downloadListScrollPane = new JScrollPane();
-        fxDescriptionPanel = new JFXPanel();
-        toolBarPanel = new JFXPanel();
-
-        //======== this ========
-        setLayout(new BorderLayout());
-
-        //======== jSplitPane1 ========
-        {
-            jSplitPane1.setDividerLocation(330);
-
-            //======== jPanelFilterExtern ========
-            {
-                jPanelFilterExtern.setPreferredSize(new Dimension(200, 644));
-                jPanelFilterExtern.setLayout(new MigLayout(
-                    new LC().insets("0").hideMode(3).gridGap("0", "0"), //NON-NLS
-                    // columns
-                    new AC()
-                        .grow().fill(),
-                    // rows
-                    new AC()
-                        .gap()
-                        .fill().gap()
-                        .grow().fill()));
-
-                //======== panel3 ========
-                {
-                    panel3.setBorder(new TitledBorder("Anzeige")); //NON-NLS
-                    panel3.setLayout(new MigLayout(
-                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                        // columns
-                        new AC()
-                            .fill().gap()
-                            .grow().fill(),
-                        // rows
-                        new AC()
-                            .fill().gap()
-                            .fill().gap()
-                            .fill()));
-
-                    //---- label1 ----
-                    label1.setText("Typ:"); //NON-NLS
-                    panel3.add(label1, new CC().cell(0, 0));
-                    panel3.add(cbDisplayCategories, new CC().cell(1, 0));
-
-                    //---- label2 ----
-                    label2.setText("Status:"); //NON-NLS
-                    panel3.add(label2, new CC().cell(0, 1));
-                    panel3.add(cbView, new CC().cell(1, 1));
-
-                    //---- btnClear ----
-                    btnClear.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); //NON-NLS
-                    btnClear.setToolTipText("Filter zur\u00fccksetzen"); //NON-NLS
-                    panel3.add(btnClear, new CC().cell(0, 2, 2, 1).alignX("right").growX(0).width("32:32:32").height("32:32:32")); //NON-NLS
-                }
-                jPanelFilterExtern.add(panel3, new CC().cell(0, 0));
-
-                //======== panel2 ========
-                {
-                    panel2.setBorder(new TitledBorder("Downloads")); //NON-NLS
-                    panel2.setLayout(new MigLayout(
-                        new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
-                        // columns
-                        new AC()
-                            .fill().gap()
-                            .fill(),
-                        // rows
-                        new AC()
-                            .gap()
-                            .fill()));
-
-                    //---- jLabel3 ----
-                    jLabel3.setText("gleichzeitig:"); //NON-NLS
-                    panel2.add(jLabel3, new CC().cell(0, 0));
-                    panel2.add(jSpinnerAnzahlDownloads, new CC().cell(1, 0));
-
-                    //---- lblBandwidth ----
-                    lblBandwidth.setText("max. Bandbreite:"); //NON-NLS
-                    panel2.add(lblBandwidth, new CC().cell(0, 1));
-
-                    //---- jLabel1 ----
-                    jLabel1.setText("KiB/s"); //NON-NLS
-                    panel2.add(jLabel1, new CC().cell(2, 1));
-
-                    //---- jSpinner1 ----
-                    jSpinner1.setModel(new SpinnerNumberModel(0, 0, 1048576, 1));
-                    jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>"); //NON-NLS
-                    panel2.add(jSpinner1, new CC().cell(1, 1));
-                }
-                jPanelFilterExtern.add(panel2, new CC().cell(0, 1));
-
-                //======== spDownload ========
-                {
-                    spDownload.setPreferredSize(new Dimension(14, 150));
-
-                    //---- txtDownload ----
-                    txtDownload.setEditable(false);
-                    txtDownload.setOpaque(false);
-                    txtDownload.setPreferredSize(new Dimension(10, 500));
-                    spDownload.setViewportView(txtDownload);
-                }
-                jPanelFilterExtern.add(spDownload, new CC().cell(0, 2));
-            }
-            jSplitPane1.setLeftComponent(jPanelFilterExtern);
-
-            //======== downloadListArea ========
-            {
-                downloadListArea.setLayout(new BorderLayout());
-                downloadListArea.add(downloadListScrollPane, BorderLayout.CENTER);
-                downloadListArea.add(fxDescriptionPanel, BorderLayout.SOUTH);
-            }
-            jSplitPane1.setRightComponent(downloadListArea);
-        }
-        add(jSplitPane1, BorderLayout.CENTER);
-        add(toolBarPanel, BorderLayout.NORTH);
-    }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JSplitPane jSplitPane1;
-    private JPanel jPanelFilterExtern;
-    private JComboBox<String> cbDisplayCategories;
-    private JComboBox<String> cbView;
-    private JButton btnClear;
-    private JSpinner jSpinnerAnzahlDownloads;
-    private JSpinner jSpinner1;
-    private JEditorPane txtDownload;
-    private JScrollPane downloadListScrollPane;
-    private JFXPanel fxDescriptionPanel;
-    private JFXPanel toolBarPanel;
-    // End of variables declaration//GEN-END:variables
 }

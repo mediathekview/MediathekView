@@ -1,29 +1,29 @@
 package mediathek.gui.dialogEinstellungen.allgemein;
 
-import mediathek.config.Daten;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
+import org.jdesktop.swingx.JXTitledPanel;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.NoSuchElementException;
 
 public class PanelEinstellungen extends JPanel {
-    private final static String ALLE = " Alle ";
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private final SpinnerListModel daySpinnerModel = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-            "12", "14", "16", "18", "20", "25", "30", "60", "90", "180", "365"});
-
 
     private void setupProxySettings() {
 
@@ -58,13 +58,6 @@ public class PanelEinstellungen extends JPanel {
     private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
         MessageBus.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
-    }
-
-    private void setupDays() {
-        jSpinnerDays.setModel(daySpinnerModel);
-        ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
-        initSpinner();
-        jSpinnerDays.addChangeListener(new BeobSpinnerDays());
     }
 
     private void setupTabUI() {
@@ -103,21 +96,27 @@ public class PanelEinstellungen extends JPanel {
         }
     }
 
+    private void setupModernSearch() {
+        var config = ApplicationConfiguration.getConfiguration();
+        var useModernSearch = config.getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+
+        var searchPanel = new ModernSearchConfigPanel();
+        searchPanel.getCbActivateModernSearch().setSelected(useModernSearch);
+        searchPanel.getCbActivateModernSearch().addActionListener(l -> {
+            var selected = searchPanel.getCbActivateModernSearch().isSelected();
+            config.setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, selected);
+        });
+        modernSearchTitlePanel.setContentContainer(searchPanel);
+    }
+
     public PanelEinstellungen() {
         super();
         initComponents();
 
+        setupModernSearch();
         setupUserAgentSettings();
 
         setupProxySettings();
-
-        jButtonLoad.addActionListener(ae -> {
-            final var daten = Daten.getInstance();
-            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("", false);
-        });
-
-        setupDays();
 
         setupTabUI();
 
@@ -131,11 +130,16 @@ public class PanelEinstellungen extends JPanel {
         
         cbAutomaticUpdateChecks.addActionListener(this::cbAutomaticUpdateChecksActionPerformed);
         cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK,true));
-    }
+        if (GuiFunktionen.isUsingExternalUpdater()) {
+            cbAutomaticUpdateChecks.setEnabled(false);
+            cbAutomaticUpdateChecks.setToolTipText("Diese Option ist deaktiviert, da ein externer Updater verwendet wird.");
+        }
 
-    @Handler
-    private void handleParallelDownloadNumberChanged(ParallelDownloadNumberChangedEvent e) {
-        SwingUtilities.invokeLater(this::initSpinner);
+        var restore = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false);
+        cbRestoreSelectedTab.setSelected(restore);
+        cbRestoreSelectedTab.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
+                cbRestoreSelectedTab.isSelected()));
     }
 
     private void setupTabSwitchListener() {
@@ -167,37 +171,6 @@ public class PanelEinstellungen extends JPanel {
         }
     }
 
-    private void initSpinner() {
-        String s;
-        final int num_days = config.getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS,0);
-        if (num_days == 0)
-            s = ALLE;
-        else
-            s = Integer.toString(num_days);
-
-        jSpinnerDays.setValue(s);
-    }
-
-    private class BeobSpinnerDays implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent arg0) {
-            String s = jSpinnerDays.getModel().getValue().toString();
-            if (s.equals(ALLE)) {
-                s = "0";
-            }
-
-            int num_days;
-            try {
-                num_days = Integer.parseInt(s);
-            }
-            catch (NumberFormatException e) {
-                num_days = 0;
-            }
-            config.setProperty(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, num_days);
-        }
-    }
-
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
@@ -205,6 +178,7 @@ public class PanelEinstellungen extends JPanel {
         jCheckBoxTabsTop = new JCheckBox();
         jCheckBoxTabIcon = new JCheckBox();
         cbAutomaticMenuTabSwitching = new JCheckBox();
+        cbRestoreSelectedTab = new JCheckBox();
         var jPanel3 = new JPanel();
         var jLabel3 = new JLabel();
         jtfUserAgent = new JTextField();
@@ -217,14 +191,11 @@ public class PanelEinstellungen extends JPanel {
         jtfProxyUser = new JTextField();
         var jLabel8 = new JLabel();
         jpfProxyPassword = new JPasswordField();
-        var jPanel2 = new JPanel();
-        var jPanel6 = new JPanel();
-        var jLabel6 = new JLabel();
-        jSpinnerDays = new JSpinner();
-        jButtonLoad = new JButton();
+        var panel1 = new JPanel();
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
+        modernSearchTitlePanel = new JXTitledPanel();
 
         //======== this ========
         setMaximumSize(new Dimension(10, 10));
@@ -232,39 +203,35 @@ public class PanelEinstellungen extends JPanel {
         //======== jPanel5 ========
         {
             jPanel5.setBorder(new TitledBorder("Tab-Verhalten")); //NON-NLS
+            jPanel5.setLayout(new MigLayout(
+                new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .gap()
+                    .fill()));
 
             //---- jCheckBoxTabsTop ----
             jCheckBoxTabsTop.setText("Tabs oben anzeigen"); //NON-NLS
+            jPanel5.add(jCheckBoxTabsTop, new CC().cell(0, 0));
 
             //---- jCheckBoxTabIcon ----
             jCheckBoxTabIcon.setText("Icons anzeigen"); //NON-NLS
             jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen"); //NON-NLS
+            jPanel5.add(jCheckBoxTabIcon, new CC().cell(1, 0));
 
             //---- cbAutomaticMenuTabSwitching ----
             cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um"); //NON-NLS
+            jPanel5.add(cbAutomaticMenuTabSwitching, new CC().cell(2, 0));
 
-            GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
-            jPanel5.setLayout(jPanel5Layout);
-            jPanel5Layout.setHorizontalGroup(
-                jPanel5Layout.createParallelGroup()
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jCheckBoxTabsTop)
-                        .addGap(5, 5, 5)
-                        .addComponent(jCheckBoxTabIcon)
-                        .addGap(5, 5, 5)
-                        .addComponent(cbAutomaticMenuTabSwitching)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            );
-            jPanel5Layout.setVerticalGroup(
-                jPanel5Layout.createParallelGroup()
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(jPanel5Layout.createParallelGroup()
-                            .addComponent(jCheckBoxTabsTop)
-                            .addComponent(jCheckBoxTabIcon)
-                            .addComponent(cbAutomaticMenuTabSwitching)))
-            );
+            //---- cbRestoreSelectedTab ----
+            cbRestoreSelectedTab.setText("Letzte Auswahl beim Start wiederherstellen"); //NON-NLS
+            cbRestoreSelectedTab.setToolTipText("Wenn gew\u00e4hlt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."); //NON-NLS
+            jPanel5.add(cbRestoreSelectedTab, new CC().cell(0, 1, 3, 1));
         }
 
         //======== jPanel3 ========
@@ -340,7 +307,7 @@ public class PanelEinstellungen extends JPanel {
                         .addGroup(jPanel4Layout.createParallelGroup()
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jtfProxyPort, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 175, Short.MAX_VALUE))
+                                .addGap(0, 187, Short.MAX_VALUE))
                             .addComponent(jpfProxyPassword))
                         .addContainerGap())
             );
@@ -363,79 +330,25 @@ public class PanelEinstellungen extends JPanel {
             );
         }
 
-        //======== jPanel2 ========
+        //======== panel1 ========
         {
-            jPanel2.setBorder(new TitledBorder("Einschr\u00e4nkungen f\u00fcr das Laden der Filmliste")); //NON-NLS
+            panel1.setLayout(new VerticalLayout());
 
-            //======== jPanel6 ========
-            {
+            //---- jCheckBoxTray ----
+            jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
+            panel1.add(jCheckBoxTray);
 
-                //---- jLabel6 ----
-                jLabel6.setText("Nur die Filme der letzten Tage laden:"); //NON-NLS
+            //---- cbUseWikipediaSenderLogos ----
+            cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
+            panel1.add(cbUseWikipediaSenderLogos);
 
-                //---- jSpinnerDays ----
-                jSpinnerDays.setToolTipText("<html>Es werden nur Filme der letzten <i>xx</i> Tage geladen.<br>Bei \"Alle\" werden alle Filme geladen.<br>(Eine kleinere Filmliste kann bei Rechnern mit wenig Speicher hilfreich sein.)<br><br>\nAuswirkung hat das erst <b>nach dem Neuladen der kompletten Filmliste</b>.</html>"); //NON-NLS
-                jSpinnerDays.setMinimumSize(new Dimension(100, 30));
-                jSpinnerDays.setPreferredSize(new Dimension(100, 30));
-                jSpinnerDays.setMaximumSize(new Dimension(150, 30));
-
-                //---- jButtonLoad ----
-                jButtonLoad.setText("Filmliste jetzt neu laden"); //NON-NLS
-
-                GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
-                jPanel6.setLayout(jPanel6Layout);
-                jPanel6Layout.setHorizontalGroup(
-                    jPanel6Layout.createParallelGroup()
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addGap(5, 5, 5)
-                            .addComponent(jLabel6)
-                            .addGap(5, 5, 5)
-                            .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButtonLoad)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                jPanel6Layout.setVerticalGroup(
-                    jPanel6Layout.createParallelGroup()
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addGroup(jPanel6Layout.createParallelGroup()
-                                .addGroup(jPanel6Layout.createSequentialGroup()
-                                    .addGap(11, 11, 11)
-                                    .addComponent(jLabel6))
-                                .addGroup(jPanel6Layout.createSequentialGroup()
-                                    .addGap(6, 6, 6)
-                                    .addGroup(jPanel6Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jSpinnerDays, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButtonLoad))))
-                            .addGap(2, 2, 2))
-                );
-            }
-
-            GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup()
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(102, Short.MAX_VALUE))
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-            );
+            //---- cbAutomaticUpdateChecks ----
+            cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
+            panel1.add(cbAutomaticUpdateChecks);
         }
 
-        //---- jCheckBoxTray ----
-        jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
-
-        //---- cbUseWikipediaSenderLogos ----
-        cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
-
-        //---- cbAutomaticUpdateChecks ----
-        cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
+        //---- modernSearchTitlePanel ----
+        modernSearchTitlePanel.setTitle("Moderne Suche"); //NON-NLS
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -448,13 +361,10 @@ public class PanelEinstellungen extends JPanel {
                         .addComponent(jPanel5, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup()
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(jCheckBoxTray)
-                                .addComponent(cbUseWikipediaSenderLogos)
-                                .addComponent(cbAutomaticUpdateChecks))
-                            .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addGap(0, 20, Short.MAX_VALUE))
+                        .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -467,14 +377,10 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jCheckBoxTray)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(cbUseWikipediaSenderLogos)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(cbAutomaticUpdateChecks)
-                    .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                    .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -482,15 +388,15 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox jCheckBoxTabsTop;
     private JCheckBox jCheckBoxTabIcon;
     private JCheckBox cbAutomaticMenuTabSwitching;
+    private JCheckBox cbRestoreSelectedTab;
     private JTextField jtfUserAgent;
     private JTextField jtfProxyHost;
     private JTextField jtfProxyPort;
     private JTextField jtfProxyUser;
     private JPasswordField jpfProxyPassword;
-    private JSpinner jSpinnerDays;
-    private JButton jButtonLoad;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
+    private JXTitledPanel modernSearchTitlePanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,35 +1,35 @@
 package mediathek.gui.actions;
 
-import mediathek.javafx.MemoryMonitor;
-import mediathek.javafx.tool.JavaFxUtils;
+import mediathek.gui.dialog.MemoryMonitorDialog;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class MemoryMonitorAction extends AbstractAction {
-    private MemoryMonitor memoryMonitor;
+    private MemoryMonitorDialog dialog;
+    private final JFrame parent;
 
-    public MemoryMonitorAction() {
-        putValue(Action.NAME,"Speicherverbrauch anzeigen");
+    public MemoryMonitorAction(@NotNull JFrame parent) {
+        this.parent = parent;
+        putValue(Action.NAME, "Speicherverbrauch anzeigen");
     }
 
     public void closeMemoryMonitor() {
-        if (memoryMonitor != null)
-            JavaFxUtils.invokeInFxThreadAndWait(() -> memoryMonitor.close());
+        if (dialog != null) {
+            dialog.dispose();
+        }
     }
 
     public void showMemoryMonitor() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            if (memoryMonitor == null) {
-                memoryMonitor = new MemoryMonitor();
-            }
-
-            memoryMonitor.show();
-        });
+        if (dialog == null)
+            dialog = new MemoryMonitorDialog(parent);
+        dialog.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         showMemoryMonitor();
     }
+
 }

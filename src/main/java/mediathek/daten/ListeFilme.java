@@ -4,19 +4,47 @@ import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
 import org.jetbrains.annotations.NotNull;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ListeFilme extends ArrayList<DatenFilm> {
     public static final String FILMLISTE = "Filmliste";
-    private final FilmListMetaData metaData = new FilmListMetaData();
+    private static final String PCS_METADATA = "metaData";
+    protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     public boolean neueFilme;
+    private FilmListMetaData metaData = new FilmListMetaData();
 
-    public FilmListMetaData metaData() {
+    public FilmListMetaData getMetaData() {
         return metaData;
+    }
+
+    public void setMetaData(FilmListMetaData meta) {
+        var oldValue = metaData;
+        metaData = meta;
+        this.pcs.firePropertyChange(PCS_METADATA, oldValue, metaData);
+    }
+
+    public void addMetaDataChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(PCS_METADATA, listener);
+    }
+
+    /**
+     * case-insensitive .distinct() implementation.
+     * @param keyExtractor the function to be applied to the key
+     * @return true if it has been seen already
+     * @param <T> template param
+     */
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     /**
@@ -24,7 +52,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * If sender is empty, return full list of themas.
      *
      * @param sender sender name as String
-     * @return List of themas as String.
+     * @return IMMUTABLE List of themas as String.
      */
     public List<String> getThemen(String sender) {
         Stream<DatenFilm> mystream = parallelStream();
@@ -33,14 +61,13 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             mystream = mystream.filter(f -> f.getSender().equals(sender));
 
         return mystream.map(DatenFilm::getThema)
-                .distinct()
-                .sorted(GermanStringSorter.getInstance())
-                .collect(Collectors.toList());
+                .filter(distinctByKey(String::toLowerCase))
+                .sorted(GermanStringSorter.getInstance()).toList();
     }
 
     public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
-        // es werden nur Filme die noch nicht vorhanden sind, einsortiert
+        // es werden nur Filme, die noch nicht vorhanden sind, einsortiert
         final HashSet<String> hashNewFilms = new HashSet<>(newFilmsList.size() + 1, 1);
 
         newFilmsList.forEach(newFilm -> hashNewFilms.add(newFilm.getUniqueHash()));
@@ -58,11 +85,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public synchronized void clear() {
         super.clear();
         neueFilme = false;
-    }
-
-    public synchronized void setMetaData(FilmListMetaData meta) {
-        metaData.setDatum(meta.getDatum());
-        metaData.setId(meta.getId());
     }
 
     /**
@@ -100,7 +122,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return true if we need an update.
      */
     public boolean needsUpdate() {
-        return (isEmpty()) || (metaData().isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
+        return (isEmpty()) || (getMetaData().isOlderThan(Konstanten.ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE));
     }
 
     public synchronized long countNewFilms() {

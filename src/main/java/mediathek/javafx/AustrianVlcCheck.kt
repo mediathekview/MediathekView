@@ -7,7 +7,7 @@ import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
 import javafx.scene.layout.FlowPane
 import mediathek.config.Konstanten
-import mediathek.daten.GeoblockingField
+import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
@@ -43,8 +43,7 @@ class AustrianVlcCheck {
         logger.trace("ORF setup tutorial display check started")
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true)) {
             //we haven´t shown the config help dialog before
-            val location = config.getString(ApplicationConfiguration.GEO_LOCATION, "")
-            if (location == GeoblockingField.GEO_AT) {
+            if (ApplicationConfiguration.getInstance().geographicLocation == Country.AT) {
                 Platform.runLater {
                     val alert = Alert(Alert.AlertType.INFORMATION)
                     alert.title = Konstanten.PROGRAMMNAME

@@ -1,15 +1,10 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.FileDialogs;
-import mediathek.tool.FilenameUtils;
+import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
@@ -61,7 +56,7 @@ public class DialogAddMoreDownload extends JDialog {
             beenden();
         });
 
-        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonPath.addActionListener(l -> {
             var initialDirectory = "";
             var cbItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();
@@ -77,7 +72,7 @@ public class DialogAddMoreDownload extends JDialog {
         });
 
 
-        jButtonDelPath.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonDelPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{pSet.getZielPfad()}));

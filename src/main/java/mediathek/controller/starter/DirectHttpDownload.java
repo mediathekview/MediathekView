@@ -82,30 +82,38 @@ public class DirectHttpDownload extends Thread {
      * @param evt the new limit
      */
     @Handler
-    private void handleRateLimitChanged(DownloadRateLimitChangedEvent evt) {
-        final long limit = calculateDownloadLimit(evt.newLimit);
+    private void handleRateLimitChanged(@NotNull DownloadRateLimitChangedEvent evt) {
+        final long limit = calculateDownloadLimit(evt);
         logger.info("thread changing download speed limit to {} KB", limit);
         rateLimiter.setRate(limit);
     }
 
-    private long calculateDownloadLimit(long limit) {
+    private long calculateDownloadLimit(@NotNull DownloadRateLimitChangedEvent evt) {
+        return calcLimit(evt.newLimit, evt.active);
+    }
+
+    private long calcLimit(long limit, boolean active) {
         long newLimit;
 
-        if (limit <= 0)
-            newLimit = 10 * FileUtils.ONE_GB;
+        if (limit <= 0 || !active)
+            newLimit = Long.MAX_VALUE;
         else
             newLimit = limit * FileUtils.ONE_KB;
 
         return newLimit;
     }
 
+    private long calculateDownloadLimit(long limit) {
+        var active = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DownloadRateLimiter.ACTIVE, false);
+        return calcLimit(limit, active);
+    }
     /**
      * Try to read the download limit from config file, other set to artificial limit 1GB/s!
      *
      * @return the limit in KB/s
      */
     private long getDownloadLimit() {
-        final long downloadLimit = ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
+        final long downloadLimit = ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0);
         return calculateDownloadLimit(downloadLimit);
     }
 
@@ -222,9 +230,6 @@ public class DirectHttpDownload extends Thread {
                             final var diffZeit = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                             final long restProzent = 1000L - p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
-                            // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
-                            // als die bereits geladene Speilzeit des Films
-                            bereitsAnschauen(datenDownload);
                         }
                         melden = true;
                     }
@@ -425,22 +430,6 @@ public class DirectHttpDownload extends Thread {
             }
         }
         return result;
-    }
-
-    private void bereitsAnschauen(DatenDownload datenDownload) {
-        if (datenDownload.film != null && datenDownload.start != null) {
-            final long filmLength = datenDownload.film.getFilmLength();
-            if (filmLength > 0
-                    && datenDownload.start.restSekunden > 0
-                    && datenDownload.mVFilmSize.getAktSize() > 0
-                    && datenDownload.mVFilmSize.getSize() > 0) {
-                // macht nur dann Sinn
-                final long zeitGeladen = filmLength * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
-                if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
-                    datenDownload.start.beginnAnschauen = true;
-                }
-            }
-        }
     }
 
     enum HttpDownloadState {

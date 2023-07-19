@@ -31,7 +31,9 @@ import javafx.stage.Stage;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
+import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
+import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -66,7 +68,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
-import static mediathek.config.MVColor.*;
+import static mediathek.config.MVColor.DOWNLOAD_FEHLER;
+import static mediathek.config.MVColor.FILM_HISTORY;
 
 
 /**
@@ -81,7 +84,6 @@ public class BookmarkWindowController implements Initializable {
   private final BookmarkDataList listeBookmarkList;
   private FilteredList<BookmarkData> filteredBookmarkList;
   private Color ColorExpired;
-  private Color ColorLive;
   private Background BackgroundSeen;
   private Background BackgroundSelected;
   private final SeenHistoryController history = new SeenHistoryController();
@@ -320,7 +322,7 @@ public class BookmarkWindowController implements Initializable {
         } else {
           setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
           // set foreground color:
-          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : data.isLiveStream() ? ColorLive : null;
+          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : null;
           if (fillcolor != null) {
             this.getChildren().forEach((n) -> ((Labeled) n).setTextFill(fillcolor));
           }
@@ -654,7 +656,7 @@ public class BookmarkWindowController implements Initializable {
    */
   private void saveBookMarkList() {
     if (listUpdated) {
-      listeBookmarkList.saveToFile(Daten.getBookmarkFilePath());
+      listeBookmarkList.saveToFile(StandardLocations.getBookmarkFilePath());
       btnSaveList.setDisable(true);
       JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText("Merkliste ist gesichert"));
     }
@@ -840,10 +842,9 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void initSettings() {
-    Color colorSeen = convertMVCAWTColor(FILM_HISTORY);
-    Color colorNew = convertMVCAWTColor(FILM_NEU);
+    var colorSeen = convertMVCAWTColor(FILM_HISTORY);
+    var colorNew = JavaFxUtils.toFXColor(MVColor.getNewColor());
     ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
-    ColorLive = convertMVCAWTColor(FILM_LIVESTREAM);
     BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
     BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));
   }

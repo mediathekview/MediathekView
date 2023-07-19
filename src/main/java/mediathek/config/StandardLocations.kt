@@ -9,6 +9,7 @@ import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.Optional
 
 object StandardLocations {
     /**
@@ -48,6 +49,16 @@ object StandardLocations {
     }
 
     /**
+     * Return the path to "bookmarks.json"
+     *
+     * @return Path object of bookmark file
+     */
+    @JvmStatic
+    fun getBookmarkFilePath(): Path {
+        return getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE)
+    }
+
+    /**
      * Return the path to "mediathek.xml"
      *
      * @return Path to the file
@@ -56,6 +67,21 @@ object StandardLocations {
     @Throws(InvalidPathException::class)
     fun getMediathekXmlFile(): Path {
         return getSettingsDirectory().resolve(Konstanten.CONFIG_FILE)
+    }
+
+    @JvmStatic
+    @Throws(InvalidPathException::class)
+    fun getXDGDownloadDirectory(): Optional<Path> {
+        return try {
+            val process = ProcessBuilder("xdg-user-dir", "DOWNLOAD")
+                .directory(File(SystemUtils.USER_HOME))
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .start()
+            val line = process.inputReader().use { reader -> reader.readLine() }
+            Optional.of(line).filter { s -> s.isNotEmpty() }.map { s -> Paths.get(s) }
+        } catch (_: IOException) {
+            Optional.empty()
+        }
     }
 
     /**
@@ -69,6 +95,8 @@ object StandardLocations {
         val userHome = SystemUtils.USER_HOME
         val path = if (SystemUtils.IS_OS_MAC_OSX)
             Paths.get(userHome, "Downloads")
+        else if (SystemUtils.IS_OS_LINUX)
+            getXDGDownloadDirectory().orElse(Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS))
         else
             Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS)
         return path.toAbsolutePath().toString()
@@ -97,7 +125,7 @@ object StandardLocations {
      * @return the path as String.
      */
     @JvmStatic
-    fun getFilmlistFilePath(): String {
+    fun getFilmlistFilePathString(): String {
         val filePart = File.separator + Konstanten.JSON_DATEI_FILME
         return if (Config.isPortableMode())
             getSettingsDirectory().toString() + filePart
@@ -111,6 +139,24 @@ object StandardLocations {
         }
     }
 
+    /**
+     * Return the location of the lucene film index.
+     */
+    @JvmStatic
+    fun getFilmIndexPath(): Path {
+        val indexDirectory = "mv_index"
+
+        return if (Config.isPortableMode())
+            getSettingsDirectory().resolve(indexDirectory)
+        else {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                val base = Paths.get(SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME)
+                base.resolve(indexDirectory)
+            } else {
+                getSettingsDirectory().resolve(indexDirectory)
+            }
+        }
+    }
     /**
      * Return the path to the lockfile.
      * On macOS we do not support roaming settings with the official app, therefore keep the old temp dir convention.

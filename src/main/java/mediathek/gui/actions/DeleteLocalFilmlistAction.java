@@ -26,13 +26,13 @@ public class DeleteLocalFilmlistAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            var filmlistPathStr = StandardLocations.getFilmlistFilePath();
+            var filmlistPathStr = StandardLocations.getFilmlistFilePathString();
             var fimlistPath = Paths.get(filmlistPathStr);
             FileUtils.moveToTrash(fimlistPath);
             JOptionPane.showMessageDialog(owner,
                     "Filmliste wurde gelöscht.\nDas Programm wird nun beendet.",
                     Konstanten.PROGRAMMNAME,JOptionPane.INFORMATION_MESSAGE);
-            MediathekGui.ui().beenden(false,false);
+            MediathekGui.ui().quitApplication();
         } catch (IOException ex) {
             logger.error("Failed to delete filmlist", ex);
             JOptionPane.showMessageDialog(owner,

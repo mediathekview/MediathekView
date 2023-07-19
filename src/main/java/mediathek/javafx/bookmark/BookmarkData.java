@@ -37,8 +37,8 @@ public class BookmarkData {
     this.sender = filmdata.getSender();
     this.titel = filmdata.getTitle();
     this.senddate = filmdata.getSendeDatum();
-    this.highQualityUrl = filmdata.getUrlHighQuality();
-    this.urlKlein = filmdata.getUrlLowQuality();
+    this.highQualityUrl = filmdata.getHighQualityUrl();
+    this.urlKlein = filmdata.getLowQualityUrl();
     this.filmdata = filmdata; 
     this.willExpire = false;
   }
@@ -56,7 +56,7 @@ public class BookmarkData {
   public String getTitel(){ return this.titel; }
   public void   setTitel(String url){ this.titel = url;}
 
-  public String getDauer(){ return ((filmdata != null) ? filmdata.getDauer(): ""); }
+  public String getDauer(){ return ((filmdata != null) ? filmdata.getFilmLengthAsString(): ""); }
   public void   setDauer(String dauer){}
 
   public String getDescription(){ return ((filmdata != null) ? filmdata.getDescription(): ""); }
@@ -96,7 +96,7 @@ public class BookmarkData {
   
   @JsonIgnore
   public boolean hasWebURL() {
-    return (this.filmdata != null && !this.filmdata.getWebsiteLink().isEmpty());
+    return (this.filmdata != null && !this.filmdata.getWebsiteUrl().isEmpty());
   }
 
   /**
@@ -132,7 +132,7 @@ public class BookmarkData {
   
   @JsonIgnore
   public String getWebUrl() {
-    return (this.filmdata != null) ? this.filmdata.getWebsiteLink() : null;
+    return (this.filmdata != null) ? this.filmdata.getWebsiteUrl() : null;
   }
 
   @JsonIgnore
@@ -161,11 +161,11 @@ public class BookmarkData {
       Film = new DatenFilm();
       Film.setThema(getThema());
       Film.setTitle(getTitel());
-      Film.setUrlNormalQuality(getUrl());
-      Film.setUrlHighQuality(getHighQualityUrl());
-      Film.setUrlLowQuality(getUrlKlein());
+      Film.setNormalQualityUrl(getUrl());
+      Film.setHighQualityUrl(getHighQualityUrl());
+      Film.setLowQualityUrl(getUrlKlein());
       Film.setSender(getSender());
-      Film.setDauer(getDauer());
+      Film.setFilmLength(getDauer());
     }
     return Film;
   }

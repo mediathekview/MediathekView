@@ -92,7 +92,7 @@ public class SettingsMigrator {
         var node = element.getFirstChild();
         if (node != null) {
             boolean result = Boolean.parseBoolean(node.getNodeValue());
-            config.setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, result);
+            ApplicationConfiguration.getInstance().setBlacklistDoNotShowGeoblockedFilms(result);
             logger.debug("migrateDoNotShowGeoFilms");
         }
     }

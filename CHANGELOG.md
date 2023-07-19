@@ -1,4 +1,74 @@
+# **14.0.0**
+- Es wird nun Java 20 verwendet.
+- User Interface wurde primär für neue macOS-Versionen überarbeitet.
+- Die *macOS Intel* Version nutzt nun Liberica JDK full mit integriertem JavaFX. Dadurch kann MediathekView nun auch wieder fehlerfrei mit Apple Silicon Macs gebaut werden.
+- Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
+- Das Programm prüft unter Linux ob der `sun.java2d.uiScale`-Parameter korrekt angegeben wurde. Im Fehlerfall wird ein Warndialog angezeigt.
+- Der PSet-Parameter `%i` liefert anstatt der internen Filmnummer nun die aktuelle Zeit seit 1970 in Millisekunden.
+- *Globale Schriftgröße ändern...*-Befehl wurde unter Linux entfernt da es keine Auswirkungen mehr hat.
+- Im Tab "Filme" wurden *"Abo löschen"* und *"Abo ändern"* aufgrund der teilweise langen Ausführungszeiten und dem damit zusammenhängenden Einfrieren der Oberfläche entfernt. Bitte nutzen Sie wie dafür vorgesehen den "Abos verwalten" Dialog.
+- Im Tab "Downloads" wurde die Textanzeige zu laufenden Downloads entfernt. Die Informationen werden nun in der globalen Statuszeile der App bei Bedarf angezeigt.
+- Die Spalten `HQ`, `UT` und `Geo` sind aufgrund der neuen Icons grundsätzlich überflüssig.
+- Die Option "Programm nicht beenden" im Beenden-Dialog bei laufenden Downloads wurde entfernt, das sie redundant ist und durch den Button "Abbrechen" erzielt wird.
+- Frankreich kann nun als Standort für das Geoblocking gesetzt werden.
+- verwendete Bibliotheken wurden aktualisiert.
+- Bandbreitendialog wurde zurück nach Swing portiert.
+- **BUGFIX:** Updater-Konfigurationsmöglichkeit wird nur noch in den Einstellungen aktiviert dargestellt, wenn sie auch Auswirkungen auf den Update-Mechanismus hat.
+- **BUGFIX:** Filter-Fenster überlagert nicht mehr Tooltip-Anzeigen.
+- **BUGFIX:** Die Oberfläche gibt nun verbesserte Hinweise, wenn Abos verarbeitet werden (nur im "Abo verwalten" Dialog)
+- **BUGFIX:** Fehler in der Anzeige im Statusfeld des Download-Tab wurde behoben.
+- **BUGFIX:** *"Filme/Blacklist öffnen..."* Eintrag wurde in *"Filme/Blacklist bearbeiten..."* umbenannt und die Icons vereinheitlicht.
+- **BUGFIX:** Manchmal inkorrekte Darstellung des Bookmark-Status im Film-Tab wurde korrigiert.
+- **BUGFIX:** Sendericons werden nun vollständig und hochauflösend gerendert.
+- **BUGFIX:** Update-Möglichkeit innerhalb des Programms wird nun richtig ein- und ausgeblendet, je nach verwendetem Installationstyp.
+- **BUGFIX:** Potentieller Absturz beim Einlesen der Abohistorie wurde behoben.
+- **BUGFIX:** Das Hinzufügen großer Mengen an Downloads blockiert nun nicht mehr das Programm.
+- **BUGFIX:** Die Dateigrößen von manuellen Downloads werden nun - sofern vorhanden - richtig verarbeitet.
+- **BUGFIX:** geo-geblockte Filmeinträge verwenden nun bei der Auswahl die Farben des Themes anstatt einer eigens definierten.
+- **BUGFIX:** Menüpunkt *"Downloads/Aktion nach abgeschlossenen Downloads..."* wurde entfernt da es in der Funktion dem regulären Beenden der Applikation entspricht.
+- **BUGFIX:** Bei zeitgesteuerten Downloads wurde der Rechner manchmal nicht wie gewünscht heruntergefahren.
+- **BUGFIX:** Nutzung der aktuellsten Apache Commons Configuration2 Bibliothek zur Behebung der bekannten CVEs.
+- **BUGFIX:** Duplikate in der Themaliste werden nun (noch weiter) reduziert als bisher.
+- **BUGFIX:** Abo verwalten Dialog konnte manchmal Höhe und Breite 0 haben.
+- **BUGFIX:** Bei geänderter Senderauswahl wird nun eine vollständige Filmliste geladen, solange die Filmliste **nicht** erweitert wird.
+- **BUGFIX:** Bei Übergabe von Downloads an JDownloader kann nun die Qualität bestimmt werden.
+- **BUGFIX:** Filterpanel im Tab "Downloads" wird nun nicht mehr zu klein dargestellt beim ersten Start.
+- **BUGFIX:** *Abo ändern*-Button kann nicht mehr aktiviert werden wenn mehrere Abos in der Liste ausgewählt sind.
+- **BUGFIX:** Frankreich wurde beim Geoblocking nicht berücksichtigt.
+- **BUGFIX:** Filme mit *EU* blocking code wurden teilweise falsch als geblockt angezeigt.
+- **BUGFIX:** Beim Export von Filmlisten wird nun vorher geprüft, ob noch mindestesns 1 GB freier Speicher vorhanden ist.
+- **BUGFIX:** Behebung diverser Probleme in *Downloads/Alle Downloads zeitverzögert starten...*.
+- **BUGFIX:** *Download weiterführen* Dialog wird nun etwas tiefer auf dem Bildschirm als normal dargestellt um ungewollte Buttonclicks zu verhindern.
+- **BUGFIX:** *Download editieren*-Dialog wurde konform zum Kontextmenü in *Download ändern* umbenannt.
+- **BUGFIX:** *Download ändern*-Dialog zeigte manchmal Daten fehlerhaft an.
+- **FEATURE:** MediathekView kann sich nun beim Beenden das zuletzt sichtbare Tab merken und dieses beim Start wiederherstellen. Das Verhalten lässt sich in den Einstellungen konfigurieren.
+- **FEATURE:** Experimenteller Schalter zur Unterstützung eines **Dark Mode** implementiert. Störende Farbschemata müssen in den Einstellungen manuell geändert werden! Nicht alle Dialoge unterstützen dies derzeit.
+- **FEATURE:** Abfragen im Tab "Filme" können nun mit Hilfe der *Lucene* Suchmaschine durchgeführt werden. Dies ist nur für erfahrene Nutzer sinnvoll! Sie wird in *Einstellungen/Allgemein* aktiviert.
+- **FEATURE:** Livestreams werden mit einem Icon markiert anstatt einer dunklen Farbe.
+- **FEATURE:** Die Toolbars können nun zum Schweben in allen Tabs abgetrennt werden.
+- **FEATURE:** Tab Filmbeschreibung wurde neu designed und stellt nun auch das Sendericon dar.
+- **FEATURE:** Icons wurden durch hochauflösende Vektorvarianten ersetzt.
+- **FEATURE:** Neues Suchfeld inklusive Suchhistorie.
+- **FEATURE:** Geoinformationen in der Spalte `Geo` im Tab "Filme" werden nun als *gesperrt/entsperrt* Icons dargestellt. Detailinformationen werden über Tooltip-Text eingeblendet.
+- **FEATURE:** Untertitelverfügbarkeit wird nun über ein `cc`-Icon an Anfang des Titels angezeigt. Die Spalte `UT` wird in einer späteren Programmversion entfernt werden.
+- **FEATURE:** Inhalte in HQ werden mit einem `HQ` Icon im Titel im Tab "Filme" dargestellt.
+- **FEATURE:** Geogesperrte Inhalte werden mit einem Schloß versehen.
+- **FEATURE:** Ein manchmal unsichtbarer Filter-Dialog kann nun über das Menü *Hilfe/Filterdialog-Position zurücksetzen* auf den sichtbaren Monitorbereich zurückgesetzt werden.
+- **FEATURE:** Im Tab Download werden die Dialoge bzgl. Neustarts fertiger Downloads nun automatisch nach 10 Sekunden geschlossen wenn kein Userinput passiert. Es wird dann jeweils die "Nein"-Option ausgewählt um bereits vorhandene Downloads zu schützen.
+- **FEATURE:** Untertitel eines Films können über das Kontextmenü im Film-Tab nun manuell geladen werden. Dabei erfolgt automatisch eine Konvertierung in das SRT-Format soweit notwendig. 
+- **FEATURE(Windows/Linux):** Schriftgröße und -art kann für das gesamte Programm über das Menü "*Schrift*" geändert werden.
+- **FEATURE(Windows/Linux):** Die Breite der Scrollbars wurde etwas erhöht um die Sichtbarkeit zu verbessern.
+- **FEATURE:** Bandbreitenbegrenzung kann im Tab *"Downloads"* nun über eine CheckBox aktiviert/deaktiviert werden.
+- **FEATURE:** Der Splash-Screen beim Start lässt sich mittels `-ns` oder `--no-splash` deaktivieren.
+- **FEATURE(Linux):** interne Nutzung von `xdg-user-dir` um sich besser in die vorhandene Desktops zu integrieren. Dies ist v.a. für flatpack-Installationen notwendig.
+- **FEATURE(macOS App):** ffmpeg auf Version 5.11 aktualisiert.
+- **FEATURE:** Abos können per Doppelklick im *Abo verwalten*-Dialog editiert werden.
+- **FEATURE:** Länderflaggen werden in *Einstellungen/Standort & Geoblocking* dargestellt.
+- **FEATURE:** *Export/Dekomprimierte Filmliste* speichert eine Filmliste mit vollständigen Sender/Thema Tags ab.
+- **FEATURE:** *Download ändern*-Dialog speichert seine Größe und Position und stellt diese wieder her.
+
 <u>**13.9.1**</u>
+
 - Die Binaries für macOS waren beschädigt und mussten erneuert werden.
 
 <u>**13.9.0**</u>

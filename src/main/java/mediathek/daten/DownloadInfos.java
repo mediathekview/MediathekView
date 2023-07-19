@@ -106,8 +106,8 @@ public class DownloadInfos {
     private void makeDownloadInfos() {
         resetData();
 
-        final var listeDownloads = Daten.getInstance().getListeDownloads();
-        final var aktivDownloads = listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+        final var aktivDownloads = Daten.getInstance()
+                .getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
 
         // Liste gestarteter Downloads
         for (DatenDownload download : aktivDownloads) {

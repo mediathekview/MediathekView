@@ -52,10 +52,25 @@ public class Config {
     private static boolean portableMode;
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
+
     @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
     private static boolean fileLoggingDisabled;
+    /**
+     * Disable JVM parameter checks on startup.
+     */
+    @CommandLine.Option(names = {"-nj", "--no-jvm-param-checks"}, description = "JVM Parameter-Prüfung deaktivieren")
+    private static boolean disableJvmParameterChecks;
+
+    @CommandLine.Option(names = {"-ns", "--no-splash"}, description = "Splash-Screen nicht anzeigen")
+    private static boolean disableSplashScreen;
+
+    public static boolean isSplashScreenDisabled() { return disableSplashScreen;}
+
+    public static boolean isDisableJvmParameterChecks() {
+        return disableJvmParameterChecks;
+    }
 
     public static boolean isInstallThreadCheckingRepaintManager() {
         return installThreadCheckingRepaintManager;

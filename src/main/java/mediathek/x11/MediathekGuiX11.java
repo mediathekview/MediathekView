@@ -2,7 +2,6 @@ package mediathek.x11;
 
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.gui.actions.ChangeGlobalFontSetting;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
@@ -34,14 +33,6 @@ public class MediathekGuiX11 extends MediathekGui {
         } catch (Exception e) {
             logger.error("Could not set awtAppClassName", e);
         }
-    }
-
-    @Override
-    protected void installChangeGlobalFontSettingMenuEntry() {
-        jMenuHilfe.addSeparator();
-        var action = new ChangeGlobalFontSetting();
-        var item = jMenuHilfe.add(action);
-        action.setMenuItem(item);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.file.GetFile;
@@ -49,8 +48,8 @@ public class PanelBlacklist extends JPanel {
 
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
-        jButtonTabelleLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
+        jButtonTabelleLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
 
         jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
 
@@ -68,8 +67,7 @@ public class PanelBlacklist extends JPanel {
         });
 
         jCheckBoxGeo.addActionListener(e -> {
-            ApplicationConfiguration.getConfiguration().
-                    setProperty(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, jCheckBoxGeo.isSelected());
+            ApplicationConfiguration.getInstance().setBlacklistDoNotShowGeoblockedFilms(jCheckBoxGeo.isSelected());
             notifyBlacklistChanged();
         });
 
@@ -154,8 +152,7 @@ public class PanelBlacklist extends JPanel {
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
 
-        var config = ApplicationConfiguration.getConfiguration();
-        jCheckBoxGeo.setSelected(config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS,false));
+        jCheckBoxGeo.setSelected(ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms());
 
         try {
             jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
@@ -234,8 +231,25 @@ public class PanelBlacklist extends JPanel {
             }
 
             private void tus() {
-                Filter.validatePatternInput(jTextFieldThemaTitel);
-                Filter.validatePatternInput(jTextFieldTitel);
+                validatePatternInput(jTextFieldThemaTitel);
+                validatePatternInput(jTextFieldTitel);
+            }
+
+            /**
+             * Check if entry in JTextField is a regexp pattern and its validity.
+             * If a recognized pattern is invalid, change the background color of the JTextField.
+             *
+             * @param tf The control that will be validated
+             */
+            private void validatePatternInput(JTextField tf) {
+                String text = tf.getText();
+                if (Filter.isPattern(text)) {
+                    tf.setForeground(MVColor.getRegExPatternColor());
+                    GuiFunktionen.showErrorIndication(tf, Filter.makePatternNoCache(text) == null);
+                } else {
+                    GuiFunktionen.showErrorIndication(tf, false);
+                    tf.setForeground(UIManager.getColor("TextField.foreground"));
+                }
             }
         };
         jTextFieldTitel.getDocument().addDocumentListener(documentListener);
@@ -315,8 +329,6 @@ public class PanelBlacklist extends JPanel {
         for (String item : lst)
             model.addElement(item);
         jComboBoxThema.setModel(model);
-
-        lst.clear();
     }
 
     private void fillControlsWithRuleData() {

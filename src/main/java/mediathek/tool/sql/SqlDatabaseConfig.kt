@@ -18,7 +18,7 @@ object SqlDatabaseConfig {
             val conf = SQLiteConfig()
             conf.setEncoding(SQLiteConfig.Encoding.UTF8)
             conf.setLockingMode(SQLiteConfig.LockingMode.NORMAL)
-            conf.setSharedCache(true)
+            conf.setSharedCache(false)
             conf.setSynchronous(SQLiteConfig.SynchronousMode.OFF)
             conf.enableLoadExtension(false)
             conf.setJournalMode(SQLiteConfig.JournalMode.WAL)

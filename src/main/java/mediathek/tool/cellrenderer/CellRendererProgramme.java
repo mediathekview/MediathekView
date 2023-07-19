@@ -1,7 +1,7 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.config.Icons;
 import mediathek.daten.DatenProg;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,10 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererProgramme extends DefaultTableCellRenderer {
-    private static final ImageIcon ja_16 = Icons.ICON_TABELLE_EIN;
-    private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
+    private static final ImageIcon ja_16 = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg");
     private static final Logger logger = LogManager.getLogger();
 
     public CellRendererProgramme() {
@@ -36,7 +34,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
                 if (getText().equals(Boolean.TRUE.toString())) {
                     setIcon(ja_16);
                 } else {
-                    setIcon(nein_12);
+                    setIcon(null);
                 }
                 setText("");
             }

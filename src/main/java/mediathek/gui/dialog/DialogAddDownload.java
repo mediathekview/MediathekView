@@ -3,8 +3,6 @@ package mediathek.gui.dialog;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
@@ -100,10 +98,10 @@ public class DialogAddDownload extends JDialog {
             }
         };
         jRadioButtonAufloesungHd.addActionListener(listener);
-        jRadioButtonAufloesungHd.setEnabled(!datenFilm.getUrlHighQuality().isEmpty());
+        jRadioButtonAufloesungHd.setEnabled(!datenFilm.getHighQualityUrl().isEmpty());
 
         jRadioButtonAufloesungKlein.addActionListener(listener);
-        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getUrlLowQuality().isEmpty());
+        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.getLowQualityUrl().isEmpty());
 
         jRadioButtonAufloesungHoch.addActionListener(listener);
         jRadioButtonAufloesungHoch.setSelected(true);
@@ -132,7 +130,7 @@ public class DialogAddDownload extends JDialog {
         var decoratedPool = Daten.getInstance().getDecoratedPool();
         hqFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY);
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
 
         Futures.addCallback(hqFuture, new FutureCallback<>() {
@@ -160,7 +158,7 @@ public class DialogAddDownload extends JDialog {
 
         hochFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlNormalQuality();
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
         Futures.addCallback(hochFuture, new FutureCallback<>() {
             @Override
@@ -185,7 +183,7 @@ public class DialogAddDownload extends JDialog {
 
         kleinFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlFuerAufloesung(FilmResolution.Enum.LOW);
-            return datenFilm.getDateigroesse(url);
+            return datenFilm.getFileSizeForUrl(url);
         });
         Futures.addCallback(kleinFuture, new FutureCallback<>() {
             @Override
@@ -303,7 +301,7 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void setupZielButton() {
-        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonZiel.setText("");
         jButtonZiel.addActionListener(l -> {
             var initialDirectory = "";
@@ -321,7 +319,7 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void setupDeleteHistoryButton() {
-        jButtonDelHistory.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonDelHistory.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
         jButtonDelHistory.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
@@ -408,9 +406,12 @@ public class DialogAddDownload extends JDialog {
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
      */
     private void calculateAndCheckDiskSpace() {
-        jRadioButtonAufloesungHd.setForeground(Color.black);
-        jRadioButtonAufloesungHoch.setForeground(Color.black);
-        jRadioButtonAufloesungKlein.setForeground(Color.black);
+        var fgColor = UIManager.getColor("Label.foreground");
+        if (fgColor != null) {
+            jRadioButtonAufloesungHd.setForeground(fgColor);
+            jRadioButtonAufloesungHoch.setForeground(fgColor);
+            jRadioButtonAufloesungKlein.setForeground(fgColor);
+        }
 
         try {
             var filmBorder = (TitledBorder)jPanelSize.getBorder();
@@ -505,12 +506,12 @@ public class DialogAddDownload extends JDialog {
 
     private boolean isHighQualityRequested() {
         return pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(FilmResolution.Enum.HIGH_QUALITY.toString())
-                && !datenFilm.getUrlHighQuality().isEmpty();
+                && !datenFilm.getHighQualityUrl().isEmpty();
     }
 
     private boolean isLowQualityRequested() {
         return pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(FilmResolution.Enum.LOW.toString()) &&
-                !datenFilm.getUrlLowQuality().isEmpty();
+                !datenFilm.getLowQualityUrl().isEmpty();
     }
 
     private boolean highQualityMandated;
@@ -530,7 +531,7 @@ public class DialogAddDownload extends JDialog {
 
         jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
 
-        if (datenFilm.getUrlSubtitle().isEmpty()) {
+        if (datenFilm.getSubtitleUrl().isEmpty()) {
             // dann gibts keinen Subtitle
             jCheckBoxSubtitle.setEnabled(false);
         } else {

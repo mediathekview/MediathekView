@@ -41,7 +41,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
     private final Daten daten;
 
@@ -228,6 +227,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                                       boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
         Object[] object;
         tModel.setRowCount(0);
+        tModel.getDataVector().clear();
         for (DatenDownload download : this) {
             if (download.istZurueckgestellt()) {
                 continue;
@@ -415,6 +415,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized DownloadStartInfo getStarts() {
         final DownloadStartInfo info = new DownloadStartInfo();
+        info.total_num_download_list_entries = size();
 
         for (DatenDownload download : this) {
             if (!download.istZurueckgestellt()) {

@@ -1,9 +1,12 @@
 package mediathek.tool;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimedTextMarkupLanguageParserTest {
@@ -62,6 +65,16 @@ class TimedTextMarkupLanguageParserTest {
             var ttmlDate = ttmlFormatter.parse("00:03:04.400");
             var srtString = srtFormatter.format(ttmlDate);
             assertTrue(srtString.endsWith(",400"));
+        }
+    }
+
+    @Test
+    @DisplayName("Fail for unsupported TTML format")
+    void unsupported_ttml_file_format() {
+        try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
+            var file = new File("src/test/resources/ttml/ttml_fail_test_file.ttml");
+            var res = parser.parse(file.toPath());
+            assertFalse(res);
         }
     }
 }

@@ -1,15 +1,17 @@
-JFDML JFormDesigner: "7.0.0.0.142" Java: "1.8.0_152-release" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.15" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq t {par t {comp hyperLinkPanel:::::x, seq {space :::p, par t {seq t {space :0:0:x, comp jButtonOk:::p::p}, comp jScrollPane1::l:::x}}}, space :p:5:p}}"
-			"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane1::::208:x, space :::p, comp hyperLinkPanel:::p::p, space :p:2:p, comp jButtonOk:::p::p, space :::p}}"
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[grow,fill][fill][fill]"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
 			"title": "Programminformationen"
+			"minimumSize": new java.awt.Dimension( 480, 100 )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane1"
 				auxiliary() {
@@ -23,14 +25,22 @@ new FormModel {
 					"rows": 5
 					"text": "\n\n"
 					"wrapStyleWord": true
+					"minimumSize": new java.awt.Dimension( 459, 85 )
 				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
 				"text": "Schließen"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 2,alignx right,growx 0"
 			} )
-			add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
-				name: "hyperLinkPanel"
+			add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
+				name: "hyperLink"
+				"text": "Link zur Webseite"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 475, 280 )

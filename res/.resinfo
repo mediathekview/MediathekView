@@ -1,0 +1,7 @@
+Die Ressourcen, wie ffmpeg und Shellskripte aus dem bin Ordner findest du hier:
+https://gitlab.com/mediathekview/mediathekview-buildres
+
+Im Repo benutze folgende Befehle um die Ressourcen zu erhalten:
+git clone https://gitlab.com/mediathekview/mediathekview-buildres.git tmpres
+mv tmpres/bin res/
+rm -rf tmpres

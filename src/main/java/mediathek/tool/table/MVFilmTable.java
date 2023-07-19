@@ -3,17 +3,14 @@ package mediathek.tool.table;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.GuiFilme;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilmSize;
-import mediathek.tool.models.TModelFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +18,37 @@ import java.util.Optional;
 public class MVFilmTable extends MVTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
-    /**
-     * Stores the selected FILM NUMBERS that need to be restored after updates.
-     */
-    private final List<Integer> selectedFilmNumbers = new ArrayList<>();
+
+    @Override public String getToolTipText(MouseEvent e) {
+        var p = e.getPoint(); // MouseEvent
+        final int viewColumn = columnAtPoint(p);
+        final int modelColumnIndex = convertColumnIndexToModel(viewColumn);
+
+        //only show title as tooltip for TITEL column...
+        if (modelColumnIndex != DatenFilm.FILM_TITEL)
+            return super.getToolTipText(e);
+
+        String toolTipText = null;
+        final int viewRow = rowAtPoint(p);
+        var comp = prepareRenderer(getCellRenderer(viewRow, viewColumn), viewRow, viewColumn);
+        var bounds = getCellRect(viewRow, viewColumn, false);
+
+
+        try {
+            //comment row, exclude heading
+            if (comp.getPreferredSize().width > bounds.width) {
+                final int modelRowIndex = convertRowIndexToModel(viewRow);
+                final DatenFilm datenFilm = (DatenFilm) getModel().getValueAt(modelRowIndex, DatenFilm.FILM_REF);
+
+                toolTipText = datenFilm.getTitle();
+            }
+        } catch (RuntimeException ignored) {
+            //catch null pointer exception if mouse is over an empty line
+        }
+
+        return toolTipText;
+    }
+
 
     public MVFilmTable() {
         super(DatenFilm.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS,
@@ -33,34 +57,17 @@ public class MVFilmTable extends MVTable {
                 Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME));
 
         setAutoCreateRowSorter(false);
-
         addPropertyChangeListener("model", evt -> {
-            //System.out.println("TABLE MODEL CHANGED");
+            //we need to setup sorter later as the model is invalid at ctor point...
+            var model = (TableModel) evt.getNewValue();
             if (sorter == null) {
-                sorter = new MyRowSorter<>(getModel());
-                //sorter.addRowSorterListener(evt1 -> System.out.println("SORT ORDER HAS CHANGED"));
+                sorter = new MyRowSorter<>(model);
+                sorter.setModel(model);
+                setRowSorter(sorter);
             }
-            setRowSorter(sorter);
-            sorter.setModel(getModel());
+            else
+                sorter.setModel(model);
         });
-    }
-
-    @Override
-    protected void loadDefaultFontSize() {
-        var config = ApplicationConfiguration.getConfiguration();
-        try {
-            final var fontSize = config.getFloat(ApplicationConfiguration.TAB_FILM_FONT_SIZE);
-            var newFont = getDefaultFont().deriveFont(fontSize);
-            setDefaultFont(newFont);
-        }
-        catch (Exception ignored) {}
-    }
-
-    @Override
-    protected void saveDefaultFontSize() {
-        var config = ApplicationConfiguration.getConfiguration();
-        final var fontSize = getDefaultFont().getSize2D();
-        config.setProperty(ApplicationConfiguration.TAB_FILM_FONT_SIZE, fontSize);
     }
 
     private void resetFilmeTab(int i) {
@@ -172,8 +179,6 @@ public class MVFilmTable extends MVTable {
     }
 
     static class MyRowSorter<M extends TableModel> extends TableRowSorter<M> {
-        //private static final Logger rsLogger = LogManager.getLogger();
-
         public MyRowSorter(M model) {
             super(model);
         }
@@ -181,6 +186,8 @@ public class MVFilmTable extends MVTable {
         @Override
         public void setModel(M model) {
             super.setModel(model);
+
+            //must be set after each model change
             // do not sort buttons
             setSortable(DatenFilm.FILM_ABSPIELEN, false);
             setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
@@ -190,98 +197,18 @@ public class MVFilmTable extends MVTable {
             setComparator(DatenFilm.FILM_SENDER, (Comparator<String>) String::compareTo);
             setComparator(DatenFilm.FILM_ZEIT, (Comparator<String>) String::compareTo);
             setComparator(DatenFilm.FILM_URL, (Comparator<String>) String::compareTo);
+            setComparator(DatenFilm.FILM_DAUER, Comparator.naturalOrder());
         }
 
         @Override
         public void setSortKeys(List<? extends SortKey> sortKeys) {
-            //FIXME something is wrong in MVTable with setting sort keys
+            // MV config stores only ONE sort key
+            // here we make sure that only one will be set on the table...
             if (sortKeys != null) {
-                if (sortKeys.size() > 1) {
-                    //rsLogger.error("BULLSHIT SORTKEYS IN");
+                while (sortKeys.size() > 1)
                     sortKeys.remove(1);
-                }
             }
             super.setSortKeys(sortKeys);
-/*
-            var list = getSortKeys();
-            if (list != null) {
-                rsLogger.debug("SORT KEYS:");
-                for (var key : list) {
-                    rsLogger.debug("COLUMN: " + key.getColumn() + ",SortOrder: " + key.getSortOrder().toString());
-                }
-            }
-*/
-        }
-    }
-
-    /**
-     * Scroll to a selected row, but center it in the middle of the visible rectangle.
-     * @param rowIndex The row to be displayed centered.
-     */
-    private void scrollToSelectionCentered(int rowIndex) {
-        Rectangle rect = getCellRect(rowIndex, 0, true);
-        Rectangle viewRect = getVisibleRect();
-        rect.setLocation(rect.x - viewRect.x, rect.y - viewRect.y);
-
-        int centerX = (viewRect.width - rect.width) / 2;
-        int centerY = (viewRect.height - rect.height) / 2;
-        if (rect.x < centerX) {
-            centerX = -centerX;
-        }
-        if (rect.y < centerY) {
-            centerY = -centerY;
-        }
-        rect.translate(centerX, centerY);
-        scrollRectToVisible(rect);
-    }
-
-    @Override
-    protected void scrollToIndexDelegate(int index) {
-        // film list moves selected entries into center of JTable view
-        scrollToSelectionCentered(index);
-    }
-    @Override
-    protected void restoreSelectedTableRows() {
-        if (!selectedFilmNumbers.isEmpty()) {
-            boolean found = false;
-
-            selectionModel.setValueIsAdjusting(true);
-            final var tModel = (TModelFilm) getModel();
-            for (var i : selectedFilmNumbers) {
-                int r = tModel.getModelRowForFilmNumber(i);
-                if (r >= 0) {
-                    // ansonsten gibts die Zeile nicht mehr
-                    r = convertRowIndexToView(r);
-                    addRowSelectionInterval(r, r);
-                    found = true;
-                }
-            }
-            if (!found && selRow >= 0 && getRowCount() > selRow) {
-                setRowSelectionInterval(selRow,selRow);
-            } else if (!found && selRow >= 0 && getRowCount() > 0) {
-                final var rowCount = tModel.getRowCount() - 1;
-                setRowSelectionInterval(rowCount, rowCount);
-            }
-            selectionModel.setValueIsAdjusting(false);
-        }
-
-        selectedFilmNumbers.clear();
-    }
-
-    @Override
-    public void saveSelectedTableRows() {
-        super.saveSelectedTableRows();
-
-        int selIndex = -1;
-        if (selRow >= 0) {
-            selIndex = (int) getModel().getValueAt(convertRowIndexToModel(selRow), DatenFilm.FILM_NR);
-        }
-
-        selectedFilmNumbers.clear();
-        if (selIndex >= 0) {
-            for (int i : selRows) {
-                selectedFilmNumbers.add((int) getModel().getValueAt(convertRowIndexToModel(i), DatenFilm.FILM_NR));
-            }
         }
     }
 }

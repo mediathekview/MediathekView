@@ -98,11 +98,11 @@ public class TModelFilm extends AbstractTableModel {
             case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
             case DatenFilm.FILM_DATUM -> film.getDatumFilm();
             case DatenFilm.FILM_ZEIT -> film.getSendeZeit();
-            case DatenFilm.FILM_DAUER -> film.getDuration();
-            case DatenFilm.FILM_GROESSE -> film.getFilmSize();
+            case DatenFilm.FILM_DAUER -> film.getFilmLength();
+            case DatenFilm.FILM_GROESSE -> film.getFileSize();
             case DatenFilm.FILM_HD -> film.isHighQuality();
             case DatenFilm.FILM_UT -> film.hasSubtitle();
-            case DatenFilm.FILM_GEO -> film.getGeo().orElse("");
+            case DatenFilm.FILM_GEO -> film.countrySet;
             case DatenFilm.FILM_URL -> film.getUrlNormalQuality();
             case DatenFilm.FILM_REF -> film;
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);

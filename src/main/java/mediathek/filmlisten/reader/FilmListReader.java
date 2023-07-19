@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
@@ -30,6 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -41,7 +44,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -96,7 +98,7 @@ public class FilmListReader implements AutoCloseable {
     protected void parseWebsiteLink(JsonParser jp, DatenFilm datenFilm) throws IOException {
         final String value = jp.nextTextValue();
         if (value != null && !value.isEmpty()) {
-            datenFilm.setWebsiteLink(value);
+            datenFilm.setWebsiteUrl(value);
         }
     }
 
@@ -109,13 +111,19 @@ public class FilmListReader implements AutoCloseable {
     protected void parseGeo(JsonParser jp, DatenFilm datenFilm) throws IOException {
         var geoStr = checkedString(jp);
 
-        Optional<String> geo;
         if (geoStr.isEmpty())
-            geo = Optional.empty();
-        else
-            geo = Optional.of(geoStr);
-
-        datenFilm.setGeo(geo);
+            datenFilm.countrySet.clear();
+        else {
+            var split = geoStr.split("-");
+            for (var geoItem : split) {
+                try {
+                    datenFilm.countrySet.add(Country.valueOf(geoItem));
+                }
+                catch (IllegalArgumentException ex) {
+                    logger.error("Unable to parse string {} to Country enum", geoItem);
+                }
+            }
+        }
     }
 
     private void parseSender(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -163,12 +171,14 @@ public class FilmListReader implements AutoCloseable {
                 break;
             }
             if (jp.isExpectedStartArrayToken()) {
-                var meta = listeFilme.metaData();
+                var meta = listeFilme.getMetaData();
                 jp.nextTextValue();
                 meta.setDatum(jp.nextTextValue());
                 jp.nextTextValue();
                 jp.nextTextValue();
                 meta.setId(jp.nextTextValue());
+                //update to fire pcs
+                listeFilme.setMetaData(meta);
 
                 break;
             }
@@ -190,15 +200,15 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrlSubtitle(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlSubtitle(checkedString(jp));
+        datenFilm.setSubtitleUrl(checkedString(jp));
     }
 
     private void parseUrlKlein(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlLowQuality(checkedString(jp));
+        datenFilm.setLowQualityUrl(checkedString(jp));
     }
 
     private void parseUrlHd(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlHighQuality(checkedString(jp));
+        datenFilm.setHighQualityUrl(checkedString(jp));
     }
 
     private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
@@ -210,12 +220,12 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseDauer(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setDauer(checkedString(jp));
+        datenFilm.setFilmLength(checkedString(jp));
     }
 
     private void parseGroesse(JsonParser jp, DatenFilm datenFilm) throws IOException {
         String value = checkedString(jp);
-        datenFilm.setSize(value);
+        datenFilm.getFileSize().setSize(value);
     }
 
     /**
@@ -269,7 +279,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseUrl(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setUrlNormalQuality(checkedString(jp));
+        datenFilm.setNormalQualityUrl(checkedString(jp));
     }
 
     private void parseLivestream(DatenFilm datenFilm) {
@@ -381,12 +391,12 @@ public class FilmListReader implements AutoCloseable {
             notifyStart(source); // für die Progressanzeige
 
             if (source.startsWith("http")) {
-                final URL sourceUrl = new URL(source);
-                processFromWeb(sourceUrl, listeFilme);
+                    final var sourceUrl = new URI(source);
+                    processFromWeb(sourceUrl.toURL(), listeFilme);
             } else
                 processFromFile(source, listeFilme);
 
-        } catch (MalformedURLException ex) {
+        } catch (MalformedURLException | URISyntaxException ex) {
             logger.warn(ex);
         }
 
@@ -492,7 +502,7 @@ public class FilmListReader implements AutoCloseable {
     private void notifyFertig(String url, ListeFilme liste) {
         logger.info("Liste Filme gelesen am: {}", DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
                 .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())));
-        logger.info("  erstellt am: {}", liste.metaData().getGenerationDateTimeAsString());
+        logger.info("  erstellt am: {}", liste.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
             progressEvent.senderUrl = url;

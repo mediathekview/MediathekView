@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -41,7 +42,16 @@ public class MVUsedUrl {
     private final String url;
 
     public MVUsedUrl(String date, String thema, String title, String url) {
-        this.datum = LocalDate.parse(date, DATE_TIME_FORMATTER);
+        LocalDate tempDate;
+        try {
+            tempDate = LocalDate.parse(date, DATE_TIME_FORMATTER);
+        }
+        catch (DateTimeException ex) {
+            logger.error("Failed to parse date: \"{}\" for thema: \"{}\", titel: \"{}\" and URL: \"{}\"", date, thema, title, url);
+            logger.error("Resetting date to current date...");
+            tempDate = LocalDate.now();
+        }
+        this.datum = tempDate;
         this.thema = thema;
         this.titel = title;
         this.url = url;

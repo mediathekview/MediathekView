@@ -1,18 +1,16 @@
 package mediathek.tool.cellrenderer;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 
 public class CellRendererDownloads extends CellRendererBaseWithStart {
@@ -22,58 +20,44 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
     private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
-    private final Icon film_start_tab;
+    private final FlatSVGIcon film_start_tab;
     private final Icon film_start_sw_tab;
-    private final Border emptyBorder = BorderFactory.createEmptyBorder();
+    private final Border emptyBorder = BorderFactory.createEmptyBorder(3,2,3,2);
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
-    private final Icon download_stop_tab;
-    private final Icon download_stop_sw_tab;
-    private final Icon download_start_tab;
+    private final FlatSVGIcon download_stop_tab;
+    private final FlatSVGIcon download_stop_sw_tab;
+    private final FlatSVGIcon download_start_tab;
     private final Icon download_start_sw_tab;
-    private final Icon download_clear_tab_selected;
+    private final FlatSVGIcon download_clear_tab_selected;
     private final Icon download_clear_sw_tab;
-    private final Icon download_del_tab_selected;
+    private final FlatSVGIcon download_del_tab_selected;
     private final Icon download_del_sw_tab;
-    private JProgressBar progressBar;
+    private final JProgressBar progressBar = new JProgressBar(0, 1000);
 
     public CellRendererDownloads() {
-        download_stop_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16, Color.WHITE);
-        download_stop_sw_tab = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
-        download_start_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16, Color.WHITE);
-        download_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.CARET_DOWN, 16);
-        download_clear_tab_selected = IconFontSwing.buildIcon(FontAwesome.ERASER, 16, Color.WHITE);
-        download_clear_sw_tab = IconFontSwing.buildIcon(FontAwesome.ERASER, 16);
+        var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
-        download_del_tab_selected = IconFontSwing.buildIcon(FontAwesome.TRASH, 16, Color.WHITE);
-        download_del_sw_tab = IconFontSwing.buildIcon(FontAwesome.TRASH, 16);
+        download_stop_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+        download_stop_tab.setColorFilter(whiteColorFilter);
+        download_stop_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
+        download_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
+        download_start_tab.setColorFilter(whiteColorFilter);
+        download_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
+        download_clear_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
+        download_clear_tab_selected.setColorFilter(whiteColorFilter);
+        download_clear_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
 
-        film_start_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, Color.WHITE);
-        film_start_sw_tab = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
+        download_del_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
+        download_del_tab_selected.setColorFilter(whiteColorFilter);
+        download_del_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
 
-        setupProgressBar();
+        film_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+        film_start_tab.setColorFilter(whiteColorFilter);
+        film_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
 
         panel = new JPanel(new BorderLayout());
         panel.add(progressBar);
-    }
-
-    private void setupProgressBar() {
-        progressBar = new JProgressBar(0, 1000);
-        progressBar.setStringPainted(true);
-        //on OSX the OS provided progress bar looks much better...
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            progressBar.setUI(new BasicProgressBarUI() {
-                @Override
-                protected Color getSelectionBackground() {
-                    return UIManager.getDefaults().getColor("Table.foreground");
-                }
-
-                @Override
-                protected Color getSelectionForeground() {
-                    return Color.WHITE;
-                }
-            });
-        }
     }
 
     @Override
@@ -101,14 +85,13 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                             handleAboColumn(textArea, datenDownload);
                         }
                         setBackgroundColor(textArea, datenDownload.start, isSelected);
-                        handleGeoBlocking(textArea, datenDownload, isSelected);
                         return textArea;
                     }
                 }
             }
 
             switch (columnModelIndex) {
-                case DatenDownload.DOWNLOAD_PROGRESS:
+                case DatenDownload.DOWNLOAD_PROGRESS -> {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (((MVTable) table).showSenderIcons() && !((MVTable) table).useSmallSenderIcons) {
                         progressBar.setBorder(largeBorder);
@@ -133,80 +116,51 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     } else {
                         setText("");
                     }
-                    break;
-
-                case DatenDownload.DOWNLOAD_RESTZEIT:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.start != null && datenDownload.start.beginnAnschauen) {
-                        setForeground(MVColor.DOWNLOAD_ANSEHEN.color);
-                    }
-                    break;
-
-                case DatenDownload.DOWNLOAD_FILM_NR:
+                }
+                case DatenDownload.DOWNLOAD_FILM_NR -> {
                     if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) == 0) {
                         setText("");
                     }
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
-
-                case DatenDownload.DOWNLOAD_ART:
+                }
+                case DatenDownload.DOWNLOAD_ART -> {
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD -> setText(DatenDownload.ART_DOWNLOAD_TXT);
                         case DatenDownload.ART_PROGRAMM -> setText(DatenDownload.ART_PROGRAMM_TXT);
                     }
-                    break;
-                case DatenDownload.DOWNLOAD_QUELLE:
+                }
+                case DatenDownload.DOWNLOAD_QUELLE -> {
                     switch (datenDownload.quelle) {
                         case DatenDownload.QUELLE_ALLE -> setText(DatenDownload.QUELLE_ALLE_TXT);
                         case DatenDownload.QUELLE_ABO -> setText(DatenDownload.QUELLE_ABO_TXT);
                         case DatenDownload.QUELLE_BUTTON -> setText(DatenDownload.QUELLE_BUTTON_TXT);
                         case DatenDownload.QUELLE_DOWNLOAD -> setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                     }
-                    break;
-
-                case DatenDownload.DOWNLOAD_BUTTON_START:
-                    handleButtonStartColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenDownload.DOWNLOAD_BUTTON_DEL:
-                    handleButtonDeleteColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenDownload.DOWNLOAD_GROESSE:
-                    setHorizontalAlignment(SwingConstants.RIGHT);
-                    break;
-
-                case DatenDownload.DOWNLOAD_ABO:
-                    handleAboColumn(datenDownload);
-                    break;
-
-                case DatenDownload.DOWNLOAD_NR:
-                case DatenDownload.DOWNLOAD_DATUM:
-                case DatenDownload.DOWNLOAD_ZEIT:
-                case DatenDownload.DOWNLOAD_DAUER:
-                case DatenDownload.DOWNLOAD_BANDBREITE:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    break;
-
-                case DatenDownload.DOWNLOAD_SENDER:
+                }
+                case DatenDownload.DOWNLOAD_BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected);
+                case DatenDownload.DOWNLOAD_BUTTON_DEL -> handleButtonDeleteColumn(datenDownload, isSelected);
+                case DatenDownload.DOWNLOAD_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
+                case DatenDownload.DOWNLOAD_ABO -> handleAboColumn(datenDownload);
+                case DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT,
+                        DatenDownload.DOWNLOAD_DAUER, DatenDownload.DOWNLOAD_BANDBREITE,
+                        DatenDownload.DOWNLOAD_RESTZEIT ->
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                case DatenDownload.DOWNLOAD_SENDER -> {
                     if (((MVTable) table).showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
-                    break;
+                }
+                case DatenDownload.DOWNLOAD_GEO -> drawGeolocationIcons(datenDownload.film, isSelected);
             }
 
             if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
                 if (datenDownload.film != null) {
-                    var title = datenDownload.film.getTitle();
-                    var columnWidth = table.getColumnModel().getColumn(columnModelIndex).getWidth();
-                    if (columnWidth < table.getFontMetrics(table.getFont()).stringWidth(title))
-                        setToolTipText(title);
+                    setIndicatorIcons(table, datenDownload.film, isSelected);
                 }
             }
 
             setBackgroundColor(this, datenDownload.start, isSelected);
-            handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
             logger.error(ex);
         }
@@ -261,14 +215,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         } else {
             setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
             setText("Download");
-        }
-    }
-
-    private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
-        if (geoMelden) {
-            if (datenDownload.start == null) {
-                setupGeoblockingBackground(c, datenDownload.arr[DatenDownload.DOWNLOAD_GEO], isSelected);
-            }
         }
     }
 

@@ -1,9 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
-import javafx.scene.control.Alert;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
-import mediathek.config.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
@@ -14,8 +13,6 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererProgramme;
@@ -74,19 +71,19 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void init() {
-        jButtonHilfe.setIcon(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16));
-        jButtonGruppePfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonProgPlus.setIcon(Icons.ICON_BUTTON_ADD);
-        jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jButtonProgPfad.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonGruppeNeu.setIcon(Icons.ICON_BUTTON_ADD);
-        jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
+        jButtonGruppePfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
+        jButtonProgPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
+        jButtonProgMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
+        jButtonProgAuf.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
+        jButtonProgAb.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
+        jButtonProgPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
+        jButtonGruppeNeu.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
+        jButtonGruppeLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
+        jButtonGruppeAuf.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
+        jButtonGruppeAb.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
 
-        var exclamationIcon = IconFontSwing.buildIcon(FontAwesome.EXCLAMATION_TRIANGLE, 16);
+        var exclamationIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg");
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
 
@@ -164,7 +161,7 @@ public class PanelPsetLang extends PanelVorlage {
                     tabelleProgramme();
                 }
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -175,7 +172,7 @@ public class PanelPsetLang extends PanelVorlage {
                 DatenProg prog = getPset().getListeProg().get(row);
                 progNeueZeile(prog.copy());
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -208,7 +205,6 @@ public class PanelPsetLang extends PanelVorlage {
 
         //Pset
         jButtonAbspielen.addActionListener(e -> {
-            jButtonAbspielen.setBackground(MVColor.BUTTON_SET_ABSPIELEN.color);
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setAbspielen();
@@ -330,7 +326,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabellePset();
                 notifyProgramSetChanged();
             } else {
-                NoSelectionErrorDialog.show();
+                NoSelectionErrorDialog.show(this);
             }
         });
 
@@ -587,7 +583,6 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
-            jButtonAbspielen.setBackground(pSet.istAbspielen() ? MVColor.BUTTON_SET_ABSPIELEN.color : null);
             switch (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]) {
                 case FilmResolution.HIGH_QUALITY -> jRadioButtonAufloesungHD.setSelected(true);
                 case FilmResolution.LOW -> jRadioButtonAufloesungKlein.setSelected(true);
@@ -706,7 +701,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyProgramSetChanged();
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -738,7 +733,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -766,15 +761,12 @@ public class PanelPsetLang extends PanelVorlage {
 
                 IoXmlSchreiben configWriter = new IoXmlSchreiben();
                 configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
-                JavaFxUtils.invokeInFxThreadAndWait(() -> {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText("Programmset exportieren");
-                    alert.setContentText("Das Programmset wurde erfolgreich exportiert.");
-                    JFXHiddenApplication.showAlert(alert, MediathekGui.ui());
-                });
+                JOptionPane.showMessageDialog(this,
+                        "Das Programmset wurde erfolgreich exportiert.",
+                        Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
     }
 
@@ -795,7 +787,7 @@ public class PanelPsetLang extends PanelVorlage {
             tabelleProgramme.setRowSelectionInterval(neu, neu);
             tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
         } else {
-            NoSelectionErrorDialog.show();
+            NoSelectionErrorDialog.show(this);
         }
 
     }
@@ -906,7 +898,7 @@ public class PanelPsetLang extends PanelVorlage {
                         notifyProgramSetChanged();
                     stopBeob = false;
                 } else {
-                    NoSelectionErrorDialog.show();
+                    NoSelectionErrorDialog.show(null);
                 }
             }
             setNamePruefen();

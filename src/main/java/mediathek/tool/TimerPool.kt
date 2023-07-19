@@ -13,16 +13,14 @@ object TimerPool {
     private val logger: Logger = LogManager.getLogger()
 
     @JvmStatic
-    val timerPool =
-        ScheduledThreadPoolExecutor((Runtime.getRuntime().availableProcessors() / 2).coerceIn(2, 4),
-            TimerPoolThreadFactory())
+    val timerPool = ScheduledThreadPoolExecutor(2, TimerPoolThreadFactory())
 
     init {
         logger.trace("Initializing timer pool...")
         //get rid of cancelled tasks immediately...
         timerPool.removeOnCancelPolicy = true
         timerPool.allowCoreThreadTimeOut(true)
-        timerPool.setKeepAliveTime(1, TimeUnit.MINUTES)
+        timerPool.setKeepAliveTime(30, TimeUnit.SECONDS)
         timerPool.scheduleWithFixedDelay({ messageBus.publishAsync(TimerEvent()) }, 4, 1, TimeUnit.SECONDS)
     }
 

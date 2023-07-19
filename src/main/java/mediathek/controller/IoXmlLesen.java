@@ -133,7 +133,7 @@ public class IoXmlLesen {
 
     private void readDownloadEntry(XMLStreamReader parser) {
         try {
-            var dl = DatenDownload.getFromConfig(parser);
+            var dl = DatenDownload.readFromConfig(parser);
             // abo entries will be generated...but we need this for CLI so far
             if (!dl.isFromAbo())
                 daten.getListeDownloads().add(dl);

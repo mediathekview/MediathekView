@@ -1,9 +1,10 @@
 package mediathek.daten.blacklist;
 
-import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
+import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
@@ -11,17 +12,15 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.MessageBus;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
-    private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     private final GeoblockingPredicate geoblockingPredicate = new GeoblockingPredicate();
     /**
      * This specifies the lower boundary for all films to be shown or not.
@@ -92,7 +91,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * Main filtering routine
      */
     public synchronized void filterListe() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         final Daten daten = Daten.getInstance();
         final ListeFilme completeFilmList = daten.getListeFilme();
         final ListeFilme filteredList = daten.getListeFilmeNachBlackList();
@@ -102,7 +100,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         loadCurrentFilterSettings();
 
         if (completeFilmList != null && !completeFilmList.isEmpty()) { // Check if there are any movies
-            filteredList.setMetaData(completeFilmList.metaData());
+            filteredList.setMetaData(completeFilmList.getMetaData());
 
             this.parallelStream().forEach(entry -> {
                 entry.convertToLowerCase();
@@ -116,8 +114,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
             setupNewEntries();
         }
-        stopwatch.stop();
-        logger.trace("Complete filtering took: {}", stopwatch);
     }
 
     /**
@@ -127,8 +123,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      */
     private Predicate<DatenFilm> createPredicate() {
         final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
-        if (days_lower_boundary != 0)
-            filterList.add(this::checkDate);
+        // we must keep it for the "old-style search. for lucene it is useless
+        if (!(Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList)) {
+            if (days_lower_boundary != 0)
+                filterList.add(this::checkDate);
+        }
 
         if (blacklistIsActive) {
             if (doNotShowGeoBlockedFilms) {
@@ -191,38 +190,39 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
-    /**
-     * Convert days to milliseconds
-     * @param days days
-     * @return the input converted to milliseconds
-     */
-    private long daysToMilliseconds(int days) {
-        return 1000L * 60L * 60L * 24L * days;
+    private void calculateZeitraumBoundaries() {
+        try {
+            var strZeitraum = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty().get();
+            if (strZeitraum.equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE))
+                days_lower_boundary = 0;
+            else {
+                var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum), TimeUnit.DAYS);
+                days_lower_boundary = System.currentTimeMillis() - days_ms;
+            }
+        } catch (Exception ex) {
+            days_lower_boundary = 0;
+        }
+    }
+
+    private void calculateMinimumFilmLength() {
+        try {
+            var filmlength_minutes = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE));
+            minimumFilmLength = filmlength_minutes * 60; // convert to seconds
+        } catch (Exception ex) {
+            minimumFilmLength = 0;
+        }
     }
 
     /**
      * Load current filter settings from Config
      */
     private void loadCurrentFilterSettings() {
-        try {
-            final String val = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty.getValue();
-            if (val.equals(ZeitraumSpinner.UNLIMITED_VALUE))
-                days_lower_boundary = 0;
-            else {
-                days_lower_boundary = System.currentTimeMillis() - daysToMilliseconds(Integer.parseInt(val));
-            }
-        } catch (Exception ex) {
-            days_lower_boundary = 0;
-        }
-        try {
-            minimumFilmLength = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
-        } catch (Exception ex) {
-            minimumFilmLength = 0;
-        }
+        calculateZeitraumBoundaries();
+        calculateMinimumFilmLength();
+
         blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        var config = ApplicationConfiguration.getConfiguration();
-        doNotShowGeoBlockedFilms = config.getBoolean(ApplicationConfiguration.BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+        doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms();
 
         geoblockingPredicate.updateLocation();
     }
@@ -315,7 +315,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @return true if film should be displayed
      */
     private boolean checkFilmLength(@NotNull DatenFilm film) {
-        final long filmLength = film.getFilmLength();
+        var filmLength = film.getFilmLength();
         return !(filmLength != 0 && minimumFilmLength > filmLength);
     }
 
@@ -323,27 +323,27 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         /**
          * Stores the current user´s location. Can be modified by another thread.
          */
-        private String geoLocation;
+        private Country geoLocation;
 
         public GeoblockingPredicate() {
-            setLocationData();
+            updateLocationData();
         }
 
         public void updateLocation() {
-            setLocationData();
+            updateLocationData();
         }
 
-        private void setLocationData() {
-            geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        private void updateLocationData() {
+            geoLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
         }
 
         @Override
         public boolean test(DatenFilm film) {
-            var geoOpt = film.getGeo();
-            if (geoOpt.isEmpty())
+            if (film.countrySet.isEmpty())
                 return true;
-            else
-                return geoOpt.orElse("").contains(geoLocation);
+            else {
+                return film.countrySet.contains(geoLocation);
+            }
         }
     }
 }

@@ -19,28 +19,24 @@
  */
 package mediathek.update;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.EscapeKeyHandler;
+import net.miginfocom.layout.AC;
+import net.miginfocom.layout.CC;
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
+import java.awt.*;
 import java.net.URISyntaxException;
 
-@SuppressWarnings("serial")
 public class DialogHinweisUpdate extends JDialog {
 
-    private static final Logger logger = LogManager.getLogger(DialogHinweisUpdate.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public DialogHinweisUpdate(JFrame parent, String ttext) {
         super(parent, true);
@@ -52,20 +48,15 @@ public class DialogHinweisUpdate extends JDialog {
         jButtonOk.addActionListener(e -> dispose());
         jTextArea1.setText(ttext);
 
-        Platform.runLater(() -> {
-            Hyperlink link = new Hyperlink("Link zur Website");
-            link.setBackground(new Background(new BackgroundFill(Color.rgb(236,236,236), CornerRadii.EMPTY, Insets.EMPTY)));
-            link.setOnAction(e -> SwingUtilities.invokeLater(() -> {
-                try {
-                    UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLOAD);
-                } catch (URISyntaxException ex) {
-                    logger.error(ex);
-                }
-            }));
-            hyperLinkPanel.setScene(new Scene(link));
+        hyperLink.addActionListener(l -> {
+            try {
+                UrlHyperlinkAction.openURL(parent, Konstanten.ADRESSE_DOWNLOAD);
+            } catch (URISyntaxException ex) {
+                logger.error(ex);
+            }
         });
-
-        setSize(450,getHeight());
+        //setSize(450,getHeight());
+        pack();
     }
 
     /** This method is called from within the constructor to
@@ -79,12 +70,23 @@ public class DialogHinweisUpdate extends JDialog {
         var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         jButtonOk = new JButton();
-        hyperLinkPanel = new JFXPanel();
+        hyperLink = new JXHyperlink();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Programminformationen"); //NON-NLS
+        setMinimumSize(new Dimension(480, 100));
         var contentPane = getContentPane();
+        contentPane.setLayout(new MigLayout(
+            new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+            // columns
+            new AC()
+                .grow().fill(),
+            // rows
+            new AC()
+                .grow().fill().gap()
+                .fill().gap()
+                .fill()));
 
         //======== jScrollPane1 ========
         {
@@ -96,39 +98,18 @@ public class DialogHinweisUpdate extends JDialog {
             jTextArea1.setRows(5);
             jTextArea1.setText("\n\n"); //NON-NLS
             jTextArea1.setWrapStyleWord(true);
+            jTextArea1.setMinimumSize(new Dimension(459, 85));
             jScrollPane1.setViewportView(jTextArea1);
         }
+        contentPane.add(jScrollPane1, new CC().cell(0, 0));
 
         //---- jButtonOk ----
         jButtonOk.setText("Schlie\u00dfen"); //NON-NLS
+        contentPane.add(jButtonOk, new CC().cell(0, 2).alignX("right").growX(0)); //NON-NLS
 
-        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
-        contentPane.setLayout(contentPaneLayout);
-        contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                        .addComponent(hyperLinkPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addGap(0, 0, Short.MAX_VALUE)
-                                    .addComponent(jButtonOk))
-                                .addComponent(jScrollPane1, GroupLayout.Alignment.LEADING))))
-                    .addGap(5, 5, 5))
-        );
-        contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(hyperLinkPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGap(2, 2, 2)
-                    .addComponent(jButtonOk)
-                    .addContainerGap())
-        );
+        //---- hyperLink ----
+        hyperLink.setText("Link zur Webseite"); //NON-NLS
+        contentPane.add(hyperLink, new CC().cell(0, 1));
         pack();
         setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
@@ -136,6 +117,6 @@ public class DialogHinweisUpdate extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private JTextArea jTextArea1;
     private JButton jButtonOk;
-    private JFXPanel hyperLinkPanel;
+    private JXHyperlink hyperLink;
     // End of variables declaration//GEN-END:variables
 }

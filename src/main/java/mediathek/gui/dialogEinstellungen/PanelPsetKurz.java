@@ -1,7 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -10,6 +8,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -34,7 +33,7 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
-        jButtonZiel.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
         if (!listePset.isEmpty()) {
@@ -176,7 +175,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.gridx = 2;
         c.weightx = 0;
         JButton button = new JButton();
-        button.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
+        button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         button.addActionListener(new ZielBeobachter(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
         button.setToolTipText("Programm auswählen");
         gridbag.setConstraints(button, c);

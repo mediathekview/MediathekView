@@ -1,14 +1,11 @@
 package mediathek;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import com.google.common.base.Stopwatch;
+import com.formdev.flatlaf.FlatLaf;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
+import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
@@ -16,9 +13,7 @@ import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
-import mediathek.tool.javafx.FXErrorDialog;
 import mediathek.tool.migrator.SettingsMigrator;
-import mediathek.tool.swing.SwingUIFontChanger;
 import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -89,8 +84,7 @@ public class Main {
                 logger.info("Moving old unsupported media database to trash.");
                 mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
             }
-        }
-        catch (IOException ignored) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -125,8 +119,7 @@ public class Main {
         final PatternLayout consolePattern;
         if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
             consolePattern = PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build();
-        }
-        else {
+        } else {
             consolePattern = PatternLayout.newBuilder().withPattern(". %msg%n").build();
         }
 
@@ -219,24 +212,21 @@ public class Main {
      */
     private static void migrateOldConfigSettings() {
         var settingsDir = StandardLocations.getSettingsDirectory().toString();
-        if (settingsDir != null && !settingsDir.isEmpty()) {
+        if (!settingsDir.isEmpty()) {
             Path pSettingsDir = Paths.get(settingsDir);
             if (Files.exists(pSettingsDir)) {
                 //convert existing settings
                 Path settingsFile = pSettingsDir.resolve(Konstanten.CONFIG_FILE);
                 if (Files.exists(settingsFile)) {
-                    logger.trace("{} exists", Konstanten.CONFIG_FILE);
-                    logger.trace("migrating old config settings");
+                    logger.trace("migrating old config settings {}", settingsFile.toAbsolutePath().toString());
                     try {
                         SettingsMigrator migrator = new SettingsMigrator(settingsFile);
                         migrator.migrate();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         logger.error("settings migration error", e);
                     }
                 }
-            }
-            else
+            } else
                 logger.trace("nothing to migrate");
         }
     }
@@ -244,8 +234,7 @@ public class Main {
     private static void printPortableModeInfo() {
         if (Config.isPortableMode()) {
             logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-        }
-        else
+        } else
             logger.info("Configuring for non-portable mode");
     }
 
@@ -277,131 +266,217 @@ public class Main {
         }
     }
 
-    private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
     private static void setupFlatLaf() {
-        FlatLightLaf.setup();
+        var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+        LookAndFeel laf;
 
-        UIManager.put("TabbedPane.showTabSeparators", true );
-        // install alternate row color only for windows >8 and macOS, Linux
-        boolean installAlternateRowColor;
-        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
-            installAlternateRowColor = true;
+        if (darkMode) {
+            laf = DarkModeFactory.getLookAndFeel();
         }
-        else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+        else {
+            laf = LightModeFactory.getLookAndFeel();
+        }
+        FlatLaf.setup(laf);
+    }
 
-        if (installAlternateRowColor)
-            UIManager.put("Table.alternateRowColor", JTABLE_ALTERNATE_ROW_COLOR);
+    /**
+     * Check if Shenandoah GC settings are supplied to JVM.
+     * Otherwise display warning dialog.
+     */
+    private static void checkJVMSettings() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        boolean correctParameters = false;
+        var paramList = runtimeMXBean.getInputArguments();
+
+        var useShenandoahGC = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseShenandoahGC")).findAny().stream().count();
+        var shenandoahHeuristics = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:ShenandoahGCHeuristics=compact")).findAny().stream().count();
+        var stringDedup = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseStringDeduplication")).findAny().stream().count();
+        var maxRamPct = paramList.stream().filter(s -> s.startsWith("-XX:MaxRAMPercentage=")).findAny().stream().count();
+        var addOpens = paramList.stream().filter(s -> s.equalsIgnoreCase("--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED")).findAny().stream().count();
+
+        //Incorrect VM params
+        var mxParamCount = paramList.stream().filter(s -> s.startsWith("-Xmx")).findAny().stream().count();
+
+        if ((useShenandoahGC > 0)
+                && (shenandoahHeuristics > 0)
+                && (stringDedup > 0)
+                && (maxRamPct > 0)
+                && (mxParamCount == 0))
+            correctParameters = true;
+
+        if (SystemUtils.IS_OS_LINUX) {
+            if (addOpens == 0)
+                correctParameters = false;
+        }
+
+        if (!correctParameters) {
+            //show error dialog
+            logger.warn("Detected incorrect JVM parameters! Please modify your settings");
+            var message = "<html>" +
+                    "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
+                    "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
+                    "<ul>" +
+                    "<li>-XX:+UseShenandoahGC</li>" +
+                    "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
+                    "<li>-XX:+UseStringDeduplication</li>" +
+                    "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
+            if (SystemUtils.IS_OS_LINUX) {
+                message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
+            }
+
+            message += "</ul><br/>" +
+                        "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                        "</html>";
+
+            JOptionPane.showMessageDialog(null,message, Konstanten.PROGRAMMNAME,
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    /**
+     * Check if a non-floating point scale factor is set on Linux.
+     * Java 18 VM does not support fractional scaling.
+     */
+    private static void checkUiScaleSetting() {
+        var strScale = System.getProperty("sun.java2d.uiScale");
+        if (strScale != null) {
+            try {
+                Integer.parseInt(strScale);
+            }
+            catch (NumberFormatException ex) {
+                // not an int -> show warning
+                // fractional scale is NOT supported under Linux, must use integer only.
+                var scaleFactor = Float.parseFloat(strScale);
+                System.out.println("uiScale factor: " + scaleFactor);
+                var newScale = Math.round(scaleFactor);
+                System.out.println("new scale: " + newScale);
+                JOptionPane.showMessageDialog(null,
+                        "<html>" +
+                                "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
+                                "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" +
+                                "Sie sollten <i>-Dsun.java2d.uiScale=" + newScale + "</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
+                        Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        setupEnvironmentProperties();
-
         if (GraphicsEnvironment.isHeadless()) {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.");
             System.exit(1);
         }
 
-        CommandLine cmd = new CommandLine(Config.class);
-        try {
-            var parseResult = cmd.parseArgs(args);
-            if (parseResult.isUsageHelpRequested()) {
-                cmd.usage(System.out);
-                System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
-            }
+        setupEnvironmentProperties();
 
-            Config.setPortableMode(parseResult.hasMatchedPositional(0));
-            if (Config.isPortableMode()) {
-                StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
-            }
+        EventQueue.invokeLater(() -> {
 
-            setupLogging();
-            printPortableModeInfo();
-
-            setupDockIcon();
-            setupFlatLaf();
-
-            if (SystemUtils.IS_OS_WINDOWS) {
-                if (!VersionHelpers.IsWindows10OrGreater())
-                    logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
-            }
-
-            setupCpuAffinity();
-
-            initializeJavaFX();
-
-            removeMediaDb();
-
-            JFXHiddenApplication.launchApplication();
-            checkMemoryRequirements();
-
-            installSingleInstanceHandler();
-
-            printVersionInformation();
-
-            printJvmParameters();
-            printArguments(args);
-        } catch (CommandLine.ParameterException ex) {
-            try (var err = cmd.getErr()) {
-                err.println(ex.getMessage());
-                if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
-                    ex.getCommandLine().usage(err);
+            CommandLine cmd = new CommandLine(Config.class);
+            try {
+                var parseResult = cmd.parseArgs(args);
+                if (parseResult.isUsageHelpRequested()) {
+                    cmd.usage(System.out);
+                    System.exit(cmd.getCommandSpec().exitCodeOnUsageHelp());
                 }
-                System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
+
+                Config.setPortableMode(parseResult.hasMatchedPositional(0));
+                if (Config.isPortableMode()) {
+                    StandardLocations.INSTANCE.setPortableBaseDirectory(Config.baseFilePath);
+                }
+
+                setupLogging();
+                printPortableModeInfo();
+
+                setupDockIcon();
+                setupFlatLaf();
+
+                if (SystemUtils.IS_OS_LINUX)
+                    checkUiScaleSetting();
+
+                if (!Config.isDisableJvmParameterChecks())
+                    checkJVMSettings();
+
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    if (!VersionHelpers.IsWindows10OrGreater())
+                        logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
+                }
+
+                setupCpuAffinity();
+
+                Platform.setImplicitExit(false);
+
+                removeMediaDb();
+                deleteOldFilmDatabaseFiles();
+                deleteOldUserAgentsDatabase();
+
+                JFXHiddenApplication.launchApplication();
+                checkMemoryRequirements();
+
+                installSingleInstanceHandler();
+
+                printVersionInformation();
+
+                printJvmParameters();
+                printArguments(args);
+            } catch (CommandLine.ParameterException ex) {
+                try (var err = cmd.getErr()) {
+                    var errStr = ex.getMessage() + "\n\n" + ex.getCommandLine().getUsageMessage();
+                    JOptionPane.showMessageDialog(null,
+                            errStr,
+                            "Fehlerhafte Kommandozeilenparameter",
+                            JOptionPane.ERROR_MESSAGE);
+                    err.println(ex.getMessage());
+                    if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
+                        ex.getCommandLine().usage(err);
+                    }
+                    System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
+                }
+            } catch (Exception ex) {
+                logger.error("Command line parse error:", ex);
+                System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
             }
-        } catch (Exception ex) {
-            logger.error("Command line parse error:", ex);
-            System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
-        }
 
-        printDirectoryPaths();
+            printDirectoryPaths();
 
-        if (!isDebuggerAttached()) {
-            splashScreen = Optional.of(new SplashScreen());
-        }
-        else {
-            logger.warn("Debugger detected -> Splash screen disabled...");
-        }
-        splashScreen.ifPresent(SplashScreen::show);
+            if (!isDebuggerAttached()) {
+                if (!Config.isSplashScreenDisabled()) {
+                    splashScreen = Optional.of(new SplashScreen());
+                }
+                else {
+                    logger.warn("Splash screen disabled...");
+                }
+            }
+            else {
+                logger.warn("Debugger detected -> Splash screen disabled...");
+            }
+            splashScreen.ifPresent(splash -> splash.setVisible(true));
 
-        migrateOldConfigSettings();
+            migrateOldConfigSettings();
 
-        //register FontAwesome font here as it may already be used at first start dialog..
-        IconFontSwing.register(FontAwesome.getIconFont());
+            loadConfigurationData();
 
-        loadConfigurationData();
+            migrateSeenHistory();
+            Daten.getInstance().launchHistoryDataLoading();
+            Daten.getInstance().loadBookMarkData();
+            // enable modern search on demand
+            var useModernSearch = ApplicationConfiguration.getConfiguration()
+                    .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+            if (useModernSearch)
+                Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
 
-        migrateSeenHistory();
-        Daten.getInstance().launchHistoryDataLoading();
-        
-        Daten.getInstance().loadBookMarkData();
-
-        if (SystemUtils.IS_OS_LINUX)
-            changeGlobalFontSize();
-
-        startGuiMode();
+            startGuiMode();
+        });
     }
 
     /**
      * Checks if the application has an debugger attached to it.
+     *
      * @return true if debugger was detected, false othewise.
      */
     private static boolean isDebuggerAttached() {
         return ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
-    }
-
-    private static void changeGlobalFontSize() {
-        try {
-            var size = ApplicationConfiguration.getConfiguration().getFloat(ApplicationConfiguration.APPLICATION_UI_FONT_SIZE);
-            logger.info("Custom font size found, changing global UI settings");
-            SwingUIFontChanger fc = new SwingUIFontChanger();
-            fc.changeFontSize(size);
-        }
-        catch (Exception e) {
-            logger.info("No custom font size found.");
-        }
     }
 
     /**
@@ -412,28 +487,17 @@ public class Main {
             if (migrator.needsMigration()) {
                 migrator.migrate();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("migrateSeenHistory", e);
             splashScreen.ifPresent(SplashScreen::close);
-            FXErrorDialog.showErrorDialogWithoutParent(Konstanten.PROGRAMMNAME,
-                            "Migration fehlgeschlagen",
-                            """
-                                    Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.
-                                    Das Programm kann nicht fortfahren und wird beendet.
-                                    
-                                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.
-                                    """, e);
+            SwingErrorDialog.showExceptionMessage(null,
+                    """
+                            <html>Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.<br>
+                            Das Programm kann nicht fortfahren und wird beendet.<br><br>
+                            Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.</html>
+                            """, e);
             System.exit(99);
         }
-    }
-
-    @SuppressWarnings("unused")
-    private static void initializeJavaFX() {
-        //JavaFX stuff
-        Platform.setImplicitExit(false);
-        //necessary to init JavaFX before loading config data
-        var dummy = new JFXPanel();
     }
 
     private static void loadConfigurationData() {
@@ -445,8 +509,7 @@ public class Main {
             Main.splashScreen.ifPresent(SplashScreen::close);
 
             var dialog = new DialogStarteinstellungen(null);
-            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED)
-            {
+            if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED) {
                 //show termination dialog
                 JOptionPane.showMessageDialog(null,
                         "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
@@ -460,14 +523,45 @@ public class Main {
         }
     }
 
+    private static void deleteOldUserAgentsDatabase() {
+        try {
+            var settingsPath = StandardLocations.getSettingsDirectory();
+            var agentDb = settingsPath.resolve("user_agents.mv.db");
+            Files.deleteIfExists(agentDb);
+        }
+        catch (IOException e) {
+            logger.error("Error deleting old user agent database occured", e);
+        }
+    }
+
+    private static void deleteOldFilmDatabaseFiles() {
+        var settingsPath = StandardLocations.getSettingsDirectory();
+        var dbFolder = settingsPath.resolve("database");
+        var traceFile = settingsPath.resolve("databasemediathekview.trace.db");
+
+        if (!Files.exists(dbFolder))
+            return;
+
+        try (var walk = Files.walk(dbFolder)) {
+            walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    //.peek(System.out::println)
+                    .forEach(File::delete);
+
+            Files.deleteIfExists(traceFile);
+        }
+        catch (Exception ex) {
+            logger.error("Got an error deleting old database directory", ex);
+        }
+    }
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
             walk.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Got an error deleting settings directory", ex);
         }
     }
@@ -513,56 +607,58 @@ public class Main {
     }
 
     private static void startGuiMode() {
-        SwingUtilities.invokeLater(() ->
-        {
-            splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_FX));
+        splashScreen.ifPresent(s -> s.update(UIProgressState.INIT_FX));
 
-            splashScreen.ifPresent(s -> s.update(UIProgressState.FILE_CLEANUP));
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                checkForOfficialOSXAppUse();
-                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
-                cleanupOsxFiles();
-            }
+        splashScreen.ifPresent(s -> s.update(UIProgressState.FILE_CLEANUP));
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            checkForOfficialOSXAppUse();
+            System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+            cleanupOsxFiles();
+        }
 
-            if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
-                // use for debugging EDT violations
-                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-                logger.info("Swing Thread checking repaint manager installed.");
-            }
+        if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
+            // use for debugging EDT violations
+            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+            logger.info("Swing Thread checking repaint manager installed.");
+        }
 
-            splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));
-            var window = getPlatformWindow();
-            splashScreen.ifPresent(SplashScreen::close);
-            window.setVisible(true);
+        splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));
+        var window = getPlatformWindow();
+        splashScreen.ifPresent(SplashScreen::close);
+        window.setVisible(true);
             /*
-                on windows there is a strange behaviour that the main window gets sent behind
+                on windows and linux there is a strange behaviour that the main window gets sent behind
                 other open windows after the splash screen is closed.
              */
-            if (SystemUtils.IS_OS_WINDOWS) {
-                window.toFront();
-                window.requestFocus();
-            }
-            //show a link to tutorial if we are in Austria and have never used MV before...
-            AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
-            vlcCheck.perform();
-        });
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            window.toFront();
+            window.requestFocus();
+        }
+        //show a link to tutorial if we are in Austria and have never used MV before...
+        AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
+        vlcCheck.perform();
     }
 
     private static MediathekGui getPlatformWindow() {
-        MediathekGui window;
-        Stopwatch watch = Stopwatch.createStarted();
+        MediathekGui window = null;
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
         } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else if (SystemUtils.IS_OS_UNIX) {
+        } else if (SystemUtils.IS_OS_LINUX) {
             window = new MediathekGuiX11();
-        } else
-            throw new IllegalStateException("Unknown operating system detected! Cannot create main window");
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    """
+                            Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
+                            Es werden nur macOS, Windows und Linux unterstützt.
 
-        watch.stop();
-        logger.trace("getPlatformWindow(): {}", watch);
+                            Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(2);
+        }
 
         return window;
     }

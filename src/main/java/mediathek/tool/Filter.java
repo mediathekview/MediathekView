@@ -3,7 +3,6 @@ package mediathek.tool;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import mediathek.config.MVColor;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.abo.DatenAbo;
 import org.apache.commons.lang3.StringUtils;
@@ -11,14 +10,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Filter {
+    /**
+     * Stores the regexp strings that were rejected as invalid.
+     */
+    public static final Set<String> regExpErrorList = new HashSet<>();
     /**
      * The cache for already compiled RegExp.
      * Entries will be removed if the haven´t been accessed for more than 5 minutes.
@@ -27,10 +28,6 @@ public class Filter {
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(new PatternCacheLoader());
     private static final Logger logger = LogManager.getLogger(Filter.class);
-    /**
-     * Stores the regexp strings that were rejected as invalid.
-     */
-    public static final Set<String> regExpErrorList = new HashSet<>();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -248,6 +245,7 @@ public class Filter {
     /**
      * Create pattern without using the cache.
      * Used for interactive search field where cache pollution is not wanted.
+     *
      * @param regExpStr the regexp pattern
      * @return Pattern if successful, otherwise null.
      */
@@ -274,26 +272,6 @@ public class Filter {
      */
     public static boolean regExpErrorsOccured() {
         return !regExpErrorList.isEmpty();
-    }
-
-    /**
-     * Check if entry in JTextField is a regexp pattern and its validity.
-     * If a recognized pattern is invalid, change the background color of the JTextField.
-     *
-     * @param tf The control that will be validated
-     */
-    public static void validatePatternInput(JTextField tf) {
-        String text = tf.getText();
-        if (Filter.isPattern(text)) {
-            if (Filter.makePattern(text) == null) {
-                //soll Pattern sein, ist aber falsch
-                tf.setBackground(MVColor.FILTER_REGEX_FEHLER.color);
-            } else {
-                tf.setBackground(MVColor.FILTER_REGEX.color);
-            }
-        } else {
-            tf.setBackground(Color.WHITE);
-        }
     }
 
     /**

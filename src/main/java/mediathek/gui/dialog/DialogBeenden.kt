@@ -1,13 +1,11 @@
 package mediathek.gui.dialog
 
-import jiconfont.icons.font_awesome.FontAwesome
-import jiconfont.swing.IconFontSwing
 import mediathek.config.Daten
 import mediathek.file.GetFile
-import mediathek.javafx.AppTerminationIndefiniteProgress
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
-import java.awt.BorderLayout
+import mediathek.tool.SVGIconUtilities
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.util.*
@@ -16,20 +14,16 @@ import javax.swing.*
 
 class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     /**
-     * Indicates whether the application can terminate.
+     * Indicate whether the application can terminate.
      */
-    private var applicationCanTerminate = false
+    var applicationCanTerminate = false
+        private set
 
     /**
      * Indicate whether computer should be shut down.
      */
     var isShutdownRequested = false
         private set
-
-    /**
-     * JPanel for displaying the glassPane with the busy indicator label.
-     */
-    private var glassPane: GlassPanel? = null
 
     /**
      * The download monitoring [javax.swing.SwingWorker].
@@ -39,22 +33,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     private val btnContinue: JButton = JButton("Weiter")
     private val cbShutdownComputer: JCheckBox = JCheckBox("Rechner herunterfahren")
     private val btnCancel: JButton = JButton("Abbrechen")
-    private val jButtonHilfe: JButton = JButton(IconFontSwing.buildIcon(FontAwesome.QUESTION_CIRCLE_O, 16f))
-
-    /**
-     * Return whether the user still wants to terminate the application.
-     *
-     * @return true if the app should continue to terminate.
-     */
-    fun applicationCanTerminate(): Boolean {
-        return applicationCanTerminate
-    }
-
-    fun setComboWaitAndTerminate() {
-        comboActions.selectedItem = WAIT_FOR_DOWNLOADS_AND_TERMINATE
-        cbShutdownComputer.isSelected = true
-        isShutdownRequested = true
-    }
+    private val jButtonHilfe: JButton = JButton(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
 
     /**
      * Create the ComboBoxModel for user selection.
@@ -65,7 +44,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         get() = DefaultComboBoxModel(
             arrayOf(
                 CANCEL_AND_TERMINATE_PROGRAM, WAIT_FOR_DOWNLOADS_AND_TERMINATE,
-                WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE, DONT_TERMINATE
+                WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE
             )
         )
 
@@ -79,21 +58,13 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         dispose()
     }
 
-    private class GlassPanel(isShutdownRequested: Boolean) : JPanel() {
-        init {
-            layout = BorderLayout(5, 5)
-            add(AppTerminationIndefiniteProgress(isShutdownRequested), BorderLayout.CENTER)
-        }
-    }
-
     /**
      * Handler which will wait untill all downloads have finished.
      *
      * @param waitForRunningDownloadsOnly if true stop all waiting DL and wait only for those running.
      */
     private fun waitUntilDownloadsHaveFinished(waitForRunningDownloadsOnly: Boolean = false) {
-        glassPane = GlassPanel(isShutdownRequested)
-        setGlassPane(glassPane)
+        glassPane = AppTerminationIndefiniteProgress(isShutdownRequested)
         glassPane?.isVisible = true
 
         if (waitForRunningDownloadsOnly)
@@ -195,7 +166,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         private const val WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden"
         private const val WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE =
             "Nur auf bereits laufende Downloads warten, danach beenden"
-        private const val DONT_TERMINATE = "Programm nicht beenden"
     }
 
     init {
@@ -241,10 +211,6 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
                 WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE -> waitUntilDownloadsHaveFinished(true)
                 CANCEL_AND_TERMINATE_PROGRAM -> {
                     applicationCanTerminate = true
-                    dispose()
-                }
-                DONT_TERMINATE -> {
-                    applicationCanTerminate = false
                     dispose()
                 }
             }

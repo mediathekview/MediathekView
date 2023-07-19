@@ -10,6 +10,8 @@ public enum ShutdownState {
     STOP_DOWNLOADS("Downloads anhalten"),
     SAVE_APP_DATA("Programmdaten sichern"),
     SAVE_BOOKMARKS("Merkliste sichern"),
+
+    TERMINATE_JAVAFX_SUPPORT("Beende JavaFX Support..."),
     COMPLETE("Fertig.");
     private final String title;
 

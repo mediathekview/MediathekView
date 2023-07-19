@@ -23,19 +23,14 @@ import mediathek.tool.FileUtils;
 import mediathek.tool.Version;
 import okhttp3.HttpUrl;
 
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(13,9,1);
-    /**
-     * Is this a nightly or a production build?
-     */
-    public static final boolean APP_IS_NIGHTLY = false;
-    public static final String EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck";
+    public static final Version MVVERSION = new Version(14,0,0);
+
+    public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
-    public static final URL FXML_FILM_DESCRIPTION_PANEL_URL = Konstanten.class.getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
@@ -56,6 +51,7 @@ public class Konstanten {
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
     // MediathekView URLs
+    public static final HttpUrl LUCENE_CLIENT_HELP_URL = HttpUrl.get("https://github.com/mediathekview/MediathekView/blob/develop/lucene_help.md");
     public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
     public static final HttpUrl WEBSITE_BASE_URL = HttpUrl.get("https://mediathekview.de");
     public static final HttpUrl URL_MEDIATHEKVIEW_RESOURCES = HttpUrl.get("https://res.mediathekview.de");
@@ -83,7 +79,6 @@ public class Konstanten {
     public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
-    public static final int GUIDOWNLOAD_DIVIDER_LOCATION = 200;
 
     public static final int LAENGE_DATEINAME = 25; // Standardwert für die Länge des Zieldateinamens
     public static final int LAENGE_FELD = 10; // Standardwert für die Länge des Feldes des Zieldateinamens zB. %T

@@ -7,22 +7,16 @@ import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.datum.DatumFilm;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-/*
- * TODO:
- * - Remove the Database Stuff from this Class to own Classes and a real OR-Mapping
- * - Finalize a Real Entity
- * - Write test cases for each Method
- * - Write JavaDoc for each of the new Methods that were split from this moloch
- */
 
 public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_NR = 0;      // wird vor dem Speichern gelöscht!
@@ -47,130 +41,138 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final int FILM_REF = 16; // no getter/setter access // Referenz auf this
     public static final int MAX_ELEM = 17;
     /**
-     * The database instance for all descriptions.
+     * Compressed URLs are missing the base normal quality URL and are indicated by the pipe-symbol.
      */
-    private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
+    public static final char COMPRESSION_MARKER = '|';
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
+    private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
+    /**
+     * List of countries which can view this film.
+     */
+    public final EnumSet<Country> countrySet = EnumSet.noneOf(Country.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     /**
-     * Internal film number, used for storage in database
+     * File size in MByte
      */
-    private final int databaseFilmNumber;
-    private DatenAbo abo;
-    private BookmarkData bookmark;
+    private final FilmSize filmSize = new FilmSize();
+    /**
+     * Stores all URLs, some keys may not exist.
+     */
+    private final EnumMap<MapKeys, Object> dataMap = new EnumMap<>(MapKeys.class);
     /**
      * film date stored IN SECONDS!!!
      */
     private DatumFilm datumFilm = DatumFilm.UNDEFINED_FILM_DATE;
-    /**
-     * File size in MByte
-     */
-    private FilmSize filmSize;
-    /**
-     * film length in seconds.
-     */
-    private long filmLength;
-    private String websiteLink;
     private String description;
-    /**
-     * Low quality URL.
-     */
-    private String url_low_quality = "";
-    /**
-     * High Quality (formerly known as HD) URL if available.
-     */
-    private Optional<String> url_high_quality = Optional.empty();
     private String datumLong = "";
     private String sender = "";
     private String thema = "";
     private String titel = "";
-    /**
-     * String of countries where this entry can be viewed, if available.
-     * Empty means viewable without restrictions.
-     */
-    private Optional<String> availableInCountries = Optional.empty();
-    /**
-     * URL to the subtitle file, if available.
-     */
-    private Optional<String> subtitle_url = Optional.empty();
     private String datum = "";
     private String sendeZeit = "";
-    private String dauer = "";
-    private String groesse = "";
     /**
-     * Normal quality URL.
+     * film duration or film length in seconds.
      */
-    private String url_normal_quality = "";
-    /**
-     * film duration in seconds.
-     * getDauer() stores the same info as a String
-     */
-    private int duration;
+    private int filmLength;
 
     public DatenFilm() {
-        filmSize = new FilmSize(0); // Dateigröße in MByte
-        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
+        dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
     }
 
     public DatenFilm(@NotNull DatenFilm other) {
-        this.abo = other.abo;
-        this.bookmark = other.bookmark;
         this.datumFilm = other.datumFilm;
-        this.filmSize = other.filmSize;
-        this.filmLength = other.filmLength;
-        this.databaseFilmNumber = other.databaseFilmNumber;
-        this.websiteLink = other.websiteLink;
+        this.filmSize.setSize(other.filmSize.toString());
         this.description = other.description;
-        this.url_low_quality = other.url_low_quality;
-        this.url_high_quality = other.url_high_quality;
         this.datumLong = other.datumLong;
         this.sender = other.sender;
         this.thema = other.thema;
         this.titel = other.titel;
-        this.availableInCountries = other.availableInCountries;
-        this.subtitle_url = other.subtitle_url;
+        this.countrySet.addAll(other.countrySet);
+        this.dataMap.putAll(other.dataMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
-        this.dauer = other.dauer;
-        this.groesse = other.groesse;
-        this.url_normal_quality = other.url_normal_quality;
-        this.duration = other.duration;
+        this.filmLength = other.filmLength;
     }
 
-    public int getDuration() {
-        return duration;
+    /**
+     * URLs are considered compressed if they contain a '|'-symbol in the text.
+     * They need to be decompressed before use.
+     * @param requestedUrl the string to be checked.
+     * @return true if url is compressed, false otherwise.
+     */
+    public static boolean isCompressedUrl(@NotNull String requestedUrl) {
+        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
+        return indexPipe != -1;
+    }
+
+    /**
+     * Get the filmlength or duration.
+     *
+     * @return filmlength/duration in seconds, or 0.
+     */
+    public int getFilmLength() {
+        return filmLength;
+    }
+
+    /**
+     * Set the film's length or duration.
+     *
+     * @param dauer Input string in format "HH:MM:SS".
+     */
+    public void setFilmLength(String dauer) {
+        //bail out early if there is nothing to split...
+        if (dauer == null || dauer.isEmpty()) {
+            filmLength = 0;
+        }
+        else {
+            final String[] split = StringUtils.split(dauer, ':');
+
+            try {
+                filmLength += Integer.parseInt(split[0]) * 3600; //hour
+                filmLength += Integer.parseInt(split[1]) * 60; //minute
+                filmLength += Integer.parseInt(split[2]); //second
+            } catch (Exception e) {
+                filmLength = 0;
+            }
+        }
     }
 
     public @Nullable DatenAbo getAbo() {
-        return abo;
+        return (DatenAbo) dataMap.getOrDefault(MapKeys.ABO_DATA, null);
     }
 
-    public void setAbo(DatenAbo abo) {
-        this.abo = abo;
+    public void setAbo(@Nullable DatenAbo abo) {
+        if (abo == null)
+            dataMap.remove(MapKeys.ABO_DATA);
+        else
+            dataMap.put(MapKeys.ABO_DATA, abo);
     }
 
     public DatumFilm getDatumFilm() {
         return datumFilm;
     }
 
-    public String getUrlLowQuality() {
-        return url_low_quality;
+    public String getLowQualityUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
     }
 
-    public void setUrlLowQuality(String url_low_quality) {
-        this.url_low_quality = url_low_quality;
-    }
-
-    public String getUrlHighQuality() {
-        return url_high_quality.orElse("");
-    }
-
-    public void setUrlHighQuality(String urlHd) {
-        if (!urlHd.isEmpty())
-            url_high_quality = Optional.of(urlHd);
+    public void setLowQualityUrl(@NotNull String url_low_quality) {
+        if (url_low_quality.isEmpty())
+            dataMap.remove(MapKeys.LOW_QUALITY_URL);
         else
-            url_high_quality = Optional.empty();
+            dataMap.put(MapKeys.LOW_QUALITY_URL, url_low_quality);
+    }
+
+    public String getHighQualityUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
+    }
+
+    public void setHighQualityUrl(@NotNull String urlHd) {
+        if (urlHd.isEmpty())
+            dataMap.remove(MapKeys.HIGH_QUALITY_URL);
+        else
+            dataMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
     }
 
     public String getDatumLong() {
@@ -233,11 +235,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Get the film number.
      * This is used internally for the database id AND
      * for the old MV code that might access it for various stuff.
+     * <p>
+     * This number is UNUSED and always returns 1 until it is completely removed.
      *
      * @return the original internal film number
      */
     public int getFilmNr() {
-        return databaseFilmNumber;
+        return (int)dataMap.get(MapKeys.FILM_NR);
     }
 
     /**
@@ -245,7 +249,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return The size in MByte
      */
-    public FilmSize getFilmSize() {
+    public FilmSize getFileSize() {
         return filmSize;
     }
 
@@ -269,13 +273,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
         }
     }
 
-    public String getWebsiteLink() {
-        return StringUtils.defaultString(websiteLink);
+    public String getWebsiteUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.WEBSITE_URL, "");
     }
 
-    public void setWebsiteLink(String link) {
-        if (link != null && !link.isEmpty()) {
-            websiteLink = link;
+    public void setWebsiteUrl(String link) {
+        if (link == null || link.isEmpty()) {
+            dataMap.remove(MapKeys.WEBSITE_URL);
+        }
+        else {
+            dataMap.put(MapKeys.WEBSITE_URL, link);
         }
     }
 
@@ -325,8 +332,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return flags.contains(DatenFilmFlags.BURNED_IN_SUBTITLES);
     }
 
+    /**
+     * Return if the film has a subtitle (URL).
+     * @return true if a downloadable subtitle is available.
+     */
     public boolean hasSubtitle() {
-        return subtitle_url.isPresent();
+        return dataMap.containsKey(MapKeys.SUBTITLE_URL);
     }
 
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
@@ -337,10 +348,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
         };
     }
 
-    public String getDateigroesse(String url) {
+    public String getFileSizeForUrl(@NotNull String url) {
         if (url.equalsIgnoreCase(getUrlNormalQuality())) {
-            return getSize();
+            return getFileSize().toString();
         } else {
+            //FIXME this is blocking EDT!
             return FileSize.getFileLengthFromUrl(url);
         }
     }
@@ -351,7 +363,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return a unique "hash" string
      */
     public String getUniqueHash() {
-        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteLink();
+        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteUrl();
     }
 
     /**
@@ -360,7 +372,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return url_high_quality.isPresent();
+        return dataMap.containsKey(MapKeys.HIGH_QUALITY_URL);
     }
 
     @Override
@@ -370,41 +382,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
             return sorter.compare(getThema(), other.getThema());
         }
         return ret;
-    }
-
-    /**
-     * Get the filmlength in seconds.
-     *
-     * @return filmlength in seconds, or 0.
-     */
-    public long getFilmLength() {
-        return filmLength;
-    }
-
-    /**
-     * Convert HH:MM:SS string into seconds.
-     * Or set to 0 in case of error.
-     *
-     * @return result in seconds or 0.
-     */
-    private long parseTimeToSeconds() {
-        long seconds = 0;
-        final String[] split = StringUtils.split(dauer, ':');
-        // if empty, don't try to split and return early...
-        if (split == null || split.length == 0) {
-            return 0;
-        }
-        else {
-            try {
-                seconds += Long.parseLong(split[0]) * 3600; //hour
-                seconds += Long.parseLong(split[1]) * 60; //minute
-                seconds += Long.parseLong(split[2]); //second
-            } catch (Exception e) {
-                seconds = 0;
-            }
-
-            return seconds;
-        }
     }
 
     private void setDatum() {
@@ -423,9 +400,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public void init() {
-        filmSize = new FilmSize(this);
-        filmLength = parseTimeToSeconds();
-
         setDatum();
     }
 
@@ -444,13 +418,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
             ret = getUrlNormalQuality();
         else {
             try {
-                // check if url contains pipe symbol...
-                final int indexPipe = requestedUrl.indexOf('|');
-                if (indexPipe == -1) { //No
+                if (isCompressedUrl(requestedUrl))
+                    ret = decompressUrl(requestedUrl);
+                else
                     ret = requestedUrl;
-                } else { //Yes
-                    ret = decompressUrl(requestedUrl, indexPipe);
-                }
             } catch (Exception e) {
                 ret = "";
                 logger.error("getUrlNormalOrRequested(auflösung: {}, requestedUrl: {})", resolution, requestedUrl, e);
@@ -460,7 +431,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    private String decompressUrl(@NotNull final String requestedUrl, final int indexPipe) {
+    public String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
+        final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
         return getUrlNormalQuality().substring(0, i) + requestedUrl.substring(indexPipe + 1);
     }
@@ -473,8 +445,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      */
     private String getUrlByResolution(@NotNull final FilmResolution.Enum resolution) {
         return switch (resolution) {
-            case HIGH_QUALITY -> getUrlHighQuality();
-            case LOW -> getUrlLowQuality();
+            case HIGH_QUALITY -> getHighQualityUrl();
+            case LOW -> getLowQualityUrl();
             default -> getUrlNormalQuality();
         };
     }
@@ -519,64 +491,42 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.sendeZeit = sendeZeit;
     }
 
-    public String getDauer() {
-        return dauer;
-    }
-
-    public void setDauer(String dauer) {
-        this.dauer = dauer;
-
-        //bail out early if there is nothing to split...
-        if (dauer == null || dauer.isEmpty()) {
-            duration = 0;
-        }
+    /**
+     * Get the film's length or duration formatted as a string in "HH:MM:SS" format.
+     * Similar to {@link DatenFilm#getFilmLength()}.
+     *
+     * @return film length or duration as String.
+     */
+    public String getFilmLengthAsString() {
+        if (filmLength == 0)
+            return "";
         else {
-            //FIXME gefällt mir nicht
-            final String[] split = StringUtils.split(this.dauer, ':');
-
-            try {
-                duration += Integer.parseInt(split[0]) * 3600; //hour
-                duration += Integer.parseInt(split[1]) * 60; //minute
-                duration += Integer.parseInt(split[2]); //second
-            } catch (Exception e) {
-                duration = 0;
-            }
+            var duration = TimeUnit.MILLISECONDS.convert(filmLength, TimeUnit.SECONDS);
+            return DurationFormatUtils.formatDuration(duration,"HH:mm:ss", true);
         }
-    }
-
-    public String getSize() {
-        return groesse;
-    }
-
-    public void setSize(String size) {
-        this.groesse = size;
     }
 
     public String getUrlNormalQuality() {
-        return url_normal_quality;
+        return (String)dataMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
     }
 
-    public void setUrlNormalQuality(String url_normal_quality) {
-        this.url_normal_quality = url_normal_quality;
-    }
-
-    public String getUrlSubtitle() {
-        return subtitle_url.orElse("");
-    }
-
-    public void setUrlSubtitle(String urlSubtitle) {
-        if (!urlSubtitle.isEmpty())
-            subtitle_url = Optional.of(urlSubtitle);
+    public void setNormalQualityUrl(@NotNull String url_normal_quality) {
+        if (url_normal_quality.isEmpty())
+            dataMap.remove(MapKeys.NORMAL_QUALITY_URL);
         else
-            subtitle_url = Optional.empty();
+            dataMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
     }
 
-    public Optional<String> getGeo() {
-        return availableInCountries;
+    public String getSubtitleUrl() {
+        return (String)dataMap.getOrDefault(MapKeys.SUBTITLE_URL,"");
     }
 
-    public void setGeo(Optional<String> availableInCountries) {
-        this.availableInCountries = availableInCountries;
+    public void setSubtitleUrl(@NotNull String urlSubtitle) {
+        if (urlSubtitle.isEmpty())
+            dataMap.remove(MapKeys.SUBTITLE_URL);
+        else {
+            dataMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
+        }
     }
 
     /**
@@ -584,8 +534,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @return BookmarkData entry
      */
-    public BookmarkData getBookmark() {
-        return this.bookmark;
+    public @Nullable BookmarkData getBookmark() {
+        return (BookmarkData) dataMap.getOrDefault(MapKeys.BOOKMARK_DATA, null);
     }
 
     /**
@@ -593,8 +543,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
      *
      * @param bookmark Bookmark entry
      */
-    public void setBookmark(BookmarkData bookmark) {
-        this.bookmark = bookmark;
+    public void setBookmark(@Nullable BookmarkData bookmark) {
+        if (bookmark == null)
+            dataMap.remove(MapKeys.BOOKMARK_DATA);
+        else
+            dataMap.put(MapKeys.BOOKMARK_DATA, bookmark);
     }
 
     /**
@@ -603,6 +556,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return boolean true
      */
     public boolean isBookmarked() {
-        return this.bookmark != null;
+        return dataMap.containsKey(MapKeys.BOOKMARK_DATA);
     }
+
+    enum MapKeys {FILM_NR, SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL, BOOKMARK_DATA, ABO_DATA}
 }

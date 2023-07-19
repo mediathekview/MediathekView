@@ -25,19 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    public static final ImageIcon ICON_DIALOG_EIN_SW = GetIcon.getProgramIcon("dialog-ein-sw.png", 16, 16);
-
-    public static final ImageIcon ICON_MENUE_VORZIEHEN = GetIcon.getProgramIcon("menue-vorziehen.png", 16, 16);
-
-    public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
-    public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
-
-    public static final ImageIcon ICON_BUTTON_REMOVE = GetIcon.getProgramIcon("button-remove.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_ADD = GetIcon.getProgramIcon("button-add.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_MOVE_DOWN = GetIcon.getProgramIcon("button-move-down.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_CLEAR = GetIcon.getProgramIcon("button-clear.png", 16, 16);
-
     // Icons TABBED_PANE
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", 32, 32);
     public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", 32, 32);

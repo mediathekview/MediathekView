@@ -27,7 +27,7 @@ open class MVInfoFile {
         sb = appendFormattedTableLine(sb, formatString, FILM_TITEL, film.title).append(System.lineSeparator())
         sb = appendFormattedTableLine(sb, formatString, FILM_DATUM, film.sendeDatum)
         sb = appendFormattedTableLine(sb, formatString, FILM_ZEIT, film.sendeZeit)
-        sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.dauer)
+        sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.filmLengthAsString)
         if (fileSize > FileSize.INVALID_SIZE)
             sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, FileUtils.humanReadableByteCountBinary(fileSize))
         else
@@ -36,7 +36,7 @@ open class MVInfoFile {
         sb.append(System.lineSeparator())
         sb.append("Website")
         sb.append(System.lineSeparator())
-        sb.append(film.websiteLink)
+        sb.append(film.websiteUrl)
         sb.append(System.lineSeparator())
         sb.append(System.lineSeparator())
         sb.append(FILM_URL)

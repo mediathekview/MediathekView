@@ -1,15 +1,10 @@
 package mediathek.gui.dialog;
 
-import jiconfont.icons.font_awesome.FontAwesome;
-import jiconfont.swing.IconFontSwing;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.FileSpecifier;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,8 +35,8 @@ public class MVPanelDownloadZiel extends JPanel {
         parent = p;
         datenDownload = download;
         letztenPfadAnzeigen = letzterPfad;
-        jButtonPath.setIcon(IconFontSwing.buildIcon(FontAwesome.FOLDER_OPEN_O, 16));
-        jButtonDelPath.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        jButtonPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
+        jButtonDelPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
          jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
@@ -149,7 +144,7 @@ public class MVPanelDownloadZiel extends JPanel {
         try {
             File file = new File(pfadName);
             if (file.exists()) {
-                jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_EXISTIERT.color);
+                jLabelExists.setForeground(Color.RED);
                 jLabelExists.setText("Datei existiert schon!");
             } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME])
                     || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD])) {

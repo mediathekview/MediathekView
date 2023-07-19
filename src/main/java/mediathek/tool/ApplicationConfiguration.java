@@ -1,8 +1,9 @@
 package mediathek.tool;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
-import mediathek.daten.GeoblockingField;
+import mediathek.daten.Country;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -25,9 +26,12 @@ import java.util.concurrent.TimeUnit;
  * The global application configuration class. This will contain all the config data in the future.
  */
 public class ApplicationConfiguration {
+    public static final String APPLICATION_DARK_MODE = "application.dark_mode";
     public static final String APPLICATION_USER_AGENT = "application.user_agent";
+    public static final String APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =
             "application.ui.install_tab_listeners";
+    public static final String APPLICATION_RESTORE_SELECTED_TAB = "application.ui.restore_selected_tab";
     public static final String APPLICATION_UI_TAB_POSITION_TOP = "application.ui.tab_position.top";
     public static final String APPLICATION_UI_MAINWINDOW_MAXIMIZED =
             "application.ui.mainwindow.maximized";
@@ -42,9 +46,8 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE =
             "application.ui.bandwidth_monitor.visible";
     public static final String APPLICATION_UI_USE_TRAY = "application.ui.tray.use";
-    public static final String APPLICATION_UI_FONT_SIZE = "application.ui.font_size";
     public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
-            "application.ui.download.tab.divider.location";
+            "application.ui.download_tab.divider.location";
     public static final String APPLICATION_UI_BOOKMARKLIST = "application.ui.bookmarklist";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
@@ -56,10 +59,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode";
     public static final String APPLICATION_BUTTONS_PANEL_VISIBLE =
             "application.buttons_panel.visible";
-    public static final String GEO_REPORT = "geo.report";
-    public static final String GEO_LOCATION = "geo.location";
-    public static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
-    public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
     public static final String DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show";
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
@@ -68,12 +67,18 @@ public class ApplicationConfiguration {
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
-    public static final String TAB_FILM_FONT_SIZE = "tab.film.font_size";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+    private static final String GEO_LOCATION = "geo.location";
+    private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
      * logger for {@link TimerTaskListener} inner class.
      */
     private static final Logger logger = LogManager.getLogger();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    /**
+     * A custom small thread scheduler exclusively for config changes.
+     */
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
     private XMLConfiguration config;
     private FileHandler handler;
     /**
@@ -95,8 +100,7 @@ public class ApplicationConfiguration {
             config.setProperty("config.major", version.getMajor());
             config.setProperty("config.minor", version.getMinor());
             config.setProperty("config.patch", version.getPatch());
-        }
-        finally {
+        } finally {
             config.unlock(LockMode.WRITE);
         }
     }
@@ -107,6 +111,40 @@ public class ApplicationConfiguration {
 
     public static Configuration getConfiguration() {
         return getInstance().config;
+    }
+
+    public Country getGeographicLocation() {
+        try {
+            var str = config.getString(GEO_LOCATION);
+            // str has no quotation marks if it was set before the update but object mapper now expects them...
+            if (!str.startsWith("\"") && !str.endsWith("\""))
+                str = "\"" + str + "\"";
+            return mapper.readValue(str, Country.class);
+        }
+        catch (Exception ex) {
+            logger.error("Unable to parse country, resetting to GERMANY", ex);
+            setGeographicLocation(Country.DE);
+            return Country.DE;
+        }
+    }
+
+    public void setGeographicLocation(Country country) {
+        try {
+            var newValue = mapper.writeValueAsString(country);
+            config.setProperty(GEO_LOCATION, newValue);
+        }
+        catch (Exception ex) {
+            logger.error("Error setting location, setting to GERMANY", ex);
+            setGeographicLocation(Country.DE);
+        }
+    }
+
+    public boolean getBlacklistDoNotShowGeoblockedFilms() {
+        return config.getBoolean(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, false);
+    }
+
+    public void setBlacklistDoNotShowGeoblockedFilms(boolean newValue) {
+        config.setProperty(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, newValue);
     }
 
     private void initializeTimedEventWriting() {
@@ -153,8 +191,7 @@ public class ApplicationConfiguration {
     private void createDefaultConfigSettings() {
         try {
             config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
-            config.setProperty(GEO_REPORT, true);
-            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
+            setGeographicLocation(Country.DE);
 
             handler.save();
         } catch (ConfigurationException configurationException) {
@@ -167,15 +204,18 @@ public class ApplicationConfiguration {
     }
 
     private void updateNewerDefaults() {
-        if (!config.containsKey(GEO_REPORT)) {
-            config.setProperty(GEO_REPORT, true);
-        }
         if (!config.containsKey(GEO_LOCATION)) {
-            config.setProperty(GEO_LOCATION, GeoblockingField.GEO_DE);
+            //object mapper expects quotation marks in the string!
+            config.setProperty(GEO_LOCATION, "\"DE\"");
         }
         if (!config.containsKey(APPLICATION_INSTALL_TAB_SWITCH_LISTENER)) {
             config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, !SystemUtils.IS_OS_MAC_OSX);
         }
+    }
+
+    public static class DownloadRateLimiter {
+        public static final String LIMIT = "download.rate.limit";
+        public static final String ACTIVE = "download.rate.active";
     }
 
     /**
@@ -217,9 +257,26 @@ public class ApplicationConfiguration {
     }
 
     public static class FilmInfoDialog {
-        public static final String FILM_INFO_VISIBLE = "film.information.visible";
-        public static final String FILM_INFO_LOCATION_X = "film.information.location.x";
-        public static final String FILM_INFO_LOCATION_Y = "film.information.location.y";
+        public static final String VISIBLE = "film.information.visible";
+        public static final String X = "film.information.location.x";
+        public static final String Y = "film.information.location.y";
+        public static final String WIDTH = "film.information.location.width";
+        public static final String HEIGHT = "film.information.location.height";
+    }
+
+    public static class MemoryMonitorDialog {
+        public static final String VISIBLE = "memory_monitor.visible";
+        public static final String X = "memory_monitor.x";
+        public static final String Y = "memory_monitor.y";
+        public static final String WIDTH = "memory_monitor.width";
+        public static final String HEIGHT = "memory_monitor.height";
+    }
+
+    public static class EditDownloadDialog {
+        public static final String X = "edit_download_dialog.x";
+        public static final String Y = "edit_download_dialog.y";
+        public static final String WIDTH = "edit_download_dialog.width";
+        public static final String HEIGHT = "edit_download_dialog.height";
     }
 
     public static class SettingsDialog {
@@ -228,11 +285,6 @@ public class ApplicationConfiguration {
         public static final String X = "application.ui.settings_dialog.x";
         public static final String Y = "application.ui.settings_dialog.y";
     }
-
-    /**
-     * A custom small thread scheduler exclusively for config changes.
-     */
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
 
     /**
      * This class will issue a timer to write config to file 5 seconds after onEvent call. In case
