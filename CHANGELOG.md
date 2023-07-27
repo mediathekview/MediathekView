@@ -1,3 +1,6 @@
+# **14.0.1**
+- **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
+
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.

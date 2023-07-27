@@ -202,21 +202,25 @@ public class GuiDownloads extends AGuiTabPanel {
         boolean updateNeeded = false;
 
         for (var row : rows) {
-            var indexRow = tabelle.convertRowIndexToModel(row);
-            var listeDownloads = daten.getListeDownloads();
-            var dlInfo = listeDownloads.get(indexRow);
-            if (dlInfo != null) {
-                if (dlInfo.mVFilmSize.getSize() != 0)
-                    continue;
+            try {
+                var indexRow = tabelle.convertRowIndexToModel(row);
+                var listeDownloads = daten.getListeDownloads();
+                var dlInfo = listeDownloads.get(indexRow);
+                if (dlInfo != null) {
+                    if (dlInfo.mVFilmSize.getSize() != 0)
+                        continue;
 
-                if (dlInfo.film != null) {
-                    var oldSize = dlInfo.mVFilmSize.getSize();
-                    dlInfo.queryLiveSize();
-                    if (dlInfo.mVFilmSize.getSize() != oldSize)
-                        updateNeeded = true;
-                }
-            } else
-                logger.error("Could not get download object");
+                    if (dlInfo.film != null) {
+                        var oldSize = dlInfo.mVFilmSize.getSize();
+                        dlInfo.queryLiveSize();
+                        if (dlInfo.mVFilmSize.getSize() != oldSize)
+                            updateNeeded = true;
+                    }
+                } else
+                    logger.error("Could not get download object");
+            }
+            catch (Exception ignored) {
+            }
         }
 
         if (updateNeeded)
@@ -598,17 +602,22 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Override
     public Optional<DatenFilm> getCurrentlySelectedFilm() {
-        final int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow != -1) {
-            Optional<DatenFilm> optRet;
-            final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
-            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
-            if (download.film == null)
-                optRet = Optional.empty();
-            else
-                optRet = Optional.of(download.film);
-            return optRet;
-        } else {
+        try {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
+                Optional<DatenFilm> optRet;
+                int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+                final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
+                if (download.film == null)
+                    optRet = Optional.empty();
+                else
+                    optRet = Optional.of(download.film);
+                return optRet;
+            } else {
+                return Optional.empty();
+            }
+        }
+        catch (Exception e) {
             return Optional.empty();
         }
     }
@@ -948,19 +957,12 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void updateFilmData() {
-        if (isShowing()) {
-            DatenFilm selectedFilm = null;
-            final int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow != -1) {
-                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
-                if (datenDownload != null) {
-                    selectedFilm = datenDownload.film;
-                }
-            }
-            var infoDialog = mediathekGui.getFilmInfoDialog();
-            if (infoDialog != null) {
-                infoDialog.updateCurrentFilm(selectedFilm);
-            }
+        if (!isShowing())
+            return;
+
+        var infoDialog = mediathekGui.getFilmInfoDialog();
+        if (infoDialog != null) {
+            infoDialog.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null));
         }
     }
 
