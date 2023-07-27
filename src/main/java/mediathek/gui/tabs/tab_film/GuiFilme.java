@@ -799,6 +799,13 @@ public class GuiFilme extends AGuiTabPanel {
             addActionListener(l -> performSearch());
 
             createTrailingComponents();
+
+            setupContextMenu();
+        }
+
+        private void setupContextMenu() {
+            var handler = new TextCopyPasteHandler<>(this);
+            setComponentPopupMenu(handler.getPopupMenu());
         }
 
         protected abstract void createTrailingComponents();
