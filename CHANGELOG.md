@@ -1,6 +1,7 @@
 # **14.0.1**
 - **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
+- **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
 
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
