@@ -7,6 +7,7 @@ import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.CopyToClipboardAction
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.sender_icon_cache.MVSenderIconCache
@@ -119,6 +120,7 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
         lblAbo.text = ""
         hyperlink.toolTipText = ""
         hyperlink.isEnabled = false
+        hyperlink.componentPopupMenu = null
         lblDescription.text = ""
         SwingUtilities.invokeLater {
             checkedPack()
@@ -157,6 +159,9 @@ class InfoDialog(parent: Window?) : JDialog(parent) {
             hyperlink.isEnabled = true
             hyperlink.toolTipText = currentFilm!!.websiteUrl
             hyperlink.isClicked = false
+            val popupMenu = JPopupMenu()
+            popupMenu.add(CopyToClipboardAction(currentFilm!!.websiteUrl))
+            hyperlink.componentPopupMenu = popupMenu
 
             val desc = currentFilm!!.description.trim { it <= ' ' }
             lblDescription.text = desc

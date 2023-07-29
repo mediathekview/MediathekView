@@ -5,6 +5,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.miginfocom.layout.AC;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URI;
 
 public class FilmDescriptionPanel extends JPanel {
@@ -142,7 +142,7 @@ public class FilmDescriptionPanel extends JPanel {
             hyperlink.setText("Link zur Webseite");
             hyperlink.setClicked(false);
             JPopupMenu popup = new JPopupMenu();
-            popup.add(new CopyToCLipboardAction(film.getWebsiteUrl()));
+            popup.add(new CopyToClipboardAction(film.getWebsiteUrl()));
             hyperlink.setComponentPopupMenu(popup);
         } catch (Exception e) {
             //logger
@@ -153,23 +153,6 @@ public class FilmDescriptionPanel extends JPanel {
         textArea.setText(film.getDescription());
         SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
         lblIcon.setSender(film.getSender());
-    }
-
-    static class CopyToCLipboardAction extends AbstractAction {
-        private final String webSiteUrl;
-
-        public CopyToCLipboardAction(@NotNull String url) {
-            webSiteUrl = url;
-            putValue(Action.NAME, "In Zwischenablage kopieren");
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                GuiFunktionen.copyToClipboard(webSiteUrl);
-            }
-            catch (Exception ignored) {
-            }
-        }
     }
 
     static class SenderIconLabel extends JLabel {
