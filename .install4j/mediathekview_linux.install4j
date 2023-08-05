@@ -28,7 +28,7 @@
   </files>
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
-      <executable name="MediathekView" iconSet="true" stderrFile="~/mv_error.log" executableMode="gui" singleInstance="true" />
+      <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
       <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.linux.64}">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
@@ -43,7 +43,7 @@
       </iconImageFiles>
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
-      <executable name="MediathekView_Portable" iconSet="true" stderrFile="~/mv_error.log" executableMode="gui" changeWorkingDirectory="false" />
+      <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" changeWorkingDirectory="false" />
       <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.linux.64}" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
