@@ -831,11 +831,6 @@ public class GuiFilme extends AGuiTabPanel {
             pcs.firePropertyChange(SEARCHMODE_PROPERTY_STRING, oldValue, mode);
         }
 
-        @Override
-        protected void fireActionPerformed() {
-            super.fireActionPerformed();
-        }
-
         /**
          * Clear searchfield on escape key press.
          */
