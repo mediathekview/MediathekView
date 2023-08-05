@@ -196,6 +196,8 @@ public class GuiFilme extends AGuiTabPanel {
                 bookmarkFilmAction.setEnabled(true);
                 toggleFilterDialogVisibilityAction.setEnabled(true);
                 searchField.setEnabled(true);
+                if (e.fromSearchField)
+                    searchField.requestFocusInWindow();
                 filterSelectionComboBox.setEnabled(true);
             });
         }
@@ -632,7 +634,6 @@ public class GuiFilme extends AGuiTabPanel {
             try {
                 SwingUtilities.invokeAndWait(this::loadTable);
             } catch (InterruptedException | InvocationTargetException ex) {
-                ex.printStackTrace();
                 logger.error("Table reload failed", ex);
             }
         });
@@ -697,6 +698,10 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void loadTable() {
+        loadTable(false);
+    }
+
+    private void loadTable(boolean from_search_field) {
         if (modelFuture != null) {
             if (!modelFuture.isDone()) {
                 return;
@@ -704,7 +709,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         final var messageBus = MessageBus.getMessageBus();
-        messageBus.publish(new TableModelChangeEvent(true));
+        messageBus.publish(new TableModelChangeEvent(true, from_search_field));
 
         stopBeob = true;
         tabelle.getSpalten();
@@ -733,7 +738,7 @@ public class GuiFilme extends AGuiTabPanel {
                             updateFilmData();
                             stopBeob = false;
                             tabelle.scrollToSelection();
-                            messageBus.publish(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
                         });
                     }
 
@@ -745,7 +750,7 @@ public class GuiFilme extends AGuiTabPanel {
                             tabelle.setSpalten();
                             updateFilmData();
                             stopBeob = false;
-                            messageBus.publish(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
                         });
                     }
                 },
@@ -971,7 +976,7 @@ public class GuiFilme extends AGuiTabPanel {
                 luceneSearchHistoryButton.addHistoryEntry(searchText);
             }
 
-            loadTable();
+            loadTable(true);
         }
     }
 
@@ -1003,7 +1008,7 @@ public class GuiFilme extends AGuiTabPanel {
                 regularSearchHistoryButton.addHistoryEntry(searchText);
             }
 
-            loadTable();
+            loadTable(true);
         }
 
         private void installDocumentListener() {

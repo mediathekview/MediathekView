@@ -194,7 +194,7 @@ public class MediathekGui extends JFrame {
 
         var messageBus = MessageBus.getMessageBus();
         //send before subscribing
-        messageBus.publishAsync(new TableModelChangeEvent(true));
+        messageBus.publishAsync(new TableModelChangeEvent(true, false));
         messageBus.subscribe(this);
 
         SwingUtilities.invokeLater(() -> {
