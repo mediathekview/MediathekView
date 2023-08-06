@@ -3,6 +3,7 @@
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
 - **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
 - **BUGFIX:** Suchfeld wird nach Enter-Taste zum Start der Suche wieder fokussiert.
+- **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
