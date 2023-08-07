@@ -21,6 +21,15 @@ import javax.swing.Box
 
 class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
+
+    override fun createFontMenu() {
+        //unused on macOS
+    }
+
+    override fun addFontMenu() {
+        //unused on macOS
+    }
+
     override fun installAdditionalHelpEntries() {
         //unused on macOS
     }

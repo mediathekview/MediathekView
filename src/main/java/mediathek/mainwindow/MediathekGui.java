@@ -52,7 +52,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -127,7 +126,7 @@ public class MediathekGui extends JFrame {
     protected Configuration config = ApplicationConfiguration.getConfiguration();
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
-    protected FontManager fontManager = new FontManager(this);
+    protected FontManager fontManager;
     protected ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
@@ -411,8 +410,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.setText("Abos");
         jMenuBar.add(jMenuAbos);
 
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            jMenuBar.add(fontMenu);
+        addFontMenu();
 
         jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
@@ -423,6 +421,10 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar);
+    }
+
+    protected void addFontMenu() {
+        jMenuBar.add(fontMenu);
     }
 
     /**
@@ -850,26 +852,9 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
-    private void createFontMenu() {
-        var restoreFontMenuItem = new JMenuItem();
-        restoreFontMenuItem.setText("Schrift zurücksetzen");
-        restoreFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        restoreFontMenuItem.addActionListener(e -> fontManager.resetFont());
-        fontMenu.add(restoreFontMenuItem);
-
-        var incrFontMenuItem = new JMenuItem();
-        incrFontMenuItem.setText("Schrift vergrößern");
-        incrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        incrFontMenuItem.addActionListener(e -> fontManager.increaseFontSize());
-        fontMenu.add(incrFontMenuItem);
-
-        var decrFontMenuItem = new JMenuItem();
-        decrFontMenuItem.setText("Schrift verkleinern");
-        decrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        decrFontMenuItem.addActionListener(e -> fontManager.decreaseFontSize());
-        fontMenu.add(decrFontMenuItem);
-
-        fontManager.updateFontMenuItems();
+    protected void createFontMenu() {
+        fontManager = new FontManager(fontMenu);
+        fontManager.restoreConfigData();
     }
 
     @Handler
