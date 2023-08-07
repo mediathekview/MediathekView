@@ -157,6 +157,8 @@ public class FontManager {
 
         FlatLaf.updateUI();
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
+
+        updateFontMenuItems();
     }
 
     private void updateFontMenuItems() {
