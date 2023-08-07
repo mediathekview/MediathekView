@@ -299,12 +299,12 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 writer.println(counter);
                 writer.println(srtFormat.format(title.begin) + " --> " + srtFormat.format(title.end));
                 for (var entry : title.listOfStrings) {
-                    final var color = entry.getColor();
-                    if (!color.isEmpty()) {
-                        writer.print("<font color=\"" + color + "\">");
+                    final var entryColor = entry.getColor();
+                    if (!entryColor.isEmpty()) {
+                        writer.print("<font color=\"" + entryColor + "\">");
                     }
                     writer.print(entry.getText());
-                    if (!color.isEmpty()) {
+                    if (!entryColor.isEmpty()) {
                         writer.print("</font>");
                     }
                     writer.println();
