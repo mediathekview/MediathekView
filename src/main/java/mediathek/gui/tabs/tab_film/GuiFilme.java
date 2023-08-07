@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -97,6 +98,7 @@ public class GuiFilme extends AGuiTabPanel {
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
     public final CopyUrlToClipboardAction copyHqUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY);
     public final CopyUrlToClipboardAction copyNormalUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL);
+    public final CopyFilmLineInfoToClipboardAction copyFilmLineInfoToClipboardAction = new CopyFilmLineInfoToClipboardAction();
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
     private final PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -1168,6 +1170,79 @@ public class GuiFilme extends AGuiTabPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             bookmarkFilm();
+        }
+    }
+
+    public class CopyFilmLineInfoToClipboardAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
+            filmSelection.ifPresent(
+                    film -> {
+                        try {
+                            JsonFilmObject filmObject = new JsonFilmObject();
+                            filmObject.sender = film.getSender();
+                            filmObject.thema = film.getThema();
+                            filmObject.titel = film.getTitle();
+                            filmObject.sende_datum = film.getSendeDatum();
+                            //sende_zeit
+                            String strZeit = film.getSendeZeit();
+                            final int len = strZeit.length();
+
+                            if (strZeit.isEmpty() || len < 8)
+                                filmObject.sende_zeit = "";
+                            else {
+                                strZeit = strZeit.substring(0, len - 3);
+                                filmObject.sende_zeit = strZeit;
+                            }
+
+                            filmObject.laenge = film.getFilmLengthAsString();
+                            filmObject.groesse =  film.getFileSize().toString();
+                            filmObject.beschreibung = film.getDescription();
+                            filmObject.url_normal = film.getUrlNormalQuality();
+                            filmObject.url_website = film.getWebsiteUrl();
+                            filmObject.url_subtitle = film.getSubtitleUrl();
+                            String url = film.getLowQualityUrl();
+                            if (DatenFilm.isCompressedUrl(url))
+                                url = film.decompressUrl(url);
+                            filmObject.url_low_quality = url;
+
+                            url = film.getHighQualityUrl();
+                            if (DatenFilm.isCompressedUrl(url))
+                                url = film.decompressUrl(url);
+                            filmObject.url_high_quality = url;
+
+                            filmObject.datum_long = film.getDatumLong();
+                            if (film.countrySet.isEmpty())
+                                filmObject.geo = "";
+                            else
+                                filmObject.geo = film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
+
+                            String result = new ObjectMapper().writeValueAsString(filmObject);
+                            GuiFunktionen.copyToClipboard(result);
+                        } catch (JsonProcessingException ex) {
+                            logger.error("Failed to export film line info", ex);
+                        }
+                    });
+        }
+
+        static class JsonFilmObject {
+            public String sender;
+            public String thema;
+            public String titel;
+            public String sende_datum;
+            public String sende_zeit;
+            public String laenge;
+            public String groesse;
+            public String geo;
+            public String url_normal;
+            public String url_low_quality;
+            public String url_high_quality;
+            public String url_subtitle;
+            public String url_website;
+            public String beschreibung;
+            public String datum_long;
         }
     }
 
