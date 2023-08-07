@@ -95,6 +95,8 @@ public class GuiFilme extends AGuiTabPanel {
     public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
+    public final CopyUrlToClipboardAction copyHqUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY);
+    public final CopyUrlToClipboardAction copyNormalUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL);
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
     private final PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -346,8 +348,8 @@ public class GuiFilme extends AGuiTabPanel {
         actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playFilmAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
         actionMap.put(ACTION_MAP_KEY_BOOKMARK_FILM, bookmarkFilmAction);
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL));
-        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY));
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, copyNormalUrlToClipboardAction);
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, copyHqUrlToClipboardAction);
         actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.LOW));
         actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
         actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
@@ -761,7 +763,7 @@ public class GuiFilme extends AGuiTabPanel {
                 decoratedPool);
     }
 
-    static class FilterVisibilityToggleButton extends JToggleButton {
+    static public class FilterVisibilityToggleButton extends JToggleButton {
         public FilterVisibilityToggleButton(Action a) {
             super(a);
             setText("");
@@ -1169,7 +1171,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private class CopyUrlToClipboardAction extends AbstractAction {
+    public class CopyUrlToClipboardAction extends AbstractAction {
         private final FilmResolution.Enum resolution;
 
         CopyUrlToClipboardAction(FilmResolution.Enum resolution) {
@@ -1457,6 +1459,8 @@ public class GuiFilme extends AGuiTabPanel {
                     // HD
                     if (!uHd.isEmpty()) {
                         item = new JMenuItem("höchste/hohe Qualität");
+                        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, GuiFunktionen.getPlatformControlKey() |
+                                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
                         item.addActionListener(
                                 e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY)));
                         submenueURL.add(item);
@@ -1465,6 +1469,9 @@ public class GuiFilme extends AGuiTabPanel {
                     // normale Auflösung, gibts immer
                     item = new JMenuItem("mittlere Qualität");
                     item.addActionListener(copyNormalUrlListener);
+                    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, GuiFunktionen.getPlatformControlKey() |
+                            KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+
                     submenueURL.add(item);
 
                     // kleine Auflösung

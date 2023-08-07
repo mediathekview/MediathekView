@@ -52,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -76,6 +77,8 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
+    private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
+    private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
     /**
      * "Pointer" to UI
      */
@@ -137,7 +140,6 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean shutdownRequested;
-
     public MediathekGui() {
         ui = this;
 
@@ -222,6 +224,8 @@ public class MediathekGui extends JFrame {
         logger.trace("Loading info dialog");
         filmInfo = new InfoDialog(this);
         logger.trace("Finished loading info dialog");
+
+        mapFilmUrlCopyCommands();
     }
 
     /**
@@ -231,6 +235,18 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    private void mapFilmUrlCopyCommands() {
+        final var im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, GuiFunktionen.getPlatformControlKey() |
+                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_HQ_URL);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, GuiFunktionen.getPlatformControlKey() |
+                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_NORMAL_URL);
+
+        final var am = jMenuBar.getActionMap();
+        am.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction);
+        am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction);
     }
 
     protected void setupScrollBarWidth() {
@@ -1059,7 +1075,7 @@ public class MediathekGui extends JFrame {
                 writer.commit();
                 //filmList.getLuceneDirectory().close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("cleanupLuceneIndex error", ex);
             }
         }
     }
@@ -1105,8 +1121,7 @@ public class MediathekGui extends JFrame {
             try {
                 logger.debug("POOL SUBMISSIONS: {}", ForkJoinPool.commonPool().getQueuedSubmissionCount());
                 TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ignored) {
             }
         }
 
