@@ -1,13 +1,15 @@
-package mediathek.tool;
+package mediathek.tool.ttml;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TimedTextMarkupLanguageParserTest {
     @Test
@@ -65,6 +67,35 @@ class TimedTextMarkupLanguageParserTest {
             var ttmlDate = ttmlFormatter.parse("00:03:04.400");
             var srtString = srtFormatter.format(ttmlDate);
             assertTrue(srtString.endsWith(",400"));
+        }
+    }
+
+    @Test
+    void convert_ttml_to_srt() {
+        Path tempSrt = null;
+        try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
+            var file = new File("src/test/resources/ttml/testcase1.ttml");
+            var ttmlPath = file.toPath();
+            var res = parser.parse(ttmlPath);
+            assertTrue(res);
+
+            tempSrt = Files.createTempFile("converted_srt_test_case", ".srt");
+            parser.toSrt(tempSrt);
+
+            file = new File("src/test/resources/ttml/testcase1.srt");
+            var expectedSrtResultPath = file.toPath();
+            var mismatch = Files.mismatch(expectedSrtResultPath, tempSrt);
+            assertEquals(-1L, mismatch);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            if (tempSrt != null) {
+                try {
+                    Files.deleteIfExists(tempSrt);
+                } catch (IOException ignored) {
+                }
+            }
         }
     }
 

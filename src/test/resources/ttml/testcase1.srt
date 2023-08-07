@@ -1,0 +1,62 @@
+1
+00:00:10,994 --> 00:00:14,474
+<font color="#FFFFFF">Zu Tausenden werden solche</font>
+<font color="#FFFFFF">Nachrichten derzeit verschickt.</font>
+
+2
+00:00:14,514 --> 00:00:18,394
+<font color="#FFFFFF">Der Trick ist simpel, sagt das</font>
+<font color="#FFFFFF">Niedersächsische Landeskriminalamt.</font>
+
+3
+00:00:18,474 --> 00:00:22,034
+<font color="#FFFFFF">Die Kriminellen geben vor die Tochter</font>
+<font color="#FFFFFF">oder der Sohn zu sein</font>
+
+4
+00:00:22,114 --> 00:00:25,834
+<font color="#FFFFFF">und dringend finanzielle Hilfe</font>
+<font color="#FFFFFF">und eine Überweisung zu benötigen.</font>
+
+5
+00:00:25,914 --> 00:00:27,514
+<font color="#FFFFFF">Alles nur als Textnachricht.</font>
+
+6
+00:00:27,594 --> 00:00:29,514
+<font color="#FFFF00">Dann wird ein Gespräch aufgebaut.</font>
+
+7
+00:00:29,594 --> 00:00:32,154
+<font color="#FFFF00">Es wird Betroffenheit</font>
+<font color="#FFFF00">und Zeitdruck aufgebaut,</font>
+
+8
+00:00:32,194 --> 00:00:35,794
+<font color="#FFFF00">weil das Kind ist in Not und</font>
+<font color="#FFFF00">dann machen die Leute das leider.</font>
+
+9
+00:00:35,834 --> 00:00:38,394
+<font color="#FFFFFF">Oft geht es gleich</font>
+<font color="#FFFFFF">um mehrere Tausend Euro.</font>
+
+10
+00:00:38,514 --> 00:00:41,834
+<font color="#FFFFFF">Insgesamt haben die Betrüger 2022</font>
+<font color="#FFFFFF">allein in Niedersachsen</font>
+
+11
+00:00:41,914 --> 00:00:43,914
+<font color="#FFFFFF">mehr als 4,5 Mio. Euro erbeutet.</font>
+
+12
+00:00:43,994 --> 00:00:46,874
+<font color="#FFFFFF">Die Polizei rät in jedem Fall,</font>
+<font color="#FFFFFF">skeptisch zu sein</font>
+
+13
+00:00:46,954 --> 00:00:49,674
+<font color="#FFFFFF">und im Zweifel die Polizei</font>
+<font color="#FFFFFF">zu verständigen.</font>
+

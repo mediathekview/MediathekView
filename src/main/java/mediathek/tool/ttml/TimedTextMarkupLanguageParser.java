@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.ttml;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,9 +113,10 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                     //retrieve the text and color information...
                     final NamedNodeMap attrMap = node.getAttributes();
                     final Node styleNode = attrMap.getNamedItem("style");
-                    final StyledString textContent = new StyledString();
 
+                    final StyledString textContent = new StyledString();
                     textContent.setText(node.getTextContent());
+
                     final String col = colorMap.get(styleNode.getNodeValue());
                     if (col == null) {
                         textContent.setColor(color); // gabs beim BR
@@ -157,9 +158,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 if (beginNode != null && endNode != null) {
                     subtitle.begin = parseFlash(beginNode.getNodeValue());
                     subtitle.end = parseFlash(endNode.getNodeValue());
-                    final StyledString textContent = new StyledString();
-                    textContent.setColor(color); // sicher ist sicher
-                    textContent.setText(subnode.getTextContent());
+                    final StyledString textContent = new StyledString(subnode.getTextContent(), color);
 
                     final Node col = attrMap.getNamedItem("tts:color");
                     if (col != null) {
@@ -299,12 +298,13 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             for (Subtitle title : subtitleList) {
                 writer.println(counter);
                 writer.println(srtFormat.format(title.begin) + " --> " + srtFormat.format(title.end));
-                for (StyledString entry : title.listOfStrings) {
-                    if (!entry.color.isEmpty()) {
-                        writer.print("<font color=\"" + entry.color + "\">");
+                for (var entry : title.listOfStrings) {
+                    final var color = entry.getColor();
+                    if (!color.isEmpty()) {
+                        writer.print("<font color=\"" + color + "\">");
                     }
-                    writer.print(entry.text);
-                    if (!entry.color.isEmpty()) {
+                    writer.print(entry.getText());
+                    if (!color.isEmpty()) {
                         writer.print("</font>");
                     }
                     writer.println();
@@ -323,32 +323,4 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         subtitleList.clear();
     }
 
-    private static class StyledString {
-
-        private String text = "";
-        private String color = "";
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public void setColor(String color) {
-            this.color = color;
-        }
-    }
-
-    private static class Subtitle {
-
-        public Date begin;
-        public Date end;
-        public List<StyledString> listOfStrings = new ArrayList<>();
-    }
 }
