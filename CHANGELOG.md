@@ -3,6 +3,7 @@
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
 - **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
 - **BUGFIX:** Suchfeld wird nach Enter-Taste zum Start der Suche wieder fokussiert.
+- **BUGFIX:** Programm stürzt nicht mehr ab wenn man versucht während der Indizierung die Blacklist auszuschalten.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 
