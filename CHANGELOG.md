@@ -6,6 +6,7 @@
 - **BUGFIX:** Programm stürzt nicht mehr ab wenn man versucht während der Indizierung die Blacklist auszuschalten.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
+- **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`. 
 
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
