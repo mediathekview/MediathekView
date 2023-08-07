@@ -196,7 +196,7 @@ public class FontManager {
         // add font sizes
         fontMenu.addSeparator();
         ArrayList<String> sizes = new ArrayList<>(Arrays.asList(
-                "10", "11", "12", "14", "16", "18", "20", "24", "28"));
+                "10", "11", "12", "13", "14", "16", "18", "20", "24", "28"));
         if (!sizes.contains(currentSize))
             sizes.add(currentSize);
         sizes.sort(String.CASE_INSENSITIVE_ORDER);
