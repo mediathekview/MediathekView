@@ -21,9 +21,8 @@ public class IndexedFilmList extends ListeFilme {
     private IndexSearcher indexSearcher;
 
     public IndexedFilmList() {
-        try {
-            var fsDir = FSDirectory.open(StandardLocations.getFilmIndexPath());
-            luceneDirectory = new NRTCachingDirectory(fsDir, 20.0, 100.0);
+        try  {
+            luceneDirectory = new NRTCachingDirectory(FSDirectory.open(StandardLocations.getFilmIndexPath()), 20.0, 100.0);
 
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
             indexWriterConfig.setRAMBufferSizeMB(256d);
