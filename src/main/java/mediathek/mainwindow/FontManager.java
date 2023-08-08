@@ -3,7 +3,9 @@ package mediathek.mainwindow;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import mediathek.gui.messages.FontSizeChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,6 +84,8 @@ public class FontManager {
         } finally {
             config.unlock(LockMode.WRITE);
         }
+
+        MessageBus.getMessageBus().publishAsync(new FontSizeChangedEvent());
     }
 
     private void increaseFontSize() {
@@ -98,6 +102,8 @@ public class FontManager {
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
 
         writeConfigData();
+
+        MessageBus.getMessageBus().publishAsync(new FontSizeChangedEvent());
     }
 
     private void decreaseFontSize() {
@@ -114,6 +120,9 @@ public class FontManager {
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
 
         writeConfigData();
+
+
+        MessageBus.getMessageBus().publishAsync(new FontSizeChangedEvent());
     }
 
     /**
@@ -232,6 +241,9 @@ public class FontManager {
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
 
         writeConfigData();
+
+
+        MessageBus.getMessageBus().publishAsync(new FontSizeChangedEvent());
     }
 
     private void fontSizeChanged(ActionEvent e) {
@@ -247,5 +259,8 @@ public class FontManager {
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
 
         writeConfigData();
+
+
+        MessageBus.getMessageBus().publishAsync(new FontSizeChangedEvent());
     }
 }

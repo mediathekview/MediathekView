@@ -4,6 +4,7 @@
 - **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
 - **BUGFIX:** Suchfeld wird nach Enter-Taste zum Start der Suche wieder fokussiert.
 - **BUGFIX:** Programm stürzt nicht mehr ab wenn man versucht während der Indizierung die Blacklist auszuschalten.
+- **BUGFIX(Windows/Linux):** Zeilenhöhe der Tabellen wird nun nach Änderung der Schriftart und -größe korrekt justiert.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`. 
