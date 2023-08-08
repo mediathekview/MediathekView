@@ -79,7 +79,6 @@ public class MediathekGui extends JFrame {
     private static final int MIN_WINDOW_HEIGHT = 600;
     private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
-    private static final String ACTION_MAP_COPY_FILM_LINE_INFO = "COPY_FILM_LINE_INFO";
     /**
      * "Pointer" to UI
      */
@@ -244,13 +243,10 @@ public class MediathekGui extends JFrame {
                 KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_HQ_URL);
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, GuiFunktionen.getPlatformControlKey() |
                 KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_NORMAL_URL);
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, GuiFunktionen.getPlatformControlKey() |
-                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_COPY_FILM_LINE_INFO);
 
         final var am = jMenuBar.getActionMap();
         am.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction);
         am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction);
-        am.put(ACTION_MAP_COPY_FILM_LINE_INFO, tabFilme.copyFilmLineInfoToClipboardAction);
     }
 
     protected void setupScrollBarWidth() {
