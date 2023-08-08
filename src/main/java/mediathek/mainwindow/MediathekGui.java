@@ -1,5 +1,7 @@
 package mediathek.mainwindow;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -226,6 +228,37 @@ public class MediathekGui extends JFrame {
         logger.trace("Finished loading info dialog");
 
         mapFilmUrlCopyCommands();
+
+        if (Config.shouldDownloadAndQuit()) {
+            var future = Daten.getInstance().getDecoratedPool().submit(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                    logger.info("Auto DL and Quit: Starting all downloads...");
+                    SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
+                    return true;
+
+                } catch (Exception e) {
+                    logger.error("Auto DL and Quit: error starting downloads", e);
+                    return false;
+                }
+            });
+            Futures.addCallback(future, new FutureCallback<>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    try {
+                        SwingUtilities.invokeAndWait(() -> quitApplication(true));
+                    } catch (Exception e) {
+                        logger.error("Auto DL and Quit: Error in callback...", e);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull Throwable t) {
+
+                    logger.error("Auto DL and Quit: Error in callback...", t);
+                }
+            }, Daten.getInstance().getDecoratedPool());
+        }
     }
 
     /**
@@ -970,9 +1003,13 @@ public class MediathekGui extends JFrame {
     }
 
     public boolean quitApplication() {
+        return quitApplication(false);
+    }
+
+    public boolean quitApplication(boolean shouldDownloadAndQuit) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            DialogBeenden dialogBeenden = new DialogBeenden(this);
+            DialogBeenden dialogBeenden = new DialogBeenden(this, shouldDownloadAndQuit);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.getApplicationCanTerminate()) {
                 return false;

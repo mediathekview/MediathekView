@@ -66,6 +66,10 @@ public class Config {
     @CommandLine.Option(names = {"-ns", "--no-splash"}, description = "Splash-Screen nicht anzeigen")
     private static boolean disableSplashScreen;
 
+    @CommandLine.Option(names = {"-dq", "--download-quit"}, description = "Automatisch downloaden, dann beenden")
+    private static boolean downloadAndQuit;
+
+    public static boolean shouldDownloadAndQuit() { return downloadAndQuit;}
     public static boolean isSplashScreenDisabled() { return disableSplashScreen;}
 
     public static boolean isDisableJvmParameterChecks() {

@@ -12,7 +12,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.swing.*
 
-class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
+class DialogBeenden(parent: JFrame, shouldDownloadAndQuit: Boolean) : JDialog(parent, true) {
     /**
      * Indicate whether the application can terminate.
      */
@@ -220,5 +220,10 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
 
         pack()
         getRootPane().defaultButton = btnContinue
+
+        if (shouldDownloadAndQuit) {
+            applicationCanTerminate = true
+            SwingUtilities.invokeLater { waitUntilDownloadsHaveFinished() }
+        }
     }
 }
