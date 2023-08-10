@@ -104,37 +104,22 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
             //here comes the content...
             switch (columnModelIndex) {
-                case DatenFilm.FILM_DAUER:
-                    setText(datenFilm.getFilmLengthAsString());
-                    break;
-
-                case DatenFilm.FILM_ABSPIELEN:
-                    handleButtonStartColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenFilm.FILM_AUFZEICHNEN:
-                    handleButtonDownloadColumn(isSelected);
-                    break;
-
-                case DatenFilm.FILM_MERKEN:
-                    handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
-                    break;
-
-                case DatenFilm.FILM_SENDER:
+                case DatenFilm.FILM_DAUER -> setText(datenFilm.getFilmLengthAsString());
+                case DatenFilm.FILM_ABSPIELEN -> handleButtonStartColumn(datenDownload, isSelected);
+                case DatenFilm.FILM_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected);
+                case DatenFilm.FILM_MERKEN ->
+                        handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
+                case DatenFilm.FILM_SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
-                    break;
-
-                case DatenFilm.FILM_TITEL:
+                }
+                case DatenFilm.FILM_TITEL -> {
                     setText(datenFilm.getTitle());
                     setIndicatorIcons(table, datenFilm, isSelected);
-                    break;
-
-                case DatenFilm.FILM_GEO:
-                    drawGeolocationIcons(datenFilm, isSelected);
-                    break;
+                }
+                case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
             }
 
             applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
@@ -199,13 +184,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     private void setIconAndToolTip(boolean isSelected, Icon normal, Icon selected, String text) {
         setToolTipText(text);
-        Icon icon;
-        if (isSelected)
-            icon = selected;
-        else
-            icon = normal;
-
-        setIcon(icon);
+        setIcon(isSelected ? selected : normal);
     }
 
     private void handleButtonDownloadColumn(final boolean isSelected) {
