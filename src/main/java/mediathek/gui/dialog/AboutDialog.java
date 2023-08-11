@@ -32,7 +32,8 @@ public class AboutDialog extends JDialog {
         hyperlinkGuiDonation.addActionListener(l -> browseToUrl("https://paypal.me/ChristianFranzke"));
         hyperlinkServerDonation.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_DONATION));
         hyperlinkForum.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_FORUM));
-        hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ANLEITUNG));
+        hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_HELP));
+        hyperlinkFaq.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_FAQ));
 
         hyperlinkJetBrains.addActionListener(l -> browseToUrl("https://www.jetbrains.com"));
         hyperlinkEjTechnologies.addActionListener(l -> browseToUrl("https://www.ej-technologies.com"));
@@ -85,6 +86,8 @@ public class AboutDialog extends JDialog {
         hyperlinkServerDonation = new JXHyperlink();
         hyperlinkForum = new JXHyperlink();
         hyperlinkOnlineHelp = new JXHyperlink();
+        hyperlinkFaq = new JXHyperlink();
+        var panel6 = new JPanel();
         var label4 = new JLabel();
         var panel4 = new JPanel();
         hyperlinkJetBrains = new JXHyperlink();
@@ -189,7 +192,8 @@ public class AboutDialog extends JDialog {
                     .fill().gap()
                     .fill().gap()
                     .fill().gap()
-                    .fill()));
+                    .fill().gap()
+                    ));
 
             //---- hyperlinkHomepage ----
             hyperlinkHomepage.setText("Homepage"); //NON-NLS
@@ -210,13 +214,30 @@ public class AboutDialog extends JDialog {
             //---- hyperlinkOnlineHelp ----
             hyperlinkOnlineHelp.setText("Online-Anleitung"); //NON-NLS
             panel5.add(hyperlinkOnlineHelp, new CC().cell(0, 4));
+
+            //---- hyperlinkFaq ----
+            hyperlinkFaq.setText("Frequently Asked Questions (FAQ)"); //NON-NLS
+            panel5.add(hyperlinkFaq, new CC().cell(0, 5));
         }
         contentPane.add(panel5, new CC().cell(0, 1).growX());
 
-        //---- label4 ----
-        label4.setText("Die Entwicklung wird unterst\u00fctzt von:"); //NON-NLS
-        label4.setVerticalAlignment(SwingConstants.TOP);
-        contentPane.add(label4, new CC().cell(0, 2));
+        //======== panel6 ========
+        {
+            panel6.setLayout(new MigLayout(
+                new LC().fill().insets("0 5 5 5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                // columns
+                new AC()
+                    .size("316").fill(), //NON-NLS
+                // rows
+                new AC()
+                    .align("top"))); //NON-NLS
+
+            //---- label4 ----
+            label4.setText("Die Entwicklung wird unterst\u00fctzt von:"); //NON-NLS
+            label4.setVerticalAlignment(SwingConstants.TOP);
+            panel6.add(label4, new CC().cell(0, 0));
+        }
+        contentPane.add(panel6, new CC().cell(0, 2));
 
         //======== panel4 ========
         {
@@ -254,6 +275,7 @@ public class AboutDialog extends JDialog {
     private JXHyperlink hyperlinkServerDonation;
     private JXHyperlink hyperlinkForum;
     private JXHyperlink hyperlinkOnlineHelp;
+    private JXHyperlink hyperlinkFaq;
     private JXHyperlink hyperlinkJetBrains;
     private JXHyperlink hyperlinkEjTechnologies;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

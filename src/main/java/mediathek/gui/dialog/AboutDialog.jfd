@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.7.0.1134" Java: "11.0.15" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -108,7 +108,7 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$columnConstraints": "[316,fill]"
-				"$rowConstraints": "[fill][fill][fill][fill][fill]"
+				"$rowConstraints": "[fill][fill][fill][fill][fill][]"
 				"$layoutConstraints": "fillx,insets 5,hidemode 3,gap 5 5"
 			} ) {
 				name: "panel5"
@@ -145,16 +145,34 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 4"
 				} )
+				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
+					name: "hyperlinkFaq"
+					"text": "Frequently Asked Questions (FAQ)"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 5"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1,growx"
 			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label4"
-				"text": "Die Entwicklung wird unterstützt von:"
-				"verticalAlignment": 1
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$columnConstraints": "[316,fill]"
+				"$rowConstraints": "[top]"
+				"$layoutConstraints": "fill,insets 0 5 5 5,hidemode 3,gap 5 5"
+			} ) {
+				name: "panel6"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "Die Entwicklung wird unterstützt von:"
+					"verticalAlignment": 1
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 2"
 			} )

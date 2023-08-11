@@ -918,6 +918,7 @@ public class MediathekGui extends JFrame {
 
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
+        jMenuHilfe.add(new ShowOnlineFaqAction(this));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));

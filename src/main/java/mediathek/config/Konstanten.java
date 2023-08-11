@@ -58,8 +58,8 @@ public class Konstanten {
     public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
     public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";
-    public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
-    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/faq/";
+    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_ONLINE_FAQ = "https://mediathekview.de/faq/";
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
