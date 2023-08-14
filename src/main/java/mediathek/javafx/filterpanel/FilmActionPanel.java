@@ -248,6 +248,8 @@ public class FilmActionPanel {
 
     private void setupDeleteFilterButton() {
         viewSettingsPane.btnDeleteFilterSettings.setOnAction(e -> {
+            viewSettingsPane.senderCheckList.getCheckModel().clearChecks();
+
             filterConfig.clearCurrentFilter();
             restoreConfigSettings();
         });
