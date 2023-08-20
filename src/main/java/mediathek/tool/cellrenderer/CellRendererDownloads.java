@@ -60,6 +60,16 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         panel.add(progressBar);
     }
 
+    private void applyHorizontalAlignment(int colIndex) {
+        switch (colIndex) {
+            case DatenDownload.DOWNLOAD_PROGRESS, DatenDownload.DOWNLOAD_FILM_NR, DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT,
+                    DatenDownload.DOWNLOAD_DAUER, DatenDownload.DOWNLOAD_BANDBREITE,
+                    DatenDownload.DOWNLOAD_RESTZEIT -> {
+                setHorizontalAlignment(SwingConstants.CENTER);
+            }
+            case DatenDownload.DOWNLOAD_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+    }
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
@@ -70,12 +80,15 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF);
+            final MVTable mvTable = (MVTable) table;
 
-            if (((MVTable) table).isLineBreak()) {
-                JTextArea textArea;
+            if (mvTable.isLineBreak()) {
+                setHorizontalAlignment(SwingConstants.LEFT);
+                setVerticalAlignment(SwingConstants.TOP);
+
                 switch (columnModelIndex) {
                     case DatenDownload.DOWNLOAD_TITEL, DatenDownload.DOWNLOAD_THEMA, DatenDownload.DOWNLOAD_URL, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DatenDownload.DOWNLOAD_FILM_URL, DatenDownload.DOWNLOAD_URL_SUBTITLE, DatenDownload.DOWNLOAD_ZIEL_DATEINAME, DatenDownload.DOWNLOAD_ZIEL_PFAD, DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME, DatenDownload.DOWNLOAD_ABO -> {
-                        textArea = new JTextArea();
+                        var textArea = new JTextArea();
                         textArea.setLineWrap(true);
                         textArea.setWrapStyleWord(true);
                         textArea.setText(value.toString());
@@ -89,11 +102,12 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     }
                 }
             }
+            else
+                applyHorizontalAlignment(columnModelIndex);
 
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS -> {
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable) table).showSenderIcons() && !((MVTable) table).useSmallSenderIcons) {
+                    if (mvTable.showSenderIcons() && !mvTable.useSmallSenderIcons) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);
@@ -121,7 +135,6 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) == 0) {
                         setText("");
                     }
-                    setHorizontalAlignment(SwingConstants.CENTER);
                 }
                 case DatenDownload.DOWNLOAD_ART -> {
                     switch (datenDownload.art) {
@@ -139,14 +152,9 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                 }
                 case DatenDownload.DOWNLOAD_BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected);
                 case DatenDownload.DOWNLOAD_BUTTON_DEL -> handleButtonDeleteColumn(datenDownload, isSelected);
-                case DatenDownload.DOWNLOAD_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
                 case DatenDownload.DOWNLOAD_ABO -> handleAboColumn(datenDownload);
-                case DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT,
-                        DatenDownload.DOWNLOAD_DAUER, DatenDownload.DOWNLOAD_BANDBREITE,
-                        DatenDownload.DOWNLOAD_RESTZEIT ->
-                        setHorizontalAlignment(SwingConstants.CENTER);
                 case DatenDownload.DOWNLOAD_SENDER -> {
-                    if (((MVTable) table).showSenderIcons()) {
+                    if (mvTable.showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
