@@ -8,6 +8,7 @@
 - **BUGFIX:** Link zur Online-Hilfe verweist nurn zur Anleitung, nicht mehr zu den FAQs.
 - **BUGFIX:** Ein Klick auf das Mülleimer-Icon im Filterdialog setzt nun auch Sender und Thema zurück.
 - **BUGFIX:** Gemerkte Filme werden wieder im Tab Filme farblich hervorgehoben dargestellt.
+- **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Filme werden die Einträge nun nicht mehr vertikal zentriert.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.

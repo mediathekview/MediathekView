@@ -91,6 +91,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
             //shortcut if we want to have line breaks, use text areas and skip the rest
             if (mvTable.isLineBreak()) {
+                setHorizontalAlignment(SwingConstants.LEFT);
+                setVerticalAlignment(SwingConstants.TOP);
+
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
@@ -99,9 +102,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     }
                 }
             }
+            else
+                applyHorizontalAlignment(columnModelIndex);
 
-            applyHorizontalAlignment(columnModelIndex);
-
+            //NOT IN LINEBREAK MODE -> REGULAR HANDLING
             //here comes the content...
             switch (columnModelIndex) {
                 case DatenFilm.FILM_DAUER -> setText(datenFilm.getFilmLengthAsString());
