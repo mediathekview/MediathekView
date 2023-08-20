@@ -94,7 +94,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
-                        applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
+                        applyColorSettings(textArea, datenFilm, isSelected, isBookMarked);
                         return textArea;
                     }
                 }
@@ -122,7 +122,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
             }
 
-            applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
+            applyColorSettings(this, datenFilm, isSelected, isBookMarked);
         } catch (Exception ex) {
             logger.error("Fehler", ex);
         }
@@ -143,26 +143,17 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
     }
 
-    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected, boolean isBookMarked) {
-        // gestarteter Film
-        final boolean start = (datenDownload != null) && (datenDownload.start != null);
-        final boolean hasBeenSeen = history.hasBeenSeen(datenFilm);
+    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isSelected, boolean isBookMarked) {
+        if (!isSelected) {
+            if (history.hasBeenSeen(datenFilm)) {
+                c.setBackground(MVColor.FILM_HISTORY.color);
+            }
 
-        if (start) {
-            //film is started for download
-            setBackgroundColor(c, datenDownload.start, isSelected);
-        } else {
-            if (!isSelected) {
-                if (hasBeenSeen) {
-                    c.setBackground(MVColor.FILM_HISTORY.color);
-                }
-
-                if (datenFilm.isNew()) {
-                    c.setForeground(MVColor.getNewColor());
-                }
-                if (isBookMarked) {
-                    c.setBackground(MVColor.FILM_BOOKMARKED.color);
-                }
+            if (datenFilm.isNew()) {
+                c.setForeground(MVColor.getNewColor());
+            }
+            if (isBookMarked) {
+                c.setBackground(MVColor.FILM_BOOKMARKED.color);
             }
         }
     }
