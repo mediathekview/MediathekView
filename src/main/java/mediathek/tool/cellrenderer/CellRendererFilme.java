@@ -152,17 +152,17 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             //film is started for download
             setBackgroundColor(c, datenDownload.start, isSelected);
         } else {
-            //not a start, set specific background colors
-            if (hasBeenSeen) {
-                if (!isSelected) {
+            if (!isSelected) {
+                if (hasBeenSeen) {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }
-            } else if (datenFilm.isNew()) {
-                // fix #259
-                if (!isSelected)
+
+                if (datenFilm.isNew()) {
                     c.setForeground(MVColor.getNewColor());
-            } else if (isBookMarked && !isSelected) {
-                c.setBackground(MVColor.FILM_BOOKMARKED.color);
+                }
+                if (isBookMarked) {
+                    c.setBackground(MVColor.FILM_BOOKMARKED.color);
+                }
             }
         }
     }
