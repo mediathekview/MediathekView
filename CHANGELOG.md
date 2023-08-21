@@ -8,6 +8,7 @@
 - **BUGFIX:** Link zur Online-Hilfe verweist nurn zur Anleitung, nicht mehr zu den FAQs.
 - **BUGFIX:** Ein Klick auf das Mülleimer-Icon im Filterdialog setzt nun auch Sender und Thema zurück.
 - **BUGFIX:** Gemerkte Filme werden wieder im Tab Filme farblich hervorgehoben dargestellt.
+- **BUGFIX:** Im Zeilenumbruch-Modus sind nun 3 Zeilen Standard statt vorher vier.
 - **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Filme werden die Einträge nun nicht mehr vertikal zentriert.
 - **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Downloads werden die Einträge nun einheitlich dargestellt.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
