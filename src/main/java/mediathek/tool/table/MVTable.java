@@ -138,7 +138,7 @@ public abstract class MVTable extends JTable {
         final var height = fm.getHeight();
 
         if (lineBreak) {
-            sizeArea = 4 * height;
+            sizeArea = 3 * height;
         }
         else {
             sizeArea = height;
