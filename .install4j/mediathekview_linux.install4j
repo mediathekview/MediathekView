@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Adoptium" release="${install4j.adoptium.jdk.version}" />
+    <jreBundles jdkProviderId="Zulu" release="${install4j.zulu.jdk.version}" />
   </application>
   <files>
     <mountPoints>

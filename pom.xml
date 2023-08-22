@@ -117,15 +117,13 @@
         <mockito.version>4.10.0</mockito.version>
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
         <picocli.version>4.7.0</picocli.version>
-        <sqlite-jdbc.version>3.41.2.1</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.42.0.0</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
-        <!-- Adoptium (Eclipse Temurin runtime, formerly AdoptOpenJDK) is used for Windows and Linux 64bit -->
-        <install4j.adoptium.jdk.version>20/jdk-20.0.1+9</install4j.adoptium.jdk.version>
-        <!-- Zulu without JavaFX is used on AArch64 ARM 64 bit linux -->
-        <install4j.zulu.jdk.version>20/20.0.1</install4j.zulu.jdk.version>
+        <!-- Zulu without JavaFX is used on Linux and Windows -->
+        <install4j.zulu.jdk.version>20/20.0.2</install4j.zulu.jdk.version>
         <install4j.jdk.min-version>20</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->

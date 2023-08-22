@@ -1,4 +1,6 @@
 # **14.0.1**
+- JDK 20.0.2 wird nun mitgeliefert
+- CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt. 
 - **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
 - **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
