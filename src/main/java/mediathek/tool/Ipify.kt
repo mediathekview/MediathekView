@@ -4,7 +4,6 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URI
-import java.net.URL
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
@@ -20,7 +19,7 @@ object Ipify {
     @get:Throws(IOException::class)
     val publicIp: String
         get() {
-            val ipify = URL("https://api64.ipify.org")
+            val ipify = URI("https://api64.ipify.org").toURL()
             val conn = ipify.openConnection()
             var ip: String
             conn.getInputStream().use { inputStream ->
