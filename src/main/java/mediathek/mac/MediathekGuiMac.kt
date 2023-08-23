@@ -6,6 +6,7 @@ import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadStartEvent
 import mediathek.gui.messages.InstallTabSwitchListenerEvent
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
@@ -18,6 +19,7 @@ import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.io.IOException
 import javax.swing.Box
+import kotlin.io.path.absolutePathString
 
 class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
@@ -48,7 +50,8 @@ class MediathekGuiMac : MediathekGui() {
 
     override fun shutdownComputer() {
         try {
-            Runtime.getRuntime().exec("nohup bin/mv_shutdown_helper")
+            val exePath = GuiFunktionenProgramme.findExecutableOnPath("mv_shutdown_helper")
+            Runtime.getRuntime().exec(arrayOf("nohup", exePath.absolutePathString()))
         } catch (e: IOException) {
             logger.error(e)
         }

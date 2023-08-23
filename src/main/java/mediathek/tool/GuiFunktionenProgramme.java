@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -189,6 +191,47 @@ public class GuiFunktionenProgramme {
 
             }
         }
+    }
+
+    /**
+     * Return the path to our binary directory.
+     * @return the path to the bin directory.
+     */
+    public static Path getBinaryPath() {
+        return Paths.get(GuiFunktionenProgramme.getPathToApplicationJar()).resolve("bin");
+    }
+
+    /**
+     * On Windows exe files can also be located at res\bin...
+     * @return return the path to res\bin directory.
+     */
+    public static Path getResBinaryPath() {
+        return Paths.get(GuiFunktionenProgramme.getPathToApplicationJar()).resolve("res").resolve("bin");
+    }
+
+    /**
+     * Search for an executable on PATH plus our bin directory.
+     * @param name the executable name
+     * @return the path INCLUDING the binary name.
+     */
+    public static Path findExecutableOnPath(String name) {
+        var exeString = name;
+        if (SystemUtils.IS_OS_WINDOWS)
+            exeString += ".exe";
+
+        var path = System.getenv("PATH");
+        path = path + File.pathSeparatorChar + getBinaryPath().toAbsolutePath();
+        // on windows (mostly during coding) binaries do only exist in res\bin directory :(
+        if (SystemUtils.IS_OS_WINDOWS)
+            path = path + File.pathSeparatorChar +  getResBinaryPath().toAbsolutePath();
+
+        for (String dirname : path.split(File.pathSeparator)) {
+            File file = new File(dirname, exeString);
+            if (file.isFile() /*&& file.canExecute()*/) {
+                return file.toPath();
+            }
+        }
+        throw new IllegalStateException(String.format("Should have found the executable %s", exeString));
     }
 
     private static boolean addOnZip(String datei) {

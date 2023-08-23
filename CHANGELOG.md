@@ -18,6 +18,7 @@
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
 - **FEATURE:** MV kann mittels `-dq` oder `--download-quit` Parameter zum automatischen Download aller Filme in der Downloadansicht mit anschließender automatischer Beendigung aufgefordert werden.
 - **FEATURE:** Im Hilfe-Menü wurde ein Eintrag zu den Frequently Asked Questions (FAQ) ergänzt.
+- **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Filminformationen aus dem Netz geladen werden (Höhe x Breite, Bitrate).
 
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
