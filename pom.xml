@@ -811,37 +811,24 @@
             <build>
                 <plugins>
                     <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>wagon-maven-plugin</artifactId>
-                    <version>2.0.2</version>
-                    <configuration>
-                        <serverId>central</serverId>
-                    </configuration>
-                    <executions>
-                    <execution>
-                        <id>http-list</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>list</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://repo1.maven.org/maven2/commons-dbutils/commons-dbutils</url>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>http-download-all</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>download</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://repo1.maven.org/maven2/commons-dbutils/commons-dbutils</url>
-                            <includes>**</includes>
-                            <toDir>${project.build.directory}/res/bin</toDir>
-                        </configuration>
-                    </execution>
-                    </executions>
+                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                        <artifactId>download-maven-plugin</artifactId>
+                        <version>1.7.0</version>
+                        <executions>
+                            <execution>
+                                <id>download-ffmpeg-exe-aarch64-from-server</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>wget</goal>
+                                </goals>
+                                <configuration>
+                                    <url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</url>
+                                    <unpack>true</unpack>
+                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
+                                    <md5>f5429db43834da7e58c88fd7baa05ce8</md5>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
