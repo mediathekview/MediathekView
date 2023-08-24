@@ -108,7 +108,8 @@ public class DialogAddDownload extends JDialog {
 
             var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
             videoStreamResult.ifPresentOrElse(stream -> {
-                var output = String.format("%dx%d, %d kBit/s", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000);
+                var fr = stream.getAvgFrameRate().intValue();
+                var output = String.format("%dx%d, %d kBit/s, %d fps (avg)", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr);
                 lblFilmInfo.setText(output);
 
             }, () -> lblFilmInfo.setText("Keine Daten verfügbar."));
