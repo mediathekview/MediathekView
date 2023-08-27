@@ -55,7 +55,7 @@ public class DarkModeDetector {
 
         try {
             boolean           isDarkMode = false;
-            var process    = Runtime.getRuntime().exec("defaults read -g AppleInterfaceStyle");
+            var process    = Runtime.getRuntime().exec(new String[]{"defaults", "read", "-g", "AppleInterfaceStyle"});
             isr        = new InputStreamReader(process.getInputStream());
             rdr        = new BufferedReader(isr);
             String            line;
@@ -110,7 +110,7 @@ public class DarkModeDetector {
         try {
             Integer           colorKey    = null;
             Runtime           runtime    = Runtime.getRuntime();
-            Process           process    = runtime.exec("defaults read -g AppleAccentColor");
+            Process           process    = runtime.exec(new String[]{"defaults", "read", "-g", "AppleAccentColor"});
             InputStreamReader isr        = new InputStreamReader(process.getInputStream());
             BufferedReader    rdr        = new BufferedReader(isr);
             String            line;
