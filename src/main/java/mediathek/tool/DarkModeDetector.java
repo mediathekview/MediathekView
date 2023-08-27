@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -37,8 +38,15 @@ public class DarkModeDetector {
             return isMacOsDarkMode();
         else if (SystemUtils.IS_OS_WINDOWS)
             return isWindowsDarkMode();
+        else if (SystemUtils.IS_OS_LINUX && isGnome())
+            return isGnomeDarkMode();
         else
             return false;
+    }
+
+    private static boolean isGnome() {
+        var currentDesktop = System.getenv("XDG_CURRENT_DESKTOP");
+        return currentDesktop != null && currentDesktop.equals("GNOME");
     }
 
     /**
@@ -46,7 +54,22 @@ public class DarkModeDetector {
      * @return true if supported, false otherwise.
      */
     public static boolean hasDarkModeDetectionSupport() {
-        return SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX;
+        return SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX ||
+                (SystemUtils.IS_OS_LINUX && isGnome());
+    }
+
+    private static boolean isGnomeDarkMode() {
+        try {
+           var process = Runtime.getRuntime().exec(new String[]{"gsettings", "get", "org.gnome.desktop.interface", "color-scheme"});
+           var buffer = new StringWriter();
+           try (var source = new InputStreamReader(process.getInputStream())) {
+               source.transferTo(buffer);
+           }
+           var rc = process.waitFor(5, TimeUnit.SECONDS);
+           return rc && buffer.toString().trim().equals( "'prefer-dark'");
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
     }
 
     private static boolean isMacOsDarkMode() {
