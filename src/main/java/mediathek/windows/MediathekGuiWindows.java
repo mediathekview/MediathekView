@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@SuppressWarnings("serial")
 public class MediathekGuiWindows extends MediathekGui {
     private final Logger logger = LogManager.getLogger(MediathekGuiWindows.class);
     public MediathekGuiWindows() {
@@ -18,10 +17,10 @@ public class MediathekGuiWindows extends MediathekGui {
 
     @Override
     protected void shutdownComputer() {
-        final String strShutdownCommand = "shutdown.exe -s -t 0";
+        final String[] strShutdownCommand = {"shutdown.exe", "-s", "-t", "0"};
 
         try {
-            logger.info("Shutdown: {}", strShutdownCommand);
+            logger.info("Windows shutdown binary called.");
             Runtime.getRuntime().exec(strShutdownCommand);
         } catch (IOException ex) {
             logger.error(ex);
