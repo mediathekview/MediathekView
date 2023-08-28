@@ -164,8 +164,8 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
 
                 Set<Integer> filmNrSet = new HashSet<>(hits.length);
                 for (var hit : hits) {
-                    var d = searcher.doc(hit.doc);
-                    filmNrSet.add(Integer.parseInt(d.get(LuceneIndexKeys.ID)));
+                    final var id = searcher.storedFields().document(hit.doc).get(LuceneIndexKeys.ID);
+                    filmNrSet.add(Integer.parseInt(id));
                 }
                 logger.trace("Number of found Lucene index entries: {}", filmNrSet.size());
                 stream = listeFilme.parallelStream()
