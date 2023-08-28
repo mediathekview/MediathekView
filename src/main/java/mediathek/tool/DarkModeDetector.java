@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * Dark mode detector for macOS and Windows.
- * Based on java code from https://gist.github.com/HanSolo/7cf10b86efff8ca2845bf5ec2dd0fe1d
+ * Based on java code from <a href="https://gist.github.com/HanSolo/7cf10b86efff8ca2845bf5ec2dd0fe1d">this gist</a>.
  */
 public class DarkModeDetector {
     public static final Map<Integer, Color[]> MACOS_ACCENT_COLOR_MAP = Map.of(-1, new Color[] { MacOSSystemColor.GRAY.colorAqua, MacOSSystemColor.GRAY.colorDark },
