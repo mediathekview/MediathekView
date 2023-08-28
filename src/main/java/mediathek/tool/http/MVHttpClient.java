@@ -26,7 +26,7 @@ public class MVHttpClient {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final ByteCounter byteCounter = new ByteCounter();
     private OkHttpClient httpClient;
-    private OkHttpClient copyClient;
+    private OkHttpClient reducedTimeoutClient;
 
     private MVHttpClient() {
         String proxyHost = System.getProperty("http.proxyHost");
@@ -163,7 +163,7 @@ public class MVHttpClient {
 
         if (proxyAuthenticator != null)
             tmpBuilder.proxyAuthenticator(proxyAuthenticator);
-        copyClient = tmpBuilder.build();
+        reducedTimeoutClient = tmpBuilder.build();
     }
 
     /**
@@ -173,7 +173,7 @@ public class MVHttpClient {
         httpClient = getDefaultClientBuilder()
                 .build();
 
-        copyClient = getDefaultClientBuilder()
+        reducedTimeoutClient = getDefaultClientBuilder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(2, TimeUnit.SECONDS)
@@ -187,6 +187,6 @@ public class MVHttpClient {
     }
 
     public OkHttpClient getReducedTimeOutClient() {
-        return copyClient;
+        return reducedTimeoutClient;
     }
 }
