@@ -36,12 +36,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
+    private static final Logger logger = LogManager.getLogger(ListeDownloads.class);
     private final Daten daten;
 
     public ListeDownloads(Daten daten_) {
@@ -52,8 +53,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         add(e);
         listeNummerieren();
     }
-
-    private static final Logger logger = LogManager.getLogger(ListeDownloads.class);
 
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
@@ -140,6 +139,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      * Get the number of unfinished download tasks.
+     *
      * @return number of unfinished tasks
      */
     public synchronized long unfinishedDownloads() {
@@ -347,8 +347,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
-        final var sdf = new SimpleDateFormat("dd.MM.yyyy");
-        final var todayDateStr = sdf.format(new Date());
+        var todayDateStr = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now());
 
         final var listeAbo = daten.getListeAbo();
         final var listeBlacklist = daten.getListeBlacklist();
@@ -483,7 +482,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         final DatenDownload[] ret = new DatenDownload[1];
 
-        final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM,1);
+        final int maxNumDownloads = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1);
         if (this.size() > 0 && getDown(maxNumDownloads)) {
             nextPossibleDownload().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
@@ -508,10 +507,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
 
             if (datenDownload.start.status == Start.STATUS_ERR
-                    && datenDownload.start.countRestarted < Konstanten.MAX_DOWNLOAD_RESTARTS
-                    && !maxSenderLaufen(datenDownload, 1)) {
+                    && datenDownload.start.countRestarted < Konstanten.MAX_DOWNLOAD_RESTARTS) {
                 int restarted = datenDownload.start.countRestarted;
-                if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                     datenDownload.resetDownload();
                     datenDownload.startDownload();
                     datenDownload.start.countRestarted = ++restarted; //datenDownload.start ist neu!!!
@@ -539,92 +537,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     private Optional<DatenDownload> nextPossibleDownload() {
-        //erster Versuch, Start mit einem anderen Sender
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
-                    if (!maxSenderLaufen(datenDownload, 1)) {
-                        return Optional.of(datenDownload);
-                    }
-                }
-            }
-        }
-
-        //zweiter Versuch, Start mit einem passenden Sender
-        for (DatenDownload datenDownload : this) {
-            if (datenDownload.start != null) {
-                if (datenDownload.start.status == Start.STATUS_INIT) {
-                    if (!maxSenderLaufen(datenDownload, Konstanten.MAX_SENDER_FILME_LADEN)) {
-                        return Optional.of(datenDownload);
-                    }
+                    return Optional.of(datenDownload);
                 }
             }
         }
 
         return Optional.empty();
-    }
-
-    /**
-     * Check if host is part of a CDN server network.
-     * Currently we only check for Akamai
-     * @param host url
-     * @return true if it belongs to a CDN
-     */
-    private boolean isCDN(final String host) {
-        return host.contains("akamaihd.net") || host.contains("cdn-storage.br.de");
-    }
-
-    private boolean maxSenderLaufen(DatenDownload d, final int max) {
-        //true wenn bereits die maxAnzahl pro Sender läuft
-        try {
-            int counter = 0;
-            final String host = getHost(d);
-            for (DatenDownload download : this) {
-                if (download.start != null) {
-                    if (download.start.status == Start.STATUS_RUN
-                            && getHost(download).equalsIgnoreCase(host)) {
-                        if (!isCDN(d.arr[DatenDownload.DOWNLOAD_FILM_URL])) {
-                            counter++;
-                            if (counter >= max) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    private String getHost(DatenDownload datenDownload) {
-        String host = "";
-        try {
-            try {
-                URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-                String tmp = url.getHost();
-                if (tmp.contains(".")) {
-                    host = tmp.substring(tmp.lastIndexOf('.'));
-                    tmp = tmp.substring(0, tmp.lastIndexOf('.'));
-                    if (tmp.contains(".")) {
-                        host = tmp.substring(tmp.lastIndexOf('.') + 1) + host;
-                    } else if (tmp.contains("/")) {
-                        host = tmp.substring(tmp.lastIndexOf('/') + 1) + host;
-                    } else {
-                        host = "host";
-                    }
-                }
-            } catch (Exception ex) {
-                host = "host";
-            } finally {
-                if (host.isEmpty()) {
-                    host = "host";
-                }
-            }
-        } catch (Exception ex) {
-            host = "exception";
-        }
-        return host;
     }
 }
