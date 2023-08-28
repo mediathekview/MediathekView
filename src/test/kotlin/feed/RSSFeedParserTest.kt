@@ -2,13 +2,13 @@ package feed
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.net.URL
+import java.net.URI
 
 internal class RSSFeedParserTest {
     @Test
     fun mvwTest() {
         try {
-            URL("https://mediathekviewweb.de/feed").openStream().use {
+            URI("https://mediathekviewweb.de/feed").toURL().openStream().use {
                 val parser = RSSFeedParser()
                 val feed = parser.readFeed(it)
                 Assertions.assertNotNull(feed)
