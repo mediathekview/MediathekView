@@ -46,7 +46,7 @@ public class DarkModeDetector {
 
     private static boolean isGnome() {
         var currentDesktop = System.getenv("XDG_CURRENT_DESKTOP");
-        return currentDesktop != null && currentDesktop.equals("GNOME");
+        return currentDesktop != null && (currentDesktop.equals("GNOME") || currentDesktop.equals("ubuntu:GNOME"));
     }
 
     /**
