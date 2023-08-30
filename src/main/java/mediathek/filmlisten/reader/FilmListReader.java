@@ -457,7 +457,7 @@ public class FilmListReader implements AutoCloseable {
                 .get()
                 .build();
 
-        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 final var endRequest = response.request();
