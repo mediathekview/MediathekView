@@ -20,7 +20,7 @@
 - **FEATURE:** Im Hilfe-Menü wurde ein Eintrag zu den Frequently Asked Questions (FAQ) ergänzt.
 - **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Filminformationen aus dem Netz geladen werden (Höhe x Breite, Bitrate).
 - **FEATURE(Linux):** Dark Mode Erkennung funktioniert nun auch mit GNOME. Danke an @swsnr!
-
+- **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
