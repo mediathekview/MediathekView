@@ -6,7 +6,6 @@ import mediathek.tool.dns.DnsSelector;
 import mediathek.tool.dns.IPvPreferenceMode;
 import okhttp3.Authenticator;
 import okhttp3.ConnectionSpec;
-import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.configuration2.Configuration;
@@ -21,9 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MVHttpClient {
     private static final MVHttpClient ourInstance = new MVHttpClient();
-    private static final String HTTP_PROXY_AUTHORIZATION = "Proxy-Authorization";
     private final Logger logger = LogManager.getLogger(MVHttpClient.class);
-    private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final ByteCounter byteCounter = new ByteCounter();
     private OkHttpClient httpClient;
     private OkHttpClient reducedTimeoutClient;
@@ -41,6 +38,7 @@ public class MVHttpClient {
             } else {
                 //environment variables were not set, use application settings...
                 try {
+                    Configuration config = ApplicationConfiguration.getConfiguration();
                     proxyHost = config.getString(ApplicationConfiguration.HttpProxy.HOST);
                     proxyPort = config.getString(ApplicationConfiguration.HttpProxy.PORT);
                     if (!proxyHost.isEmpty() && !proxyPort.isEmpty()) {
@@ -90,10 +88,12 @@ public class MVHttpClient {
         var config = ApplicationConfiguration.getConfiguration();
         IPvPreferenceMode mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(IPvPreferenceMode.IPV4_ONLY)));
 
-        builder.connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        builder.connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .socketFactory(byteCounter.socketFactory())
+                .followRedirects(true)
+                .followSslRedirects(true)
                 .dns(new DnsSelector(mode));
         return builder;
     }
@@ -102,42 +102,6 @@ public class MVHttpClient {
         return byteCounter;
     }
 
-    private Authenticator createAuthenticator(String prxUser, String prxPassword) {
-        return (route, response) -> {
-            if (response.request().header(HTTP_PROXY_AUTHORIZATION) != null) {
-                return null; // Give up, we've already attempted to authenticate.
-            }
-            final String credential = Credentials.basic(prxUser, prxPassword);
-            return response.request().newBuilder()
-                    .header(HTTP_PROXY_AUTHORIZATION, credential)
-                    .build();
-        };
-    }
-
-    private Authenticator setupProxyAuthenticator() {
-        String prxUser = System.getProperty("http.proxyUser");
-        String prxPassword = System.getProperty("http.proxyPassword");
-        Authenticator proxyAuthenticator = null;
-
-        if (prxUser != null && prxPassword != null && !prxUser.isEmpty() && !prxPassword.isEmpty()) {
-            //create proxy auth from environment vars
-            proxyAuthenticator = createAuthenticator(prxUser, prxPassword);
-            logger.info("Proxy Authentication from environment vars: ({})", prxUser);
-        } else {
-            //try to create proxy auth from settings
-            try {
-                prxUser = config.getString(ApplicationConfiguration.HttpProxy.USER);
-                prxPassword = config.getString(ApplicationConfiguration.HttpProxy.PASSWORD);
-                if (!prxUser.isEmpty() && !prxPassword.isEmpty()) {
-                    proxyAuthenticator = createAuthenticator(prxUser, prxPassword);
-                    logger.info("Proxy Authentication from application settings: ({})", prxUser);
-                }
-            } catch (NoSuchElementException ignored) {
-            }
-        }
-
-        return proxyAuthenticator;
-    }
 
     /**
      * Set the proxy parameters on the shared HTTP clients.
@@ -145,7 +109,8 @@ public class MVHttpClient {
      * @param proxy The proxy settings to be used.
      */
     private void setupProxyClients(Proxy proxy) {
-        final Authenticator proxyAuthenticator = setupProxyAuthenticator();
+        var prxManager = new OkHttpProxyAuthenticator();
+        final Authenticator proxyAuthenticator = prxManager.getProxyAuthenticator();
 
         OkHttpClient.Builder tmpBuilder;
         tmpBuilder = getDefaultClientBuilder()
