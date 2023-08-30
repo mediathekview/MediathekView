@@ -392,8 +392,12 @@ public class Main {
                 setupDockIcon();
                 setupFlatLaf();
 
-                if (SystemUtils.IS_OS_LINUX)
+                if (SystemUtils.IS_OS_LINUX) {
                     checkUiScaleSetting();
+                    // enable custom window decorations
+                    JFrame.setDefaultLookAndFeelDecorated( true );
+                    JDialog.setDefaultLookAndFeelDecorated( true );
+                }
 
                 if (!Config.isDisableJvmParameterChecks())
                     checkJVMSettings();
