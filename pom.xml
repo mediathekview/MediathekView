@@ -730,27 +730,16 @@
                         <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>download-ffmpeg-exe-intel-from-server</id>
+                                <id>download-ffmpeg-exe-aarch64-from-server</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.exe</url>
+                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</url>
+                                    <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>c075ca784ad26b3ad3f8f49474ee5187</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-ffprobe-exe-intel-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffprobe.exe</url>
-                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>239433c7e3c51021dd678f19d7eaf39e</md5>
+                                    <md5>eec52ae0359df126c5056bc21a652ac0</md5>
                                 </configuration>
                             </execution>
                         </executions>
