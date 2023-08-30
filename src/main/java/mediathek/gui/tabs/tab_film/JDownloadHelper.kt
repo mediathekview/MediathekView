@@ -33,7 +33,7 @@ class JDownloadHelper {
             .post(formBody)
             .build()
         try {
-            val builder = MVHttpClient.getInstance().reducedTimeOutClient.newBuilder()
+            val builder = MVHttpClient.getInstance().httpClient.newBuilder()
             builder.connectTimeout(125, TimeUnit.MILLISECONDS)
             val client = builder.build()
             client.newCall(request).execute().use {

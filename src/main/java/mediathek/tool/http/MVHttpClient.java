@@ -23,7 +23,6 @@ public class MVHttpClient {
     private final Logger logger = LogManager.getLogger(MVHttpClient.class);
     private final ByteCounter byteCounter = new ByteCounter();
     private OkHttpClient httpClient;
-    private OkHttpClient reducedTimeoutClient;
 
     private MVHttpClient() {
         String proxyHost = System.getProperty("http.proxyHost");
@@ -88,9 +87,9 @@ public class MVHttpClient {
         var config = ApplicationConfiguration.getConfiguration();
         IPvPreferenceMode mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(IPvPreferenceMode.IPV4_ONLY)));
 
-        builder.connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
+        builder.connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
                 .socketFactory(byteCounter.socketFactory())
                 .followRedirects(true)
                 .followSslRedirects(true)
@@ -113,45 +112,22 @@ public class MVHttpClient {
         final Authenticator proxyAuthenticator = prxManager.getProxyAuthenticator();
 
         OkHttpClient.Builder tmpBuilder;
-        tmpBuilder = getDefaultClientBuilder()
-                .proxy(proxy);
+        tmpBuilder = getDefaultClientBuilder().proxy(proxy);
 
         if (proxyAuthenticator != null)
             tmpBuilder.proxyAuthenticator(proxyAuthenticator);
         httpClient = tmpBuilder.build();
-
-        tmpBuilder = getDefaultClientBuilder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(2, TimeUnit.SECONDS)
-                .proxy(proxy);
-
-        if (proxyAuthenticator != null)
-            tmpBuilder.proxyAuthenticator(proxyAuthenticator);
-        reducedTimeoutClient = tmpBuilder.build();
     }
 
     /**
      * Setup HTTP client without proxy settings
      */
     private void setupNonProxyClients() {
-        httpClient = getDefaultClientBuilder()
-                .build();
-
-        reducedTimeoutClient = getDefaultClientBuilder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(2, TimeUnit.SECONDS)
-                .build();
-
+        httpClient = getDefaultClientBuilder().build();
         logger.info("MVHttpClient: Proxy not configured");
     }
 
     public OkHttpClient getHttpClient() {
         return httpClient;
-    }
-
-    public OkHttpClient getReducedTimeOutClient() {
-        return reducedTimeoutClient;
     }
 }

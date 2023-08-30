@@ -86,7 +86,7 @@ public class FileSize {
         logger.info("Requesting file size for: {}", url);
         final Request request = new Request.Builder().url(url).head().build();
         long respLength = INVALID_SIZE;
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
                 respLength = getContentLength(response);
             }

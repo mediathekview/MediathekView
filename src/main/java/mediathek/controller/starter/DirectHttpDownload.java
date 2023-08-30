@@ -130,7 +130,7 @@ public class DirectHttpDownload extends Thread {
                 .header("User-Agent", getUserAgent())
                 .build();
 
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
                 contentSize = FileSize.getContentLength(response);
 

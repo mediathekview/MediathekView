@@ -218,7 +218,7 @@ public class BookmarkNoteDialog implements Initializable
         String result = null;
         if (hasWebURL) {
             final Request request = new Request.Builder().url(data.getWebUrl()).get().build();
-            try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+            try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
                     try (var is = body.byteStream();
