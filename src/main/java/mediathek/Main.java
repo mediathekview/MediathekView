@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import javax.imageio.ImageIO;
@@ -312,25 +313,29 @@ public class Main {
         if (!correctParameters) {
             //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            var message = "<html>" +
-                    "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
-                    "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
-                    "<ul>" +
-                    "<li>-XX:+UseShenandoahGC</li>" +
-                    "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
-                    "<li>-XX:+UseStringDeduplication</li>" +
-                    "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
-            if (SystemUtils.IS_OS_LINUX) {
-                message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
-            }
-
-            message += "</ul><br/>" +
-                        "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                        "</html>";
-
-            JOptionPane.showMessageDialog(null,message, Konstanten.PROGRAMMNAME,
+            JOptionPane.showMessageDialog(null,getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    @NotNull
+    private static String getJvmErrorMessageString() {
+        var message = "<html>" +
+                "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
+                "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
+                "<ul>" +
+                "<li>-XX:+UseShenandoahGC</li>" +
+                "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
+                "<li>-XX:+UseStringDeduplication</li>" +
+                "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
+        if (SystemUtils.IS_OS_LINUX) {
+            message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
+        }
+
+        message += "</ul><br/>" +
+                    "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                    "</html>";
+        return message;
     }
 
     /**

@@ -64,9 +64,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         switch (colIndex) {
             case DatenDownload.DOWNLOAD_PROGRESS, DatenDownload.DOWNLOAD_FILM_NR, DatenDownload.DOWNLOAD_NR, DatenDownload.DOWNLOAD_DATUM, DatenDownload.DOWNLOAD_ZEIT,
                     DatenDownload.DOWNLOAD_DAUER, DatenDownload.DOWNLOAD_BANDBREITE,
-                    DatenDownload.DOWNLOAD_RESTZEIT -> {
-                setHorizontalAlignment(SwingConstants.CENTER);
-            }
+                    DatenDownload.DOWNLOAD_RESTZEIT -> setHorizontalAlignment(SwingConstants.CENTER);
             case DatenDownload.DOWNLOAD_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }

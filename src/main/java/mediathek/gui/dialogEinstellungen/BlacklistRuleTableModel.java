@@ -52,11 +52,6 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
         };
     }
 
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
-    }
-
     /**
      * Remove a BlacklistRule from model
      *

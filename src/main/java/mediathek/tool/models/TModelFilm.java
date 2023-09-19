@@ -21,30 +21,6 @@ public class TModelFilm extends AbstractTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int i, int j) {
-        return false;
-    }
-
-    /**
-     * Get model row for a requested film nr.
-     *
-     * @param reqFilmNr the filmnr of the request
-     * @return the model row, otherwise -1
-     */
-    public int getModelRowForFilmNumber(int reqFilmNr) {
-        int ret = 0;
-
-        for (var film : dataList) {
-            if (film.getFilmNr() == reqFilmNr)
-                return ret;
-            else
-                ret++;
-        }
-
-        return -1;
-    }
-
-    @Override
     public int getRowCount() {
         return dataList.size();
     }
