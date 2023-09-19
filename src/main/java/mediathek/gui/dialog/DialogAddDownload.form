@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+<Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
       <AuxValues>
@@ -301,13 +301,9 @@
                           <Component id="jRadioButtonAufloesungHoch" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jRadioButtonAufloesungKlein" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="292" max="32767" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btnRequestLiveInfo" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lblFilmInfo" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -322,11 +318,8 @@
                       <Component id="jRadioButtonAufloesungHoch" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonAufloesungKlein" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnRequestLiveInfo" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lblFilmInfo" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -357,21 +350,26 @@
             <Property name="text" type="java.lang.String" value="Niedrig"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="btnRequestLiveInfo">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Filminformationen abrufen..."/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lblFilmInfo">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font component="lblFilmInfo" property="font" relativeSize="true" size="-1"/>
-              </FontInfo>
-            </Property>
-            <Property name="text" type="java.lang.String" value="jLabel2"/>
-          </Properties>
-        </Component>
+        <Container class="javax.swing.JPanel" name="jPanel3">
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+            <Property name="alignment" type="int" value="0"/>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JButton" name="btnRequestLiveInfo">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Filminformationen abrufen..."/>
+              </Properties>
+            </Component>
+            <Component class="org.jdesktop.swingx.JXBusyLabel" name="lblBusyIndicator">
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblStatus">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jLabel2"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="jTextFieldSender">

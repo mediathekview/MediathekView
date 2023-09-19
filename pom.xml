@@ -93,7 +93,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.2</controlsfx.version>
-        <flatlaf.version>3.1.1</flatlaf.version>
+        <flatlaf.version>3.2.1</flatlaf.version>
         <guava.version>31.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.14.1</jackson.version>

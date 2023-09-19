@@ -5,6 +5,7 @@ import com.github.kokorin.jaffree.ffprobe.FFprobe;
 import com.github.kokorin.jaffree.ffprobe.FFprobeResult;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -37,7 +38,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class DialogAddDownload extends JDialog {
     private DatenPset pSet;
@@ -76,7 +79,13 @@ public class DialogAddDownload extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setNameFilm();
-                lblFilmInfo.setText("");
+                lblStatus.setText("");
+                lblBusyIndicator.setBusy(false);
+                lblBusyIndicator.setVisible(false);
+                if (resultListenableFuture != null) {
+                    resultListenableFuture.cancel(true);
+                    resultListenableFuture = null;
+                }
             }
         };
         jRadioButtonAufloesungHd.addActionListener(listener);
@@ -92,35 +101,64 @@ public class DialogAddDownload extends JDialog {
     }
 
     private Path ffprobePath;
+    private ListenableFuture<FFprobeResult> resultListenableFuture;
 
     private void handleRequestLiveFilmInfo() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
         var res = getFilmResolution();
         var url = datenFilm.getUrlFuerAufloesung(res);
 
-        try {
-            btnRequestLiveInfo.setEnabled(false);
-            FFprobeResult result = FFprobe.atPath(ffprobePath)
-                    .setShowStreams(true)
-                    .setInput(url)
-                    .execute();
+        btnRequestLiveInfo.setEnabled(false);
+        lblBusyIndicator.setVisible(true);
+        lblBusyIndicator.setBusy(true);
+        lblStatus.setText("");
 
-            var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
-            videoStreamResult.ifPresentOrElse(stream -> {
-                var fr = stream.getAvgFrameRate().intValue();
-                var output = String.format("%dx%d, %d kBit/s, %d fps (avg)", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr);
-                lblFilmInfo.setText(output);
+        Future<FFprobeResult> resultFuture = FFprobe.atPath(ffprobePath)
+                .setShowStreams(true)
+                .setInput(url)
+                .executeAsync();
+        resultListenableFuture = JdkFutureAdapters.listenInPoolThread(resultFuture);
+        Futures.addCallback(resultListenableFuture, new FutureCallback<>() {
+            @Override
+            public void onSuccess(FFprobeResult result) {
+                var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
+                videoStreamResult.ifPresentOrElse(stream -> {
+                    var fr = stream.getAvgFrameRate().intValue();
+                    var output = String.format("%dx%d, %d kBit/s, %d fps (avg)", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr);
+                    SwingUtilities.invokeLater(() -> {
+                        lblStatus.setForeground(UIManager.getColor("Label.foreground"));
+                        lblStatus.setText(output);
+                    });
+                }, () -> SwingUtilities.invokeLater(() -> {
+                    lblStatus.setForeground(UIManager.getColor("Label.foreground"));
+                    lblStatus.setText("Keine Daten verfügbar.");
+                }));
 
-            }, () -> lblFilmInfo.setText("Keine Daten verfügbar."));
-            btnRequestLiveInfo.setEnabled(true);
-        }
-        catch (Exception ex) {
-            lblFilmInfo.setText("Abrufen der Infos fehlgeschlagen!");
-            lblFilmInfo.setForeground(Color.RED);
-            logger.error("ffprobe execution failed", ex);
-        }
-        setCursor(Cursor.getDefaultCursor());
+                SwingUtilities.invokeLater(() -> resetBusyLabelAndButton());
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable t) {
+                // show nothing when task was cancelled...
+                if (t instanceof CancellationException) {
+                    SwingUtilities.invokeLater(() -> {
+                        lblStatus.setText("");
+                        resetBusyLabelAndButton();
+                    });
+                }
+                else
+                    SwingUtilities.invokeLater(() -> {
+                    lblStatus.setText("Unbekannter Fehler aufgetreten.");
+                    lblStatus.setForeground(Color.RED);
+                    resetBusyLabelAndButton();
+                });
+            }
+        }, Daten.getInstance().getDecoratedPool());
+    }
+
+    private void resetBusyLabelAndButton() {
+        lblBusyIndicator.setBusy(false);
+        lblBusyIndicator.setVisible(false);
+        btnRequestLiveInfo.setEnabled(true);
     }
 
     private void detectFfprobeExecutable() {
@@ -129,15 +167,21 @@ public class DialogAddDownload extends JDialog {
         }
         catch (Exception ex) {
             logger.error("ffprobe not found", ex);
-            lblFilmInfo.setText("Hilfsprogramm nicht gefunden!");
-            lblFilmInfo.setForeground(Color.RED);
+            lblBusyIndicator.setText("Hilfsprogramm nicht gefunden!");
+            lblBusyIndicator.setForeground(Color.RED);
             btnRequestLiveInfo.setEnabled(false);
         }
     }
 
-    private void setupUI() {
-        lblFilmInfo.setText("");
+    private void setupBusyIndicator() {
+        lblBusyIndicator.setText("");
+        lblBusyIndicator.setBusy(false);
+        lblBusyIndicator.setVisible(false);
+        lblStatus.setText("");
+    }
 
+    private void setupUI() {
+        setupBusyIndicator();
         detectFfprobeExecutable();
 
         // launch async tasks first
@@ -693,8 +737,10 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd = new javax.swing.JRadioButton();
         jRadioButtonAufloesungHoch = new javax.swing.JRadioButton();
         jRadioButtonAufloesungKlein = new javax.swing.JRadioButton();
+        jPanel3 = new javax.swing.JPanel();
         btnRequestLiveInfo = new javax.swing.JButton();
-        lblFilmInfo = new javax.swing.JLabel();
+        lblBusyIndicator = new org.jdesktop.swingx.JXBusyLabel();
+        lblStatus = new javax.swing.JLabel();
         jTextFieldSender = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -819,10 +865,14 @@ public class DialogAddDownload extends JDialog {
         buttonGroup1.add(jRadioButtonAufloesungKlein);
         jRadioButtonAufloesungKlein.setText("Niedrig");
 
-        btnRequestLiveInfo.setText("Filminformationen abrufen...");
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        lblFilmInfo.setFont(lblFilmInfo.getFont().deriveFont(lblFilmInfo.getFont().getSize()-1f));
-        lblFilmInfo.setText("jLabel2");
+        btnRequestLiveInfo.setText("Filminformationen abrufen...");
+        jPanel3.add(btnRequestLiveInfo);
+        jPanel3.add(lblBusyIndicator);
+
+        lblStatus.setText("jLabel2");
+        jPanel3.add(lblStatus);
 
         javax.swing.GroupLayout jPanelSizeLayout = new javax.swing.GroupLayout(jPanelSize);
         jPanelSize.setLayout(jPanelSizeLayout);
@@ -837,11 +887,8 @@ public class DialogAddDownload extends JDialog {
                         .addComponent(jRadioButtonAufloesungHoch)
                         .addGap(18, 18, 18)
                         .addComponent(jRadioButtonAufloesungKlein)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelSizeLayout.createSequentialGroup()
-                        .addComponent(btnRequestLiveInfo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblFilmInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 292, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanelSizeLayout.setVerticalGroup(
@@ -852,10 +899,8 @@ public class DialogAddDownload extends JDialog {
                     .addComponent(jRadioButtonAufloesungHd)
                     .addComponent(jRadioButtonAufloesungHoch)
                     .addComponent(jRadioButtonAufloesungKlein))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addGroup(jPanelSizeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRequestLiveInfo)
-                    .addComponent(lblFilmInfo))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -918,12 +963,14 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JComboBox<String> jComboBoxPfad;
     private javax.swing.JComboBox<String> jComboBoxPset;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelSize;
     private javax.swing.JRadioButton jRadioButtonAufloesungHd;
     private javax.swing.JRadioButton jRadioButtonAufloesungHoch;
     private javax.swing.JRadioButton jRadioButtonAufloesungKlein;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldSender;
-    private javax.swing.JLabel lblFilmInfo;
+    private org.jdesktop.swingx.JXBusyLabel lblBusyIndicator;
+    private javax.swing.JLabel lblStatus;
     // End of variables declaration//GEN-END:variables
 }
