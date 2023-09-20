@@ -149,6 +149,12 @@ public class MediathekGui extends JFrame {
 
         setupScrollBarWidth();
         UIManager.put("TabbedPane.showTabSeparators", true);
+        UIManager.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equalsIgnoreCase("lookAndFeel")) {
+                SwingUtilities.updateComponentTreeUI(progressLabel);
+                SwingUtilities.updateComponentTreeUI(progressBar);
+            }
+        });
 
         setupAlternatingRowColors();
 
