@@ -385,9 +385,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
                 //diesen Film in die Downloadliste eintragen
                 abo.setDownDatum(todayDateStr);
-                if (!abo.getPsetName().equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
+                if (!abo.getPsetName().equals(pSet.getName())) {
                     // nur den Namen anpassen, falls geändert
-                    abo.setPsetName(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+                    abo.setPsetName(pSet.getName());
                 }
 
                 //dann in die Liste schreiben

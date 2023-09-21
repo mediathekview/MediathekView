@@ -145,14 +145,14 @@ public class DatenPset implements Comparable<DatenPset> {
     public boolean isLabel() {
         //if program list is empty AND there is a name -> label
         if (this.listeProg.isEmpty()) {
-            return !this.arr[PROGRAMMSET_NAME].isEmpty();
+            return !getName().isEmpty();
         }
         return false;
     }
 
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        return this.arr[PROGRAMMSET_NAME].isEmpty();
+        return getName().isEmpty();
     }
 
     public void setAbspielen() {

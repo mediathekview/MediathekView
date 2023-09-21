@@ -319,7 +319,7 @@ public class DialogAddDownload extends JDialog {
 
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(listeSpeichern.getObjectDataCombo()));
         if (pSet != null) {
-            jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+            jComboBoxPset.setSelectedItem(pSet.getName());
         } else {
             pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
         }

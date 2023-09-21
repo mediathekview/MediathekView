@@ -400,7 +400,7 @@ public class PanelPsetLang extends PanelVorlage {
                     if (row != -1) {
                         datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
                         tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
-                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
+                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.getName());
                     }
                 }
             }
@@ -428,7 +428,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (!datenPset.isFreeLine() && !datenPset.isLabel()) {
                 // nur wenn kein Label oder freeline
                 text.append("++++++++++++++++++++++++++++++++++++++++++++" + '\n');
-                text.append(PIPE + "Programmgruppe: ").append(datenPset.arr[DatenPset.PROGRAMMSET_NAME]).append('\n');
+                text.append(PIPE + "Programmgruppe: ").append(datenPset.getName()).append('\n');
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
                 if (datenPset.progsContainPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
@@ -552,7 +552,7 @@ public class PanelPsetLang extends PanelVorlage {
         GuiFunktionen.enableComponents(jTabbedPane, pSet != null);
         jButtonAbspielen.setBackground(null);
         if (pSet != null) {
-            jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+            jTabbedPane.setTitleAt(0, "Set Name: " + pSet.getName());
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE].equals("")) {
                 jSpinnerLaenge.setValue(Konstanten.LAENGE_DATEINAME);
                 pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE] = String.valueOf(Konstanten.LAENGE_DATEINAME);
@@ -572,8 +572,8 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
             jCheckBoxSpotlight.setEnabled(SystemUtils.IS_OS_MAC_OSX);
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
-            jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+            jScrollPane1.setBorder(BorderFactory.createTitledBorder(null, "Set Name: " + pSet.getName(), TitledBorder.LEFT, TitledBorder.TOP));
+            jTextFieldSetName.setText(pSet.getName());
             tfGruppeDirektSuffix.setText(pSet.arr[DatenPset.PROGRAMMSET_SUFFIX_DIREKT]);
             tfGruppeDirektPraefix.setText(pSet.arr[DatenPset.PROGRAMMSET_PRAEFIX_DIREKT]);
             tfGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME]);
@@ -718,7 +718,7 @@ public class PanelPsetLang extends PanelVorlage {
             String text;
             if (rows.length == 1) {
                 pSet = listePset.get(tabellePset.convertRowIndexToModel(rows[0]));
-                text = pSet.arr[DatenPset.PROGRAMMSET_NAME];
+                text = pSet.getName();
             } else {
                 text = rows.length + " Set löschen?";
             }
@@ -750,7 +750,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
 
-            final var entryName = liste.get(0).arr[DatenPset.PROGRAMMSET_NAME];
+            final var entryName = liste.get(0).getName();
             String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -870,7 +870,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (row != -1) {
                 int foundgruppe = 0;
                 for (DatenPset gruppe : listePset) {
-                    if (jTextFieldSetName.getText().equals(gruppe.arr[DatenPset.PROGRAMMSET_NAME])) {
+                    if (jTextFieldSetName.getText().equals(gruppe.getName())) {
                         ++foundgruppe;
                     }
                 }
@@ -892,7 +892,7 @@ public class PanelPsetLang extends PanelVorlage {
                     datenPset.arr[psetIndex] = textComponent.getText();
                     if (psetIndex == DatenPset.PROGRAMMSET_NAME) {
                         tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), modelIndex, DatenPset.PROGRAMMSET_NAME);
-                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
+                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.getName());
                     }
                     if (fireUpdate)
                         notifyProgramSetChanged();

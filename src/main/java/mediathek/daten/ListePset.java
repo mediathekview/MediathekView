@@ -104,7 +104,7 @@ public class ListePset extends ArrayList<DatenPset> {
         } else {
             for (DatenPset pset : this) {
                 if (pset.istAbo()) {
-                    if (pset.arr[DatenPset.PROGRAMMSET_NAME].equals(name)) {
+                    if (pset.getName().equals(name)) {
                         ret = pset;
                     }
                 }
@@ -148,7 +148,7 @@ public class ListePset extends ArrayList<DatenPset> {
         int i = 0;
         object = new String[this.size()];
         for (DatenPset datenPset : this) {
-            object[i] = datenPset.arr[DatenPset.PROGRAMMSET_NAME];
+            object[i] = datenPset.getName();
             ++i;
         }
         return object;

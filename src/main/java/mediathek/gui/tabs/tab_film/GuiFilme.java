@@ -1321,7 +1321,7 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].isEmpty()) {
+                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }

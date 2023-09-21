@@ -87,7 +87,7 @@ public class PanelPsetKurz extends PanelVorlage {
             pSet = null;
         }
         if (pSet != null) {
-            jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+            jTextFieldName.setText(pSet.getName());
             jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG]);
             if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].equals("")) {
                 jTextFieldZiel.setEditable(false);
