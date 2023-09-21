@@ -1325,17 +1325,11 @@ public class GuiFilme extends AGuiTabPanel {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
-                Color col = pset.getFarbe();
-                JMenuItem item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME]);
-                if (pset.getListeProg().isEmpty()) {
-                    if (col != null) {
-                        item.setForeground(col);
-                    }
-                } else {
+
+                JMenuItem item = new JMenuItem(pset.getName());
+                pset.getForegroundColor().ifPresent(item::setForeground);
+                if (!pset.getListeProg().isEmpty()) {
                     item.addActionListener(l -> playerStarten(pset));
-                    if (col != null) {
-                        item.setBackground(col);
-                    }
                 }
                 submenue.add(item);
             }

@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class DatenPset implements Comparable<DatenPset> {
 
@@ -225,6 +226,18 @@ public class DatenPset implements Comparable<DatenPset> {
             ret.addProg(prog.copy());
         }
         return ret;
+    }
+
+    /**
+     * Return the specified foreground color if present.
+     * @return the requested foreground color for the PSet.
+     */
+    public Optional<Color> getForegroundColor() {
+        return Optional.ofNullable(getFarbe());
+    }
+
+    public String getName() {
+        return arr[PROGRAMMSET_NAME];
     }
 
     public Color getFarbe() {
