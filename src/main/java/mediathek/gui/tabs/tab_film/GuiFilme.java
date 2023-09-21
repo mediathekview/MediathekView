@@ -1196,22 +1196,13 @@ public class GuiFilme extends AGuiTabPanel {
         private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
-        private final JMenuItem miSave = createSaveFilmItem();
-        private final JMenuItem miBookmark = createBookmarkFilmItem();
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
         private final DownloadSubtitleAction downloadSubtitleAction = new DownloadSubtitleAction(GuiFilme.this);
         private Point p;
-        private JMenuItem miPrintTable;
 
         TableContextMenuHandler() {
-            createStaticMenuEntries();
-        }
-
-        private void createStaticMenuEntries() {
-            miPrintTable = new JMenuItem("Tabelle drucken");
-            miPrintTable.addActionListener(beobPrint);
         }
 
         @Override
@@ -1281,20 +1272,6 @@ public class GuiFilme extends AGuiTabPanel {
             }
         }
 
-        private JMenuItem createSaveFilmItem() {
-            JMenuItem item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
-            item.addActionListener(saveFilmAction);
-            return item;
-        }
-
-        private JMenuItem createBookmarkFilmItem() {
-            JMenuItem item = new JMenuItem("Film merken");
-            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
-            item.addActionListener(bookmarkFilmAction);
-            return item;
-        }
-
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1305,7 +1282,9 @@ public class GuiFilme extends AGuiTabPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             jPopupMenu.add(playFilmAction);
-            jPopupMenu.add(miSave);
+            jPopupMenu.add(saveFilmAction);
+
+            JMenuItem miBookmark = new JMenuItem(bookmarkFilmAction);
             jPopupMenu.add(miBookmark);
             jPopupMenu.addSeparator();
 
@@ -1392,6 +1371,8 @@ public class GuiFilme extends AGuiTabPanel {
             });
 
             // Drucken
+            var miPrintTable = new JMenuItem("Tabelle drucken");
+            miPrintTable.addActionListener(beobPrint);
             jPopupMenu.add(miPrintTable);
 
             jPopupMenu.add(mediathekGui.showFilmInformationAction);

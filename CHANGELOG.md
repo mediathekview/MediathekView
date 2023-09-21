@@ -13,6 +13,8 @@
 - **BUGFIX:** Im Zeilenumbruch-Modus sind nun 3 Zeilen Standard statt vorher vier.
 - **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Filme werden die Einträge nun nicht mehr vertikal zentriert.
 - **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Downloads werden die Einträge nun einheitlich dargestellt.
+- **BUGFIX:** Im Tab Filme wurde der Kontextmenüeintrag "Film aufzeichnen" konform zum Menüeintrag in "Film downloaden" angepasst.
+- **BUGFIX:** Im Tab Filme wurden die Darstellungsfehler im Kontextmenü beim Hell/Dunkel-Wechsel korrigiert.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
