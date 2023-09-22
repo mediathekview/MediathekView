@@ -201,10 +201,7 @@ public class MediathekGui extends JFrame {
 
         workaroundJavaFxInitializationBug();
 
-        var messageBus = MessageBus.getMessageBus();
-        //send before subscribing
-        messageBus.publishAsync(new TableModelChangeEvent(true, false));
-        messageBus.subscribe(this);
+        subscribeTableModelChangeEvent();
 
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
@@ -223,11 +220,7 @@ public class MediathekGui extends JFrame {
 
         checkInvalidRegularExpressions();
 
-        logger.trace("Loading bandwidth monitor");
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
-            showBandwidthUsageAction.actionPerformed(null);
-        }
-        logger.trace("Finished loading bandwidth monitor");
+        loadBandwidthMonitor();
 
         logger.trace("Loading info dialog");
         filmInfo = new InfoDialog(this);
@@ -265,6 +258,21 @@ public class MediathekGui extends JFrame {
                 }
             }, Daten.getInstance().getDecoratedPool());
         }
+    }
+
+    private void loadBandwidthMonitor() {
+        logger.trace("Loading bandwidth monitor");
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
+            showBandwidthUsageAction.actionPerformed(null);
+        }
+        logger.trace("Finished loading bandwidth monitor");
+    }
+
+    private void subscribeTableModelChangeEvent() {
+        var messageBus = MessageBus.getMessageBus();
+        //send before subscribing
+        messageBus.publishAsync(new TableModelChangeEvent(true, false));
+        messageBus.subscribe(this);
     }
 
     /**
