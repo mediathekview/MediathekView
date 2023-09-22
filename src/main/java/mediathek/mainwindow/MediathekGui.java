@@ -1169,14 +1169,13 @@ public class MediathekGui extends JFrame {
     }
 
     private void waitForCommonPoolToComplete() {
-        while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
-            try {
-                logger.debug("POOL SUBMISSIONS: {}", ForkJoinPool.commonPool().getQueuedSubmissionCount());
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException ignored) {
-            }
-        }
+        var pool = ForkJoinPool.commonPool();
+        boolean isQuiescent = pool.isQuiescent();
 
+        while (pool.hasQueuedSubmissions() && !isQuiescent) {
+            logger.debug("POOL SUBMISSIONS: {}", pool.getQueuedSubmissionCount());
+            isQuiescent = pool.awaitQuiescence(500, TimeUnit.MILLISECONDS);
+        }
     }
 
     /**
