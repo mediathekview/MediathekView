@@ -1,6 +1,7 @@
 # **14.0.1**
-- JDK 20.0.2 wird nun mitgeliefert
+- JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt. 
+- **Linux:** Native notifications wurden für aktuelle Bibliotheksversion angepasst.
 - **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
 - **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
@@ -23,6 +24,7 @@
 - **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Filminformationen aus dem Netz geladen werden (Höhe x Breite, Bitrate).
 - **FEATURE(Linux):** Dark Mode Erkennung funktioniert nun auch mit GNOME. Danke an @swsnr!
 - **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
+
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.

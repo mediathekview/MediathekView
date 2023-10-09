@@ -1,7 +1,9 @@
 package mediathek.tool.notification;
 
-import es.blackleg.jlibnotify.LibNotify;
-import es.blackleg.jlibnotify.core.DefaultLibNotifyLoader;
+import es.blackleg.jlibnotify.JLibnotify;
+import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader;
+import es.blackleg.jlibnotify.exception.JLibnotifyInitException;
+import es.blackleg.jlibnotify.exception.JLibnotifyLoadException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,12 +11,13 @@ import java.io.Closeable;
 
 public class LinuxNotificationCenter implements INotificationCenter, Closeable {
     private static final Logger logger = LogManager.getLogger();
-    private LibNotify libNotify;
+    private JLibnotify libNotify;
     private boolean nativeSupport;
 
     public LinuxNotificationCenter() {
         try {
-            libNotify = DefaultLibNotifyLoader.getInstance().load();
+            var loader = new DefaultJLibnotifyLoader();
+            libNotify = loader.load();
             libNotify.init("MediathekView");
             nativeSupport = true;
 
@@ -29,7 +32,7 @@ public class LinuxNotificationCenter implements INotificationCenter, Closeable {
             for (var s : caps)
                 logger.debug("\t {}",s);
         }
-        catch (UnsatisfiedLinkError | RuntimeException e) {
+        catch (UnsatisfiedLinkError | RuntimeException | JLibnotifyLoadException | JLibnotifyInitException e) {
             nativeSupport = false;
             logger.error("failed to initialize libNotify",e);
         }
@@ -38,7 +41,7 @@ public class LinuxNotificationCenter implements INotificationCenter, Closeable {
     @Override
     public void displayNotification(NotificationMessage msg) {
         var notification = libNotify.createNotification(msg.getTitle(), msg.message,"dialog-information");
-        libNotify.showNotification(notification);
+        notification.show();
     }
 
     public boolean hasNativeSupport() {

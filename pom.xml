@@ -80,8 +80,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>20</java.version>
-        <jdk.language.version>20</jdk.language.version>
+        <java.version>21</java.version>
+        <jdk.language.version>21</jdk.language.version>
         <kotlin.language.target>20</kotlin.language.target>
         <kotlin.version>1.9.0</kotlin.version>
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -117,7 +117,7 @@
         <miglayout.version>11.1</miglayout.version>
         <mockito.version>4.10.0</mockito.version>
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
-        <picocli.version>4.7.0</picocli.version>
+        <picocli.version>4.7.3</picocli.version>
         <sqlite-jdbc.version>3.43.0.0</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
@@ -171,7 +171,7 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.4</version>
         </dependency>
 
         <dependency>
@@ -209,7 +209,7 @@
         <dependency>
             <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
-            <version>0.2.0</version>
+            <version>1.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.java.dev.jna</groupId>
