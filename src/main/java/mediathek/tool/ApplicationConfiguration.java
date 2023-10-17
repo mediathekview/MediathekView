@@ -63,6 +63,7 @@ public class ApplicationConfiguration {
     public static final String DOWNLOAD_SOUND_BEEP = "download.sound.beep";
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
     public static final String DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number";
+    public static final String DOWNLOAD_FETCH_FILE_SIZE = "download.fetch_file_size";
     public static final String SEARCH_USE_FILM_DESCRIPTIONS =
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
@@ -120,8 +121,7 @@ public class ApplicationConfiguration {
             if (!str.startsWith("\"") && !str.endsWith("\""))
                 str = "\"" + str + "\"";
             return mapper.readValue(str, Country.class);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Unable to parse country, resetting to GERMANY", ex);
             setGeographicLocation(Country.DE);
             return Country.DE;
@@ -132,8 +132,7 @@ public class ApplicationConfiguration {
         try {
             var newValue = mapper.writeValueAsString(country);
             config.setProperty(GEO_LOCATION, newValue);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Error setting location, setting to GERMANY", ex);
             setGeographicLocation(Country.DE);
         }

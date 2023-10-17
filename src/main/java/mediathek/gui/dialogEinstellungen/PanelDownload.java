@@ -32,6 +32,7 @@ public class PanelDownload extends JPanel {
         cbkDownloadError = new JCheckBox();
         jCheckBoxBeep = new JCheckBox();
         jButtonBeep = new JButton();
+        cbFetchMissingFileSize = new JCheckBox();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -47,7 +48,8 @@ public class PanelDownload extends JPanel {
                 // rows
                 new AC()
                     .fill().gap()
-                    .fill()));
+                    .fill().gap()
+                    ));
 
             //---- cbkDownloadError ----
             cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen"); //NON-NLS
@@ -60,6 +62,10 @@ public class PanelDownload extends JPanel {
             //---- jButtonBeep ----
             jButtonBeep.setText("Test"); //NON-NLS
             jPanel2.add(jButtonBeep, new CC().cell(1, 1));
+
+            //---- cbFetchMissingFileSize ----
+            cbFetchMissingFileSize.setText("Fehlende Filmgr\u00f6\u00dfe nachladen"); //NON-NLS
+            jPanel2.add(cbFetchMissingFileSize, new CC().cell(0, 2));
         }
         add(jPanel2, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -70,5 +76,6 @@ public class PanelDownload extends JPanel {
     private JCheckBox cbkDownloadError;
     private JCheckBox jCheckBoxBeep;
     private JButton jButtonBeep;
+    private JCheckBox cbFetchMissingFileSize;
     // End of variables declaration//GEN-END:variables
 }
