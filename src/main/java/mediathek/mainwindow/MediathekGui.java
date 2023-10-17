@@ -1183,7 +1183,7 @@ public class MediathekGui extends JFrame {
             isQuiescent = pool.awaitQuiescence(500, TimeUnit.MILLISECONDS);
         }
 
-        logger.trace("Entering waitForCommonPoolToComplete()");
+        logger.trace("Leaving waitForCommonPoolToComplete()");
     }
 
     /**
