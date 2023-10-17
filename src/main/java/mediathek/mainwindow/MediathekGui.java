@@ -1141,19 +1141,23 @@ public class MediathekGui extends JFrame {
     }
 
     private void shutdownTimerPool() {
+        logger.trace("Entering shutdownTimerPool()");
+
         var timerPool = TimerPool.getTimerPool();
         timerPool.shutdown();
         try {
             if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))
                 logger.warn("Time out occured before pool final termination");
         } catch (InterruptedException e) {
-            logger.warn("timerPool shutdown exception", e);
+            logger.error("timerPool shutdown exception", e);
         }
         var taskList = timerPool.shutdownNow();
         if (!taskList.isEmpty()) {
             logger.trace("timerPool taskList was not empty");
             logger.trace(taskList.toString());
         }
+
+        logger.trace("Leaving shutdownTimerPool()");
     }
 
     private void stopDownloads() {
@@ -1169,13 +1173,17 @@ public class MediathekGui extends JFrame {
     }
 
     private void waitForCommonPoolToComplete() {
+        logger.trace("Entering waitForCommonPoolToComplete()");
+
         var pool = ForkJoinPool.commonPool();
         boolean isQuiescent = pool.isQuiescent();
 
         while (pool.hasQueuedSubmissions() && !isQuiescent) {
-            logger.debug("POOL SUBMISSIONS: {}", pool.getQueuedSubmissionCount());
+            logger.trace("POOL SUBMISSIONS: {}", pool.getQueuedSubmissionCount());
             isQuiescent = pool.awaitQuiescence(500, TimeUnit.MILLISECONDS);
         }
+
+        logger.trace("Entering waitForCommonPoolToComplete()");
     }
 
     /**
