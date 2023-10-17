@@ -5,6 +5,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.controller.ThrottlingInputStream;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
@@ -257,6 +258,14 @@ public class DirectHttpDownload extends Thread {
             } else {
                 //Anzeige ändern - bei Fehler fehlt der Eintrag
                 start.status = Start.STATUS_ERR;
+                //in case of error remove seen indication
+                var film = datenDownload.film;
+                if (film != null) {
+                    logger.trace("Removing errorneous download from history");
+                    try (var historyController = new SeenHistoryController()) {
+                        historyController.markUnseen(film);
+                    }
+                }
             }
         }
     }
