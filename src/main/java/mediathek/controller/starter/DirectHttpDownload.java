@@ -5,6 +5,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.controller.ThrottlingInputStream;
+import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
@@ -340,6 +341,9 @@ public class DirectHttpDownload extends Thread {
             logger.error("run()", ex);
             start.status = Start.STATUS_ERR;
             state = HttpDownloadState.ERROR;
+
+            removeSeenHistoryEntry();
+
             SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
         } finally {
             if (body != null)
@@ -355,6 +359,15 @@ public class DirectHttpDownload extends Thread {
 
         messageBus.publishAsync(new DownloadFinishedEvent());
         messageBus.unsubscribe(this);
+    }
+
+    private void removeSeenHistoryEntry() {
+        if (datenDownload.film != null) {
+            logger.trace("Removing failed download entry from history");
+            try (var historyController = new SeenHistoryController()) {
+                historyController.markUnseen(datenDownload.film);
+            }
+        }
     }
 
     private void waitForPendingDownloads() {
