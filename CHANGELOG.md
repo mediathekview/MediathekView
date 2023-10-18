@@ -25,7 +25,6 @@
 - **FEATURE(Linux):** Dark Mode Erkennung funktioniert nun auch mit GNOME. Danke an @swsnr!
 - **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
 - **FEATURE:** Das Nachladen von fehlenden Filmgrößen kann in den *Einstellungen/Aufzeichnen und Abspielen/Download* abgeschaltet werden.
-- **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
 
 # **14.0.0**
 - Es wird nun Java 20 verwendet.
