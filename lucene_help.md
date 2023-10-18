@@ -2,7 +2,7 @@ MediathekView verwendet im **Experten-Modus** zur Suche nach Filmtiteln nun die 
 
 **Wird im Suchfeld nur Text ohne ein unten aufgeführtes Tag eingegeben, ist gds. das Tag `titel` der Suchbereich.**
 
-MediathekView bietet die folgenden *tags* für die Formulierung von Suchabfragen an:
+MediathekView bietet die folgenden *tags* (Achtung: hier sind **immer** Kleinbuchstaben zu verwenden) für die Formulierung von Suchabfragen an:
 
 | Name          | Typ     | Beschreibung                                                 |
 | ------------- | ------- | ------------------------------------------------------------ |
