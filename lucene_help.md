@@ -1,5 +1,7 @@
 MediathekView verwendet im **Experten-Modus** zur Suche nach Filmtiteln nun die Volltextsuche [Apache Lucene](https://lucene.apache.org). Damit einhergehend kann die bisher verwendete Suchfunktionalität nicht mehr genutzt werden, jedoch erschließen sich durch die neu integrierte professionelle Suche viel mehr Möglichkeiten, die Ergebnisse einzugrenzen.
 
+**Wird im Suchfeld nur Text ohne ein unten aufgeführtes Tag eingegeben, ist gds. das Tag `titel` der Suchbereich.**
+
 MediathekView bietet die folgenden *tags* für die Formulierung von Suchabfragen an:
 
 | Name          | Typ     | Beschreibung                                                 |
