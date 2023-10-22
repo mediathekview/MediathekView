@@ -124,8 +124,8 @@
         <mainclass>mediathek.Main</mainclass>
 
         <!-- Zulu without JavaFX is used on Linux and Windows -->
-        <install4j.zulu.jdk.version>20/20.0.2</install4j.zulu.jdk.version>
-        <install4j.jdk.min-version>20</install4j.jdk.min-version>
+        <install4j.zulu.jdk.version>21/21.0.1</install4j.zulu.jdk.version>
+        <install4j.jdk.min-version>21</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
