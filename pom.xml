@@ -93,7 +93,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.1.2</controlsfx.version>
-        <flatlaf.version>3.2.1</flatlaf.version>
+        <flatlaf.version>3.2.5</flatlaf.version>
         <guava.version>32.1.2-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.15.2</jackson.version>
@@ -101,7 +101,7 @@
         <javafx.version>20.0.1</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jna.version>5.13.0</jna.version>
-        <junit.jupiter.version>5.9.0</junit.jupiter.version>
+        <junit.jupiter.version>5.9.2</junit.jupiter.version>
         <log4j2.version>2.20.0</log4j2.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -115,7 +115,7 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.1</miglayout.version>
-        <mockito.version>4.10.0</mockito.version>
+        <mockito.version>5.2.0</mockito.version>
         <okhttp.version>5.0.0-alpha.10</okhttp.version>
         <picocli.version>4.7.3</picocli.version>
         <sqlite-jdbc.version>3.43.0.0</sqlite-jdbc.version>
