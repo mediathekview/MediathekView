@@ -513,8 +513,12 @@ public class MediathekGui extends JFrame {
 
     private void createMemoryMonitor() {
         boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
-        if (visible)
-            showMemoryMonitorAction.showMemoryMonitor();
+        if (visible) {
+            if (!SystemUtils.IS_OS_MAC_OSX) {
+                //FIXME macOS Sonoma 14.1 causes freeze when showing on startup...
+                showMemoryMonitorAction.showMemoryMonitor();
+            }
+        }
     }
 
     /**
@@ -1136,7 +1140,10 @@ public class MediathekGui extends JFrame {
      * Gracefully shutdown the JavaFX environment.
      */
     private void shutdownJavaFx() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        //FIXME macOS Sonoma 14.1 causes freezes here :-(
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+
         Platform.exit();
     }
 
