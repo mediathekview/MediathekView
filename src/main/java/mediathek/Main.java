@@ -7,7 +7,6 @@ import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
@@ -646,9 +645,6 @@ public class Main {
             window.toFront();
             window.requestFocus();
         }
-        //show a link to tutorial if we are in Austria and have never used MV before...
-        AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
-        vlcCheck.perform();
     }
 
     private static MediathekGui getPlatformWindow() {

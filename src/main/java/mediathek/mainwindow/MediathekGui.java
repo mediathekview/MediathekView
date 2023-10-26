@@ -258,6 +258,10 @@ public class MediathekGui extends JFrame {
                 }
             }, Daten.getInstance().getDecoratedPool());
         }
+
+        //show a link to tutorial if we are in Austria and have never used MV before...
+        AustrianVlcCheck vlcCheck = new AustrianVlcCheck(this);
+        vlcCheck.perform();
     }
 
     private void loadBandwidthMonitor() {
