@@ -1118,13 +1118,13 @@ public class MediathekGui extends JFrame {
         logger.info("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
+        logger.info("Cleanup Lucene index.");
+        cleanupLuceneIndex();
+
         RuntimeStatistics.printRuntimeStatistics();
         if (Config.isEnhancedLoggingEnabled()) {
             RuntimeStatistics.printDataUsageStatistics();
         }
-
-        logger.info("Cleanup Lucene index.");
-        cleanupLuceneIndex();
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
