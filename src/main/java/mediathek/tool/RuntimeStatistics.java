@@ -1,6 +1,5 @@
 package mediathek.tool;
 
-import mediathek.config.Config;
 import mediathek.tool.http.MVHttpClient;
 import org.apache.logging.log4j.LogManager;
 
@@ -19,7 +18,7 @@ public class RuntimeStatistics {
     public static void printRuntimeStatistics() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         final var endZeit = LocalDateTime.now();
-        final var runTime = LocalTime.MIN.plusSeconds(Duration.between(startZeit,endZeit).toSeconds());
+        final var runTime = LocalTime.MIN.plusSeconds(Duration.between(startZeit, endZeit).toSeconds());
 
         var logger = LogManager.getLogger();
         logger.info("################################################################################");
@@ -29,11 +28,9 @@ public class RuntimeStatistics {
     }
 
     public static void printDataUsageStatistics() {
-        if (Config.isEnhancedLoggingEnabled()) {
-            var byteCounter = MVHttpClient.getInstance().getByteCounter();
-            var logger = LogManager.getLogger();
-            logger.info("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
-            logger.info("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
-        }
+        var byteCounter = MVHttpClient.getInstance().getByteCounter();
+        var logger = LogManager.getLogger();
+        logger.info("total data sent: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesWritten()));
+        logger.info("total data received: {}", FileUtils.humanReadableByteCountBinary(byteCounter.totalBytesRead()));
     }
 }

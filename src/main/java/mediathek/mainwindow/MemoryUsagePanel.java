@@ -4,8 +4,6 @@ import mediathek.gui.messages.DarkModeChangeEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.jetbrains.annotations.NotNull;
-import org.jfree.chart.ChartMouseEvent;
-import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -64,7 +62,6 @@ public class MemoryUsagePanel extends JPanel {
         var chart = new JFreeChart(plot);
         chart.removeLegend();
         var chartPanel = new ChartPanel(chart);
-        chartPanel.addChartMouseListener(new GarbageCollectionMouseListener());
         chartPanel.setPopupMenu(null);
         add(chartPanel);
 
@@ -90,18 +87,6 @@ public class MemoryUsagePanel extends JPanel {
 
     private void addTotalObservation(double y) {
         total.add(new Millisecond(), y);
-    }
-
-    private static class GarbageCollectionMouseListener implements ChartMouseListener {
-        @Override
-        public void chartMouseClicked(ChartMouseEvent event) {
-            System.gc();
-        }
-
-        @Override
-        public void chartMouseMoved(ChartMouseEvent event) {
-
-        }
     }
 
     public class MemoryUsageDataGenerator extends Timer implements ActionListener {

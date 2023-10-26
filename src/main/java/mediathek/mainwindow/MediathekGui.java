@@ -909,7 +909,15 @@ public class MediathekGui extends JFrame {
 
     private void createViewMenu() {
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showMemoryMonitorAction);
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuAnsicht.add(showMemoryMonitorAction);
+        }
+        else {
+            // only show for debug purposes...wil cause hang at shutdown
+            if (Config.isDebugModeEnabled()) {
+                jMenuAnsicht.add(showMemoryMonitorAction);
+            }
+        }
         jMenuAnsicht.add(showBandwidthUsageAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
@@ -1036,6 +1044,8 @@ public class MediathekGui extends JFrame {
             setShutdownRequested(dialogBeenden.isShutdownRequested());
         }
 
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
         if (automaticFilmlistUpdate != null)
             automaticFilmlistUpdate.close();
 
@@ -1051,71 +1061,64 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
-        ShutdownDialogController shutdownProgress = new ShutdownDialogController(this);
-        shutdownProgress.show();
+        logger.info("Perform history maintenance.");
+        try (SeenHistoryController history = new SeenHistoryController()) {
+            history.performMaintenance();
+        }
 
-        var historyWorker = CompletableFuture.runAsync(() -> {
-            try (SeenHistoryController history = new SeenHistoryController()) {
-                history.performMaintenance();
-            }
-        });
-
-        var bookmarkWorker = CompletableFuture.runAsync(() ->
-                daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath()));
+        logger.info("Save bookmark list.");
+        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
 
         // stop the download thread
-        shutdownProgress.setStatus(ShutdownState.TERMINATE_STARTER_THREAD);
+        logger.info("Stop Starter Thread.");
         daten.getStarterClass().getStarterThread().interrupt();
 
-        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        logger.info("Close Notification center.");
         closeNotificationCenter();
 
         // Tabelleneinstellungen merken
-        shutdownProgress.setStatus(ShutdownState.SAVE_FILM_DATA);
+        logger.info("Save Tab Filme data.");
         tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
         tabFilme.filmActionPanel.getFilterDialog().dispose();
 
-        shutdownProgress.setStatus(ShutdownState.SAVE_DOWNLOAD_DATA);
+        logger.info("Save Tab Download data.");
         tabDownloads.tabelleSpeichern();
 
-        shutdownProgress.setStatus(ShutdownState.STOP_DOWNLOADS);
+        logger.info("Stop all downloads.");
         stopDownloads();
 
-        shutdownProgress.setStatus(ShutdownState.SAVE_APP_DATA);
+        logger.info("Save app data.");
         daten.allesSpeichern();
 
-        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_THREAD_POOL);
+        logger.info("Shutdown pools.");
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         //shutdown JavaFX
-        shutdownProgress.setStatus(ShutdownState.TERMINATE_JAVAFX_SUPPORT);
+        logger.info("Shutdown JavaFX.");
         shutdownJavaFx();
 
-        try {
-            shutdownProgress.setStatus(ShutdownState.SAVE_BOOKMARKS);
-            bookmarkWorker.get();
-
-            shutdownProgress.setStatus(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
-            historyWorker.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Async task error", e);
-        }
-
         //close main window
+        logger.info("Close main window.");
         dispose();
 
         //write all settings if not done already...
+        logger.info("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
         RuntimeStatistics.printRuntimeStatistics();
-        RuntimeStatistics.printDataUsageStatistics();
-        shutdownProgress.setStatus(ShutdownState.COMPLETE);
+        if (Config.isEnhancedLoggingEnabled()) {
+            RuntimeStatistics.printDataUsageStatistics();
+        }
 
+        logger.info("Cleanup Lucene index.");
         cleanupLuceneIndex();
 
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
         if (isShutdownRequested()) {
+            logger.info("Requesting computer shutdown.");
             shutdownComputer();
         }
 
@@ -1140,9 +1143,10 @@ public class MediathekGui extends JFrame {
      * Gracefully shutdown the JavaFX environment.
      */
     private void shutdownJavaFx() {
-        //FIXME macOS Sonoma 14.1 causes freezes here :-(
-        if (!SystemUtils.IS_OS_MAC_OSX)
+        //causes system hang on Sonoma 14.1
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        }
 
         Platform.exit();
     }

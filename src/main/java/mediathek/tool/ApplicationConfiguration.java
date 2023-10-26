@@ -80,6 +80,7 @@ public class ApplicationConfiguration {
      * A custom small thread scheduler exclusively for config changes.
      */
     private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+    private final TimerTaskListener timerTaskListener = new TimerTaskListener();
     private XMLConfiguration config;
     private FileHandler handler;
     /**
@@ -147,7 +148,7 @@ public class ApplicationConfiguration {
     }
 
     private void initializeTimedEventWriting() {
-        config.addEventListener(ConfigurationEvent.ANY, new TimerTaskListener());
+        config.addEventListener(ConfigurationEvent.ANY, timerTaskListener);
     }
 
     private void setupXmlConfiguration() {
@@ -179,7 +180,8 @@ public class ApplicationConfiguration {
     public void writeConfiguration() {
         try {
             // cancel a pending writer task first
-            if (future != null) future.cancel(false);
+            config.removeEventListener(ConfigurationEvent.ANY, timerTaskListener);
+            if (future != null) future.cancel(true);
 
             handler.save();
         } catch (ConfigurationException configurationException) {

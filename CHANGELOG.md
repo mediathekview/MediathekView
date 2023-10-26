@@ -28,7 +28,10 @@
 - **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
 - 
 # **14.0.0**
-- Es wird nun Java 20 verwendet.
+- **ACHTUNG: macOS Sonoma 14.1 verursacht diverse Probleme und Programmhänger! Einige dieser Probleme konnten beseitigt werden, führen aber zu kleineren Einschränkungen.**
+- macOS: Speicherverbrauchsanzeige wurde deaktiviert. Sie verursacht bisher unbekannte Programmanomalien unter macOS Sonoma 14.1
+- Beim Beenden wird kein Fortschrittsdialog mehr angezeigt.
+- Es wird nun Java 21 verwendet.
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Die *macOS Intel* Version nutzt nun Liberica JDK full mit integriertem JavaFX. Dadurch kann MediathekView nun auch wieder fehlerfrei mit Apple Silicon Macs gebaut werden.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.
