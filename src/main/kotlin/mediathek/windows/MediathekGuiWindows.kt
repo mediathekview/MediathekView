@@ -1,39 +1,30 @@
-package mediathek.windows;
+package mediathek.windows
 
-import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.notification.INotificationCenter;
-import mediathek.tool.notification.WinNotificationCenter;
-import mediathek.tool.threads.IndicatorThread;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import mediathek.mainwindow.MediathekGui
+import mediathek.tool.notification.INotificationCenter
+import mediathek.tool.notification.WinNotificationCenter
+import mediathek.tool.threads.IndicatorThread
+import org.apache.logging.log4j.LogManager
+import java.io.IOException
 
-import java.io.IOException;
+class MediathekGuiWindows : MediathekGui() {
+    private val logger = LogManager.getLogger()
 
-public class MediathekGuiWindows extends MediathekGui {
-    private final Logger logger = LogManager.getLogger(MediathekGuiWindows.class);
-    public MediathekGuiWindows() {
-        super();
-    }
-
-    @Override
-    protected void shutdownComputer() {
-        final String[] strShutdownCommand = {"shutdown.exe", "-s", "-t", "0"};
-
+    override fun shutdownComputer() {
+        val strShutdownCommand = arrayOf("shutdown.exe", "-s", "-t", "0")
         try {
-            logger.info("Windows shutdown binary called.");
-            Runtime.getRuntime().exec(strShutdownCommand);
-        } catch (IOException ex) {
-            logger.error(ex);
+            logger.info("Windows shutdown binary called.")
+            Runtime.getRuntime().exec(strShutdownCommand)
+        } catch (ex: IOException) {
+            logger.error(ex)
         }
     }
 
-    @Override
-    protected IndicatorThread createProgressIndicatorThread() {
-        return new TaskbarIndicatorThread(this);
+    override fun createProgressIndicatorThread(): IndicatorThread {
+        return TaskbarIndicatorThread(this)
     }
 
-    @Override
-    protected INotificationCenter getNotificationCenter() {
-        return new WinNotificationCenter();
+    override fun getNotificationCenter(): INotificationCenter {
+        return WinNotificationCenter()
     }
 }
