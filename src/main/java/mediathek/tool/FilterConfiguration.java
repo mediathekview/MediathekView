@@ -11,8 +11,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static mediathek.tool.ApplicationConfiguration.getConfiguration;
-
 public class FilterConfiguration {
   protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
   protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
@@ -25,7 +23,7 @@ public class FilterConfiguration {
   private final Configuration configuration;
 
   public FilterConfiguration() {
-    this(getConfiguration());
+    this(ApplicationConfiguration.getConfiguration());
   }
 
   public FilterConfiguration(Configuration configuration) {
@@ -133,7 +131,7 @@ public class FilterConfiguration {
     return !Arrays.stream(migrationSteps)
         .map(Supplier::get)
         .filter(Boolean::booleanValue)
-        .collect(Collectors.toUnmodifiableList())
+        .toList()
         .isEmpty();
   }
 

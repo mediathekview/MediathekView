@@ -80,10 +80,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>21</java.version>
         <jdk.language.version>21</jdk.language.version>
         <kotlin.language.target>20</kotlin.language.target>
         <kotlin.version>1.9.0</kotlin.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
@@ -103,7 +104,7 @@
         <jna.version>5.13.0</jna.version>
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
         <log4j2.version>2.20.0</log4j2.version>
-        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
@@ -507,7 +508,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>${java.version}</version>
+                                    <version>${jdk.language.version}</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

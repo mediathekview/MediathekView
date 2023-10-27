@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.EventListWithEmptyFirstEntry;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.GermanStringSorter;
@@ -42,7 +43,7 @@ public class FilmActionPanel {
     /**
      * The JavaFX list based on {@link #sourceThemaList}.
      */
-    private final EventObservableList<String> themaListItems = new EventObservableList<>(sourceThemaList);
+    private final EventObservableList<String> observableThemaList = new EventObservableList<>(new EventListWithEmptyFirstEntry(sourceThemaList));
     private OldSwingJavaFxFilterDialog filterDialog;
     private RangeSlider filmLengthSlider;
     private ReadOnlyObjectProperty<String> zeitraumProperty;
@@ -280,8 +281,8 @@ public class FilmActionPanel {
     }
 
     private void setupThemaComboBox() {
-        viewSettingsPane.themaComboBox.setItems(themaListItems);
-        themaSuggestionProvider = SuggestionProvider.create(themaListItems);
+        viewSettingsPane.themaComboBox.setItems(observableThemaList);
+        themaSuggestionProvider = SuggestionProvider.create(sourceThemaList);
         TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
     }
 
@@ -397,19 +398,18 @@ public class FilmActionPanel {
         var transactionThemaList = new TransactionList<>(sourceThemaList);
         transactionThemaList.beginEvent(true);
         transactionThemaList.clear();
-        transactionThemaList.add("");
 
         var selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
-        var tempThemaList = getThemaList(selectedSenders).stream()
+        var tempThemaList = getThemaList(selectedSenders).stream().distinct()
                 .sorted(GermanStringSorter.getInstance())
                 .toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
 
-        //update autocpmpletion provider here only as the other listeners fire too much
+        //update autocompletion provider here only as the other listeners fire too much
         themaSuggestionProvider.clearSuggestions();
-        //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
-        themaSuggestionProvider.addPossibleSuggestions(themaListItems);
+        themaSuggestionProvider.addPossibleSuggestions(sourceThemaList);
+
         viewSettingsPane.themaComboBox.getSelectionModel().select(0);
     }
 }
