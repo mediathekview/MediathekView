@@ -35,7 +35,7 @@ public class DialogEditAbo extends JDialog {
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
-    public boolean[] multiEditCbIndices = new boolean[AboTags.values().length];
+    public boolean[] multiEditCbIndices = new boolean[AboTags.getEntries().size()];
     /**
      * Determines whether the whole edit operation was "ok" -> successful or not.
      */
@@ -149,7 +149,7 @@ public class DialogEditAbo extends JDialog {
             c.gridy = 0;
         }
 
-        for (var tag : AboTags.values()) {
+        for (var tag : AboTags.getEntries()) {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.WEST;
             addExtraFeld(tag, gridbag, c, jPanelExtra);
