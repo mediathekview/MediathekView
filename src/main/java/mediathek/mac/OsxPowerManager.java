@@ -25,7 +25,6 @@ public class OsxPowerManager {
         catch (IOException e) {
             caffeinateProcess = null;
             logger.error("disabling power management failed", e);
-            e.printStackTrace();
         }
     }
 
