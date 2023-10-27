@@ -20,12 +20,12 @@ enum class AboTags(val index: Int, val xmlName: String) {
     companion object {
         @JvmStatic
         fun fromXmlTag(tag: String): Optional<AboTags> {
-            return Arrays.stream(values()).filter { e: AboTags -> e.xmlName == tag }.findAny()
+            return Arrays.stream(entries.toTypedArray()).filter { e: AboTags -> e.xmlName == tag }.findAny()
         }
 
         @JvmStatic
         fun fromIndex(index: Int): Optional<AboTags> {
-            return Arrays.stream(values()).filter { e: AboTags -> e.index == index }.findAny()
+            return Arrays.stream(entries.toTypedArray()).filter { e: AboTags -> e.index == index }.findAny()
         }
     }
 }
