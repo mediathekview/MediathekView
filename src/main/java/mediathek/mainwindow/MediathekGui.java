@@ -1072,53 +1072,53 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
-        logger.info("Perform history maintenance.");
+        logger.trace("Perform history maintenance.");
         try (SeenHistoryController history = new SeenHistoryController()) {
             history.performMaintenance();
         }
 
-        logger.info("Save bookmark list.");
+        logger.trace("Save bookmark list.");
         daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
 
         // stop the download thread
-        logger.info("Stop Starter Thread.");
+        logger.trace("Stop Starter Thread.");
         daten.getStarterClass().getStarterThread().interrupt();
 
-        logger.info("Close Notification center.");
+        logger.trace("Close Notification center.");
         closeNotificationCenter();
 
         // Tabelleneinstellungen merken
-        logger.info("Save Tab Filme data.");
+        logger.trace("Save Tab Filme data.");
         tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
         tabFilme.filmActionPanel.getFilterDialog().dispose();
 
-        logger.info("Save Tab Download data.");
+        logger.trace("Save Tab Download data.");
         tabDownloads.tabelleSpeichern();
 
-        logger.info("Stop all downloads.");
+        logger.trace("Stop all downloads.");
         stopDownloads();
 
-        logger.info("Save app data.");
+        logger.trace("Save app data.");
         daten.allesSpeichern();
 
-        logger.info("Shutdown pools.");
+        logger.trace("Shutdown pools.");
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         //shutdown JavaFX
-        logger.info("Shutdown JavaFX.");
+        logger.trace("Shutdown JavaFX.");
         shutdownJavaFx();
 
         //close main window
-        logger.info("Close main window.");
+        logger.trace("Close main window.");
         dispose();
 
         //write all settings if not done already...
-        logger.info("Write app config.");
+        logger.trace("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        logger.info("Cleanup Lucene index.");
+        logger.trace("Cleanup Lucene index.");
         cleanupLuceneIndex();
 
         RuntimeStatistics.printRuntimeStatistics();
