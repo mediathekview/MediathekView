@@ -1,6 +1,7 @@
 package mediathek;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
@@ -13,7 +14,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
 import mediathek.tool.migrator.SettingsMigrator;
-import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.lang3.SystemUtils;
