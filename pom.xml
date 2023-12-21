@@ -118,7 +118,7 @@
         <miglayout.version>11.1</miglayout.version>
         <mockito.version>5.2.0</mockito.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
-        <picocli.version>4.7.3</picocli.version>
+        <picocli.version>4.7.5</picocli.version>
         <sqlite-jdbc.version>3.44.1.0</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
