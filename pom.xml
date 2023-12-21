@@ -95,7 +95,7 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <controlsfx.version>11.2.0</controlsfx.version>
         <flatlaf.version>3.2.5</flatlaf.version>
-        <guava.version>32.1.2-jre</guava.version>
+        <guava.version>33.0.0-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.15.2</jackson.version>
         <jaffree.version>2023.09.10</jaffree.version>
