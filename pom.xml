@@ -82,7 +82,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.language.version>21</jdk.language.version>
         <kotlin.language.target>21</kotlin.language.target>
-        <kotlin.version>1.9.20</kotlin.version>
+        <kotlin.version>1.9.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
