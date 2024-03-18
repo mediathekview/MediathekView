@@ -26,6 +26,7 @@
 - **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
 - **FEATURE:** Das Nachladen von fehlenden Filmgrößen kann in den *Einstellungen/Aufzeichnen und Abspielen/Download* abgeschaltet werden.
 - **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
+- **FEATURE(Windows):** Darkmode Button wird ab Windows 10 in der Menüzeile neben den Window controls angezeigt.
 - 
 # **14.0.0**
 - **ACHTUNG: macOS Sonoma 14.1 verursacht diverse Probleme und Programmhänger! Einige dieser Probleme konnten beseitigt werden, führen aber zu kleineren Einschränkungen.**

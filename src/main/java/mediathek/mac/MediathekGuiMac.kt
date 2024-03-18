@@ -13,6 +13,7 @@ import mediathek.tool.threads.IndicatorThread
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
@@ -23,6 +24,14 @@ import kotlin.io.path.absolutePathString
 
 class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
+
+    override fun setToolBarProperties() {
+        //not used on macOS
+    }
+
+    override fun installToolBar() {
+        contentPane.add(commonToolBar, BorderLayout.PAGE_START)
+    }
 
     override fun createFontMenu() {
         //unused on macOS

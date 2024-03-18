@@ -323,6 +323,20 @@ public class MediathekGui extends JFrame {
             UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
     }
 
+    protected void createDarkModeToggleButton() {
+        commonToolBar.add(Box.createHorizontalGlue());
+        commonToolBar.add(toggleDarkModeAction);
+    }
+
+    protected void setToolBarProperties() {
+        commonToolBar.setFloatable(true);
+        commonToolBar.setName("Allgemein");
+    }
+
+    protected void installToolBar() {
+        tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+    }
+
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.add(showFilmInformationAction);
@@ -333,20 +347,10 @@ public class MediathekGui extends JFrame {
         commonToolBar.add(manageBookmarkAction);
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
-        commonToolBar.add(Box.createHorizontalGlue());
-        commonToolBar.add(toggleDarkModeAction);
+        createDarkModeToggleButton();
 
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            commonToolBar.setFloatable(true);
-            commonToolBar.setName("Allgemein");
-        }
-
-
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
-        }
-        else
-            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+        setToolBarProperties();
+        installToolBar();
     }
 
     /**
@@ -467,7 +471,7 @@ public class MediathekGui extends JFrame {
         im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
     }
 
-    private void createMenuBar() {
+    protected void createMenuBar() {
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
         jMenuBar.add(jMenuDatei);

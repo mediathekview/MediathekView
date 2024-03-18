@@ -76,34 +76,38 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>Maven2</id>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
     </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.language.version>21</jdk.language.version>
         <kotlin.language.target>21</kotlin.language.target>
-        <kotlin.version>1.9.21</kotlin.version>
+        <kotlin.version>1.9.23</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
 
         <annotations.version>24.0.1</annotations.version>
-        <assertj-core.version>3.24.2</assertj-core.version>
+        <assertj-core.version>3.25.2</assertj-core.version>
         <commons-configuration2.version>2.9.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
         <controlsfx.version>11.2.0</controlsfx.version>
-        <flatlaf.version>3.2.5</flatlaf.version>
+        <flatlaf.version>3.4</flatlaf.version>
         <guava.version>33.0.0-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
-        <jackson.version>2.15.2</jackson.version>
+        <jackson.version>2.16.1</jackson.version>
         <jaffree.version>2023.09.10</jaffree.version>
         <javafx.version>21.0.1</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
-        <jna.version>5.13.0</jna.version>
-        <junit.jupiter.version>5.9.2</junit.jupiter.version>
-        <log4j2.version>2.20.0</log4j2.version>
+        <jna.version>5.14.0</jna.version>
+        <junit.jupiter.version>5.10.1</junit.jupiter.version>
+        <log4j2.version>2.22.1</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -115,11 +119,11 @@
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <miglayout.version>11.1</miglayout.version>
-        <mockito.version>5.2.0</mockito.version>
+        <miglayout.version>11.3</miglayout.version>
+        <mockito.version>5.10.0</mockito.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
         <picocli.version>4.7.5</picocli.version>
-        <sqlite-jdbc.version>3.44.1.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.45.2.0</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
@@ -142,7 +146,7 @@
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
         <install4j.version>10.0.5</install4j.version>
-        <lucene.version>9.7.0</lucene.version>
+        <lucene.version>9.10.0</lucene.version>
     </properties>
 
     <dependencies>
@@ -204,13 +208,13 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>3.7.12</version>
+            <version>3.7.14</version>
         </dependency>
 
         <dependency>
             <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.java.dev.jna</groupId>
