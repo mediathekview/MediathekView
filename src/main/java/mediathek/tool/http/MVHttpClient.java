@@ -86,6 +86,7 @@ public class MVHttpClient {
 
         var config = ApplicationConfiguration.getConfiguration();
         IPvPreferenceMode mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(IPvPreferenceMode.IPV4_ONLY)));
+        logger.trace("Setting DNS selector to mode: {}", mode.toString());
 
         builder.connectTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
