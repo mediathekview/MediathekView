@@ -27,7 +27,7 @@ MediathekView startet nicht:
 
 https://mediathekview.de/faq/#mediathekview-startet-nicht
 
-* MediathekView benötigt mindestens Java 15 welches mit geliefert wird.
+* MediathekView benötigt mindestens Java 21 welches mit geliefert wird.
 
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
@@ -70,24 +70,23 @@ Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar
+jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -jar MediathekView.jar
 
 Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
 
 ===========================================================    
-Starten mit zusätzlichen Parametern
+Starten mit zusätzlichen Parametern (Windows)
 -----------------------------------------------------------
-jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication  --enable-preview -jar MediathekView.jar c:\temp
-jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication  --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
+jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar [Pfad] [Parameter]
+jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar c:\temp
+jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
-"-Xmx2G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 2GB werden nicht empfohlen.)
 
 
 ===========================================================    
@@ -95,4 +94,4 @@ Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
 Linux: MediathekView_Portable
-Java: jre/bin/java -Xmx2G -XX:+UseG1GC -Dfile.encoding=UTF-8 -XX:+UseStringDeduplication --enable-preview -jar MediathekView.jar Einstellungen/.mediathek3
+Java: jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3

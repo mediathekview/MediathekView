@@ -85,7 +85,7 @@ cat > usr/bin/$LOWERAPP <<'EOF'
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
-MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -Dfile.encoding=UTF-8 -DexternalUpdateCheck -jar MediathekView.jar "$@"
+MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -DexternalUpdateCheck -jar MediathekView.jar "$@"
 cd $OLDPWD
 EOF
 
