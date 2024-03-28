@@ -1,8 +1,8 @@
 package mediathek.mainwindow;
 
+import com.formdev.flatlaf.extras.components.FlatButton;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import mediathek.Main;
@@ -312,20 +312,33 @@ public class MediathekGui extends JFrame {
         UIManager.put( "ScrollBar.width", 16 );
     }
 
-    public void setupAlternatingRowColors() {
-        // install alternate row color only for windows >8 and macOS, Linux
-        boolean installAlternateRowColor;
-        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
-            installAlternateRowColor = true;
-        } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+    /**
+     * Check if alternate row colors in table should be used.
+     * Overridden in subclasses for the different OSes.
+     * @return true when alternating row colors should be used, false otherwise.
+     */
+    protected boolean useAlternateRowColors() {
+        return false;
+    }
 
-        if (installAlternateRowColor)
+    public void setupAlternatingRowColors() {
+        if (useAlternateRowColors())
             UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
     }
 
     protected void createDarkModeToggleButton() {
         commonToolBar.add(Box.createHorizontalGlue());
         commonToolBar.add(toggleDarkModeAction);
+    }
+
+    protected void createDarkModeMenuAction() {
+        var actionButton = new FlatButton();
+        actionButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        actionButton.setFocusable(false);
+        actionButton.setAction(toggleDarkModeAction);
+        actionButton.setSquareSize(true);
+        jMenuBar.add(Box.createGlue());
+        jMenuBar.add(actionButton);
     }
 
     protected void setToolBarProperties() {
