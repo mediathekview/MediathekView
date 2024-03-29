@@ -78,9 +78,9 @@ Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE ge
 ===========================================================    
 Starten mit zusätzlichen Parametern (Windows)
 -----------------------------------------------------------
-jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar [Pfad] [Parameter]
-jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar c:\temp
-jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar [Pfad] [Parameter]
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar c:\temp
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
