@@ -1,6 +1,7 @@
 # **14.0.1**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
-- CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt. 
+- CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt.
+- **macOS:** Die Position der Reiter kann nicht mehr geändert werden, da dies zu Problemen mit der Fensterdarstellung führt. Die Einstellungen dafür werden zurück gesetzt und können im Programm nicht mehr geändert werden. 
 - **Linux:** Native notifications wurden für aktuelle Bibliotheksversion angepasst.
 - **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
 - **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
@@ -16,6 +17,8 @@
 - **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Downloads werden die Einträge nun einheitlich dargestellt.
 - **BUGFIX:** Im Tab Filme wurde der Kontextmenüeintrag "Film aufzeichnen" konform zum Menüeintrag in "Film downloaden" angepasst.
 - **BUGFIX:** Im Tab Filme wurden die Darstellungsfehler im Kontextmenü beim Hell/Dunkel-Wechsel korrigiert.
+- **BUGFIX:** Toolbar "Allgemein" wird nun nicht mehr falsch dargestellt im Tab wenn die Tab-Position seitlich ist.
+- **BUGFIX(Windows/Linux):** Der Text der Reiter "Filme" und "Downloads" wird nun korrekt rotiert wenn die Reiterposition nicht oben ist.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
@@ -27,6 +30,7 @@
 - **FEATURE:** Das Nachladen von fehlenden Filmgrößen kann in den *Einstellungen/Aufzeichnen und Abspielen/Download* abgeschaltet werden.
 - **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
 - **FEATURE(Windows/Linux):** Darkmode Button wird ab Windows 10 und unter Linux in der Menüzeile neben den window controls angezeigt.
+- **FEATURE(Windows/Linux):** Tab-Labels werden nun korrekt rotiert wenn die Tab-Position nicht oben ist.
 - 
 # **14.0.0**
 - **ACHTUNG: macOS Sonoma 14.1 verursacht diverse Probleme und Programmhänger! Einige dieser Probleme konnten beseitigt werden, führen aber zu kleineren Einschränkungen.**

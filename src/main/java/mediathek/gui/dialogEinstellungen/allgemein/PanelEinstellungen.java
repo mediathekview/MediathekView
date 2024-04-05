@@ -68,6 +68,10 @@ public class PanelEinstellungen extends JPanel {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            jCheckBoxTabsTop.setEnabled(false);
+            jCheckBoxTabsTop.setToolTipText(NO_INFLUENCE_TEXT);
+        }
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
@@ -151,10 +155,13 @@ public class PanelEinstellungen extends JPanel {
         });
     }
 
+    private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
+
     private void setupTabSwitchListener() {
         if (SystemUtils.IS_OS_MAC_OSX) {
             //deactivated on OS X
             cbAutomaticMenuTabSwitching.setEnabled(false);
+            cbAutomaticMenuTabSwitching.setToolTipText(NO_INFLUENCE_TEXT);
             config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
         } else {
             boolean installed;

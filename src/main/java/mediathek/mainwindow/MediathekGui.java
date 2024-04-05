@@ -93,7 +93,7 @@ public class MediathekGui extends JFrame {
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
-    protected final SettingsAction settingsAction = new SettingsAction(this);
+    protected final SettingsAction settingsAction = new SettingsAction();
     final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
@@ -196,6 +196,7 @@ public class MediathekGui extends JFrame {
         setupNotificationCenter();
 
         createCommonToolBar();
+        installToolBar();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
@@ -257,6 +258,11 @@ public class MediathekGui extends JFrame {
                     logger.error("Auto DL and Quit: Error in callback...", t);
                 }
             }, Daten.getInstance().getDecoratedPool());
+        }
+
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
+            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         }
 
         performAustrianVlcCheck();
@@ -348,6 +354,7 @@ public class MediathekGui extends JFrame {
 
     protected void installToolBar() {
         tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
     }
 
     protected void createCommonToolBar() {
@@ -363,7 +370,6 @@ public class MediathekGui extends JFrame {
         createDarkModeToggleButton();
 
         setToolBarProperties();
-        installToolBar();
     }
 
     /**
@@ -809,12 +815,18 @@ public class MediathekGui extends JFrame {
     /**
      * Change placement of tabs based on settings
      */
-    private void configureTabPlacement() {
+    protected void configureTabPlacement() {
         final boolean topPosition = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
-        if (topPosition)
+        if (topPosition) {
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
-        else
+            getContentPane().remove(commonToolBar);
+            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        }
+        else {
             tabbedPane.setTabPlacement(JTabbedPane.LEFT);
+            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", null);
+            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+        }
     }
 
     private void configureTabIcons() {
@@ -879,6 +891,11 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    @Handler
+    private void handleShowSettingsDialogEvent(ShowSettingsDialogEvent evt) {
+        SwingUtilities.invokeLater(() -> getSettingsDialog().setVisible(true));
+    }
+
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
@@ -926,13 +943,18 @@ public class MediathekGui extends JFrame {
         jMenuDatei.add(exportMenu);
         jMenuDatei.add(importMenu);
 
-        //on macOS we will use native handlers instead...
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            jMenuDatei.addSeparator();
-            jMenuDatei.add(settingsAction);
-            jMenuDatei.addSeparator();
-            jMenuDatei.add(new QuitAction(this));
-        }
+        addSettingsMenuItem();
+        addQuitMenuItem();
+    }
+
+    protected void addSettingsMenuItem() {
+        jMenuDatei.addSeparator();
+        jMenuDatei.add(settingsAction);
+    }
+
+    protected void addQuitMenuItem() {
+        jMenuDatei.addSeparator();
+        jMenuDatei.add(new QuitAction(this));
     }
 
     private void createViewMenu() {
@@ -1019,7 +1041,9 @@ public class MediathekGui extends JFrame {
         miGc.addActionListener(l -> System.gc());
 
         devMenu.add(miGc);
-        jMenuBar.add(devMenu);
+
+        var idx = jMenuBar.getComponentIndex(jMenuAnsicht);
+        jMenuBar.add(devMenu, ++idx);
     }
 
     private void createAboMenu() {

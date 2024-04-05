@@ -5,8 +5,11 @@ import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadStartEvent
 import mediathek.gui.messages.InstallTabSwitchListenerEvent
+import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
+import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.GuiFunktionenProgramme
+import mediathek.tool.MessageBus
 import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
@@ -29,10 +32,23 @@ class MediathekGuiMac : MediathekGui() {
         return true
     }
 
+    override fun addQuitMenuItem() {
+        //using native handler instead
+    }
+
+    override fun addSettingsMenuItem() {
+        //using native handler instead
+    }
     override fun setToolBarProperties() {
         //not used on macOS
     }
 
+    override fun configureTabPlacement() {
+        // force tab position top on macOS
+        config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true)
+
+        super.configureTabPlacement()
+    }
     override fun installToolBar() {
         contentPane.add(commonToolBar, BorderLayout.PAGE_START)
     }
@@ -139,7 +155,9 @@ class MediathekGuiMac : MediathekGui() {
         }
 
         if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            desktop.setPreferencesHandler { settingsDialog.isVisible = true }
+            desktop.setPreferencesHandler {
+                MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
+            }
         }
 
         getRootPane().putClientProperty("apple.awt.windowTitleVisible", false)

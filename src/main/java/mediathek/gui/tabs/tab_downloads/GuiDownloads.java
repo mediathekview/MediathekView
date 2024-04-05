@@ -142,8 +142,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupDownloadListStatusBar();
 
-        setupF4Key(mediathekGui);
-
         setupDownloadListTable();
 
         setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
@@ -180,21 +178,6 @@ public class GuiDownloads extends AGuiTabPanel {
     public void tabelleSpeichern() {
         if (tabelle != null) {
             tabelle.writeTableConfigurationData();
-        }
-    }
-
-    private void setupF4Key(MediathekGui mediathekGui) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            // zum Abfangen der Win-F4 für comboboxen
-            InputMap im = cbDisplayCategories.getInputMap();
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
-            ActionMap am = cbDisplayCategories.getActionMap();
-            am.put("einstellungen", new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mediathekGui.getSettingsDialog().setVisible(true);
-                }
-            });
         }
     }
 
@@ -1103,7 +1086,7 @@ public class GuiDownloads extends AGuiTabPanel {
         swingToolBar.add(toggleFilterPanelAction);
     }
 
-    class ToggleFilterPanelAction extends AbstractAction {
+    public class ToggleFilterPanelAction extends AbstractAction {
         public ToggleFilterPanelAction() {
             putValue(Action.NAME, "Filter anzeigen/ausblenden");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen/ausblenden");
