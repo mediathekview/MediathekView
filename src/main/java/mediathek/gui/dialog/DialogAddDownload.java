@@ -228,7 +228,13 @@ public class DialogAddDownload extends JDialog {
     private ListenableFuture<String> hochFuture;
     private ListenableFuture<String> kleinFuture;
 
+    private boolean restoreFetchSize;
+
     private void launchResolutionFutures() {
+        // always fetch file size during dialog ops...
+        restoreFetchSize = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true);
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true);
+
         var decoratedPool = Daten.getInstance().getDecoratedPool();
         hqFuture = decoratedPool.submit(() -> {
             var url = datenFilm.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY);
@@ -437,6 +443,10 @@ public class DialogAddDownload extends JDialog {
             kleinFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error occured while waiting for file size futures", e);
+        }
+        finally {
+            //reset fetch size state to previous value
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, restoreFetchSize);
         }
     }
 
