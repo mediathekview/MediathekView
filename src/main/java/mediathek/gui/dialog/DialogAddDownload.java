@@ -146,8 +146,7 @@ public class DialogAddDownload extends JDialog {
                 var audioStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.AUDIO).findAny();
                 audioStreamResult.ifPresentOrElse(astream -> {
                             var sample_rate = astream.getSampleRate();
-                            var bits_per_sample = astream.getBitRate() / 1000;
-                            var audio_output = String.format("Audio: %d Hz, %d kBit/s, %s", sample_rate, bits_per_sample, astream.getCodecLongName());
+                            final String audio_output = getAudioInfo(astream, sample_rate);
                             SwingUtilities.invokeLater(() -> {
                                 lblAudioInfo.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
                                 lblAudioInfo.setText(audio_output);
@@ -160,9 +159,9 @@ public class DialogAddDownload extends JDialog {
 
                 var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
                 videoStreamResult.ifPresentOrElse(stream -> {
-                    var fr = stream.getAvgFrameRate().intValue();
+                    var frame_rate = stream.getAvgFrameRate().intValue();
                     var codecName = getVideoCodecName(stream);
-                    var video_output = String.format("Video: %dx%d, %d kBit/s, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr, codecName);
+                    final String video_output = getVideoInfoString(stream, frame_rate, codecName);
                     SwingUtilities.invokeLater(() -> {
                         lblStatus.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
                         lblStatus.setText(video_output);
@@ -173,6 +172,42 @@ public class DialogAddDownload extends JDialog {
                 }));
 
                 SwingUtilities.invokeLater(() -> resetBusyLabelAndButton());
+            }
+
+            private int safe_process_bit_rate(Integer in)
+            {
+                int bits;
+                try {
+                    bits = in / 1000;
+                }
+                catch (Exception e) {
+                    bits = 0;
+                }
+                return bits;
+            }
+
+            private String getVideoInfoString(Stream stream, int frame_rate, String codecName) {
+                int bit_rate = safe_process_bit_rate(stream.getBitRate());
+                String video_output;
+                if (bit_rate == 0) {
+                    video_output = String.format("Video: %dx%d, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), frame_rate, codecName);
+                }
+                else {
+                    video_output = String.format("Video: %dx%d, %d kBit/s, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), bit_rate, frame_rate, codecName);
+                }
+                return video_output;
+            }
+
+            private String getAudioInfo(Stream astream, Integer sample_rate) {
+                int bits_per_sample = safe_process_bit_rate(astream.getBitRate());
+                String audio_output;
+                if (bits_per_sample == 0) {
+                    audio_output = String.format("Audio: %d Hz, %s", sample_rate, astream.getCodecLongName());
+                }
+                else {
+                    audio_output = String.format("Audio: %d Hz, %d kBit/s, %s", sample_rate, bits_per_sample, astream.getCodecLongName());
+                }
+                return audio_output;
             }
 
             @Override
