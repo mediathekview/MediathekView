@@ -65,8 +65,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanelSize" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jPanelSize" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jCheckBoxStarten" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Group type="103" alignment="1" groupAlignment="3" attributes="0">
@@ -327,9 +327,9 @@
                       <Component id="jRadioButtonAufloesungHoch" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonAufloesungKlein" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -376,11 +376,29 @@
             </Component>
             <Component class="org.jdesktop.swingx.JXBusyLabel" name="lblBusyIndicator">
             </Component>
-            <Component class="javax.swing.JLabel" name="lblStatus">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="status"/>
-              </Properties>
-            </Component>
+            <Container class="javax.swing.JPanel" name="jPanel5">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                <Property name="columns" type="int" value="1"/>
+                <Property name="rows" type="int" value="2"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="lblStatus">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="status"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblAudioInfo">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="audio"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
           </SubComponents>
         </Container>
       </SubComponents>

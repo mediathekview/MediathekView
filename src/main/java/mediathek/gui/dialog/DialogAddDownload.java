@@ -57,6 +57,9 @@ public class DialogAddDownload extends JDialog {
     private JTextComponent cbPathTextComponent;
     private static final Logger logger = LogManager.getLogger();
     private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
+    private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
+    private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
+
 
     public DialogAddDownload(@NotNull Frame parent, @NotNull DatenFilm film, @Nullable DatenPset pSet, @NotNull Optional<FilmResolution.Enum> requestedResolution) {
         super(parent, true);
@@ -81,6 +84,7 @@ public class DialogAddDownload extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 setNameFilm();
                 lblStatus.setText("");
+                lblAudioInfo.setText("");
                 lblBusyIndicator.setBusy(false);
                 lblBusyIndicator.setVisible(false);
                 if (resultListenableFuture != null) {
@@ -111,7 +115,7 @@ public class DialogAddDownload extends JDialog {
      */
     private String getVideoCodecName(@NotNull Stream stream) {
         var name = stream.getCodecLongName();
-        logger.trace("codec long name: {}", name);
+        logger.trace("video codec long name: {}", name);
         try {
             var splitName = name.split("/");
             return splitName[0].trim();
@@ -129,6 +133,7 @@ public class DialogAddDownload extends JDialog {
         lblBusyIndicator.setVisible(true);
         lblBusyIndicator.setBusy(true);
         lblStatus.setText("");
+        lblAudioInfo.setText("");
 
         Future<FFprobeResult> resultFuture = FFprobe.atPath(ffprobePath)
                 .setShowStreams(true)
@@ -138,18 +143,33 @@ public class DialogAddDownload extends JDialog {
         Futures.addCallback(resultListenableFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(FFprobeResult result) {
+                var audioStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.AUDIO).findAny();
+                audioStreamResult.ifPresentOrElse(astream -> {
+                            var sample_rate = astream.getSampleRate();
+                            var bits_per_sample = astream.getBitRate() / 1000;
+                            var audio_output = String.format("Audio: %d Hz, %d kBit/s, %s", sample_rate, bits_per_sample, astream.getCodecLongName());
+                            SwingUtilities.invokeLater(() -> {
+                                lblAudioInfo.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
+                                lblAudioInfo.setText(audio_output);
+                            });
+                        },
+                        () -> SwingUtilities.invokeLater(() -> {
+                            lblAudioInfo.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
+                            lblAudioInfo.setText(NO_DATA_AVAILABLE);
+                        }));
+
                 var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
                 videoStreamResult.ifPresentOrElse(stream -> {
                     var fr = stream.getAvgFrameRate().intValue();
                     var codecName = getVideoCodecName(stream);
-                    var output = String.format("%dx%d, %d kBit/s, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr, codecName);
+                    var video_output = String.format("Video: %dx%d, %d kBit/s, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr, codecName);
                     SwingUtilities.invokeLater(() -> {
-                        lblStatus.setForeground(UIManager.getColor("Label.foreground"));
-                        lblStatus.setText(output);
+                        lblStatus.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
+                        lblStatus.setText(video_output);
                     });
                 }, () -> SwingUtilities.invokeLater(() -> {
-                    lblStatus.setForeground(UIManager.getColor("Label.foreground"));
-                    lblStatus.setText("Keine Daten verfügbar.");
+                    lblStatus.setForeground(UIManager.getColor(KEY_LABEL_FOREGROUND));
+                    lblStatus.setText(NO_DATA_AVAILABLE);
                 }));
 
                 SwingUtilities.invokeLater(() -> resetBusyLabelAndButton());
@@ -161,6 +181,7 @@ public class DialogAddDownload extends JDialog {
                 if (t instanceof CancellationException) {
                     SwingUtilities.invokeLater(() -> {
                         lblStatus.setText("");
+                        lblAudioInfo.setText("");
                         resetBusyLabelAndButton();
                     });
                 }
@@ -168,6 +189,7 @@ public class DialogAddDownload extends JDialog {
                     SwingUtilities.invokeLater(() -> {
                     lblStatus.setText("Unbekannter Fehler aufgetreten.");
                     lblStatus.setForeground(Color.RED);
+                    lblAudioInfo.setText("");
                     resetBusyLabelAndButton();
                 });
             }
@@ -197,6 +219,7 @@ public class DialogAddDownload extends JDialog {
         lblBusyIndicator.setBusy(false);
         lblBusyIndicator.setVisible(false);
         lblStatus.setText("");
+        lblAudioInfo.setText("");
     }
 
     private void setupUI() {
@@ -538,7 +561,7 @@ public class DialogAddDownload extends JDialog {
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
      */
     private void calculateAndCheckDiskSpace() {
-        var fgColor = UIManager.getColor("Label.foreground");
+        var fgColor = UIManager.getColor(KEY_LABEL_FOREGROUND);
         if (fgColor != null) {
             jRadioButtonAufloesungHd.setForeground(fgColor);
             jRadioButtonAufloesungHoch.setForeground(fgColor);
@@ -773,7 +796,9 @@ public class DialogAddDownload extends JDialog {
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         btnRequestLiveInfo = new javax.swing.JButton();
         lblBusyIndicator = new org.jdesktop.swingx.JXBusyLabel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         lblStatus = new javax.swing.JLabel();
+        lblAudioInfo = new javax.swing.JLabel();
         jTextFieldSender = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -879,8 +904,15 @@ public class DialogAddDownload extends JDialog {
         jPanel3.add(btnRequestLiveInfo);
         jPanel3.add(lblBusyIndicator);
 
+        jPanel5.setLayout(new java.awt.GridLayout(2, 1));
+
         lblStatus.setText("status");
-        jPanel3.add(lblStatus);
+        jPanel5.add(lblStatus);
+
+        lblAudioInfo.setText("audio");
+        jPanel5.add(lblAudioInfo);
+
+        jPanel3.add(jPanel5);
 
         javax.swing.GroupLayout jPanelSizeLayout = new javax.swing.GroupLayout(jPanelSize);
         jPanelSize.setLayout(jPanelSizeLayout);
@@ -907,9 +939,9 @@ public class DialogAddDownload extends JDialog {
                     .addComponent(jRadioButtonAufloesungHd)
                     .addComponent(jRadioButtonAufloesungHoch)
                     .addComponent(jRadioButtonAufloesungKlein))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTextFieldSender.setEditable(false);
@@ -948,8 +980,8 @@ public class DialogAddDownload extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBoxStarten, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -979,6 +1011,7 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JRadioButton jRadioButtonAufloesungKlein;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldSender;
+    private javax.swing.JLabel lblAudioInfo;
     private org.jdesktop.swingx.JXBusyLabel lblBusyIndicator;
     private javax.swing.JLabel lblStatus;
     // End of variables declaration//GEN-END:variables
