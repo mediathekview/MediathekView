@@ -3,6 +3,7 @@ package mediathek.gui.dialog;
 import com.github.kokorin.jaffree.StreamType;
 import com.github.kokorin.jaffree.ffprobe.FFprobe;
 import com.github.kokorin.jaffree.ffprobe.FFprobeResult;
+import com.github.kokorin.jaffree.ffprobe.Stream;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
@@ -103,6 +104,23 @@ public class DialogAddDownload extends JDialog {
     private Path ffprobePath;
     private ListenableFuture<FFprobeResult> resultListenableFuture;
 
+    /**
+     * Return only the first part of the long codec name.
+     * @param stream The video stream from ffprobe.
+     * @return First entry of long codec name.
+     */
+    private String getVideoCodecName(@NotNull Stream stream) {
+        var name = stream.getCodecLongName();
+        logger.trace("codec long name: {}", name);
+        try {
+            var splitName = name.split("/");
+            return splitName[0].trim();
+        }
+        catch (Exception e) {
+            return name;
+        }
+    }
+
     private void handleRequestLiveFilmInfo() {
         var res = getFilmResolution();
         var url = datenFilm.getUrlFuerAufloesung(res);
@@ -123,7 +141,8 @@ public class DialogAddDownload extends JDialog {
                 var videoStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.VIDEO).findAny();
                 videoStreamResult.ifPresentOrElse(stream -> {
                     var fr = stream.getAvgFrameRate().intValue();
-                    var output = String.format("%dx%d, %d kBit/s, %d fps (avg)", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr);
+                    var codecName = getVideoCodecName(stream);
+                    var output = String.format("%dx%d, %d kBit/s, %d fps (avg), %s", stream.getWidth(), stream.getHeight(), stream.getBitRate() / 1000, fr, codecName);
                     SwingUtilities.invokeLater(() -> {
                         lblStatus.setForeground(UIManager.getColor("Label.foreground"));
                         lblStatus.setText(output);
