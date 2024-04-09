@@ -958,7 +958,7 @@ public class DialogAddDownload extends JDialog {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        btnRequestLiveInfo.setText("Filminformationen abrufen...");
+        btnRequestLiveInfo.setText("Codec-Details abrufen...");
         jPanel3.add(btnRequestLiveInfo);
         jPanel3.add(lblBusyIndicator);
 

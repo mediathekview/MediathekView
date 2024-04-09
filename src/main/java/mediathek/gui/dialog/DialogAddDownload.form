@@ -371,7 +371,7 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="btnRequestLiveInfo">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Filminformationen abrufen..."/>
+                <Property name="text" type="java.lang.String" value="Codec-Details abrufen..."/>
               </Properties>
             </Component>
             <Component class="org.jdesktop.swingx.JXBusyLabel" name="lblBusyIndicator">

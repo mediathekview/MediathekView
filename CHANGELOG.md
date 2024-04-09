@@ -24,7 +24,7 @@
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
 - **FEATURE:** MV kann mittels `-dq` oder `--download-quit` Parameter zum automatischen Download aller Filme in der Downloadansicht mit anschließender automatischer Beendigung aufgefordert werden.
 - **FEATURE:** Im Hilfe-Menü wurde ein Eintrag zu den Frequently Asked Questions (FAQ) ergänzt.
-- **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Filminformationen aus dem Netz geladen werden (Höhe x Breite, Bitrate).
+- **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Codec-Informationen für die gewählte URL aus dem Netz geladen werden.
 - **FEATURE(Linux):** Dark Mode Erkennung funktioniert nun auch mit GNOME. Danke an @swsnr!
 - **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
 - **FEATURE:** Das Nachladen von fehlenden Filmgrößen kann in den *Einstellungen/Aufzeichnen und Abspielen/Download* abgeschaltet werden.
