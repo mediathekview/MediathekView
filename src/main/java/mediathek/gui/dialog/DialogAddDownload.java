@@ -4,6 +4,7 @@ import com.github.kokorin.jaffree.StreamType;
 import com.github.kokorin.jaffree.ffprobe.FFprobe;
 import com.github.kokorin.jaffree.ffprobe.FFprobeResult;
 import com.github.kokorin.jaffree.ffprobe.Stream;
+import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
@@ -219,13 +220,42 @@ public class DialogAddDownload extends JDialog {
                         resetBusyLabelAndButton();
                     });
                 }
-                else
-                    SwingUtilities.invokeLater(() -> {
-                    lblStatus.setText("Unbekannter Fehler aufgetreten.");
+                else if (t instanceof JaffreeAbnormalExitException e) {
+                    String final_str = getJaffreeErrorString(e);
+                    setupLabels(final_str);
+                }
+                else {
+                    setupLabels(MSG_UNKNOWN_ERROR);
+                }
+            }
+
+            private void setupLabels(String text) {
+                SwingUtilities.invokeLater(() -> {
+                    lblStatus.setText(text);
                     lblStatus.setForeground(Color.RED);
                     lblAudioInfo.setText("");
                     resetBusyLabelAndButton();
                 });
+            }
+
+            private static final String ERR_MSG_PART = "Server returned ";
+            private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler aufgetreten.";
+
+            private @NotNull String getJaffreeErrorString(JaffreeAbnormalExitException e) {
+                String final_str;
+                try {
+                    var msg = e.getProcessErrorLogMessages().getFirst().message.split(":");
+                    var err_msg = msg[msg.length - 1].trim();
+                    if (err_msg.startsWith(ERR_MSG_PART)) {
+                        final_str = err_msg.substring(ERR_MSG_PART.length());
+                    } else {
+                        final_str = MSG_UNKNOWN_ERROR;
+                    }
+                }
+                catch (Exception ignored) {
+                    final_str = MSG_UNKNOWN_ERROR;
+                }
+                return final_str;
             }
         }, Daten.getInstance().getDecoratedPool());
     }
