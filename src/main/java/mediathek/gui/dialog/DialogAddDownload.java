@@ -73,7 +73,6 @@ public class DialogAddDownload extends JDialog {
         this.pSet = pSet;
 
         setupUI();
-        packIt();
 
         setLocationRelativeTo(parent);
     }
@@ -293,12 +292,6 @@ public class DialogAddDownload extends JDialog {
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
-    }
-
-    private void packIt() {
-        int w = this.getWidth();
-        pack();
-        this.setSize(w, this.getHeight());
     }
 
     private ListenableFuture<String> hqFuture;
