@@ -447,6 +447,10 @@ public class GuiFilme extends AGuiTabPanel {
             return;
         }
 
+        if (pSet == null) {
+            pSet = Daten.listePset.getListeSpeichern().getFirst();
+        }
+
         List<DatenFilm> liste = getSelFilme();
         boolean standard = false;
         String pfad = "";
@@ -454,9 +458,6 @@ public class GuiFilme extends AGuiTabPanel {
         boolean subtitle = false;
 
         if (liste.size() > 1) {
-            if (pSet == null) {
-                pSet = Daten.listePset.getListeSpeichern().get(0);
-            }
             DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
             damd.setVisible(true);
             standard = damd.addAll;
@@ -483,9 +484,6 @@ public class GuiFilme extends AGuiTabPanel {
             }
 
             if (standard) {
-                if (pSet == null) {
-                    pSet = Daten.listePset.getListeSpeichern().get(0);
-                }
                 datenDownload = new DatenDownload(
                         pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "",
                         pfad, "");
@@ -896,7 +894,7 @@ public class GuiFilme extends AGuiTabPanel {
 
             public void addHistoryEntry(String text) {
                 if (!historyList.contains(text)) {
-                    historyList.add(0, text);
+                    historyList.addFirst(text);
                     saveHistory();
                 }
 
