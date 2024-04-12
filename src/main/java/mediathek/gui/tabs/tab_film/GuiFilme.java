@@ -478,7 +478,7 @@ public class GuiFilme extends AGuiTabPanel {
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
                         "Anlegen?",
                         JOptionPane.YES_NO_OPTION);
-                if (ret != JOptionPane.OK_OPTION) {
+                if (ret != JOptionPane.YES_OPTION) {
                     continue;
                 }
             }
