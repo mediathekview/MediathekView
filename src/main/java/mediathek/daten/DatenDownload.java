@@ -155,6 +155,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         init();
     }
 
+    public DatenDownload(@NotNull DatenPset pSet, @NotNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle)
+    {
+        this(pSet, film, quelle, abo, name, pfad, aufloesung);
+        arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
+        arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
+    }
+
     /**
      * Read the download data from config.
      *

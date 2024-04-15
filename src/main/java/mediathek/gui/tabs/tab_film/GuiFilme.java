@@ -440,7 +440,7 @@ public class GuiFilme extends AGuiTabPanel {
         SwingUtilities.invokeLater(this::updateStartInfoProperty);
     }
 
-    private synchronized void saveFilm(DatenPset pSet) {
+    private synchronized void saveFilm(@Nullable DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
             new DialogAboNoSet(mediathekGui).setVisible(true);
             // Satz mit x, war wohl nix
@@ -452,28 +452,28 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         List<DatenFilm> liste = getSelFilme();
-        boolean standard = false;
+        boolean addAllWithDefaults = false;
         String pfad = "";
         boolean info = false;
         boolean subtitle = false;
 
         if (liste.size() > 1) {
             DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
-            damd.setVisible(true);
-            standard = damd.addAll;
-            pfad = damd.getPath();
-            info = damd.info;
-            subtitle = damd.subtitle;
-            if (damd.cancel) {
+            var result = damd.showDialog();
+            if (damd.wasCancelled()) {
                 return;
+            }
+            else {
+                addAllWithDefaults = result.addAll();
+                pfad = result.path();
+                info = result.info();
+                subtitle = result.subtitle();
             }
         }
 
-        for (DatenFilm datenFilm : liste) {
+        for (var film : liste) {
             // erst mal schauen obs den schon gibt
-            DatenDownload datenDownload =
-                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-            if (datenDownload != null) {
+            if (daten.getListeDownloads().getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
                 int ret = JOptionPane.showConfirmDialog(mediathekGui,
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
                         "Anlegen?",
@@ -483,27 +483,36 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             }
 
-            if (standard) {
-                datenDownload = new DatenDownload(
-                        pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "",
-                        pfad, "");
-                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
-                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
-
-                daten.getListeDownloads().addMitNummer(datenDownload);
-                MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-                    // und evtl. auch gleich starten
-                    datenDownload.startDownload();
-                }
+            if (addAllWithDefaults) {
+                var datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "",
+                        pfad, "", info, subtitle);
+                registerDownload(datenDownload);
             } else {
-                saveFilm(datenFilm, pSet);
+                saveFilm(film, pSet);
             }
         }
     }
 
-    private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
+    /**
+     * Register a download object in queue.
+     * @param datenDownload the object that should be downloaded.
+     */
+    private void registerDownload(@NotNull DatenDownload datenDownload) {
+        Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
+            // und evtl. auch gleich starten
+            datenDownload.startDownload();
+        }
+    }
+    /**
+     * Download a single film via add download dialog.
+     * @param datenFilm film of interest
+     * @param pSet the program set, can be null.
+     */
+    private void saveFilm(@NotNull DatenFilm datenFilm, @NotNull DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
+            //TODO should be impossible to reach this code block as psets are checked before...investigate.
             MVMessageDialog.showMessageDialog(this,
                     "Ohne Programm-Sets können keine Downloads gestartet werden.",
                     Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);

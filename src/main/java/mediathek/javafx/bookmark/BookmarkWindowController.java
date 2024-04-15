@@ -32,22 +32,18 @@ import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPset;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.gui.dialog.DialogAddMoreDownload;
-import mediathek.gui.messages.DownloadListChangedEvent;
+import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MVC;
-import mediathek.tool.MessageBus;
 import mediathek.tool.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
@@ -245,7 +241,7 @@ public class BookmarkWindowController implements Initializable {
 
   @SuppressWarnings("unchecked")
   private void copy2Clipboard(Event e) {
-    TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
+    TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().getFirst();
     BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
     String data = pos.getTableColumn().getCellObservableValue(item).getValue();
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
@@ -560,7 +556,7 @@ public class BookmarkWindowController implements Initializable {
   private void tbviewOnContextRequested(ContextMenuEvent event) {
     if (!tbBookmarks.getSelectionModel().getSelectedItems().isEmpty()) { // Do not show row context menu if nothing is selected
       if (!ccopyitem.isDisable()) { // adapt copy content to column
-        TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
+        TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().getFirst();
         BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
         String sdata = pos.getTableColumn() != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
         ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
@@ -674,7 +670,6 @@ public class BookmarkWindowController implements Initializable {
   /**
    * Trigger Download of movie   (mirror fucntionality of FilmGUI)
    * @param data movie object to be used for download
-   *
    * Note: Due to mixture of JavaFX and Swing the windows do not arrange properly,
    *       workaround is to hide bookmark window during processing
    */
@@ -704,31 +699,14 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void createDownload(DatenFilm film) {
-    final var daten = Daten.getInstance();
-
     stage.hide();
 
     SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
-      DatenPset pSet = Daten.listePset.getListeSpeichern().get(0);
+      final var pSet = Daten.listePset.getListeSpeichern().getFirst();
       final var ui = MediathekGui.ui();
-      DialogAddMoreDownload damd = new DialogAddMoreDownload(ui, pSet);
-      damd.setLocationRelativeTo(ui);
-      damd.setVisible(true);
-
-      String pfad = damd.getPath();
-      boolean info = damd.info;
-      boolean subtitle = damd.subtitle;
-      if (!damd.cancel) {
-        DatenDownload datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, "");
-        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
-        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
-
-        daten.getListeDownloads().addMitNummer(datenDownload);
-        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-          datenDownload.startDownload();  // und evtl. auch gleich starten
-        }
-      }
+      var dlg = new DialogAddDownload(ui, film, pSet, Optional.empty());
+      dlg.setLocationRelativeTo(ui);
+      dlg.setVisible(true);
       showStage();
     });
   }

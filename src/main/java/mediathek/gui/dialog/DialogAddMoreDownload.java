@@ -17,14 +17,23 @@ import java.awt.*;
 import java.util.Objects;
 
 public class DialogAddMoreDownload extends JDialog {
-    public boolean addAll;
-    public boolean cancel;
-    public boolean info;
-    public boolean subtitle;
+    private boolean addAll;
+    private boolean cancel;
+    private boolean info;
+    private boolean subtitle;
 
     private final DatenPset pSet;
     private final String orgPfad;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
+
+    public boolean wasCancelled() { return cancel; }
+
+    public record DialogResult(boolean addAll, boolean info, boolean subtitle, String path) {}
+
+    public DialogResult showDialog() {
+        setVisible(true);
+        return new DialogResult(addAll, info, subtitle, getPath());
+    }
 
     public DialogAddMoreDownload(JFrame parent, DatenPset pSet) {
         super(parent);
@@ -116,7 +125,7 @@ public class DialogAddMoreDownload extends JDialog {
         pack();
     }
 
-    public String getPath() {
+    private String getPath() {
         String path = jComboBoxPath.getModel().getSelectedItem().toString();
         if (path.isEmpty()) {
             path = pSet.getZielPfad();
