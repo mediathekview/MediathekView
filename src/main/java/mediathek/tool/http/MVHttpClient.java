@@ -3,7 +3,6 @@ package mediathek.tool.http;
 import mediathek.config.Config;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.dns.DnsSelector;
-import mediathek.tool.dns.IPvPreferenceMode;
 import okhttp3.Authenticator;
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
@@ -22,6 +21,7 @@ public class MVHttpClient {
     private static final MVHttpClient ourInstance = new MVHttpClient();
     private final Logger logger = LogManager.getLogger(MVHttpClient.class);
     private final ByteCounter byteCounter = new ByteCounter();
+    private final DnsSelector dnsSelector = new DnsSelector();
     private OkHttpClient httpClient;
 
     private MVHttpClient() {
@@ -84,17 +84,13 @@ public class MVHttpClient {
             builder.connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS));
         }
 
-        var config = ApplicationConfiguration.getConfiguration();
-        IPvPreferenceMode mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(IPvPreferenceMode.IPV4_ONLY)));
-        logger.trace("Setting DNS selector to mode: {}", mode.toString());
-
         builder.connectTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(2, TimeUnit.SECONDS)
                 .socketFactory(byteCounter.socketFactory())
                 .followRedirects(true)
                 .followSslRedirects(true)
-                .dns(new DnsSelector(mode));
+                .dns(dnsSelector);
         return builder;
     }
 

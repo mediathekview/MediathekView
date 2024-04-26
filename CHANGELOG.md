@@ -32,7 +32,9 @@
 - **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
 - **FEATURE(Windows/Linux):** Darkmode Button wird ab Windows 10 und unter Linux in der Menüzeile neben den window controls angezeigt.
 - **FEATURE(Windows/Linux):** Tab-Labels werden nun korrekt rotiert wenn die Tab-Position nicht oben ist.
-- 
+- **FEATURE:** Der bevorzugte DNS-IP-Auflösungsmodus kann nun via `-dpm <XXX>` oder `--dns-preference-mode <XXX>` geändert werden. Zulässige Werte sind `system`, `ip_v6`, `ip_v4`, `ip_v6_only`, `ip_v4_only` (Standardwert). Eine Änderung kann bei IPv6-only Internetanschlüssen notwendig sein. 
+
+
 # **14.0.0**
 - **ACHTUNG: macOS Sonoma 14.1 verursacht diverse Probleme und Programmhänger! Einige dieser Probleme konnten beseitigt werden, führen aber zu kleineren Einschränkungen.**
 - macOS: Speicherverbrauchsanzeige wurde deaktiviert. Sie verursacht bisher unbekannte Programmanomalien unter macOS Sonoma 14.1

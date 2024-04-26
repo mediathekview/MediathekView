@@ -13,6 +13,7 @@ import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
+import mediathek.tool.dns.IPvPreferenceMode;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -364,6 +365,20 @@ public class Main {
         }
     }
 
+    private static void configureDnsPreferenceMode(CommandLine.ParseResult parseResult) {
+        var config = ApplicationConfiguration.getConfiguration();
+        if (parseResult.hasMatchedOption("dpm")) {
+            logger.trace("Dns preference mode set via CLI, storing config value");
+            config.setProperty(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode()));
+        }
+        else {
+            logger.trace("Dns preference mode NOT set, using config setting");
+            var mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode())));
+            Config.setDnsIpPreferenceMode(mode);
+        }
+        logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString());
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -392,6 +407,8 @@ public class Main {
 
                 setupLogging();
                 printPortableModeInfo();
+
+                configureDnsPreferenceMode(parseResult);
 
                 if (SystemUtils.IS_OS_LINUX) {
                     // enable custom window decorations
