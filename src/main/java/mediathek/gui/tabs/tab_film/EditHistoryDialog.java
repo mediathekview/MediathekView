@@ -54,7 +54,15 @@ public class EditHistoryDialog extends JDialog {
             for (var idx : list.getSelectedIndices()) {
                 changeList.add(list.getModel().getElementAt(idx));
             }
-            changeList.forEach(eventList::remove);
+
+            var lock = eventList.getReadWriteLock().writeLock();
+            lock.lock();
+            try {
+                changeList.forEach(eventList::remove);
+            }
+            finally {
+                lock.unlock();
+            }
             changeList.clear();
         });
 

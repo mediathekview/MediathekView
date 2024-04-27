@@ -894,16 +894,22 @@ public class GuiFilme extends AGuiTabPanel {
                     JPopupMenu popupMenu = new JPopupMenu();
                     popupMenu.add(miClearHistory);
                     popupMenu.add(miEditHistory);
-                    if (!historyList.isEmpty()) {
-                        popupMenu.addSeparator();
-                        for (var item : historyList) {
-                            JMenuItem historyItem = new JMenuItem(item);
-                            historyItem.addActionListener(li -> {
-                                searchField.setText(item);
-                                searchField.fireActionPerformed();
-                            });
-                            popupMenu.add(historyItem);
+                    historyList.getReadWriteLock().readLock().lock();
+                    try {
+                        if (!historyList.isEmpty()) {
+                            popupMenu.addSeparator();
+                            for (var item : historyList) {
+                                JMenuItem historyItem = new JMenuItem(item);
+                                historyItem.addActionListener(li -> {
+                                    searchField.setText(item);
+                                    searchField.fireActionPerformed();
+                                });
+                                popupMenu.add(historyItem);
+                            }
                         }
+                    }
+                    finally {
+                        historyList.getReadWriteLock().readLock().unlock();
                     }
                     popupMenu.show(this, 0, this.getHeight());
                 });
@@ -926,7 +932,13 @@ public class GuiFilme extends AGuiTabPanel {
                         List<String> entries = mapper.readValue(json, new TypeReference<>() {
                         });
                         if (!entries.isEmpty()) {
-                            historyList.addAll(entries);
+                            historyList.getReadWriteLock().writeLock().lock();
+                            try {
+                                historyList.addAll(entries);
+                            }
+                            finally {
+                                historyList.getReadWriteLock().writeLock().unlock();
+                            }
                         }
                     }
                 } catch (JsonProcessingException ex) {
@@ -937,8 +949,14 @@ public class GuiFilme extends AGuiTabPanel {
             private void saveHistory() {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
-                    var json = mapper.writeValueAsString(historyList);
-                    ApplicationConfiguration.getConfiguration().setProperty(SEARCH_HISTORY_CONFIG, json);
+                    historyList.getReadWriteLock().readLock().lock();
+                    try {
+                        var json = mapper.writeValueAsString(historyList);
+                        ApplicationConfiguration.getConfiguration().setProperty(SEARCH_HISTORY_CONFIG, json);
+                    }
+                    finally {
+                        historyList.getReadWriteLock().readLock().unlock();
+                    }
                 } catch (JsonProcessingException e) {
                     logger.error("Failed to write search history", e);
                 }
