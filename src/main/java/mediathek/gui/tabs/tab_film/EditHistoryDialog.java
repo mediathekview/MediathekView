@@ -1,0 +1,157 @@
+/*
+ * Created by JFormDesigner on Sat Apr 27 12:49:11 CEST 2024
+ */
+
+package mediathek.gui.tabs.tab_film;
+
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.DefaultEventListModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.SVGIconUtilities;
+import org.apache.commons.configuration2.sync.LockMode;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
+/**
+ * @author christianfranzke
+ */
+public class EditHistoryDialog extends JDialog {
+    private static final String CONFIG_X = "edit_history.x";
+    private static final String CONFIG_Y = "edit_history.y";
+    private static final String CONFIG_HEIGHT = "edit_history.height";
+    private static final String CONFIG_WIDTH = "edit_history.width";
+
+    public EditHistoryDialog(Window owner, JMenuItem menuItem, EventList<String> eventList) {
+        super(owner);
+        initComponents();
+
+        menuItem.setEnabled(false);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                menuItem.setEnabled(true);
+                savePosition();
+            }
+        });
+
+        DefaultEventListModel<String> model = GlazedListsSwing.eventListModelWithThreadProxyList(eventList);
+        list.setModel(model);
+        list.getSelectionModel().addListSelectionListener(l -> {
+            if (l.getValueIsAdjusting())
+                return;
+            adjustDeleteButton();
+        });
+        adjustDeleteButton();
+
+        btnDeleteEntries.addActionListener(l -> {
+            var changeList = new ArrayList<String>();
+            for (var idx : list.getSelectedIndices()) {
+                changeList.add(list.getModel().getElementAt(idx));
+            }
+            changeList.forEach(eventList::remove);
+            changeList.clear();
+        });
+
+        restorePosition();
+    }
+
+    private void restorePosition() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.READ);
+            int x = config.getInt(CONFIG_X);
+            int y = config.getInt(CONFIG_Y);
+            int width = config.getInt(CONFIG_WIDTH);
+            int height = config.getInt(CONFIG_HEIGHT);
+
+            setSize(width, height);
+            setLocation(x, y);
+        } catch (Exception ignored) {
+            System.out.println("COULD NOT FIND CONFIGURATION");
+        } finally {
+            config.unlock(LockMode.READ);
+        }
+    }
+
+    private void savePosition() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.WRITE);
+            var size = getSize();
+            var location = getLocation();
+            config.setProperty(CONFIG_WIDTH, size.width);
+            config.setProperty(CONFIG_HEIGHT, size.height);
+            config.setProperty(CONFIG_X, location.x);
+            config.setProperty(CONFIG_Y, location.y);
+        } finally {
+            config.unlock(LockMode.WRITE);
+        }
+    }
+
+    private void adjustDeleteButton() {
+        btnDeleteEntries.setEnabled(list.getSelectionModel().getSelectedItemsCount() > 0);
+    }
+
+    private void initComponents() {
+        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
+        // Generated using JFormDesigner non-commercial license
+        var dialogPane = new JPanel();
+        var contentPanel = new JPanel();
+        var scrollPane1 = new JScrollPane();
+        list = new JList<>();
+        var toolBar1 = new JToolBar();
+        btnDeleteEntries = new JButton();
+        btnDeleteEntries.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg")); //NON-NLS
+
+        //======== this ========
+        setTitle("Suchhistorie bearbeiten"); //NON-NLS
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setType(Window.Type.UTILITY);
+        var contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+
+        //======== dialogPane ========
+        {
+            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+            dialogPane.setLayout(new BorderLayout());
+
+            //======== contentPanel ========
+            {
+                contentPanel.setLayout(new BorderLayout());
+
+                //======== scrollPane1 ========
+                {
+                    scrollPane1.setViewportView(list);
+                }
+                contentPanel.add(scrollPane1, BorderLayout.CENTER);
+
+                //======== toolBar1 ========
+                {
+                    toolBar1.setFloatable(false);
+
+                    //---- btnDeleteEntries ----
+                    btnDeleteEntries.setToolTipText("Ausgew\u00e4hlte Eintr\u00e4ge l\u00f6schen"); //NON-NLS
+                    toolBar1.add(btnDeleteEntries);
+                }
+                contentPanel.add(toolBar1, BorderLayout.NORTH);
+            }
+            dialogPane.add(contentPanel, BorderLayout.CENTER);
+        }
+        contentPane.add(dialogPane, BorderLayout.CENTER);
+        pack();
+        setLocationRelativeTo(getOwner());
+        // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
+    }
+
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+    // Generated using JFormDesigner non-commercial license
+    private JList<String> list;
+    private JButton btnDeleteEntries;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
+}

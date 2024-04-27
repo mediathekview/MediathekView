@@ -1,5 +1,7 @@
 package mediathek.gui.tabs.tab_film;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -863,8 +865,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         public class SearchHistoryButton extends JButton {
             private static final Logger logger = LogManager.getLogger();
-            private final List<String> historyList = new ArrayList<>();
-            private final JMenuItem miClearHistory = new JMenuItem("Historie löschen");
+            private final EventList<String> historyList = new BasicEventList<>();
+            private final JMenuItem miClearHistory = new JMenuItem("Alles löschen");
+            private final JMenuItem miEditHistory = new JMenuItem("Einträge bearbeiten");
             private String SEARCH_HISTORY_CONFIG = "search.history.items";
 
             public SearchHistoryButton(@Nullable SearchControlFieldMode mode) {
@@ -881,9 +884,16 @@ public class GuiFilme extends AGuiTabPanel {
                     historyList.clear();
                     saveHistory();
                 });
+
+                miEditHistory.addActionListener(l -> {
+                    EditHistoryDialog dlg = new EditHistoryDialog(mediathekGui , miEditHistory, historyList);
+                    dlg.setVisible(true);
+                });
+
                 addActionListener(l -> {
                     JPopupMenu popupMenu = new JPopupMenu();
                     popupMenu.add(miClearHistory);
+                    popupMenu.add(miEditHistory);
                     if (!historyList.isEmpty()) {
                         popupMenu.addSeparator();
                         for (var item : historyList) {
@@ -899,14 +909,13 @@ public class GuiFilme extends AGuiTabPanel {
                 });
 
                 loadHistory();
+                historyList.addListEventListener(l -> saveHistory());
             }
 
             public void addHistoryEntry(String text) {
                 if (!historyList.contains(text)) {
                     historyList.addFirst(text);
-                    saveHistory();
                 }
-
             }
 
             private void loadHistory() {
