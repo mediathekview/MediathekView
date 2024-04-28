@@ -25,7 +25,7 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
@@ -104,7 +104,7 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
-    private final InfoDialog filmInfo;
+    private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     public FixedRedrawStatusBar swingStatusBar;
@@ -224,7 +224,7 @@ public class MediathekGui extends JFrame {
         loadBandwidthMonitor();
 
         logger.trace("Loading info dialog");
-        filmInfo = new InfoDialog(this);
+        filmInfo = new FilmInfoDialog(this);
         logger.trace("Finished loading info dialog");
 
         mapFilmUrlCopyCommands();
@@ -630,7 +630,7 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    public InfoDialog getFilmInfoDialog() {
+    public FilmInfoDialog getFilmInfoDialog() {
         return filmInfo;
     }
 

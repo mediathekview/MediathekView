@@ -35,6 +35,7 @@
 - **FEATURE(Windows/Linux):** Tab-Labels werden nun korrekt rotiert wenn die Tab-Position nicht oben ist.
 - **FEATURE:** Der bevorzugte DNS-IP-Auflösungsmodus kann nun via `-dpm <XXX>` oder `--dns-preference-mode <XXX>` geändert werden. Zulässige Werte sind `system`, `ip_v6`, `ip_v4`, `ip_v6_only`, `ip_v4_only` (Standardwert). Eine Änderung kann bei IPv6-only Internetanschlüssen notwendig sein.
 - **FEATURE:** Die Suchhistorie kann nun im Kontextmenü editiert werden.
+- **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
 
 
 # **14.0.0**
