@@ -819,7 +819,7 @@
                                     <url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>f5429db43834da7e58c88fd7baa05ce8</md5>
+                                    <md5>3812b8f3c99cf33278dad42a79bff973</md5>
                                 </configuration>
                             </execution>
                         </executions>
