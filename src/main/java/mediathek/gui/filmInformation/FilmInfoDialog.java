@@ -220,16 +220,20 @@ public class FilmInfoDialog extends JDialog {
 
             currentFilm.getAboOptional().ifPresentOrElse(abo -> lblAbo.setText(abo.getName()), () -> lblAbo.setText(""));
 
-            hyperlink.setEnabled(true);
-            hyperlink.setToolTipText(currentFilm.getWebsiteUrl());
-            hyperlink.setClicked(false);
-            var popupMenu = new JPopupMenu();
-            popupMenu.add(new CopyToClipboardAction(currentFilm.getWebsiteUrl()));
-            hyperlink.setComponentPopupMenu(popupMenu);
+            prepareHyperlink(currentFilm.getWebsiteUrl());
 
             lblDescription.setText(currentFilm.getDescription().trim());
             SwingUtilities.invokeLater(() -> descScrollPane.getVerticalScrollBar().setValue(0));
         }, this::clearControls);
+    }
+
+    private void prepareHyperlink(String url) {
+        hyperlink.setEnabled(true);
+        hyperlink.setToolTipText(url);
+        hyperlink.setClicked(false);
+        var popupMenu = new JPopupMenu();
+        popupMenu.add(new CopyToClipboardAction(url));
+        hyperlink.setComponentPopupMenu(popupMenu);
     }
 
     private void initComponents() {
