@@ -1,6 +1,6 @@
 # **14.0.1**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
-- **macOS:** ffmpeg 7.0 ist nun enthalten.
+- **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.
 - CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt.
 - **macOS:** Die Position der Reiter kann nicht mehr geändert werden, da dies zu Problemen mit der Fensterdarstellung führt. Die Einstellungen dafür werden zurück gesetzt und können im Programm nicht mehr geändert werden. 
 - **Linux:** Native notifications wurden für aktuelle Bibliotheksversion angepasst.

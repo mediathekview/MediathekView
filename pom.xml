@@ -735,7 +735,7 @@
                         <version>1.7.0</version>
                         <executions>
                             <execution>
-                                <id>download-ffmpeg-exe-aarch64-from-server</id>
+                                <id>download-ffmpeg-exe-amd64-from-server</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>wget</goal>
@@ -744,7 +744,7 @@
                                     <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>eec52ae0359df126c5056bc21a652ac0</md5>
+                                    <md5>2727f5d3c676cd9d2968199d773f44ca</md5>
                                 </configuration>
                             </execution>
                         </executions>
