@@ -217,12 +217,9 @@ public class FilmInfoDialog extends JDialog {
             }
             cbHq.setSelected(currentFilm.isHighQuality());
             cbSubtitle.setSelected(currentFilm.hasSubtitle());
-            var abo = currentFilm.getAbo();
-            if (abo != null) {
-                lblAbo.setText(abo.getName());
-            } else {
-                lblAbo.setText("");
-            }
+
+            currentFilm.getAboOptional().ifPresentOrElse(abo -> lblAbo.setText(abo.getName()), () -> lblAbo.setText(""));
+
             hyperlink.setEnabled(true);
             hyperlink.setToolTipText(currentFilm.getWebsiteUrl());
             hyperlink.setClicked(false);

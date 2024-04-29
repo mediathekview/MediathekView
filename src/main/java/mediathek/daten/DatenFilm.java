@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -136,6 +137,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
                 filmLength = 0;
             }
         }
+    }
+
+    public Optional<DatenAbo> getAboOptional() {
+        var abo = getAbo();
+        return abo == null ? Optional.empty() : Optional.of(abo);
     }
 
     public @Nullable DatenAbo getAbo() {
