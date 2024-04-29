@@ -22,7 +22,6 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class FilmInfoDialog extends JDialog {
     private static final Dimension DEFAULT_SENDER_DIMENSION = new Dimension(64, 64);
     private static final Logger logger = LogManager.getLogger();
-    private DatenFilm currentFilm = null;
+    private Optional<DatenFilm> currentFilmOptional = Optional.empty();
 
     public FilmInfoDialog(Window owner) {
         super(owner);
@@ -165,8 +165,12 @@ public class FilmInfoDialog extends JDialog {
             setVisible(true);
     }
 
-    public void updateCurrentFilm(@Nullable DatenFilm film) {
-        currentFilm = film;
+    public void updateCurrentFilm(DatenFilm film) {
+        if (film == null)
+            currentFilmOptional = Optional.empty();
+        else
+            currentFilmOptional = Optional.of(film);
+
         if (isVisible()) {
             updateTextFields();
         }
@@ -191,9 +195,7 @@ public class FilmInfoDialog extends JDialog {
     }
 
     private void updateTextFields() {
-        if (currentFilm == null) {
-            clearControls();
-        } else {
+        currentFilmOptional.ifPresentOrElse(currentFilm -> {
             MVSenderIconCache.get(currentFilm.getSender()).ifPresentOrElse(icon -> {
                 lblSender.setText("");
                 var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
@@ -230,7 +232,7 @@ public class FilmInfoDialog extends JDialog {
 
             lblDescription.setText(currentFilm.getDescription().trim());
             SwingUtilities.invokeLater(() -> descScrollPane.getVerticalScrollBar().setValue(0));
-        }
+        }, this::clearControls);
     }
 
     private void initComponents() {
