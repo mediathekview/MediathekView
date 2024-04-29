@@ -22,7 +22,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -165,7 +165,7 @@ public class FilmInfoDialog extends JDialog {
             setVisible(true);
     }
 
-    public void updateCurrentFilm(@NotNull DatenFilm film) {
+    public void updateCurrentFilm(@Nullable DatenFilm film) {
         currentFilm = film;
         if (isVisible()) {
             updateTextFields();
