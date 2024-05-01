@@ -4,6 +4,8 @@ import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.SwingErrorDialog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,10 +15,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class ShowOnlineHelpAction extends AbstractAction {
+    private static final Logger logger = LogManager.getLogger();
+
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
+    }
+
+    private void openUrl() {
+        try {
+            UrlHyperlinkAction.openURL(null, Konstanten.ADRESSE_ONLINE_HELP);
+        } catch (URISyntaxException ex) {
+            logger.warn(ex);
+        }
     }
 
     @Override
@@ -31,13 +43,10 @@ public class ShowOnlineHelpAction extends AbstractAction {
                             "Es trat ein Fehler beim Öffnen der Online-Hilfe auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
                             ex);
                 }
+            } else {
+                openUrl();
             }
-            else {
-                JOptionPane.showMessageDialog(MediathekGui.ui(),
-                        "<html>Ihr Betriebssystem unterstützt das Öffnen des Browsers nicht.<br>" +
-                                "Bitte öffnen Sie <b>" + Konstanten.ADRESSE_ONLINE_HELP + "</b> selbst in Ihrem Browser.</html>",
-                        Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        } else
+            openUrl();
     }
 }

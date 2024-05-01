@@ -2,16 +2,20 @@ package mediathek.gui.tabs.tab_film;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class FilmDescriptionPanel extends JPanel {
     private final AGuiTabPanel currentTab;
@@ -35,6 +40,29 @@ public class FilmDescriptionPanel extends JPanel {
         this.currentTab = currentTab;
 
         initComponents();
+
+        hyperlink.addActionListener(l -> {
+            if (!hyperlink.getToolTipText().isEmpty()) {
+                var toolTipText = hyperlink.getToolTipText();
+                if (Desktop.isDesktopSupported()) {
+                    var d = Desktop.getDesktop();
+                    if (d.isSupported(Desktop.Action.BROWSE)) {
+                        try {
+                            d.browse(new URI(toolTipText));
+                        } catch (Exception ex) {
+                            SwingErrorDialog.showExceptionMessage(
+                                    MediathekGui.ui(),
+                                    "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                                    ex);
+                        }
+                    } else {
+                        openUrl(toolTipText);
+                    }
+                } else {
+                    openUrl(toolTipText);
+                }
+            }
+        });
 
         createPopupMenu();
 
@@ -132,13 +160,22 @@ public class FilmDescriptionPanel extends JPanel {
         lblTitel.setText("");
     }
 
+    private void openUrl(String url) {
+        try {
+            UrlHyperlinkAction.openURL(null, url);
+        } catch (URISyntaxException ex) {
+            logger.warn(ex);
+        }
+    }
+
+    private static final Logger logger = LogManager.getLogger();
+
     private void showFilmDescription(@NotNull DatenFilm film) {
         lblThema.setText(film.getThema());
         lblTitel.setText(film.getTitle());
 
         hyperlink.setVisible(true);
         try {
-            hyperlink.setURI(new URI(film.getWebsiteUrl()));
             hyperlink.setText("Link zur Webseite");
             hyperlink.setClicked(false);
             JPopupMenu popup = new JPopupMenu();
