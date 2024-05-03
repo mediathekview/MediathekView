@@ -1097,7 +1097,7 @@
                                 <configuration>
                                     <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffmpeg</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>89a30e6e2126216fa3a3339812d14eca</md5>
+                                    <md5>438891fe3a1077081aa400c1df18590c</md5>
                                 </configuration>
                             </execution>
                             <execution>
