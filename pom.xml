@@ -1109,7 +1109,7 @@
                                 <configuration>
                                     <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffprobe</url>
                                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>0e2f20dacc9c81e9de742e5eae54637e</md5>
+                                    <md5>5226b0b358243c5757108e107dc546bf</md5>
                                 </configuration>
                             </execution>
                         </executions>
