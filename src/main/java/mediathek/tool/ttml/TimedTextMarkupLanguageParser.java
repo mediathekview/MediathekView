@@ -313,7 +313,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 counter++;
             }
         } catch (Exception ex) {
-            logger.error("File: " + srtFile, ex);
+            logger.error("File: {}", srtFile, ex);
         }
     }
 
