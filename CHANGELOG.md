@@ -1,4 +1,4 @@
-# **14.0.1**
+# **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.
 - CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt.
@@ -38,6 +38,7 @@
 - **FEATURE:** Der bevorzugte DNS-IP-Auflösungsmodus kann nun via `-dpm <XXX>` oder `--dns-preference-mode <XXX>` geändert werden. Zulässige Werte sind `system`, `ip_v6`, `ip_v4`, `ip_v6_only`, `ip_v4_only` (Standardwert). Eine Änderung kann bei IPv6-only Internetanschlüssen notwendig sein.
 - **FEATURE:** Die Suchhistorie kann nun im Kontextmenü editiert werden.
 - **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
+- **FEATURE:** Die Filter werden nun über einen eigenen Button umbenannt und nicht mehr durch Eingabe in der ComboBox.
 
 
 # **14.0.0**

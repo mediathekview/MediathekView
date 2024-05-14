@@ -63,6 +63,9 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     private ComboBox<FilterDTO> filterSelect;
     @FXML
     private Button btnAddNewFilter;
+    @FXML
+    public Button btnRenameFilter;
+
     private boolean deleteCurrentFilterButtonDisabled;
 
     public CommonViewSettingsPane() {
@@ -107,6 +110,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
                     filterSelect.setDisable(disable);
                     btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
                     btnAddNewFilter.setDisable(disable);
+                    btnRenameFilter.setDisable(disable);
                 });
     }
 
@@ -136,7 +140,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     public void selectFilter(FilterDTO filter) {
         SingleSelectionModel<FilterDTO> selectionModel = filterSelect.getSelectionModel();
         if (!filter.equals(selectionModel.getSelectedItem())) {
-            selectionModel.select(filter);
+            Platform.runLater(() -> selectionModel.select(filter));
         }
     }
 

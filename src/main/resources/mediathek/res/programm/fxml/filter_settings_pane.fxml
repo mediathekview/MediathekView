@@ -14,7 +14,15 @@
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
     <HBox spacing="4.0">
-        <ComboBox fx:id="filterSelect" editable="true" promptText="Filter Auswahl" />
+        <ComboBox fx:id="filterSelect" promptText="Filter Auswahl" />
+        <Button fx:id="btnRenameFilter">
+            <tooltip>
+                <Tooltip text="Filter umbenennen"/>
+            </tooltip>
+            <graphic>
+                <Glyph fontFamily="FontAwesome" icon="EDIT" fontSize="16"/>
+            </graphic>
+        </Button>
         <Button fx:id="btnAddNewFilter">
             <tooltip>
                 <Tooltip text="Neuen Filter anlegen"/>
@@ -28,7 +36,7 @@
                 <Tooltip text="Aktuellen Filter löschen"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
+                <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
             </graphic>
         </Button>
         <Separator orientation="VERTICAL"/>
@@ -37,7 +45,7 @@
                 <Tooltip text="Aktuellen Filter zurücksetzen"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="TRASH_ALT" fontSize="16"/>
+                <Glyph fontFamily="FontAwesome" icon="RECYCLE" fontSize="16"/>
             </graphic>
         </Button>
     </HBox>

@@ -5,6 +5,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransactionList;
 import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
@@ -32,7 +33,7 @@ import java.util.UUID;
  * This class sets up the GuiFilme filter dialog.
  * property for filtering in GuiFilme.
  */
-public class FilmActionPanel {
+public class FilterActionPanel {
     private static final Logger logger = LogManager.getLogger();
     private final FilterConfiguration filterConfig;
     private final ObservableList<FilterDTO> availableFilters;
@@ -63,11 +64,12 @@ public class FilmActionPanel {
     private SuggestionProvider<String> themaSuggestionProvider;
     private CommonViewSettingsPane viewSettingsPane;
 
-    public FilmActionPanel(@NotNull JToggleButton filterToggleBtn) {
+    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
         this.filterConfig = new FilterConfiguration();
 
         setupViewSettingsPane();
         setupDeleteFilterButton();
+        setupRenameFilterButton();
 
         SwingUtilities.invokeLater(
                 () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
@@ -204,10 +206,10 @@ public class FilmActionPanel {
     private void setupFilterSelection() {
         viewSettingsPane.setAvailableFilters(availableFilters);
         FilterConfiguration.addAvailableFiltersObserver(
-                () -> {
+                () -> Platform.runLater(() -> {
                     availableFilters.clear();
                     availableFilters.addAll(filterConfig.getAvailableFilters());
-                });
+                }));
         FilterConfiguration.addCurrentFiltersObserver(
                 filter -> {
                     viewSettingsPane.selectFilter(filter);
@@ -253,6 +255,37 @@ public class FilmActionPanel {
 
             filterConfig.clearCurrentFilter();
             restoreConfigSettings();
+        });
+    }
+
+    private void setupRenameFilterButton() {
+        viewSettingsPane.btnRenameFilter.setOnAction(e -> {
+            final var fltName = filterConfig.getCurrentFilter().name();
+            SwingUtilities.invokeLater(() -> {
+                String s = (String)JOptionPane.showInputDialog(
+                        MediathekGui.ui(),
+                        "Neuer Name des Filters:",
+                        "Filter umbenennen",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        fltName);
+                if (s != null) {
+                    if (!s.isEmpty()) {
+                        final var fName = s.trim();
+                        if (!fName.equals(fltName)){
+                            renameCurrentFilter(fName);
+                            logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
+                        }
+                        else
+                            logger.warn("New and old filter name are identical...doing nothing");
+                    }
+                    else
+                        logger.warn("Rename filter text was empty...doing nothing");
+                }
+                else
+                    logger.trace("User cancelled rename");
+            });
         });
     }
 

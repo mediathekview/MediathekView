@@ -39,7 +39,7 @@ import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -111,10 +111,15 @@ public class GuiFilme extends AGuiTabPanel {
     private final JToolBar toolBar = new JToolBar();
     private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
     private final PauseTransition zeitraumTransition = new PauseTransition(Duration.millis(250));
+
+    public FilterActionPanel getFilterActionPanel() {
+        return filterActionPanel;
+    }
+
     /**
      * The JavaFx Film action popup panel.
      */
-    public FilmActionPanel filmActionPanel;
+    private final FilterActionPanel filterActionPanel;
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -153,7 +158,8 @@ public class GuiFilme extends AGuiTabPanel {
         setupFilmSelectionPropertyListener();
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
-        setupFilmActionPanel();
+
+        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility);
 
         start_init();
         // register message bus handler
@@ -291,10 +297,6 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(cbkShowDescription);
     }
 
-    private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel(btnToggleFilterDialogVisibility);
-    }
-
     private void setupPsetButtonsTab() {
         var initialVisibility = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
         setupButtonsMenuItem(initialVisibility);
@@ -368,7 +370,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> filmActionPanel.updateThemaComboBox());
+                Platform.runLater(() -> filterActionPanel.updateThemaComboBox());
             }
         });
 
@@ -411,7 +413,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filmActionPanel.isShowUnseenOnly()) {
+            if (filterActionPanel.isShowUnseenOnly()) {
                 Platform.runLater(reloadTableDataTransition::playFromStart);
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -521,7 +523,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filmActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -569,7 +571,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filmActionPanel.isShowOnlyHighQuality()) {
+            if (filterActionPanel.isShowOnlyHighQuality()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -657,7 +659,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         zeitraumTransition.setOnFinished(evt -> {
             // reset sender filter first
-            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
+            filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {
@@ -677,24 +679,24 @@ public class GuiFilme extends AGuiTabPanel {
                     reloadTableDataTransition.playFromStart();
                 }
             };
-            filmActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
-            filmActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
-            filmActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
-            var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+            filterActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
+            filterActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
+            filterActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
+            var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
             filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
-            filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
+            filterActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
 
-            filmActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
-                if (!filmActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
+            filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
+                if (!filterActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
                     reloadTableDataTransition.playFromStart();
                 }
             });
@@ -738,9 +740,9 @@ public class GuiFilme extends AGuiTabPanel {
             var searchFieldData = new SearchFieldData(searchField.getText(),
                     searchField.getSearchMode());
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
             } else {
-                helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
             }
             return helper.getFilteredTableModel();
         });
@@ -793,7 +795,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            var dlg = filmActionPanel.getFilterDialog();
+            var dlg = filterActionPanel.getFilterDialog();
             if (dlg != null) {
                 var visible = dlg.isVisible();
                 visible = !visible;
