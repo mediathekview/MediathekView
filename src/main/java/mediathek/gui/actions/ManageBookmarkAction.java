@@ -1,6 +1,5 @@
 package mediathek.gui.actions;
 
-import javafx.application.Platform;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
 
@@ -19,6 +18,6 @@ public class ManageBookmarkAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Platform.runLater(() -> mediathekGui.tabFilme.showBookmarkWindow());
+        mediathekGui.tabFilme.showBookmarkWindow();
     }
 }

@@ -549,11 +549,13 @@ public class GuiFilme extends AGuiTabPanel {
      * If necessary instantiate and show the bookmark window
      */
     public void showBookmarkWindow() {
-        if (bookmarkWindowController.isEmpty()) {
-            bookmarkWindowController = Optional.of(new BookmarkWindowController());
-            bookmarkWindowController.get().setPartner(this);
-        }
-        bookmarkWindowController.get().show();
+        Platform.runLater(() -> {
+            if (bookmarkWindowController.isEmpty()) {
+                bookmarkWindowController = Optional.of(new BookmarkWindowController());
+                bookmarkWindowController.get().setPartner(this);
+            }
+            bookmarkWindowController.get().show();
+        });
     }
 
     public void playerStarten(DatenPset pSet) {
