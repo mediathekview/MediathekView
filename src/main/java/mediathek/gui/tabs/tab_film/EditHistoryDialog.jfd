@@ -46,6 +46,20 @@ new FormModel {
 								"JavaCodeGenerator.postCreateCode": "btnDeleteEntries.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/trash-can.svg\"));"
 							}
 						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnUp"
+							"toolTipText": "Element nach oben verschieben"
+							auxiliary() {
+								"JavaCodeGenerator.postCreateCode": "btnUp.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/arrow-up.svg\"));"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnDown"
+							"toolTipText": "Element nach unten verschieben"
+							auxiliary() {
+								"JavaCodeGenerator.postCreateCode": "btnDown.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/arrow-down.svg\"));"
+							}
+						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "North"
 					} )

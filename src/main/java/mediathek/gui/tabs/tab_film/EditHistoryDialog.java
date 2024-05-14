@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.function.Function;
 
 /**
  * @author christianfranzke
@@ -26,10 +27,15 @@ public class EditHistoryDialog extends JDialog {
     private static final String CONFIG_Y = "edit_history.y";
     private static final String CONFIG_HEIGHT = "edit_history.height";
     private static final String CONFIG_WIDTH = "edit_history.width";
+    private final EventList<String> eventList;
+    private final Function<Integer,Integer> inc_op = f -> f + 1;
+    private final Function<Integer,Integer> dec_op = f -> f - 1;
 
     public EditHistoryDialog(Window owner, JMenuItem menuItem, EventList<String> eventList) {
         super(owner);
         initComponents();
+
+        this.eventList = eventList;
 
         menuItem.setEnabled(false);
         addWindowListener(new WindowAdapter() {
@@ -45,14 +51,15 @@ public class EditHistoryDialog extends JDialog {
         list.getSelectionModel().addListSelectionListener(l -> {
             if (l.getValueIsAdjusting())
                 return;
-            adjustDeleteButton();
+            adjustButtons();
         });
-        adjustDeleteButton();
+        adjustButtons();
 
         btnDeleteEntries.addActionListener(l -> {
             var changeList = new ArrayList<String>();
+            var listModel = list.getModel();
             for (var idx : list.getSelectedIndices()) {
-                changeList.add(list.getModel().getElementAt(idx));
+                changeList.add(listModel.getElementAt(idx));
             }
 
             var lock = eventList.getReadWriteLock().writeLock();
@@ -66,7 +73,35 @@ public class EditHistoryDialog extends JDialog {
             changeList.clear();
         });
 
+        btnUp.addActionListener(l -> {
+            var idx = list.getSelectedIndex();
+            idx = moveEntry(idx, dec_op);
+            list.setSelectedIndex(idx);
+        });
+
+        btnDown.addActionListener(l -> {
+            var idx = list.getSelectedIndex();
+            idx = moveEntry(idx, inc_op);
+            list.setSelectedIndex(idx);
+        });
+
         restorePosition();
+    }
+
+    private int moveEntry(int idx, Function<Integer,Integer> operator) {
+        var lock = eventList.getReadWriteLock().writeLock();
+        lock.lock();
+        try {
+            var obj = eventList.get(idx);
+            eventList.remove(idx);
+            idx = operator.apply(idx);
+            eventList.add(idx, obj);
+        }
+        finally {
+            lock.unlock();
+        }
+
+        return idx;
     }
 
     private void restorePosition() {
@@ -102,8 +137,20 @@ public class EditHistoryDialog extends JDialog {
         }
     }
 
-    private void adjustDeleteButton() {
-        btnDeleteEntries.setEnabled(list.getSelectionModel().getSelectedItemsCount() > 0);
+    private void adjustButtons() {
+        final var itemCount = list.getSelectionModel().getSelectedItemsCount();
+        final var singleSelection = itemCount == 1;
+        btnDeleteEntries.setEnabled(itemCount > 0);
+        btnUp.setEnabled(singleSelection);
+        btnDown.setEnabled(singleSelection);
+        if (singleSelection) {
+            //check if entry is either first or last entry
+            var idx = list.getSelectionModel().getLeadSelectionIndex();
+            if (idx == 0) //first
+                btnUp.setEnabled(false);
+            if (idx == list.getModel().getSize() - 1) //last
+                btnDown.setEnabled(false);
+        }
     }
 
     private void initComponents() {
@@ -116,6 +163,10 @@ public class EditHistoryDialog extends JDialog {
         var toolBar1 = new JToolBar();
         btnDeleteEntries = new JButton();
         btnDeleteEntries.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg")); //NON-NLS
+        btnUp = new JButton();
+        btnUp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg")); //NON-NLS
+        btnDown = new JButton();
+        btnDown.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg")); //NON-NLS
 
         //======== this ========
         setTitle("Suchhistorie bearbeiten"); //NON-NLS
@@ -146,6 +197,14 @@ public class EditHistoryDialog extends JDialog {
                     //---- btnDeleteEntries ----
                     btnDeleteEntries.setToolTipText("Ausgew\u00e4hlte Eintr\u00e4ge l\u00f6schen"); //NON-NLS
                     toolBar1.add(btnDeleteEntries);
+
+                    //---- btnUp ----
+                    btnUp.setToolTipText("Element nach oben verschieben"); //NON-NLS
+                    toolBar1.add(btnUp);
+
+                    //---- btnDown ----
+                    btnDown.setToolTipText("Element nach unten verschieben"); //NON-NLS
+                    toolBar1.add(btnDown);
                 }
                 contentPanel.add(toolBar1, BorderLayout.NORTH);
             }
@@ -161,5 +220,7 @@ public class EditHistoryDialog extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private JList<String> list;
     private JButton btnDeleteEntries;
+    private JButton btnUp;
+    private JButton btnDown;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
