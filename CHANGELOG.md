@@ -22,6 +22,7 @@
 - **BUGFIX(Windows/Linux):** Der Text der Reiter "Filme" und "Downloads" wird nun korrekt rotiert wenn die Reiterposition nicht oben ist.
 - **BUGFIX:** Im *Merkliste verwalten*-Dialog wird nun der richtige Download-Dialog verwendet.
 - **BUGFIX(Linux):** Es wird nun ein konfigurierter Browser gestartet wenn die von Java zur Verfügung gestellten Funktionen nicht funktionieren.
+- **BUGFIX:** *Merkliste verwalten*-Dialog verwendet nun primär die JavaFX styleguide Vorgaben.
 - **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
 - **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
 - **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
