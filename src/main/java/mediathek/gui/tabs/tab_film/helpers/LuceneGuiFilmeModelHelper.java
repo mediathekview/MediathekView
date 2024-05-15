@@ -111,6 +111,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 var analyzer = listeFilme.getAnalyzer();
                 var parser = new StandardQueryParser(analyzer);
                 parser.setPointsConfigMap(PARSER_CONFIG_MAP);
+                parser.setAllowLeadingWildcard(true);
                 var initialQuery = parser.parse(searchText, LuceneIndexKeys.TITEL);
 
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();

@@ -39,6 +39,7 @@
 - **FEATURE:** Die Suchhistorie kann nun im Kontextmenü editiert werden.
 - **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
 - **FEATURE:** Die Filter werden nun über einen eigenen Button umbenannt und nicht mehr durch Eingabe in der ComboBox.
+- **FEATURE:** Bei der Lucene-Suche dürfen Wildcards nun auch am Anfang des Suchtexts verwendet werden.
 
 
 # **14.0.0**
