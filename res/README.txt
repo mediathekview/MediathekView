@@ -93,5 +93,7 @@ gespeichert (beim Start ohne die Angabe eines Pfades).
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
+Java: jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
+
 Linux: MediathekView_Portable
 Java: jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
