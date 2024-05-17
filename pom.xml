@@ -145,7 +145,7 @@
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
-        <install4j.version>10.0.5</install4j.version>
+        <install4j.version>10.0.7</install4j.version>
         <lucene.version>9.10.0</lucene.version>
     </properties>
 
