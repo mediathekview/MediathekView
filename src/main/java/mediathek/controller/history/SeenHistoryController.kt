@@ -63,7 +63,12 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    fun markSeen(film: DatenFilm) {
+    fun markSeen(film: DatenFilm?) {
+        if (film == null) {
+            logger.warn("markSeen: no film found")
+            return
+        }
+
         if (film.isLivestream) return
         if (hasBeenSeen(film)) return
         try {
