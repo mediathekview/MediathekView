@@ -86,7 +86,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.language.version>21</jdk.language.version>
         <kotlin.language.target>21</kotlin.language.target>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>2.0.0</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -99,7 +99,7 @@
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <controlsfx.version>11.2.1</controlsfx.version>
         <flatlaf.version>3.4</flatlaf.version>
-        <guava.version>33.2.0-jre</guava.version>
+        <guava.version>33.2.1-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.17.0</jackson.version>
         <jaffree.version>2023.09.10</jaffree.version>
@@ -123,7 +123,7 @@
         <mockito.version>5.11.0</mockito.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <picocli.version>4.7.6</picocli.version>
-        <sqlite-jdbc.version>3.45.3.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
@@ -146,7 +146,7 @@
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
         <install4j.version>10.0.7</install4j.version>
-        <lucene.version>9.10.0</lucene.version>
+        <lucene.version>9.11.0</lucene.version>
     </properties>
 
     <dependencies>
