@@ -41,6 +41,7 @@
 - **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
 - **FEATURE:** Die Filter werden nun über einen eigenen Button umbenannt und nicht mehr durch Eingabe in der ComboBox.
 - **FEATURE:** Bei der Lucene-Suche dürfen Wildcards nun auch am Anfang des Suchtexts verwendet werden.
+- Network Timeout wurde auf 10 Sekunden erhöht. Dies sollte bei schlechten Netzwerkverbindungen etwas Abhilfe schaffen.
 
 
 # **14.0.0**

@@ -84,15 +84,18 @@ public class MVHttpClient {
             builder.connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS));
         }
 
-        builder.connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(2, TimeUnit.SECONDS)
+        builder.connectTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
                 .socketFactory(byteCounter.socketFactory())
                 .followRedirects(true)
                 .followSslRedirects(true)
                 .dns(dnsSelector);
         return builder;
     }
+
+    //TODO make configurable network timeout
+    private static final long NETWORK_TIMEOUT = 10;
 
     public ByteCounter getByteCounter() {
         return byteCounter;
