@@ -741,10 +741,28 @@
                                     <goal>wget</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</url>
+                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg_new.zip</url>
                                     <unpack>true</unpack>
-                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>2727f5d3c676cd9d2968199d773f44ca</md5>
+                                    <outputDirectory>${project.build.directory}/res</outputDirectory>
+                                    <md5>ef173fd7a3b684c71e445702a8f510f3</md5>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.coderplus.maven.plugins</groupId>
+                        <artifactId>copy-rename-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>rename-file</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>rename</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceFile>${project.build.directory}/res/ffmpeg/</sourceFile>
+                                    <destinationFile>${project.build.directory}/res/bin/</destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
