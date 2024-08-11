@@ -992,6 +992,12 @@ public class MediathekGui extends JFrame {
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(true));
     }
 
+    private void createHelperToolsEntries() {
+        var menu = new JMenu("Hilfsmittel");
+        menu.add(new OptimizeHistoryDbAction(this));
+        jMenuHilfe.add(menu);
+    }
+
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
         jMenuHilfe.add(new ShowOnlineFaqAction(this));
@@ -1003,6 +1009,9 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetFilterDialogPosition(this));
         jMenuHilfe.addSeparator();
+        createHelperToolsEntries();
+        jMenuHilfe.addSeparator();
+
         //do not show menu entry if we have external update support
         if (GuiFunktionen.isNotUsingExternalUpdater()) {
             jMenuHilfe.add(searchProgramUpdateAction);

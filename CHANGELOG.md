@@ -41,6 +41,7 @@
 - **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
 - **FEATURE:** Die Filter werden nun über einen eigenen Button umbenannt und nicht mehr durch Eingabe in der ComboBox.
 - **FEATURE:** Bei der Lucene-Suche dürfen Wildcards nun auch am Anfang des Suchtexts verwendet werden.
+- **FEATURE:** Die Datenbank der gesehenen Filme kann nun über das Menü *"Hilfe/Hilfsmittel/History-Datenbank optimieren..."* von eventuell vorhandenen Duplikaten befreit werden. Dies kann die Performance des Programms bei einer großen (und älteren) Datenbank positiv beeinflussen.
 - Network Timeout wurde auf 10 Sekunden erhöht. Dies sollte bei schlechten Netzwerkverbindungen etwas Abhilfe schaffen.
 
 

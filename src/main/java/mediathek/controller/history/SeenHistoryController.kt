@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.*
 import kotlin.system.exitProcess
+import kotlin.use
 
 /**
  * Database based seen history controller.
@@ -126,8 +127,7 @@ class SeenHistoryController : AutoCloseable {
                 it.executeUpdate("REINDEX seen_history")
                 it.executeUpdate("VACUUM")
             }
-        }
-        catch (e: SQLException) {
+        } catch (e: SQLException) {
             logger.error("Failed to execute maintenance script", e)
         }
         logger.trace("Finished maintenance")
@@ -269,6 +269,49 @@ class SeenHistoryController : AutoCloseable {
     private fun installShutdownHook() {
         shutdownThread = SeenHistoryShutdownHook(connection)
         Runtime.getRuntime().addShutdownHook(shutdownThread)
+    }
+
+    @JvmRecord
+    data class DuplicateSearchResult(val total: Long, val distinct: Long)
+
+    @Throws(SQLException::class)
+    fun removeDuplicates() {
+        val prevAutoCommitState = connection!!.autoCommit
+        connection!!.autoCommit = false
+        try {
+            connection!!.createStatement().use { statement ->
+                statement.executeUpdate("CREATE TABLE temp_history AS SELECT DISTINCT datum,thema,titel,url FROM seen_history ORDER BY datum")
+                statement.executeUpdate("DELETE FROM seen_history")
+                statement.executeUpdate("INSERT INTO seen_history(datum,thema,titel,url) SELECT datum,thema,titel,url FROM temp_history")
+                statement.executeUpdate("DROP TABLE temp_history")
+            }
+            connection!!.commit()
+        }
+        catch (e: SQLException) {
+            connection!!.rollback()
+            throw e
+        }
+        connection!!.autoCommit = prevAutoCommitState
+    }
+
+    @Throws(SQLException::class)
+    fun checkDuplicates(): DuplicateSearchResult {
+        var total: Long = 0
+        var distinct: Long = 0
+
+        connection!!.createStatement().use { statement ->
+            statement!!.executeQuery("SELECT COUNT(*) FROM seen_history").use {
+                it.next()
+                total = it.getLong(1)
+            }
+        }
+        connection!!.createStatement().use { statement ->
+            statement.executeQuery("SELECT COUNT(*) FROM (SELECT DISTINCT datum,thema,titel,url FROM seen_history)").use {
+                it.next()
+                distinct = it.getLong(1)
+            }
+        }
+        return DuplicateSearchResult(total, distinct)
     }
 
     init {
