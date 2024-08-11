@@ -2,12 +2,14 @@ package mediathek.gui.dialog;
 
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
 public class DialogContinueDownload extends JDialog {
     public enum DownloadResult {
@@ -133,24 +135,31 @@ public class DialogContinueDownload extends JDialog {
      */
     private class CountdownAction implements ActionListener {
 
-        private int w = Konstanten.CONTINUE_DOWNLOAD;
+        private int countdown;
+
+        public CountdownAction() {
+            countdown = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME);
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (w > 0) {
+            String msg;
+            if (countdown > 0) {
                 if (!direkterDownload) {
-                    jButtonWeiter.setText("Überschreiben in " + w + 's');
+                    msg = String.format("Überschreiben in %ds", countdown);
                 } else {
-                    jButtonWeiter.setText("Weiterführen in " + w + 's');
+                    msg = String.format("Weiterführen in %ds", countdown);
                 }
+                jButtonWeiter.setText(msg);
+
                 if (countdownTimer != null) {
-                    countdownTimer.setDelay(1000);
+                    countdownTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS));
                 }
             } else {
                 result = DownloadResult.CONTINUE;
                 beenden();
             }
-            w--;
+            countdown--;
         }
     }
 

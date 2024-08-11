@@ -64,6 +64,7 @@ public class ApplicationConfiguration {
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
     public static final String DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number";
     public static final String DOWNLOAD_FETCH_FILE_SIZE = "download.fetch_file_size";
+    public static final String DOWNLOAD_CONTINUATION_TIME = "download.continuation.time";
     public static final String SEARCH_USE_FILM_DESCRIPTIONS =
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
