@@ -106,7 +106,7 @@
         <javafx.version>22</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jna.version>5.14.0</jna.version>
-        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <junit.jupiter.version>5.10.3</junit.jupiter.version>
         <log4j2.version>2.23.1</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
