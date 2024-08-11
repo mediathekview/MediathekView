@@ -19,7 +19,7 @@ default:
     - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 git-lfs > /dev/null
     - source /private/ENVS
     - whoami
-    - mkdir ~/.ssh
+    - mkdir -p ~/.ssh
     - ssh-keyscan -p 60002 dw2.mvorg.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 60002 116.202.81.23 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
