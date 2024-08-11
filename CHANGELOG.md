@@ -1,6 +1,9 @@
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.
+- **macOS Intel: Minimum OS-Version ist 10.15 Catalina! Diese Version wurde nur damit getestet! Sie mag auf früheren macOS Systemen laufen, dafür gibt es keine Garantie und keinen Support!**
+- **macOS Intel:** Es wird JDK 21 mitgeliefert, das zukünftig genutzte JDK 22 wird nicht mehr mit macOS Versionen vor 11 Big Sur funktionieren.
+- **macOS Apple Silicon:** Aufgrund bekannter größerer Fehler von JDK 21 auf neueren macOS Versionen wird hier JDK 22 verwendet.
 - CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt.
 - **macOS:** Die Position der Reiter kann nicht mehr geändert werden, da dies zu Problemen mit der Fensterdarstellung führt. Die Einstellungen dafür werden zurück gesetzt und können im Programm nicht mehr geändert werden. 
 - **Linux:** Native notifications wurden für aktuelle Bibliotheksversion angepasst.
