@@ -1,3 +1,6 @@
+# **14.2.0**
+- **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
+
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.

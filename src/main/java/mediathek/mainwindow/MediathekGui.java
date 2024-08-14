@@ -233,6 +233,11 @@ public class MediathekGui extends JFrame {
             var future = Daten.getInstance().getDecoratedPool().submit(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(10);
+                    logger.info("Auto DL and Quit: Updating filmlist...");
+                    final var daten = Daten.getInstance();
+                    daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
+                    daten.getFilmeLaden().loadFilmlist("", false);
+                    logger.info("Auto DL and Quit: Filmlist update done.");
                     logger.info("Auto DL and Quit: Starting all downloads...");
                     SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
                     return true;
