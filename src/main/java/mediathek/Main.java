@@ -379,6 +379,14 @@ public class Main {
         logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString());
     }
 
+    private static void registerFlatLafCustomization() {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            var settings = StandardLocations.getSettingsDirectory().resolve("flatlaf");
+            logger.info("Registering {} as custom FlatLaf config folder", settings);
+            FlatLaf.registerCustomDefaultsSource(settings.toFile());
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -417,6 +425,8 @@ public class Main {
                 }
 
                 setupDockIcon();
+
+                registerFlatLafCustomization();
                 setupFlatLaf();
 
                 if (SystemUtils.IS_OS_LINUX) {
