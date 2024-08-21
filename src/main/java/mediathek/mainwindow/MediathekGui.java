@@ -362,10 +362,21 @@ public class MediathekGui extends JFrame {
         tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
     }
 
+    protected void createToggleBlacklistButton() {
+        boolean useIconWithText = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
+        if (useIconWithText) {
+            commonToolBar.add(new JButton(toggleBlacklistAction));
+        }
+        else {
+            commonToolBar.add(toggleBlacklistAction);
+        }
+    }
+
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.add(showFilmInformationAction);
-        commonToolBar.add(toggleBlacklistAction);
+        createToggleBlacklistButton();
         commonToolBar.addSeparator();
         commonToolBar.add(editBlacklistAction);
         commonToolBar.add(manageAboAction);
