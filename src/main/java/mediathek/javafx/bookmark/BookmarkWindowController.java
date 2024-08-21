@@ -10,7 +10,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,36 +21,27 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
-import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.DatenPset;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.gui.dialog.DialogAddMoreDownload;
-import mediathek.gui.messages.DownloadListChangedEvent;
+import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.MVC;
-import mediathek.tool.MessageBus;
 import mediathek.tool.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -68,8 +58,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static javafx.scene.input.MouseButton.PRIMARY;
-import static mediathek.config.MVColor.DOWNLOAD_FEHLER;
-import static mediathek.config.MVColor.FILM_HISTORY;
 
 
 /**
@@ -80,13 +68,21 @@ import static mediathek.config.MVColor.FILM_HISTORY;
  */
 public class BookmarkWindowController implements Initializable {
 
-  private Stage stage;
+  private static final Logger logger = LogManager.getLogger();
+  /**
+   * Set the display filter:
+   * Rotate: All bookmarks -> Unseen bookmarks -> Seen Bookmarks -+
+   *              ^                                               |
+   *              +-----------------------------------------------+
+   */
+  private static final String[] BTNFILTER_TOOLTIPTEXT = {"Nur ungesehene Filme anzeigen", "Nur gesehene Filme anzeigen", "Alle Filme anzeigen"};
+  private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
+  private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
+  private static final String ALERT_TITLE = "Merkliste";
   private final BookmarkDataList listeBookmarkList;
-  private FilteredList<BookmarkData> filteredBookmarkList;
-  private Color ColorExpired;
-  private Background BackgroundSeen;
-  private Background BackgroundSelected;
   private final SeenHistoryController history = new SeenHistoryController();
+  private Stage stage;
+  private FilteredList<BookmarkData> filteredBookmarkList;
   private MenuItem playitem;
   private MenuItem loaditem;
   private MenuItem deleteitem;
@@ -100,7 +96,6 @@ public class BookmarkWindowController implements Initializable {
   private boolean listUpdated; // indicates new updates to bookmarklist
   private ScheduledFuture<?> SaveBookmarkTask; // Future task to save
   private int FilterState;
-
   @FXML
   private Button btnSaveList;
   @FXML
@@ -155,6 +150,20 @@ public class BookmarkWindowController implements Initializable {
     listUpdated = false;
   }
 
+  private static void setStageSize(Stage window) {
+    Configuration config = ApplicationConfiguration.getConfiguration();
+    try {
+      config.lock(LockMode.READ);
+      window.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
+      window.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
+      window.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
+      window.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
+    }
+    finally {
+      config.unlock(LockMode.READ);
+    }
+  }
+
   /**
    * Marks all selected films as seen if unseen (at least one in selection)
    * or unseen if all are seen
@@ -185,8 +194,6 @@ public class BookmarkWindowController implements Initializable {
       bookmarks.forEach((data) -> tbBookmarks.getSelectionModel().select(data));
     }
   }
-
-
 
   @FXML
   private void btnSaveBookMarkList(Event e) {
@@ -225,8 +232,7 @@ public class BookmarkWindowController implements Initializable {
       }
     }
     catch (IOException ex) {
-      LogManager.getLogger(BookmarkWindowController.class).error("{} Can't find/load the FXML description! Exception - {}",
-                                                                  getClass(), ex.toString());
+      logger.error("Can't find/load the FXML description!", ex);
     }
   }
 
@@ -239,13 +245,13 @@ public class BookmarkWindowController implements Initializable {
       }
     }
     catch (URISyntaxException ex) {
-      LogManager.getLogger(BookmarkWindowController.class).error("{} Hyperlink Syntax exception - {}", getClass(), ex.toString());
+      logger.error("Hyperlink Syntax exception", ex);
     }
   }
 
   @SuppressWarnings("unchecked")
   private void copy2Clipboard(Event e) {
-    TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
+    TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().getFirst();
     BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
     String data = pos.getTableColumn().getCellObservableValue(item).getValue();
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(data), null);
@@ -308,24 +314,6 @@ public class BookmarkWindowController implements Initializable {
           }
         } else {
           this.setText(null);
-        }
-      }
-    });
-
-    // add row renderer to set colors
-    tbBookmarks.setRowFactory((var UNUSED) -> new TableRow<>() {
-      @Override
-      protected void updateItem(BookmarkData data, boolean empty) {
-        super.updateItem(data, empty);
-        if (empty || data == null) {
-          setBackground(Background.EMPTY);
-        } else {
-          setBackground(isSelected() ? BackgroundSelected : data.getSeen() ? BackgroundSeen : Background.EMPTY);
-          // set foreground color:
-          Color fillcolor = isSelected() ? Color.WHITE : data.isNotInFilmList() ? ColorExpired : null;
-          if (fillcolor != null) {
-            this.getChildren().forEach((n) -> ((Labeled) n).setTextFill(fillcolor));
-          }
         }
       }
     });
@@ -526,15 +514,6 @@ public class BookmarkWindowController implements Initializable {
     spSplitPane.setDividerPositions(newposition);
   }
 
-  /**
-   * Set the display filter:
-   * Rotate: All bookmarks -> Unseen bookmarks -> Seen Bookmarks -+
-   *              ^                                               |
-   *              +-----------------------------------------------+
-   */
-  private static final String[] BTNFILTER_TOOLTIPTEXT = {"Nur ungesehene Filme anzeigen", "Nur gesehene Filme anzeigen", "Alle Filme anzeigen"};
-  private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
-  private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
   @FXML
   private void btnFilterAction(ActionEvent e) {
     if (++FilterState > 2) {
@@ -560,7 +539,7 @@ public class BookmarkWindowController implements Initializable {
   private void tbviewOnContextRequested(ContextMenuEvent event) {
     if (!tbBookmarks.getSelectionModel().getSelectedItems().isEmpty()) { // Do not show row context menu if nothing is selected
       if (!ccopyitem.isDisable()) { // adapt copy content to column
-        TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().get(0);
+        TablePosition<BookmarkData, String> pos = tbBookmarks.getSelectionModel().getSelectedCells().getFirst();
         BookmarkData item = tbBookmarks.getItems().get(pos.getRow());
         String sdata = pos.getTableColumn() != null ? pos.getTableColumn().getCellObservableValue(item).getValue() : "";
         ccopyitem.setDisable(sdata == null || sdata.isBlank()); // Disable if cell is empty:
@@ -602,8 +581,7 @@ public class BookmarkWindowController implements Initializable {
           scene.getStylesheets().add(getClass().getResource("/mediathek/res/css/bookmarkWindow.css").toExternalForm());
         }
         catch (IOException e) {
-          LogManager.getLogger(BookmarkWindowController.class).error("{} Can't find/load the FXML description! Exception - {}",
-                                                                      getClass(), e.toString());
+          logger.error("Can't find/load the FXML description!", e);
           stage = null;
         }
       }
@@ -663,8 +641,6 @@ public class BookmarkWindowController implements Initializable {
     listUpdated = false;
   }
 
-  private static final String ALERT_TITLE = "Merkliste";
-
   private void playAction(BookmarkData data) {
     Daten.getInstance().getStarterClass().urlMitProgrammStarten(Daten.listePset.getPsetAbspielen(), data.getDataAsDatenFilm(), "");
     tbBookmarks.getSelectionModel().clearSelection(); // re-select to trigger UI update
@@ -674,7 +650,6 @@ public class BookmarkWindowController implements Initializable {
   /**
    * Trigger Download of movie   (mirror fucntionality of FilmGUI)
    * @param data movie object to be used for download
-   *
    * Note: Due to mixture of JavaFX and Swing the windows do not arrange properly,
    *       workaround is to hide bookmark window during processing
    */
@@ -704,31 +679,14 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void createDownload(DatenFilm film) {
-    final var daten = Daten.getInstance();
-
     stage.hide();
 
     SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
-      DatenPset pSet = Daten.listePset.getListeSpeichern().get(0);
+      final var pSet = Daten.listePset.getListeSpeichern().getFirst();
       final var ui = MediathekGui.ui();
-      DialogAddMoreDownload damd = new DialogAddMoreDownload(ui, pSet);
-      damd.setLocationRelativeTo(ui);
-      damd.setVisible(true);
-
-      String pfad = damd.getPath();
-      boolean info = damd.info;
-      boolean subtitle = damd.subtitle;
-      if (!damd.cancel) {
-        DatenDownload datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, "");
-        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
-        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
-
-        daten.getListeDownloads().addMitNummer(datenDownload);
-        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-          datenDownload.startDownload();  // und evtl. auch gleich starten
-        }
-      }
+      var dlg = new DialogAddDownload(ui, film, pSet, Optional.empty());
+      dlg.setLocationRelativeTo(ui);
+      dlg.setVisible(true);
       showStage();
     });
   }
@@ -771,31 +729,14 @@ public class BookmarkWindowController implements Initializable {
         ? spSplitPane.getDividerPositions()[0] : divposition);
     }
     catch(Exception e) {
-      LogManager.getLogger(ApplicationConfiguration.class).error("Save Config exception: ", e);
+      logger.error("Save Config exception: ", e);
     }
     finally {
       config.unlock(LockMode.WRITE);
     }
   }
 
-  private static void setStageSize(Stage window) {
-    Configuration config = ApplicationConfiguration.getConfiguration();
-    try {
-      config.lock(LockMode.READ);
-      window.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
-      window.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
-      window.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
-      window.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
-    }
-    finally {
-      config.unlock(LockMode.READ);
-    }
-  }
-
   private void setStageEvents() {
-    stage.setOnShowing(e -> {
-      initSettings(); // re-read config values on showing
-    });
     stage.setOnHiding(e -> {
       if (listUpdated) { // Save pending changes on hiding
         cancelBookmarkSave();
@@ -835,18 +776,6 @@ public class BookmarkWindowController implements Initializable {
       }
     }
     return lifestream;
-  }
-
-  private static Color convertMVCAWTColor(MVC mvc) {
-    return Color.rgb(mvc.color.getRed(),mvc.color.getGreen(), mvc.color.getBlue());
-  }
-
-  private void initSettings() {
-    var colorSeen = convertMVCAWTColor(FILM_HISTORY);
-    var colorNew = JavaFxUtils.toFXColor(MVColor.getNewColor());
-    ColorExpired = convertMVCAWTColor(DOWNLOAD_FEHLER);
-    BackgroundSeen = new Background(new BackgroundFill(colorSeen, CornerRadii.EMPTY, Insets.EMPTY));
-    BackgroundSelected = new Background(new BackgroundFill(colorNew, CornerRadii.EMPTY, Insets.EMPTY));
   }
 
   /**

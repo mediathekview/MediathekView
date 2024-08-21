@@ -106,8 +106,8 @@ public class RuntimeExec {
 
             Thread clearIn = new Thread(new ClearInOut(IoType.INPUT, process));
             Thread clearOut = new Thread(new ClearInOut(IoType.ERROR, process));
-            clearIn.setName("ClearIn: " + clearIn.getId());
-            clearOut.setName("ClearOut: " + clearOut.getId());
+            clearIn.setName("ClearIn: " + clearIn.threadId());
+            clearOut.setName("ClearOut: " + clearOut.threadId());
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
@@ -124,7 +124,7 @@ public class RuntimeExec {
     static class PatternCacheLoader extends CacheLoader<String, Pattern> {
 
         @Override
-        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+        public @NotNull Pattern load(@NotNull String pattern) throws IllegalArgumentException {
             logger.trace("COMPILING RuntimeExec PATTERN: " + pattern);
             return Pattern.compile(pattern);
         }

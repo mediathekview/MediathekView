@@ -278,10 +278,10 @@ public class FilmeLaden {
         if (event.fehler) {
             logger.info("");
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
-            JOptionPane.showMessageDialog(MediathekGui.ui(),
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(MediathekGui.ui(),
                     "Das Laden der Filmliste hat nicht geklappt!",
                     Konstanten.PROGRAMMNAME,
-                    JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE));
 
             // dann die alte Liste wieder laden
             listeFilme.clear();

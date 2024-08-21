@@ -7,6 +7,8 @@ import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.tool.MessageBus;
 import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelDownload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.activation.DataHandler;
 import javax.swing.*;
@@ -155,10 +157,12 @@ public class MVDownloadsTable extends MVTable {
                 // here's the problem
                 // canImport is called during drags AND before drop is accepted
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("canImport", e);
             }
             return true;
         }
+
+        private static final Logger logger = LogManager.getLogger();
 
         @Override
         public int getSourceActions(JComponent c) {
@@ -183,7 +187,7 @@ public class MVDownloadsTable extends MVTable {
                     return true;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("importData", ex);
             }
             return false;
         }

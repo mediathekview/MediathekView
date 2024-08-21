@@ -142,8 +142,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupDownloadListStatusBar();
 
-        setupF4Key(mediathekGui);
-
         setupDownloadListTable();
 
         setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
@@ -183,40 +181,29 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    private void setupF4Key(MediathekGui mediathekGui) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            // zum Abfangen der Win-F4 für comboboxen
-            InputMap im = cbDisplayCategories.getInputMap();
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
-            ActionMap am = cbDisplayCategories.getActionMap();
-            am.put("einstellungen", new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mediathekGui.getSettingsDialog().setVisible(true);
-                }
-            });
-        }
-    }
-
     private void updateFilmSizes(int[] rows) {
         boolean updateNeeded = false;
 
         for (var row : rows) {
-            var indexRow = tabelle.convertRowIndexToModel(row);
-            var listeDownloads = daten.getListeDownloads();
-            var dlInfo = listeDownloads.get(indexRow);
-            if (dlInfo != null) {
-                if (dlInfo.mVFilmSize.getSize() != 0)
-                    continue;
+            try {
+                var indexRow = tabelle.convertRowIndexToModel(row);
+                var listeDownloads = daten.getListeDownloads();
+                var dlInfo = listeDownloads.get(indexRow);
+                if (dlInfo != null) {
+                    if (dlInfo.mVFilmSize.getSize() != 0)
+                        continue;
 
-                if (dlInfo.film != null) {
-                    var oldSize = dlInfo.mVFilmSize.getSize();
-                    dlInfo.queryLiveSize();
-                    if (dlInfo.mVFilmSize.getSize() != oldSize)
-                        updateNeeded = true;
-                }
-            } else
-                logger.error("Could not get download object");
+                    if (dlInfo.film != null) {
+                        var oldSize = dlInfo.mVFilmSize.getSize();
+                        dlInfo.queryLiveSize();
+                        if (dlInfo.mVFilmSize.getSize() != oldSize)
+                            updateNeeded = true;
+                    }
+                } else
+                    logger.error("Could not get download object");
+            }
+            catch (Exception ignored) {
+            }
         }
 
         if (updateNeeded)
@@ -598,17 +585,22 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Override
     public Optional<DatenFilm> getCurrentlySelectedFilm() {
-        final int selectedTableRow = tabelle.getSelectedRow();
-        if (selectedTableRow != -1) {
-            Optional<DatenFilm> optRet;
-            final int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
-            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
-            if (download.film == null)
-                optRet = Optional.empty();
-            else
-                optRet = Optional.of(download.film);
-            return optRet;
-        } else {
+        try {
+            final int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow != -1) {
+                Optional<DatenFilm> optRet;
+                int modelIndex = tabelle.convertRowIndexToModel(selectedTableRow);
+                final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF);
+                if (download.film == null)
+                    optRet = Optional.empty();
+                else
+                    optRet = Optional.of(download.film);
+                return optRet;
+            } else {
+                return Optional.empty();
+            }
+        }
+        catch (Exception e) {
             return Optional.empty();
         }
     }
@@ -948,19 +940,12 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void updateFilmData() {
-        if (isShowing()) {
-            DatenFilm selectedFilm = null;
-            final int selectedTableRow = tabelle.getSelectedRow();
-            if (selectedTableRow != -1) {
-                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
-                if (datenDownload != null) {
-                    selectedFilm = datenDownload.film;
-                }
-            }
-            var infoDialog = mediathekGui.getFilmInfoDialog();
-            if (infoDialog != null) {
-                infoDialog.updateCurrentFilm(selectedFilm);
-            }
+        if (!isShowing())
+            return;
+
+        var infoDialog = mediathekGui.getFilmInfoDialog();
+        if (infoDialog != null) {
+            infoDialog.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null));
         }
     }
 
@@ -1101,7 +1086,7 @@ public class GuiDownloads extends AGuiTabPanel {
         swingToolBar.add(toggleFilterPanelAction);
     }
 
-    class ToggleFilterPanelAction extends AbstractAction {
+    public class ToggleFilterPanelAction extends AbstractAction {
         public ToggleFilterPanelAction() {
             putValue(Action.NAME, "Filter anzeigen/ausblenden");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen/ausblenden");

@@ -19,13 +19,18 @@
  */
 package mediathek.config;
 
+import mediathek.tool.dns.IPvPreferenceMode;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "MediathekView")
 public class Config {
-
     @CommandLine.Parameters(index = "0", paramLabel = "<Pfad zum Verzeichnis>", description = "Pfad zum Einstellungsverzeichnis für Portablen Betrieb", arity = "0..1")
     public static String baseFilePath;
+    /**
+     * Specify the preferred DNS IP mode for name resolutions. Defaults to IPv4 only.
+     */
+    @CommandLine.Option(names = {"-dpm", "--dns-preference-mode"}, description = "Bevorzugtes IP-Protokoll für DNS festlegen")
+    private static IPvPreferenceMode dnsIpPreferenceMode = IPvPreferenceMode.IPV4_ONLY;
     @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
     /**
@@ -52,7 +57,6 @@ public class Config {
     private static boolean portableMode;
     @CommandLine.Option(names = {"-m", "--maximized"}, description = "Programmfenster beim Start maximieren")
     private static boolean startMaximized; // Fenster maximieren
-
     @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Hilfe anzeigen")
     private static boolean helpRequested;
     @CommandLine.Option(names = {"-f", "--disable-file-logging"}, description = "Speichern des Log output in Datei deaktivieren")
@@ -62,10 +66,20 @@ public class Config {
      */
     @CommandLine.Option(names = {"-nj", "--no-jvm-param-checks"}, description = "JVM Parameter-Prüfung deaktivieren")
     private static boolean disableJvmParameterChecks;
-
     @CommandLine.Option(names = {"-ns", "--no-splash"}, description = "Splash-Screen nicht anzeigen")
     private static boolean disableSplashScreen;
+    @CommandLine.Option(names = {"-dq", "--download-quit"}, description = "Automatisch downloaden, dann beenden")
+    private static boolean downloadAndQuit;
 
+    public static IPvPreferenceMode getDnsIpPreferenceMode() {
+        return dnsIpPreferenceMode;
+    }
+
+    public static void setDnsIpPreferenceMode(IPvPreferenceMode dnsIpPreferenceMode) {
+        Config.dnsIpPreferenceMode = dnsIpPreferenceMode;
+    }
+
+    public static boolean shouldDownloadAndQuit() { return downloadAndQuit;}
     public static boolean isSplashScreenDisabled() { return disableSplashScreen;}
 
     public static boolean isDisableJvmParameterChecks() {

@@ -192,7 +192,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
     private void calculateZeitraumBoundaries() {
         try {
-            var strZeitraum = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty().get();
+            var strZeitraum = MediathekGui.ui().tabFilme.getFilterActionPanel().zeitraumProperty().get();
             if (strZeitraum.equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE))
                 days_lower_boundary = 0;
             else {

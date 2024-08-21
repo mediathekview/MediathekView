@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class DatenPset implements Comparable<DatenPset> {
 
@@ -78,6 +79,22 @@ public class DatenPset implements Comparable<DatenPset> {
         initialize();
         arr[PROGRAMMSET_NAME] = name;
         arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
+    }
+
+    /**
+     * Indicate whether a subtitle file should be downloaded.
+     * @return true if download, otherwise false.
+     */
+    public boolean shouldDownloadSubtitle() {
+        return Boolean.parseBoolean(arr[PROGRAMMSET_SUBTITLE]);
+    }
+
+    /**
+     * Indicate wheter an Infofile should be created.
+     * @return true for creation, false otherwise
+     */
+    public boolean shouldCreateInfofile() {
+        return Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_INFODATEI]);
     }
 
     public void addProg(DatenProg prog) {
@@ -144,14 +161,14 @@ public class DatenPset implements Comparable<DatenPset> {
     public boolean isLabel() {
         //if program list is empty AND there is a name -> label
         if (this.listeProg.isEmpty()) {
-            return !this.arr[PROGRAMMSET_NAME].isEmpty();
+            return !getName().isEmpty();
         }
         return false;
     }
 
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        return this.arr[PROGRAMMSET_NAME].isEmpty();
+        return getName().isEmpty();
     }
 
     public void setAbspielen() {
@@ -225,6 +242,18 @@ public class DatenPset implements Comparable<DatenPset> {
             ret.addProg(prog.copy());
         }
         return ret;
+    }
+
+    /**
+     * Return the specified foreground color if present.
+     * @return the requested foreground color for the PSet.
+     */
+    public Optional<Color> getForegroundColor() {
+        return Optional.ofNullable(getFarbe());
+    }
+
+    public String getName() {
+        return arr[PROGRAMMSET_NAME];
     }
 
     public Color getFarbe() {

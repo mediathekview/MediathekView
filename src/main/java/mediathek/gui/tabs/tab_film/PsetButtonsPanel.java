@@ -1,7 +1,6 @@
 package mediathek.gui.tabs.tab_film;
 
 import mediathek.config.Daten;
-import mediathek.daten.DatenPset;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
@@ -50,21 +49,19 @@ public class PsetButtonsPanel extends JPanel {
         btnPanel.removeAll();
 
         for (var pset : Daten.listePset.getListeButton()) {
-            final var psetName = pset.arr[DatenPset.PROGRAMMSET_NAME];
-            final var psetColor = pset.getFarbe();
             if (!pset.isFreeLine()) {
+                JComponent comp;
+
                 if (pset.isLabel()) {
-                    var l = new JLabel(psetName);
-                    if (psetColor != null)
-                        l.setForeground(psetColor);
-                    btnPanel.add(l);
+                    comp = new JLabel(pset.getName());
                 } else {
-                    var b = new JButton(psetName);
-                    if (psetColor != null)
-                        b.setBackground(psetColor);
+                    var b = new JButton(pset.getName());
                     b.addActionListener(l -> guiFilme.playerStarten(pset));
-                    btnPanel.add(b);
+                    comp = b;
                 }
+
+                pset.getForegroundColor().ifPresent(comp::setForeground);
+                btnPanel.add(comp);
             } else {
                 btnPanel.add(new JLabel(""));
             }

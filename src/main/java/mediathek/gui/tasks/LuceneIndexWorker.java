@@ -29,6 +29,11 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         this.progLabel = progLabel;
 
         SwingUtilities.invokeLater(() -> {
+            final var ui = MediathekGui.ui();
+            ui.toggleBlacklistAction.setEnabled(false);
+            ui.editBlacklistAction.setEnabled(false);
+            ui.loadFilmListAction.setEnabled(false);
+
             progLabel.setText("Blacklist anwenden");
             progressBar.setIndeterminate(true);
         });
@@ -116,6 +121,14 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void done() {
+        final var ui = MediathekGui.ui();
+        ui.toggleBlacklistAction.setEnabled(true);
+        ui.editBlacklistAction.setEnabled(true);
+        ui.loadFilmListAction.setEnabled(true);
     }
 
 }

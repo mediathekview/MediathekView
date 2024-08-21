@@ -83,15 +83,21 @@ public class FileSize {
             return INVALID_SIZE;
         }
 
-        logger.info("Requesting file size for: {}", url);
         final Request request = new Request.Builder().url(url).head().build();
         long respLength = INVALID_SIZE;
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                respLength = getContentLength(response);
+
+        var fetchSize = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true);
+        if (fetchSize) {
+            logger.info("Requesting file size for: {}", url);
+            try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    respLength = getContentLength(response);
+                }
+            } catch (IOException ignored) {
             }
-        } catch (IOException ignored) {
         }
+        else
+            logger.info("Skipping file size request due to user setting");
 
         if (respLength < ONE_MiB) {
             // alles unter 1MB sind Playlisten, ORF: Trailer bei im Ausland gesperrten Filmen, ...

@@ -7,6 +7,7 @@ import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
+import mediathek.javafx.filterpanel.SenderListBoxModel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererAbo;
@@ -147,7 +148,7 @@ public class ManageAboPanel extends JPanel {
 
         swingToolBar.add(new JLabel("Abos für Sender:"));
         senderCombo.setMaximumSize(new Dimension(150, Integer.MAX_VALUE));
-        senderCombo.setModel(GlazedListsSwing.eventComboBoxModel(new SenderListModel()));
+        senderCombo.setModel(GlazedListsSwing.eventComboBoxModel(new EventListWithEmptyFirstEntry(SenderListBoxModel.getReadOnlySenderList())));
         senderCombo.setSelectedIndex(0);
         senderCombo.addActionListener(l -> tabelleLaden());
         swingToolBar.add(senderCombo);

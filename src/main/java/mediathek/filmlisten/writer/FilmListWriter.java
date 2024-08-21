@@ -52,8 +52,8 @@ public class FilmListWriter {
         if (Files.notExists(filePath)) {
             try {
                 Files.createDirectories(filePath);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+            } catch (IOException e) {
+                logger.error("checkOsxCacheDirectory", e);
             }
         }
     }

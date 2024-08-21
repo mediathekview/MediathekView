@@ -1,5 +1,7 @@
 package mediathek.gui.tabs.tab_film;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +39,7 @@ import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -95,6 +97,8 @@ public class GuiFilme extends AGuiTabPanel {
     public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final BookmarkFilmAction bookmarkFilmAction = new BookmarkFilmAction();
+    public final CopyUrlToClipboardAction copyHqUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY);
+    public final CopyUrlToClipboardAction copyNormalUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL);
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
     private final PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
@@ -107,10 +111,15 @@ public class GuiFilme extends AGuiTabPanel {
     private final JToolBar toolBar = new JToolBar();
     private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
     private final PauseTransition zeitraumTransition = new PauseTransition(Duration.millis(250));
+
+    public FilterActionPanel getFilterActionPanel() {
+        return filterActionPanel;
+    }
+
     /**
      * The JavaFx Film action popup panel.
      */
-    public FilmActionPanel filmActionPanel;
+    private final FilterActionPanel filterActionPanel;
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -149,7 +158,8 @@ public class GuiFilme extends AGuiTabPanel {
         setupFilmSelectionPropertyListener();
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
-        setupFilmActionPanel();
+
+        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility);
 
         start_init();
         // register message bus handler
@@ -168,9 +178,13 @@ public class GuiFilme extends AGuiTabPanel {
         toolBar.add(saveFilmAction);
         toolBar.add(bookmarkFilmAction);
         toolBar.addSeparator();
+
         filterSelectionComboBox.setMaximumSize(new Dimension(150, 100));
+        filterSelectionComboBox.setEditable(false);
+        filterSelectionComboBox.setToolTipText("Aktiver Filter");
         toolBar.add(filterSelectionComboBox);
         toolBar.addSeparator();
+
         toolBar.add(new JLabel("Suche:"));
         toolBar.add(searchField);
         toolBar.addSeparator();
@@ -196,6 +210,8 @@ public class GuiFilme extends AGuiTabPanel {
                 bookmarkFilmAction.setEnabled(true);
                 toggleFilterDialogVisibilityAction.setEnabled(true);
                 searchField.setEnabled(true);
+                if (e.fromSearchField)
+                    searchField.requestFocusInWindow();
                 filterSelectionComboBox.setEnabled(true);
             });
         }
@@ -281,10 +297,6 @@ public class GuiFilme extends AGuiTabPanel {
         menu.add(cbkShowDescription);
     }
 
-    private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel(btnToggleFilterDialogVisibility);
-    }
-
     private void setupPsetButtonsTab() {
         var initialVisibility = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false);
         setupButtonsMenuItem(initialVisibility);
@@ -340,8 +352,8 @@ public class GuiFilme extends AGuiTabPanel {
         actionMap.put(ACTION_MAP_KEY_PLAY_FILM, playFilmAction);
         actionMap.put(ACTION_MAP_KEY_SAVE_FILM, saveFilmAction);
         actionMap.put(ACTION_MAP_KEY_BOOKMARK_FILM, bookmarkFilmAction);
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL));
-        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY));
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, copyNormalUrlToClipboardAction);
+        actionMap.put(ACTION_MAP_KEY_COPY_HD_URL, copyHqUrlToClipboardAction);
         actionMap.put(ACTION_MAP_KEY_COPY_KLEIN_URL, new CopyUrlToClipboardAction(FilmResolution.Enum.LOW));
         actionMap.put(ACTION_MAP_KEY_MARK_SEEN, markFilmAsSeenAction);
         actionMap.put(ACTION_MAP_KEY_MARK_UNSEEN, markFilmAsUnseenAction);
@@ -358,7 +370,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> filmActionPanel.updateThemaComboBox());
+                Platform.runLater(() -> filterActionPanel.updateThemaComboBox());
             }
         });
 
@@ -401,7 +413,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filmActionPanel.isShowUnseenOnly()) {
+            if (filterActionPanel.isShowUnseenOnly()) {
                 Platform.runLater(reloadTableDataTransition::playFromStart);
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -432,79 +444,86 @@ public class GuiFilme extends AGuiTabPanel {
         SwingUtilities.invokeLater(this::updateStartInfoProperty);
     }
 
-    private synchronized void saveFilm(DatenPset pSet) {
+    private synchronized void saveFilm(@Nullable DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
             new DialogAboNoSet(mediathekGui).setVisible(true);
             // Satz mit x, war wohl nix
             return;
         }
 
+        if (pSet == null) {
+            pSet = Daten.listePset.getListeSpeichern().getFirst();
+        }
+
         List<DatenFilm> liste = getSelFilme();
-        boolean standard = false;
+        boolean addAllWithDefaults = false;
         String pfad = "";
         boolean info = false;
         boolean subtitle = false;
 
         if (liste.size() > 1) {
-            if (pSet == null) {
-                pSet = Daten.listePset.getListeSpeichern().get(0);
-            }
             DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
-            damd.setVisible(true);
-            standard = damd.addAll;
-            pfad = damd.getPath();
-            info = damd.info;
-            subtitle = damd.subtitle;
-            if (damd.cancel) {
+            var result = damd.showDialog();
+            if (damd.wasCancelled()) {
                 return;
+            }
+            else {
+                addAllWithDefaults = result.addAll();
+                pfad = result.path();
+                info = result.info();
+                subtitle = result.subtitle();
             }
         }
 
-        for (DatenFilm datenFilm : liste) {
+        for (var film : liste) {
             // erst mal schauen obs den schon gibt
-            DatenDownload datenDownload =
-                    daten.getListeDownloads().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-            if (datenDownload != null) {
+            if (daten.getListeDownloads().getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
                 int ret = JOptionPane.showConfirmDialog(mediathekGui,
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
                         "Anlegen?",
                         JOptionPane.YES_NO_OPTION);
-                if (ret != JOptionPane.OK_OPTION) {
+                if (ret != JOptionPane.YES_OPTION) {
                     continue;
                 }
             }
 
-            if (standard) {
-                if (pSet == null) {
-                    pSet = Daten.listePset.getListeSpeichern().get(0);
-                }
-                datenDownload = new DatenDownload(
-                        pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "",
-                        pfad, "");
-                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
-                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
-
-                daten.getListeDownloads().addMitNummer(datenDownload);
-                MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-                    // und evtl. auch gleich starten
-                    datenDownload.startDownload();
-                }
+            if (addAllWithDefaults) {
+                var datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "",
+                        pfad, "", info, subtitle);
+                registerDownload(datenDownload);
             } else {
-                saveFilm(datenFilm, pSet);
+                saveFilm(film, pSet);
             }
         }
     }
 
-    private void saveFilm(DatenFilm datenFilm, DatenPset pSet) {
+    /**
+     * Register a download object in queue.
+     * @param datenDownload the object that should be downloaded.
+     */
+    private void registerDownload(@NotNull DatenDownload datenDownload) {
+        Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
+        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
+            // und evtl. auch gleich starten
+            datenDownload.startDownload();
+        }
+    }
+    /**
+     * Download a single film via add download dialog.
+     * @param datenFilm film of interest
+     * @param pSet the program set, can be null.
+     */
+    private void saveFilm(@NotNull DatenFilm datenFilm, @NotNull DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
+            //TODO should be impossible to reach this code block as psets are checked before...investigate.
             MVMessageDialog.showMessageDialog(this,
                     "Ohne Programm-Sets können keine Downloads gestartet werden.",
                     Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filmActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -532,11 +551,13 @@ public class GuiFilme extends AGuiTabPanel {
      * If necessary instantiate and show the bookmark window
      */
     public void showBookmarkWindow() {
-        if (bookmarkWindowController.isEmpty()) {
-            bookmarkWindowController = Optional.of(new BookmarkWindowController());
-            bookmarkWindowController.get().setPartner(this);
-        }
-        bookmarkWindowController.get().show();
+        Platform.runLater(() -> {
+            if (bookmarkWindowController.isEmpty()) {
+                bookmarkWindowController = Optional.of(new BookmarkWindowController());
+                bookmarkWindowController.get().setPartner(this);
+            }
+            bookmarkWindowController.get().show();
+        });
     }
 
     public void playerStarten(DatenPset pSet) {
@@ -550,7 +571,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filmActionPanel.isShowOnlyHighQuality()) {
+            if (filterActionPanel.isShowOnlyHighQuality()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -632,14 +653,13 @@ public class GuiFilme extends AGuiTabPanel {
             try {
                 SwingUtilities.invokeAndWait(this::loadTable);
             } catch (InterruptedException | InvocationTargetException ex) {
-                ex.printStackTrace();
                 logger.error("Table reload failed", ex);
             }
         });
 
         zeitraumTransition.setOnFinished(evt -> {
             // reset sender filter first
-            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
+            filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {
@@ -659,24 +679,24 @@ public class GuiFilme extends AGuiTabPanel {
                     reloadTableDataTransition.playFromStart();
                 }
             };
-            filmActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
-            filmActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
-            filmActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
-            var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+            filterActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
+            filterActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
+            filterActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
+            var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
             filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
-            filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
+            filterActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
 
-            filmActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
-                if (!filmActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
+            filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
+                if (!filterActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
                     reloadTableDataTransition.playFromStart();
                 }
             });
@@ -697,6 +717,10 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void loadTable() {
+        loadTable(false);
+    }
+
+    private void loadTable(boolean from_search_field) {
         if (modelFuture != null) {
             if (!modelFuture.isDone()) {
                 return;
@@ -704,7 +728,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         final var messageBus = MessageBus.getMessageBus();
-        messageBus.publish(new TableModelChangeEvent(true));
+        messageBus.publish(new TableModelChangeEvent(true, from_search_field));
 
         stopBeob = true;
         tabelle.getSpalten();
@@ -716,9 +740,9 @@ public class GuiFilme extends AGuiTabPanel {
             var searchFieldData = new SearchFieldData(searchField.getText(),
                     searchField.getSearchMode());
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
             } else {
-                helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
             }
             return helper.getFilteredTableModel();
         });
@@ -733,7 +757,7 @@ public class GuiFilme extends AGuiTabPanel {
                             updateFilmData();
                             stopBeob = false;
                             tabelle.scrollToSelection();
-                            messageBus.publish(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
                         });
                     }
 
@@ -745,14 +769,14 @@ public class GuiFilme extends AGuiTabPanel {
                             tabelle.setSpalten();
                             updateFilmData();
                             stopBeob = false;
-                            messageBus.publish(new TableModelChangeEvent(false));
+                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
                         });
                     }
                 },
                 decoratedPool);
     }
 
-    static class FilterVisibilityToggleButton extends JToggleButton {
+    static public class FilterVisibilityToggleButton extends JToggleButton {
         public FilterVisibilityToggleButton(Action a) {
             super(a);
             setText("");
@@ -771,7 +795,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            var dlg = filmActionPanel.getFilterDialog();
+            var dlg = filterActionPanel.getFilterDialog();
             if (dlg != null) {
                 var visible = dlg.isVisible();
                 visible = !visible;
@@ -799,6 +823,13 @@ public class GuiFilme extends AGuiTabPanel {
             addActionListener(l -> performSearch());
 
             createTrailingComponents();
+
+            setupContextMenu();
+        }
+
+        private void setupContextMenu() {
+            var handler = new TextCopyPasteHandler<>(this);
+            setComponentPopupMenu(handler.getPopupMenu());
         }
 
         protected abstract void createTrailingComponents();
@@ -824,11 +855,6 @@ public class GuiFilme extends AGuiTabPanel {
             pcs.firePropertyChange(SEARCHMODE_PROPERTY_STRING, oldValue, mode);
         }
 
-        @Override
-        protected void fireActionPerformed() {
-            super.fireActionPerformed();
-        }
-
         /**
          * Clear searchfield on escape key press.
          */
@@ -843,8 +869,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         public class SearchHistoryButton extends JButton {
             private static final Logger logger = LogManager.getLogger();
-            private final List<String> historyList = new ArrayList<>();
-            private final JMenuItem miClearHistory = new JMenuItem("Historie löschen");
+            private final EventList<String> historyList = new BasicEventList<>();
+            private final JMenuItem miClearHistory = new JMenuItem("Alles löschen");
+            private final JMenuItem miEditHistory = new JMenuItem("Einträge bearbeiten");
             private String SEARCH_HISTORY_CONFIG = "search.history.items";
 
             public SearchHistoryButton(@Nullable SearchControlFieldMode mode) {
@@ -861,32 +888,44 @@ public class GuiFilme extends AGuiTabPanel {
                     historyList.clear();
                     saveHistory();
                 });
+
+                miEditHistory.addActionListener(l -> {
+                    EditHistoryDialog dlg = new EditHistoryDialog(mediathekGui , miEditHistory, historyList);
+                    dlg.setVisible(true);
+                });
+
                 addActionListener(l -> {
                     JPopupMenu popupMenu = new JPopupMenu();
                     popupMenu.add(miClearHistory);
-                    if (!historyList.isEmpty()) {
-                        popupMenu.addSeparator();
-                        for (var item : historyList) {
-                            JMenuItem historyItem = new JMenuItem(item);
-                            historyItem.addActionListener(li -> {
-                                searchField.setText(item);
-                                searchField.fireActionPerformed();
-                            });
-                            popupMenu.add(historyItem);
+                    popupMenu.add(miEditHistory);
+                    historyList.getReadWriteLock().readLock().lock();
+                    try {
+                        if (!historyList.isEmpty()) {
+                            popupMenu.addSeparator();
+                            for (var item : historyList) {
+                                JMenuItem historyItem = new JMenuItem(item);
+                                historyItem.addActionListener(li -> {
+                                    searchField.setText(item);
+                                    searchField.fireActionPerformed();
+                                });
+                                popupMenu.add(historyItem);
+                            }
                         }
+                    }
+                    finally {
+                        historyList.getReadWriteLock().readLock().unlock();
                     }
                     popupMenu.show(this, 0, this.getHeight());
                 });
 
                 loadHistory();
+                historyList.addListEventListener(l -> saveHistory());
             }
 
             public void addHistoryEntry(String text) {
                 if (!historyList.contains(text)) {
-                    historyList.add(0, text);
-                    saveHistory();
+                    historyList.addFirst(text);
                 }
-
             }
 
             private void loadHistory() {
@@ -897,7 +936,13 @@ public class GuiFilme extends AGuiTabPanel {
                         List<String> entries = mapper.readValue(json, new TypeReference<>() {
                         });
                         if (!entries.isEmpty()) {
-                            historyList.addAll(entries);
+                            historyList.getReadWriteLock().writeLock().lock();
+                            try {
+                                historyList.addAll(entries);
+                            }
+                            finally {
+                                historyList.getReadWriteLock().writeLock().unlock();
+                            }
                         }
                     }
                 } catch (JsonProcessingException ex) {
@@ -908,8 +953,14 @@ public class GuiFilme extends AGuiTabPanel {
             private void saveHistory() {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
-                    var json = mapper.writeValueAsString(historyList);
-                    ApplicationConfiguration.getConfiguration().setProperty(SEARCH_HISTORY_CONFIG, json);
+                    historyList.getReadWriteLock().readLock().lock();
+                    try {
+                        var json = mapper.writeValueAsString(historyList);
+                        ApplicationConfiguration.getConfiguration().setProperty(SEARCH_HISTORY_CONFIG, json);
+                    }
+                    finally {
+                        historyList.getReadWriteLock().readLock().unlock();
+                    }
                 } catch (JsonProcessingException e) {
                     logger.error("Failed to write search history", e);
                 }
@@ -969,7 +1020,7 @@ public class GuiFilme extends AGuiTabPanel {
                 luceneSearchHistoryButton.addHistoryEntry(searchText);
             }
 
-            loadTable();
+            loadTable(true);
         }
     }
 
@@ -1001,7 +1052,7 @@ public class GuiFilme extends AGuiTabPanel {
                 regularSearchHistoryButton.addHistoryEntry(searchText);
             }
 
-            loadTable();
+            loadTable(true);
         }
 
         private void installDocumentListener() {
@@ -1158,7 +1209,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private class CopyUrlToClipboardAction extends AbstractAction {
+    public class CopyUrlToClipboardAction extends AbstractAction {
         private final FilmResolution.Enum resolution;
 
         CopyUrlToClipboardAction(FilmResolution.Enum resolution) {
@@ -1183,22 +1234,13 @@ public class GuiFilme extends AGuiTabPanel {
         private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
-        private final JMenuItem miSave = createSaveFilmItem();
-        private final JMenuItem miBookmark = createBookmarkFilmItem();
         private final ActionListener unseenActionListener = new BeobHistory(false);
         private final ActionListener seenActionListener = new BeobHistory(true);
         private final JDownloadHelper jDownloadHelper = new JDownloadHelper();
         private final DownloadSubtitleAction downloadSubtitleAction = new DownloadSubtitleAction(GuiFilme.this);
         private Point p;
-        private JMenuItem miPrintTable;
 
         TableContextMenuHandler() {
-            createStaticMenuEntries();
-        }
-
-        private void createStaticMenuEntries() {
-            miPrintTable = new JMenuItem("Tabelle drucken");
-            miPrintTable.addActionListener(beobPrint);
         }
 
         @Override
@@ -1268,20 +1310,6 @@ public class GuiFilme extends AGuiTabPanel {
             }
         }
 
-        private JMenuItem createSaveFilmItem() {
-            JMenuItem item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
-            item.addActionListener(saveFilmAction);
-            return item;
-        }
-
-        private JMenuItem createBookmarkFilmItem() {
-            JMenuItem item = new JMenuItem("Film merken");
-            item.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg"));
-            item.addActionListener(bookmarkFilmAction);
-            return item;
-        }
-
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             final int nr = tabelle.rowAtPoint(p);
@@ -1292,7 +1320,9 @@ public class GuiFilme extends AGuiTabPanel {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             jPopupMenu.add(playFilmAction);
-            jPopupMenu.add(miSave);
+            jPopupMenu.add(saveFilmAction);
+
+            JMenuItem miBookmark = new JMenuItem(bookmarkFilmAction);
             jPopupMenu.add(miBookmark);
             jPopupMenu.addSeparator();
 
@@ -1329,21 +1359,15 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].isEmpty()) {
+                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
-                Color col = pset.getFarbe();
-                JMenuItem item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME]);
-                if (pset.getListeProg().isEmpty()) {
-                    if (col != null) {
-                        item.setForeground(col);
-                    }
-                } else {
+
+                JMenuItem item = new JMenuItem(pset.getName());
+                pset.getForegroundColor().ifPresent(item::setForeground);
+                if (!pset.getListeProg().isEmpty()) {
                     item.addActionListener(l -> playerStarten(pset));
-                    if (col != null) {
-                        item.setBackground(col);
-                    }
                 }
                 submenue.add(item);
             }
@@ -1379,6 +1403,8 @@ public class GuiFilme extends AGuiTabPanel {
             });
 
             // Drucken
+            var miPrintTable = new JMenuItem("Tabelle drucken");
+            miPrintTable.addActionListener(beobPrint);
             jPopupMenu.add(miPrintTable);
 
             jPopupMenu.add(mediathekGui.showFilmInformationAction);
@@ -1446,6 +1472,8 @@ public class GuiFilme extends AGuiTabPanel {
                     // HD
                     if (!uHd.isEmpty()) {
                         item = new JMenuItem("höchste/hohe Qualität");
+                        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, GuiFunktionen.getPlatformControlKey() |
+                                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
                         item.addActionListener(
                                 e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY)));
                         submenueURL.add(item);
@@ -1454,6 +1482,9 @@ public class GuiFilme extends AGuiTabPanel {
                     // normale Auflösung, gibts immer
                     item = new JMenuItem("mittlere Qualität");
                     item.addActionListener(copyNormalUrlListener);
+                    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, GuiFunktionen.getPlatformControlKey() |
+                            KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+
                     submenueURL.add(item);
 
                     // kleine Auflösung

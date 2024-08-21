@@ -49,7 +49,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
                     .get()
                     .build();
 
-            try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+            try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
                     BufferedImage b_img = ImageIO.read(body.byteStream());

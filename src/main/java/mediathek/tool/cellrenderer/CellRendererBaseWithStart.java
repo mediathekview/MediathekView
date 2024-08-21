@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
+    public static final String ICON_POSITION_RIGHT = "ui.list.iconposition_right";
     private static final EnumSet<Country> euCountryList = EnumSet.of(Country.DE, Country.AT, Country.FR);
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected final FlatSVGIcon lockedIcon;
@@ -213,6 +214,9 @@ public class CellRendererBaseWithStart extends CellRendererBase {
             icon = new CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, iconList.toArray(new Icon[0]));
         setIcon(icon);
 
+        final int position = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ICON_POSITION_RIGHT, false) ? SwingConstants.LEADING : SwingConstants.TRAILING;
+        setHorizontalTextPosition(position);
         //always clear at the end
         iconList.clear();
     }

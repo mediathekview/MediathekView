@@ -10,17 +10,23 @@ import mediathek.tool.GermanStringSorter
  * The base model object for all available senders that the client can process.
  */
 object SenderListBoxModel {
-    private val providedSenderList: EventList<String> = BasicEventList()
+    @JvmStatic
+    val providedSenderList: EventList<String> = BasicEventList()
 
     @JvmStatic
     val readOnlySenderList = ReadOnlySenderListBoxModel()
 
     class ReadOnlySenderListBoxModel : TransformedList<String, String>(providedSenderList) {
+        /*init {
+            source.addListEventListener(this)
+        }*/
+
         override fun isWritable(): Boolean {
             return false
         }
 
         override fun listChanged(listChanges: ListEvent<String>?) {
+            //updates.forwardEvent(listChanges)
         }
     }
 
@@ -51,7 +57,6 @@ object SenderListBoxModel {
         providedSenderList.add("WDR")
         providedSenderList.add("ZDF")
         providedSenderList.add("ZDF-tivi")
-
         providedSenderList.sortWith(GermanStringSorter.getInstance())
     }
 }

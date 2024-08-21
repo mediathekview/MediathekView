@@ -5,6 +5,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
+import mediathek.tool.cellrenderer.CellRendererBaseWithStart;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
@@ -67,6 +68,10 @@ public class PanelEinstellungen extends JPanel {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            jCheckBoxTabsTop.setEnabled(false);
+            jCheckBoxTabsTop.setToolTipText(NO_INFLUENCE_TEXT);
+        }
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
@@ -140,12 +145,23 @@ public class PanelEinstellungen extends JPanel {
         cbRestoreSelectedTab.setSelected(restore);
         cbRestoreSelectedTab.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
                 cbRestoreSelectedTab.isSelected()));
+
+        var drawIconsRight = ApplicationConfiguration.getConfiguration()
+                        .getBoolean(CellRendererBaseWithStart.ICON_POSITION_RIGHT, false);
+        cbDrawListIconsRight.setSelected(drawIconsRight);
+        cbDrawListIconsRight.addActionListener(l -> {
+            ApplicationConfiguration.getConfiguration().setProperty(CellRendererBaseWithStart.ICON_POSITION_RIGHT, cbDrawListIconsRight.isSelected());
+            MediathekGui.ui().repaint();
+        });
     }
+
+    private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
 
     private void setupTabSwitchListener() {
         if (SystemUtils.IS_OS_MAC_OSX) {
             //deactivated on OS X
             cbAutomaticMenuTabSwitching.setEnabled(false);
+            cbAutomaticMenuTabSwitching.setToolTipText(NO_INFLUENCE_TEXT);
             config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
         } else {
             boolean installed;
@@ -195,6 +211,7 @@ public class PanelEinstellungen extends JPanel {
         jCheckBoxTray = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
+        cbDrawListIconsRight = new JCheckBox();
         modernSearchTitlePanel = new JXTitledPanel();
 
         //======== this ========
@@ -345,6 +362,10 @@ public class PanelEinstellungen extends JPanel {
             //---- cbAutomaticUpdateChecks ----
             cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
             panel1.add(cbAutomaticUpdateChecks);
+
+            //---- cbDrawListIconsRight ----
+            cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen"); //NON-NLS
+            panel1.add(cbDrawListIconsRight);
         }
 
         //---- modernSearchTitlePanel ----
@@ -379,7 +400,7 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -397,6 +418,7 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
+    private JCheckBox cbDrawListIconsRight;
     private JXTitledPanel modernSearchTitlePanel;
     // End of variables declaration//GEN-END:variables
 }

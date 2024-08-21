@@ -5,6 +5,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransactionList;
 import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.EventListWithEmptyFirstEntry;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.GermanStringSorter;
@@ -31,7 +33,7 @@ import java.util.UUID;
  * This class sets up the GuiFilme filter dialog.
  * property for filtering in GuiFilme.
  */
-public class FilmActionPanel {
+public class FilterActionPanel {
     private static final Logger logger = LogManager.getLogger();
     private final FilterConfiguration filterConfig;
     private final ObservableList<FilterDTO> availableFilters;
@@ -42,7 +44,7 @@ public class FilmActionPanel {
     /**
      * The JavaFX list based on {@link #sourceThemaList}.
      */
-    private final EventObservableList<String> themaListItems = new EventObservableList<>(sourceThemaList);
+    private final EventObservableList<String> observableThemaList = new EventObservableList<>(new EventListWithEmptyFirstEntry(sourceThemaList));
     private OldSwingJavaFxFilterDialog filterDialog;
     private RangeSlider filmLengthSlider;
     private ReadOnlyObjectProperty<String> zeitraumProperty;
@@ -62,11 +64,12 @@ public class FilmActionPanel {
     private SuggestionProvider<String> themaSuggestionProvider;
     private CommonViewSettingsPane viewSettingsPane;
 
-    public FilmActionPanel(@NotNull JToggleButton filterToggleBtn) {
+    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
         this.filterConfig = new FilterConfiguration();
 
         setupViewSettingsPane();
         setupDeleteFilterButton();
+        setupRenameFilterButton();
 
         SwingUtilities.invokeLater(
                 () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
@@ -203,10 +206,10 @@ public class FilmActionPanel {
     private void setupFilterSelection() {
         viewSettingsPane.setAvailableFilters(availableFilters);
         FilterConfiguration.addAvailableFiltersObserver(
-                () -> {
+                () -> Platform.runLater(() -> {
                     availableFilters.clear();
                     availableFilters.addAll(filterConfig.getAvailableFilters());
-                });
+                }));
         FilterConfiguration.addCurrentFiltersObserver(
                 filter -> {
                     viewSettingsPane.selectFilter(filter);
@@ -248,8 +251,41 @@ public class FilmActionPanel {
 
     private void setupDeleteFilterButton() {
         viewSettingsPane.btnDeleteFilterSettings.setOnAction(e -> {
+            viewSettingsPane.senderCheckList.getCheckModel().clearChecks();
+
             filterConfig.clearCurrentFilter();
             restoreConfigSettings();
+        });
+    }
+
+    private void setupRenameFilterButton() {
+        viewSettingsPane.btnRenameFilter.setOnAction(e -> {
+            final var fltName = filterConfig.getCurrentFilter().name();
+            SwingUtilities.invokeLater(() -> {
+                String s = (String)JOptionPane.showInputDialog(
+                        MediathekGui.ui(),
+                        "Neuer Name des Filters:",
+                        "Filter umbenennen",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        fltName);
+                if (s != null) {
+                    if (!s.isEmpty()) {
+                        final var fName = s.trim();
+                        if (!fName.equals(fltName)){
+                            renameCurrentFilter(fName);
+                            logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
+                        }
+                        else
+                            logger.warn("New and old filter name are identical...doing nothing");
+                    }
+                    else
+                        logger.warn("Rename filter text was empty...doing nothing");
+                }
+                else
+                    logger.trace("User cancelled rename");
+            });
         });
     }
 
@@ -278,8 +314,8 @@ public class FilmActionPanel {
     }
 
     private void setupThemaComboBox() {
-        viewSettingsPane.themaComboBox.setItems(themaListItems);
-        themaSuggestionProvider = SuggestionProvider.create(themaListItems);
+        viewSettingsPane.themaComboBox.setItems(observableThemaList);
+        themaSuggestionProvider = SuggestionProvider.create(sourceThemaList);
         TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
     }
 
@@ -395,19 +431,18 @@ public class FilmActionPanel {
         var transactionThemaList = new TransactionList<>(sourceThemaList);
         transactionThemaList.beginEvent(true);
         transactionThemaList.clear();
-        transactionThemaList.add("");
 
         var selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
-        var tempThemaList = getThemaList(selectedSenders).stream()
+        var tempThemaList = getThemaList(selectedSenders).stream().distinct()
                 .sorted(GermanStringSorter.getInstance())
                 .toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
 
-        //update autocpmpletion provider here only as the other listeners fire too much
+        //update autocompletion provider here only as the other listeners fire too much
         themaSuggestionProvider.clearSuggestions();
-        //themaListItems wird durch die sourcelist/transactionlist aktualisiert im Vorfeld
-        themaSuggestionProvider.addPossibleSuggestions(themaListItems);
+        themaSuggestionProvider.addPossibleSuggestions(sourceThemaList);
+
         viewSettingsPane.themaComboBox.getSelectionModel().select(0);
     }
 }

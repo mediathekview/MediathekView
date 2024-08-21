@@ -20,6 +20,22 @@ public class MediathekGuiX11 extends MediathekGui {
         setupX11WindowManagerClassName();
     }
 
+    @Override
+    protected boolean useAlternateRowColors() {
+        return true;
+    }
+
+    @Override
+    protected void createDarkModeToggleButton() {
+        // we are using a menu item here
+    }
+
+    @Override
+    protected void createMenuBar() {
+        super.createMenuBar();
+        createDarkModeMenuAction();
+    }
+
     /**
      * Setup the X11 window manager WM_CLASS hint.
      * Enables e.g. GNOME to determine application name and to enable app specific functionality.

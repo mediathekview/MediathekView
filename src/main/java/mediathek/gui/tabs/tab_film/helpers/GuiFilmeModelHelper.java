@@ -9,8 +9,8 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
+import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
@@ -25,16 +25,16 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
     private String[] arrIrgendwo;
 
-    public GuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
+    public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                @NotNull SeenHistoryController historyController,
                                @NotNull SearchFieldData searchFieldData) {
-        this.filmActionPanel = filmActionPanel;
+        this.filterActionPanel = filterActionPanel;
         this.historyController = historyController;
         this.searchFieldData = searchFieldData;
     }
 
     private String getFilterThema() {
-        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
+        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
             filterThema = "";
         }
@@ -44,23 +44,23 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
 
     @Override
     protected boolean noFiltersAreSet() {
-        var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
+        var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
 
-        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
+        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
                 && ((int) filmLengthSlider.getLowValue() == 0)
                 && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
-                && !filmActionPanel.isDontShowAbos()
-                && !filmActionPanel.isShowUnseenOnly()
-                && !filmActionPanel.isShowOnlyHighQuality()
-                && !filmActionPanel.isShowSubtitlesOnly()
-                && !filmActionPanel.isShowLivestreamsOnly()
-                && !filmActionPanel.isShowNewOnly()
-                && !filmActionPanel.isShowBookMarkedOnly()
-                && !filmActionPanel.isDontShowTrailers()
-                && !filmActionPanel.isDontShowSignLanguage()
-                && !filmActionPanel.isDontShowAudioVersions();
+                && !filterActionPanel.isDontShowAbos()
+                && !filterActionPanel.isShowUnseenOnly()
+                && !filterActionPanel.isShowOnlyHighQuality()
+                && !filterActionPanel.isShowSubtitlesOnly()
+                && !filterActionPanel.isShowLivestreamsOnly()
+                && !filterActionPanel.isShowNewOnly()
+                && !filterActionPanel.isShowBookMarkedOnly()
+                && !filterActionPanel.isDontShowTrailers()
+                && !filterActionPanel.isDontShowSignLanguage()
+                && !filterActionPanel.isDontShowAudioVersions();
     }
 
 
@@ -70,9 +70,9 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+        final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
-        if (filmActionPanel.isShowUnseenOnly())
+        if (filterActionPanel.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
@@ -82,23 +82,23 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             senderSet.addAll(selectedSenders);
             stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
-        if (filmActionPanel.isShowNewOnly())
+        if (filterActionPanel.isShowNewOnly())
             stream = stream.filter(DatenFilm::isNew);
-        if (filmActionPanel.isShowBookMarkedOnly())
+        if (filterActionPanel.isShowBookMarkedOnly())
             stream = stream.filter(DatenFilm::isBookmarked);
-        if (filmActionPanel.isShowLivestreamsOnly())
+        if (filterActionPanel.isShowLivestreamsOnly())
             stream = stream.filter(DatenFilm::isLivestream);
-        if (filmActionPanel.isShowOnlyHighQuality())
+        if (filterActionPanel.isShowOnlyHighQuality())
             stream = stream.filter(DatenFilm::isHighQuality);
-        if (filmActionPanel.isDontShowTrailers())
+        if (filterActionPanel.isDontShowTrailers())
             stream = stream.filter(film -> !film.isTrailerTeaser());
-        if (filmActionPanel.isDontShowSignLanguage())
+        if (filterActionPanel.isDontShowSignLanguage())
             stream = stream.filter(film -> !film.isSignLanguage());
-        if (filmActionPanel.isDontShowAudioVersions())
+        if (filterActionPanel.isDontShowAudioVersions())
             stream = stream.filter(film -> !film.isAudioVersion());
-        if (filmActionPanel.isDontShowAbos())
+        if (filterActionPanel.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
-        if (filmActionPanel.isShowSubtitlesOnly()) {
+        if (filterActionPanel.isShowSubtitlesOnly()) {
             stream = stream.filter(this::subtitleCheck);
         }
         if (!filterThema.isEmpty()) {
@@ -107,7 +107,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
             stream = stream.filter(this::maxLengthCheck);
         }
-        if (filmActionPanel.isShowUnseenOnly()) {
+        if (filterActionPanel.isShowUnseenOnly()) {
             stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
@@ -128,7 +128,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
 
         list.clear();
 
-        if (filmActionPanel.isShowUnseenOnly())
+        if (filterActionPanel.isShowUnseenOnly())
             historyController.emptyMemoryCache();
     }
 

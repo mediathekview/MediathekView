@@ -18,6 +18,7 @@ public class MemoryMonitorAction extends AbstractAction {
     public void closeMemoryMonitor() {
         if (dialog != null) {
             dialog.dispose();
+            dialog = null;
         }
     }
 

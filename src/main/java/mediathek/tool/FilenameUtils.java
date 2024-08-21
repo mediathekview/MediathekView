@@ -19,7 +19,7 @@ public class FilenameUtils {
 
     /**
      * Valid characters for Windows in file names:
-     * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
+     * Based on <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx">MSDN sample</a>
      */
     public static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS = "[:\\\\/*?|<>\"]";
     public static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH = "[:/*?|<>\"]";
@@ -128,7 +128,7 @@ public class FilenameUtils {
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
         } catch (CharacterCodingException e) {
-            e.printStackTrace();
+            logger.error("convertToNativeEncoding", e);
         }
 
         return ret;
@@ -171,7 +171,7 @@ public class FilenameUtils {
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
         } catch (CharacterCodingException e) {
-            e.printStackTrace();
+            logger.error("convertToASCIIEncoding", e);
         }
 
         return ret;

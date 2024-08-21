@@ -1,0 +1,90 @@
+<tt:tt xmlns:tt="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" xmlns:tts="http://www.w3.org/ns/ttml#styling" xmlns:ebuttm="urn:ebu:tt:metadata" ttp:timeBase="media" ttp:cellResolution="50 30" xml:lang="de">
+<tt:head>
+<tt:metadata>
+<ebuttm:documentMetadata>
+<ebuttm:documentEbuttVersion>v1.0</ebuttm:documentEbuttVersion>
+</ebuttm:documentMetadata>
+</tt:metadata>
+<tt:styling>
+<tt:style xml:id="defaultStyle" tts:fontFamily="Verdana,Arial,Tiresias" tts:fontSize="160%" tts:lineHeight="125%"/>
+<tt:style xml:id="textBlack" tts:color="#000000" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textRed" tts:color="#FF0000" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textGreen" tts:color="#00FF00" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textYellow" tts:color="#FFFF00" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textBlue" tts:color="#0000FF" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textMagenta" tts:color="#FF00FF" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textCyan" tts:color="#00FFFF" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textWhite" tts:color="#FFFFFF" tts:backgroundColor="#000000c2"/>
+<tt:style xml:id="textCenter" tts:textAlign="center"/>
+<tt:style xml:id="textLeft" tts:textAlign="left"/>
+<tt:style xml:id="textRight" tts:textAlign="right"/>
+</tt:styling>
+<tt:layout>
+<tt:region xml:id="top" tts:origin="10% 10%" tts:extent="80% 80%" tts:displayAlign="before"/>
+<tt:region xml:id="bottom" tts:origin="10% 10%" tts:extent="80% 80%" tts:displayAlign="after"/>
+</tt:layout>
+</tt:head>
+<tt:body>
+<tt:div style="defaultStyle">
+<tt:p xml:id="sub0" style="textCenter" region="bottom" begin="00:00:10.994" end="00:00:14.474">
+<tt:span style="textWhite">Zu Tausenden werden solche</tt:span>
+<tt:br/>
+<tt:span style="textWhite">Nachrichten derzeit verschickt.</tt:span>
+</tt:p>
+<tt:p xml:id="sub1" style="textCenter" region="bottom" begin="00:00:14.514" end="00:00:18.394">
+<tt:span style="textWhite">Der Trick ist simpel, sagt das</tt:span>
+<tt:br/>
+<tt:span style="textWhite">Niedersächsische Landeskriminalamt.</tt:span>
+</tt:p>
+<tt:p xml:id="sub2" style="textCenter" region="bottom" begin="00:00:18.474" end="00:00:22.034">
+<tt:span style="textWhite">Die Kriminellen geben vor die Tochter</tt:span>
+<tt:br/>
+<tt:span style="textWhite">oder der Sohn zu sein</tt:span>
+</tt:p>
+<tt:p xml:id="sub3" style="textCenter" region="bottom" begin="00:00:22.114" end="00:00:25.834">
+<tt:span style="textWhite">und dringend finanzielle Hilfe</tt:span>
+<tt:br/>
+<tt:span style="textWhite">und eine Überweisung zu benötigen.</tt:span>
+</tt:p>
+<tt:p xml:id="sub4" style="textCenter" region="bottom" begin="00:00:25.914" end="00:00:27.514">
+<tt:span style="textWhite">Alles nur als Textnachricht.</tt:span>
+</tt:p>
+<tt:p xml:id="sub5" style="textCenter" region="bottom" begin="00:00:27.594" end="00:00:29.514">
+<tt:span style="textYellow">Dann wird ein Gespräch aufgebaut.</tt:span>
+</tt:p>
+<tt:p xml:id="sub6" style="textCenter" region="bottom" begin="00:00:29.594" end="00:00:32.154">
+<tt:span style="textYellow">Es wird Betroffenheit</tt:span>
+<tt:br/>
+<tt:span style="textYellow">und Zeitdruck aufgebaut,</tt:span>
+</tt:p>
+<tt:p xml:id="sub7" style="textCenter" region="bottom" begin="00:00:32.194" end="00:00:35.794">
+<tt:span style="textYellow">weil das Kind ist in Not und</tt:span>
+<tt:br/>
+<tt:span style="textYellow">dann machen die Leute das leider.</tt:span>
+</tt:p>
+<tt:p xml:id="sub8" style="textCenter" region="bottom" begin="00:00:35.834" end="00:00:38.394">
+<tt:span style="textWhite">Oft geht es gleich</tt:span>
+<tt:br/>
+<tt:span style="textWhite">um mehrere Tausend Euro.</tt:span>
+</tt:p>
+<tt:p xml:id="sub9" style="textCenter" region="bottom" begin="00:00:38.514" end="00:00:41.834">
+<tt:span style="textWhite">Insgesamt haben die Betrüger 2022</tt:span>
+<tt:br/>
+<tt:span style="textWhite">allein in Niedersachsen</tt:span>
+</tt:p>
+<tt:p xml:id="sub10" style="textCenter" region="bottom" begin="00:00:41.914" end="00:00:43.914">
+<tt:span style="textWhite">mehr als 4,5 Mio. Euro erbeutet.</tt:span>
+</tt:p>
+<tt:p xml:id="sub11" style="textCenter" region="bottom" begin="00:00:43.994" end="00:00:46.874">
+<tt:span style="textWhite">Die Polizei rät in jedem Fall,</tt:span>
+<tt:br/>
+<tt:span style="textWhite">skeptisch zu sein</tt:span>
+</tt:p>
+<tt:p xml:id="sub12" style="textCenter" region="bottom" begin="00:00:46.954" end="00:00:49.674">
+<tt:span style="textWhite">und im Zweifel die Polizei</tt:span>
+<tt:br/>
+<tt:span style="textWhite">zu verständigen.</tt:span>
+</tt:p>
+</tt:div>
+</tt:body>
+</tt:tt>

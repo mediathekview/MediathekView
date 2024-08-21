@@ -2,6 +2,9 @@ package mediathek.tool.table;
 
 import com.sun.jna.platform.win32.VersionHelpers;
 import mediathek.config.MVConfig;
+import mediathek.gui.messages.FontSizeChangedEvent;
+import mediathek.tool.MessageBus;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +65,14 @@ public abstract class MVTable extends JTable {
         calculateRowHeight();
 
         applyWindowsSevenTableEffects();
+
+        MessageBus.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleFontSizeChanged(FontSizeChangedEvent e) {
+        System.out.println("FONT SIZE CHANGED");
+        SwingUtilities.invokeLater(this::calculateRowHeight);
     }
 
     /**
@@ -127,7 +138,7 @@ public abstract class MVTable extends JTable {
         final var height = fm.getHeight();
 
         if (lineBreak) {
-            sizeArea = 4 * height;
+            sizeArea = 3 * height;
         }
         else {
             sizeArea = height;

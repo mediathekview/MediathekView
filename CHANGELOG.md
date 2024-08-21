@@ -1,5 +1,59 @@
+# **14.1.0**
+- JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
+- **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.
+- **macOS Intel: Minimum OS-Version ist 10.15 Catalina! Diese Version wurde nur damit getestet! Sie mag auf früheren macOS Systemen laufen, dafür gibt es keine Garantie und keinen Support!**
+- **macOS Intel:** Es wird JDK 21 mitgeliefert, das zukünftig genutzte JDK 22 wird nicht mehr mit macOS Versionen vor 11 Big Sur funktionieren.
+- **macOS Apple Silicon:** Aufgrund bekannter größerer Fehler von JDK 21 auf neueren macOS Versionen wird hier JDK 22 verwendet.
+- CVE in xerial-jdbc Bibliothek wurde durch eine neuere Version gefixt.
+- **macOS:** Die Position der Reiter kann nicht mehr geändert werden, da dies zu Problemen mit der Fensterdarstellung führt. Die Einstellungen dafür werden zurück gesetzt und können im Programm nicht mehr geändert werden. 
+- **Linux:** Native notifications wurden für aktuelle Bibliotheksversion angepasst.
+- **BUGFIX:** Inkorrekte Beschreibung des "Gespeicherten Film abspielen" Toolbar-Button im Tab Download wurde korrigiert.
+- **BUGFIX:** Fehlendes Kontextmenü beim Suchfeld wurde hinzugefügt.
+- **BUGFIX:** Fehlendes Kontextmenü in der Filmbeschreibung zum Kopieren der URL wurde hinzugefügt.
+- **BUGFIX:** Suchfeld wird nach Enter-Taste zum Start der Suche wieder fokussiert.
+- **BUGFIX:** Programm stürzt nicht mehr ab wenn man versucht während der Indizierung die Blacklist auszuschalten.
+- **BUGFIX(Windows/Linux):** Zeilenhöhe der Tabellen wird nun nach Änderung der Schriftart und -größe korrekt justiert.
+- **BUGFIX:** Link zur Online-Hilfe verweist nurn zur Anleitung, nicht mehr zu den FAQs.
+- **BUGFIX:** Ein Klick auf das Mülleimer-Icon im Filterdialog setzt nun auch Sender und Thema zurück.
+- **BUGFIX:** Gemerkte Filme werden wieder im Tab Filme farblich hervorgehoben dargestellt.
+- **BUGFIX:** Im Zeilenumbruch-Modus sind nun 3 Zeilen Standard statt vorher vier.
+- **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Filme werden die Einträge nun nicht mehr vertikal zentriert.
+- **BUGFIX:** Im *Zeilen umbrechen*-Modus des Tab Downloads werden die Einträge nun einheitlich dargestellt.
+- **BUGFIX:** Im Tab Filme wurde der Kontextmenüeintrag "Film aufzeichnen" konform zum Menüeintrag in "Film downloaden" angepasst.
+- **BUGFIX:** Im Tab Filme wurden die Darstellungsfehler im Kontextmenü beim Hell/Dunkel-Wechsel korrigiert.
+- **BUGFIX:** Toolbar "Allgemein" wird nun nicht mehr falsch dargestellt im Tab wenn die Tab-Position seitlich ist.
+- **BUGFIX(Windows/Linux):** Der Text der Reiter "Filme" und "Downloads" wird nun korrekt rotiert wenn die Reiterposition nicht oben ist.
+- **BUGFIX:** Im *Merkliste verwalten*-Dialog wird nun der richtige Download-Dialog verwendet.
+- **BUGFIX(Linux):** Es wird nun ein konfigurierter Browser gestartet wenn die von Java zur Verfügung gestellten Funktionen nicht funktionieren.
+- **BUGFIX:** *Merkliste verwalten*-Dialog verwendet nun primär die JavaFX styleguide Vorgaben.
+- **BUGFIX:** In Film-URLs werden nun vor dem Download alle Query-Parameter entfernt.
+- **FEATURE:** In der Filmliste kann die Darstellung der Info-Icons nun so konfiguriert werden, dass sie links oder Rechts des Titels dargestellt werden. Dies erfolgt mit der Checkbox unter *Einstellungen/Allgemein->Info-Icons der Listen rechts darstellen*.
+- **FEATURE(Windows/Linux):** Geänderte Programmschriftart und -größe wird nun gespeichert und beim Start wiederhergestellt.
+- **FEATURE:** Die URLs des selektierten Films können nun für HQ und normale Auflösung mittels `Strg+Alt+Shift+H` bzw. `Strg+Alt+Shift+N` oder wie bisher über das Kontextmenü in die Zwischenablage kopiert werden. Unter macOS ersetze `Strg` mit `Command`.
+- **FEATURE:** MV kann mittels `-dq` oder `--download-quit` Parameter zum automatischen Download aller Filme in der Downloadansicht mit anschließender automatischer Beendigung aufgefordert werden.
+- **FEATURE:** Im Hilfe-Menü wurde ein Eintrag zu den Frequently Asked Questions (FAQ) ergänzt.
+- **FEATURE:** Im *"Film speichern"*-Dialog können nun zur jeweils ausgewählten Qualitätsstufe ergänzende Codec-Informationen für die gewählte URL aus dem Netz geladen werden.
+- **FEATURE(Linux):** Dark Mode Erkennung funktioniert nun auch mit GNOME. Danke an @swsnr!
+- **FEATURE(Linux):** Die Fensterdekorationen der Windows/macOS-Versionen werden nun auch unter Linux verwendet.
+- **FEATURE:** Das Nachladen von fehlenden Filmgrößen kann in den *Einstellungen/Aufzeichnen und Abspielen/Download* abgeschaltet werden.
+- **FEATURE:** Fehlerhafte Downloads werden nun automatisch aus der Gesehen Datenbank entfernt.
+- **FEATURE(Windows/Linux):** Darkmode Button wird ab Windows 10 und unter Linux in der Menüzeile neben den window controls angezeigt.
+- **FEATURE(Windows/Linux):** Tab-Labels werden nun korrekt rotiert wenn die Tab-Position nicht oben ist.
+- **FEATURE:** Der bevorzugte DNS-IP-Auflösungsmodus kann nun via `-dpm <XXX>` oder `--dns-preference-mode <XXX>` geändert werden. Zulässige Werte sind `system`, `ip_v6`, `ip_v4`, `ip_v6_only`, `ip_v4_only` (Standardwert). Eine Änderung kann bei IPv6-only Internetanschlüssen notwendig sein.
+- **FEATURE:** Die Suchhistorie kann nun im Kontextmenü editiert werden.
+- **FEATURE:** Dialog "Filminformation" kann nun vollständig vergrößert oder verkleinert werden.
+- **FEATURE:** Die Filter werden nun über einen eigenen Button umbenannt und nicht mehr durch Eingabe in der ComboBox.
+- **FEATURE:** Bei der Lucene-Suche dürfen Wildcards nun auch am Anfang des Suchtexts verwendet werden.
+- **FEATURE:** Die Datenbank der gesehenen Filme kann nun über das Menü *"Hilfe/Hilfsmittel/History-Datenbank optimieren..."* von eventuell vorhandenen Duplikaten befreit werden. Dies kann die Performance des Programms bei einer großen (und älteren) Datenbank positiv beeinflussen.
+- **FEATURE:** Der Default-Wert zum automatischen Weiterführen von Downloads kann nun in den Einstellungen unter "Download" angepasst werden (Wertebereich 1-60).
+- Network Timeout wurde auf 10 Sekunden erhöht. Dies sollte bei schlechten Netzwerkverbindungen etwas Abhilfe schaffen.
+
+
 # **14.0.0**
-- Es wird nun Java 20 verwendet.
+- **ACHTUNG: macOS Sonoma 14.1 verursacht diverse Probleme und Programmhänger! Einige dieser Probleme konnten beseitigt werden, führen aber zu kleineren Einschränkungen.**
+- macOS: Speicherverbrauchsanzeige wurde deaktiviert. Sie verursacht bisher unbekannte Programmanomalien unter macOS Sonoma 14.1
+- Beim Beenden wird kein Fortschrittsdialog mehr angezeigt.
+- Es wird nun Java 21 verwendet.
 - User Interface wurde primär für neue macOS-Versionen überarbeitet.
 - Die *macOS Intel* Version nutzt nun Liberica JDK full mit integriertem JavaFX. Dadurch kann MediathekView nun auch wieder fehlerfrei mit Apple Silicon Macs gebaut werden.
 - Das Programm überprüft beim Start ob die JVM-Parameter korrekt sind und gibt ansonsten eine Warnung aus. Dies kann über die Paramter `-nj` oder `--no-jvm-param-checks` deaktiviert werden.

@@ -1,10 +1,8 @@
 package mediathek.javafx.tool;
 
 import javafx.application.Platform;
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -29,19 +27,5 @@ public class JavaFxUtils {
         } catch (ExecutionException | InterruptedException e) {
             logger.error("invokeInFxThreadAndWait() failed", e);
         }
-    }
-
-    /**
-     * Convert a swing color to JavaFX.
-     * @param awtColor the swing color.
-     * @return the JavaFX color.
-     */
-    public static Color toFXColor(@NotNull java.awt.Color awtColor) {
-        int r = awtColor.getRed();
-        int g = awtColor.getGreen();
-        int b = awtColor.getBlue();
-        int a = awtColor.getAlpha();
-        double opacity = a / 255.0;
-        return javafx.scene.paint.Color.rgb(r, g, b, opacity);
     }
 }

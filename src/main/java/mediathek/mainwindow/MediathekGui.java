@@ -1,6 +1,8 @@
 package mediathek.mainwindow;
 
-import com.sun.jna.platform.win32.VersionHelpers;
+import com.formdev.flatlaf.extras.components.FlatButton;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import mediathek.Main;
@@ -23,7 +25,7 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
@@ -77,6 +79,8 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
+    private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
+    private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
     /**
      * "Pointer" to UI
      */
@@ -89,7 +93,7 @@ public class MediathekGui extends JFrame {
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
-    protected final SettingsAction settingsAction = new SettingsAction(this);
+    protected final SettingsAction settingsAction = new SettingsAction();
     final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
@@ -100,7 +104,7 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
-    private final InfoDialog filmInfo;
+    private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     public FixedRedrawStatusBar swingStatusBar;
@@ -127,7 +131,7 @@ public class MediathekGui extends JFrame {
     protected Configuration config = ApplicationConfiguration.getConfiguration();
     protected JToolBar commonToolBar = new JToolBar();
     protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
-    protected FontManager fontManager = new FontManager(this);
+    protected FontManager fontManager;
     protected ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
@@ -138,7 +142,6 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean shutdownRequested;
-
     public MediathekGui() {
         ui = this;
 
@@ -146,6 +149,12 @@ public class MediathekGui extends JFrame {
 
         setupScrollBarWidth();
         UIManager.put("TabbedPane.showTabSeparators", true);
+        UIManager.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equalsIgnoreCase("lookAndFeel")) {
+                SwingUtilities.updateComponentTreeUI(progressLabel);
+                SwingUtilities.updateComponentTreeUI(progressBar);
+            }
+        });
 
         setupAlternatingRowColors();
 
@@ -187,15 +196,13 @@ public class MediathekGui extends JFrame {
         setupNotificationCenter();
 
         createCommonToolBar();
+        installToolBar();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
 
         workaroundJavaFxInitializationBug();
 
-        var messageBus = MessageBus.getMessageBus();
-        //send before subscribing
-        messageBus.publishAsync(new TableModelChangeEvent(true));
-        messageBus.subscribe(this);
+        subscribeTableModelChangeEvent();
 
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
@@ -214,15 +221,75 @@ public class MediathekGui extends JFrame {
 
         checkInvalidRegularExpressions();
 
+        loadBandwidthMonitor();
+
+        logger.trace("Loading info dialog");
+        filmInfo = new FilmInfoDialog(this);
+        logger.trace("Finished loading info dialog");
+
+        mapFilmUrlCopyCommands();
+
+        if (Config.shouldDownloadAndQuit()) {
+            var future = Daten.getInstance().getDecoratedPool().submit(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                    logger.info("Auto DL and Quit: Starting all downloads...");
+                    SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
+                    return true;
+
+                } catch (Exception e) {
+                    logger.error("Auto DL and Quit: error starting downloads", e);
+                    return false;
+                }
+            });
+            Futures.addCallback(future, new FutureCallback<>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    try {
+                        SwingUtilities.invokeAndWait(() -> quitApplication(true));
+                    } catch (Exception e) {
+                        logger.error("Auto DL and Quit: Error in callback...", e);
+                    }
+                }
+
+                @Override
+                public void onFailure(@NotNull Throwable t) {
+
+                    logger.error("Auto DL and Quit: Error in callback...", t);
+                }
+            }, Daten.getInstance().getDecoratedPool());
+        }
+
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
+            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
+        }
+
+        performAustrianVlcCheck();
+    }
+
+    private void performAustrianVlcCheck() {
+        //perform check only when we are not in download-only mode...
+        if (!Config.shouldDownloadAndQuit()) {
+            //show a link to tutorial if we are in Austria and have never used MV before...
+            AustrianVlcCheck vlcCheck = new AustrianVlcCheck(this);
+            vlcCheck.perform();
+        }
+    }
+
+    private void loadBandwidthMonitor() {
         logger.trace("Loading bandwidth monitor");
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
             showBandwidthUsageAction.actionPerformed(null);
         }
         logger.trace("Finished loading bandwidth monitor");
+    }
 
-        logger.trace("Loading info dialog");
-        filmInfo = new InfoDialog(this);
-        logger.trace("Finished loading info dialog");
+    private void subscribeTableModelChangeEvent() {
+        var messageBus = MessageBus.getMessageBus();
+        //send before subscribing
+        messageBus.publishAsync(new TableModelChangeEvent(true, false));
+        messageBus.subscribe(this);
     }
 
     /**
@@ -234,20 +301,60 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
+    private void mapFilmUrlCopyCommands() {
+        final var im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, GuiFunktionen.getPlatformControlKey() |
+                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_HQ_URL);
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, GuiFunktionen.getPlatformControlKey() |
+                KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_NORMAL_URL);
+
+        final var am = jMenuBar.getActionMap();
+        am.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction);
+        am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction);
+    }
+
     protected void setupScrollBarWidth() {
         // win and linux users complain about scrollbars being too small...
         UIManager.put( "ScrollBar.width", 16 );
     }
 
-    public void setupAlternatingRowColors() {
-        // install alternate row color only for windows >8 and macOS, Linux
-        boolean installAlternateRowColor;
-        if (SystemUtils.IS_OS_WINDOWS && VersionHelpers.IsWindows8OrGreater()) {
-            installAlternateRowColor = true;
-        } else installAlternateRowColor = SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX;
+    /**
+     * Check if alternate row colors in table should be used.
+     * Overridden in subclasses for the different OSes.
+     * @return true when alternating row colors should be used, false otherwise.
+     */
+    protected boolean useAlternateRowColors() {
+        return false;
+    }
 
-        if (installAlternateRowColor)
+    public void setupAlternatingRowColors() {
+        if (useAlternateRowColors())
             UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
+    }
+
+    protected void createDarkModeToggleButton() {
+        commonToolBar.add(Box.createHorizontalGlue());
+        commonToolBar.add(toggleDarkModeAction);
+    }
+
+    protected void createDarkModeMenuAction() {
+        var actionButton = new FlatButton();
+        actionButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        actionButton.setFocusable(false);
+        actionButton.setAction(toggleDarkModeAction);
+        actionButton.setSquareSize(true);
+        jMenuBar.add(Box.createGlue());
+        jMenuBar.add(actionButton);
+    }
+
+    protected void setToolBarProperties() {
+        commonToolBar.setFloatable(true);
+        commonToolBar.setName("Allgemein");
+    }
+
+    protected void installToolBar() {
+        tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
     }
 
     protected void createCommonToolBar() {
@@ -260,20 +367,9 @@ public class MediathekGui extends JFrame {
         commonToolBar.add(manageBookmarkAction);
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
-        commonToolBar.add(Box.createHorizontalGlue());
-        commonToolBar.add(toggleDarkModeAction);
+        createDarkModeToggleButton();
 
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            commonToolBar.setFloatable(true);
-            commonToolBar.setName("Allgemein");
-        }
-
-
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
-        }
-        else
-            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+        setToolBarProperties();
     }
 
     /**
@@ -394,7 +490,7 @@ public class MediathekGui extends JFrame {
         im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
     }
 
-    private void createMenuBar() {
+    protected void createMenuBar() {
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
         jMenuBar.add(jMenuDatei);
@@ -411,8 +507,7 @@ public class MediathekGui extends JFrame {
         jMenuAbos.setText("Abos");
         jMenuBar.add(jMenuAbos);
 
-        if (!SystemUtils.IS_OS_MAC_OSX)
-            jMenuBar.add(fontMenu);
+        addFontMenu();
 
         jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
@@ -423,6 +518,10 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar);
+    }
+
+    protected void addFontMenu() {
+        jMenuBar.add(fontMenu);
     }
 
     /**
@@ -448,8 +547,12 @@ public class MediathekGui extends JFrame {
 
     private void createMemoryMonitor() {
         boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
-        if (visible)
-            showMemoryMonitorAction.showMemoryMonitor();
+        if (visible) {
+            if (!SystemUtils.IS_OS_MAC_OSX) {
+                //FIXME macOS Sonoma 14.1 causes freeze when showing on startup...
+                showMemoryMonitorAction.showMemoryMonitor();
+            }
+        }
     }
 
     /**
@@ -527,7 +630,7 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    public InfoDialog getFilmInfoDialog() {
+    public FilmInfoDialog getFilmInfoDialog() {
         return filmInfo;
     }
 
@@ -712,12 +815,18 @@ public class MediathekGui extends JFrame {
     /**
      * Change placement of tabs based on settings
      */
-    private void configureTabPlacement() {
+    protected void configureTabPlacement() {
         final boolean topPosition = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
-        if (topPosition)
+        if (topPosition) {
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
-        else
+            getContentPane().remove(commonToolBar);
+            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        }
+        else {
             tabbedPane.setTabPlacement(JTabbedPane.LEFT);
+            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", null);
+            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
+        }
     }
 
     private void configureTabIcons() {
@@ -782,6 +891,11 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    @Handler
+    private void handleShowSettingsDialogEvent(ShowSettingsDialogEvent evt) {
+        SwingUtilities.invokeLater(() -> getSettingsDialog().setVisible(true));
+    }
+
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
@@ -829,18 +943,31 @@ public class MediathekGui extends JFrame {
         jMenuDatei.add(exportMenu);
         jMenuDatei.add(importMenu);
 
-        //on macOS we will use native handlers instead...
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            jMenuDatei.addSeparator();
-            jMenuDatei.add(settingsAction);
-            jMenuDatei.addSeparator();
-            jMenuDatei.add(new QuitAction(this));
-        }
+        addSettingsMenuItem();
+        addQuitMenuItem();
+    }
+
+    protected void addSettingsMenuItem() {
+        jMenuDatei.addSeparator();
+        jMenuDatei.add(settingsAction);
+    }
+
+    protected void addQuitMenuItem() {
+        jMenuDatei.addSeparator();
+        jMenuDatei.add(new QuitAction(this));
     }
 
     private void createViewMenu() {
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showMemoryMonitorAction);
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            jMenuAnsicht.add(showMemoryMonitorAction);
+        }
+        else {
+            // only show for debug purposes...wil cause hang at shutdown
+            if (Config.isDebugModeEnabled()) {
+                jMenuAnsicht.add(showMemoryMonitorAction);
+            }
+        }
         jMenuAnsicht.add(showBandwidthUsageAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
@@ -850,26 +977,9 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
-    private void createFontMenu() {
-        var restoreFontMenuItem = new JMenuItem();
-        restoreFontMenuItem.setText("Schrift zurücksetzen");
-        restoreFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        restoreFontMenuItem.addActionListener(e -> fontManager.resetFont());
-        fontMenu.add(restoreFontMenuItem);
-
-        var incrFontMenuItem = new JMenuItem();
-        incrFontMenuItem.setText("Schrift vergrößern");
-        incrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        incrFontMenuItem.addActionListener(e -> fontManager.increaseFontSize());
-        fontMenu.add(incrFontMenuItem);
-
-        var decrFontMenuItem = new JMenuItem();
-        decrFontMenuItem.setText("Schrift verkleinern");
-        decrFontMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
-        decrFontMenuItem.addActionListener(e -> fontManager.decreaseFontSize());
-        fontMenu.add(decrFontMenuItem);
-
-        fontManager.updateFontMenuItems();
+    protected void createFontMenu() {
+        fontManager = new FontManager(fontMenu);
+        fontManager.restoreConfigData();
     }
 
     @Handler
@@ -882,8 +992,15 @@ public class MediathekGui extends JFrame {
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(true));
     }
 
+    private void createHelperToolsEntries() {
+        var menu = new JMenu("Hilfsmittel");
+        menu.add(new OptimizeHistoryDbAction(this));
+        jMenuHilfe.add(menu);
+    }
+
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
+        jMenuHilfe.add(new ShowOnlineFaqAction(this));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
@@ -892,6 +1009,9 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetFilterDialogPosition(this));
         jMenuHilfe.addSeparator();
+        createHelperToolsEntries();
+        jMenuHilfe.addSeparator();
+
         //do not show menu entry if we have external update support
         if (GuiFunktionen.isNotUsingExternalUpdater()) {
             jMenuHilfe.add(searchProgramUpdateAction);
@@ -930,7 +1050,9 @@ public class MediathekGui extends JFrame {
         miGc.addActionListener(l -> System.gc());
 
         devMenu.add(miGc);
-        jMenuBar.add(devMenu);
+
+        var idx = jMenuBar.getComponentIndex(jMenuAnsicht);
+        jMenuBar.add(devMenu, ++idx);
     }
 
     private void createAboMenu() {
@@ -969,15 +1091,21 @@ public class MediathekGui extends JFrame {
     }
 
     public boolean quitApplication() {
+        return quitApplication(false);
+    }
+
+    public boolean quitApplication(boolean shouldDownloadAndQuit) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            DialogBeenden dialogBeenden = new DialogBeenden(this);
+            DialogBeenden dialogBeenden = new DialogBeenden(this, shouldDownloadAndQuit);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.getApplicationCanTerminate()) {
                 return false;
             }
             setShutdownRequested(dialogBeenden.isShutdownRequested());
         }
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         if (automaticFilmlistUpdate != null)
             automaticFilmlistUpdate.close();
@@ -994,71 +1122,64 @@ public class MediathekGui extends JFrame {
 
         manageAboAction.closeDialog();
 
-        ShutdownDialogController shutdownProgress = new ShutdownDialogController(this);
-        shutdownProgress.show();
+        logger.trace("Perform history maintenance.");
+        try (SeenHistoryController history = new SeenHistoryController()) {
+            history.performMaintenance();
+        }
 
-        var historyWorker = CompletableFuture.runAsync(() -> {
-            try (SeenHistoryController history = new SeenHistoryController()) {
-                history.performMaintenance();
-            }
-        });
-
-        var bookmarkWorker = CompletableFuture.runAsync(() ->
-                daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath()));
+        logger.trace("Save bookmark list.");
+        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
 
         // stop the download thread
-        shutdownProgress.setStatus(ShutdownState.TERMINATE_STARTER_THREAD);
+        logger.trace("Stop Starter Thread.");
         daten.getStarterClass().getStarterThread().interrupt();
 
-        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_NOTIFICATION_CENTER);
+        logger.trace("Close Notification center.");
         closeNotificationCenter();
 
         // Tabelleneinstellungen merken
-        shutdownProgress.setStatus(ShutdownState.SAVE_FILM_DATA);
+        logger.trace("Save Tab Filme data.");
         tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
-        tabFilme.filmActionPanel.getFilterDialog().dispose();
+        tabFilme.getFilterActionPanel().getFilterDialog().dispose();
 
-        shutdownProgress.setStatus(ShutdownState.SAVE_DOWNLOAD_DATA);
+        logger.trace("Save Tab Download data.");
         tabDownloads.tabelleSpeichern();
 
-        shutdownProgress.setStatus(ShutdownState.STOP_DOWNLOADS);
+        logger.trace("Stop all downloads.");
         stopDownloads();
 
-        shutdownProgress.setStatus(ShutdownState.SAVE_APP_DATA);
+        logger.trace("Save app data.");
         daten.allesSpeichern();
 
-        shutdownProgress.setStatus(ShutdownState.SHUTDOWN_THREAD_POOL);
+        logger.trace("Shutdown pools.");
         shutdownTimerPool();
         waitForCommonPoolToComplete();
 
         //shutdown JavaFX
-        shutdownProgress.setStatus(ShutdownState.TERMINATE_JAVAFX_SUPPORT);
+        logger.trace("Shutdown JavaFX.");
         shutdownJavaFx();
 
-        try {
-            shutdownProgress.setStatus(ShutdownState.SAVE_BOOKMARKS);
-            bookmarkWorker.get();
-
-            shutdownProgress.setStatus(ShutdownState.PERFORM_SEEN_HISTORY_MAINTENANCE);
-            historyWorker.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Async task error", e);
-        }
-
         //close main window
+        logger.trace("Close main window.");
         dispose();
 
         //write all settings if not done already...
+        logger.trace("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        RuntimeStatistics.printRuntimeStatistics();
-        RuntimeStatistics.printDataUsageStatistics();
-        shutdownProgress.setStatus(ShutdownState.COMPLETE);
-
+        logger.trace("Cleanup Lucene index.");
         cleanupLuceneIndex();
 
+        RuntimeStatistics.printRuntimeStatistics();
+        if (Config.isEnhancedLoggingEnabled()) {
+            RuntimeStatistics.printDataUsageStatistics();
+        }
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
         if (isShutdownRequested()) {
+            logger.info("Requesting computer shutdown.");
             shutdownComputer();
         }
 
@@ -1074,7 +1195,7 @@ public class MediathekGui extends JFrame {
                 writer.commit();
                 //filmList.getLuceneDirectory().close();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.error("cleanupLuceneIndex error", ex);
             }
         }
     }
@@ -1083,24 +1204,32 @@ public class MediathekGui extends JFrame {
      * Gracefully shutdown the JavaFX environment.
      */
     private void shutdownJavaFx() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        //causes system hang on Sonoma 14.1
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
+        }
+
         Platform.exit();
     }
 
     private void shutdownTimerPool() {
+        logger.trace("Entering shutdownTimerPool()");
+
         var timerPool = TimerPool.getTimerPool();
         timerPool.shutdown();
         try {
             if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))
                 logger.warn("Time out occured before pool final termination");
         } catch (InterruptedException e) {
-            logger.warn("timerPool shutdown exception", e);
+            logger.error("timerPool shutdown exception", e);
         }
         var taskList = timerPool.shutdownNow();
         if (!taskList.isEmpty()) {
             logger.trace("timerPool taskList was not empty");
             logger.trace(taskList.toString());
         }
+
+        logger.trace("Leaving shutdownTimerPool()");
     }
 
     private void stopDownloads() {
@@ -1116,15 +1245,17 @@ public class MediathekGui extends JFrame {
     }
 
     private void waitForCommonPoolToComplete() {
-        while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
-            try {
-                logger.debug("POOL SUBMISSIONS: {}", ForkJoinPool.commonPool().getQueuedSubmissionCount());
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        logger.trace("Entering waitForCommonPoolToComplete()");
+
+        var pool = ForkJoinPool.commonPool();
+        boolean isQuiescent = pool.isQuiescent();
+
+        while (pool.hasQueuedSubmissions() && !isQuiescent) {
+            logger.trace("POOL SUBMISSIONS: {}", pool.getQueuedSubmissionCount());
+            isQuiescent = pool.awaitQuiescence(500, TimeUnit.MILLISECONDS);
         }
 
+        logger.trace("Leaving waitForCommonPoolToComplete()");
     }
 
     /**

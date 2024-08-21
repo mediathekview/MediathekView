@@ -128,7 +128,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
             var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PSET_PROGRAM_GROUP_LIST_PATH);
             assert url != null;
             Request request = new Request.Builder().url(url).get().build();
-            try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+            try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
                 if (response.isSuccessful() && body != null) {
                     try (InputStream is = body.byteStream();
@@ -170,7 +170,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
 
             if (NetUtils.isUrl(dateiUrl)) {
                 Request request = new Request.Builder().url(dateiUrl).get().build();
-                try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+                try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                      ResponseBody body = response.body()) {
                     if (response.isSuccessful() && body != null) {
                         try (InputStream is = body.byteStream();

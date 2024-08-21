@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14,0,0);
+    public static final Version MVVERSION = new Version(14,1,0);
 
     public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
@@ -47,7 +47,10 @@ public class Konstanten {
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
     public static final byte MAX_EXTERNAL_STARTS = 3;
-    public static final byte CONTINUE_DOWNLOAD = 60; //seconds
+    /**
+     * Default time for automatic continuation of existing downloads.
+     */
+    public static final byte DOWNLOAD_CONTINUATION_DEFAULT_TIME = 60; //seconds
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
     // MediathekView URLs
@@ -58,8 +61,8 @@ public class Konstanten {
     public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
     public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";
-    public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
-    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/faq/";
+    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_ONLINE_FAQ = "https://mediathekview.de/faq/";
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";

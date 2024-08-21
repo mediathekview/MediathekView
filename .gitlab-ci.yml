@@ -1,9 +1,10 @@
 
 variables:
-  MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
+#  MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
+  MAVEN_OPTS: "-Djava.awt.headless=true"
   MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
-image: maven:3.9-eclipse-temurin-20
+image: maven:3.9-eclipse-temurin-21
 
 
 cache:
@@ -18,20 +19,20 @@ default:
     - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 git-lfs > /dev/null
     - source /private/ENVS
     - whoami
-    - mkdir ~/.ssh
+    - mkdir -p ~/.ssh
     - ssh-keyscan -p 60002 dw2.mvorg.de >> ~/.ssh/known_hosts
-    - ssh-keyscan -p 60002 148.251.176.136 >> ~/.ssh/known_hosts
+    - ssh-keyscan -p 60002 116.202.81.23 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_10_0_5.tar.gz -O install4j.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_10_0_7.tar.gz -O install4j.tar.gz
     - tar -zxf install4j.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
     - mvn clean
     - mvn install4j:install-license -Pinstall4j
-    - git clone https://gitlab.com/mediathekview/mediathekview-buildres.git tmpres
-    - mv tmpres/bin res/
-    - rm -rf tmpres
+#    - git clone https://gitlab.com/mediathekview/mediathekview-buildres.git tmpres
+#    - mv tmpres/bin res/
+#    - rm -rf tmpres
 
 stages:
   - deploy-nightly-lin

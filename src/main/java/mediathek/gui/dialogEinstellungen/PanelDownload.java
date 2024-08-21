@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.tool.ApplicationConfiguration;
 import net.miginfocom.layout.AC;
@@ -10,7 +11,6 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class PanelDownload extends JPanel {
 
     public PanelDownload() {
@@ -19,10 +19,24 @@ public class PanelDownload extends JPanel {
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
         cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
 
-        jCheckBoxBeep.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));
-        jCheckBoxBeep.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
+        var config = ApplicationConfiguration.getConfiguration();
+        jCheckBoxBeep.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));
+        jCheckBoxBeep.addActionListener(l -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
+
+        cbFetchMissingFileSize.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true));
+        cbFetchMissingFileSize.addActionListener(l -> config.setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, cbFetchMissingFileSize.isSelected()));
 
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
+
+        var countdown = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME);
+        if (countdown < 1 || countdown > Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME) {
+            countdown = Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME;
+        }
+        spDefaultDownloadContinuation.setValue(countdown);
+        spDefaultDownloadContinuation.addChangeListener(e -> {
+            int val = (int)spDefaultDownloadContinuation.getValue();
+            config.setProperty(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, val);
+        });
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -32,6 +46,10 @@ public class PanelDownload extends JPanel {
         cbkDownloadError = new JCheckBox();
         jCheckBoxBeep = new JCheckBox();
         jButtonBeep = new JButton();
+        cbFetchMissingFileSize = new JCheckBox();
+        var panel1 = new JPanel();
+        var label1 = new JLabel();
+        spDefaultDownloadContinuation = new JSpinner();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -47,7 +65,9 @@ public class PanelDownload extends JPanel {
                 // rows
                 new AC()
                     .fill().gap()
-                    .fill()));
+                    .fill().gap()
+                    .gap()
+                    ));
 
             //---- cbkDownloadError ----
             cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen"); //NON-NLS
@@ -60,6 +80,24 @@ public class PanelDownload extends JPanel {
             //---- jButtonBeep ----
             jButtonBeep.setText("Test"); //NON-NLS
             jPanel2.add(jButtonBeep, new CC().cell(1, 1));
+
+            //---- cbFetchMissingFileSize ----
+            cbFetchMissingFileSize.setText("Fehlende Filmgr\u00f6\u00dfe nachladen"); //NON-NLS
+            jPanel2.add(cbFetchMissingFileSize, new CC().cell(0, 2));
+
+            //======== panel1 ========
+            {
+                panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+                //---- label1 ----
+                label1.setText("Standard-Wert f\u00fcr automatische Weiterf\u00fchrung:"); //NON-NLS
+                panel1.add(label1);
+
+                //---- spDefaultDownloadContinuation ----
+                spDefaultDownloadContinuation.setModel(new SpinnerNumberModel(1, 1, 60, 1));
+                panel1.add(spDefaultDownloadContinuation);
+            }
+            jPanel2.add(panel1, new CC().cell(0, 3, 2, 1));
         }
         add(jPanel2, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -70,5 +108,7 @@ public class PanelDownload extends JPanel {
     private JCheckBox cbkDownloadError;
     private JCheckBox jCheckBoxBeep;
     private JButton jButtonBeep;
+    private JCheckBox cbFetchMissingFileSize;
+    private JSpinner spDefaultDownloadContinuation;
     // End of variables declaration//GEN-END:variables
 }

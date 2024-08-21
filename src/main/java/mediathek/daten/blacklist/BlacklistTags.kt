@@ -11,7 +11,7 @@ enum class BlacklistTags(val index: Int, val xmlName: String) {
     companion object {
         @JvmStatic
         fun fromXmlTag(tag: String): Optional<BlacklistTags> {
-            return Arrays.stream(values()).filter { e: BlacklistTags -> e.xmlName == tag }.findAny()
+            return Arrays.stream(entries.toTypedArray()).filter { e: BlacklistTags -> e.xmlName == tag }.findAny()
         }
     }
 }

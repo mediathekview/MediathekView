@@ -1,20 +1,20 @@
 package mediathek;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.javafx.AustrianVlcCheck;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
+import mediathek.tool.dns.IPvPreferenceMode;
 import mediathek.tool.migrator.SettingsMigrator;
-import mediathek.tool.swing.ThreadCheckingRepaintManager;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.lang3.SystemUtils;
@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import javax.imageio.ImageIO;
@@ -312,25 +313,29 @@ public class Main {
         if (!correctParameters) {
             //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            var message = "<html>" +
-                    "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
-                    "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
-                    "<ul>" +
-                    "<li>-XX:+UseShenandoahGC</li>" +
-                    "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
-                    "<li>-XX:+UseStringDeduplication</li>" +
-                    "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
-            if (SystemUtils.IS_OS_LINUX) {
-                message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
-            }
-
-            message += "</ul><br/>" +
-                        "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                        "</html>";
-
-            JOptionPane.showMessageDialog(null,message, Konstanten.PROGRAMMNAME,
+            JOptionPane.showMessageDialog(null,getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    @NotNull
+    private static String getJvmErrorMessageString() {
+        var message = "<html>" +
+                "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
+                "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
+                "<ul>" +
+                "<li>-XX:+UseShenandoahGC</li>" +
+                "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
+                "<li>-XX:+UseStringDeduplication</li>" +
+                "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
+        if (SystemUtils.IS_OS_LINUX) {
+            message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
+        }
+
+        message += "</ul><br/>" +
+                    "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                    "</html>";
+        return message;
     }
 
     /**
@@ -358,6 +363,20 @@ public class Main {
                         Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
             }
         }
+    }
+
+    private static void configureDnsPreferenceMode(CommandLine.ParseResult parseResult) {
+        var config = ApplicationConfiguration.getConfiguration();
+        if (parseResult.hasMatchedOption("dpm")) {
+            logger.trace("Dns preference mode set via CLI, storing config value");
+            config.setProperty(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode()));
+        }
+        else {
+            logger.trace("Dns preference mode NOT set, using config setting");
+            var mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode())));
+            Config.setDnsIpPreferenceMode(mode);
+        }
+        logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString());
     }
 
     /**
@@ -389,11 +408,20 @@ public class Main {
                 setupLogging();
                 printPortableModeInfo();
 
+                configureDnsPreferenceMode(parseResult);
+
+                if (SystemUtils.IS_OS_LINUX) {
+                    // enable custom window decorations
+                    JFrame.setDefaultLookAndFeelDecorated( true );
+                    JDialog.setDefaultLookAndFeelDecorated( true );
+                }
+
                 setupDockIcon();
                 setupFlatLaf();
 
-                if (SystemUtils.IS_OS_LINUX)
+                if (SystemUtils.IS_OS_LINUX) {
                     checkUiScaleSetting();
+                }
 
                 if (!Config.isDisableJvmParameterChecks())
                     checkJVMSettings();
@@ -634,9 +662,6 @@ public class Main {
             window.toFront();
             window.requestFocus();
         }
-        //show a link to tutorial if we are in Austria and have never used MV before...
-        AustrianVlcCheck vlcCheck = new AustrianVlcCheck();
-        vlcCheck.perform();
     }
 
     private static MediathekGui getPlatformWindow() {

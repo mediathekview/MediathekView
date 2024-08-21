@@ -1,0 +1,77 @@
+JFDML JFormDesigner: "8.2.3.0.386" Java: "17.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Suchhistorie bearbeiten"
+			"defaultCloseOperation": 2
+			"type": enum java.awt.Window$Type UTILITY
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "contentPanel"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "list"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+						name: "toolBar1"
+						"floatable": false
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnDeleteEntries"
+							"toolTipText": "Ausgewählte Einträge löschen"
+							auxiliary() {
+								"JavaCodeGenerator.postCreateCode": "btnDeleteEntries.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/trash-can.svg\"));"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnUp"
+							"toolTipText": "Element nach oben verschieben"
+							auxiliary() {
+								"JavaCodeGenerator.postCreateCode": "btnUp.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/arrow-up.svg\"));"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "btnDown"
+							"toolTipText": "Element nach unten verschieben"
+							auxiliary() {
+								"JavaCodeGenerator.postCreateCode": "btnDown.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/arrow-down.svg\"));"
+							}
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 515, 350 )
+		} )
+	}
+}

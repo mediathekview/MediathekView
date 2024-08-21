@@ -22,6 +22,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -137,6 +139,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         } else {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(aufloesung));
         }
+        //if URL contains query parameters
+        if (arr[DOWNLOAD_URL].contains("?")) {
+            //remove query parameters
+            arr[DOWNLOAD_URL] = getUrlWithoutParameters(arr[DOWNLOAD_URL]);
+        }
+
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
@@ -153,6 +161,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
         aufrufBauen(pSet, film, abo, name, pfad);
         init();
+    }
+
+    public DatenDownload(@NotNull DatenPset pSet, @NotNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle)
+    {
+        this(pSet, film, quelle, abo, name, pfad, aufloesung);
+        arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
+        arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
     }
 
     /**
@@ -256,6 +271,26 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         String ret = StringUtils.replace(datum, ":", "");
         ret = StringUtils.replace(ret, ".", "");
         return ret;
+    }
+
+    /**
+     * Remove all query parameters from url, e.g. ?explicit=true
+     * @param url the original url
+     * @return filtered url string
+     */
+    private String getUrlWithoutParameters(String url) {
+        try {
+            var uri = new URI(url);
+            return new URI(uri.getScheme(),
+                    uri.getAuthority(),
+                    uri.getPath(),
+                    null, // Ignore the query part of the input url
+                    uri.getFragment()).toString();
+        }
+        catch (URISyntaxException e) {
+            logger.error("Failed to parse url, returning unmodified", e);
+            return url;
+        }
     }
 
     public void startDownload() {

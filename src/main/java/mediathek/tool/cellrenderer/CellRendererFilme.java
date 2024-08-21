@@ -91,53 +91,42 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
             //shortcut if we want to have line breaks, use text areas and skip the rest
             if (mvTable.isLineBreak()) {
+                setHorizontalAlignment(SwingConstants.LEFT);
+                setVerticalAlignment(SwingConstants.TOP);
+
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
-                        applyColorSettings(textArea, datenFilm, datenDownload, isSelected, isBookMarked);
+                        applyColorSettings(textArea, datenFilm, isSelected, isBookMarked);
                         return textArea;
                     }
                 }
             }
+            else
+                applyHorizontalAlignment(columnModelIndex);
 
-            applyHorizontalAlignment(columnModelIndex);
-
+            //NOT IN LINEBREAK MODE -> REGULAR HANDLING
             //here comes the content...
             switch (columnModelIndex) {
-                case DatenFilm.FILM_DAUER:
-                    setText(datenFilm.getFilmLengthAsString());
-                    break;
-
-                case DatenFilm.FILM_ABSPIELEN:
-                    handleButtonStartColumn(datenDownload, isSelected);
-                    break;
-
-                case DatenFilm.FILM_AUFZEICHNEN:
-                    handleButtonDownloadColumn(isSelected);
-                    break;
-
-                case DatenFilm.FILM_MERKEN:
-                    handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
-                    break;
-
-                case DatenFilm.FILM_SENDER:
+                case DatenFilm.FILM_DAUER -> setText(datenFilm.getFilmLengthAsString());
+                case DatenFilm.FILM_ABSPIELEN -> handleButtonStartColumn(datenDownload, isSelected);
+                case DatenFilm.FILM_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected);
+                case DatenFilm.FILM_MERKEN ->
+                        handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
+                case DatenFilm.FILM_SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
                         setSenderIcon(value.toString(), targetDim);
                     }
-                    break;
-
-                case DatenFilm.FILM_TITEL:
+                }
+                case DatenFilm.FILM_TITEL -> {
                     setText(datenFilm.getTitle());
                     setIndicatorIcons(table, datenFilm, isSelected);
-                    break;
-
-                case DatenFilm.FILM_GEO:
-                    drawGeolocationIcons(datenFilm, isSelected);
-                    break;
+                }
+                case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
             }
 
-            applyColorSettings(this, datenFilm, datenDownload, isSelected, isBookMarked);
+            applyColorSettings(this, datenFilm, isSelected, isBookMarked);
         } catch (Exception ex) {
             logger.error("Fehler", ex);
         }
@@ -158,25 +147,16 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
     }
 
-    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected, boolean isBookMarked) {
-        // gestarteter Film
-        final boolean start = (datenDownload != null) && (datenDownload.start != null);
-        final boolean hasBeenSeen = history.hasBeenSeen(datenFilm);
+    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isSelected, boolean isBookMarked) {
+        if (!isSelected) {
+            if (history.hasBeenSeen(datenFilm)) {
+                c.setBackground(MVColor.FILM_HISTORY.color);
+            }
 
-        if (start) {
-            //film is started for download
-            setBackgroundColor(c, datenDownload.start, isSelected);
-        } else {
-            //not a start, set specific background colors
-            if (hasBeenSeen) {
-                if (!isSelected) {
-                    c.setBackground(MVColor.FILM_HISTORY.color);
-                }
-            } else if (datenFilm.isNew()) {
-                // fix #259
-                if (!isSelected)
-                    c.setForeground(MVColor.getNewColor());
-            } else if (isBookMarked && !isSelected) {
+            if (datenFilm.isNew()) {
+                c.setForeground(MVColor.getNewColor());
+            }
+            if (isBookMarked) {
                 c.setBackground(MVColor.FILM_BOOKMARKED.color);
             }
         }
@@ -199,13 +179,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     private void setIconAndToolTip(boolean isSelected, Icon normal, Icon selected, String text) {
         setToolTipText(text);
-        Icon icon;
-        if (isSelected)
-            icon = selected;
-        else
-            icon = normal;
-
-        setIcon(icon);
+        setIcon(isSelected ? selected : normal);
     }
 
     private void handleButtonDownloadColumn(final boolean isSelected) {
