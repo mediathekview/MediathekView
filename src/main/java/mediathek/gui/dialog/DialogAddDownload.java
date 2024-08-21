@@ -507,10 +507,11 @@ public class DialogAddDownload extends JDialog {
                     //perform checks only when OS is not windows
                     if (!SystemUtils.IS_OS_WINDOWS) {
                         String s = cbPathTextComponent.getText();
+                        final var editor = jComboBoxPfad.getEditor().getEditorComponent();
                         if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
-                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                            editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                         } else {
-                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                            editor.setBackground(UIManager.getColor("TextField.background"));
                         }
                     }
                     calculateAndCheckDiskSpace();
@@ -1063,7 +1064,7 @@ public class DialogAddDownload extends JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, jButtonAbbrechen, jButtonOk);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
