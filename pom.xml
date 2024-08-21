@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>14.1.0</version>
+    <version>14.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -98,8 +98,8 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.15.0</commons-lang3.version>
         <controlsfx.version>11.2.1</controlsfx.version>
-        <flatlaf.version>3.5</flatlaf.version>
-        <guava.version>33.2.1-jre</guava.version>
+        <flatlaf.version>3.5.1</flatlaf.version>
+        <guava.version>33.3.0-jre</guava.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.17.2</jackson.version>
         <jaffree.version>2023.09.10</jaffree.version>
@@ -123,7 +123,7 @@
         <mockito.version>5.12.0</mockito.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <picocli.version>4.7.6</picocli.version>
-        <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.46.0.1</sqlite-jdbc.version>
         <xz.version>1.9</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
