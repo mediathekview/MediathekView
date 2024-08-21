@@ -2,6 +2,7 @@
 - **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
 - **BUGFIX:** FlatLaf Regression gelöst, die manchmal zu einer inkorrekten Darstellung der Oberfläche führte.
 - **BUGFIX(Linux/macOS):** Im "Film Speichern"-Dialog wurde der Zielpfad im Dark Mode weiß dargestellt.
+- **BUGFIX:** Im "Neues Abo anlegen"-Dialog werden Textfelder im Dark Mode nicht mehr weiß hinterlegt.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 
