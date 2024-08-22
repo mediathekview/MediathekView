@@ -750,7 +750,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
 
-            final var entryName = liste.get(0).getName();
+            final var entryName = liste.getFirst().getName();
             String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -877,7 +877,7 @@ public class PanelPsetLang extends PanelVorlage {
                 if (foundgruppe > 1) {
                     jTextFieldSetName.setBackground(Color.ORANGE);
                 } else {
-                    jTextFieldSetName.setBackground(Color.WHITE);
+                    jTextFieldSetName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                 }
             }
         }
@@ -1208,7 +1208,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jLabel13))
                                     .addContainerGap(317, Short.MAX_VALUE))
                         );
-                        jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
+                        jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, jButtonGruppeFarbe, jButtonGruppeStandardfarbe);
                         jPanel5Layout.setVerticalGroup(
                             jPanel5Layout.createParallelGroup()
                                 .addGroup(jPanel5Layout.createSequentialGroup()
@@ -1359,7 +1359,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jLabel16))
                                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         );
-                        jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonGruppePfad, tfGruppeZielName, tfGruppeZielPfad});
+                        jPanel1Layout.linkSize(SwingConstants.VERTICAL, jButtonGruppePfad, tfGruppeZielName, tfGruppeZielPfad);
                     }
 
                     GroupLayout jPanel9Layout = new GroupLayout(jPanel9);
@@ -1714,7 +1714,7 @@ public class PanelPsetLang extends PanelVorlage {
                                     .addComponent(jCheckBoxRemoteDownload)
                                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         );
-                        jPanelProgrammDetailsLayout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName});
+                        jPanelProgrammDetailsLayout.linkSize(SwingConstants.VERTICAL, jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName);
                     }
 
                     GroupLayout jPanelProgrammeLayout = new GroupLayout(jPanelProgramme);
