@@ -3,7 +3,9 @@ package mediathek.gui.tabs.tab_film.helpers;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
+import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.FilterActionPanel;
+import mediathek.javafx.filterpanel.ZeitraumSpinner;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +36,26 @@ public abstract class GuiModelHelper {
             return filmLength >= sliderRange.minLengthInSeconds();
     }
 
-    protected abstract boolean noFiltersAreSet();
+    protected boolean noFiltersAreSet() {
+        var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
+
+        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
+                && getFilterThema().isEmpty()
+                && searchFieldData.isEmpty()
+                && ((int) filmLengthSlider.getLowValue() == 0)
+                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && !filterActionPanel.isDontShowAbos()
+                && !filterActionPanel.isShowUnseenOnly()
+                && !filterActionPanel.isShowOnlyHighQuality()
+                && !filterActionPanel.isShowSubtitlesOnly()
+                && !filterActionPanel.isShowLivestreamsOnly()
+                && !filterActionPanel.isShowNewOnly()
+                && !filterActionPanel.isShowBookMarkedOnly()
+                && !filterActionPanel.isDontShowTrailers()
+                && !filterActionPanel.isDontShowSignLanguage()
+                && !filterActionPanel.isDontShowAudioVersions()
+                && filterActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+    }
 
     protected boolean seenCheck(DatenFilm film) {
         return !historyController.hasBeenSeenFromCache(film);
@@ -46,5 +67,11 @@ public abstract class GuiModelHelper {
         var minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
         sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);
+    }
+
+    protected String getFilterThema() {
+        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
+
+        return filterThema == null ? "" : filterThema;
     }
 }

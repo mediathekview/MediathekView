@@ -54,38 +54,6 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
         this.searchFieldData = searchFieldData;
     }
 
-    private String getFilterThema() {
-        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
-        if (filterThema == null) {
-            filterThema = "";
-        }
-
-        return filterThema;
-    }
-
-    @Override
-    protected boolean noFiltersAreSet() {
-        var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
-
-        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
-                && getFilterThema().isEmpty()
-                && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getLowValue() == 0)
-                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
-                && !filterActionPanel.isDontShowAbos()
-                && !filterActionPanel.isShowUnseenOnly()
-                && !filterActionPanel.isShowOnlyHighQuality()
-                && !filterActionPanel.isShowSubtitlesOnly()
-                && !filterActionPanel.isShowLivestreamsOnly()
-                && !filterActionPanel.isShowNewOnly()
-                && !filterActionPanel.isShowBookMarkedOnly()
-                && !filterActionPanel.isDontShowTrailers()
-                && !filterActionPanel.isDontShowSignLanguage()
-                && !filterActionPanel.isDontShowAudioVersions()
-                && filterActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
-    }
-
-
     private TModelFilm performTableFiltering() {
         var listeFilme = (IndexedFilmList) Daten.getInstance().getListeFilmeNachBlackList();
         try {
