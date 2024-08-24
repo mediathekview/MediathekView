@@ -5,6 +5,7 @@ import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
     private static final Logger logger = LogManager.getLogger();
     private final JProgressBar progressBar;
     private final JLabel progLabel;
-    private int oldProgress = 0;
+    private int oldProgress;
 
     public LuceneIndexWorker(@NotNull JLabel progLabel, @NotNull JProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -114,8 +115,9 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             filmListe.setIndexSearcher(new IndexSearcher(reader));
         } catch (Exception ex) {
             SwingUtilities.invokeLater(() -> {
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
                 SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                        "Fehler bei der Erstellung des Filmindex.\nDas Programm wird beendet da es nicht lauffähig ist.", ex);
+                        "Fehler bei der Erstellung des Filmindex.\nDas Programm wird beendet da es nicht lauffähig ist.\nModerne Suche wurde deaktiviert.", ex);
                 MediathekGui.ui().quitApplication();
             });
         }
