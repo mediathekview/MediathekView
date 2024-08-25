@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,7 +15,6 @@ import okhttp3.ResponseBody;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -46,8 +44,6 @@ public class BookmarkNoteDialog implements Initializable
   protected Button CancelButton;
   @FXML
   protected Button btnWebDate;
-  @FXML
-  protected Button btnWebLink;
   @FXML
   private ProgressIndicator fxProgress;
   @FXML
@@ -138,21 +134,6 @@ public class BookmarkNoteDialog implements Initializable
     new Thread(task).start();
   }
   
-  /**
-   * Opens the linked webpage Webpage
-   * @param e (unused)
-   */
-  @FXML
-  private void btnOpenWebLink(Event e) {
-    try {
-      if (hasWebURL) {
-        UrlHyperlinkAction.openURL(null,data.getWebUrl());
-      }
-    }
-    catch (URISyntaxException ignored) {}
-  }
-  
-  
   public final boolean SetandShow(Stage dlgstage, BookmarkData data) {
     this.dlgstage = dlgstage;
     this.data = data;
@@ -172,8 +153,7 @@ public class BookmarkNoteDialog implements Initializable
         catch (Exception ignored) {}
       }
       btnWebDate.setDisable(!hasWebURL); 
-      btnWebLink.setDisable(!hasWebURL);
-    }   
+    }
     handleChange();
     // Display the Dialog and wait
     this.dlgstage.showAndWait();

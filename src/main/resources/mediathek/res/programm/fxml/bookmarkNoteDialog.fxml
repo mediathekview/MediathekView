@@ -31,15 +31,6 @@
             <Tooltip text="Verfügbar bis Datum auf der Webseite suchen"/>
         </tooltip>
     </Button>
-    <Button fx:id="btnWebLink" layoutX="15.0" layoutY="109.0" mnemonicParsing="false" onAction="#btnOpenWebLink"
-            AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="109.0">
-        <graphic>
-          <Glyph fontFamily="FontAwesome" icon="LINK"/>
-        </graphic>
-        <tooltip>
-          <Tooltip text="Film Webseite öffnen"/>
-        </tooltip>
-    </Button>
     <Button fx:id="CancelButton" cancelButton="true" layoutX="289.0" layoutY="133.0" mnemonicParsing="false"
             onAction="#handleCancel" onMouseClicked="#handleCancel" text="Abbruch" textAlignment="CENTER"
             AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="120.0">
