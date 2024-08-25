@@ -45,25 +45,33 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class DialogAddDownload extends JDialog {
+    private static final Logger logger = LogManager.getLogger();
+    private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
+    private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
+    private static final String KEY_TEXTFIELD_BACKROUND = "TextField.background";
+    private static final String TITLED_BORDER_STRING = "Download-Qualität";
+    private final DatenFilm film;
+    private final Optional<FilmResolution.Enum> requestedResolution;
+    private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
     /**
      * The currently selected pSet or null when no selection.
      */
     private DatenPset active_pSet;
     private DatenDownload datenDownload;
-    private final DatenFilm film;
     private String orgPfad = "";
-    private final Optional<FilmResolution.Enum> requestedResolution;
     private String dateiGroesse_HQ = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
     private boolean nameGeaendert;
     private boolean stopBeob;
     private JTextComponent cbPathTextComponent;
-    private static final Logger logger = LogManager.getLogger();
-    private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
-    private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
-    private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
-
+    private Path ffprobePath;
+    private ListenableFuture<FFprobeResult> resultListenableFuture;
+    private ListenableFuture<String> hqFuture;
+    private ListenableFuture<String> hochFuture;
+    private ListenableFuture<String> kleinFuture;
+    private boolean restoreFetchSize;
+    private boolean highQualityMandated;
 
     public DialogAddDownload(@NotNull Frame parent, @NotNull DatenFilm film, @Nullable DatenPset pSet, @NotNull Optional<FilmResolution.Enum> requestedResolution) {
         super(parent, true);
@@ -82,6 +90,58 @@ public class DialogAddDownload extends JDialog {
         }
 
         setLocationRelativeTo(parent);
+    }
+
+    public static void setModelPfad(String pfad, JComboBox<String> jcb) {
+        ArrayList<String> pfade = new ArrayList<>();
+        final boolean showLastUsedPath = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true);
+
+        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
+        if (!showLastUsedPath && !pfad.isEmpty()) {
+            // aktueller Pfad an Platz 1
+            pfade.add(pfad);
+
+        }
+        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+            for (String s : p) {
+                if (!pfade.contains(s)) {
+                    pfade.add(s);
+                }
+            }
+        }
+        if (showLastUsedPath && !pfad.isEmpty()) {
+            // aktueller Pfad zum Schluss
+            if (!pfade.contains(pfad)) {
+                pfade.add(pfad);
+            }
+        }
+        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
+    }
+
+    public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
+        ArrayList<String> pfade = new ArrayList<>();
+        String s = Objects.requireNonNull(jcb.getSelectedItem()).toString();
+
+        if (!s.equals(orgPath) || ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)) {
+            pfade.add(s);
+        }
+        for (int i = 0; i < jcb.getItemCount(); ++i) {
+            s = jcb.getItemAt(i);
+            if (!s.equals(orgPath) && !pfade.contains(s)) {
+                pfade.add(s);
+            }
+        }
+        if (!pfade.isEmpty()) {
+            s = pfade.getFirst();
+            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
+                final var pfad = pfade.get(i);
+                if (!pfad.isEmpty()) {
+                    s += "<>" + pfad;
+                }
+            }
+        }
+        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     private void setupFilmQualityRadioButtons() {
@@ -110,9 +170,6 @@ public class DialogAddDownload extends JDialog {
 
         btnRequestLiveInfo.addActionListener(l -> handleRequestLiveFilmInfo());
     }
-
-    private Path ffprobePath;
-    private ListenableFuture<FFprobeResult> resultListenableFuture;
 
     /**
      * Return only the first part of the long codec name.
@@ -147,6 +204,9 @@ public class DialogAddDownload extends JDialog {
                 .executeAsync();
         resultListenableFuture = JdkFutureAdapters.listenInPoolThread(resultFuture);
         Futures.addCallback(resultListenableFuture, new FutureCallback<>() {
+            private static final String ERR_MSG_PART = "Server returned ";
+            private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler aufgetreten.";
+
             @Override
             public void onSuccess(FFprobeResult result) {
                 var audioStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.AUDIO).findAny();
@@ -244,9 +304,6 @@ public class DialogAddDownload extends JDialog {
                 });
             }
 
-            private static final String ERR_MSG_PART = "Server returned ";
-            private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler aufgetreten.";
-
             private @NotNull String getJaffreeErrorString(JaffreeAbnormalExitException e) {
                 String final_str;
                 try {
@@ -329,12 +386,6 @@ public class DialogAddDownload extends JDialog {
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
-
-    private ListenableFuture<String> hqFuture;
-    private ListenableFuture<String> hochFuture;
-    private ListenableFuture<String> kleinFuture;
-
-    private boolean restoreFetchSize;
 
     private void launchResolutionFutures() {
         // always fetch file size during dialog ops...
@@ -473,7 +524,7 @@ public class DialogAddDownload extends JDialog {
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
-                        jTextFieldName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
+                        jTextFieldName.setBackground(UIManager.getDefaults().getColor(KEY_TEXTFIELD_BACKROUND));
                     }
                 }
 
@@ -511,7 +562,7 @@ public class DialogAddDownload extends JDialog {
                         if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
                             editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                         } else {
-                            editor.setBackground(UIManager.getColor("TextField.background"));
+                            editor.setBackground(UIManager.getColor(KEY_TEXTFIELD_BACKROUND));
                         }
                     }
                     calculateAndCheckDiskSpace();
@@ -626,8 +677,6 @@ public class DialogAddDownload extends JDialog {
         return usableSpace;
     }
 
-    private static final String TITLED_BORDER_STRING = "Download-Qualität";
-
     /**
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
      */
@@ -678,58 +727,6 @@ public class DialogAddDownload extends JDialog {
         }
     }
 
-    public static void setModelPfad(String pfad, JComboBox<String> jcb) {
-        ArrayList<String> pfade = new ArrayList<>();
-        final boolean showLastUsedPath = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true);
-
-        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!showLastUsedPath && !pfad.isEmpty()) {
-            // aktueller Pfad an Platz 1
-            pfade.add(pfad);
-
-        }
-        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
-            for (String s : p) {
-                if (!pfade.contains(s)) {
-                    pfade.add(s);
-                }
-            }
-        }
-        if (showLastUsedPath && !pfad.isEmpty()) {
-            // aktueller Pfad zum Schluss
-            if (!pfade.contains(pfad)) {
-                pfade.add(pfad);
-            }
-        }
-        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
-    }
-
-    public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
-        ArrayList<String> pfade = new ArrayList<>();
-        String s = Objects.requireNonNull(jcb.getSelectedItem()).toString();
-
-        if (!s.equals(orgPath) || ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)) {
-            pfade.add(s);
-        }
-        for (int i = 0; i < jcb.getItemCount(); ++i) {
-            s = jcb.getItemAt(i);
-            if (!s.equals(orgPath) && !pfade.contains(s)) {
-                pfade.add(s);
-            }
-        }
-        if (!pfade.isEmpty()) {
-            s = pfade.get(0);
-            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
-                final var pfad = pfade.get(i);
-                if (!pfad.isEmpty()) {
-                    s += "<>" + pfad;
-                }
-            }
-        }
-        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
-    }
-
     private boolean isHighQualityRequested() {
         return active_pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(FilmResolution.Enum.HIGH_QUALITY.toString())
                 && film.isHighQuality();
@@ -740,7 +737,6 @@ public class DialogAddDownload extends JDialog {
                 !film.getLowQualityUrl().isEmpty();
     }
 
-    private boolean highQualityMandated;
     /**
      * Setup the resolution radio buttons based on available download URLs.
      */
