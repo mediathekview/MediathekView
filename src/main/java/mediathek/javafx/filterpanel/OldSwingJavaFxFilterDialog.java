@@ -1,11 +1,13 @@
 package mediathek.javafx.filterpanel;
 
+import com.formdev.flatlaf.FlatLaf;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.gui.messages.DarkModeChangeEvent;
 import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
@@ -23,6 +25,7 @@ import java.util.NoSuchElementException;
 public class OldSwingJavaFxFilterDialog extends JDialog {
     private final JFXPanel fxPanel = new JFXPanel();
     private final JToggleButton filterToggleButton;
+    private Scene scene;
 
     public OldSwingJavaFxFilterDialog(Frame owner, CommonViewSettingsPane content, @NotNull JToggleButton filterToggleButton) {
         super(owner);
@@ -36,7 +39,9 @@ public class OldSwingJavaFxFilterDialog extends JDialog {
         setType(Type.UTILITY);
         setContentPane(fxPanel);
         Platform.runLater(() -> {
-            fxPanel.setScene(new Scene(content));
+            scene = new Scene(content);
+            setupJavaFxDarkMode();
+            fxPanel.setScene(scene);
             SwingUtilities.invokeLater(() -> {
                 pack();
                 restoreWindowSizeFromConfig();
@@ -62,6 +67,21 @@ public class OldSwingJavaFxFilterDialog extends JDialog {
                 fxPanel.setEnabled(enabled);
             }
         });
+    }
+
+    private void setupJavaFxDarkMode() {
+        if (FlatLaf.isLafDark()) {
+            var res = getClass().getResource("/mediathek/res/css/javafx-dark-mode/style.css");
+            assert res != null;
+            scene.getStylesheets().add(res.toExternalForm());
+        }
+        else
+            scene.getStylesheets().clear();
+    }
+
+    @Handler
+    private void handleDarkModeChange(DarkModeChangeEvent e) {
+        Platform.runLater(this::setupJavaFxDarkMode);
     }
 
     @Handler
