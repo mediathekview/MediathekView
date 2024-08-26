@@ -2,7 +2,6 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
@@ -30,7 +29,7 @@ public class DialogEinstellungen extends JFrame {
     private PanelFilmlisteLaden panelImportFilme;
     private PanelBlacklist panelBlacklist;
     private PanelDateinamen panelDateinamen;
-    private PanelVorlage panelPset;
+    private JPanel panelPset;
     private PanelPsetImport panelPsetVorlagen;
     private JPanel panelNotifications;
     private final JPanel panelLeer = new JPanel();
@@ -124,7 +123,7 @@ public class DialogEinstellungen extends JFrame {
         panelImportFilme = new PanelFilmlisteLaden(true);
         panelBlacklist = new PanelBlacklist(daten, this, PanelBlacklist.class.getName());
         panelDateinamen = new PanelDateinamen(daten, this);
-        panelPset = new PanelPset(daten, this);
+        panelPset = new PanelPset(this);
         panelPsetVorlagen = new PanelPsetImport(daten, this);
 
         panelNotifications = new PanelNotifications();

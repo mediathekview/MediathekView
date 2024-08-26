@@ -868,18 +868,13 @@ public class PanelPsetLang extends PanelVorlage {
             //doppelte Gruppennamen suchen
             int row = tabellePset.getSelectedRow();
             if (row != -1) {
-                int foundgruppe = 0;
-                for (DatenPset gruppe : listePset) {
-                    if (jTextFieldSetName.getText().equals(gruppe.getName())) {
-                        ++foundgruppe;
-                    }
-                }
-                if (foundgruppe > 1) {
+                if (listePset.stream().filter(set -> set.getName().equals(jTextFieldSetName.getText())).count() > 1) {
                     jTextFieldSetName.setBackground(Color.ORANGE);
                 } else {
                     jTextFieldSetName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                 }
             }
+            jTextFieldSetName.requestFocusInWindow();
         }
 
         private void eingabe() {

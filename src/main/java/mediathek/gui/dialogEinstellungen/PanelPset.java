@@ -2,7 +2,6 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -11,9 +10,12 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelPset extends PanelVorlage {
-    public PanelPset(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+public class PanelPset extends JPanel {
+    private final JFrame parentComponent;
+
+    public PanelPset(JFrame parentComponent) {
+        this.parentComponent = parentComponent;
+
         initComponents();
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
@@ -28,6 +30,7 @@ public class PanelPset extends PanelVorlage {
      */
     private void setupPSetVisiblePanels() {
         jPanelPset.removeAll();
+        var daten = Daten.getInstance();
         if (jCheckBoxAlleEinstellungen.isSelected()) {
             jPanelPset.add(new PanelPsetLang(daten, parentComponent, Daten.listePset), BorderLayout.CENTER);
         } else {
