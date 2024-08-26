@@ -12,6 +12,7 @@
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
 - **FEATURE:** Dark Mode für Filter-Dialog.
 - **FEATURE:** Beschleunigte Verarbeitung von Lucene mittels native access aktiviert (benötigt `--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector` in den Startparametern)
+- **FEATURE:** *Einstellungen/Set bearbeiten* für Dark Mode-Kompatibilität angepasst.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
