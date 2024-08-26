@@ -260,6 +260,13 @@ public class ApplicationConfiguration {
         public static final String VISIBLE = "application.ui.filter_dialog.visible";
     }
 
+    public static class AddDownloadDialog {
+        public static final String WIDTH = "application.ui.adddownload_dialog.width";
+        public static final String HEIGHT = "application.ui.adddownload_dialog.height";
+        public static final String X = "application.ui.adddownload_dialog.location.x";
+        public static final String Y = "application.ui.adddownload_dialog.location.y";
+    }
+
     public static class FilmInfoDialog {
         public static final String VISIBLE = "film.information.visible";
         public static final String X = "film.information.location.x";

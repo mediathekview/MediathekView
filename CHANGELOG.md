@@ -2,6 +2,7 @@
 - **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
 - **BUGFIX:** FlatLaf Regression gelöst, die manchmal zu einer inkorrekten Darstellung der Oberfläche führte.
 - **BUGFIX(Linux/macOS):** Im "Film Speichern"-Dialog wurde der Zielpfad im Dark Mode weiß dargestellt.
+- **BUGFIX:** "Film speichern"-Dialog speichert nun explizit seine Größe,etc und stellt sie wieder her.
 - **BUGFIX:** Im "Neues Abo anlegen"-Dialog werden Textfelder im Dark Mode nicht mehr weiß hinterlegt.
 - **BUGFIX:** Diverse Textfelder werden im Dark Mode nicht mehr mit weißem Hintergrund dargestellt.
 - **BUGFIX:** MV deaktiviert im Fehlerfall die moderne Suche automatisch, so dass ein Neustart der App möglich wird.

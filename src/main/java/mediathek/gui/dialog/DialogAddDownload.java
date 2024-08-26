@@ -18,6 +18,7 @@ import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +33,15 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
@@ -88,8 +92,10 @@ public class DialogAddDownload extends JDialog {
         if (SystemUtils.IS_OS_MAC_OSX) {
             pack();
         }
-
+        restoreWindowSizeFromConfig();
         setLocationRelativeTo(parent);
+
+        addComponentListener(new DialogPositionComponentListener());
     }
 
     public static void setModelPfad(String pfad, JComboBox<String> jcb) {
@@ -142,6 +148,24 @@ public class DialogAddDownload extends JDialog {
             }
         }
         MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
+    }
+
+    private void restoreWindowSizeFromConfig() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.READ);
+            final int width = config.getInt(ApplicationConfiguration.AddDownloadDialog.WIDTH);
+            final int height = config.getInt(ApplicationConfiguration.AddDownloadDialog.HEIGHT);
+            final int x = config.getInt(ApplicationConfiguration.AddDownloadDialog.X);
+            final int y = config.getInt(ApplicationConfiguration.AddDownloadDialog.Y);
+
+            setBounds(x, y, width, height);
+        } catch (NoSuchElementException ignored) {
+            //do not restore anything
+        } finally {
+            config.unlock(LockMode.READ);
+        }
+
     }
 
     private void setupFilmQualityRadioButtons() {
@@ -838,6 +862,35 @@ public class DialogAddDownload extends JDialog {
         addDownloadToQueue();
 
         dispose();
+    }
+
+    private static class DialogPositionComponentListener extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        private void storeWindowPosition(ComponentEvent e) {
+            var config = ApplicationConfiguration.getConfiguration();
+            var component = e.getComponent();
+
+            var dims = component.getSize();
+            var loc = component.getLocation();
+            try {
+                config.lock(LockMode.WRITE);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.WIDTH, dims.width);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.HEIGHT, dims.height);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.X, loc.x);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.Y, loc.y);
+            } finally {
+                config.unlock(LockMode.WRITE);
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
