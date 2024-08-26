@@ -166,6 +166,8 @@ public class GuiFilme extends AGuiTabPanel {
         MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
+
+        tabelle.getTableHeader().setReorderingAllowed(false);
     }
 
     private void createToolBar() {

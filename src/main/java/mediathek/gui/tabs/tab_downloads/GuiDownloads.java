@@ -162,6 +162,8 @@ public class GuiDownloads extends AGuiTabPanel {
 
         if (Taskbar.isTaskbarSupported())
             setupTaskbarMenu();
+
+        tabelle.getTableHeader().setReorderingAllowed(false);
     }
 
     private void setupDownloadListStatusBar() {
