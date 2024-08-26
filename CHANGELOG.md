@@ -7,12 +7,14 @@
 - **BUGFIX:** Diverse Textfelder werden im Dark Mode nicht mehr mit weißem Hintergrund dargestellt.
 - **BUGFIX:** MV deaktiviert im Fehlerfall die moderne Suche automatisch, so dass ein Neustart der App möglich wird.
 - **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun richtig.
+- **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
 - **FEATURE:** Dark Mode für Filter-Dialog.
 - **FEATURE:** Beschleunigte Verarbeitung von Lucene mittels native access aktiviert (benötigt `--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector` in den Startparametern)
 - **FEATURE:** *Einstellungen/Set bearbeiten* für Dark Mode-Kompatibilität angepasst.
+- **FEATURE:** Der Einstellungen-Dialog ist nun vollständig Dark-Mode-kompatibel.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.

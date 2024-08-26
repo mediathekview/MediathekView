@@ -21,18 +21,6 @@ import java.awt.*;
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
     public boolean ok;
-    private PanelEinstellungen panelEinstellungen;
-    private PanelDownload panelDownload;
-    private PanelEinstellungenErweitert panelEinstellungenErweitert;
-    private PanelEinstellungenGeo panelEinstellungenGeo;
-    private PanelEinstellungenColor panelEinstellungenColor;
-    private PanelFilmlisteLaden panelImportFilme;
-    private PanelBlacklist panelBlacklist;
-    private PanelDateinamen panelDateinamen;
-    private JPanel panelPset;
-    private PanelPsetImport panelPsetVorlagen;
-    private JPanel panelNotifications;
-    private final JPanel panelLeer = new JPanel();
 
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
@@ -69,7 +57,6 @@ public class DialogEinstellungen extends JFrame {
         initComponents();
         daten = Daten.getInstance();
 
-        initPanels();
         initTree();
 
         restoreSizeFromConfig();
@@ -114,21 +101,6 @@ public class DialogEinstellungen extends JFrame {
         }
     }
 
-    private void initPanels() {
-        panelEinstellungen = new PanelEinstellungen();
-        panelDownload = new PanelDownload();
-        panelEinstellungenErweitert = new PanelEinstellungenErweitert();
-        panelEinstellungenGeo = new PanelEinstellungenGeo(this);
-        panelEinstellungenColor = new PanelEinstellungenColor();
-        panelImportFilme = new PanelFilmlisteLaden(true);
-        panelBlacklist = new PanelBlacklist(daten, this, PanelBlacklist.class.getName());
-        panelDateinamen = new PanelDateinamen(daten, this);
-        panelPset = new PanelPset(this);
-        panelPsetVorlagen = new PanelPsetImport(daten, this);
-
-        panelNotifications = new PanelNotifications();
-    }
-
     private void initTree() {
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
         // ######## Einstellungen ############
@@ -163,7 +135,7 @@ public class DialogEinstellungen extends JFrame {
             if (node == null) {
                 // nix markiert
                 jPanelExtra.removeAll();
-                jPanelExtra.add(panelLeer);
+                jPanelExtra.add(new JPanel());
             } else {
                 String name1 = node.getUserObject().toString();
                 setTitle(name1);
@@ -171,53 +143,53 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_einstellungen -> jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
                     case NAME_notifications -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelNotifications);
+                        jPanelExtra.add(new PanelNotifications());
                     }
                     case NAME_bandwidth -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelDownload);
+                        jPanelExtra.add(new PanelDownload());
                     }
                     case NAME_allgemeineEinstellungen -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungen);
+                        jPanelExtra.add(new PanelEinstellungen());
                     }
                     case NAME_allgemeineEinstellungenErweitert -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenErweitert);
+                        jPanelExtra.add(new PanelEinstellungenErweitert());
                     }
                     case NAME_allgemeineEinstellungenGeo -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenGeo);
+                        jPanelExtra.add(new PanelEinstellungenGeo(this));
                     }
                     case NAME_allgemeineEinstellungenColor -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelEinstellungenColor);
+                        jPanelExtra.add(new PanelEinstellungenColor());
                     }
                     case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
                     case NAME_filmListeLaden -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelImportFilme);
+                        jPanelExtra.add(new PanelFilmlisteLaden(true));
                     }
                     case NAME_blacklist -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelBlacklist);
+                        jPanelExtra.add(new PanelBlacklist(daten, this, PanelBlacklist.class.getName()));
                     }
                     case NAME_aufzeichnen -> jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
                     case NAME_dateiname -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelDateinamen);
+                        jPanelExtra.add(new PanelDateinamen(daten, this));
                     }
                     case NAME_programmset -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPset);
+                        jPanelExtra.add(new PanelPset(this));
                     }
                     case NAME_programmsetImportieren -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelPsetVorlagen);
+                        jPanelExtra.add(new PanelPsetImport(daten, this));
                     }
                     default -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(panelLeer);
+                        jPanelExtra.add(new JPanel());
                         setTitle("Programmeinstellungen");
                     }
                 }

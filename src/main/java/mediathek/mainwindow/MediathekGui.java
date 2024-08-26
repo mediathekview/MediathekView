@@ -909,7 +909,11 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleShowSettingsDialogEvent(ShowSettingsDialogEvent evt) {
-        SwingUtilities.invokeLater(() -> getSettingsDialog().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            getSettingsDialog().setVisible(true);
+            if (!SystemUtils.IS_OS_LINUX)
+                getSettingsDialog().toFront();
+        });
     }
 
     /**
