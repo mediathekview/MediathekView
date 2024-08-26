@@ -135,8 +135,6 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private Label lblSeen;
   @FXML
-  private Label lblMessage;
-  @FXML
   private Label lblFilter;
   @FXML
   private TextArea taDescription;
@@ -220,10 +218,9 @@ public class BookmarkWindowController implements Initializable {
     dlgstage.initOwner(this.stage);
     try {
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml"));
-      BookmarkNoteDialog bdialog = new BookmarkNoteDialog();
+      BookmarkNoteDialogController bdialog = new BookmarkNoteDialogController();
       fxmlLoader.setController(bdialog);
       Scene scene = new Scene(fxmlLoader.load());
-      scene.getStylesheets().add(getClass().getResource("/mediathek/res/css/bookmarkNoteDialog.css").toExternalForm());
       dlgstage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
       dlgstage.setScene(scene);
       if (bdialog.SetandShow(dlgstage, tbBookmarks.getSelectionModel().getSelectedItem())) {
@@ -626,7 +623,6 @@ public class BookmarkWindowController implements Initializable {
                                     30,
                                     TimeUnit.SECONDS);
     }
-    lblMessage.setText("");
   }
 
   /**
@@ -636,7 +632,6 @@ public class BookmarkWindowController implements Initializable {
     if (listUpdated) {
       listeBookmarkList.saveToFile(StandardLocations.getBookmarkFilePath());
       btnSaveList.setDisable(true);
-      JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText("Merkliste ist gesichert"));
     }
     listUpdated = false;
   }
