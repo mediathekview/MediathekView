@@ -128,24 +128,22 @@
 
         <mainclass>mediathek.Main</mainclass>
 
-        <!-- Zulu without JavaFX is used on Linux and Windows -->
-        <install4j.zulu.jdk.version>21/21.0.1</install4j.zulu.jdk.version>
-        <install4j.jdk.min-version>21</install4j.jdk.min-version>
-
-        <!-- VM Parameters Windows x64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
-            -XX:+UseStringDeduplication -DexternalUpdateCheck
-        </install4j.vmparameters.win.64>
-        <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
-            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
-            -DexternalUpdateCheck
-        </install4j.vmparameters.linux.64>
-
+        <install4j.version>10.0.9</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
-        <install4j.version>10.0.7</install4j.version>
+        <install4j.jdk.min-version>22</install4j.jdk.min-version>
+
+        <!-- VM Parameters Windows x64 -->
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
+            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector -DexternalUpdateCheck
+        </install4j.vmparameters.win.64>
+        <!-- VM Parameters Linux 64bit Intel and ARM -->
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
+            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
+            -DexternalUpdateCheck
+        </install4j.vmparameters.linux.64>
+
         <lucene.version>9.11.1</lucene.version>
     </properties>
 
@@ -166,13 +164,7 @@
             <artifactId>lucene-queryparser</artifactId>
             <version>${lucene.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.install4j</groupId>
-            <artifactId>install4j-runtime</artifactId>
-            <version>${install4j.version}</version>
-        </dependency>
-
+        
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>

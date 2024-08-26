@@ -52,7 +52,7 @@ public class DialogAddDownload extends JDialog {
     private static final Logger logger = LogManager.getLogger();
     private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
     private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
-    private static final String KEY_TEXTFIELD_BACKROUND = "TextField.background";
+    private static final String KEY_TEXTFIELD_BACKGROUND = "TextField.background";
     private static final String TITLED_BORDER_STRING = "Download-Qualität";
     private final DatenFilm film;
     private final Optional<FilmResolution.Enum> requestedResolution;
@@ -548,7 +548,7 @@ public class DialogAddDownload extends JDialog {
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
-                        jTextFieldName.setBackground(UIManager.getDefaults().getColor(KEY_TEXTFIELD_BACKROUND));
+                        jTextFieldName.setBackground(UIManager.getDefaults().getColor(KEY_TEXTFIELD_BACKGROUND));
                     }
                 }
 
@@ -586,7 +586,7 @@ public class DialogAddDownload extends JDialog {
                         if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
                             editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                         } else {
-                            editor.setBackground(UIManager.getColor(KEY_TEXTFIELD_BACKROUND));
+                            editor.setBackground(UIManager.getColor(KEY_TEXTFIELD_BACKGROUND));
                         }
                     }
                     calculateAndCheckDiskSpace();
