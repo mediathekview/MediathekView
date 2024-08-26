@@ -32,7 +32,6 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
-        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
         if (!listePset.isEmpty()) {
@@ -387,7 +386,7 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jLabel2.setText("Zielpfad:");
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonZiel.setToolTipText("Pfad auswählen");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));

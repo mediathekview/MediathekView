@@ -176,8 +176,8 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="SVGIconUtilities.createSVGIcon(&quot;icons/fontawesome/folder-open.svg&quot;)" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
           </Properties>
