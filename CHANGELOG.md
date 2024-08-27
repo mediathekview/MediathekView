@@ -15,6 +15,7 @@
 - **FEATURE:** Beschleunigte Verarbeitung von Lucene mittels native access aktiviert (benötigt `--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector` in den Startparametern)
 - **FEATURE:** *Einstellungen/Set bearbeiten* für Dark Mode-Kompatibilität angepasst.
 - **FEATURE:** Der Einstellungen-Dialog ist nun vollständig Dark-Mode-kompatibel.
+- **FEATURE:** Im Tab Filme kann nun *Sender - Thema - Titel* in die Zwischenablage per Kontextmenü kopiert werden. 
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
