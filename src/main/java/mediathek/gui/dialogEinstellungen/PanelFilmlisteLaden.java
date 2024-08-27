@@ -1,6 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
@@ -134,6 +135,8 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox26);
     }
 
+    private boolean warningDialogShown;
+
     private void senderSelectionItemHandler(ItemEvent e) {
         var cb = (JCheckBox)e.getSource();
         var selected = cb.isSelected();
@@ -144,6 +147,13 @@ public class PanelFilmlisteLaden extends JPanel {
             SenderFilmlistLoadApprover.deny(sender);
 
         senderSelectionChanged = true;
+        SwingUtilities.invokeLater(() -> {
+            if (!warningDialogShown) {
+                var msg = "<html>Bei Änderungen an den Sendern <b>muss</b> zwingend ein Neustart durchgeführt werden.</html>";
+                JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+                warningDialogShown = true;
+            }
+        });
     }
 
     private boolean senderSelectionChanged;
