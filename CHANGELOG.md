@@ -8,6 +8,7 @@
 - **BUGFIX:** MV deaktiviert im Fehlerfall die moderne Suche automatisch, so dass ein Neustart der App möglich wird.
 - **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun richtig.
 - **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
+- **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
