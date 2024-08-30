@@ -1454,6 +1454,12 @@ public class GuiFilme extends AGuiTabPanel {
             });
             mCopyToClipboard.add(miCopySenderThemaTitelToClipboard);
 
+            var miCopyDescriptionToClipboard = new JMenuItem("Beschreibung");
+            miCopyDescriptionToClipboard.addActionListener(e -> {
+                GuiFunktionen.copyToClipboard(film.getDescription());
+            });
+            mCopyToClipboard.add(miCopyDescriptionToClipboard);
+
             setupFilmUrlCopyToClipboardEntries(mCopyToClipboard, film);
 
             popupMenu.add(mCopyToClipboard);
