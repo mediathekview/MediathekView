@@ -1,6 +1,7 @@
 package mediathek.gui.tabs.tab_film;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
@@ -40,6 +41,7 @@ public class FilmDescriptionPanel extends JPanel {
         this.currentTab = currentTab;
 
         initComponents();
+
 
         hyperlink.addActionListener(l -> {
             if (!hyperlink.getToolTipText().isEmpty()) {
@@ -91,6 +93,19 @@ public class FilmDescriptionPanel extends JPanel {
                     currentFilm.getTitle();
 
             GuiFunktionen.copyToClipboard(sb);
+        });
+        popupMenu.add(item);
+
+        popupMenu.addSeparator();
+        item = new JMenuItem("Auswahl kopieren");
+        item.addActionListener(l -> {
+            final var selected = (textArea.getSelectionEnd() - textArea.getSelectionStart()) > 0;
+            if (!selected) {
+                JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            } else {
+                var text = textArea.getSelectedText();
+                GuiFunktionen.copyToClipboard(text);
+            }
         });
         popupMenu.add(item);
 

@@ -5,6 +5,7 @@
 package mediathek.gui.filmInformation;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
+import mediathek.config.Konstanten;
 import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -42,10 +43,13 @@ public class FilmInfoDialog extends JDialog {
     private static final Dimension DEFAULT_SENDER_DIMENSION = new Dimension(64, 64);
     private static final Logger logger = LogManager.getLogger();
     private Optional<DatenFilm> currentFilmOptional = Optional.empty();
+    private final JPopupMenu popupMenu = new JPopupMenu();
 
     public FilmInfoDialog(Window owner) {
         super(owner);
         initComponents();
+
+        setupDescriptionPopupMenu();
 
         setupHyperlink();
 
@@ -54,6 +58,23 @@ public class FilmInfoDialog extends JDialog {
 
         setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false));
         setupListeners();
+    }
+
+    private void setupDescriptionPopupMenu() {
+        var item = new JMenuItem("Auswahl kopieren");
+        item.addActionListener(l -> {
+            final var selected = (lblDescription.getSelectionEnd() - lblDescription.getSelectionStart()) > 0;
+            if (!selected) {
+                JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                var text = lblDescription.getSelectedText();
+                System.out.println("TEXT: " + text);
+                GuiFunktionen.copyToClipboard(text);
+            }
+        });
+        popupMenu.add(item);
+        lblDescription.setComponentPopupMenu(popupMenu);
     }
 
     private void setupListeners() {
