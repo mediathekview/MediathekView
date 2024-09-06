@@ -20,6 +20,7 @@
 - **FEATURE:** Bei Änderungen der Senderauswahl wird nun jeweils einmalig per Warndialog auf die Notwendigkeit eines Neustarts der App hingewiesen.
 - **FEATURE:** Im Tab Filme kann nun die Filmbeschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE:** Im Tab Beschreibung und im FilmInfo-Dialog können jeweils selektierte Texte der Beschreibung per Kontextmenü in die Zwischenablage kopiert werden.
+- **FEATURE(Linux):** Für exotische Window Manager können nun die FlatLaf-Dekorationen mittels `-dfd` oder `--disable-flatlaf-decorations` Parametern deaktiviert werden.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.

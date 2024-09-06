@@ -419,9 +419,11 @@ public class Main {
                 configureDnsPreferenceMode(parseResult);
 
                 if (SystemUtils.IS_OS_LINUX) {
-                    // enable custom window decorations
-                    JFrame.setDefaultLookAndFeelDecorated( true );
-                    JDialog.setDefaultLookAndFeelDecorated( true );
+                    if (!Config.isDisableFlatLafDecorations()) {
+                        // enable custom window decorations
+                        JFrame.setDefaultLookAndFeelDecorated(true);
+                        JDialog.setDefaultLookAndFeelDecorated(true);
+                    }
                 }
 
                 setupDockIcon();

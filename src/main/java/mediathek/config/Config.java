@@ -33,6 +33,8 @@ public class Config {
     private static IPvPreferenceMode dnsIpPreferenceMode = IPvPreferenceMode.IPV4_ONLY;
     @CommandLine.Option(names = {"-d", "--debug"}, hidden = true, description = "Debug-Modus aktivieren (FÜR ENTWICKLER)")
     private static boolean debug; // Debugmodus
+    @CommandLine.Option(names = {"-dfd", "--disable-flatlaf-decorations"}, description = "Deaktiviert unter Linux Window Manager Dekorationen")
+    private static boolean disableFlatLafDecorations;
     /**
      * Limit the number of used CPUs on Windows.
      */
@@ -70,6 +72,10 @@ public class Config {
     private static boolean disableSplashScreen;
     @CommandLine.Option(names = {"-dq", "--download-quit"}, description = "Automatisch downloaden, dann beenden")
     private static boolean downloadAndQuit;
+
+    public static boolean isDisableFlatLafDecorations() {
+        return disableFlatLafDecorations;
+    }
 
     public static IPvPreferenceMode getDnsIpPreferenceMode() {
         return dnsIpPreferenceMode;
