@@ -1417,7 +1417,7 @@ public class GuiFilme extends AGuiTabPanel {
                 var miCreateInfoFile = new JMenuItem("Infodatei erzeugen...");
                 miCreateInfoFile.addActionListener(l -> {
                     System.out.println("INFO FILE");
-                    var file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "/Users/christianfranzke/Desktop/infofile.txt");
+                    var file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "");
                     if (file != null) {
                         MVInfoFile infoFile = new MVInfoFile();
                         try {
