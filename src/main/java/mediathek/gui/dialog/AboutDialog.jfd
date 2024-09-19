@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -179,24 +179,17 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 0,hidemode 3,gap 0 0"
 				"$columnConstraints": "[grow,left]"
-				"$rowConstraints": "[fill][fill]"
+				"$rowConstraints": "[fill]"
 			} ) {
 				name: "panel4"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
-					name: "hyperlinkJetBrains"
-					"text": "JetBrains IntelliJ"
-					"verticalAlignment": 1
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0,growx"
-				} )
-				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkEjTechnologies"
 					"text": "ej-technologies install4j & JProfiler"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1,growx"
+					"value": "cell 0 0,growx"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 2"

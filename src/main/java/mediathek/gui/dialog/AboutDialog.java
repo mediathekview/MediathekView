@@ -35,7 +35,6 @@ public class AboutDialog extends JDialog {
         hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_HELP));
         hyperlinkFaq.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_FAQ));
 
-        hyperlinkJetBrains.addActionListener(l -> browseToUrl("https://www.jetbrains.com"));
         hyperlinkEjTechnologies.addActionListener(l -> browseToUrl("https://www.ej-technologies.com"));
 
 
@@ -90,7 +89,6 @@ public class AboutDialog extends JDialog {
         var panel6 = new JPanel();
         var label4 = new JLabel();
         var panel4 = new JPanel();
-        hyperlinkJetBrains = new JXHyperlink();
         hyperlinkEjTechnologies = new JXHyperlink();
 
         //======== this ========
@@ -248,17 +246,11 @@ public class AboutDialog extends JDialog {
                     .grow().align("left"), //NON-NLS
                 // rows
                 new AC()
-                    .fill().gap()
                     .fill()));
-
-            //---- hyperlinkJetBrains ----
-            hyperlinkJetBrains.setText("JetBrains IntelliJ"); //NON-NLS
-            hyperlinkJetBrains.setVerticalAlignment(SwingConstants.TOP);
-            panel4.add(hyperlinkJetBrains, new CC().cell(0, 0).growX());
 
             //---- hyperlinkEjTechnologies ----
             hyperlinkEjTechnologies.setText("ej-technologies install4j & JProfiler"); //NON-NLS
-            panel4.add(hyperlinkEjTechnologies, new CC().cell(0, 1).growX());
+            panel4.add(hyperlinkEjTechnologies, new CC().cell(0, 0).growX());
         }
         contentPane.add(panel4, new CC().cell(1, 2));
         pack();
@@ -276,7 +268,6 @@ public class AboutDialog extends JDialog {
     private JXHyperlink hyperlinkForum;
     private JXHyperlink hyperlinkOnlineHelp;
     private JXHyperlink hyperlinkFaq;
-    private JXHyperlink hyperlinkJetBrains;
     private JXHyperlink hyperlinkEjTechnologies;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
