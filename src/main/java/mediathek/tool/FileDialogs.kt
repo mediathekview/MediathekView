@@ -37,7 +37,7 @@ class FileDialogs {
                 chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
                 chooser.dialogTitle = title
                 chooser.isFileHidingEnabled = true
-                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
                     resultFile = File(chooser.selectedFile.absolutePath)
                 }
             }
@@ -70,7 +70,7 @@ class FileDialogs {
                 chooser.fileSelectionMode = JFileChooser.FILES_ONLY
                 chooser.dialogTitle = title
                 chooser.isFileHidingEnabled = true
-                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
                     resultFile = File(chooser.selectedFile.absolutePath)
                 }
             }
@@ -111,7 +111,7 @@ class FileDialogs {
                 chooser.fileSelectionMode = JFileChooser.FILES_ONLY
                 chooser.dialogTitle = title
                 chooser.isFileHidingEnabled = true
-                if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                     resultFile = File(chooser.selectedFile.absolutePath)
                 }
             }

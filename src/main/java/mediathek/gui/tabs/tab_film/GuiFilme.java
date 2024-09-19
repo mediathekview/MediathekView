@@ -66,6 +66,7 @@ import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -1410,6 +1411,25 @@ public class GuiFilme extends AGuiTabPanel {
             jPopupMenu.add(mediathekGui.showFilmInformationAction);
             // History
             res.ifPresent(film -> setupHistoryContextActions(jPopupMenu, film));
+
+            res.ifPresent(film -> {
+                jPopupMenu.addSeparator();
+                var miCreateInfoFile = new JMenuItem("Infodatei erzeugen...");
+                miCreateInfoFile.addActionListener(l -> {
+                    System.out.println("INFO FILE");
+                    var file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "/Users/christianfranzke/Desktop/infofile.txt");
+                    if (file != null) {
+                        MVInfoFile infoFile = new MVInfoFile();
+                        try {
+                            infoFile.writeManualInfoFile(film, file.toPath());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                jPopupMenu.add(miCreateInfoFile);
+            });
+
             // anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }

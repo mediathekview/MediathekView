@@ -9,6 +9,7 @@
 - **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun richtig.
 - **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
 - **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.
+- **BUGFIX(Linux):** Inkorrekte Verarbeitung der Parent-Beziehung bei Auswahldialogen wurde behoben.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
@@ -21,6 +22,7 @@
 - **FEATURE:** Im Tab Filme kann nun die Filmbeschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE:** Im Tab Beschreibung und im FilmInfo-Dialog können jeweils selektierte Texte der Beschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE(Linux):** Für exotische Window Manager können nun die FlatLaf-Dekorationen mittels `-dfd` oder `--disable-flatlaf-decorations` Parametern deaktiviert werden.
+- **FEATURE:** Info-Datei kann nun per Kontextmenü for jeden Eintrag manuell erzeugt werden.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
