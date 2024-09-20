@@ -68,9 +68,7 @@ public class FilmInfoDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             }
             else {
-                var text = lblDescription.getSelectedText();
-                System.out.println("TEXT: " + text);
-                GuiFunktionen.copyToClipboard(text);
+                GuiFunktionen.copyToClipboard(lblDescription.getSelectedText());
             }
         });
         popupMenu.add(item);
