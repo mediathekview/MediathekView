@@ -22,7 +22,7 @@
 - **FEATURE:** Im Tab Filme kann nun die Filmbeschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE:** Im Tab Beschreibung und im FilmInfo-Dialog können jeweils selektierte Texte der Beschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE(Linux):** Für exotische Window Manager können nun die FlatLaf-Dekorationen mittels `-dfd` oder `--disable-flatlaf-decorations` Parametern deaktiviert werden.
-- **FEATURE:** Info-Datei kann nun per Kontextmenü for jeden Eintrag manuell erzeugt werden.
+- **FEATURE:** Info-Datei kann nun per Kontextmenü für jeden Eintrag manuell erzeugt werden.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
