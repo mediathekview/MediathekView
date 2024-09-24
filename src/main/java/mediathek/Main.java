@@ -505,9 +505,29 @@ public class Main {
                     .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
             if (useModernSearch)
                 Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
+            else {
+                try {
+                    checkModernSearchIndexRemoval();
+                } catch (IOException e) {
+                    logger.error("Unable to delete lucene index path", e);
+                }
+            }
 
             startGuiMode();
         });
+    }
+
+    /**
+     * Remove modern search index when not in use.
+     * @throws IOException
+     */
+    private static void checkModernSearchIndexRemoval() throws IOException {
+        //when modern search is not in use, delete unused film index directory as a precaution
+        var indexPath = StandardLocations.getFilmIndexPath();
+        if (Files.exists(indexPath)) {
+            logger.info("Modern search not in use, deleting unnecessary index directory");
+            FileUtils.deletePathRecursively(indexPath);
+        }
     }
 
     /**
