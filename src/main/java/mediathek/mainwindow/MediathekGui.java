@@ -238,6 +238,12 @@ public class MediathekGui extends JFrame {
                     daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
                     daten.getFilmeLaden().loadFilmlist("", false);
                     logger.info("Auto DL and Quit: Filmlist update done.");
+                    logger.info("Auto DL and Quit: Loading Abos...");
+                    daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false);
+                    logger.info("Auto DL and Quit: Loading Abos done.");
+                    logger.info("Auto DL and Quit: Applying Blacklist...");
+                    daten.getListeBlacklist().filterListe();
+                    logger.info("Auto DL and Quit: Applying Blacklist...done.");
                     logger.info("Auto DL and Quit: Starting all downloads...");
                     SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
                     return true;
