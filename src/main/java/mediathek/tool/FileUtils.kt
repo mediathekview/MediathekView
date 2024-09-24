@@ -30,6 +30,17 @@ object FileUtils {
         return File(fileName).nameWithoutExtension
     }
 
+    @Throws(IOException::class)
+    @JvmStatic
+    fun deletePathRecursively(rootPath: Path) {
+        Files.walk(rootPath/*, FileVisitOption.FOLLOW_LINKS*/).use { walk ->
+            walk.sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                //.peek(System.out::println)
+                .forEach(File::delete)
+        }
+    }
+
     @JvmStatic
     fun humanReadableByteCountBinary(bytes: Long): String {
         val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)

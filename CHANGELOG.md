@@ -5,7 +5,7 @@
 - **BUGFIX:** "Film speichern"-Dialog speichert nun explizit seine Größe,etc und stellt sie wieder her.
 - **BUGFIX:** Im "Neues Abo anlegen"-Dialog werden Textfelder im Dark Mode nicht mehr weiß hinterlegt.
 - **BUGFIX:** Diverse Textfelder werden im Dark Mode nicht mehr mit weißem Hintergrund dargestellt.
-- **BUGFIX:** MV deaktiviert im Fehlerfall die moderne Suche automatisch, so dass ein Neustart der App möglich wird.
+- **BUGFIX:** MV löscht bei einem fehlerhaften Lucene-Index diesen nun um einen erfolgreichen Start zu ermöglichen.
 - **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun richtig.
 - **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
 - **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.

@@ -2,10 +2,11 @@ package mediathek.gui.tasks;
 
 import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.FileUtils;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class LuceneIndexWorker extends SwingWorker<Void, Void> {
     private static final Logger logger = LogManager.getLogger();
@@ -114,10 +116,18 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
 
             filmListe.setIndexSearcher(new IndexSearcher(reader));
         } catch (Exception ex) {
+            logger.error("Lucene film index most probably damaged, deleting it.");
+            try {
+                var indexPath = StandardLocations.getFilmIndexPath();
+                if (Files.exists(indexPath)) {
+                    FileUtils.deletePathRecursively(indexPath);
+                }
+            } catch (IOException e) {
+                logger.error("Unable to delete lucene index path", e);
+            }
             SwingUtilities.invokeLater(() -> {
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
                 SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                        "Fehler bei der Erstellung des Filmindex.\nDas Programm wird beendet da es nicht lauffähig ist.\nModerne Suche wurde deaktiviert.", ex);
+                        "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.", ex);
                 MediathekGui.ui().quitApplication();
             });
         }
