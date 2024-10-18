@@ -177,7 +177,7 @@ public class FilmDescriptionPanel extends JPanel {
 
     private void openUrl(String url) {
         try {
-            UrlHyperlinkAction.openURL(null, url);
+            UrlHyperlinkAction.openURL(url);
         } catch (URISyntaxException ex) {
             logger.warn(ex);
         }

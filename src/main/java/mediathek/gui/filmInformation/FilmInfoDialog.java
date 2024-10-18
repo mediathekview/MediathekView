@@ -146,7 +146,7 @@ public class FilmInfoDialog extends JDialog {
 
     private void openUrl(String url) {
         try {
-            UrlHyperlinkAction.openURL(null, url);
+            UrlHyperlinkAction.openURL(url);
         } catch (URISyntaxException ex) {
             logger.warn(ex);
         }

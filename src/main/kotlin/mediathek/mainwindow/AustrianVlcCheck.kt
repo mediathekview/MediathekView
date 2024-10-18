@@ -30,7 +30,7 @@ class AustrianVlcCheck(val owner: JFrame) {
             if (e.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                 try {
                     ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, false)
-                    UrlHyperlinkAction.openURL(MediathekGui.ui(), Konstanten.ORF_TUTORIAL_LINK)
+                    UrlHyperlinkAction.openURL(Konstanten.ORF_TUTORIAL_LINK)
                 } catch (ex: Exception) {
                     logger.error("Failed to display ORF tutorial", ex)
                 }

@@ -238,7 +238,7 @@ public class BookmarkWindowController implements Initializable {
     String url = tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl();
     try {
       if (url != null) {
-        UrlHyperlinkAction.openURL(null,url);
+        UrlHyperlinkAction.openURL(url);
       }
     }
     catch (URISyntaxException ex) {

@@ -5,6 +5,7 @@
 package mediathek.gui.dialog;
 
 import mediathek.config.Konstanten;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author Christian Franzke
@@ -48,20 +49,9 @@ public class AboutDialog extends JDialog {
     }
 
     private void browseToUrl(@NotNull String url) {
-        if (Desktop.isDesktopSupported()) {
-            var desktop = Desktop.getDesktop();
-            if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                try {
-                    desktop.browse(new URI(url));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            else {
-                showError();
-            }
-        }
-        else {
+        try {
+            UrlHyperlinkAction.openURL(url);
+        } catch (URISyntaxException e) {
             showError();
         }
     }

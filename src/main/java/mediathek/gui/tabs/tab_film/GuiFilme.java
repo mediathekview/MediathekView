@@ -1555,7 +1555,7 @@ public class GuiFilme extends AGuiTabPanel {
                 miThema.addActionListener(l -> {
                     var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
                     try {
-                        UrlHyperlinkAction.openURL(MediathekGui.ui(), url);
+                        UrlHyperlinkAction.openURL(url);
                     } catch (URISyntaxException ex) {
                         logger.error("Failed to launch online search for url {}", url);
                     }
@@ -1566,7 +1566,7 @@ public class GuiFilme extends AGuiTabPanel {
                 miTitel.addActionListener(l -> {
                     var url = item.getQueryUrl() + URLEncoder.encode(film.getTitle(), StandardCharsets.UTF_8);
                     try {
-                        UrlHyperlinkAction.openURL(MediathekGui.ui(), url);
+                        UrlHyperlinkAction.openURL(url);
                     } catch (URISyntaxException ex) {
                         logger.error("Failed to launch online search for url {}", url);
                     }
