@@ -111,21 +111,19 @@ public class BookmarkNoteDialogController implements Initializable {
             fxStatus.setVisible(false);
 
             String result = searchExpirationDateTask.getValue();
-            Alert alert = new Alert(Alert.AlertType.NONE);
-            alert.initOwner(dlgstage);
-            alert.setTitle(Konstanten.PROGRAMMNAME);
-            alert.setHeaderText("Suche nach Datum");
-
-            if (result != null) {
-                alert.setAlertType(Alert.AlertType.INFORMATION);
-                var msg = String.format("Verfügbarkeit bis %s wurde gefunden.", result);
-                alert.setContentText(msg);
-                fxDate.getEditor().setText(result);
-            } else {
+            if (result == null) {
+                // do avail found
+                Alert alert = new Alert(Alert.AlertType.NONE);
+                alert.initOwner(dlgstage);
+                alert.setTitle(Konstanten.PROGRAMMNAME);
+                alert.setHeaderText("Suche nach Datum");
                 alert.setAlertType(Alert.AlertType.WARNING);
                 alert.setContentText("Es konnte keine Verfügbarkeit gefunden werden.");
+                alert.showAndWait();
             }
-            alert.showAndWait();
+            else {
+                fxDate.getEditor().setText(result);
+            }
 
             btnWebDate.setDisable(false);
         });
