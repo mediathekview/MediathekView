@@ -306,8 +306,6 @@ public class FilmListReader implements AutoCloseable {
         final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true);
         final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true);
         final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true);
-        //FIXME implement config
-        final boolean checkDuplicates = true;
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
@@ -373,9 +371,7 @@ public class FilmListReader implements AutoCloseable {
         }
 
         // search for duplicates after we have all the information available and initialized
-        if (checkDuplicates) {
-            checkDuplicates(listeFilme);
-        }
+        checkDuplicates(listeFilme);
     }
 
     private void checkDuplicates(@NotNull ListeFilme filmList) {
