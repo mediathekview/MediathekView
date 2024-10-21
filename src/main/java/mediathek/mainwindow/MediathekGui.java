@@ -25,6 +25,7 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.duplicates.DuplicateStatisticsDialog;
 import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
@@ -278,6 +279,9 @@ public class MediathekGui extends JFrame {
         }
 
         performAustrianVlcCheck();
+
+        var dlg = new DuplicateStatisticsDialog(this);
+        dlg.setVisible(true);
     }
 
     private void performAustrianVlcCheck() {
