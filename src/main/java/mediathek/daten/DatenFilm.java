@@ -193,6 +193,27 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return flags.contains(DatenFilmFlags.TRAILER_TEASER);
     }
 
+    /**
+     * Returns whether this film entry was already seen before and is hence a duplicate entry.
+     * @return true if it was seen before, false otherwise.
+     */
+    public boolean isDuplicate() {
+        return flags.contains(DatenFilmFlags.DUPLICATE);
+    }
+
+    /**
+     * Set if this film entry has a URL that was seen before.
+     * @param duplicate are we a duplicate?
+     */
+    public void setDuplicate(boolean duplicate) {
+        if (duplicate) {
+            flags.add(DatenFilmFlags.DUPLICATE);
+        }
+        else {
+            flags.remove(DatenFilmFlags.DUPLICATE);
+        }
+    }
+
     public void setTrailerTeaser(boolean val) {
         if (val) {
             flags.add(DatenFilmFlags.TRAILER_TEASER);
