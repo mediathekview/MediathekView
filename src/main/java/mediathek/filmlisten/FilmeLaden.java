@@ -14,6 +14,7 @@ import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.FilmlistWriterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
+import mediathek.gui.tasks.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.http.MVHttpClient;
@@ -316,7 +317,8 @@ public class FilmeLaden {
             throw new RuntimeException(e);
         }
         var workerTask = CompletableFuture.runAsync(new RefreshAboWorker(progLabel, progressBar))
-                .thenRun(new BlacklistFilterWorker(progLabel, progressBar));
+                .thenRun(new BlacklistFilterWorker(progLabel, progressBar))
+                .thenRun(new FilmDuplicateEvaluationTask());
 
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));

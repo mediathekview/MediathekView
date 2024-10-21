@@ -34,6 +34,7 @@ import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
+import mediathek.gui.tasks.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
@@ -604,6 +605,7 @@ public class MediathekGui extends JFrame {
                         daten.getFilmeLaden().loadFilmlist("", true);
                     }
                 })
+                .thenRun(new FilmDuplicateEvaluationTask())
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
 

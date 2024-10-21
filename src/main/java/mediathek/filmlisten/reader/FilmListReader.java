@@ -3,10 +3,7 @@ package mediathek.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Sets;
 import mediathek.config.Config;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.daten.Country;
@@ -47,8 +44,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -371,53 +366,6 @@ public class FilmListReader implements AutoCloseable {
                 dateFilter.filter(datenFilm);
             }
         }
-
-        // search for duplicates after we have all the information available and initialized
-        checkDuplicates(listeFilme);
-        printDuplicateStatistics(listeFilme);
-    }
-
-    public record DuplicateStatistics(String sender, long count) {}
-
-    private void printDuplicateStatistics(@NotNull ListeFilme listeFilme) {
-        Stopwatch watch = Stopwatch.createStarted();
-        final var duplicates = listeFilme.parallelStream()
-                .filter(DatenFilm::isDuplicate)
-                .toList();
-
-        var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
-
-        Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
-        statisticsEventList.getReadWriteLock().writeLock().lock();
-        for (var sender : statisticsMap.keySet()) {
-            statisticsEventList.add(new DuplicateStatistics(sender, statisticsMap.get(sender)));
-        }
-        statisticsEventList.getReadWriteLock().writeLock().unlock();
-        watch.stop();
-        //logger.trace(statisticsEventList.toString());
-        long dupes = 0;
-        for (var item : statisticsEventList) {
-            dupes += item.count;
-        }
-        logger.trace("Duplicate stream filter took: {}", watch);
-        logger.trace("Number of duplicates: {}", duplicates.size());
-        logger.trace("Calculated dupes: {}", dupes);
-    }
-
-    private void checkDuplicates(@NotNull ListeFilme filmList) {
-        logger.trace("Start Duplicate URL search");
-        final Set<String> urlCache = Sets.newConcurrentHashSet();
-
-        Stopwatch watch = Stopwatch.createStarted();
-        filmList.parallelStream().forEach(film -> {
-            final var url = film.getUrlNormalQuality();
-            final var duplicate = urlCache.contains(url);
-            film.setDuplicate(duplicate);
-            urlCache.add(url);
-        });
-        watch.stop();
-        logger.trace("Duplicate URL search took: {}", watch);
-        urlCache.clear();
     }
 
     /**
