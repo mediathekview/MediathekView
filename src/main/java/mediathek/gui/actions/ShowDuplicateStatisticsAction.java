@@ -12,7 +12,7 @@ public class ShowDuplicateStatisticsAction extends AbstractAction {
 
     public ShowDuplicateStatisticsAction(@NotNull Frame owner) {
         this.owner = owner;
-        putValue(Action.NAME, "Filmduplikat-Statistik anzeigen...");
+        putValue(Action.NAME, "Filmduplikat-Statistik anzeigen");
     }
 
     @Override

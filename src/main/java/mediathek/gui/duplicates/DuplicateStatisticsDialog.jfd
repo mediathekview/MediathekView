@@ -5,43 +5,35 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "Duplikatstatistik"
+			"title": "Filmduplikat-Statistik"
 			"defaultCloseOperation": 2
 			"type": enum java.awt.Window$Type UTILITY
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
 				"vgap": 5
 			} ) {
-				name: "dialogPane"
-				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				name: "contentPane"
+				"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scrollPane1"
+					add( new FormComponent( "javax.swing.JTable" ) {
+						name: "table"
+						"selectionMode": 0
+						"showHorizontalLines": false
+						"showVerticalLines": false
+						"autoResizeMode": 0
+						"preferredScrollableViewportSize": new java.awt.Dimension( 250, 400 )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label1"
 					"text": "Gesamtanzahl Duplikate:"
 				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "South"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
-					name: "contentPanel"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane1"
-						add( new FormComponent( "javax.swing.JTable" ) {
-							name: "table"
-							"selectionMode": 0
-							"showHorizontalLines": false
-							"showVerticalLines": false
-							"autoResizeMode": 0
-							"preferredScrollableViewportSize": new java.awt.Dimension( 250, 400 )
-						} )
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "Center"
-					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
+					"value": "Last"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

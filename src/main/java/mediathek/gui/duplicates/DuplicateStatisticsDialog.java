@@ -81,48 +81,41 @@ public class DuplicateStatisticsDialog extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
-        var dialogPane = new JPanel();
-        label1 = new JLabel();
-        var contentPanel = new JPanel();
+        var contentPane = new JPanel();
         scrollPane1 = new JScrollPane();
         table = new JTable();
+        label1 = new JLabel();
 
         //======== this ========
-        setTitle("Duplikatstatistik"); //NON-NLS
+        setTitle("Filmduplikat-Statistik"); //NON-NLS
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setType(Window.Type.UTILITY);
-        var contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
+        var contentPane2 = getContentPane();
+        contentPane2.setLayout(new BorderLayout());
 
-        //======== dialogPane ========
+        //======== contentPane ========
         {
-            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setLayout(new BorderLayout(0, 5));
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(new BorderLayout(0, 5));
+
+            //======== scrollPane1 ========
+            {
+
+                //---- table ----
+                table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                table.setShowHorizontalLines(false);
+                table.setShowVerticalLines(false);
+                table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                table.setPreferredScrollableViewportSize(new Dimension(250, 400));
+                scrollPane1.setViewportView(table);
+            }
+            contentPane.add(scrollPane1, BorderLayout.CENTER);
 
             //---- label1 ----
             label1.setText("Gesamtanzahl Duplikate:"); //NON-NLS
-            dialogPane.add(label1, BorderLayout.SOUTH);
-
-            //======== contentPanel ========
-            {
-                contentPanel.setLayout(new BorderLayout());
-
-                //======== scrollPane1 ========
-                {
-
-                    //---- table ----
-                    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                    table.setShowHorizontalLines(false);
-                    table.setShowVerticalLines(false);
-                    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                    table.setPreferredScrollableViewportSize(new Dimension(250, 400));
-                    scrollPane1.setViewportView(table);
-                }
-                contentPanel.add(scrollPane1, BorderLayout.CENTER);
-            }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
+            contentPane.add(label1, BorderLayout.PAGE_END);
         }
-        contentPane.add(dialogPane, BorderLayout.CENTER);
+        contentPane2.add(contentPane, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -130,8 +123,8 @@ public class DuplicateStatisticsDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
-    private JLabel label1;
     private JScrollPane scrollPane1;
     private JTable table;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
