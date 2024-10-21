@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import mediathek.config.Config;
+import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.daten.Country;
@@ -44,7 +45,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -373,22 +376,24 @@ public class FilmListReader implements AutoCloseable {
         printDuplicateStatistics(listeFilme);
     }
 
+    public record DuplicateStatistics(String sender, long count) {}
+
     private void printDuplicateStatistics(@NotNull ListeFilme listeFilme) {
         Stopwatch watch = Stopwatch.createStarted();
         final var duplicates = listeFilme.parallelStream()
                 .filter(DatenFilm::isDuplicate)
                 .toList();
         final var senders = duplicates.parallelStream().map(DatenFilm::getSender).distinct().toList();
-        final Map<String,Long> statistics = new HashMap<>();
+        var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
         for (var sender: senders) {
             final var dupes = duplicates.parallelStream().filter(f -> f.getSender().equals(sender)).count();
-            statistics.put(sender, dupes);
+            statisticsEventList.add(new DuplicateStatistics(sender, dupes));
         }
         watch.stop();
-        logger.trace(statistics.toString());
+        logger.trace(statisticsEventList.toString());
         long dupes = 0;
-        for (var key: statistics.keySet()) {
-            dupes += statistics.get(key);
+        for (var item : statisticsEventList) {
+            dupes += item.count;
         }
         logger.trace("Duplicate stream filter took: {}", watch);
         logger.trace("Number of duplicates: {}", duplicates.size());

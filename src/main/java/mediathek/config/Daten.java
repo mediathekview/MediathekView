@@ -1,5 +1,7 @@
 package mediathek.config;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -10,6 +12,7 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
@@ -36,6 +39,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
+    private final EventList<FilmListReader.DuplicateStatistics> statisticsEventList = new BasicEventList<>();
+    public EventList<FilmListReader.DuplicateStatistics> getFilmListDuplicateStatisticsList() { return statisticsEventList; }
     public static final MVColor mVColor = new MVColor(); // verwendete Farben
     /**
      * Prevent the unnecessary writing of a filmlist on startup when reading is enough
