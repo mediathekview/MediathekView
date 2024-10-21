@@ -81,8 +81,8 @@ public class DuplicateStatisticsDialog extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
+        var dialogPane = new JPanel();
+        var contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
         table = new JTable();
         label1 = new JLabel();
@@ -130,8 +130,6 @@ public class DuplicateStatisticsDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
     private JScrollPane scrollPane1;
     private JTable table;
     private JLabel label1;
