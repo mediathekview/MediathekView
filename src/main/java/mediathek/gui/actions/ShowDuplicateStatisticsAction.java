@@ -17,7 +17,7 @@ public class ShowDuplicateStatisticsAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var dlg = new DuplicateStatisticsDialog(owner);
+        var dlg = new DuplicateStatisticsDialog(owner, this);
         dlg.setVisible(true);
     }
 }

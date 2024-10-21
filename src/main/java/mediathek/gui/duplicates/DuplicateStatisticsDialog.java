@@ -7,6 +7,7 @@ package mediathek.gui.duplicates;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.config.Daten;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,9 +20,12 @@ import java.util.Comparator;
  * @author christianfranzke
  */
 public class DuplicateStatisticsDialog extends JDialog {
+    private final AbstractAction action;
 
-    public DuplicateStatisticsDialog(Window owner) {
+    public DuplicateStatisticsDialog(@NotNull Window owner, @NotNull AbstractAction action) {
         super(owner);
+        this.action = action;
+
         initComponents();
 
         var tableFormat = new DuplicateStatisticsTableFormat();
@@ -38,6 +42,15 @@ public class DuplicateStatisticsDialog extends JDialog {
         resizeSenderColumnWidth();
 
         pack();
+
+        action.setEnabled(false);
+    }
+
+    @Override
+    public void dispose() {
+        action.setEnabled(true);
+
+        super.dispose();
     }
 
     private void resizeSenderColumnWidth() {
