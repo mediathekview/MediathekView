@@ -17,29 +17,6 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "table"
-							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
-								add( new java.util.Vector {
-									add( "ARD" )
-									add( 1l )
-								} )
-								add( new java.util.Vector {
-									add( "ZDF" )
-									add( 2l )
-								} )
-							}, new java.util.Vector {
-								add( "Sender" )
-								add( "Anzahl Duplikate" )
-							}, new java.util.Vector {
-								add( class java.lang.String )
-								add( class java.lang.Long )
-							}, new java.util.Vector {
-								add( false )
-								add( null )
-							}, new java.util.Vector {
-								add( null )
-								add( new com.jformdesigner.model.SwingTableColumn( null, 100, 0, 0, true ) )
-							} )
-							"autoCreateRowSorter": true
 							"selectionMode": 0
 							"showHorizontalLines": false
 							"showVerticalLines": false
@@ -47,33 +24,21 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
 					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0:1.0, 80"
-					"$rowSpecs": "0"
-					"$hGap": 5
-					"$vGap": 5
-				} ) {
-					name: "buttonBar"
-					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "okButton"
-						"text": "Schließen"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
-						"gridy": 0
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Gesamtanzahl Duplikate:"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "South"
+					"value": "Center"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 400, 300 )
+			"size": new java.awt.Dimension( 290, 300 )
 		} )
 	}
 }

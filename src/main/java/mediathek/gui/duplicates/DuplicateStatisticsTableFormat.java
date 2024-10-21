@@ -1,8 +1,10 @@
 package mediathek.gui.duplicates;
 
-import ca.odell.glazedlists.gui.TableFormat;
+import ca.odell.glazedlists.gui.AdvancedTableFormat;
 
-public class DuplicateStatisticsTableFormat implements TableFormat<DuplicateStatistics> {
+import java.util.Comparator;
+
+public class DuplicateStatisticsTableFormat implements AdvancedTableFormat<DuplicateStatistics> {
 
     @Override
     public int getColumnCount() {
@@ -25,5 +27,19 @@ public class DuplicateStatisticsTableFormat implements TableFormat<DuplicateStat
             case 1 -> stats.count();
             default -> null;
         };
+    }
+
+    @Override
+    public Class getColumnClass(int column) {
+        return switch (column) {
+            case 0 -> String.class;
+            case 1 -> Long.class;
+            default -> null;
+        };
+    }
+
+    @Override
+    public Comparator getColumnComparator(int column) {
+        return null;
     }
 }
