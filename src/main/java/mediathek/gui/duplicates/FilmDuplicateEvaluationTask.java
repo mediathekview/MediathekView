@@ -30,22 +30,24 @@ public class FilmDuplicateEvaluationTask implements Runnable {
         var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
 
         Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
-        statisticsEventList.getReadWriteLock().writeLock().lock();
-        statisticsEventList.clear();
         TransactionList<DuplicateStatistics> tList = new TransactionList<>(statisticsEventList);
+        tList.getReadWriteLock().writeLock().lock();
+        tList.clear();
         for (var sender : statisticsMap.keySet()) {
             tList.add(new DuplicateStatistics(sender, statisticsMap.get(sender)));
         }
-        statisticsEventList.getReadWriteLock().writeLock().unlock();
+        tList.getReadWriteLock().writeLock().unlock();
         watch.stop();
-        //logger.trace(statisticsEventList.toString());
-        long dupes = 0;
+
+        /*long dupes = 0;
+        statisticsEventList.getReadWriteLock().readLock().lock();
         for (var item : statisticsEventList) {
             dupes += item.count();
         }
+        statisticsEventList.getReadWriteLock().readLock().unlock();*/
         logger.trace("Duplicate stream filter took: {}", watch);
         logger.trace("Number of duplicates: {}", duplicates.size());
-        logger.trace("Calculated dupes: {}", dupes);
+        //logger.trace("Calculated dupes: {}", dupes);
     }
 
     private void checkDuplicates() {
@@ -53,7 +55,9 @@ public class FilmDuplicateEvaluationTask implements Runnable {
         final Set<String> urlCache = Sets.newConcurrentHashSet();
 
         Stopwatch watch = Stopwatch.createStarted();
-        listeFilme.parallelStream().forEach(film -> {
+        listeFilme.stream()
+                .filter(f -> !f.isLivestream())
+                .forEach(film -> {
             final var url = film.getUrlNormalQuality();
             final var duplicate = urlCache.contains(url);
             film.setDuplicate(duplicate);

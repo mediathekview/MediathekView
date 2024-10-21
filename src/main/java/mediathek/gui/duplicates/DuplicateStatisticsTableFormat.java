@@ -40,6 +40,14 @@ public class DuplicateStatisticsTableFormat implements AdvancedTableFormat<Dupli
 
     @Override
     public Comparator getColumnComparator(int column) {
+        switch (column) {
+            case 0 -> {
+                return (Comparator<String>) String::compareTo;
+            }
+            case 1 -> {
+                return (Comparator<Long>) Long::compareTo;
+            }
+        }
         return null;
     }
 }

@@ -4,6 +4,7 @@
 
 package mediathek.gui.duplicates;
 
+import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.config.Daten;
 
@@ -12,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.util.Comparator;
 
 /**
  * @author christianfranzke
@@ -23,9 +25,12 @@ public class DuplicateStatisticsDialog extends JDialog {
         initComponents();
 
         var tableFormat = new DuplicateStatisticsTableFormat();
-        var model = GlazedListsSwing.eventTableModelWithThreadProxyList(Daten.getInstance().getFilmListDuplicateStatisticsList(), tableFormat);
+        final var dupeStatsList = Daten.getInstance().getFilmListDuplicateStatisticsList();
+        SortedList<DuplicateStatistics> sortedList = new SortedList<>(dupeStatsList, Comparator.comparing(DuplicateStatistics::sender));
+        var model = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, tableFormat);
         model.addTableModelListener(e -> updateTotalStats());
         table.setModel(model);
+
         updateTotalStats();
 
         //table.getColumnModel().getColumn(0).setPreferredWidth(120);
@@ -93,7 +98,7 @@ public class DuplicateStatisticsDialog extends JDialog {
                     table.setShowHorizontalLines(false);
                     table.setShowVerticalLines(false);
                     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                    table.setPreferredScrollableViewportSize(new Dimension(270, 300));
+                    table.setPreferredScrollableViewportSize(new Dimension(250, 400));
                     scrollPane1.setViewportView(table);
                 }
                 contentPanel.add(scrollPane1, BorderLayout.CENTER);
