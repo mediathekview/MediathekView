@@ -23,7 +23,7 @@ new FormModel {
 							"showHorizontalLines": false
 							"showVerticalLines": false
 							"autoResizeMode": 0
-							"preferredScrollableViewportSize": new java.awt.Dimension( 270, 300 )
+							"preferredScrollableViewportSize": new java.awt.Dimension( 250, 400 )
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"

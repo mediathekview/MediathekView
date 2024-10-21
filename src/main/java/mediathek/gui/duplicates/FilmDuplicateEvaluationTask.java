@@ -1,5 +1,6 @@
 package mediathek.gui.duplicates;
 
+import ca.odell.glazedlists.TransactionList;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import mediathek.config.Daten;
@@ -31,8 +32,9 @@ public class FilmDuplicateEvaluationTask implements Runnable {
         Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
         statisticsEventList.getReadWriteLock().writeLock().lock();
         statisticsEventList.clear();
+        TransactionList<DuplicateStatistics> tList = new TransactionList<>(statisticsEventList);
         for (var sender : statisticsMap.keySet()) {
-            statisticsEventList.add(new DuplicateStatistics(sender, statisticsMap.get(sender)));
+            tList.add(new DuplicateStatistics(sender, statisticsMap.get(sender)));
         }
         statisticsEventList.getReadWriteLock().writeLock().unlock();
         watch.stop();
