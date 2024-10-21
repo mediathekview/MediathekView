@@ -47,6 +47,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -383,14 +384,17 @@ public class FilmListReader implements AutoCloseable {
         final var duplicates = listeFilme.parallelStream()
                 .filter(DatenFilm::isDuplicate)
                 .toList();
-        final var senders = duplicates.parallelStream().map(DatenFilm::getSender).distinct().toList();
+
         var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
-        for (var sender: senders) {
-            final var dupes = duplicates.parallelStream().filter(f -> f.getSender().equals(sender)).count();
-            statisticsEventList.add(new DuplicateStatistics(sender, dupes));
+
+        Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
+        statisticsEventList.getReadWriteLock().writeLock().lock();
+        for (var sender : statisticsMap.keySet()) {
+            statisticsEventList.add(new DuplicateStatistics(sender, statisticsMap.get(sender)));
         }
+        statisticsEventList.getReadWriteLock().writeLock().unlock();
         watch.stop();
-        logger.trace(statisticsEventList.toString());
+        //logger.trace(statisticsEventList.toString());
         long dupes = 0;
         for (var item : statisticsEventList) {
             dupes += item.count;
