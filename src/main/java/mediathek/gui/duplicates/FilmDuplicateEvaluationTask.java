@@ -1,4 +1,4 @@
-package mediathek.gui.tasks.duplicates;
+package mediathek.gui.duplicates;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;

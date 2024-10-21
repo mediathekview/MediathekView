@@ -12,7 +12,7 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.tasks.duplicates.DuplicateStatistics;
+import mediathek.gui.duplicates.DuplicateStatistics;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
