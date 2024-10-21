@@ -47,7 +47,6 @@ public class DuplicateStatisticsDialog extends JDialog {
             setLocation(x, y);
         }
         catch (NoSuchElementException e) {
-            logger.warn("Could not restore position, using defaults", e);
             pack();
         }
         catch (Exception ex) {
